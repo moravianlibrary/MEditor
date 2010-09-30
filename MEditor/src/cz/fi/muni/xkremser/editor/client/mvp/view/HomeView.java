@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.mvp;
+package cz.fi.muni.xkremser.editor.client.mvp.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
@@ -7,9 +7,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import cz.fi.muni.xkremser.editor.client.mvp.presenter.HomePresenter;
 
 public class HomeView extends Composite implements HomePresenter.Display {
 	private final TextBox name;
@@ -17,20 +18,17 @@ public class HomeView extends Composite implements HomePresenter.Display {
 
 	public HomeView() {
 		final FlowPanel panel = new FlowPanel();
-
-		initWidget(panel);
-
 		name = new TextBox();
 		panel.add(name);
 
 		sendButton = new Button("Go");
 		panel.add(sendButton);
 
-		// Add the nameField and sendButton to the RootPanel
-		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(name);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-
+		// // Add the nameField and sendButton to the RootPanel
+		// // Use RootPanel.get() to get the entire body element
+		// RootPanel.get("nameFieldContainer").add(name);
+		// RootPanel.get("sendButtonContainer").add(sendButton);
+		initWidget(panel);
 		reset();
 	}
 

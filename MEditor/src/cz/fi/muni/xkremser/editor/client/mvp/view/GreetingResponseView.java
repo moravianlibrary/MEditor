@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.mvp;
+package cz.fi.muni.xkremser.editor.client.mvp.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
@@ -11,6 +11,8 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import cz.fi.muni.xkremser.editor.client.mvp.presenter.GreetingResponsePresenter;
 
 public class GreetingResponseView extends DialogBox implements
 		GreetingResponsePresenter.Display {

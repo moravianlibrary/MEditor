@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.mvp;
+package cz.fi.muni.xkremser.editor.client.mvp.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
+
+import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
 
 public class DigitalObjectMenuView extends Composite implements DigitalObjectMenuPresenter.Display {
 	private final TextBox name;

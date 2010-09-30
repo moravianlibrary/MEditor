@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.mvp;
+package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -24,7 +24,7 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 		public HasClickHandlers getMenu();
 	}
 
-	public static final Place PLACE = new Place("Neco");
+	public static final Place PLACE = new Place("tree");
 
 	private final DispatchAsync dispatcher;
 
@@ -35,10 +35,8 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 	// achieve this, but I wanted to put something together quickly - sorry!
 
 	@Inject
-	public DigitalObjectMenuPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher,
-			final GreetingResponsePresenter greetingResponsePresenter) {
+	public DigitalObjectMenuPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher) {
 		super(display, eventBus);
-
 		this.dispatcher = dispatcher;
 		bind();
 	}

@@ -7,8 +7,8 @@ import com.google.gwt.inject.client.Ginjector;
 
 import cz.fi.muni.xkremser.editor.client.mvp.AppPresenter;
 
-@GinModules({ ClientDispatchModule.class, GreetingClientModule.class })
-public interface GreetingGinjector extends Ginjector {
+@GinModules({ ClientDispatchModule.class, EditorClientModule.class })
+public interface EditorGinjector extends Ginjector {
 
 	AppPresenter getAppPresenter();
 

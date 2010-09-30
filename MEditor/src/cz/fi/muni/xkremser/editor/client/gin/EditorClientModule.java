@@ -9,14 +9,14 @@ import com.google.inject.Singleton;
 
 import cz.fi.muni.xkremser.editor.client.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.mvp.AppPresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.DigitalObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.DigitalObjectMenuView;
-import cz.fi.muni.xkremser.editor.client.mvp.GreetingResponsePresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.GreetingResponseView;
-import cz.fi.muni.xkremser.editor.client.mvp.HomePresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.HomeView;
+import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.mvp.presenter.GreetingResponsePresenter;
+import cz.fi.muni.xkremser.editor.client.mvp.presenter.HomePresenter;
+import cz.fi.muni.xkremser.editor.client.mvp.view.DigitalObjectMenuView;
+import cz.fi.muni.xkremser.editor.client.mvp.view.GreetingResponseView;
+import cz.fi.muni.xkremser.editor.client.mvp.view.HomeView;
 
-public class GreetingClientModule extends AbstractPresenterModule {
+public class EditorClientModule extends AbstractPresenterModule {
 
 	@Override
 	protected void configure() {

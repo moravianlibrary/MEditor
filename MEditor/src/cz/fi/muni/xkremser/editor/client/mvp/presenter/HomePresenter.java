@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.mvp;
+package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.DisplayCallback;
@@ -47,15 +47,14 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	// response presenter listen for events (via bind()). This is not a very
 	// good way to
 	// achieve this, but I wanted to put something together quickly - sorry!
-	private final GreetingResponsePresenter greetingResponsePresenter;
+	// private final GreetingResponsePresenter greetingResponsePresenter;
 
 	@Inject
-	public HomePresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher, final GreetingResponsePresenter greetingResponsePresenter) {
+	public HomePresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher) {
 		super(display, eventBus);
-
 		this.dispatcher = dispatcher;
 
-		this.greetingResponsePresenter = greetingResponsePresenter;
+		// this.greetingResponsePresenter = greetingResponsePresenter;
 
 		bind();
 	}
