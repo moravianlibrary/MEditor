@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="test-classes" path="test"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/gin-1.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-2.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-servlet-2.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dispatch-1.0.0.jar" sourcepath="/home/freon/.m2/repository/net/customware/gwt/dispatch/gwt-dispatch/1.0.0/gwt-dispatch-1.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-presenter-1.0.0.jar" sourcepath="/home/freon/.m2/repository/net/customware/gwt/presenter/gwt-presenter/1.0.0/gwt-presenter-1.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-2.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration-1.6.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-iface-1_2_3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/a2jruntime.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-z3950-1_2_3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-util.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/marc4j.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-3.0.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt-skins.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

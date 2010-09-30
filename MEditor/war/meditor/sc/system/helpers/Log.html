@@ -1,0 +1,55 @@
+
+<!--======================================================================
+    Isomorphic SmartClient Developer Console
+    Copyright 2000-2007 Isomorphic Software, Inc. (www.isomorphic.com)
+    All rights reserved.
+======================================================================-->
+
+<HTML>
+<TITLE>SmartClient Developer Console</TITLE>
+<HEAD>
+<SCRIPT>
+var isomorphicDir = "../../";
+
+window.suppressAutoLogWindow = true;
+window.useSimpleNames = false;
+</SCRIPT>
+<!--  -->
+
+<SCRIPT src=../development/ISC_FileLoader.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT>isc.FileLoader.modulesDir = "system/development/";</SCRIPT>
+<SCRIPT src=../development/ISC_Core.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT src=../development/ISC_Foundation.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT src=../development/ISC_Containers.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT src=../development/ISC_Grids.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT src=../development/ISC_Forms.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT src=../development/ISC_DataBinding.js?isc_version=8.0-2.2.js></SCRIPT>
+<SCRIPT src=../development/ISC_Tools.js?isc_version=8.0-2.2.js></SCRIPT>
+
+<SCRIPT type="text/javascript">
+    if(isc.Browser.isSafari) {
+          isc.Browser.safariVersion = 525;
+        }
+</SCRIPT>
+<SCRIPT>
+
+if (!(isc.loadSkin || window.loadSkin)) {
+    document.write("<script src="+window.opener.isc.Page.getSkinDir()+"load_skin.js?isc_version=8.0-2.2.js></"+"script>");
+}
+</SCRIPT>
+<SCRIPT>isc.deferAutoDraw = true;</SCRIPT>
+
+</HEAD>
+<BODY LEFTMARGIN=0 TOPMARGIN=0 BGCOLOR=DDDDDD ONBLUR='saveState()'
+      STYLE="overflow:hidden">
+
+<SCRIPT src="../development/ISC_DeveloperConsole.js"></SCRIPT>
+
+</BODY>
+</HTML>
+
+<!--======================================================================
+    Isomorphic SmartClient Developer Console
+    Copyright 2000-2007 Isomorphic Software, Inc. (www.isomorphic.com)
+    All rights reserved.
+======================================================================-->
