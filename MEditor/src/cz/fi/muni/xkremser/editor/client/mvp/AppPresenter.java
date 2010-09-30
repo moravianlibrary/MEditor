@@ -7,11 +7,11 @@ import com.google.inject.Inject;
 
 public class AppPresenter {
 	private HasWidgets container;
-	private final GreetingPresenter greetingPresenter;
+	private final HomePresenter greetingPresenter;
 	private final DigitalObjectMenuPresenter digitalObjectMenuPresenter;
 
 	@Inject
-	public AppPresenter(final DispatchAsync dispatcher, final GreetingPresenter greetingPresenter, final DigitalObjectMenuPresenter digitalObjectMenuPresenter) {
+	public AppPresenter(final DispatchAsync dispatcher, final HomePresenter greetingPresenter, final DigitalObjectMenuPresenter digitalObjectMenuPresenter) {
 		this.greetingPresenter = greetingPresenter;
 		this.digitalObjectMenuPresenter = digitalObjectMenuPresenter;
 	}
