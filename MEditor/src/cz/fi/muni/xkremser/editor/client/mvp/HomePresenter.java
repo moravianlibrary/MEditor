@@ -24,7 +24,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.SendGreeting;
 import cz.fi.muni.xkremser.editor.shared.rpc.SendGreetingResult;
 
-public class GreetingPresenter extends WidgetPresenter<GreetingPresenter.Display> {
+public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -50,8 +50,7 @@ public class GreetingPresenter extends WidgetPresenter<GreetingPresenter.Display
 	private final GreetingResponsePresenter greetingResponsePresenter;
 
 	@Inject
-	public GreetingPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher,
-			final GreetingResponsePresenter greetingResponsePresenter) {
+	public HomePresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher, final GreetingResponsePresenter greetingResponsePresenter) {
 		super(display, eventBus);
 
 		this.dispatcher = dispatcher;

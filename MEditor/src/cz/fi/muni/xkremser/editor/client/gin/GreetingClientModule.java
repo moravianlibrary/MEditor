@@ -11,10 +11,10 @@ import cz.fi.muni.xkremser.editor.client.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.mvp.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.DigitalObjectMenuView;
-import cz.fi.muni.xkremser.editor.client.mvp.GreetingPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.GreetingResponsePresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.GreetingResponseView;
-import cz.fi.muni.xkremser.editor.client.mvp.GreetingView;
+import cz.fi.muni.xkremser.editor.client.mvp.HomePresenter;
+import cz.fi.muni.xkremser.editor.client.mvp.HomeView;
 
 public class GreetingClientModule extends AbstractPresenterModule {
 
@@ -23,7 +23,7 @@ public class GreetingClientModule extends AbstractPresenterModule {
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).in(Singleton.class);
 
-		bindPresenter(GreetingPresenter.class, GreetingPresenter.Display.class, GreetingView.class);
+		bindPresenter(HomePresenter.class, HomePresenter.Display.class, HomeView.class);
 		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.Display.class, DigitalObjectMenuView.class);
 		bindPresenter(GreetingResponsePresenter.class, GreetingResponsePresenter.Display.class, GreetingResponseView.class);
 

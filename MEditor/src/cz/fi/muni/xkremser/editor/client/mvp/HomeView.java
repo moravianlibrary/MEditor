@@ -11,11 +11,11 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class GreetingView extends Composite implements GreetingPresenter.Display {
+public class HomeView extends Composite implements HomePresenter.Display {
 	private final TextBox name;
 	private final Button sendButton;
 
-	public GreetingView() {
+	public HomeView() {
 		final FlowPanel panel = new FlowPanel();
 
 		initWidget(panel);
@@ -25,23 +25,25 @@ public class GreetingView extends Composite implements GreetingPresenter.Display
 
 		sendButton = new Button("Go");
 		panel.add(sendButton);
-		
+
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
 		RootPanel.get("nameFieldContainer").add(name);
 		RootPanel.get("sendButtonContainer").add(sendButton);
-		
+
 		reset();
 	}
 
+	@Override
 	public HasValue<String> getName() {
 		return name;
 	}
 
+	@Override
 	public HasClickHandlers getSend() {
 		return sendButton;
 	}
-	
+
 	public void reset() {
 		// Focus the cursor on the name field when the app loads
 		name.setFocus(true);
@@ -51,6 +53,7 @@ public class GreetingView extends Composite implements GreetingPresenter.Display
 	/**
 	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
 	 */
+	@Override
 	public Widget asWidget() {
 		return this;
 	}
