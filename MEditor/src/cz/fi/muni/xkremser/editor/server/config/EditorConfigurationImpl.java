@@ -23,11 +23,9 @@ public class EditorConfigurationImpl extends EditorConfiguration {
 	public static final String CONFIGURATION = WORKING_DIR + File.separator + DEFAULT_CONF_LOCATION;
 
 	private Configuration configuration;
-	private final Log logger;
 
 	@Inject
 	public EditorConfigurationImpl(final Log logger) {
-		this.logger = logger;
 		File dir = new File(WORKING_DIR);
 		if (!dir.exists()) {
 			boolean mkdirs = dir.mkdirs();

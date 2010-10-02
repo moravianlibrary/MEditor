@@ -21,12 +21,18 @@ import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
+import com.smartgwt.client.widgets.tree.TreeNode;
+
+import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
 public class SideNavInputTree extends TreeGrid {
 
 	private final String idSuffix = "";
 
-	private final ExplorerTreeNode[] showcaseData = ShowcaseData.getData(idSuffix);
+	// private final ExplorerTreeNode[] showcaseData =
+	// ShowcaseData.getData(idSuffix);
+	private final Tree tree;
 
 	public SideNavInputTree() {
 		setWidth100();
@@ -40,16 +46,17 @@ public class SideNavInputTree extends TreeGrid {
 		setShowConnectors(true);
 		setShowAllRecords(true);
 		setLoadDataOnDemand(false);
-		setCanSort(false);
+		setCanSort(true);
 
 		TreeGridField field1 = new TreeGridField();
 		// field1.setCanFilter(true);
-		field1.setName("ISSN");
+		field1.setName(Constants.ATTR_ISSN);
 		field1.setTitle("ISSN");
 		field1.setWidth(160);
 		TreeGridField field2 = new TreeGridField();
 		field2.setCanFilter(true);
-		field2.setName("Name");
+		field2.setName(Constants.ATTR_NAME);
+		// field2.setAttribute("name", "name");
 		field2.setTitle("Name");
 		setFields(field1, field2);
 
@@ -58,20 +65,40 @@ public class SideNavInputTree extends TreeGrid {
 		setClosedIconSuffix("");
 		// setAutoFetchData(true);
 
-		Tree tree = new Tree();
+		tree = new Tree();
 		tree.setModelType(TreeModelType.PARENT);
-		tree.setNameProperty("name");
+		tree.setNameProperty(Constants.ATTR_NAME);
 		tree.setOpenProperty("isOpen");
 		tree.setIdField("nodeID");
 		tree.setParentIdField("parentNodeID");
-		tree.setRootValue("root" + idSuffix);
+		tree.setRootValue("/");
+		tree.setShowRoot(false);
 
-		tree.setData(showcaseData);
+		// tree.setData(showcaseData);
 
 		setData(tree);
 	}
 
-	public ExplorerTreeNode[] getShowcaseData() {
-		return showcaseData;
+	public void refresh(ScanInputQueueResult result) {
+		if (result.getItems().size() == 0)
+			return;
+		TreeNode[] nodeList = new TreeNode[result.getItems().size()];
+		for (int i = 0; i < result.getItems().size(); i++) {
+			String id = result.getItems().get(i).getId();
+			String name = result.getItems().get(i).getName();
+			ExplorerTreeNode aux = new ExplorerTreeNode(name, id, result.getPathPrefix(), "silk/layout_content.png", true, idSuffix);
+			aux.setAttribute(Constants.ATTR_ID, id);
+			aux.setCanExpand(true);
+			aux.setIsFolder(true);
+			nodeList[i] = aux;
+		}
+		// addData(record);
+		// Record r =
+		tree.addList(nodeList, result.getPathPrefix());
+		// tree.find("/periodika");
+
 	}
+	// public ExplorerTreeNode[] getShowcaseData() {
+	// return showcaseData;
+	// }
 }

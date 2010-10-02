@@ -4,7 +4,6 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -66,12 +65,13 @@ public class AppPresenter {
 		HLayout top = new HLayout();
 		top.setWidth100();
 		top.setHeight(100);
-		top.addMember(new IButton("ahoj"));
+		top.setBorder("1px solid");
 		main.addMember(top);
 
 		HLayout underTop = new HLayout();
 		underTop.setWidth100();
 		underTop.setHeight100();
+		// underTop.setShowResizeBar(true);
 		main.addMember(underTop);
 
 		underTop.addMember(treePresenter.getDisplay().asWidget());

@@ -11,7 +11,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-2.0.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration-1.6.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration-1.6.jar" sourcepath="/home/freon/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-iface-1_2_3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/a2jruntime.jar"/>

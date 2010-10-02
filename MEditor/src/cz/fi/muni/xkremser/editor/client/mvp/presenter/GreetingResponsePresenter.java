@@ -1,5 +1,7 @@
 package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -81,5 +83,14 @@ public class GreetingResponsePresenter extends WidgetPresenter<GreetingResponseP
 	protected void onRevealDisplay() {
 		// TODO Auto-generated method stub
 
+	}
+
+	private List<String> getTopLevel() {
+		Log.info("Calling doSend");
+		return null;
+	}
+
+	private List<String> getLevel(String pathPrefix) {
+		return null;
 	}
 }

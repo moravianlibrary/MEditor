@@ -2,41 +2,38 @@ package cz.fi.muni.xkremser.editor.client.mvp.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.tree.SideNavRecentlyTree;
+import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
-public class DigitalObjectMenuView extends Composite implements DigitalObjectMenuPresenter.Display {
+public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuPresenter.Display {
 
-	// private final TreePanel treePanel;
+	private SideNavInputTree inputTree;
+
 	// private TreeNode ctxNode;
 	// private final TreeEditor treeEditor;
 	// private Menu menu;
 
 	public DigitalObjectMenuView() {
-		VLayout sideNavLayout = new VLayout();
-		sideNavLayout.setHeight100();
-		sideNavLayout.setWidth(285);
-		sideNavLayout.setShowResizeBar(true);
+		super();
+		setHeight100();
+		setWidth(285);
+		setShowResizeBar(true);
 
 		SideNavRecentlyTree sideNavTree2 = new SideNavRecentlyTree();
-		SideNavInputTree sideNavTree1 = new SideNavInputTree();
-		sideNavTree1.setHeight("600");
-		sideNavLayout.addMember(sideNavTree1);
-		sideNavLayout.addMember(sideNavTree2);
-
-		initWidget(sideNavLayout);
-		reset();
-	}
-
-	public void reset() {
-		// Focus the cursor on the name field when the app loads
+		addMember(new Label("Recently modified") {
+			{
+				setHeight(15);
+			}
+		});
+		addMember(sideNavTree2);
 	}
 
 	/**
@@ -53,7 +50,30 @@ public class DigitalObjectMenuView extends Composite implements DigitalObjectMen
 	}
 
 	@Override
-	public HasClickHandlers getMenu() {
-		return null;
+	public void expandNode(String id) {
+		// TODO Auto-generated method stub
+
 	}
+
+	@Override
+	public void showInputQueue() {
+		Label l = new Label("Input queue");
+		l.setHeight(15);
+		addMember(l, 0);
+		inputTree = new SideNavInputTree();
+		inputTree.setHeight("600");
+		addMember(inputTree, 1);
+
+	}
+
+	@Override
+	public void refreshInputQueue(ScanInputQueueResult result) {
+		inputTree.refresh(result);
+	}
+
+	@Override
+	public HasFolderOpenedHandlers getInputTree() {
+		return inputTree;
+	}
+
 }

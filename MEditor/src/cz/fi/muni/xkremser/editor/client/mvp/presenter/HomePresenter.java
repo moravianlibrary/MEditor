@@ -14,7 +14,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
@@ -81,7 +80,7 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 		// });
 
 		// delete
-		dispatcher.execute(new ScanInputQueue(Constants.DOC_TYPE.MONOGRAPHS), new AsyncCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueue(""), new AsyncCallback<ScanInputQueueResult>() {
 			@Override
 			public void onFailure(final Throwable cause) {
 				Log.error("Handle Failure:", cause);

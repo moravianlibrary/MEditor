@@ -3,25 +3,25 @@ package cz.fi.muni.xkremser.editor.shared.rpc;
 import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
-import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.Constants.DOC_TYPE;
 
 public class ScanInputQueueResult implements Result {
-	private Constants.DOC_TYPE documentType;
+	// input
+	private String pathPrefix;
+
+	// output
 	private ArrayList<InputQueueItemDetail> items;
 
 	@SuppressWarnings("unused")
 	private ScanInputQueueResult() {
 	}
 
-	public ScanInputQueueResult(DOC_TYPE documentType,
-			ArrayList<InputQueueItemDetail> items) {
-		this.documentType = documentType;
+	public ScanInputQueueResult(String pathPrefix, ArrayList<InputQueueItemDetail> items) {
+		this.pathPrefix = pathPrefix;
 		this.items = items;
 	}
 
-	public Constants.DOC_TYPE getDocumentType() {
-		return documentType;
+	public String getPathPrefix() {
+		return pathPrefix;
 	}
 
 	public ArrayList<InputQueueItemDetail> getItems() {

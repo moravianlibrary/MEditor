@@ -5,6 +5,8 @@ import org.apache.commons.configuration.Configuration;
 public abstract class EditorConfiguration {
 	public static class Constants {
 		public static final String INPUT_QUEUE = "input_queue";
+		public static final String DOCUMENT_TYPES = "document_types";
+		public static final String[] DOCUMENT_DEFAULT_TYPES = { "periodical", "monographs" };
 		public static final String Z3950_PROFILE = "z39.50_profile";
 		public static final String Z3950_HOST = "z39.50_host";
 		public static final String Z3950_PORT = "z39.50_port";
@@ -46,6 +48,10 @@ public abstract class EditorConfiguration {
 
 	public String getFedoraHost() {
 		return getConfiguration().getString(Constants.FEDORA_HOST);
+	}
+
+	public String[] getDocumentTypes() {
+		return getConfiguration().getStringArray(Constants.DOCUMENT_TYPES);
 	}
 
 }

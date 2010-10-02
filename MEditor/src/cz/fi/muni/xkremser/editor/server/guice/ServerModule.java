@@ -25,6 +25,6 @@ public class ServerModule extends ActionHandlerModule {
 		bindHandler(ScanInputQueue.class, ScanInputQueueHandler.class);
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
-		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).in(Singleton.class);
+		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 	}
 }
