@@ -1,10 +1,7 @@
 package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.DisplayCallback;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -18,11 +15,8 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.shared.event.GreetingSentEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.SendGreeting;
-import cz.fi.muni.xkremser.editor.shared.rpc.SendGreetingResult;
 
 public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	/**
@@ -38,9 +32,10 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 		public HasClickHandlers getSend();
 	}
 
-	public static final Place PLACE = new Place("Greeting");
-
 	private final DispatchAsync dispatcher;
+	private final DigitalObjectMenuPresenter treePresenter;
+
+	// private final DigitalObjectMenuPresenter treePresenter;
 
 	// FUDGE FACTOR! Although this is not used, having GIN pass the object
 	// to this class will force its instantiation and therefore will make the
@@ -48,13 +43,13 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	// good way to
 	// achieve this, but I wanted to put something together quickly - sorry!
 	// private final GreetingResponsePresenter greetingResponsePresenter;
+	// /*, final DigitalObjectMenuPresenter treePresenter*/
 
 	@Inject
-	public HomePresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher) {
+	public HomePresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher, final DigitalObjectMenuPresenter treePresenter) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
-
-		// this.greetingResponsePresenter = greetingResponsePresenter;
+		this.treePresenter = treePresenter;
 
 		bind();
 	}
@@ -65,23 +60,25 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	private void doSend() {
 		Log.info("Calling doSend");
 
-		dispatcher.execute(new SendGreeting(display.getName().getValue()), new DisplayCallback<SendGreetingResult>(display) {
-
-			@Override
-			protected void handleFailure(final Throwable cause) {
-				Log.error("Handle Failure:", cause);
-
-				Window.alert(SERVER_ERROR);
-			}
-
-			@Override
-			protected void handleSuccess(final SendGreetingResult result) {
-				// take the result from the server and notify client
-				// interested components
-				eventBus.fireEvent(new GreetingSentEvent(result.getName(), result.getMessage()));
-			}
-
-		});
+		// dispatcher.execute(new SendGreeting(display.getName().getValue()), new
+		// DisplayCallback<SendGreetingResult>(display) {
+		//
+		// @Override
+		// protected void handleFailure(final Throwable cause) {
+		// Log.error("Handle Failure:", cause);
+		//
+		// Window.alert(SERVER_ERROR);
+		// }
+		//
+		// @Override
+		// protected void handleSuccess(final SendGreetingResult result) {
+		// // take the result from the server and notify client
+		// // interested components
+		// eventBus.fireEvent(new GreetingSentEvent(result.getName(),
+		// result.getMessage()));
+		// }
+		//
+		// });
 
 		// delete
 		dispatcher.execute(new ScanInputQueue(Constants.DOC_TYPE.MONOGRAPHS), new AsyncCallback<ScanInputQueueResult>() {
@@ -120,43 +117,35 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	}
 
 	@Override
-	public void refreshDisplay() {
-		// This is called when the presenter should pull the latest data
-		// from the server, etc. In this case, there is nothing to do.
-	}
-
-	@Override
 	public void revealDisplay() {
 		// Nothing to do. This is more useful in UI which may be buried
 		// in a tab bar, tree, etc.
 	}
 
-	/**
-	 * Returning a place will allow this presenter to automatically trigger when
-	 * '#Greeting' is passed into the browser URL.
-	 */
 	@Override
-	public Place getPlace() {
-		return PLACE;
+	protected void onRevealDisplay() {
+		// TODO Auto-generated method stub
+
 	}
 
-	@Override
-	protected void onPlaceRequest(final PlaceRequest request) {
-		// Grab the 'name' from the request and put it into the 'name' field.
-		// This allows a tag of '#Greeting;name=Foo' to populate the name
-		// field.
-		final String name = request.getParameter("name", null);
-		final String doi = request.getParameter(Constants.URL_PARAM_DOI, null);
-		final String action = request.getParameter(Constants.URL_PARAM_ACTION, null);
-
-		if (doi != null) {
-			Window.alert(doi);
-		}
-		if (action != null) {
-			Window.alert(action);
-		}
-		if (name != null) {
-			display.getName().setValue(name);
-		}
-	}
+	// @Override
+	// protected void onPlaceRequest(final PlaceRequest request) {
+	// // Grab the 'name' from the request and put it into the 'name' field.
+	// // This allows a tag of '#Greeting;name=Foo' to populate the name
+	// // field.
+	// final String name = request.getParameter("name", null);
+	// final String doi = request.getParameter(Constants.URL_PARAM_DOI, null);
+	// final String action = request.getParameter(Constants.URL_PARAM_ACTION,
+	// null);
+	//
+	// if (doi != null) {
+	// Window.alert(doi);
+	// }
+	// if (action != null) {
+	// Window.alert(action);
+	// }
+	// if (name != null) {
+	// display.getName().setValue(name);
+	// }
+	// }
 }

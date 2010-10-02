@@ -22,7 +22,6 @@ import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 
-
 public class SideNavInputTree extends TreeGrid {
 
 	private final String idSuffix = "";
@@ -46,12 +45,12 @@ public class SideNavInputTree extends TreeGrid {
 		TreeGridField field1 = new TreeGridField();
 		// field1.setCanFilter(true);
 		field1.setName("ISSN");
-		// field1.setTitle("<b>Import queue</b>");
+		field1.setTitle("ISSN");
 		field1.setWidth(160);
 		TreeGridField field2 = new TreeGridField();
 		field2.setCanFilter(true);
 		field2.setName("Name");
-		field2.setTitle("<b>Recently modified</b>");
+		field2.setTitle("Name");
 		setFields(field1, field2);
 
 		setShowOpenIcons(false);

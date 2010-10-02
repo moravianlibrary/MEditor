@@ -14,8 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.GreetingResponsePresenter;
 
-public class GreetingResponseView extends DialogBox implements
-		GreetingResponsePresenter.Display {
+public class GreetingResponseView extends DialogBox implements GreetingResponsePresenter.Display {
 	private final Label textToServerLabel;
 	private final HTML serverResponseLabel;
 	private final Button closeButton;
@@ -46,18 +45,22 @@ public class GreetingResponseView extends DialogBox implements
 		this.center();
 	}
 
+	@Override
 	public HasText getTextToServer() {
 		return textToServerLabel;
 	}
 
+	@Override
 	public HasHTML getServerResponse() {
 		return serverResponseLabel;
 	}
 
+	@Override
 	public HasClickHandlers getClose() {
 		return closeButton;
 	}
 
+	@Override
 	public DialogBox getDialogBox() {
 		return this;
 	}
@@ -65,15 +68,9 @@ public class GreetingResponseView extends DialogBox implements
 	/**
 	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
 	 */
+	@Override
 	public Widget asWidget() {
 		return this;
 	}
 
-	@Override
-	public void startProcessing() {
-	}
-
-	@Override
-	public void stopProcessing() {
-	}
 }

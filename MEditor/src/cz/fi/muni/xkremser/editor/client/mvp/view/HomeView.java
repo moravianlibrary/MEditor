@@ -55,12 +55,4 @@ public class HomeView extends Composite implements HomePresenter.Display {
 	public Widget asWidget() {
 		return this;
 	}
-
-	@Override
-	public void startProcessing() {
-	}
-
-	@Override
-	public void stopProcessing() {
-	}
 }

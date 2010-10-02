@@ -22,7 +22,6 @@ import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 
-
 public class SideNavRecentlyTree extends TreeGrid {
 
 	private final String idSuffix = "";
@@ -46,7 +45,7 @@ public class SideNavRecentlyTree extends TreeGrid {
 		TreeGridField field1 = new TreeGridField();
 		field1.setCanFilter(true);
 		field1.setName("name");
-		field1.setTitle("<b>Import queue</b>");
+		field1.setTitle("Recently modified");
 		// TreeGridField field2 = new TreeGridField();
 		// field2.setCanFilter(true);
 		// field2.setName("name2");

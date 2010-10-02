@@ -1,8 +1,6 @@
 package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -18,8 +16,7 @@ import com.google.inject.Inject;
 import cz.fi.muni.xkremser.editor.shared.event.GreetingSentEvent;
 import cz.fi.muni.xkremser.editor.shared.event.GreetingSentEventHandler;
 
-public class GreetingResponsePresenter extends
-		WidgetPresenter<GreetingResponsePresenter.Display> {
+public class GreetingResponsePresenter extends WidgetPresenter<GreetingResponsePresenter.Display> {
 	public interface Display extends WidgetDisplay {
 		HasText getTextToServer();
 
@@ -30,11 +27,8 @@ public class GreetingResponsePresenter extends
 		DialogBox getDialogBox();
 	}
 
-	public static final Place PLACE = new Place("GreetingResponse");
-
 	@Inject
-	public GreetingResponsePresenter(final Display display,
-			final EventBus eventBus) {
+	public GreetingResponsePresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
 
 		bind();
@@ -44,6 +38,7 @@ public class GreetingResponsePresenter extends
 	protected void onBind() {
 		// Add a handler to close the DialogBox
 		display.getClose().addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(final ClickEvent event) {
 				display.getDialogBox().hide();
 
@@ -53,18 +48,17 @@ public class GreetingResponsePresenter extends
 			}
 		});
 
-		eventBus.addHandler(GreetingSentEvent.TYPE,
-				new GreetingSentEventHandler() {
+		eventBus.addHandler(GreetingSentEvent.TYPE, new GreetingSentEventHandler() {
 
-					@Override
-					public void onGreetingSent(final GreetingSentEvent event) {
-						Log.info("Handling GreetingSent event");
+			@Override
+			public void onGreetingSent(final GreetingSentEvent event) {
+				Log.info("Handling GreetingSent event");
 
-						display.getTextToServer().setText(event.getName());
-						display.getServerResponse().setHTML(event.getMessage());
-						display.getDialogBox().show();
-					}
-				});
+				display.getTextToServer().setText(event.getName());
+				display.getServerResponse().setHTML(event.getMessage());
+				display.getDialogBox().show();
+			}
+		});
 	}
 
 	@Override
@@ -77,22 +71,15 @@ public class GreetingResponsePresenter extends
 		// from the server, etc. In this case, there is nothing to do.
 	}
 
+	@Override
 	public void revealDisplay() {
 		// Nothing to do. This is more useful in UI which may be buried
 		// in a tab bar, tree, etc.
 	}
 
-	/**
-	 * Returning a place will allow this presenter to automatically trigger when
-	 * '#GreetingResponse' is passed into the browser URL.
-	 */
 	@Override
-	public Place getPlace() {
-		return PLACE;
-	}
+	protected void onRevealDisplay() {
+		// TODO Auto-generated method stub
 
-	@Override
-	protected void onPlaceRequest(final PlaceRequest request) {
-		// this is a popup
 	}
 }

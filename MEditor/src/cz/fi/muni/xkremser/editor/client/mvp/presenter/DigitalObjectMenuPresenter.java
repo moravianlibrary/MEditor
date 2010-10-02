@@ -2,12 +2,11 @@ package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
@@ -24,16 +23,16 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 		public HasClickHandlers getMenu();
 	}
 
-	public static final Place PLACE = new Place("tree");
-
 	private final DispatchAsync dispatcher;
 
 	// FUDGE FACTOR! Although this is not used, having GIN pass the object
-	// to this class will force its instantiation and therefore will make the
-	// response presenter listen for events (via bind()). This is not a very
+	// to this class will force its instantiation and therefore will make
+	// the
+	// response presenter listen for events (via bind()). This is not a
+	// very
 	// good way to
-	// achieve this, but I wanted to put something together quickly - sorry!
-
+	// achieve this, but I wanted to put something together quickly -
+	// sorry!
 	@Inject
 	public DigitalObjectMenuPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher) {
 		super(display, eventBus);
@@ -106,36 +105,14 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 	}
 
 	@Override
-	public void refreshDisplay() {
-		// This is called when the presenter should pull the latest data
-		// from the server, etc. In this case, there is nothing to do.
-	}
-
-	@Override
 	public void revealDisplay() {
-		// Nothing to do. This is more useful in UI which may be buried
-		// in a tab bar, tree, etc.
-	}
-
-	/**
-	 * Returning a place will allow this presenter to automatically trigger when
-	 * '#Greeting' is passed into the browser URL.
-	 */
-	@Override
-	public Place getPlace() {
-		return PLACE;
+		Window.alert("blib");
 	}
 
 	@Override
-	protected void onPlaceRequest(final PlaceRequest request) {
-		// Grab the 'name' from the request and put it into the 'name' field.
-		// This allows a tag of '#Greeting;name=Foo' to populate the name
-		// field.
-		final String name = request.getParameter("selected", null);
+	protected void onRevealDisplay() {
+		// TODO Auto-generated method stub
 
-		if (name != null) {
-			display.getSelected().setValue(name);
-
-		}
 	}
+
 }

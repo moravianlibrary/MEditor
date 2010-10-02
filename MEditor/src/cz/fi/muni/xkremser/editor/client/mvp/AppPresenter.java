@@ -4,21 +4,23 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.HomePresenter;
 
 public class AppPresenter {
-	private HasWidgets treeContainer;
 	private HasWidgets mainContainer;
 	private final HomePresenter homePresenter;
-	private final DigitalObjectMenuPresenter digitalObjectMenuPresenter;
+	private final DigitalObjectMenuPresenter treePresenter;
 
 	@Inject
 	public AppPresenter(final DispatchAsync dispatcher, final HomePresenter homePresenter, final DigitalObjectMenuPresenter treePresenter,
 			final DigitalObjectMenuPresenter digitalObjectMenuPresenter) {
 		this.homePresenter = homePresenter;
-		this.digitalObjectMenuPresenter = digitalObjectMenuPresenter;
+		this.treePresenter = treePresenter;
 		bind();
 	}
 
@@ -54,13 +56,45 @@ public class AppPresenter {
 
 	private void showMain() {
 		mainContainer.clear();
-		treeContainer.clear();
-		mainContainer.add(homePresenter.getDisplay().asWidget());
-		treeContainer.add(digitalObjectMenuPresenter.getDisplay().asWidget());
+
+		// layouting
+
+		VLayout main = new VLayout();
+		// main.setLayoutMargin(5);
+		main.setWidth100();
+		main.setHeight100();
+		HLayout top = new HLayout();
+		top.setWidth100();
+		top.setHeight(100);
+		top.addMember(new IButton("ahoj"));
+		main.addMember(top);
+
+		HLayout underTop = new HLayout();
+		underTop.setWidth100();
+		underTop.setHeight100();
+		main.addMember(underTop);
+
+		underTop.addMember(treePresenter.getDisplay().asWidget());
+		underTop.addMember(homePresenter.getDisplay().asWidget());
+
+		// main.draw();
+		mainContainer.add(main);
+
+		// sideNav.addLeafClickHandler(new LeafClickHandler() {
+		// @Override
+		// public void onLeafClick(LeafClickEvent event) {
+		// TreeNode node = event.getLeaf();
+		// // showSample(node);
+		// }
+		// });
+		// main.addMember(hLayout);
+		// main.draw();
+
+		// mainContainer.add(homePresenter.getDisplay().asWidget());
+
 	}
 
-	public void go(final HasWidgets menuContainer, final HasWidgets mainContainer) {
-		this.treeContainer = menuContainer;
+	public void go(final HasWidgets mainContainer) {
 		this.mainContainer = mainContainer;
 
 		showMain();
