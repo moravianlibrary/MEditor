@@ -9,8 +9,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.tree.SideNavInputTree;
-import cz.fi.muni.xkremser.editor.client.tree.SideNavRecentlyTree;
+import cz.fi.muni.xkremser.editor.client.mvp.view.tree.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.mvp.view.tree.SideNavRecentlyTree;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
 public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuPresenter.Display {
