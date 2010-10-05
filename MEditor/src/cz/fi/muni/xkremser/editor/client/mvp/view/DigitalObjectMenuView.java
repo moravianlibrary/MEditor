@@ -4,6 +4,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
@@ -74,6 +75,12 @@ public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuP
 	@Override
 	public HasFolderOpenedHandlers getInputTree() {
 		return inputTree;
+	}
+
+	@Override
+	public void setDataSourceToInputQueue(DataSource source) {
+		inputTree.setDataSource(source);
+
 	}
 
 }

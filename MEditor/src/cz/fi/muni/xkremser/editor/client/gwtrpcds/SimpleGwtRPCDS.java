@@ -1,10 +1,16 @@
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
-import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
@@ -15,6 +21,11 @@ import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.Messages;
+import cz.fi.muni.xkremser.editor.client.mvp.view.tree.ExplorerTreeNode;
+import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
+import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
 /**
  * Example <code>AbstractGwtRPCDS</code> implementation.
@@ -24,8 +35,11 @@ import cz.fi.muni.xkremser.editor.client.Constants;
  * @version 1.0
  */
 public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
+	private final DispatchAsync dispatcher;
 
-	public SimpleGwtRPCDS() {
+	@Inject
+	public SimpleGwtRPCDS(final DispatchAsync dispatcher) {
+		this.dispatcher = dispatcher;
 		DataSourceField field;
 		field = new DataSourceIntegerField(Constants.ATTR_ID, "id");
 		field.setPrimaryKey(true);
@@ -37,52 +51,48 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		field = new DataSourceTextField(Constants.ATTR_ISSN, "issn");
 		field.setRequired(true);
 		addField(field);
+		ExplorerTreeNode nod = new ExplorerTreeNode("", "/", "root", "silk/layout_content.png", true, "");
+		ExplorerTreeNode nod1 = new ExplorerTreeNode("mon", "/mon", "/", "silk/layout_content.png", true, "");
+		nod.setAttribute(Constants.ATTR_ID, "/");
+		nod.setAttribute(Constants.ATTR_ISSN, "pokus_issn");
+		nod.setAttribute(Constants.ATTR_NAME, "pokus_name");
+		nod.setCanExpand(true);
+		nod.setIsFolder(true);
+		nod1.setAttribute(Constants.ATTR_ID, "mon");
+		nod1.setAttribute(Constants.ATTR_ISSN, "mon_issn");
+		nod1.setAttribute(Constants.ATTR_NAME, "mon_name");
+		setTestData(new ExplorerTreeNode[] { nod }); // zkusit
+		// addData(nod1);
+		//
+		// addData(new ExplorerTreeNode("per", "/per", "/",
+		// "silk/layout_content.png", true, ""));
+		// addData(new ExplorerTreeNode("per1", "/per/per1", "/per",
+		// "silk/layout_content.png", true, ""));
+
 	}
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		// This can be used as parameter for server side sorting.
-		// request.getSortBy ();
-
-		// Finding which rows were requested
-		// Normaly these two indexes should be passed to server
-		// but for this example I will do "paging" on client side
-		final int startIndex = (request.getStartRow() < 0) ? 0 : request.getStartRow();
-		final int endIndex = (request.getEndRow() == null) ? -1 : request.getEndRow();
-		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
-		service.fetch(new AsyncCallback<List<SimpleGwtRPCDSRecord>>() {
+		String id = (String) request.getCriteria().getValues().get("parentId");
+		dispatcher.execute(new ScanInputQueue(id), new AsyncCallback<ScanInputQueueResult>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable cause) {
+				Log.error("Handle Failure:", cause);
 				response.setStatus(RPCResponse.STATUS_FAILURE);
-				processResponse(requestId, response);
+				Window.alert(Messages.SERVER_SCANINPUT_ERROR);
 			}
 
 			@Override
-			public void onSuccess(List<SimpleGwtRPCDSRecord> result) {
-				// Calculating size of return list
-				int size = result.size();
-				if (endIndex >= 0) {
-					if (endIndex < startIndex) {
-						size = 0;
-					} else {
-						size = endIndex - startIndex + 1;
-					}
-				}
-				// Create list for return - it is just requested records
-				ListGridRecord[] list = new ListGridRecord[size];
-				if (size > 0) {
-					for (int i = 0; i < result.size(); i++) {
-						if (i >= startIndex && i <= endIndex) {
-							ListGridRecord record = new ListGridRecord();
-							copyValues(result.get(i), record);
-							list[i - startIndex] = record;
-						}
-					}
+			public void onSuccess(final ScanInputQueueResult result) {
+				ArrayList<InputQueueItem> items = result.getItems();
+				ListGridRecord[] list = new ListGridRecord[items.size()];
+				for (int i = 0; i < items.size(); i++) {
+					ListGridRecord record = new ListGridRecord();
+					copyValues(items.get(i), record);
+					list[i] = record;
 				}
 				response.setData(list);
-				// IMPORTANT: for paging to work we have to specify size of full result
-				// set
-				response.setTotalRows(result.size());
+				response.setTotalRows(items.size());
 				processResponse(requestId, response);
 			}
 		});
@@ -93,10 +103,10 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		// Retrieve record which should be added.
 		JavaScriptObject data = request.getData();
 		ListGridRecord rec = new ListGridRecord(data);
-		SimpleGwtRPCDSRecord testRec = new SimpleGwtRPCDSRecord();
+		InputQueueItem testRec = new InputQueueItem();
 		copyValues(rec, testRec);
 		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
-		service.add(testRec, new AsyncCallback<SimpleGwtRPCDSRecord>() {
+		service.add(testRec, new AsyncCallback<InputQueueItem>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				response.setStatus(RPCResponse.STATUS_FAILURE);
@@ -104,7 +114,7 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 			}
 
 			@Override
-			public void onSuccess(SimpleGwtRPCDSRecord result) {
+			public void onSuccess(InputQueueItem result) {
 				ListGridRecord[] list = new ListGridRecord[1];
 				ListGridRecord newRec = new ListGridRecord();
 				copyValues(result, newRec);
@@ -121,10 +131,10 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		// Next line would be nice to replace with line:
 		// ListGridRecord rec = request.getEditedRecord ();
 		ListGridRecord rec = getEditedRecord(request);
-		SimpleGwtRPCDSRecord testRec = new SimpleGwtRPCDSRecord();
+		InputQueueItem testRec = new InputQueueItem();
 		copyValues(rec, testRec);
 		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
-		service.update(testRec, new AsyncCallback<SimpleGwtRPCDSRecord>() {
+		service.update(testRec, new AsyncCallback<InputQueueItem>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				response.setStatus(RPCResponse.STATUS_FAILURE);
@@ -132,7 +142,7 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 			}
 
 			@Override
-			public void onSuccess(SimpleGwtRPCDSRecord result) {
+			public void onSuccess(InputQueueItem result) {
 				ListGridRecord[] list = new ListGridRecord[1];
 				ListGridRecord updRec = new ListGridRecord();
 				copyValues(result, updRec);
@@ -148,7 +158,7 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		// Retrieve record which should be removed.
 		JavaScriptObject data = request.getData();
 		final ListGridRecord rec = new ListGridRecord(data);
-		SimpleGwtRPCDSRecord testRec = new SimpleGwtRPCDSRecord();
+		InputQueueItem testRec = new InputQueueItem();
 		copyValues(rec, testRec);
 		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
 		service.remove(testRec, new AsyncCallback<Object>() {
@@ -171,14 +181,17 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		});
 	}
 
-	private static void copyValues(ListGridRecord from, SimpleGwtRPCDSRecord to) {
-		to.setId(from.getAttributeAsInt("id"));
-		to.setName(from.getAttributeAsString("name"));
+	private static void copyValues(ListGridRecord from, InputQueueItem to) {
+		to.setPath(from.getAttributeAsString(Constants.ATTR_ID));
+		to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
+		to.setIssn(from.getAttributeAsString(Constants.ATTR_ISSN));
 	}
 
-	private static void copyValues(SimpleGwtRPCDSRecord from, ListGridRecord to) {
-		to.setAttribute("id", from.getId());
-		to.setAttribute("name", from.getName());
+	private static void copyValues(InputQueueItem from, ListGridRecord to) {
+		to.setAttribute("parentId", from.getPath().substring(0, from.getPath().lastIndexOf(File.separator))); // debug
+		to.setAttribute(Constants.ATTR_ID, from.getPath());
+		to.setAttribute(Constants.ATTR_NAME, from.getName());
+		to.setAttribute(Constants.ATTR_ISSN, from.getIssn());
 	}
 
 	private ListGridRecord getEditedRecord(DSRequest request) {

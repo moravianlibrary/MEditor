@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
+
 /**
  * 
  * @author Aleksandras Novikovas
@@ -12,12 +14,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface SimpleGwtRPCDSServiceAsync {
 
-	public abstract void fetch(AsyncCallback<List<SimpleGwtRPCDSRecord>> asyncCallback);
+	public abstract void fetch(AsyncCallback<List<InputQueueItem>> asyncCallback);
 
-	public abstract void add(SimpleGwtRPCDSRecord record, AsyncCallback<SimpleGwtRPCDSRecord> asyncCallback);
+	public abstract void add(InputQueueItem record, AsyncCallback<InputQueueItem> asyncCallback);
 
-	public abstract void update(SimpleGwtRPCDSRecord record, AsyncCallback<SimpleGwtRPCDSRecord> asyncCallback);
+	public abstract void update(InputQueueItem record, AsyncCallback<InputQueueItem> asyncCallback);
 
-	public abstract void remove(SimpleGwtRPCDSRecord record, AsyncCallback asyncCallback);
+	public abstract void remove(InputQueueItem record, AsyncCallback asyncCallback);
 
 }

@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDSRecord;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDSService;
+import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 
 /**
  * 
@@ -18,46 +18,46 @@ public class SimpleGwtRPCDSServiceImpl extends RemoteServiceServlet implements S
 
 	private static final long serialVersionUID = 1L;
 
-	static List<SimpleGwtRPCDSRecord> list;
+	static List<InputQueueItem> list;
 
 	static int id;
 	static {
 		id = 1;
-		list = new ArrayList<SimpleGwtRPCDSRecord>();
-		SimpleGwtRPCDSRecord record;
-		record = new SimpleGwtRPCDSRecord();
-		record.setId(id++);
-		record.setName("First");
-		list.add(record);
-		record = new SimpleGwtRPCDSRecord();
-		record.setId(id++);
-		record.setName("Second");
-		list.add(record);
-		record = new SimpleGwtRPCDSRecord();
-		record.setId(id++);
-		record.setName("Third");
+		list = new ArrayList<InputQueueItem>();
+		InputQueueItem record = null;
+		// record = new InputQueueItem();
+		// record.setId("1");
+		// record.setName("First");
+		// list.add(record);
+		// record = new InputQueueItem();
+		// record.setId("2");
+		// record.setName("Second");
+		// list.add(record);
+		// record = new InputQueueItem();
+		// record.setId("3");
+		// record.setName("Third");
 		list.add(record);
 	}
 
 	@Override
-	public List<SimpleGwtRPCDSRecord> fetch() {
+	public List<InputQueueItem> fetch() {
 		return list;
 	}
 
 	@Override
-	public SimpleGwtRPCDSRecord add(SimpleGwtRPCDSRecord record) {
-		record.setId(id++);
+	public InputQueueItem add(InputQueueItem record) {
+		// record.setId("4"); // new id
 		list.add(record);
 		return record;
 	}
 
 	@Override
-	public SimpleGwtRPCDSRecord update(SimpleGwtRPCDSRecord record) {
-		Integer recordId = record.getId();
+	public InputQueueItem update(InputQueueItem record) {
+		String recordId = record.getPath();
 		if (recordId != null) {
 			int index = -1;
 			for (int i = 0; i < list.size(); i++) {
-				if (recordId.equals(list.get(i).getId())) {
+				if (recordId.equals(list.get(i).getPath())) {
 					index = i;
 					break;
 				}
@@ -71,12 +71,12 @@ public class SimpleGwtRPCDSServiceImpl extends RemoteServiceServlet implements S
 	}
 
 	@Override
-	public void remove(SimpleGwtRPCDSRecord record) {
-		Integer recordId = record.getId();
+	public void remove(InputQueueItem record) {
+		String recordId = record.getPath();
 		if (recordId != null) {
 			int index = -1;
 			for (int i = 0; i < list.size(); i++) {
-				if (recordId.equals(list.get(i).getId())) {
+				if (recordId.equals(list.get(i).getPath())) {
 					index = i;
 					break;
 				}

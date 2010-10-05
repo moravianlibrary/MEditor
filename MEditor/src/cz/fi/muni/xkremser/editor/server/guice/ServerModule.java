@@ -6,6 +6,8 @@ import org.apache.commons.logging.Log;
 
 import com.google.inject.Singleton;
 
+import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
@@ -26,5 +28,7 @@ public class ServerModule extends ActionHandlerModule {
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
+		bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
+		// bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 	}
 }

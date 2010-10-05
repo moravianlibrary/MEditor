@@ -19,6 +19,16 @@ public abstract class EditorConfiguration {
 																																		// image
 		// public static final String FEDORA_DEFAULT_HOST = "195.113.155.50"; //
 		// freon.mzk.cz
+		public static final String DB_HOST = "db_host";
+		public static final String DB_PORT = "db_port";
+		public static final String DB_LOGIN = "db_login";
+		public static final String DB_PASSWORD = "db_password";
+		public static final String DB_NAME = "db_name";
+		public static final String DB_HOST_DEFAULT = "localhost";
+		public static final String DB_PORT_DEFAULT = "5432";
+		public static final String DB_LOGIN_DEFAULT = "meditor";
+		public static final String DB_PASSWORD_DEFAULT = "123456";
+		public static final String DB_NAME_DEFAULT = "meditor";
 
 	}
 
@@ -52,6 +62,26 @@ public abstract class EditorConfiguration {
 
 	public String[] getDocumentTypes() {
 		return getConfiguration().getStringArray(Constants.DOCUMENT_TYPES);
+	}
+
+	public String getDBHost() {
+		return getConfiguration().getString(Constants.DB_HOST);
+	}
+
+	public String getDBPort() {
+		return getConfiguration().getString(Constants.DB_PORT);
+	}
+
+	public String getDBLogin() {
+		return getConfiguration().getString(Constants.DB_LOGIN);
+	}
+
+	public String getDBPassword() {
+		return getConfiguration().getString(Constants.DB_PASSWORD);
+	}
+
+	public String getDBName() {
+		return getConfiguration().getString(Constants.DB_NAME);
 	}
 
 }

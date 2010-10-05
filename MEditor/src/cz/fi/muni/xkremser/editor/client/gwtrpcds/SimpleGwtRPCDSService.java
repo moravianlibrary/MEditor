@@ -6,6 +6,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
+
 /**
  * 
  * @author Aleksandras Novikovas
@@ -15,13 +17,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("/SimpleGwtRPCDSService")
 public interface SimpleGwtRPCDSService extends RemoteService {
 
-	List<SimpleGwtRPCDSRecord> fetch();
+	List<InputQueueItem> fetch();
 
-	SimpleGwtRPCDSRecord add(SimpleGwtRPCDSRecord record);
+	InputQueueItem add(InputQueueItem record);
 
-	SimpleGwtRPCDSRecord update(SimpleGwtRPCDSRecord record);
+	InputQueueItem update(InputQueueItem record);
 
-	void remove(SimpleGwtRPCDSRecord record);
+	void remove(InputQueueItem record);
 
 	public static class Util {
 		private static SimpleGwtRPCDSServiceAsync instance;

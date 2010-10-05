@@ -6,25 +6,25 @@ import net.customware.gwt.dispatch.shared.Result;
 
 public class ScanInputQueueResult implements Result {
 	// input
-	private String pathPrefix;
+	private String id;
 
 	// output
-	private ArrayList<InputQueueItemDetail> items;
+	private ArrayList<InputQueueItem> items;
 
 	@SuppressWarnings("unused")
 	private ScanInputQueueResult() {
 	}
 
-	public ScanInputQueueResult(String pathPrefix, ArrayList<InputQueueItemDetail> items) {
-		this.pathPrefix = pathPrefix;
+	public ScanInputQueueResult(String id, ArrayList<InputQueueItem> items) {
+		this.id = id;
 		this.items = items;
 	}
 
-	public String getPathPrefix() {
-		return pathPrefix;
+	public String getId() {
+		return id;
 	}
 
-	public ArrayList<InputQueueItemDetail> getItems() {
+	public ArrayList<InputQueueItem> getItems() {
 		return items;
 	}
 

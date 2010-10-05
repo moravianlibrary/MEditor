@@ -10,11 +10,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
+import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedEvent;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedHandler;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDS;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
@@ -35,6 +37,8 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 		public HasFolderOpenedHandlers getInputTree();
 
 		public void refreshInputQueue(ScanInputQueueResult result);
+
+		public void setDataSourceToInputQueue(DataSource source);
 	}
 
 	private final DispatchAsync dispatcher;
@@ -71,6 +75,7 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 				if (result != null) {
 					if (!isInputQueueShown()) { // input_queue is not set
 						getDisplay().showInputQueue();
+						getDisplay().setDataSourceToInputQueue(new SimpleGwtRPCDS(dispatcher)); // DI
 						addFolderOpenedHandler();
 					}
 					setInputQueueShown(true);
@@ -109,7 +114,9 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 
 	@Override
 	protected void onBind() {
-		getData();
+		getDisplay().showInputQueue();
+		getDisplay().setDataSourceToInputQueue(new SimpleGwtRPCDS(dispatcher)); // DI
+		// getData();
 
 		// 'display' is a final global field containing the Display passed into
 		// the constructor.
