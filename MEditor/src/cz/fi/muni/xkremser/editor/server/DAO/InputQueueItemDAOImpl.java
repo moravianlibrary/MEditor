@@ -1,5 +1,6 @@
 package cz.fi.muni.xkremser.editor.server.DAO;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,8 +23,9 @@ public class InputQueueItemDAOImpl implements InputQueueItemDAO {
 
 	public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
 	public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_NAME + " (path, issn, name) VALUES ((?),(?),(?))";
-	public static final String FIND_ALL_ITEMS = "SELECT path, issn, name FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
-	public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ALL_ITEMS + " WHERE path LIKE ((?))";
+	public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, issn, name FROM " + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('"
+			+ File.separator + "' IN trim(leading ((?)) FROM path)) = 0";
+	public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT + " AND path LIKE ((?))";
 
 	@Inject
 	private EditorConfiguration conf;
@@ -110,18 +112,20 @@ public class InputQueueItemDAOImpl implements InputQueueItemDAO {
 		if (conn == null) {
 			initConnection();
 		}
-		boolean all = (prefix == null || "".equals(prefix));
+		boolean top = (prefix == null || "".equals(prefix));
 		PreparedStatement findSt = null;
 		ArrayList<InputQueueItem> retList = new ArrayList<InputQueueItem>();
 		try {
-			findSt = conn.prepareStatement(all ? FIND_ALL_ITEMS : FIND_ITEMS_BY_PATH_STATEMENT);
+			findSt = conn.prepareStatement(top ? FIND_ITEMS_ON_TOP_LVL_STATEMENT : FIND_ITEMS_BY_PATH_STATEMENT);
 		} catch (SQLException e) {
 			logger.error("Could not get find items statement", e);
 		}
 		try {
-			if (!all) {
-				findSt.setString(1, '%' + prefix + "/%");
+			findSt.setString(1, prefix + '/');
+			if (!top) {
+				findSt.setString(2, '%' + prefix + "/%");
 			}
+
 			ResultSet rs = findSt.executeQuery();
 			while (rs.next()) {
 				retList.add(new InputQueueItem(rs.getString("path"), rs.getString("issn"), rs.getString("name")));

@@ -68,9 +68,9 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, Scan
 				}
 				inputQueueDAO.updateItems(scanDirectoryStructure(base, ""));
 				result = new ScanInputQueueResult(id, list);
-			} else {
-				result = new ScanInputQueueResult(id, inputQueueDAO.getItems(id));
 			}
+			result = new ScanInputQueueResult(id, list);
+
 		} else {
 			result = new ScanInputQueueResult(id, inputQueueDAO.getItems(id));
 		}

@@ -1,6 +1,5 @@
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -14,7 +13,6 @@ import com.google.inject.Inject;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
-import com.smartgwt.client.data.fields.DataSourceIntegerField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.JSOHelper;
@@ -22,7 +20,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.Messages;
-import cz.fi.muni.xkremser.editor.client.mvp.view.tree.ExplorerTreeNode;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
@@ -35,45 +32,34 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
  * @version 1.0
  */
 public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
+
 	private final DispatchAsync dispatcher;
 
 	@Inject
-	public SimpleGwtRPCDS(final DispatchAsync dispatcher) {
+	public SimpleGwtRPCDS(DispatchAsync dispatcher) {
 		this.dispatcher = dispatcher;
 		DataSourceField field;
-		field = new DataSourceIntegerField(Constants.ATTR_ID, "id");
+		field = new DataSourceTextField(Constants.ATTR_ID, "id");
 		field.setPrimaryKey(true);
-		// AutoIncrement on server.
 		field.setRequired(true);
+		field.setHidden(true);
+		addField(field);
+		field = new DataSourceTextField(Constants.ATTR_PARENT, "parent");
+		field.setForeignKey(Constants.ATTR_ID);
+		field.setHidden(true);
 		addField(field);
 		field = new DataSourceTextField(Constants.ATTR_NAME, "name");
-		field.setRequired(false);
+		field.setRequired(true);
+		addField(field);
 		field = new DataSourceTextField(Constants.ATTR_ISSN, "issn");
 		field.setRequired(true);
 		addField(field);
-		ExplorerTreeNode nod = new ExplorerTreeNode("", "/", "root", "silk/layout_content.png", true, "");
-		ExplorerTreeNode nod1 = new ExplorerTreeNode("mon", "/mon", "/", "silk/layout_content.png", true, "");
-		nod.setAttribute(Constants.ATTR_ID, "/");
-		nod.setAttribute(Constants.ATTR_ISSN, "pokus_issn");
-		nod.setAttribute(Constants.ATTR_NAME, "pokus_name");
-		nod.setCanExpand(true);
-		nod.setIsFolder(true);
-		nod1.setAttribute(Constants.ATTR_ID, "mon");
-		nod1.setAttribute(Constants.ATTR_ISSN, "mon_issn");
-		nod1.setAttribute(Constants.ATTR_NAME, "mon_name");
-		setTestData(new ExplorerTreeNode[] { nod }); // zkusit
-		// addData(nod1);
-		//
-		// addData(new ExplorerTreeNode("per", "/per", "/",
-		// "silk/layout_content.png", true, ""));
-		// addData(new ExplorerTreeNode("per1", "/per/per1", "/per",
-		// "silk/layout_content.png", true, ""));
 
 	}
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		String id = (String) request.getCriteria().getValues().get("parentId");
+		String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
 		dispatcher.execute(new ScanInputQueue(id), new AsyncCallback<ScanInputQueueResult>() {
 			@Override
 			public void onFailure(final Throwable cause) {
@@ -188,7 +174,10 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 	}
 
 	private static void copyValues(InputQueueItem from, ListGridRecord to) {
-		to.setAttribute("parentId", from.getPath().substring(0, from.getPath().lastIndexOf(File.separator))); // debug
+		// String parentId = from.getPath().substring(0,
+		// from.getPath().lastIndexOf(Constants.FILE_SEPARATOR));
+		// to.setAttribute("parentId", from.getPath()); // debug
+		// to.setAttribute("parentNodeID", from.getPath()); // debug
 		to.setAttribute(Constants.ATTR_ID, from.getPath());
 		to.setAttribute(Constants.ATTR_NAME, from.getName());
 		to.setAttribute(Constants.ATTR_ISSN, from.getIssn());

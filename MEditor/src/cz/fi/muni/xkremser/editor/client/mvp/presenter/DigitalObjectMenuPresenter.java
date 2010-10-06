@@ -5,19 +5,11 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
-import com.smartgwt.client.data.DataSource;
-import com.smartgwt.client.widgets.tree.events.FolderOpenedEvent;
-import com.smartgwt.client.widgets.tree.events.FolderOpenedHandler;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDS;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
 
 public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMenuPresenter.Display> {
@@ -32,13 +24,11 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 
 		public void expandNode(String id);
 
-		public void showInputQueue();
+		public void showInputQueue(DispatchAsync dispatcher);
 
 		public HasFolderOpenedHandlers getInputTree();
 
 		public void refreshInputQueue(ScanInputQueueResult result);
-
-		public void setDataSourceToInputQueue(DataSource source);
 	}
 
 	private final DispatchAsync dispatcher;
@@ -59,63 +49,64 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 		bind();
 	}
 
-	private void getData(String id) {
-		Log.info("Calling getData(id='" + id == null ? "root" : id + "')");
+	// private void getData(String id) {
+	// Log.info("Calling getData(id='" + id == null ? "root" : id + "')");
+	//
+	// // scan input queue
+	// dispatcher.execute(new ScanInputQueue(id), new
+	// AsyncCallback<ScanInputQueueResult>() {
+	// @Override
+	// public void onFailure(final Throwable cause) {
+	// Log.error("Method getData failed: ", cause);
+	// Window.alert(SERVER_ERROR);
+	// }
+	//
+	// @Override
+	// public void onSuccess(final ScanInputQueueResult result) {
+	// if (result != null) {
+	// if (!isInputQueueShown()) { // input_queue is not set
+	// getDisplay().showInputQueue(dispatcher);
+	// getDisplay().setDataSourceToInputQueue(new SimpleGwtRPCDS(dispatcher)); //
+	// DI
+	// }
+	// setInputQueueShown(true);
+	// getDisplay().refreshInputQueue(result);
+	// } else {
+	// setInputQueueShown(false);
+	// }
+	// }
+	//
+	// });
 
-		// scan input queue
-		dispatcher.execute(new ScanInputQueue(id), new AsyncCallback<ScanInputQueueResult>() {
-			@Override
-			public void onFailure(final Throwable cause) {
-				Log.error("Method getData failed: ", cause);
-				Window.alert(SERVER_ERROR);
-			}
+	// get recently modified
+	// dispatcher.execute(new ScanInputQueue(path), new
+	// AsyncCallback<ScanInputQueueResult>() {
+	// @Override
+	// public void onFailure(final Throwable cause) {
+	// Log.error("Method getData failed: ", cause);
+	// Window.alert(SERVER_ERROR);
+	// }
+	//
+	// @Override
+	// public void onSuccess(final ScanInputQueueResult result) {
+	// if (result == null) { // input_queue is not set
+	// // hide input queue tree
+	// } else {
+	// // fill input queue tree
+	// }
+	// }
+	//
+	// });
+	// }
 
-			@Override
-			public void onSuccess(final ScanInputQueueResult result) {
-				if (result != null) {
-					if (!isInputQueueShown()) { // input_queue is not set
-						getDisplay().showInputQueue();
-						getDisplay().setDataSourceToInputQueue(new SimpleGwtRPCDS(dispatcher)); // DI
-						addFolderOpenedHandler();
-					}
-					setInputQueueShown(true);
-					getDisplay().refreshInputQueue(result);
-				} else {
-					setInputQueueShown(false);
-				}
-			}
-
-		});
-
-		// get recently modified
-		// dispatcher.execute(new ScanInputQueue(path), new
-		// AsyncCallback<ScanInputQueueResult>() {
-		// @Override
-		// public void onFailure(final Throwable cause) {
-		// Log.error("Method getData failed: ", cause);
-		// Window.alert(SERVER_ERROR);
-		// }
-		//
-		// @Override
-		// public void onSuccess(final ScanInputQueueResult result) {
-		// if (result == null) { // input_queue is not set
-		// // hide input queue tree
-		// } else {
-		// // fill input queue tree
-		// }
-		// }
-		//
-		// });
-	}
-
-	private void getData() {
-		getData(null);
-	}
+	// private void getData() {
+	// getData(null);
+	// }
 
 	@Override
 	protected void onBind() {
-		getDisplay().showInputQueue();
-		getDisplay().setDataSourceToInputQueue(new SimpleGwtRPCDS(dispatcher)); // DI
+		getDisplay().showInputQueue(dispatcher);
+		// // DI
 		// getData();
 
 		// 'display' is a final global field containing the Display passed into
@@ -127,17 +118,6 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 		// Log.error("pipina");
 		// }
 		// });
-	}
-
-	private void addFolderOpenedHandler() {
-		getDisplay().getInputTree().addFolderOpenedHandler(new FolderOpenedHandler() {
-
-			@Override
-			public void onFolderOpened(FolderOpenedEvent event) {
-				getData(event.getNode().getAttribute(Constants.ATTR_ID));
-
-			}
-		});
 	}
 
 	@Override

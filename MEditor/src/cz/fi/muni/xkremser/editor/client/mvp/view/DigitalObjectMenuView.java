@@ -1,14 +1,15 @@
 package cz.fi.muni.xkremser.editor.client.mvp.view;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
-import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.mvp.view.tree.SideNavRecentlyTree;
@@ -51,20 +52,14 @@ public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuP
 	}
 
 	@Override
-	public void expandNode(String id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showInputQueue() {
+	public void showInputQueue(DispatchAsync dispatcher) {
 		Label l = new Label("Input queue");
 		l.setHeight(15);
 		addMember(l, 0);
 		inputTree = new SideNavInputTree();
 		inputTree.setHeight("600");
 		addMember(inputTree, 1);
-
+		inputTree.setDataSource(new SimpleGwtRPCDS(dispatcher));
 	}
 
 	@Override
@@ -78,8 +73,8 @@ public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuP
 	}
 
 	@Override
-	public void setDataSourceToInputQueue(DataSource source) {
-		inputTree.setDataSource(source);
+	public void expandNode(String id) {
+		// TODO Auto-generated method stub
 
 	}
 

@@ -18,6 +18,7 @@ package cz.fi.muni.xkremser.editor.client.mvp.view.tree;
 
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.tree.TreeGrid;
+import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
@@ -27,10 +28,6 @@ public class SideNavInputTree extends TreeGrid {
 
 	private final String idSuffix = "";
 
-	// private final ExplorerTreeNode[] showcaseData =
-	// ShowcaseData.getData(idSuffix);
-	// private final Tree tree;
-
 	public SideNavInputTree() {
 		setWidth100();
 		setHeight100();
@@ -39,45 +36,29 @@ public class SideNavInputTree extends TreeGrid {
 		setAnimateFolders(true);
 		setAnimateFolderSpeed(1000);
 		setNodeIcon("silk/application_view_list.png");
+		// set
 		setShowSortArrow(SortArrow.CORNER);
 		setShowConnectors(true);
 		setShowAllRecords(true);
 		setLoadDataOnDemand(true);
 		setCanSort(true);
 		setAutoFetchData(true);
-
-		//
-		// TreeGridField field1 = new TreeGridField();
-		// // field1.setCanFilter(true);
-		// field1.setName(Constants.ATTR_ISSN);
-		// field1.setTitle("ISSN");
-		// field1.setWidth(160);
-		// TreeGridField field2 = new TreeGridField();
-		// field2.setCanFilter(true);
-		// field2.setName(Constants.ATTR_NAME);
-		// // field2.setAttribute("name", "name");
-		// field2.setTitle("Name");
-		// setFields(field1, field2);
-
 		setShowOpenIcons(false);
 		setShowDropIcons(false);
 		setClosedIconSuffix("");
-		// setAutoFetchData(true); com.smartgwt.client.data.ResultTree
-		// fet
-
-		// tree = new Tree();
-		// tree.setModelType(TreeModelType.PARENT);
-		// tree.setNameProperty(Constants.ATTR_NAME);
-		// tree.setOpenProperty("isOpen");
-		// tree.setIdField("nodeID");
-		// tree.setParentIdField("parentNodeID");
-		// tree.setRootValue("/");
-		// tree.setShowRoot(false);
 		setShowRoot(false);
 
-		// tree.setData(new SimpleGwtRPCDS());
+		TreeGridField field1 = new TreeGridField();
+		field1.setCanFilter(true);
+		field1.setName(Constants.ATTR_ISSN);
+		field1.setTitle("ISSN");
 
-		// setData(tree);
+		TreeGridField field2 = new TreeGridField();
+		field2.setCanFilter(true);
+		field2.setName(Constants.ATTR_NAME);
+		field2.setTitle("Naaame");
+
+		setFields(field1, field2);
 	}
 
 	public void refresh(ScanInputQueueResult result) {
@@ -93,13 +74,6 @@ public class SideNavInputTree extends TreeGrid {
 			aux.setIsFolder(true);
 			nodeList[i] = aux;
 		}
-		// addData(record);
-		// Record r =
-		// tree.addList(nodeList, result.getPathPrefix());
-		// tree.find("/periodika");
-
 	}
-	// public ExplorerTreeNode[] getShowcaseData() {
-	// return showcaseData;
-	// }
+
 }

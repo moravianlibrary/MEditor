@@ -44,4 +44,9 @@ public class InputQueueItem implements IsSerializable {
 		this.issn = issn;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + this.path + ", " + this.name + ", " + this.issn + ")";
+	}
+
 }

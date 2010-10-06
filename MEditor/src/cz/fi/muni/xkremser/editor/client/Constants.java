@@ -7,9 +7,11 @@ public class Constants {
 
 	// input queue tree
 	public static final String ATTR_ID = "path"; // path
-	public static final String ATTR_NAME = "name";
+	public static final String ATTR_PARENT = "parent";
+	public static final String ATTR_NAME = "name_";
 	public static final String ATTR_ISSN = "issn";
 	public static final String TABLE_INPUT_QUEUE_NAME = "input_queue_item";
 	public static final int DIR_MAX_DEPTH = 5;
+	public static final String FILE_SEPARATOR = "/";
 
 }
