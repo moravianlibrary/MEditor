@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.HomePresenter;
 
@@ -14,12 +15,14 @@ public class AppPresenter {
 	private HasWidgets mainContainer;
 	private final HomePresenter homePresenter;
 	private final DigitalObjectMenuPresenter treePresenter;
+	private final EditorClientConfiguration config;
 
 	@Inject
 	public AppPresenter(final DispatchAsync dispatcher, final HomePresenter homePresenter, final DigitalObjectMenuPresenter treePresenter,
-			final DigitalObjectMenuPresenter digitalObjectMenuPresenter) {
+			final DigitalObjectMenuPresenter digitalObjectMenuPresenter, final EditorClientConfiguration config) {
 		this.homePresenter = homePresenter;
 		this.treePresenter = treePresenter;
+		this.config = config;
 		bind();
 	}
 
@@ -64,7 +67,7 @@ public class AppPresenter {
 		main.setHeight100();
 		HLayout top = new HLayout();
 		top.setWidth100();
-		top.setHeight(100);
+		top.setHeight(90);
 		top.setBorder("1px solid");
 		main.addMember(top);
 

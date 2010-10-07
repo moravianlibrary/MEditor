@@ -7,7 +7,6 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.smartgwt.client.data.DSRequest;
@@ -19,10 +18,9 @@ import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
+import cz.fi.muni.xkremser.editor.shared.rpc.result.ScanInputQueueResult;
 
 /**
  * Example <code>AbstractGwtRPCDS</code> implementation.
@@ -48,7 +46,7 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		field.setForeignKey(Constants.ATTR_ID);
 		field.setHidden(true);
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_NAME, "name");
+		field = new DataSourceTextField(Constants.ATTR_NAME, "Name");
 		field.setRequired(true);
 		addField(field);
 		field = new DataSourceTextField(Constants.ATTR_ISSN, "issn");
@@ -60,12 +58,12 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
-		dispatcher.execute(new ScanInputQueue(id), new AsyncCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueue(id, ScanInputQueue.TYPE.DB_GET), new AsyncCallback<ScanInputQueueResult>() {
 			@Override
 			public void onFailure(final Throwable cause) {
 				Log.error("Handle Failure:", cause);
 				response.setStatus(RPCResponse.STATUS_FAILURE);
-				Window.alert(Messages.SERVER_SCANINPUT_ERROR);
+				// Window.alert(Messages.SERVER_SCANINPUT_ERROR);
 			}
 
 			@Override
@@ -174,10 +172,6 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 	}
 
 	private static void copyValues(InputQueueItem from, ListGridRecord to) {
-		// String parentId = from.getPath().substring(0,
-		// from.getPath().lastIndexOf(Constants.FILE_SEPARATOR));
-		// to.setAttribute("parentId", from.getPath()); // debug
-		// to.setAttribute("parentNodeID", from.getPath()); // debug
 		to.setAttribute(Constants.ATTR_ID, from.getPath());
 		to.setAttribute(Constants.ATTR_NAME, from.getName());
 		to.setAttribute(Constants.ATTR_ISSN, from.getIssn());

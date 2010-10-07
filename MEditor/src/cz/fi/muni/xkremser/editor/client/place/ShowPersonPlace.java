@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.places;
+package cz.fi.muni.xkremser.editor.client.place;
 
 import net.customware.gwt.presenter.client.gin.ProvidedPresenterPlace;
 import net.customware.gwt.presenter.client.place.PlaceRequest;

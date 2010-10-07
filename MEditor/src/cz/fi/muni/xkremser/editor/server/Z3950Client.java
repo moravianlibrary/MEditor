@@ -42,6 +42,7 @@ import com.k_int.IR.Searchable;
 import com.k_int.z3950.IRClient.Z3950Origin;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
 import cz.fi.muni.xkremser.editor.shared.DublinCoreXML;
 
 public class Z3950Client {
@@ -61,7 +62,7 @@ public class Z3950Client {
 	public static final String NKP_NKC_PROFILE_ID = "nkp_nkc";
 
 	public static enum SEARCH_FIELD {
-		SYSNO, ISBN, TITLE
+		SYSNO, BAR, TITLE
 	}
 
 	public static final String RECORD_SYNTAX = "usmarc";
@@ -80,6 +81,7 @@ public class Z3950Client {
 		String host = null;
 		String port = null;
 		String base = null;
+		int barLength = 0;
 		int profileIndex = -1;
 		if ((profile = configuration.getZ3950Profile()) != null) {
 			if (MZK_PROFILE_ID.equals(profile)) {
@@ -124,6 +126,16 @@ public class Z3950Client {
 				base = EditorConfiguration.Constants.Z3950_DEFAULT_BASES[profileIndex];
 			}
 		}
+		// barcode length
+		if ((barLength = configuration.getZ3950BarLength().intValue()) == Constants.UNDEF.intValue()) {
+			if (profileIndex == -1) {
+				logger.error("Neither " + EditorConfiguration.Constants.Z3950_BAR_LENGTH + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
+						+ " is set in editor configuration!");
+				return null;
+			} else {
+				barLength = EditorConfiguration.Constants.Z3950_DEFAULT_BAR_LENGTH[profileIndex];
+			}
+		}
 
 		Properties props = new Properties();
 		props.put("ServiceHost", host);
@@ -157,16 +169,24 @@ public class Z3950Client {
 		e.collections.add(base);
 		e.hints.put("record_syntax", RECORD_SYNTAX);
 		String query = "@attrset bib-1 ";
-		switch (field) {
-			case ISBN:
-				query += "@attr 1=1099 "; // not tested
-			break;
-			case SYSNO:
-				query += "@attr 1=12 ";
-			break;
-			case TITLE:
-				query += "@attr 1=4 ";
-			break;
+		if (field != null) {
+			switch (field) {
+				case BAR:
+					query += "@attr 1=1099 "; // not tested
+				break;
+				case SYSNO:
+					query += "@attr 1=12 ";
+				break;
+				case TITLE:
+					query += "@attr 1=4 ";
+				break;
+			}
+		} else {
+			if (barLength == what.length()) {
+				query += "@attr 1=1099 "; // barcode
+			} else {
+				query += "@attr 1=12 "; // sysno
+			}
 		}
 		e.setQueryModel(new com.k_int.IR.QueryModels.PrefixString(query + "\"" + what + "\""));
 		logger.debug("QUERY: " + e.getQueryModel().toString());

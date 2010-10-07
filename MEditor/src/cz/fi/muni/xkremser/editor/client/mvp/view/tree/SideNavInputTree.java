@@ -16,19 +16,20 @@
 
 package cz.fi.muni.xkremser.editor.client.mvp.view.tree;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
+
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
-import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDS;
 
 public class SideNavInputTree extends TreeGrid {
 
 	private final String idSuffix = "";
 
-	public SideNavInputTree() {
+	public SideNavInputTree(DispatchAsync dispatcher) {
 		setWidth100();
 		setHeight100();
 		setCustomIconProperty("icon");
@@ -36,16 +37,16 @@ public class SideNavInputTree extends TreeGrid {
 		setAnimateFolders(true);
 		setAnimateFolderSpeed(1000);
 		setNodeIcon("silk/application_view_list.png");
-		// set
+		setFolderIcon("silk/folder.png");
+		setShowOpenIcons(true);
+		setShowDropIcons(false);
+		setLoadingDataMessage("loading ...");
 		setShowSortArrow(SortArrow.CORNER);
 		setShowConnectors(true);
 		setShowAllRecords(true);
 		setLoadDataOnDemand(true);
 		setCanSort(true);
 		setAutoFetchData(true);
-		setShowOpenIcons(false);
-		setShowDropIcons(false);
-		setClosedIconSuffix("");
 		setShowRoot(false);
 
 		TreeGridField field1 = new TreeGridField();
@@ -56,24 +57,10 @@ public class SideNavInputTree extends TreeGrid {
 		TreeGridField field2 = new TreeGridField();
 		field2.setCanFilter(true);
 		field2.setName(Constants.ATTR_NAME);
-		field2.setTitle("Naaame");
+		field2.setTitle("Name");
 
 		setFields(field1, field2);
-	}
-
-	public void refresh(ScanInputQueueResult result) {
-		if (result.getItems().size() == 0)
-			return;
-		TreeNode[] nodeList = new TreeNode[result.getItems().size()];
-		for (int i = 0; i < result.getItems().size(); i++) {
-			String path = result.getItems().get(i).getPath();
-			String name = result.getItems().get(i).getName();
-			ExplorerTreeNode aux = new ExplorerTreeNode(name, path, result.getId(), "silk/layout_content.png", true, idSuffix);
-			aux.setAttribute(Constants.ATTR_ID, path);
-			aux.setCanExpand(true);
-			aux.setIsFolder(true);
-			nodeList[i] = aux;
-		}
+		setDataSource(new SimpleGwtRPCDS(dispatcher));
 	}
 
 }

@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.places;
+package cz.fi.muni.xkremser.editor.client.place;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.DefaultPlaceManager;

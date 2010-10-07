@@ -13,8 +13,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.shared.rpc.SendGreeting;
-import cz.fi.muni.xkremser.editor.shared.rpc.SendGreetingResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.SendGreeting;
+import cz.fi.muni.xkremser.editor.shared.rpc.result.SendGreetingResult;
 
 public class SendGreetingHandler implements ActionHandler<SendGreeting, SendGreetingResult> {
 	private final Log logger;

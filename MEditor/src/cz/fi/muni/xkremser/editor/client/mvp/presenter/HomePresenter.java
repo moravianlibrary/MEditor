@@ -14,8 +14,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
+import cz.fi.muni.xkremser.editor.shared.rpc.result.ScanInputQueueResult;
 
 public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 	/**
@@ -80,7 +80,7 @@ public class HomePresenter extends WidgetPresenter<HomePresenter.Display> {
 		// });
 
 		// delete
-		dispatcher.execute(new ScanInputQueue(""), new AsyncCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueue("", ScanInputQueue.TYPE.DB_GET), new AsyncCallback<ScanInputQueueResult>() {
 			@Override
 			public void onFailure(final Throwable cause) {
 				Log.error("Handle Failure:", cause);

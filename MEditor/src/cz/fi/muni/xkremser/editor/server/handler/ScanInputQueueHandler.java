@@ -18,8 +18,8 @@ import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueue;
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
+import cz.fi.muni.xkremser.editor.shared.rpc.result.ScanInputQueueResult;
 
 public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, ScanInputQueueResult> {
 	private final Log logger;
@@ -39,43 +39,63 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, Scan
 
 	@Override
 	public ScanInputQueueResult execute(final ScanInputQueue action, final ExecutionContext context) throws ActionException {
-
-		final String base = configuration.getScanInputQueuePath();
-		if (base == null || "".equals(base)) {
-			logger.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
-			return null;
-		}
 		// parse input
 		final String id = action.getId() == null ? "" : action.getId();
-		logger.info("Scanning input queue: " + base + id);
-		ScanInputQueueResult result;
-		ArrayList<InputQueueItem> list; // due to gwt performance issues, more
-																		// concrete interface is used
-		if (id == null || "".equals(id)) { // top level
-			list = inputQueueDAO.getItems(id);
-			if (list.size() == 0) {
+		final ScanInputQueue.TYPE type = action.getType();
+		final String base = configuration.getScanInputQueuePath();
+		logger.debug("Processing input queue: " + base + id);
+		ScanInputQueueResult result = null;
 
-				String[] types = configuration.getDocumentTypes();
-				if (types == null || types.length == 0)
-					types = EditorConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
-				list = new ArrayList<InputQueueItem>(types.length);
-				for (int i = 0; i < types.length; i++) {
-					File test = new File(base + types[i]);
-					if (!test.exists()) {
-						test.mkdir(); // create if not exists
-					}
-					list.add(new InputQueueItem(File.separator + types[i], types[i], ""));
-				}
-				inputQueueDAO.updateItems(scanDirectoryStructure(base, ""));
-				result = new ScanInputQueueResult(id, list);
+		if (type == ScanInputQueue.TYPE.DB_GET) {
+			if (base == null || "".equals(base)) {
+				logger.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
+				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 			}
-			result = new ScanInputQueueResult(id, list);
+			ArrayList<InputQueueItem> list; // due to gwt performance issues, more
+																			// concrete interface is used
+			if (id == null || "".equals(id)) { // top level
+				if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
+					result = new ScanInputQueueResult(id, type, updateDb(base));
+				} else {
+					result = new ScanInputQueueResult(id, type, list);
+				}
+			} else {
+				result = new ScanInputQueueResult(id, type, inputQueueDAO.getItems(id));
+			}
+		}
 
-		} else {
-			result = new ScanInputQueueResult(id, inputQueueDAO.getItems(id));
+		if (type == ScanInputQueue.TYPE.DB_UPDATE) {
+			result = new ScanInputQueueResult(id, type, updateDb(base));
 		}
 		return result;
 	}
+
+	private void checkDocumentTypes(String[] types) throws ActionException {
+		throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
+	}
+
+	private ArrayList<InputQueueItem> updateDb(String base) throws ActionException {
+		String[] types = configuration.getDocumentTypes();
+		if (types == null || types.length == 0)
+			types = EditorConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
+		checkDocumentTypes(types);
+		ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();
+		ArrayList<InputQueueItem> listTopLvl = new ArrayList<InputQueueItem>(types.length);
+		for (int i = 0; i < types.length; i++) {
+			File test = new File(base + File.separator + types[i]);
+			if (!test.exists()) {
+				test.mkdir(); // create if not exists
+			}
+			listTopLvl.add(new InputQueueItem(File.separator + types[i], types[i], ""));
+			list.add(new InputQueueItem(File.separator + types[i], types[i], ""));
+			list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
+		}
+		inputQueueDAO.updateItems(list);
+		return listTopLvl;
+
+	}
+
+	// private
 
 	private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
 		return scanDirectoryStructure(pathPrefix, relativePath, new ArrayList<InputQueueItem>(), Constants.DIR_MAX_DEPTH);

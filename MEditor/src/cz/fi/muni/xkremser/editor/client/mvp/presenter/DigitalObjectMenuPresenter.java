@@ -1,16 +1,20 @@
 package cz.fi.muni.xkremser.editor.client.mvp.presenter;
 
+import java.util.Date;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
+import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 
 public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMenuPresenter.Display> {
 	/**
@@ -20,19 +24,20 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server.";
 
 	public interface Display extends WidgetDisplay {
-		public HasValue<String> getSelected();
+		HasValue<String> getSelected();
 
-		public void expandNode(String id);
+		void expandNode(String id);
 
-		public void showInputQueue(DispatchAsync dispatcher);
+		void showInputQueue(DispatchAsync dispatcher);
 
-		public HasFolderOpenedHandlers getInputTree();
+		HasFolderOpenedHandlers getInputTree();
 
-		public void refreshInputQueue(ScanInputQueueResult result);
+		HasClickHandlers getRefreshWidget();
 	}
 
 	private final DispatchAsync dispatcher;
 	private boolean inputQueueShown = false;
+	private final EditorClientConfiguration config;
 
 	// FUDGE FACTOR! Although this is not used, having GIN pass the object
 	// to this class will force its instantiation and therefore will make
@@ -43,9 +48,10 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 	// achieve this, but I wanted to put something together quickly -
 	// sorry!
 	@Inject
-	public DigitalObjectMenuPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher) {
+	public DigitalObjectMenuPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher, final EditorClientConfiguration config) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
+		this.config = config;
 		bind();
 	}
 
@@ -105,6 +111,10 @@ public class DigitalObjectMenuPresenter extends WidgetPresenter<DigitalObjectMen
 
 	@Override
 	protected void onBind() {
+
+		Log.info("tady to chci pouzit" + new Date().toString());
+		Log.info(String.valueOf(System.currentTimeMillis()));
+
 		getDisplay().showInputQueue(dispatcher);
 		// // DI
 		// getData();

@@ -1,5 +1,6 @@
-package cz.fi.muni.xkremser.editor.shared.rpc;
+package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.result.SendGreetingResult;
 import net.customware.gwt.dispatch.shared.Action;
 
 public class SendGreeting implements Action<SendGreetingResult> {

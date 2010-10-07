@@ -39,11 +39,11 @@ public class InputQueueItemDAOImpl implements InputQueueItemDAO {
 		} catch (ClassNotFoundException ex) {
 			logger.error("Could not find the driver", ex);
 		}
-		String host = conf.getDBHost() == null ? EditorConfiguration.Constants.DB_HOST_DEFAULT : conf.getDBHost();
-		String port = conf.getDBPort() == null ? EditorConfiguration.Constants.DB_PORT_DEFAULT : conf.getDBPort();
-		String login = conf.getDBLogin() == null ? EditorConfiguration.Constants.DB_LOGIN_DEFAULT : conf.getDBLogin();
-		String password = conf.getDBPassword() == null ? EditorConfiguration.Constants.DB_PASSWORD_DEFAULT : conf.getDBPassword();
-		String name = conf.getDBName() == null ? EditorConfiguration.Constants.DB_NAME_DEFAULT : conf.getDBName();
+		String host = conf.getDBHost();
+		String port = conf.getDBPort();
+		String login = conf.getDBLogin();
+		String password = conf.getDBPassword();
+		String name = conf.getDBName();
 		try {
 			conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, login, password);
 
