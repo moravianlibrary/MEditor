@@ -9,9 +9,9 @@ import net.customware.gwt.presenter.client.place.TokenFormatter;
 
 import com.google.inject.Singleton;
 
-import cz.fi.muni.xkremser.editor.client.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
+import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.mvp.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.mvp.presenter.GreetingResponsePresenter;
