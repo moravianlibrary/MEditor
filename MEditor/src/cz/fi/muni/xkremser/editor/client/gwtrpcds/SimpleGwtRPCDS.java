@@ -7,7 +7,6 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
@@ -18,6 +17,7 @@ import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.result.ScanInputQueueResult;
@@ -58,16 +58,20 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
-		dispatcher.execute(new ScanInputQueue(id, ScanInputQueue.TYPE.DB_GET), new AsyncCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueue(id, ScanInputQueue.TYPE.DB_GET), new DispatchCallback<ScanInputQueueResult>() {
 			@Override
-			public void onFailure(final Throwable cause) {
+			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				// Window.alert(Messages.SERVER_SCANINPUT_ERROR);
+
+				// TODO: Scanning input
+				// queue: Action failed because attribut input_queue is not set. kdyz
+				// nejsou zadne configuration.properties
 			}
 
 			@Override
-			public void onSuccess(final ScanInputQueueResult result) {
+			public void callback(final ScanInputQueueResult result) {
 				ArrayList<InputQueueItem> items = result.getItems();
 				ListGridRecord[] list = new ListGridRecord[items.size()];
 				for (int i = 0; i < items.size(); i++) {
@@ -90,15 +94,15 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		InputQueueItem testRec = new InputQueueItem();
 		copyValues(rec, testRec);
 		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
-		service.add(testRec, new AsyncCallback<InputQueueItem>() {
+		service.add(testRec, new DispatchCallback<InputQueueItem>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void callbackError(Throwable caught) {
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
 			}
 
 			@Override
-			public void onSuccess(InputQueueItem result) {
+			public void callback(InputQueueItem result) {
 				ListGridRecord[] list = new ListGridRecord[1];
 				ListGridRecord newRec = new ListGridRecord();
 				copyValues(result, newRec);
@@ -118,15 +122,15 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		InputQueueItem testRec = new InputQueueItem();
 		copyValues(rec, testRec);
 		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
-		service.update(testRec, new AsyncCallback<InputQueueItem>() {
+		service.update(testRec, new DispatchCallback<InputQueueItem>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void callbackError(Throwable caught) {
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
 			}
 
 			@Override
-			public void onSuccess(InputQueueItem result) {
+			public void callback(InputQueueItem result) {
 				ListGridRecord[] list = new ListGridRecord[1];
 				ListGridRecord updRec = new ListGridRecord();
 				copyValues(result, updRec);
@@ -145,15 +149,15 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 		InputQueueItem testRec = new InputQueueItem();
 		copyValues(rec, testRec);
 		SimpleGwtRPCDSServiceAsync service = GWT.create(SimpleGwtRPCDSService.class);
-		service.remove(testRec, new AsyncCallback<Object>() {
+		service.remove(testRec, new DispatchCallback<Object>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void callbackError(Throwable caught) {
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
 			}
 
 			@Override
-			public void onSuccess(Object result) {
+			public void callback(Object result) {
 				ListGridRecord[] list = new ListGridRecord[1];
 				// We do not receive removed record from server.
 				// Return record from request.
