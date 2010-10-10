@@ -2,6 +2,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
@@ -19,10 +20,12 @@ import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyTree;
 
-public class DigitalObjectMenuViewImpl extends ViewWithUiHandlers<DigitalObjectMenuViewImpl.MyUiHandlers> implements DigitalObjectMenuPresenter.MyView {
+public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuView.MyUiHandlers> implements DigitalObjectMenuPresenter.MyView {
 
 	public interface MyUiHandlers extends UiHandlers {
 		void onRefresh();
+
+		void onShowInputQueue();
 	}
 
 	private SideNavInputTree inputTree;
@@ -35,12 +38,11 @@ public class DigitalObjectMenuViewImpl extends ViewWithUiHandlers<DigitalObjectM
 	// private final TreeEditor treeEditor;
 	// private Menu menu;
 
-	public DigitalObjectMenuViewImpl() {
+	public DigitalObjectMenuView() {
 		layout = new VLayout();
 
 		layout.setHeight100();
-		layout.setWidth(285);
-		layout.setShowResizeBar(true);
+		layout.setWidth100();
 
 		SideNavRecentlyTree sideNavTree = new SideNavRecentlyTree();
 
@@ -94,24 +96,24 @@ public class DigitalObjectMenuViewImpl extends ViewWithUiHandlers<DigitalObjectM
 		return null;
 	}
 
-	// @Override
-	// public void showInputQueue(DispatchAsync dispatcher) {
-	// SectionStackSection section1 = new SectionStackSection();
-	// section1.setTitle("Input queue");
-	// section1.setItems(new SideNavInputTree(dispatcher));
-	// refreshButton = new ImgButton();
-	// refreshButton.setSrc("[SKIN]actions/refresh.png");
-	// refreshButton.setSize(16);
-	// refreshButton.setShowFocused(false);
-	// refreshButton.setShowRollOver(false);
-	// refreshButton.setShowDown(false);
-	//
-	// section1.setControls(refreshButton);
-	// section1.setResizeable(true);
-	// section1.setExpanded(true);
-	// sectionStack.addSection(section1, 0);
-	// // inputTree.setHeight("600");
-	// }
+	@Override
+	public void showInputQueue(DispatchAsync dispatcher) {
+		SectionStackSection section1 = new SectionStackSection();
+		section1.setTitle("Input queue");
+		section1.setItems(new SideNavInputTree(dispatcher));
+		refreshButton = new ImgButton();
+		refreshButton.setSrc("[SKIN]actions/refresh.png");
+		refreshButton.setSize(16);
+		refreshButton.setShowFocused(false);
+		refreshButton.setShowRollOver(false);
+		refreshButton.setShowDown(false);
+
+		section1.setControls(refreshButton);
+		section1.setResizeable(true);
+		section1.setExpanded(true);
+		sectionStack.addSection(section1, 0);
+		// inputTree.setHeight("600");
+	}
 
 	@Override
 	public HasFolderOpenedHandlers getInputTree() {

@@ -19,9 +19,11 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
-import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuViewImpl;
+import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
+import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 
 public class EditorClientModule extends AbstractPresenterModule {
 
@@ -40,7 +42,12 @@ public class EditorClientModule extends AbstractPresenterModule {
 		// Presenters
 		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
 		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
-		bindPresenterWidget(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuViewImpl.class);
+		bindPresenter(ModifyPresenter.class, ModifyPresenter.MyView.class, ModifyView.class, ModifyPresenter.MyProxy.class);
+		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuView.class,
+				DigitalObjectMenuPresenter.MyProxy.class);
+		// bindPresenterWidget(DigitalObjectMenuPresenter.class,
+		// DigitalObjectMenuPresenter.MyView.class,
+		// DigitalObjectMenuView.class);
 
 		bind(CachingDispatchAsync.class);
 		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);

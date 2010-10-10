@@ -12,7 +12,7 @@
   
   <define-configuration-property name="gin.ginjector" is-multi-valued="false" />
   <set-configuration-property name="gin.ginjector"
-       value="com.google.gwt.inject.client.Ginjector.EditorGinjector" />
+       value="cz.fi.muni.xkremser.editor.client.gin.EditorGinjector" />
   
  <!-- <inherits name='com.smartclient.theme.fleet.Fleet'/> -->
  <!-- <inherits name='com.smartclient.theme.silverwave.SilverWave'/> -->

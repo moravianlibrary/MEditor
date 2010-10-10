@@ -43,12 +43,15 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	}
 
 	private DispatchAsync dispatcher;
+	private final DigitalObjectMenuPresenter leftPresenter;
 
 	@Inject
 	// public HomePresenter(final MyView display, final EventBus eventBus, final
 	// DispatchAsync dispatcher, final DigitalObjectMenuPresenter treePresenter) {
-	public HomePresenter(final EventBus eventBus, final MyView view, final MyProxy proxy) {
+	public HomePresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter) {
 		super(eventBus, view, proxy);
+		this.leftPresenter = leftPresenter;
+
 	}
 
 	/**
@@ -96,8 +99,13 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	}
 
 	@Override
+	protected void onReset() {
+		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+	}
+
+	@Override
 	protected void revealInParent() {
-		RevealContentEvent.fire(eventBus, AppPresenter.TYPE_SetMainContent, this);
+		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
 	}
 
 }

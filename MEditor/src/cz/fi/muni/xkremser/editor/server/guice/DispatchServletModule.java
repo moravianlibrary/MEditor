@@ -8,6 +8,6 @@ public class DispatchServletModule extends ServletModule {
 
 	@Override
 	public void configureServlets() {
-		serve("/meditor/" + ActionImpl.DEFAULT_SERVICE_NAME).with(DispatchServiceImpl.class);
+		serve("/meditor/" + ActionImpl.DEFAULT_SERVICE_NAME + "*").with(DispatchServiceImpl.class);
 	}
 }

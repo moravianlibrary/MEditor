@@ -22,8 +22,10 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	// private HasWidgets mainContainer;
 
 	public AppView() {
-		VLayout main = new VLayout();
+		widget = new VLayout();
 		leftContainer = new VLayout();
+		leftContainer.setWidth(285);
+		leftContainer.setShowResizeBar(true);
 		mainContainer = new VLayout(); // TODO: consider some panel
 		// main.setLayoutMargin(5);
 		widget.setWidth100();
@@ -52,16 +54,16 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	public void setInSlot(Object slot, Widget content) {
 		if (slot == AppPresenter.TYPE_SetMainContent) {
 			setMainContent(content);
-		} else if (slot == AppPresenter.TYPE_SetTopContent) {
-			setLeftContent(content);
+			// } else if (slot == AppPresenter.TYPE_SetTopContent) {
+			// setTopContent(content);
 		} else if (slot == AppPresenter.TYPE_SetLeftContent) {
-			setTopContent(content);
+			setLeftContent(content);
 		} else {
 			super.setInSlot(slot, content);
 		}
 	}
 
-	private void setTopContent(Widget content) {
+	private void setMainContent(Widget content) {
 		mainContainer.clear();
 		if (content != null) {
 			mainContainer.addMember(content);
@@ -69,17 +71,17 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	}
 
 	private void setLeftContent(Widget content) {
-		leftContainer.clear();
+		// leftContainer.clear();
 		if (content != null) {
 			leftContainer.addMember(content);
 		}
 	}
 
-	private void setMainContent(Widget content) {
-		topContainer.clear();
-		if (content != null) {
-			topContainer.addMember(content);
-		}
-	}
+	// private void setTopContent(Widget content) {
+	// topContainer.clear();
+	// if (content != null) {
+	// topContainer.addMember(content);
+	// }
+	// }
 
 }
