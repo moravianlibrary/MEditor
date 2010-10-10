@@ -3,14 +3,13 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.gwtplatform.dispatch.server.ExecutionContext;
+import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.SendGreeting;
@@ -56,12 +55,13 @@ public class SendGreetingHandler implements ActionHandler<SendGreeting, SendGree
 	}
 
 	@Override
-	public void rollback(final SendGreeting action, final SendGreetingResult result, final ExecutionContext context) throws ActionException {
-		// Nothing to do here
+	public Class<SendGreeting> getActionType() {
+		return SendGreeting.class;
 	}
 
 	@Override
-	public Class<SendGreeting> getActionType() {
-		return SendGreeting.class;
+	public void undo(SendGreeting action, SendGreetingResult result, ExecutionContext context) throws ActionException {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  */
 
-package cz.fi.muni.xkremser.editor.client.mvp.view.tree;
+package cz.fi.muni.xkremser.editor.client.view.tree;
 
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.TreeModelType;

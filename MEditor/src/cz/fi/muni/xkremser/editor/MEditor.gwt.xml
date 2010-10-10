@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='meditor'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="com.google.gwt.inject.Inject" />
-  <inherits name='net.customware.gwt.dispatch.Dispatch' />
-  <inherits name='net.customware.gwt.presenter.Presenter' />
+  
+  <inherits name='com.google.gwt.user.User'/> 
+  <inherits name="com.google.gwt.inject.Inject" /> 
   <inherits name='com.smartgwt.SmartGwt'/>
   <inherits name='com.smartgwt.SmartGwtNoScript'/>
-  <inherits name='com.smartgwt.tools.SmartGwtTools'/>
+  <inherits name='com.smartgwt.tools.SmartGwtTools'/>  
+  <inherits name='com.gwtplatform.dispatch.Dispatch' />
+  <inherits name='com.gwtplatform.mvp.Mvp' />
+  
+  <define-configuration-property name="gin.ginjector" is-multi-valued="false" />
+  <set-configuration-property name="gin.ginjector"
+       value="com.google.gwt.inject.client.Ginjector.EditorGinjector" />
   
  <!-- <inherits name='com.smartclient.theme.fleet.Fleet'/> -->
  <!-- <inherits name='com.smartclient.theme.silverwave.SilverWave'/> -->

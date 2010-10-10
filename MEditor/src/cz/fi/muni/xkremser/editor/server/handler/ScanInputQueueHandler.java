@@ -5,13 +5,12 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Inject;
+import com.gwtplatform.dispatch.server.ExecutionContext;
+import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
@@ -19,9 +18,10 @@ import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
-import cz.fi.muni.xkremser.editor.shared.rpc.result.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
-public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, ScanInputQueueResult> {
+public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction, ScanInputQueueResult> {
 	private final Log logger;
 	private final EditorConfiguration configuration;
 
@@ -38,7 +38,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, Scan
 	}
 
 	@Override
-	public ScanInputQueueResult execute(final ScanInputQueue action, final ExecutionContext context) throws ActionException {
+	public ScanInputQueueResult execute(final ScanInputQueueAction action, final ExecutionContext context) throws ActionException {
 		// parse input
 		final String id = action.getId() == null ? "" : action.getId();
 		final ScanInputQueue.TYPE type = action.getType();
@@ -55,17 +55,17 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, Scan
 																			// concrete interface is used
 			if (id == null || "".equals(id)) { // top level
 				if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
-					result = new ScanInputQueueResult(id, type, updateDb(base));
+					result = new ScanInputQueueResult(updateDb(base));
 				} else {
-					result = new ScanInputQueueResult(id, type, list);
+					result = new ScanInputQueueResult(list);
 				}
 			} else {
-				result = new ScanInputQueueResult(id, type, inputQueueDAO.getItems(id));
+				result = new ScanInputQueueResult(inputQueueDAO.getItems(id));
 			}
 		}
 
 		if (type == ScanInputQueue.TYPE.DB_UPDATE) {
-			result = new ScanInputQueueResult(id, type, updateDb(base));
+			result = new ScanInputQueueResult(updateDb(base));
 		}
 		return result;
 	}
@@ -122,12 +122,13 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueue, Scan
 	}
 
 	@Override
-	public void rollback(final ScanInputQueue action, final ScanInputQueueResult result, final ExecutionContext context) throws ActionException {
-		// Nothing to do here
+	public Class<ScanInputQueueAction> getActionType() {
+		return ScanInputQueueAction.class;
 	}
 
 	@Override
-	public Class<ScanInputQueue> getActionType() {
-		return ScanInputQueue.class;
+	public void undo(ScanInputQueueAction action, ScanInputQueueResult result, ExecutionContext context) throws ActionException {
+		// TODO Auto-generated method stub
+
 	}
 }

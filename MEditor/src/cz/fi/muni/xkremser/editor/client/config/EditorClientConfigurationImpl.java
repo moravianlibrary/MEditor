@@ -2,16 +2,15 @@ package cz.fi.muni.xkremser.editor.client.config;
 
 import java.util.Date;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.gwtplatform.dispatch.client.DispatchAsync;
 
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfig;
-import cz.fi.muni.xkremser.editor.shared.rpc.result.GetClientConfigResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 
 @Singleton
 public class EditorClientConfigurationImpl extends EditorClientConfiguration {
@@ -21,7 +20,7 @@ public class EditorClientConfigurationImpl extends EditorClientConfiguration {
 	@Inject
 	public EditorClientConfigurationImpl(final DispatchAsync dispatcher) {
 		if (configuration == null) {
-			dispatcher.execute(new GetClientConfig(), new DispatchCallback<GetClientConfigResult>() {
+			dispatcher.execute(new GetClientConfigAction(), new DispatchCallback<GetClientConfigResult>() {
 				@Override
 				public void callbackError(final Throwable cause) {
 					Log.error("Handle Failure:", cause);

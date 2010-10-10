@@ -2,12 +2,11 @@ package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
 import java.util.ArrayList;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.inject.Inject;
+import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
@@ -20,7 +19,8 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
-import cz.fi.muni.xkremser.editor.shared.rpc.result.ScanInputQueueResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
 /**
  * Example <code>AbstractGwtRPCDS</code> implementation.
@@ -58,7 +58,7 @@ public class SimpleGwtRPCDS extends AbstractGwtRPCDS {
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
-		dispatcher.execute(new ScanInputQueue(id, ScanInputQueue.TYPE.DB_GET), new DispatchCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueueAction(id, ScanInputQueue.TYPE.DB_GET), new DispatchCallback<ScanInputQueueResult>() {
 			@Override
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);

@@ -3,20 +3,19 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Inject;
+import com.gwtplatform.dispatch.server.ExecutionContext;
+import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfig;
-import cz.fi.muni.xkremser.editor.shared.rpc.result.GetClientConfigResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 
-public class GetClientConfigHandler implements ActionHandler<GetClientConfig, GetClientConfigResult> {
+public class GetClientConfigHandler implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
 	private final Log logger;
 	private final EditorConfiguration configuration;
 
@@ -30,7 +29,7 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfig, Ge
 	}
 
 	@Override
-	public GetClientConfigResult execute(final GetClientConfig action, final ExecutionContext context) throws ActionException {
+	public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context) throws ActionException {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		Iterator<String> it = configuration.getClientConfiguration().getKeys();
 		while (it.hasNext()) {
@@ -42,12 +41,13 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfig, Ge
 	}
 
 	@Override
-	public void rollback(final GetClientConfig action, final GetClientConfigResult result, final ExecutionContext context) throws ActionException {
-		// Nothing to do here
+	public Class<GetClientConfigAction> getActionType() {
+		return GetClientConfigAction.class;
 	}
 
 	@Override
-	public Class<GetClientConfig> getActionType() {
-		return GetClientConfig.class;
+	public void undo(GetClientConfigAction action, GetClientConfigResult result, ExecutionContext context) throws ActionException {
+		// TODO Auto-generated method stub
+
 	}
 }

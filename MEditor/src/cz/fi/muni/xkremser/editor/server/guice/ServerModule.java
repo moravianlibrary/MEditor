@@ -1,10 +1,9 @@
 package cz.fi.muni.xkremser.editor.server.guice;
 
-import net.customware.gwt.dispatch.server.guice.ActionHandlerModule;
-
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Singleton;
+import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
@@ -12,23 +11,20 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
-import cz.fi.muni.xkremser.editor.server.handler.SendGreetingHandler;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfig;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.SendGreeting;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
 /**
  * Module which binds the handlers and configurations
  * 
  */
-public class ServerModule extends ActionHandlerModule {
+public class ServerModule extends HandlerModule {
 
 	@Override
 	protected void configureHandlers() {
-		bindHandler(SendGreeting.class, SendGreetingHandler.class);
-		bindHandler(ScanInputQueue.class, ScanInputQueueHandler.class);
-		bindHandler(ScanInputQueue.class, ScanInputQueueHandler.class);
-		bindHandler(GetClientConfig.class, GetClientConfigHandler.class);
+		// bindHandler(SendGreeting.class, SendGreetingHandler.class);
+		bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
+		bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();

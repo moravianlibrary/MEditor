@@ -1,12 +1,13 @@
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import net.customware.gwt.dispatch.shared.Action;
-import cz.fi.muni.xkremser.editor.shared.rpc.result.GetClientConfigResult;
+import java.util.HashMap;
 
-public class GetClientConfig implements Action<GetClientConfigResult> {
+import com.gwtplatform.annotation.GenDispatch;
+import com.gwtplatform.annotation.Out;
 
-	public GetClientConfig() {
+@GenDispatch(isSecure = false)
+public class GetClientConfig {
 
-	}
-
+	@Out(1)
+	HashMap<String, Object> config;
 }

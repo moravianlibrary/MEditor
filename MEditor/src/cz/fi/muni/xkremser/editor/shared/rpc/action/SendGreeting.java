@@ -1,9 +1,10 @@
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.result.SendGreetingResult;
-import net.customware.gwt.dispatch.shared.Action;
+import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-public class SendGreeting implements Action<SendGreetingResult> {
+import cz.fi.muni.xkremser.editor.shared.rpc.result.SendGreetingResult;
+
+public class SendGreeting extends UnsecuredActionImpl<SendGreetingResult> {
 
 	private static final long serialVersionUID = 5804421607858017477L;
 

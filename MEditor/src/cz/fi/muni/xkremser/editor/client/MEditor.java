@@ -2,10 +2,9 @@ package cz.fi.muni.xkremser.editor.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.gwtplatform.mvp.client.DelayedBindRegistry;
 
 import cz.fi.muni.xkremser.editor.client.gin.EditorGinjector;
-import cz.fi.muni.xkremser.editor.client.mvp.AppPresenter;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -15,10 +14,11 @@ public class MEditor implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
-		final AppPresenter appPresenter = injector.getAppPresenter();
+		DelayedBindRegistry.bind(injector);
+		injector.getPlaceManager().revealCurrentPlace();
 
-		appPresenter.go(RootPanel.get());
-
-		injector.getPlaceManager().fireCurrentPlace();
+		// final AppPresenter appPresenter = injector.getAppPresenter();
+		// appPresenter.go(RootPanel.get());
+		// injector.getPlaceManager().fireCurrentPlace();
 	}
 }

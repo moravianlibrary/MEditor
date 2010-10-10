@@ -1,6 +1,6 @@
 package cz.fi.muni.xkremser.editor.shared.rpc.result;
 
-import net.customware.gwt.dispatch.shared.Result;
+import com.gwtplatform.dispatch.shared.Result;
 
 public class SendGreetingResult implements Result {
 

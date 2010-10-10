@@ -14,10 +14,9 @@
  * Lesser General Public License for more details.
  */
 
-package cz.fi.muni.xkremser.editor.client.mvp.view.tree;
+package cz.fi.muni.xkremser.editor.client.view.tree;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
-
+import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;

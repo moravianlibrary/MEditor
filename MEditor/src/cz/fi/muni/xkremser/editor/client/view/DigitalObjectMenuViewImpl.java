@@ -1,10 +1,9 @@
-package cz.fi.muni.xkremser.editor.client.mvp.view;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtplatform.mvp.client.UiHandlers;
+import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
@@ -16,27 +15,32 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
-import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.view.tree.SideNavInputTree;
-import cz.fi.muni.xkremser.editor.client.mvp.view.tree.SideNavRecentlyTree;
+import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyTree;
 
-public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuPresenter.Display {
+public class DigitalObjectMenuViewImpl extends ViewWithUiHandlers<DigitalObjectMenuViewImpl.MyUiHandlers> implements DigitalObjectMenuPresenter.MyView {
+
+	public interface MyUiHandlers extends UiHandlers {
+		void onRefresh();
+	}
 
 	private SideNavInputTree inputTree;
 	private final SectionStack sectionStack;
 	private final SectionStackSection sectionRecentlyModified;
 	private ImgButton refreshButton;
+	private final VLayout layout;
 
 	// private TreeNode ctxNode;
 	// private final TreeEditor treeEditor;
 	// private Menu menu;
 
-	public DigitalObjectMenuView() {
-		super();
+	public DigitalObjectMenuViewImpl() {
+		layout = new VLayout();
 
-		setHeight100();
-		setWidth(285);
-		setShowResizeBar(true);
+		layout.setHeight100();
+		layout.setWidth(285);
+		layout.setShowResizeBar(true);
 
 		SideNavRecentlyTree sideNavTree = new SideNavRecentlyTree();
 
@@ -67,7 +71,7 @@ public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuP
 		sectionStack.setWidth100();
 		sectionStack.setHeight100();
 		sectionStack.setOverflow(Overflow.HIDDEN);
-		addMember(sectionStack);
+		layout.addMember(sectionStack);
 	}
 
 	/**
@@ -75,32 +79,39 @@ public class DigitalObjectMenuView extends VLayout implements DigitalObjectMenuP
 	 */
 	@Override
 	public Widget asWidget() {
-		return this;
+		return layout;
 	}
+
+	// @UiHandler("saveButton")
+	// void onSaveButtonClicked(ClickEvent event) {
+	// if (getUiHandlers() != null) {
+	// getUiHandlers().onRefresh();
+	// }
+	// }
 
 	@Override
 	public HasValue<String> getSelected() {
 		return null;
 	}
 
-	@Override
-	public void showInputQueue(DispatchAsync dispatcher) {
-		SectionStackSection section1 = new SectionStackSection();
-		section1.setTitle("Input queue");
-		section1.setItems(new SideNavInputTree(dispatcher));
-		refreshButton = new ImgButton();
-		refreshButton.setSrc("[SKIN]actions/refresh.png");
-		refreshButton.setSize(16);
-		refreshButton.setShowFocused(false);
-		refreshButton.setShowRollOver(false);
-		refreshButton.setShowDown(false);
-
-		section1.setControls(refreshButton);
-		section1.setResizeable(true);
-		section1.setExpanded(true);
-		sectionStack.addSection(section1, 0);
-		// inputTree.setHeight("600");
-	}
+	// @Override
+	// public void showInputQueue(DispatchAsync dispatcher) {
+	// SectionStackSection section1 = new SectionStackSection();
+	// section1.setTitle("Input queue");
+	// section1.setItems(new SideNavInputTree(dispatcher));
+	// refreshButton = new ImgButton();
+	// refreshButton.setSrc("[SKIN]actions/refresh.png");
+	// refreshButton.setSize(16);
+	// refreshButton.setShowFocused(false);
+	// refreshButton.setShowRollOver(false);
+	// refreshButton.setShowDown(false);
+	//
+	// section1.setControls(refreshButton);
+	// section1.setResizeable(true);
+	// section1.setExpanded(true);
+	// sectionStack.addSection(section1, 0);
+	// // inputTree.setHeight("600");
+	// }
 
 	@Override
 	public HasFolderOpenedHandlers getInputTree() {

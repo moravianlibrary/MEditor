@@ -30,7 +30,6 @@
 			cz.fi.muni.xkremser.editor.server.ModifyDOServiceImpl
         </servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
 		<url-pattern>/gwt-log</url-pattern>
@@ -44,8 +43,8 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
-	
-		<welcome-file-list>
+
+	<welcome-file-list>
 		<welcome-file>MEditor.html</welcome-file>
 	</welcome-file-list>
 

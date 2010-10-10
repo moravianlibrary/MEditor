@@ -4,7 +4,6 @@
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/gin-1.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-servlet-2.0.jar"/>
@@ -14,14 +13,20 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration-1.6.jar" sourcepath="/home/freon/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-iface-1_2_3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/a2jruntime.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-z3950-1_2_3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-util.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/marc4j.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-3.0.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt-skins.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-presenter-1.1.1.jar" sourcepath="/home/freon/.m2/repository/net/customware/gwt/presenter/gwt-presenter/1.1.1/gwt-presenter-1.1.1-sources.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dispatch-1.1.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/postgresql-8.4-701.jdbc4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gin-r137.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtp-0.4.jar"/>
+	<classpathentry kind="src" path="generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

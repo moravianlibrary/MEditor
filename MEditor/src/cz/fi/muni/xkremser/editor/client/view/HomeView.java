@@ -1,23 +1,22 @@
-package cz.fi.muni.xkremser.editor.client.mvp.view;
-
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtplatform.mvp.client.ViewImpl;
 
-import cz.fi.muni.xkremser.editor.client.mvp.presenter.HomePresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 
-public class HomeView extends Composite implements HomePresenter.Display {
+public class HomeView extends ViewImpl implements HomePresenter.MyView {
 	private final TextBox name;
 	private final Button sendButton;
+	private final FlowPanel panel;
 
 	public HomeView() {
-		final FlowPanel panel = new FlowPanel();
+		panel = new FlowPanel();
 		name = new TextBox();
 		panel.add(name);
 
@@ -28,7 +27,6 @@ public class HomeView extends Composite implements HomePresenter.Display {
 		// // Use RootPanel.get() to get the entire body element
 		// RootPanel.get("nameFieldContainer").add(name);
 		// RootPanel.get("sendButtonContainer").add(sendButton);
-		initWidget(panel);
 		reset();
 	}
 
@@ -53,6 +51,6 @@ public class HomeView extends Composite implements HomePresenter.Display {
 	 */
 	@Override
 	public Widget asWidget() {
-		return this;
+		return panel;
 	}
 }

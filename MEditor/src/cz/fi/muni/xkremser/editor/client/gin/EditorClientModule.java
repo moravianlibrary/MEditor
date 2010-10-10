@@ -1,42 +1,48 @@
 package cz.fi.muni.xkremser.editor.client.gin;
 
-import net.customware.gwt.presenter.client.DefaultEventBus;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
-import net.customware.gwt.presenter.client.place.ParameterTokenFormatter;
-import net.customware.gwt.presenter.client.place.PlaceManager;
-import net.customware.gwt.presenter.client.place.TokenFormatter;
-
 import com.google.inject.Singleton;
+import com.gwtplatform.mvp.client.DefaultEventBus;
+import com.gwtplatform.mvp.client.DefaultProxyFailureHandler;
+import com.gwtplatform.mvp.client.EventBus;
+import com.gwtplatform.mvp.client.RootPresenter;
+import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
+import com.gwtplatform.mvp.client.proxy.ParameterTokenFormatter;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
+import com.gwtplatform.mvp.client.proxy.TokenFormatter;
 
+import cz.fi.muni.xkremser.editor.client.EditorPlaceManager;
+import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
-import cz.fi.muni.xkremser.editor.client.mvp.AppPresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.presenter.DigitalObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.presenter.GreetingResponsePresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.presenter.HomePresenter;
-import cz.fi.muni.xkremser.editor.client.mvp.view.DigitalObjectMenuView;
-import cz.fi.muni.xkremser.editor.client.mvp.view.GreetingResponseView;
-import cz.fi.muni.xkremser.editor.client.mvp.view.HomeView;
-import cz.fi.muni.xkremser.editor.client.place.BasicPlaceManager;
+import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
+import cz.fi.muni.xkremser.editor.client.view.AppView;
+import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuViewImpl;
+import cz.fi.muni.xkremser.editor.client.view.HomeView;
 
 public class EditorClientModule extends AbstractPresenterModule {
 
 	@Override
 	protected void configure() {
+		// Singletons
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
+		bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(Singleton.class);
+		bind(PlaceManager.class).to(EditorPlaceManager.class).in(Singleton.class);
+		bind(RootPresenter.class).asEagerSingleton();
+		bind(ProxyFailureHandler.class).to(DefaultProxyFailureHandler.class).in(Singleton.class);
 
-		bindPresenter(HomePresenter.class, HomePresenter.Display.class, HomeView.class);
-		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.Display.class, DigitalObjectMenuView.class);
-		bindPresenter(GreetingResponsePresenter.class, GreetingResponsePresenter.Display.class, GreetingResponseView.class);
+		// Constants
+		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
 
-		bind(AppPresenter.class).in(Singleton.class);
+		// Presenters
+		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
+		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
+		bindPresenterWidget(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuViewImpl.class);
+
 		bind(CachingDispatchAsync.class);
-
-		bind(TokenFormatter.class).to(ParameterTokenFormatter.class);
-		bind(PlaceManager.class).to(BasicPlaceManager.class).asEagerSingleton();
-
 		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
 	}

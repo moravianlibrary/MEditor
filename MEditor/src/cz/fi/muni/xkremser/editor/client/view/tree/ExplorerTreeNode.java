@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.mvp.view.tree;
+package cz.fi.muni.xkremser.editor.client.view.tree;
 
 import com.smartgwt.client.widgets.tree.TreeNode;
 

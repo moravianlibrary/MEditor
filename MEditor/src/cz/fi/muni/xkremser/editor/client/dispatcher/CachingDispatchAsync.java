@@ -3,13 +3,14 @@ package cz.fi.muni.xkremser.editor.client.dispatcher;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.dispatch.shared.Action;
-import net.customware.gwt.dispatch.shared.Result;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.client.DispatchRequest;
+import com.gwtplatform.dispatch.shared.Action;
+import com.gwtplatform.dispatch.shared.Result;
 
+// TODO: test
 public class CachingDispatchAsync implements DispatchAsync {
 
 	private final DispatchAsync mDispatcher;
@@ -21,8 +22,8 @@ public class CachingDispatchAsync implements DispatchAsync {
 	}
 
 	@Override
-	public <A extends Action<R>, R extends Result> void execute(final A action, final AsyncCallback<R> callback) {
-		mDispatcher.execute(action, callback);
+	public <A extends Action<R>, R extends Result> DispatchRequest execute(final A action, final AsyncCallback<R> callback) {
+		return mDispatcher.execute(action, callback);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,5 +52,11 @@ public class CachingDispatchAsync implements DispatchAsync {
 
 	public void clear() {
 		mCache.clear();
+	}
+
+	@Override
+	public <A extends Action<R>, R extends Result> DispatchRequest undo(A action, R result, AsyncCallback<Void> callback) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
