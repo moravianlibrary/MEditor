@@ -23,8 +23,9 @@ import com.smartgwt.client.widgets.tree.TreeGridField;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDS;
+import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 
-public class SideNavInputTree extends TreeGrid {
+public class SideNavInputTree extends TreeGrid implements Refreshable {
 
 	private final String idSuffix = "";
 
@@ -60,6 +61,11 @@ public class SideNavInputTree extends TreeGrid {
 
 		setFields(field1, field2);
 		setDataSource(new SimpleGwtRPCDS(dispatcher));
+	}
+
+	@Override
+	public void refreshTree() {
+		fetchData();
 	}
 
 }

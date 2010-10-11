@@ -9,12 +9,13 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
@@ -26,6 +27,10 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		void onRefresh();
 
 		void onShowInputQueue();
+	}
+
+	public interface Refreshable {
+		void refreshTree();
 	}
 
 	private SideNavInputTree inputTree;
@@ -100,24 +105,27 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	public void showInputQueue(DispatchAsync dispatcher) {
 		SectionStackSection section1 = new SectionStackSection();
 		section1.setTitle("Input queue");
-		section1.setItems(new SideNavInputTree(dispatcher));
+		inputTree = new SideNavInputTree(dispatcher);
+		section1.setItems(inputTree);
 		refreshButton = new ImgButton();
 		refreshButton.setSrc("[SKIN]actions/refresh.png");
 		refreshButton.setSize(16);
 		refreshButton.setShowFocused(false);
 		refreshButton.setShowRollOver(false);
 		refreshButton.setShowDown(false);
+		refreshButton.setCanHover(true);
+		refreshButton.addHoverHandler(new HoverHandler() {
+			@Override
+			public void onHover(HoverEvent event) {
+				refreshButton.setPrompt("Rescan directory structure.");
+			}
+		});
 
 		section1.setControls(refreshButton);
 		section1.setResizeable(true);
 		section1.setExpanded(true);
 		sectionStack.addSection(section1, 0);
 		// inputTree.setHeight("600");
-	}
-
-	@Override
-	public HasFolderOpenedHandlers getInputTree() {
-		return inputTree;
 	}
 
 	@Override
@@ -129,6 +137,11 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	@Override
 	public HasClickHandlers getRefreshWidget() {
 		return refreshButton;
+	}
+
+	@Override
+	public Refreshable getInputTree() {
+		return inputTree;
 	}
 
 }

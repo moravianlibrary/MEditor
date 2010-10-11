@@ -22,6 +22,7 @@ public class InputQueueItemDAOImpl implements InputQueueItemDAO {
 	public Connection conn = null;
 
 	public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
+	public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(id) FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
 	public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_NAME + " (path, issn, name) VALUES ((?),(?),(?))";
 	public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, issn, name FROM " + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('"
 			+ File.separator + "' IN trim(leading ((?)) FROM path)) = 0";
@@ -68,15 +69,23 @@ public class InputQueueItemDAOImpl implements InputQueueItemDAO {
 		try {
 
 			PreparedStatement deleteSt = conn.prepareStatement(DELETE_ALL_ITEMS_STATEMENT);
+			PreparedStatement selectCount = conn.prepareStatement(SELECT_NUMBER_ITEMS_STATEMENT);
+
+			ResultSet rs = selectCount.executeQuery();
+			rs.next();
+			int totalBefore = rs.getInt(1);
 			// TX start
-			int ret = deleteSt.executeUpdate();
+			int deleted = deleteSt.executeUpdate();
+			int updated = 0;
 			for (InputQueueItem item : toUpdate) {
-				ret += getItemInsertStatement(item).executeUpdate();
+				updated += getItemInsertStatement(item).executeUpdate();
 			}
-			if (ret == toUpdate.size()) {
+			if (totalBefore == deleted && updated == toUpdate.size()) {
 				conn.commit();
+				logger.debug("DB has been updated. -> commit");
 			} else {
 				conn.rollback();
+				logger.debug("DB has not been updated. -> rollback");
 			}
 			// TX end
 		} catch (SQLException e) {

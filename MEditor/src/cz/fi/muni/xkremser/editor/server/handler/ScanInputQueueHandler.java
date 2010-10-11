@@ -71,7 +71,9 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	}
 
 	private void checkDocumentTypes(String[] types) throws ActionException {
-		throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
+		// throw new
+		// ActionException("Scanning input queue: Action failed because attribut " +
+		// EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 	}
 
 	private ArrayList<InputQueueItem> updateDb(String base) throws ActionException {

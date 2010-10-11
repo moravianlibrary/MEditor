@@ -12,10 +12,16 @@ import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
-import com.smartgwt.client.widgets.tree.events.HasFolderOpenedHandlers;
 
+import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
 public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy> implements MyUiHandlers {
 	/**
@@ -29,13 +35,11 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 		void expandNode(String id);
 
-		// void showInputQueue(DispatchAsync dispatcher);
-
-		HasFolderOpenedHandlers getInputTree();
-
 		HasClickHandlers getRefreshWidget();
 
 		void showInputQueue(DispatchAsync dispatcher);
+
+		Refreshable getInputTree();
 	}
 
 	@ProxyStandard
@@ -64,11 +68,24 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	@Override
 	protected void onBind() {
-
+		super.onBind();
 		Log.info("tady to chci pouzit" + new Date().toString());
 		Log.info(String.valueOf(System.currentTimeMillis()));
 
 		getView().showInputQueue(dispatcher);
+		registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				dispatcher.execute(new ScanInputQueueAction(null, ScanInputQueue.TYPE.DB_UPDATE), new DispatchCallback<ScanInputQueueResult>() {
+
+					@Override
+					public void callback(ScanInputQueueResult result) {
+						getView().getInputTree().refreshTree();
+					}
+				});
+			}
+		}));
 	}
 
 	@Override
@@ -86,7 +103,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	@Override
 	public void onRefresh() {
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override
