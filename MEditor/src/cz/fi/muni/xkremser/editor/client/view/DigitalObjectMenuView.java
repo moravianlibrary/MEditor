@@ -39,10 +39,6 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	private ImgButton refreshButton;
 	private final VLayout layout;
 
-	// private TreeNode ctxNode;
-	// private final TreeEditor treeEditor;
-	// private Menu menu;
-
 	public DigitalObjectMenuView() {
 		layout = new VLayout();
 

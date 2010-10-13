@@ -40,7 +40,6 @@ public abstract class EditorConfiguration {
 		public static final String DB_HOST_DEFAULT = "localhost";
 		public static final String DB_PORT_DEFAULT = "5432";
 		public static final String DB_LOGIN_DEFAULT = "meditor";
-		public static final String DB_PASSWORD_DEFAULT = "123456";
 		public static final String DB_NAME_DEFAULT = "meditor";
 
 	}
@@ -102,7 +101,7 @@ public abstract class EditorConfiguration {
 	}
 
 	public String getDBPassword() {
-		return getConfiguration().getString(Constants.DB_PASSWORD, Constants.DB_PASSWORD_DEFAULT);
+		return getConfiguration().getString(Constants.DB_PASSWORD);
 	}
 
 	public String getDBName() {

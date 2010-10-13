@@ -45,6 +45,10 @@ public class InputQueueItemDAOImpl implements InputQueueItemDAO {
 		String login = conf.getDBLogin();
 		String password = conf.getDBPassword();
 		String name = conf.getDBName();
+		if (password == null || password.length() < 3) {
+			logger.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "' reason: no password set.");
+			return;
+		}
 		try {
 			conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, login, password);
 

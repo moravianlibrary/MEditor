@@ -34,7 +34,7 @@ import com.google.inject.BindingAnnotation;
  * @author Christian Goudreau
  */
 @BindingAnnotation
-@Target({FIELD, PARAMETER, METHOD})
+@Target({ FIELD, PARAMETER, METHOD })
 @Retention(RUNTIME)
 public @interface DefaultPlace {
 }

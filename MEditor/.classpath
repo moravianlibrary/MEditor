@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -23,10 +28,10 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gin-r137.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtp-0.4.jar"/>
-	<classpathentry kind="src" path="generated">
-		<attributes>
-			<attribute name="optional" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="/home/freon/eclipse/plugins/org.apache.commons.discovery_0.2.0.v201004190315/lib/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="/home/freon/eclipse/plugins/javax.xml.rpc_1.1.0.v201005080400/lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="/home/freon/eclipse/plugins/javax.xml.soap_1.2.0.v201005080501/lib/saaj.jar"/>
+	<classpathentry kind="lib" path="/home/freon/eclipse/plugins/javax.wsdl_1.6.2.v201005080631.jar"/>
+	<classpathentry kind="lib" path="/home/freon/eclipse/plugins/org.apache.commons.logging_1.0.4.v201005080501.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

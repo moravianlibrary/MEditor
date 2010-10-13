@@ -1,6 +1,5 @@
 package cz.fi.muni.xkremser.editor.client.view.tree;
 
-
 public class ShowcaseData {
 
 	private final String idSuffix;

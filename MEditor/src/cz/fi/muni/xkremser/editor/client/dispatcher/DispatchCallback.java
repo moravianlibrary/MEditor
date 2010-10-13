@@ -21,13 +21,13 @@ public abstract class DispatchCallback<T> implements AsyncCallback<T> {
 
 	/**
 	 * Must be overriden by clients to handle callbacks
+	 * 
 	 * @param result
 	 */
 	public abstract void callback(T result);
 
 	/**
-	 * Should be overriden by clients who want to
-	 * handle error cases themselves.
+	 * Should be overriden by clients who want to handle error cases themselves.
 	 */
 	public void callbackError(Throwable t) {
 		t.printStackTrace();
