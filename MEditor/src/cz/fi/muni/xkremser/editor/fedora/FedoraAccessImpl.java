@@ -76,7 +76,11 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public Document getRelsExt(String uuid) throws IOException {
 		String relsExtUrl = relsExtUrl(KConfiguration.getInstance(), uuid);
 		LOGGER.fine("Reading rels ext +" + relsExtUrl);
-		InputStream docStream = RESTHelper.inputStream(relsExtUrl, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass());
+		// InputStream docStream = RESTHelper.inputStream(relsExtUrl,
+		// KConfiguration.getInstance().getFedoraUser(),
+		// KConfiguration.getInstance().getFedoraPass());
+		InputStream docStream = RESTHelper.inputStream(relsExtUrl, "fedoraAdmin", "freodootra");
+
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
@@ -403,7 +407,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	public static String relsExtUrl(KConfiguration configuration, String uuid) {
-		String url = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/RELS-EXT";
+		String url = /* configuration.getFedoraHost() + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/uuid:" + uuid + "/RELS-EXT";
 		return url;
 	}
 

@@ -2,17 +2,22 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -27,6 +32,10 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 	@Inject
 	private Z3950Client client;
+
+	@Inject
+	@Named("securedFedoraAccess")
+	private FedoraAccess fedoraAccess;
 
 	@Inject
 	private InputQueueItemDAO inputQueueDAO;
@@ -47,6 +56,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		ScanInputQueueResult result = null;
 
 		if (type == ScanInputQueue.TYPE.DB_GET) {
+			checkDocumentTypes(null);
 			if (base == null || "".equals(base)) {
 				logger.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
@@ -71,6 +81,21 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	}
 
 	private void checkDocumentTypes(String[] types) throws ActionException {
+		try {
+			Document contentDom = fedoraAccess.getRelsExt("0eaa6730-9068-11dd-97de-000d606f5dc6");
+			String node = contentDom.getBaseURI();
+			String nodeName = contentDom.getNodeName();
+			String nodeValue = contentDom.getNodeValue();
+			String text = contentDom.getTextContent();
+			NodeList list = contentDom.getChildNodes();
+			for (int i = 0; i < list.getLength(); i++) {
+				System.out.println(list.item(i).getTextContent());
+			}
+			System.out.println("bla");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// throw new
 		// ActionException("Scanning input queue: Action failed because attribut " +
 		// EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
