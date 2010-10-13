@@ -2,13 +2,10 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -56,7 +53,6 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		ScanInputQueueResult result = null;
 
 		if (type == ScanInputQueue.TYPE.DB_GET) {
-			checkDocumentTypes(null);
 			if (base == null || "".equals(base)) {
 				logger.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
@@ -81,24 +77,12 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	}
 
 	private void checkDocumentTypes(String[] types) throws ActionException {
-		try {
-			Document contentDom = fedoraAccess.getRelsExt("0eaa6730-9068-11dd-97de-000d606f5dc6");
-			String node = contentDom.getBaseURI();
-			String nodeName = contentDom.getNodeName();
-			String nodeValue = contentDom.getNodeValue();
-			String text = contentDom.getTextContent();
-			NodeList list = contentDom.getChildNodes();
-			for (int i = 0; i < list.getLength(); i++) {
-				System.out.println(list.item(i).getTextContent());
+		for (String uuid : types) {
+			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + uuid)) {
+				logger.error("Model " + uuid + " is not present in repository.");
+				throw new ActionException(Constants.FEDORA_MODEL_PREFIX + uuid);
 			}
-			System.out.println("bla");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		// throw new
-		// ActionException("Scanning input queue: Action failed because attribut " +
-		// EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 	}
 
 	private ArrayList<InputQueueItem> updateDb(String base) throws ActionException {

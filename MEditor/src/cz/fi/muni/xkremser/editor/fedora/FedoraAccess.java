@@ -173,6 +173,16 @@ public interface FedoraAccess {
 	 */
 	public boolean isContentAccessible(String uuid) throws IOException;
 
+	/**
+	 * Checks whetere content is present
+	 * 
+	 * @param uuid
+	 *          uuid of object which can be protected
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean isDigitalObjectPresent(String uuid);
+
 	public FedoraAPIA getAPIA();
 
 	public FedoraAPIM getAPIM();

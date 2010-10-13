@@ -213,4 +213,9 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.getMimeTypeForStream(pid, datastreamName);
 	}
 
+	@Override
+	public boolean isDigitalObjectPresent(String uuid) {
+		return rawAccess.isDigitalObjectPresent(uuid);
+	}
+
 }

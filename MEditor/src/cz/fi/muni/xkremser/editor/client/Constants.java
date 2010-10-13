@@ -14,4 +14,7 @@ public class Constants {
 	public static final int DIR_MAX_DEPTH = 5;
 	public static final String FILE_SEPARATOR = "/";
 
+	// fedora
+	public static final String FEDORA_MODEL_PREFIX = "model";
+
 }

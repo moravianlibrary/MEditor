@@ -406,8 +406,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 		return fedoraObject + "/DC";
 	}
 
+	public static String obj(KConfiguration configuration, String uuid) {
+		String fedoraObject = /* configuration.getFedoraHost()TODO: + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/" + uuid;
+		return fedoraObject;
+	}
+
 	public static String relsExtUrl(KConfiguration configuration, String uuid) {
-		String url = /* configuration.getFedoraHost() + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/uuid:" + uuid + "/RELS-EXT";
+		String url = /* configuration.getFedoraHost()TODO: + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/uuid:" + uuid + "/RELS-EXT";
 		return url;
 	}
 
@@ -548,6 +553,40 @@ public class FedoraAccessImpl implements FedoraAccess {
 		} catch (XPathExpressionException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new IOException(e);
+		}
+	}
+
+	@Override
+	public boolean isDigitalObjectPresent(String uuid) {
+		String objUrl = obj(KConfiguration.getInstance(), uuid);
+		LOGGER.info("Reading dc +" + objUrl);
+		try {
+			InputStream docStream = RESTHelper.inputStream(objUrl, "fedoraAdmin", "freodootra"/*
+																																												 * KConfiguration
+																																												 * .
+																																												 * getInstance
+																																												 * (
+																																												 * )
+																																												 * .
+																																												 * getFedoraUser
+																																												 * (
+																																												 * )
+																																												 * ,
+																																												 * KConfiguration
+																																												 * .
+																																												 * getInstance
+																																												 * (
+																																												 * )
+																																												 * .
+																																												 * getFedoraPass
+																																												 * (
+																																												 * )
+																																												 */);
+
+			return true;
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, uuid + " in not in the repository, please insert this model first!" + e.getMessage(), e);
+			return false;
 		}
 	}
 }
