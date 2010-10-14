@@ -23,9 +23,4 @@ public class ScanInputQueue extends UnsecuredActionImpl<ScanInputQueueResult> {
 
 	@Out(1)
 	private ArrayList<InputQueueItem> items;
-
-	// @Override
-	// public String getServiceName() {
-	// return super.getServiceName() + "Action";
-	// }
 }

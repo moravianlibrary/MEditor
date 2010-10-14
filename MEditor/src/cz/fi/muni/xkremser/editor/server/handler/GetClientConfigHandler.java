@@ -10,7 +10,6 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
@@ -18,9 +17,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 public class GetClientConfigHandler implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
 	private final Log logger;
 	private final EditorConfiguration configuration;
-
-	@Inject
-	private InputQueueItemDAO inputQueueDAO;
 
 	@Inject
 	public GetClientConfigHandler(final Log logger, final EditorConfiguration configuration) {

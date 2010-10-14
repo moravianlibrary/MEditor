@@ -41,6 +41,7 @@ import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 
+import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.fedora.utils.LexerException;
 import cz.fi.muni.xkremser.editor.fedora.utils.PIDParser;
@@ -76,10 +77,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public Document getRelsExt(String uuid) throws IOException {
 		String relsExtUrl = relsExtUrl(uuid);
 		LOGGER.fine("Reading rels ext +" + relsExtUrl);
-		// InputStream docStream = RESTHelper.inputStream(relsExtUrl,
-		// KConfiguration.getInstance().getFedoraUser(),
-		// KConfiguration.getInstance().getFedoraPass());
-		InputStream docStream = RESTHelper.inputStream(relsExtUrl, "fedoraAdmin", "freodootra");
+		InputStream docStream = RESTHelper.inputStream(relsExtUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 
 		try {
 			return XMLUtils.parseDocument(docStream, true);
@@ -93,14 +91,14 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	@Override
-	public KrameriusModels getKrameriusModel(Document relsExt) {
+	public KrameriusModel getKrameriusModel(Document relsExt) {
 		try {
 			Element foundElement = XMLUtils.findElement(relsExt.getDocumentElement(), "hasModel", FedoraNamespaces.FEDORA_MODELS_URI);
 			if (foundElement != null) {
 				String sform = foundElement.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI, "resource");
 				PIDParser pidParser = new PIDParser(sform);
 				pidParser.disseminationURI();
-				KrameriusModels model = KrameriusModels.parseString(pidParser.getObjectId());
+				KrameriusModel model = KrameriusModelHelper.parseString(pidParser.getObjectId());
 				return model;
 			} else
 				throw new IllegalArgumentException("cannot find model of ");
@@ -114,7 +112,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	@Override
-	public KrameriusModels getKrameriusModel(String uuid) throws IOException {
+	public KrameriusModel getKrameriusModel(String uuid) throws IOException {
 		return getKrameriusModel(getRelsExt(uuid));
 	}
 
@@ -402,7 +400,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	public String obj(String uuid) {
-		String fedoraObject = /* configuration.getFedoraHost()TODO: + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/" + uuid;
+		String fedoraObject = configuration.getFedoraHost() + "/get/" + uuid;
 		return fedoraObject;
 	}
 
@@ -562,8 +560,6 @@ public class FedoraAccessImpl implements FedoraAccess {
 			LOGGER.log(Level.SEVERE, uuid + " in not in the repository, please insert this model first!" + e.getMessage(), e);
 			return false;
 		}
-		// InputStream docStream = RESTHelper.inputStream(objUrl, "fedoraAdmin",
-		// "freodootra");
 		return bytes != null;
 	}
 }

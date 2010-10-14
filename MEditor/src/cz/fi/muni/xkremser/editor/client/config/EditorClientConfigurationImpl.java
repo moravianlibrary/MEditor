@@ -34,7 +34,7 @@ public class EditorClientConfigurationImpl extends EditorClientConfiguration imp
 				public void callback(GetClientConfigResult result) {
 					EditorClientConfigurationImpl.this.configuration = new MyConfiguration(result.getConfig());
 					ConfigReceivedEvent.fire(EditorClientConfigurationImpl.this, true);
-					Log.info("Client configuration successfully returned from server.");
+					Log.debug("Client configuration successfully returned from server.");
 				}
 			});
 		}

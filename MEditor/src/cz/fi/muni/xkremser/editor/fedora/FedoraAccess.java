@@ -13,6 +13,8 @@ import org.fedora.api.ObjectFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+
 /**
  * This is main point to access to fedora through REST-API
  * 
@@ -37,10 +39,10 @@ public interface FedoraAccess {
 	 * 
 	 * @param relsExt
 	 *          RELS-EXT document
-	 * @see KrameriusModels
+	 * @see KrameriusModel
 	 * @return
 	 */
-	public KrameriusModels getKrameriusModel(Document relsExt);
+	public KrameriusModel getKrameriusModel(Document relsExt);
 
 	/**
 	 * Returns KrameriusModel of given object
@@ -50,7 +52,7 @@ public interface FedoraAccess {
 	 * @return
 	 * @throws IOException
 	 */
-	public KrameriusModels getKrameriusModel(String uuid) throws IOException;
+	public KrameriusModel getKrameriusModel(String uuid) throws IOException;
 
 	/**
 	 * Recursive processing fedora objects

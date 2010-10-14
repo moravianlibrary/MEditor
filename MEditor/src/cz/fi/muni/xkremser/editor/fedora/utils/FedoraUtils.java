@@ -27,7 +27,7 @@ import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.fedora.KrameriusModels;
+import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
@@ -136,7 +136,7 @@ public class FedoraUtils {
 						// info:fedora/
 						pids.add(childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("info:fedora/")[1]);
 					}
-					models.add(KrameriusModels.toString(RDFModels.convertRDFToModel(nodeName)));
+					models.add(KrameriusModel.toString(RDFModels.convertRDFToModel(nodeName)));
 					return FedoraUtils.fillFirstPagePid(pids, models);
 				}
 			}

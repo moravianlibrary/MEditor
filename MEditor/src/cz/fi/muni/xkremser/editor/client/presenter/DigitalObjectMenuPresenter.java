@@ -1,8 +1,5 @@
 package cz.fi.muni.xkremser.editor.client.presenter;
 
-import java.util.Date;
-
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -22,6 +19,8 @@ import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -70,8 +69,17 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	@Override
 	protected void onBind() {
 		super.onBind();
-		Log.info("tady to chci pouzit" + new Date().toString());
-		Log.info(String.valueOf(System.currentTimeMillis()));
+
+		// test
+		// page cc25c992-c94c-11df-84b1-001b63bd97ba
+		dispatcher.execute(new GetDigitalObjectDetailAction("0eaa6730-9068-11dd-97de-000d606f5dc6"), new DispatchCallback<GetDigitalObjectDetailResult>() {
+
+			@Override
+			public void callback(GetDigitalObjectDetailResult result) {
+
+			}
+		});
+		// test
 
 		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
 			@Override

@@ -36,7 +36,7 @@ public abstract class EditorConfiguration {
 		public static final String ACCESS_ADMIN_PATTERNS_DEFAULT = "127.*" + ACCESS_PATTERN_SEPARATOR + "localhost";
 
 		// fedora
-		public static final String FEDORA_HOST = "fedora_host";
+		public static final String FEDORA_HOST = "fedoraHost";
 		public static final String FEDORA_HOST_DEFAULT = "10.2.2.219"; // virtual
 																																		// image
 		// public static final String FEDORA_DEFAULT_HOST = "195.113.155.50"; //

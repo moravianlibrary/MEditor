@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.fedora.valueobj;
+package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,6 +15,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.fedora.KrameriusModelHelper;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -85,7 +86,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		// fedoraAccess.isDigitalObjectPresent("0eaa6730-9068-11dd-97de-000d606f5dc6");
 
 		for (String uuid : types) {
-			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + uuid)) {
+			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + KrameriusModelHelper.parseString(uuid))) {
 				logger.error("Model " + uuid + " is not present in repository.");
 				throw new ActionException(Constants.FEDORA_MODEL_PREFIX + uuid);
 			}

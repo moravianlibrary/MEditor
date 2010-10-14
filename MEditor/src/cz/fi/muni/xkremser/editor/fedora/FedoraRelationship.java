@@ -1,10 +1,11 @@
 package cz.fi.muni.xkremser.editor.fedora;
 
-import static cz.fi.muni.xkremser.editor.fedora.KrameriusModels.INTERNALPART;
-import static cz.fi.muni.xkremser.editor.fedora.KrameriusModels.MONOGRAPHUNIT;
-import static cz.fi.muni.xkremser.editor.fedora.KrameriusModels.PAGE;
-import static cz.fi.muni.xkremser.editor.fedora.KrameriusModels.PERIODICALITEM;
-import static cz.fi.muni.xkremser.editor.fedora.KrameriusModels.PERIODICALVOLUME;
+import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.INTERNALPART;
+import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.MONOGRAPHUNIT;
+import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.PAGE;
+import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.PERIODICALITEM;
+import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.PERIODICALVOLUME;
+import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
 
 /**
  * Relationships in fedora
@@ -18,13 +19,13 @@ public enum FedoraRelationship {
 
 	isOnPage(null);
 
-	private KrameriusModels poitingModel;
+	private KrameriusModel poitingModel;
 
-	private FedoraRelationship(KrameriusModels pointingModel) {
+	private FedoraRelationship(KrameriusModel pointingModel) {
 		this.poitingModel = pointingModel;
 	}
 
-	public KrameriusModels getPointingModel() {
+	public KrameriusModel getPointingModel() {
 		return poitingModel;
 	}
 

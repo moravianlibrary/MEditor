@@ -20,6 +20,8 @@ import org.w3c.dom.Element;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+
 /**
  * This is secured variant of class FedoraAccessImpl {@link FedoraAccessImpl}. <br>
  * Only three methos are secured:
@@ -94,12 +96,12 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 	}
 
 	@Override
-	public KrameriusModels getKrameriusModel(Document relsExt) {
+	public KrameriusModel getKrameriusModel(Document relsExt) {
 		return rawAccess.getKrameriusModel(relsExt);
 	}
 
 	@Override
-	public KrameriusModels getKrameriusModel(String uuid) throws IOException {
+	public KrameriusModel getKrameriusModel(String uuid) throws IOException {
 		return rawAccess.getKrameriusModel(uuid);
 	}
 
