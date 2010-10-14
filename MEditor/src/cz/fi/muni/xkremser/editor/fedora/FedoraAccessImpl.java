@@ -42,11 +42,11 @@ import org.xml.sax.SAXException;
 import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils;
-import cz.fi.muni.xkremser.editor.fedora.utils.KConfiguration;
 import cz.fi.muni.xkremser.editor.fedora.utils.LexerException;
 import cz.fi.muni.xkremser.editor.fedora.utils.PIDParser;
 import cz.fi.muni.xkremser.editor.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.fedora.utils.XMLUtils;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 /**
  * Default implementation of fedoraAccess
@@ -58,10 +58,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(FedoraAccessImpl.class.getName());
 
-	private final KConfiguration configuration;
+	private final EditorConfiguration configuration;
 
 	@Inject
-	public FedoraAccessImpl(KConfiguration configuration) {
+	public FedoraAccessImpl(EditorConfiguration configuration) {
 		super();
 		this.configuration = configuration;
 	}
@@ -74,7 +74,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public Document getRelsExt(String uuid) throws IOException {
-		String relsExtUrl = relsExtUrl(KConfiguration.getInstance(), uuid);
+		String relsExtUrl = relsExtUrl(uuid);
 		LOGGER.fine("Reading rels ext +" + relsExtUrl);
 		// InputStream docStream = RESTHelper.inputStream(relsExtUrl,
 		// KConfiguration.getInstance().getFedoraUser(),
@@ -120,9 +120,9 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public Document getBiblioMods(String uuid) throws IOException {
-		String biblioModsUrl = biblioMods(KConfiguration.getInstance(), uuid);
+		String biblioModsUrl = biblioMods(uuid);
 		LOGGER.info("Reading bibliomods +" + biblioModsUrl);
-		InputStream docStream = RESTHelper.inputStream(biblioModsUrl, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass());
+		InputStream docStream = RESTHelper.inputStream(biblioModsUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
@@ -136,9 +136,9 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public Document getDC(String uuid) throws IOException {
-		String dcUrl = dc(KConfiguration.getInstance(), uuid);
+		String dcUrl = dc(uuid);
 		LOGGER.info("Reading dc +" + dcUrl);
-		InputStream docStream = RESTHelper.inputStream(dcUrl, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass());
+		InputStream docStream = RESTHelper.inputStream(dcUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
@@ -247,21 +247,16 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public InputStream getThumbnail(String uuid) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(getThumbnailFromFedora(configuration, uuid), configuration.getFedoraUser(),
-				configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(FedoraUtils.getThumbnailFromFedora(uuid), configuration.getFedoraLogin(),
+				configuration.getFedoraPassword());
 		InputStream thumbInputStream = con.getInputStream();
 		return thumbInputStream;
 	}
 
-	private String getThumbnailFromFedora(KConfiguration configuration2, String uuid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public Document getThumbnailProfile(String uuid) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(thumbImageProfile(configuration, uuid), configuration.getFedoraUser(),
-				configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(thumbImageProfile(uuid), configuration.getFedoraLogin(),
+				configuration.getFedoraPassword());
 		InputStream stream = con.getInputStream();
 		try {
 			return XMLUtils.parseDocument(stream, true);
@@ -282,8 +277,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public InputStream getImageFULL(String uuid) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(getDjVuImage(configuration, uuid), configuration.getFedoraUser(),
-				configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper
+				.openConnection(getDjVuImage(uuid), configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		con.connect();
 		if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			InputStream thumbInputStream = con.getInputStream();
@@ -294,8 +289,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public boolean isImageFULLAvailable(String uuid) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(getFedoraDatastreamsList(configuration, uuid), configuration.getFedoraUser(),
-				configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(getFedoraDatastreamsList(uuid), configuration.getFedoraLogin(),
+				configuration.getFedoraPassword());
 		InputStream stream = con.getInputStream();
 		try {
 			Document parseDocument = XMLUtils.parseDocument(stream, true);
@@ -352,8 +347,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public Document getImageFULLProfile(String uuid) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(fullImageProfile(configuration, uuid), configuration.getFedoraUser(),
-				configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(fullImageProfile(uuid), configuration.getFedoraLogin(),
+				configuration.getFedoraPassword());
 		InputStream stream = con.getInputStream();
 		try {
 			return XMLUtils.parseDocument(stream, true);
@@ -366,53 +361,53 @@ public class FedoraAccessImpl implements FedoraAccess {
 		}
 	}
 
-	public static String fullImageProfile(KConfiguration configuration, String uuid) {
-		return dsProfile(configuration, "IMG_FULL", uuid);
+	public String fullImageProfile(String uuid) {
+		return dsProfile("IMG_FULL", uuid);
 	}
 
-	public static String thumbImageProfile(KConfiguration configuration, String uuid) {
-		return dsProfile(configuration, "IMG_THUMB", uuid);
+	public String thumbImageProfile(String uuid) {
+		return dsProfile("IMG_THUMB", uuid);
 	}
 
-	public static String dcProfile(KConfiguration configuration, String uuid) {
-		return dsProfile(configuration, "DC", uuid);
+	public String dcProfile(String uuid) {
+		return dsProfile("DC", uuid);
 	}
 
-	public static String biblioModsProfile(KConfiguration configuration, String uuid) {
-		return dsProfile(configuration, "BIBLIO_MODS", uuid);
+	public String biblioModsProfile(String uuid) {
+		return dsProfile("BIBLIO_MODS", uuid);
 	}
 
-	public static String relsExtProfile(KConfiguration configuration, String uuid) {
-		return dsProfile(configuration, "RELS-EXT", uuid);
+	public String relsExtProfile(String uuid) {
+		return dsProfile("RELS-EXT", uuid);
 	}
 
-	public static String dsProfile(KConfiguration configuration, String ds, String uuid) {
+	public String dsProfile(String ds, String uuid) {
 		String fedoraObject = configuration.getFedoraHost() + "/objects/uuid:" + uuid;
 		return fedoraObject + "/datastreams/" + ds + "?format=text/xml";
 	}
 
-	public static String dsProfileForPid(KConfiguration configuration, String ds, String pid) {
+	public String dsProfileForPid(String ds, String pid) {
 		String fedoraObject = configuration.getFedoraHost() + "/objects/" + pid;
 		return fedoraObject + "/datastreams/" + ds + "?format=text/xml";
 	}
 
-	public static String biblioMods(KConfiguration configuration, String uuid) {
+	public String biblioMods(String uuid) {
 		String fedoraObject = configuration.getFedoraHost() + "/get/uuid:" + uuid;
 		return fedoraObject + "/BIBLIO_MODS";
 	}
 
-	public static String dc(KConfiguration configuration, String uuid) {
+	public String dc(String uuid) {
 		String fedoraObject = configuration.getFedoraHost() + "/get/uuid:" + uuid;
 		return fedoraObject + "/DC";
 	}
 
-	public static String obj(KConfiguration configuration, String uuid) {
+	public String obj(String uuid) {
 		String fedoraObject = /* configuration.getFedoraHost()TODO: + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/" + uuid;
 		return fedoraObject;
 	}
 
-	public static String relsExtUrl(KConfiguration configuration, String uuid) {
-		String url = /* configuration.getFedoraHost()TODO: + */"http://krameriusdemo.mzk.cz:8080/fedora" + "/get/uuid:" + uuid + "/RELS-EXT";
+	public String relsExtUrl(String uuid) {
+		String url = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/RELS-EXT";
 		return url;
 	}
 
@@ -446,8 +441,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	private void initAPIA() {
-		final String user = KConfiguration.getInstance().getFedoraUser();
-		final String pwd = KConfiguration.getInstance().getFedoraPass();
+		final String user = configuration.getFedoraLogin();
+		final String pwd = configuration.getFedoraPassword();
 		Authenticator.setDefault(new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -457,8 +452,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 		FedoraAPIAService APIAservice = null;
 		try {
-			APIAservice = new FedoraAPIAService(new URL(KConfiguration.getInstance().getFedoraHost() + "/wsdl?api=API-A"), new QName(
-					"http://www.fedora.info/definitions/1/0/api/", "Fedora-API-A-Service"));
+			APIAservice = new FedoraAPIAService(new URL(configuration.getFedoraLogin() + "/wsdl?api=API-A"), new QName("http://www.fedora.info/definitions/1/0/api/",
+					"Fedora-API-A-Service"));
 		} catch (MalformedURLException e) {
 			LOGGER.severe("InvalidURL API-A:" + e);
 			throw new RuntimeException(e);
@@ -470,8 +465,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	private void initAPIM() {
-		final String user = KConfiguration.getInstance().getFedoraUser();
-		final String pwd = KConfiguration.getInstance().getFedoraPass();
+		final String user = configuration.getFedoraLogin();
+		final String pwd = configuration.getFedoraPassword();
 		Authenticator.setDefault(new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -481,8 +476,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 		FedoraAPIMService APIMservice = null;
 		try {
-			APIMservice = new FedoraAPIMService(new URL(KConfiguration.getInstance().getFedoraHost() + "/wsdl?api=API-M"), new QName(
-					"http://www.fedora.info/definitions/1/0/api/", "Fedora-API-M-Service"));
+			APIMservice = new FedoraAPIMService(new URL(configuration.getFedoraHost() + "/wsdl?api=API-M"), new QName("http://www.fedora.info/definitions/1/0/api/",
+					"Fedora-API-M-Service"));
 		} catch (MalformedURLException e) {
 			LOGGER.severe("InvalidURL API-M:" + e);
 			throw new RuntimeException(e);
@@ -527,7 +522,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public InputStream getDataStream(String pid, String datastreamName) throws IOException {
 		String datastream = configuration.getFedoraHost() + "/get/" + pid + "/" + datastreamName;
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(datastream, configuration.getFedoraUser(), configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(datastream, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		con.connect();
 		if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			InputStream thumbInputStream = con.getInputStream();
@@ -538,8 +533,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public String getMimeTypeForStream(String pid, String datastreamName) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(dsProfileForPid(configuration, datastreamName, pid), configuration.getFedoraUser(),
-				configuration.getFedoraPass());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(dsProfileForPid(datastreamName, pid), configuration.getFedoraLogin(),
+				configuration.getFedoraPassword());
 		InputStream stream = con.getInputStream();
 		try {
 			Document parseDocument = XMLUtils.parseDocument(stream, true);
@@ -558,35 +553,17 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	@Override
 	public boolean isDigitalObjectPresent(String uuid) {
-		String objUrl = obj(KConfiguration.getInstance(), uuid);
+		String objUrl = obj(uuid);
 		LOGGER.info("Reading dc +" + objUrl);
+		byte[] bytes = null;
 		try {
-			InputStream docStream = RESTHelper.inputStream(objUrl, "fedoraAdmin", "freodootra"/*
-																																												 * KConfiguration
-																																												 * .
-																																												 * getInstance
-																																												 * (
-																																												 * )
-																																												 * .
-																																												 * getFedoraUser
-																																												 * (
-																																												 * )
-																																												 * ,
-																																												 * KConfiguration
-																																												 * .
-																																												 * getInstance
-																																												 * (
-																																												 * )
-																																												 * .
-																																												 * getFedoraPass
-																																												 * (
-																																												 * )
-																																												 */);
-
-			return true;
-		} catch (IOException e) {
+			bytes = getAPIM().getObjectXML(uuid);
+		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, uuid + " in not in the repository, please insert this model first!" + e.getMessage(), e);
 			return false;
 		}
+		// InputStream docStream = RESTHelper.inputStream(objUrl, "fedoraAdmin",
+		// "freodootra");
+		return bytes != null;
 	}
 }

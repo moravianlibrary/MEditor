@@ -34,7 +34,7 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfigActi
 		Iterator<String> it = configuration.getClientConfiguration().getKeys();
 		while (it.hasNext()) {
 			String key = it.next();
-			result.put(key, configuration.getConfiguration().getProperty(key));
+			result.put(key, configuration.getConfiguration().getProperty(EditorConfiguration.Constants.GUI_CONFIGURATION_PPREFIX + '.' + key));
 		}
 
 		return new GetClientConfigResult(result);

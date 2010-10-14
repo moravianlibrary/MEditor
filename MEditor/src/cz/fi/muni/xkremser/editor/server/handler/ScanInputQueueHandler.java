@@ -77,6 +77,13 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	}
 
 	private void checkDocumentTypes(String[] types) throws ActionException {
+		// fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX +
+		// "periodical");
+		// fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX +
+		// "bla");
+		// fedoraAccess.isDigitalObjectPresent("uuid:0eaa6730-9068-11dd-97de-000d606f5dc6");
+		// fedoraAccess.isDigitalObjectPresent("0eaa6730-9068-11dd-97de-000d606f5dc6");
+
 		for (String uuid : types) {
 			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + uuid)) {
 				logger.error("Model " + uuid + " is not present in repository.");

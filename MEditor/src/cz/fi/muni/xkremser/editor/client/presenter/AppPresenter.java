@@ -8,7 +8,6 @@ import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ContentSlot;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.Proxy;
-import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 
@@ -40,7 +39,6 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 
 	// private final HomePresenter homePresenter;
 	// private final DigitalObjectMenuPresenter treePresenter;
-	// private final EditorClientConfiguration config;
 
 	@Inject
 	// public AppPresenter(final DispatchAsync dispatcher, final HomePresenter

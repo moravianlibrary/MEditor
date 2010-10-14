@@ -2,41 +2,58 @@ package cz.fi.muni.xkremser.editor.server.config;
 
 import org.apache.commons.configuration.Configuration;
 
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
+
 public abstract class EditorConfiguration {
 	public static class Constants {
 		public static final Integer UNDEF = new Integer(-1);
-		public static final String INPUT_QUEUE = "input_queue";
-		public static final String DOCUMENT_TYPES = "document_types";
+		public static final String INPUT_QUEUE = "inputQueue";
+		public static final String DOCUMENT_TYPES = EditorClientConfiguration.Constants.DOCUMENT_TYPES;
 		public static final String[] DOCUMENT_DEFAULT_TYPES = { "periodical", "monograph" };
 
 		// GUI
 		public static final String GUI_CONFIGURATION_PPREFIX = "gui";
-		public static final String GUI_SHOW_INPUT_QUEUE = GUI_CONFIGURATION_PPREFIX + "show_input_queue";
-		public static final boolean GUI_SHOW_INPUT_QUEUE_DEFAULT = true;
+		public static final String GUI_SHOW_INPUT_QUEUE = GUI_CONFIGURATION_PPREFIX + EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE;
+		public static final boolean GUI_SHOW_INPUT_QUEUE_DEFAULT = EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT;
 
 		// z39.50
-		public static final String Z3950_PROFILE = "z39.50_profile";
+		public static final String Z3950_PROFILE = "z39.50Profile";
 		public static final String Z3950_PROFILE_DEFAULT = "mzk";
-		public static final String Z3950_HOST = "z39.50_host";
-		public static final String Z3950_PORT = "z39.50_port";
-		public static final String Z3950_BASE = "z39.50_base";
-		public static final String Z3950_BAR_LENGTH = "barcode_length";
+		public static final String Z3950_HOST = "z39.50Host";
+		public static final String Z3950_PORT = "z39.50Port";
+		public static final String Z3950_BASE = "z39.50Base";
+		public static final String Z3950_BAR_LENGTH = "barcodeLength";
 		public static final String[] Z3950_DEFAULT_HOSTS = { "aleph.mzk.cz", "aleph.muni.cz", "sigma.nkp.cz", "sigma.nkp.cz" };
 		public static final String[] Z3950_DEFAULT_PORTS = { "9991", "9991", "9909", "9909" };
 		public static final String[] Z3950_DEFAULT_BASES = { "MZK01-UTF", "MUB01", "SKC", "NKC" };
 		public static final int[] Z3950_DEFAULT_BAR_LENGTH = { 10, 10, 10, 10 };
 
-		// database
+		// access
+		public static final String ACCESS_PATTERN_SEPARATOR = "||";
+		public static final String ACCESS_USER_PATTERNS = "accessUserPatterns";
+		public static final String ACCESS_USER_PATTERNS_DEFAULT = "*";
+		public static final String ACCESS_ADMIN_PATTERNS = "accessAdminPatterns";
+		public static final String ACCESS_ADMIN_PATTERNS_DEFAULT = "127.*" + ACCESS_PATTERN_SEPARATOR + "localhost";
+
+		// fedora
 		public static final String FEDORA_HOST = "fedora_host";
-		public static final String FEDORA_DEFAULT_HOST = "10.2.2.219"; // virtual
+		public static final String FEDORA_HOST_DEFAULT = "10.2.2.219"; // virtual
 																																		// image
 		// public static final String FEDORA_DEFAULT_HOST = "195.113.155.50"; //
 		// freon.mzk.cz
-		public static final String DB_HOST = "db_host";
-		public static final String DB_PORT = "db_port";
-		public static final String DB_LOGIN = "db_login";
-		public static final String DB_PASSWORD = "db_password";
-		public static final String DB_NAME = "db_name";
+
+		public static final String FEDORA_LOGIN = "fedoraLogin";
+		public static final String FEDORA_LOGIN_DEFAULT = "fedoraAdmin";
+
+		public static final String FEDORA_PASSWORD = "fedoraPassword";
+		public static final String FEDORA_PASSWORD_DEFAULT = "fedoraAdmin";
+
+		// database
+		public static final String DB_HOST = "dbHost";
+		public static final String DB_PORT = "dbPort";
+		public static final String DB_LOGIN = "dbLogin";
+		public static final String DB_PASSWORD = "dbPassword";
+		public static final String DB_NAME = "dbName";
 		public static final String DB_HOST_DEFAULT = "localhost";
 		public static final String DB_PORT_DEFAULT = "5432";
 		public static final String DB_LOGIN_DEFAULT = "meditor";
@@ -81,7 +98,15 @@ public abstract class EditorConfiguration {
 	}
 
 	public String getFedoraHost() {
-		return getConfiguration().getString(Constants.FEDORA_HOST, Constants.FEDORA_DEFAULT_HOST);
+		return getConfiguration().getString(Constants.FEDORA_HOST, Constants.FEDORA_HOST_DEFAULT);
+	}
+
+	public String getFedoraLogin() {
+		return getConfiguration().getString(Constants.FEDORA_LOGIN, Constants.FEDORA_LOGIN_DEFAULT);
+	}
+
+	public String getFedoraPassword() {
+		return getConfiguration().getString(Constants.FEDORA_PASSWORD, Constants.FEDORA_PASSWORD_DEFAULT);
 	}
 
 	public String[] getDocumentTypes() {
@@ -106,6 +131,16 @@ public abstract class EditorConfiguration {
 
 	public String getDBName() {
 		return getConfiguration().getString(Constants.DB_NAME, Constants.DB_NAME_DEFAULT);
+	}
+
+	public String[] getUserAccessPatterns() {
+		String property = getConfiguration().getString(Constants.ACCESS_USER_PATTERNS, Constants.ACCESS_USER_PATTERNS_DEFAULT);
+		return property.split(Constants.ACCESS_PATTERN_SEPARATOR);
+	}
+
+	public String[] getAdminAccessPatterns() {
+		String property = getConfiguration().getString(Constants.ACCESS_ADMIN_PATTERNS, Constants.ACCESS_ADMIN_PATTERNS_DEFAULT);
+		return property.split(Constants.ACCESS_PATTERN_SEPARATOR);
 	}
 
 }

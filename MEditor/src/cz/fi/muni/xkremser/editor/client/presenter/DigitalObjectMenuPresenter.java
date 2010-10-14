@@ -16,9 +16,12 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
+import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -50,17 +53,15 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	private final DispatchAsync dispatcher;
 	private boolean inputQueueShown = false;
 
-	// private final EditorClientConfiguration config;
+	// @Inject
+	private final EditorClientConfiguration config;
 
 	@Inject
-	public DigitalObjectMenuPresenter(final MyView view, final EventBus eventBus, final MyProxy proxy, final DispatchAsync dispatcher/*
-																																																																		 * ,
-																																																																		 * final
-																																																																		 * EditorClientConfiguration
-																																																																		 * config
-																																																																		 */) {
+	public DigitalObjectMenuPresenter(final MyView view, final EventBus eventBus, final MyProxy proxy, final DispatchAsync dispatcher,
+			final EditorClientConfiguration config) {
 		super(eventBus, view, proxy);
 		this.dispatcher = dispatcher;
+		this.config = config;
 		// getView().setUiHandlers(this);
 		// this.config = config;
 		bind();
@@ -72,25 +73,24 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		Log.info("tady to chci pouzit" + new Date().toString());
 		Log.info(String.valueOf(System.currentTimeMillis()));
 
-		getView().showInputQueue(dispatcher);
-		registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
-
+		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
-				dispatcher.execute(new ScanInputQueueAction(null, ScanInputQueue.TYPE.DB_UPDATE), new DispatchCallback<ScanInputQueueResult>() {
-
-					@Override
-					public void callback(ScanInputQueueResult result) {
-						getView().getInputTree().refreshTree();
-					}
-				});
+			public void onConfigReceived(ConfigReceivedEvent event) {
+				if (event.isStatusOK()) {
+					setInputQueueShown(config.getShowInputQueue());
+				} else {
+					setInputQueueShown(EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
+				}
+				if (isInputQueueShown()) {
+					onShowInputQueue();
+				}
 			}
-		}));
+		});
 	}
 
 	@Override
 	protected void onUnbind() {
-		// Add unbind functionality here for more complex presenters.
+		super.onUnbind();
 	}
 
 	public boolean isInputQueueShown() {
@@ -103,7 +103,13 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	@Override
 	public void onRefresh() {
+		dispatcher.execute(new ScanInputQueueAction(null, ScanInputQueue.TYPE.DB_UPDATE), new DispatchCallback<ScanInputQueueResult>() {
 
+			@Override
+			public void callback(ScanInputQueueResult result) {
+				getView().getInputTree().refreshTree();
+			}
+		});
 	}
 
 	@Override
@@ -113,8 +119,14 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	@Override
 	public void onShowInputQueue() {
-		// TODO Auto-generated method stub
+		getView().showInputQueue(dispatcher);
+		registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
 
+			@Override
+			public void onClick(ClickEvent event) {
+				onRefresh();
+			}
+		}));
 	}
 
 }

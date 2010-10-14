@@ -25,8 +25,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.inject.Inject;
+
 import cz.fi.muni.xkremser.editor.fedora.KrameriusModels;
 import cz.fi.muni.xkremser.editor.fedora.RDFModels;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 public class FedoraUtils {
 
@@ -36,12 +39,15 @@ public class FedoraUtils {
 	public static final String IMG_THUMB_STREAM = "IMG_THUMB";
 	public static final String IMG_FULL_STREAM = "IMG_FULL";
 
+	@Inject
+	private static EditorConfiguration configuration;
+
 	public static ArrayList<String> getRdfPids(String pid, String relation) {
 		ArrayList<String> pids = new ArrayList<String>();
 		try {
 
-			String command = KConfiguration.getInstance().getFedoraHost() + "/get/" + pid + "/" + RELS_EXT_STREAM;
-			InputStream is = RESTHelper.inputStream(command, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass());
+			String command = configuration.getFedoraHost() + "/get/" + pid + "/" + RELS_EXT_STREAM;
+			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 			Document contentDom = XMLUtils.parseDocument(is);
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();
@@ -68,11 +74,9 @@ public class FedoraUtils {
 
 	public static List<RelationshipTuple> getSubjectPids(String objectPid) {
 		List<RelationshipTuple> retval = new ArrayList<RelationshipTuple>();
-		String command = KConfiguration.getInstance().getFedoraHost() + "/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20%3Cinfo:fedora/"
-				+ objectPid + "%3E";
+		String command = configuration.getFedoraHost() + "/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20%3Cinfo:fedora/" + objectPid + "%3E";
 		try {
-			String result = IOUtils.readAsString(
-					RESTHelper.inputStream(command, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass()),
+			String result = IOUtils.readAsString(RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword()),
 					Charset.forName("UTF-8"), true);
 			String[] lines = result.split("\n");
 			for (String line : lines) {
@@ -104,8 +108,8 @@ public class FedoraUtils {
 
 		String pid = pids.get(pids.size() - 1);
 		try {
-			String command = KConfiguration.getInstance().getFedoraHost() + "/get/uuid:" + pid + "/RELS-EXT";
-			InputStream is = RESTHelper.inputStream(command, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass());
+			String command = configuration.getFedoraHost() + "/get/uuid:" + pid + "/RELS-EXT";
+			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 			Document contentDom = XMLUtils.parseDocument(is);
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();
@@ -147,8 +151,8 @@ public class FedoraUtils {
 
 		ArrayList<String> pids = new ArrayList<String>();
 		try {
-			String command = KConfiguration.getInstance().getFedoraHost() + "/get/" + pid + "/RELS-EXT";
-			InputStream is = RESTHelper.inputStream(command, KConfiguration.getInstance().getFedoraUser(), KConfiguration.getInstance().getFedoraPass());
+			String command = configuration.getFedoraHost() + "/get/" + pid + "/RELS-EXT";
+			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 			Document contentDom = XMLUtils.parseDocument(is);
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();
@@ -180,7 +184,7 @@ public class FedoraUtils {
 	 *          objektu
 	 * @return
 	 */
-	public static String getDjVuImage(KConfiguration configuration, String uuid) {
+	public static String getDjVuImage(String uuid) {
 		String imagePath = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/" + IMG_FULL_STREAM;
 		return imagePath;
 	}
@@ -191,12 +195,12 @@ public class FedoraUtils {
 	 * @param uuid
 	 * @return
 	 */
-	public static String getThumbnailFromFedora(KConfiguration configuration, String uuid) {
+	public static String getThumbnailFromFedora(String uuid) {
 		String imagePath = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/" + IMG_THUMB_STREAM;
 		return imagePath;
 	}
 
-	public static String getFedoraDatastreamsList(KConfiguration configuration, String uuid) {
+	public static String getFedoraDatastreamsList(String uuid) {
 		String datastreamsListPath = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/datastreams?format=xml";
 		return datastreamsListPath;
 	}

@@ -15,6 +15,6 @@ public class Constants {
 	public static final String FILE_SEPARATOR = "/";
 
 	// fedora
-	public static final String FEDORA_MODEL_PREFIX = "model";
+	public static final String FEDORA_MODEL_PREFIX = "model:";
 
 }

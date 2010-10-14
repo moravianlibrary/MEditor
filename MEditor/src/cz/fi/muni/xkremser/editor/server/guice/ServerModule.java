@@ -12,6 +12,7 @@ import cz.fi.muni.xkremser.editor.fedora.FedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.fedora.IPaddressChecker;
 import cz.fi.muni.xkremser.editor.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.fedora.SecuredFedoraAccessImpl;
+import cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -42,5 +43,8 @@ public class ServerModule extends HandlerModule {
 		bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class).in(Scopes.SINGLETON);
 		bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess")).to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
 		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
+
+		// static injection
+		requestStaticInjection(FedoraUtils.class);
 	}
 }

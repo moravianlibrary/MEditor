@@ -1,6 +1,5 @@
 package cz.fi.muni.xkremser.editor.fedora;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,11 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import cz.fi.muni.xkremser.editor.fedora.utils.KConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 public class RequestIPaddressChecker implements IPaddressChecker {
 
 	private final Logger logger;
+	@Inject
+	// TODO: do setru s tim
+	private EditorConfiguration configuration;
 	private final Provider<HttpServletRequest> provider;
 
 	@Inject
@@ -25,12 +27,11 @@ public class RequestIPaddressChecker implements IPaddressChecker {
 
 	@Override
 	public boolean privateVisitor() {
-		KConfiguration kConfiguration = KConfiguration.getInstance();
-		List<String> patterns = kConfiguration.getPatterns();
+		String[] patterns = configuration.getUserAccessPatterns();
 		return checkPatterns(patterns);
 	}
 
-	private boolean checkPatterns(List<String> patterns) {
+	private boolean checkPatterns(String[] patterns) {
 		HttpServletRequest httpServletRequest = this.provider.get();
 		String remoteAddr = httpServletRequest.getRemoteAddr();
 		if (patterns != null) {
@@ -44,10 +45,9 @@ public class RequestIPaddressChecker implements IPaddressChecker {
 	}
 
 	@Override
-	// TODO: Controlled by property, it is not only localhost
 	public boolean localHostVisitor() {
-		List<String> lrControllingAddrs = KConfiguration.getInstance().getLRControllingAddresses();
-		return checkPatterns(lrControllingAddrs);
+		String[] patterns = configuration.getAdminAccessPatterns();
+		return checkPatterns(patterns);
 	}
 
 }

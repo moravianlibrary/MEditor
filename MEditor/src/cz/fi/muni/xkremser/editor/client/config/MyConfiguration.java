@@ -1,9 +1,10 @@
 package cz.fi.muni.xkremser.editor.client.config;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class MyConfiguration extends HashMap<String, Object> {
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
+
+public class MyConfiguration {
 
 	private final Map<String, Object> configuration;
 
@@ -12,11 +13,14 @@ public class MyConfiguration extends HashMap<String, Object> {
 	}
 
 	public boolean getBoolean(String key, boolean defaultValue) {
-		return get(key) == null ? defaultValue : (Boolean) get(key);
+		if (configuration.get(key) == null) {
+			return defaultValue;
+		}
+		return ClientUtils.toBoolean((String) configuration.get(key));
 	}
 
 	public String[] getStringArray(String key) {
-		return (String[]) get(key);
+		return (String[]) configuration.get(key);
 	}
 
 	public Map<String, Object> getConfiguration() {

@@ -3,11 +3,11 @@ package cz.fi.muni.xkremser.editor.client.config;
 public abstract class EditorClientConfiguration {
 	public static class Constants {
 		public static final Integer UNDEF = new Integer(-1);
-		public static final String DOCUMENT_TYPES = "document_types";
+		public static final String DOCUMENT_TYPES = "documentTypes";
 		public static final String[] DOCUMENT_DEFAULT_TYPES = { "periodical", "monograph" };
 
 		// GUI
-		public static final String GUI_SHOW_INPUT_QUEUE = "show_input_queue";
+		public static final String GUI_SHOW_INPUT_QUEUE = "showInputQueue";
 		public static final boolean GUI_SHOW_INPUT_QUEUE_DEFAULT = true;
 
 	}
