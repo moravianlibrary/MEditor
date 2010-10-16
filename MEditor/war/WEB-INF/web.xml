@@ -25,9 +25,9 @@
 		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>ModifyDOService</servlet-name>
+		<servlet-name>ThumbnailService</servlet-name>
 		<servlet-class>
-			cz.fi.muni.xkremser.editor.server.ModifyDOServiceImpl
+			cz.fi.muni.xkremser.editor.server.ThumbnailServiceImpl
         </servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -36,8 +36,8 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>ModifyDOService</servlet-name>
-		<url-pattern>/modify/*</url-pattern>
+		<servlet-name>ThumbnailService</servlet-name>
+		<url-pattern>/thumbnail/*</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

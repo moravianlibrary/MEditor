@@ -16,10 +16,6 @@ import com.smartgwt.client.util.SC;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
-import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 
 public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy> {
 	/**
@@ -87,7 +83,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		super.prepareFromRequest(request);
 		uuid = request.getParameter(Constants.URL_PARAM_UUID, null);
 
-		SC.say(uuid);
+		// SC.say(uuid);
 		// if(anything wrong)
 		// > {
 		// > getProxy().manualRevealFailed();
@@ -108,20 +104,21 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		super.onReset();
 
 		SC.say(uuid);
-		if (uuid != null) {
-			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
-
-				@Override
-				public void callback(GetDigitalObjectDetailResult result) {
-					System.out.println(result.getDetail());
-					// System.out.println(result.getDetail().getClass());
-					// System.out.println(result.getClass());
-					InternalPartDetail inter = (InternalPartDetail) result.getDetail();
-					System.out.println(inter.getPages());
-
-				}
-			});
-		}
+		// if (uuid != null) {
+		// dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new
+		// DispatchCallback<GetDigitalObjectDetailResult>() {
+		//
+		// @Override
+		// public void callback(GetDigitalObjectDetailResult result) {
+		// System.out.println(result.getDetail());
+		// // System.out.println(result.getDetail().getClass());
+		// // System.out.println(result.getClass());
+		// InternalPartDetail inter = (InternalPartDetail) result.getDetail();
+		// System.out.println(inter.getPages());
+		//
+		// }
+		// });
+		// }
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
 
 	}
