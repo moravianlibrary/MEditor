@@ -1,5 +1,7 @@
 package cz.fi.muni.xkremser.editor.server.guice;
 
+import javax.xml.namespace.NamespaceContext;
+
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Scopes;
@@ -10,6 +12,7 @@ import com.gwtplatform.dispatch.server.guice.HandlerModule;
 import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccessImpl;
+import cz.fi.muni.xkremser.editor.fedora.FedoraNamespaceContext;
 import cz.fi.muni.xkremser.editor.fedora.IPaddressChecker;
 import cz.fi.muni.xkremser.editor.fedora.KrameriusModelHelper;
 import cz.fi.muni.xkremser.editor.fedora.RequestIPaddressChecker;
@@ -47,6 +50,7 @@ public class ServerModule extends HandlerModule {
 		// Fedora
 		bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class).in(Scopes.SINGLETON);
 		bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess")).to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
+		bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
 
 		// Fedora/Kramerius models
 		int total = KrameriusModel.values().length;

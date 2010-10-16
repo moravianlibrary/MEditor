@@ -1,14 +1,16 @@
-package cz.fi.muni.xkremser.editor.shared.rpc;
+package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Value object pro Dublin core stream
  * 
  * @author xholcik
  */
-public class DublinCore {
+public class DublinCore implements IsSerializable {
 
 	private String title;
 
@@ -155,6 +157,13 @@ public class DublinCore {
 
 	public void setRights(String rights) {
 		this.rights = rights;
+	}
+
+	@Override
+	public String toString() {
+		return "DublinCore [title=" + title + ", identifier=" + identifier + ", creator=" + creator + ", publisher=" + publisher + ", contributor=" + contributor
+				+ ", date=" + date + ", language=" + language + ", description=" + description + ", format=" + format + ", subject=" + subject + ", type=" + type
+				+ ", rights=" + rights + "]";
 	}
 
 }

@@ -199,4 +199,8 @@ public interface FedoraAccess {
 
 	public String getMimeTypeForStream(String pid, String datastreamName) throws IOException;
 
+	public List<String> getIsOnPagesUuid(String uuid) throws IOException;
+
+	public List<String> getPagesUuid(String uuid) throws IOException;
+
 }

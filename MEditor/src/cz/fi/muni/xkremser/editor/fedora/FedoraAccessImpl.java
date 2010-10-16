@@ -3,6 +3,8 @@ package cz.fi.muni.xkremser.editor.fedora;
 import static cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils.getDjVuImage;
 import static cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils.getFedoraDatastreamsList;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Authenticator;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.BindingProvider;
@@ -37,6 +40,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
@@ -60,16 +65,24 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(FedoraAccessImpl.class.getName());
 
 	private final EditorConfiguration configuration;
+	private final NamespaceContext nsContext;
 
 	@Inject
-	public FedoraAccessImpl(EditorConfiguration configuration) {
+	public FedoraAccessImpl(EditorConfiguration configuration, NamespaceContext nsContext) {
 		super();
 		this.configuration = configuration;
+		this.nsContext = nsContext;
 	}
 
 	@Override
 	public List<Element> getPages(String uuid, boolean deep) throws IOException {
 		Document relsExt = getRelsExt(uuid);
+
+		DOMImplementationLS domImplLS = (DOMImplementationLS) relsExt.getImplementation();
+		LSSerializer serializer = domImplLS.createLSSerializer();
+		String str = serializer.writeToString(relsExt);
+		System.out.println(str);
+
 		return getPages(uuid, relsExt.getDocumentElement());
 	}
 
@@ -241,6 +254,98 @@ public class FedoraAccessImpl implements FedoraAccess {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new IOException(e);
 		}
+	}
+
+	private List<String> getUuids(String uuid, String xPathString) throws IOException {
+		try {
+			Element rootElementOfRelsExt = getRelsExt(uuid).getDocumentElement();
+			List<String> elms = new ArrayList<String>();
+			XPathFactory xpfactory = XPathFactory.newInstance();
+			XPath xpath = xpfactory.newXPath();
+			xpath.setNamespaceContext(nsContext);
+			XPathExpression expr = xpath.compile(xPathString);
+
+			NodeList nodes = (NodeList) expr.evaluate(rootElementOfRelsExt, XPathConstants.NODESET);
+			for (int i = 0, lastIndex = nodes.getLength() - 1; i <= lastIndex; i++) {
+				Node node = nodes.item(i);
+				PIDParser pidParser = new PIDParser(node.getNodeValue());
+				pidParser.disseminationURI();
+				elms.add(pidParser.getObjectId());
+			}
+			return elms;
+		} catch (XPathExpressionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			throw new IOException(e);
+		} catch (LexerException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	public static org.w3c.dom.Document loadXMLFrom(String xml) throws org.xml.sax.SAXException, java.io.IOException {
+		return loadXMLFrom(new java.io.ByteArrayInputStream(xml.getBytes()));
+	}
+
+	public static org.w3c.dom.Document loadXMLFrom(java.io.InputStream is) throws org.xml.sax.SAXException, java.io.IOException {
+		javax.xml.parsers.DocumentBuilderFactory factory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		javax.xml.parsers.DocumentBuilder builder = null;
+		try {
+			builder = factory.newDocumentBuilder();
+		} catch (javax.xml.parsers.ParserConfigurationException ex) {
+		}
+		org.w3c.dom.Document doc = builder.parse(is);
+		is.close();
+		return doc;
+	}
+
+	public static void main(String... args) throws FileNotFoundException, SAXException, IOException, XPathExpressionException, LexerException {
+
+		Document doc = loadXMLFrom(new FileInputStream("/home/freon/example.xml"));
+
+		Element rootElementOfRelsExt = doc.getDocumentElement();
+		List<String> elms = new ArrayList<String>();
+		XPathFactory xpfactory = XPathFactory.newInstance();
+		XPath xpath = xpfactory.newXPath();
+		xpath.setNamespaceContext(new FedoraNamespaceContext()); // TODO: singleton
+																															// a inject
+		// XPathExpression expr = xpath.compile("/RDF/Description/hasPage");
+		XPathExpression expr = xpath.compile("/rdf:RDF/rdf:Description/kramerius:hasPage/@rdf:resource");
+
+		NodeList nodes = (NodeList) expr.evaluate(rootElementOfRelsExt, XPathConstants.NODESET);
+		System.out.println(nodes.getLength());
+		for (int i = 0, lastIndex = nodes.getLength() - 1; i <= lastIndex; i++) {
+
+			// DOMImplementationLS domImplLS = (DOMImplementationLS)
+			// nodes.item(i).getOwnerDocument().getImplementation();
+			// LSSerializer serializer = domImplLS.createLSSerializer();
+			// String str = serializer.writeToString(nodes.item(i));
+			// System.out.println(str);
+
+			Node elm = nodes.item(i);
+			System.out.println("***************");
+			System.out.println("node value=" + elm.getNodeValue());
+			System.out.println("local name=" + elm.getLocalName());
+			System.out.println("text content=" + elm.getTextContent());
+			System.out.println("prefix=" + elm.getPrefix());
+			System.out.println("namespace uri=" + elm.getNamespaceURI());
+			// String sform = elm.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI,
+			// "resource");
+			// PIDParser pidParser = new PIDParser(sform);
+			// pidParser.disseminationURI();
+			// elms.add(pidParser.getObjectId());
+		}
+
+	}
+
+	@Override
+	public List<String> getPagesUuid(String uuid) throws IOException {
+		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasPage/@rdf:resource");
+	}
+
+	@Override
+	public List<String> getIsOnPagesUuid(String uuid) throws IOException {
+		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:isOnPage/@rdf:resource");
 	}
 
 	@Override

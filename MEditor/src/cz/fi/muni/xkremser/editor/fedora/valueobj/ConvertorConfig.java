@@ -7,7 +7,8 @@ import javax.xml.bind.Marshaller;
 /**
  * Konfigurace konvertoru
  * 
- * @author xholcik
+ * @author xholcik TODO: smazat celou tridu?
+ * 
  */
 public class ConvertorConfig {
 

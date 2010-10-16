@@ -1,7 +1,6 @@
-package cz.fi.muni.xkremser.editor.shared.rpc.action;
+package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 public class PageDetail extends AbstractDigitalObjectDetail {
 
@@ -16,8 +15,16 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 	// text OCR ?
 	// MODS ?
 
+	// DC
+	// title
+	// identifier - uuid
+	// identifier - handle
+	// type (= model:page)
+	// rights
+
 	private DublinCore dc;
 
+	@Override
 	public DublinCore getDc() {
 		return dc;
 	}

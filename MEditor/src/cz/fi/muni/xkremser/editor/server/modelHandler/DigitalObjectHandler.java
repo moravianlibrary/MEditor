@@ -11,7 +11,7 @@ import com.google.inject.name.Named;
 import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.fedora.KrameriusModelHelper;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.AbstractDigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 
 public class DigitalObjectHandler implements CanGetObject {
 
@@ -39,4 +39,9 @@ public class DigitalObjectHandler implements CanGetObject {
 
 		return handler.getDigitalObject(uuid);
 	}
+
+	public FedoraAccess getFedoraAccess() {
+		return fedoraAccess;
+	}
+
 }

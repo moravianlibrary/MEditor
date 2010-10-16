@@ -1,11 +1,19 @@
-package cz.fi.muni.xkremser.editor.shared.rpc.action;
+package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-public class IntCompPartDetail extends AbstractDigitalObjectDetail {
+public class InternalPartDetail extends AbstractDigitalObjectDetail {
+
+	// DC
+	// title
+	// creator
+	// contributor
+	// identifier - uuid
+	// identifier - handle
+	// type (= model:internalpart)
+	// rights (treba policy:private)
 
 	@Override
 	public KrameriusModel getModel() {
@@ -24,12 +32,13 @@ public class IntCompPartDetail extends AbstractDigitalObjectDetail {
 		this.pages = pages;
 	}
 
-	public DublinCore getDc() {
-		return dc;
-	}
-
 	public void setDc(DublinCore dc) {
 		this.dc = dc;
+	}
+
+	@Override
+	public DublinCore getDc() {
+		return dc;
 	}
 
 	// handle

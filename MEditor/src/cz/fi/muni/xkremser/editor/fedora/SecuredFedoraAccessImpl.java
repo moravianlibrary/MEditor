@@ -220,4 +220,14 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.isDigitalObjectPresent(uuid);
 	}
 
+	@Override
+	public List<String> getIsOnPagesUuid(String uuid) throws IOException {
+		return rawAccess.getIsOnPagesUuid(uuid);
+	}
+
+	@Override
+	public List<String> getPagesUuid(String uuid) throws IOException {
+		return rawAccess.getPagesUuid(uuid);
+	}
+
 }
