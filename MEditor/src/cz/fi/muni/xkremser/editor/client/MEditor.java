@@ -14,11 +14,18 @@ public class MEditor implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
+
+		// IButton adminButton = new IButton("Admin Console");
+		// adminButton.addClickHandler(new ClickHandler() {
+		// @Override
+		// public void onClick(ClickEvent event) {
+		// com.smartgwtee.tools.client.SCEE.openDataSourceConsole();
+		// }
+		// });
+		// adminButton.draw();
+
 		DelayedBindRegistry.bind(injector);
 		injector.getPlaceManager().revealCurrentPlace();
 
-		// final AppPresenter appPresenter = injector.getAppPresenter();
-		// appPresenter.go(RootPanel.get());
-		// injector.getPlaceManager().fireCurrentPlace();
 	}
 }

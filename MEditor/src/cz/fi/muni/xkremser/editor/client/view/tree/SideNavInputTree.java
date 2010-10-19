@@ -22,7 +22,7 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.SimpleGwtRPCDS;
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 
 public class SideNavInputTree extends TreeGrid implements Refreshable {
@@ -60,7 +60,7 @@ public class SideNavInputTree extends TreeGrid implements Refreshable {
 		field2.setTitle("Name");
 
 		setFields(field1, field2);
-		setDataSource(new SimpleGwtRPCDS(dispatcher));
+		setDataSource(new InputTreeGwtRPCDS(dispatcher));
 	}
 
 	@Override

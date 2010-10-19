@@ -37,7 +37,7 @@
 
 	<servlet-mapping>
 		<servlet-name>ThumbnailService</servlet-name>
-		<url-pattern>/thumbnail/*</url-pattern>
+		<url-pattern>/images/thumbnail/*</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

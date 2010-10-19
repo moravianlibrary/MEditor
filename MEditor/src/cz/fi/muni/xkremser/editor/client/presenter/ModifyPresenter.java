@@ -1,5 +1,7 @@
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -12,10 +14,16 @@ import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
-import com.smartgwt.client.util.SC;
+import com.smartgwt.client.data.Record;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
+import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.view.CarRecord;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 
 public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy> {
 	/**
@@ -29,6 +37,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		public HasValue<String> getName();
 
 		public HasClickHandlers getSend();
+
+		void setData(Record[] data);
 	}
 
 	@ProxyCodeSplit
@@ -53,28 +63,6 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	@Override
 	protected void onBind() {
 		super.onBind();
-
-		if (uuid != null) {
-			// test
-			// page cc25c992-c94c-11df-84b1-001b63bd97ba
-			// monograph 0eaa6730-9068-11dd-97de-000d606f5dc6
-			// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
-
-			// dispatcher.execute(new
-			// GetDigitalObjectDetailAction("cc25c992-c94c-11df-84b1-001b63bd97ba"),
-			// new
-			// DispatchCallback<GetDigitalObjectDetailResult>() {
-			// dispatcher.execute(new
-			// GetDigitalObjectDetailAction("0eaa6730-9068-11dd-97de-000d606f5dc6"),
-			// new
-			// DispatchCallback<GetDigitalObjectDetailResult>() {
-			// dispatcher.execute(new
-			// GetDigitalObjectDetailAction("1118b1bf-c94d-11df-84b1-001b63bd97ba"),
-			// new
-			// DispatchCallback<GetDigitalObjectDetailResult>() {
-
-			// test
-		}
 
 	};
 
@@ -103,22 +91,28 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	protected void onReset() {
 		super.onReset();
 
-		SC.say(uuid);
-		// if (uuid != null) {
-		// dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new
-		// DispatchCallback<GetDigitalObjectDetailResult>() {
-		//
-		// @Override
-		// public void callback(GetDigitalObjectDetailResult result) {
-		// System.out.println(result.getDetail());
-		// // System.out.println(result.getDetail().getClass());
-		// // System.out.println(result.getClass());
-		// InternalPartDetail inter = (InternalPartDetail) result.getDetail();
-		// System.out.println(inter.getPages());
-		//
-		// }
-		// });
-		// }
+		// test
+		// page cc25c992-c94c-11df-84b1-001b63bd97ba
+		// monograph 0eaa6730-9068-11dd-97de-000d606f5dc6
+		// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
+		uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
+
+		if (uuid != null) {
+			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
+
+				@Override
+				public void callback(GetDigitalObjectDetailResult result) {
+					InternalPartDetail pageDetail = (InternalPartDetail) result.getDetail();
+					Record[] data = new Record[pageDetail.getPages().size()];
+
+					List<PageDetail> pages = pageDetail.getPages();
+					for (int i = 0, total = pages.size(); i < total; i++) {
+						data[i] = new CarRecord(pages.get(i).getDc().getTitle(), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier().get(0));
+					}
+					getView().setData(data);
+				}
+			});
+		}
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
 
 	}

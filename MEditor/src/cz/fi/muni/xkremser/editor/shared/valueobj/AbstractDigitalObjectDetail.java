@@ -10,6 +10,10 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	public abstract DublinCore getDc();
 
+	public abstract boolean hasPages();
+
+	// public abstract boolean hasMods();
+
 	// public Class<? extends AbstractDigitalObjectDetail> getClazz() {
 	// return getClass();
 	// }

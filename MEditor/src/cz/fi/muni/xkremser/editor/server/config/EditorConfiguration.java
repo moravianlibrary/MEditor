@@ -15,6 +15,8 @@ public abstract class EditorConfiguration {
 		public static final String GUI_CONFIGURATION_PPREFIX = "gui";
 		public static final String GUI_SHOW_INPUT_QUEUE = GUI_CONFIGURATION_PPREFIX + EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE;
 		public static final boolean GUI_SHOW_INPUT_QUEUE_DEFAULT = EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT;
+		public static final String GUI_RECENTLY_MODIFIED_NUMBER = "recentlyModifiedNumber";
+		public static final int GUI_RECENTLY_MODIFIED_NUMBER_DEFAULT = 10;
 
 		// z39.50
 		public static final String Z3950_PROFILE = "z39.50Profile";
@@ -141,6 +143,10 @@ public abstract class EditorConfiguration {
 	public String[] getAdminAccessPatterns() {
 		String property = getConfiguration().getString(Constants.ACCESS_ADMIN_PATTERNS, Constants.ACCESS_ADMIN_PATTERNS_DEFAULT);
 		return property.split(Constants.ACCESS_PATTERN_SEPARATOR);
+	}
+
+	public int getRecentlyModifiedNumber() {
+		return getConfiguration().getInt(Constants.GUI_RECENTLY_MODIFIED_NUMBER, Constants.GUI_RECENTLY_MODIFIED_NUMBER_DEFAULT);
 	}
 
 }

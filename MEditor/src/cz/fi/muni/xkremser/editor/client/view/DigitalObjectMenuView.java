@@ -17,6 +17,7 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyTree;
@@ -34,6 +35,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	}
 
 	private SideNavInputTree inputTree;
+	private final SideNavRecentlyTree sideNavTree;
 	private final SectionStack sectionStack;
 	private final SectionStackSection sectionRecentlyModified;
 	private ImgButton refreshButton;
@@ -45,7 +47,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		layout.setHeight100();
 		layout.setWidth100();
 
-		SideNavRecentlyTree sideNavTree = new SideNavRecentlyTree();
+		sideNavTree = new SideNavRecentlyTree();
 
 		DynamicForm form = new DynamicForm();
 		form.setHeight(1);
@@ -95,6 +97,11 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	@Override
 	public HasValue<String> getSelected() {
 		return null;
+	}
+
+	@Override
+	public void setDS(DispatchAsync dispatcher) {
+		this.sideNavTree.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher));
 	}
 
 	@Override

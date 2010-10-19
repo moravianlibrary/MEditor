@@ -33,4 +33,9 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 		this.dc = dc;
 	}
 
+	@Override
+	public boolean hasPages() {
+		return false;
+	}
+
 }

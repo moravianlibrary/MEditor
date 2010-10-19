@@ -93,7 +93,7 @@ public class IOUtils {
 
 	}
 
-	public static File checkDirectory(String name) {
+	public static File checkDirectory(String name) { // TODO: zaintegrovatz
 		File directory = new File(name);
 		if (!directory.exists() || !directory.isDirectory()) {
 			if (!directory.mkdir()) {

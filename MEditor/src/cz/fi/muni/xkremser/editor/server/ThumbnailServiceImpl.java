@@ -1,33 +1,92 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
+import java.io.InputStream;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.mortbay.log.Log;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.ModifyDOService;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
-public class ThumbnailServiceImpl extends RemoteServiceServlet implements ModifyDOService {
+import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.fedora.utils.IOUtils;
+import cz.fi.muni.xkremser.editor.fedora.utils.RESTHelper;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
-	@Override
-	public void modify(String pid) {
-		// TODO Auto-generated method stub
+public class ThumbnailServiceImpl extends HttpServlet {
 
-	}
+	@Inject
+	private EditorConfiguration config;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// super.doGet(req, resp);
+		// TODO: sekuryta :]
 
-		System.out.println(req.getRequestURI());
-		System.out.println(req.getParameterMap());
-		String site = "http://krameriusdemo.mzk.cz:8080/fedora/objects/uuid:1fc0c770-cd8b-11df-886d-001b63bd97ba/datastreams/IMG_THUMB/content";
-		resp.setContentType("image/jpeg");
-		resp.setStatus(resp.SC_MOVED_TEMPORARILY);
-		resp.setHeader("Location", site);
+		// char '/' is twice present in "/thumbnail/XYZ"
+		String uuid = req.getRequestURI().substring(Constants.SERVLET_IMAGES_THUMBNAIL_PREFIX.length() + 2);
+		Log.info("UUID is " + uuid);
+		if (uuid != null && !"".equals(uuid)) {
+			resp.setContentType("image/jpeg");
+			StringBuffer sb = new StringBuffer();
+			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_THUMB/content");
+			InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
+			ServletOutputStream os = resp.getOutputStream();
 
+			try {
+				IOUtils.copyStreams(is, os);
+
+			} catch (IOException e) {
+				// TODO: zalogovat
+			} finally {
+				os.flush();
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						// TODO: zalogovat
+					} finally {
+						is = null;
+					}
+				}
+			}
+			resp.setStatus(200);
+		} else {
+			resp.setStatus(404);
+		}
 	}
+
+	public EditorConfiguration getConfig() {
+		return config;
+	}
+
+	public void setConfig(EditorConfiguration config) {
+		this.config = config;
+	}
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		Injector injector = getInjector();
+		injector.injectMembers(this);
+	}
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		Injector injector = getInjector();
+		injector.injectMembers(this);
+	}
+
+	protected Injector getInjector() {
+		return (Injector) getServletContext().getAttribute(Injector.class.getName());
+	}
+
 }

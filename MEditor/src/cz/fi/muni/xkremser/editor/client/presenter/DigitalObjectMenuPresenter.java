@@ -40,6 +40,8 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		void showInputQueue(DispatchAsync dispatcher);
 
 		Refreshable getInputTree();
+
+		void setDS(DispatchAsync dispatcher);
 	}
 
 	@ProxyStandard
@@ -68,6 +70,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	protected void onBind() {
 		super.onBind();
 
+		getView().setDS(dispatcher);
 		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
 			@Override
 			public void onConfigReceived(ConfigReceivedEvent event) {

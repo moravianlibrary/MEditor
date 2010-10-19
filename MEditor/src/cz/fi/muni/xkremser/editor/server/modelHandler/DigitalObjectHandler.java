@@ -32,10 +32,14 @@ public class DigitalObjectHandler implements CanGetObject {
 		try {
 			model = fedoraAccess.getKrameriusModel(uuid);
 		} catch (IOException e) {
-			logger.error("Could not get model of object " + uuid, e);
-			return null;
+			logger.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);
 		}
-		CanGetObject handler = injector.getInstance(KrameriusModelHelper.TYPES.get(model));
+		CanGetObject handler = null;
+		if (model != null) {
+			handler = injector.getInstance(KrameriusModelHelper.TYPES.get(model));
+		} else {
+			handler = injector.getInstance(GenericHandler.class);
+		}
 
 		return handler.getDigitalObject(uuid);
 	}

@@ -20,13 +20,19 @@ import cz.fi.muni.xkremser.editor.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
+import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
 /**
@@ -41,10 +47,15 @@ public class ServerModule extends HandlerModule {
 		bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
 		bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
 		bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
+		bindHandler(GetRecentlyModifiedAction.class, GetRecentlyModifiedHandler.class);
+		bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
+
+		// DAO
 		bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
+		bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
 		// bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
 		// Fedora

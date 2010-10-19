@@ -24,7 +24,7 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	public AppView() {
 		widget = new VLayout();
 		leftContainer = new VLayout();
-		leftContainer.setWidth(285);
+		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
 		mainContainer = new VLayout(); // TODO: consider some panel
 		// main.setLayoutMargin(5);

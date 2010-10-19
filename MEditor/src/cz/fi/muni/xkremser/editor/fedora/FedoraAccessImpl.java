@@ -3,8 +3,6 @@ package cz.fi.muni.xkremser.editor.fedora;
 import static cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils.getDjVuImage;
 import static cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils.getFedoraDatastreamsList;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Authenticator;
@@ -40,8 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
@@ -77,12 +73,6 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public List<Element> getPages(String uuid, boolean deep) throws IOException {
 		Document relsExt = getRelsExt(uuid);
-
-		DOMImplementationLS domImplLS = (DOMImplementationLS) relsExt.getImplementation();
-		LSSerializer serializer = domImplLS.createLSSerializer();
-		String str = serializer.writeToString(relsExt);
-		System.out.println(str);
-
 		return getPages(uuid, relsExt.getDocumentElement());
 	}
 
@@ -297,45 +287,6 @@ public class FedoraAccessImpl implements FedoraAccess {
 		org.w3c.dom.Document doc = builder.parse(is);
 		is.close();
 		return doc;
-	}
-
-	public static void main(String... args) throws FileNotFoundException, SAXException, IOException, XPathExpressionException, LexerException {
-
-		Document doc = loadXMLFrom(new FileInputStream("/home/freon/example.xml"));
-
-		Element rootElementOfRelsExt = doc.getDocumentElement();
-		List<String> elms = new ArrayList<String>();
-		XPathFactory xpfactory = XPathFactory.newInstance();
-		XPath xpath = xpfactory.newXPath();
-		xpath.setNamespaceContext(new FedoraNamespaceContext()); // TODO: singleton
-																															// a inject
-		// XPathExpression expr = xpath.compile("/RDF/Description/hasPage");
-		XPathExpression expr = xpath.compile("/rdf:RDF/rdf:Description/kramerius:hasPage/@rdf:resource");
-
-		NodeList nodes = (NodeList) expr.evaluate(rootElementOfRelsExt, XPathConstants.NODESET);
-		System.out.println(nodes.getLength());
-		for (int i = 0, lastIndex = nodes.getLength() - 1; i <= lastIndex; i++) {
-
-			// DOMImplementationLS domImplLS = (DOMImplementationLS)
-			// nodes.item(i).getOwnerDocument().getImplementation();
-			// LSSerializer serializer = domImplLS.createLSSerializer();
-			// String str = serializer.writeToString(nodes.item(i));
-			// System.out.println(str);
-
-			Node elm = nodes.item(i);
-			System.out.println("***************");
-			System.out.println("node value=" + elm.getNodeValue());
-			System.out.println("local name=" + elm.getLocalName());
-			System.out.println("text content=" + elm.getTextContent());
-			System.out.println("prefix=" + elm.getPrefix());
-			System.out.println("namespace uri=" + elm.getNamespaceURI());
-			// String sform = elm.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI,
-			// "resource");
-			// PIDParser pidParser = new PIDParser(sform);
-			// pidParser.disseminationURI();
-			// elms.add(pidParser.getObjectId());
-		}
-
 	}
 
 	@Override

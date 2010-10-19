@@ -41,6 +41,11 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 		return dc;
 	}
 
+	@Override
+	public boolean hasPages() {
+		return true;
+	}
+
 	// handle
 	// policy
 
