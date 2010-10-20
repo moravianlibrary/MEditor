@@ -46,21 +46,30 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 
 		layout.setHeight100();
 		layout.setWidth100();
+		layout.setOverflow(Overflow.AUTO);
 
 		sideNavTree = new SideNavRecentlyTree();
 
-		DynamicForm form = new DynamicForm();
+		final DynamicForm form = new DynamicForm();
 		form.setHeight(1);
-		form.setWidth(75);
+		form.setWidth(60);
 		form.setNumCols(1);
+		form.setCanHover(true);
+		form.addHoverHandler(new HoverHandler() {
+			@Override
+			public void onHover(HoverEvent event) {
+				form.setPrompt("Show only objects modified by...");
+			}
+		});
 
 		SelectItem selectItem = new SelectItem();
-		selectItem.setWidth(120);
+		selectItem.setWidth(60);
 		selectItem.setShowTitle(false);
-		selectItem.setValueMap("Development", "Staging", "Production");
-		selectItem.setDefaultValue("Development");
+		selectItem.setValueMap("me", "all");
+		selectItem.setDefaultValue("me");
 
 		form.setFields(selectItem);
+		form.setTitle("by:");
 
 		sectionRecentlyModified = new SectionStackSection();
 		sectionRecentlyModified.setTitle("Recently modified");
@@ -75,6 +84,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		sectionStack.setAnimateSections(true);
 		sectionStack.setWidth100();
 		sectionStack.setHeight100();
+		sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.setOverflow(Overflow.HIDDEN);
 		layout.addMember(sectionStack);
 	}

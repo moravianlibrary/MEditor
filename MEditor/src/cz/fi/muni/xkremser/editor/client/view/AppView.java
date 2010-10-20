@@ -3,6 +3,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -27,9 +28,11 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
 		mainContainer = new VLayout(); // TODO: consider some panel
-		// main.setLayoutMargin(5);
-		widget.setWidth100();
-		widget.setHeight100();
+		mainContainer.setOverflow(Overflow.AUTO);
+		widget.setWidth("99%");
+		widget.setHeight("98%");
+		// widget.setAutoHeight();
+		widget.setOverflow(Overflow.AUTO);
 		topContainer = new HLayout();
 		topContainer.setWidth100();
 		topContainer.setHeight(90);
@@ -37,6 +40,9 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		widget.addMember(topContainer);
 
 		HLayout underTop = new HLayout();
+		underTop.setAutoWidth();
+		underTop.setAutoHeight();
+		underTop.setOverflow(Overflow.AUTO);
 		underTop.setWidth100();
 		underTop.setHeight100();
 		widget.addMember(underTop);

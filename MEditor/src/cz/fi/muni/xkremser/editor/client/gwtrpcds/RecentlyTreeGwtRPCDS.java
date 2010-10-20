@@ -51,7 +51,8 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
-		dispatcher.execute(new GetRecentlyModifiedAction(), new DispatchCallback<GetRecentlyModifiedResult>() {
+		// TODO: false -> parameter (GetRecentlyModifiedAction)
+		dispatcher.execute(new GetRecentlyModifiedAction(false), new DispatchCallback<GetRecentlyModifiedResult>() {
 			@Override
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);

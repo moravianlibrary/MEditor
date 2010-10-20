@@ -2,14 +2,9 @@ package cz.fi.muni.xkremser.editor.client;
 
 public class Constants {
 	private static final String SERVLET_IMAGES_PREFIX = "images/";
+	// must be the same as in web.xml
 	public static final String SERVLET_THUMBNAIL_PREFIX = "thumbnail";
-	public static final String SERVLET_IMAGES_THUMBNAIL_PREFIX = SERVLET_IMAGES_PREFIX + SERVLET_THUMBNAIL_PREFIX; // must
-																																																									// be
-																																																									// the
-																																																									// same
-																																																									// as
-																																																									// in
-																																																									// web.xml
+	public static final String SERVLET_FULL_PREFIX = "full";
 
 	public static final String URL_PARAM_UUID = "uuid";
 	public static final String URL_PARAM_ACTION = "action";
@@ -23,6 +18,7 @@ public class Constants {
 	public static final String ATTR_ID = "path"; // path
 	public static final String ATTR_PARENT = "parent";
 	public static final String ATTR_NAME = "atName";
+	public static final String ATTR_PICTURE = "picture";
 	public static final String ATTR_ISSN = "issn";
 	public static final int DIR_MAX_DEPTH = 5;
 	public static final String FILE_SEPARATOR = "/";

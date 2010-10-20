@@ -1,61 +1,38 @@
-/** Add css rules here for your application. */
+/** Metadata editor css */
 
 
-/** Example rules used by the template application (remove for your app) */
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
+
+
+
+
+
+
+
+
+
+
+
+.no-style {
+  border: 0px;
+  padding: 3px;
+  background: #000;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  z-index: 800001;
 }
-
-.sendButton {
-  display: block;
-  font-size: 16pt;
-}
-
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-  width: 400px;
-}
-
-.dialogVPanel {
-  margin: 5px;
-}
-
-.serverResponseLabelError {
-  color: red;
-}
-
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-  margin: 15px 6px 6px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .gwt-PopupPanel {
-  border: 3px solid #C3D9FF;
+  border: 3px solid #888888;
   padding: 3px;
-  background: white;
+  background: #000;
+  z-index: 800001;
 }
 .gwt-PopupPanelGlass {
   background-color: #000;
-  opacity: 0.3;
-  filter: alpha(opacity=30);
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  z-index: 800001;
 }
 html>body .gwt-PopupPanel {
 }

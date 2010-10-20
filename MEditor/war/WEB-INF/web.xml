@@ -24,6 +24,12 @@
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
 		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<url-pattern>/gwt-log</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet for generating thumbnails -->
 	<servlet>
 		<servlet-name>ThumbnailService</servlet-name>
 		<servlet-class>
@@ -31,14 +37,25 @@
         </servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<url-pattern>/gwt-log</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
 		<servlet-name>ThumbnailService</servlet-name>
 		<url-pattern>/images/thumbnail/*</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Servlet for generating full images -->
+	<servlet>
+		<servlet-name>FullImgService</servlet-name>
+		<servlet-class>
+			cz.fi.muni.xkremser.editor.server.FullImgServiceImpl
+        </servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FullImgService</servlet-name>
+		<url-pattern>/images/full/*</url-pattern>
+	</servlet-mapping>
+	
+
+
+
 
 	<session-config>
 		<session-timeout>30</session-timeout>

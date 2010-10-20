@@ -2,18 +2,20 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.widgets.tile.TileRecord;
 
-public class CarRecord extends TileRecord {
+import cz.fi.muni.xkremser.editor.client.Constants;
 
-	public CarRecord() {
+public class PageRecord extends TileRecord {
+
+	public PageRecord() {
 	}
 
-	public CarRecord(String name, String price, String picture) {
-		this(name, price, picture, null);
+	public PageRecord(String name, String uuid, String picture) {
+		this(name, uuid, picture, null);
 	}
 
-	public CarRecord(String name, String price, String picture, String description) {
+	public PageRecord(String name, String uuid, String picture, String description) {
 		setName(name);
-		setPrice(price);
+		setUuid(uuid);
 		setPicture(picture);
 		setDescription(description);
 	}
@@ -25,7 +27,7 @@ public class CarRecord extends TileRecord {
 	 *          the name
 	 */
 	public void setName(String name) {
-		setAttribute("name", name);
+		setAttribute(Constants.ATTR_NAME, name);
 	}
 
 	/**
@@ -34,26 +36,26 @@ public class CarRecord extends TileRecord {
 	 * @return the name
 	 */
 	public String getName() {
-		return getAttribute("name");
+		return getAttribute(Constants.ATTR_NAME);
 	}
 
 	/**
-	 * Set the price.
+	 * Set the uuid.
 	 * 
-	 * @param price
-	 *          the price
+	 * @param uuid
+	 *          the uuid
 	 */
-	public void setPrice(String price) {
-		setAttribute("price", price);
+	public void setUuid(String uuid) {
+		setAttribute(Constants.ATTR_UUID, uuid);
 	}
 
 	/**
-	 * Return the price.
+	 * Return the uuid
 	 * 
-	 * @return the price
+	 * @return the uuid
 	 */
-	public String getPrice() {
-		return getAttribute("price");
+	public String getUuid() {
+		return getAttribute(Constants.ATTR_UUID);
 	}
 
 	/**
@@ -63,7 +65,7 @@ public class CarRecord extends TileRecord {
 	 *          the picture
 	 */
 	public void setPicture(String picture) {
-		setAttribute("picture", picture);
+		setAttribute(Constants.ATTR_PICTURE, picture);
 	}
 
 	/**
@@ -72,7 +74,7 @@ public class CarRecord extends TileRecord {
 	 * @return the picture
 	 */
 	public String getPicture() {
-		return getAttribute("picture");
+		return getAttribute(Constants.ATTR_PICTURE);
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class CarRecord extends TileRecord {
 	 *          the description
 	 */
 	public void setDescription(String description) {
-		setAttribute("description", description);
+		setAttribute(Constants.ATTR_DESC, description);
 	}
 
 	/**
@@ -91,7 +93,7 @@ public class CarRecord extends TileRecord {
 	 * @return the description
 	 */
 	public String getDescription() {
-		return getAttribute("description");
+		return getAttribute(Constants.ATTR_DESC);
 	}
 
 }

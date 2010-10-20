@@ -18,7 +18,7 @@ import cz.fi.muni.xkremser.editor.fedora.utils.IOUtils;
 import cz.fi.muni.xkremser.editor.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
-public class ThumbnailServiceImpl extends HttpServlet {
+public class FullImgServiceImpl extends HttpServlet {
 
 	@Inject
 	private EditorConfiguration config;
@@ -30,13 +30,12 @@ public class ThumbnailServiceImpl extends HttpServlet {
 
 		// char '/' is twice present in "/thumbnail/XYZ"
 		// /meditor ==> nefunguje
-		String uuid = req.getRequestURI().substring(
-				req.getRequestURI().indexOf(Constants.SERVLET_THUMBNAIL_PREFIX) + Constants.SERVLET_THUMBNAIL_PREFIX.length() + 1);
+		String uuid = req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_FULL_PREFIX) + Constants.SERVLET_FULL_PREFIX.length() + 1);
 
 		if (uuid != null && !"".equals(uuid)) {
 			resp.setContentType("image/jpeg");
 			StringBuffer sb = new StringBuffer();
-			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_THUMB/content");
+			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_FULL/content");
 			InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
 			ServletOutputStream os = resp.getOutputStream();
 

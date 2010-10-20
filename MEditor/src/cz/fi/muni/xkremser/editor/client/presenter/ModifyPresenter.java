@@ -19,7 +19,7 @@ import com.smartgwt.client.data.Record;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.view.CarRecord;
+import cz.fi.muni.xkremser.editor.client.view.PageRecord;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
@@ -39,6 +39,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		public HasClickHandlers getSend();
 
 		void setData(Record[] data);
+
+		void setWidgets(boolean tileGridVisible, DispatchAsync dispatcher);
 	}
 
 	@ProxyCodeSplit
@@ -50,6 +52,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	private final DispatchAsync dispatcher;
 	private final DigitalObjectMenuPresenter leftPresenter;
 	private String uuid;
+	private String previousUuid;
+	private boolean forcedRefresh;
 
 	@Inject
 	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
@@ -97,7 +101,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
 		uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
 
-		if (uuid != null) {
+		if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
 			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
 
 				@Override
@@ -107,14 +111,15 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 					List<PageDetail> pages = pageDetail.getPages();
 					for (int i = 0, total = pages.size(); i < total; i++) {
-						data[i] = new CarRecord(pages.get(i).getDc().getTitle(), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier().get(0));
+						data[i] = new PageRecord(pages.get(i).getDc().getTitle(), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier().get(0));
 					}
+					getView().setWidgets(true, dispatcher);
 					getView().setData(data);
 				}
 			});
 		}
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
-
+		previousUuid = uuid;
 	}
 
 	@Override
