@@ -1,12 +1,12 @@
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 public class PageDetail extends AbstractDigitalObjectDetail {
 
 	@Override
-	public Constants.KrameriusModel getModel() {
-		return Constants.KrameriusModel.PAGE;
+	public KrameriusModel getModel() {
+		return KrameriusModel.PAGE;
 	}
 
 	// file (literal)

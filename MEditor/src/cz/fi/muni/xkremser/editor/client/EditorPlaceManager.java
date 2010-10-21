@@ -15,8 +15,8 @@ public class EditorPlaceManager extends PlaceManagerImpl {
 	public EditorPlaceManager(final EventBus eventBus, final TokenFormatter tokenFormatter, @DefaultPlace String defaultNameToken) {
 		super(eventBus, tokenFormatter);
 
-		// this.defaultPlaceRequest = new PlaceRequest("modify");
-		this.defaultPlaceRequest = new PlaceRequest("home");
+		this.defaultPlaceRequest = new PlaceRequest("modify");
+		// this.defaultPlaceRequest = new PlaceRequest("home");
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 /**
  * This is secured variant of class FedoraAccessImpl {@link FedoraAccessImpl}. <br>

@@ -9,12 +9,11 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.fedora.FedoraNamespaceContext;
 import cz.fi.muni.xkremser.editor.fedora.IPaddressChecker;
-import cz.fi.muni.xkremser.editor.fedora.KrameriusModelHelper;
 import cz.fi.muni.xkremser.editor.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils;
@@ -24,6 +23,7 @@ import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
+import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
@@ -66,7 +66,7 @@ public class ServerModule extends HandlerModule {
 		// Fedora/Kramerius models
 		int total = KrameriusModel.values().length;
 		for (int i = 0; i < total; i++) {
-			bind(KrameriusModelHelper.TYPES.get(KrameriusModel.values()[i])).in(Scopes.SINGLETON);
+			bind(KrameriusModelMapping.TYPES.get(KrameriusModel.values()[i])).in(Scopes.SINGLETON);
 		}
 
 		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);

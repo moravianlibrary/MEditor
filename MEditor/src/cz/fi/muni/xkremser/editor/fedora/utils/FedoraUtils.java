@@ -27,7 +27,7 @@ import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 

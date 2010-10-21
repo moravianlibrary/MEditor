@@ -2,11 +2,11 @@ package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
-	public abstract Constants.KrameriusModel getModel();
+	public abstract KrameriusModel getModel();
 
 	public abstract DublinCore getDc();
 

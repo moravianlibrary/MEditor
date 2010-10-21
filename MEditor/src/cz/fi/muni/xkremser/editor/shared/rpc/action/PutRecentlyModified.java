@@ -14,6 +14,6 @@ public class PutRecentlyModified extends UnsecuredActionImpl<ScanInputQueueResul
 	private RecentlyModifiedItem item;
 
 	@Out(1)
-	private boolean ok;
+	private boolean found;
 
 }

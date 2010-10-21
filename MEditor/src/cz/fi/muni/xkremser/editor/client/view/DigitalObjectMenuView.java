@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
@@ -13,14 +14,19 @@ import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyTree;
+import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuView.MyUiHandlers> implements DigitalObjectMenuPresenter.MyView {
 
@@ -28,6 +34,8 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		void onRefresh();
 
 		void onShowInputQueue();
+
+		void onAddDigitalObject(RecentlyModifiedItem item);
 	}
 
 	public interface Refreshable {
@@ -62,11 +70,21 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 			}
 		});
 
-		SelectItem selectItem = new SelectItem();
+		final SelectItem selectItem = new SelectItem();
 		selectItem.setWidth(60);
 		selectItem.setShowTitle(false);
 		selectItem.setValueMap("me", "all");
 		selectItem.setDefaultValue("me");
+		selectItem.addChangedHandler(new ChangedHandler() {
+			@Override
+			public void onChanged(ChangedEvent event) {
+				Criteria criteria = new Criteria();
+				boolean all = "all".equals(event.getValue());
+				criteria.addCriteria(Constants.ATTR_ALL, all);
+				// sideNavTree.fetchData(criteria);
+				sideNavTree.filterData(criteria);
+			}
+		});
 
 		form.setFields(selectItem);
 		form.setTitle("by:");
@@ -155,6 +173,11 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	@Override
 	public Refreshable getInputTree() {
 		return inputTree;
+	}
+
+	@Override
+	public ListGrid getRecentlyModifiedTree() {
+		return sideNavTree;
 	}
 
 }

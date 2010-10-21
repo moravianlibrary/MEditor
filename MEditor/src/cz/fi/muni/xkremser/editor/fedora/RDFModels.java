@@ -4,7 +4,7 @@
  */
 package cz.fi.muni.xkremser.editor.fedora;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 /**
  * 

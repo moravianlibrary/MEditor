@@ -32,7 +32,6 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 		if (action.getItem().getUuid() == null || "".equals(action.getItem().getUuid()))
 			throw new NullPointerException("getItem().getUuid()");
 		logger.debug("Processing action: PutRecentlyModified item:" + action.getItem());
-
 		return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem()));
 	}
 

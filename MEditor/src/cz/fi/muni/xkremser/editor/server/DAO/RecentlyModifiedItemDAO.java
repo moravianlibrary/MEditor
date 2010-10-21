@@ -8,6 +8,5 @@ public interface RecentlyModifiedItemDAO {
 
 	boolean put(RecentlyModifiedItem toPut);
 
-	ArrayList<RecentlyModifiedItem> getItems(int nLatest);
-
+	ArrayList<RecentlyModifiedItem> getItems(int nLatest, boolean isForAll);
 }

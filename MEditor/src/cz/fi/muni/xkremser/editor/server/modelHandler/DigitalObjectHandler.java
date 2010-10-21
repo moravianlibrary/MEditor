@@ -8,9 +8,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.fedora.KrameriusModelHelper;
+import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 
 public class DigitalObjectHandler implements CanGetObject {
@@ -36,7 +36,7 @@ public class DigitalObjectHandler implements CanGetObject {
 		}
 		CanGetObject handler = null;
 		if (model != null) {
-			handler = injector.getInstance(KrameriusModelHelper.TYPES.get(model));
+			handler = injector.getInstance(KrameriusModelMapping.TYPES.get(model));
 		} else {
 			handler = injector.getInstance(GenericHandler.class);
 		}

@@ -13,7 +13,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.FedoraNamespaceContext;
 
 public class BiblioModsUtils {
@@ -37,7 +37,7 @@ public class BiblioModsUtils {
 		}
 	}
 
-	public static String getTitle(Document doc, Constants.KrameriusModel model) {
+	public static String getTitle(Document doc, KrameriusModel model) {
 		String title = titleFromBiblioMods(doc);
 		if ((title == null) || (title.equals(""))) {
 			switch (model) {

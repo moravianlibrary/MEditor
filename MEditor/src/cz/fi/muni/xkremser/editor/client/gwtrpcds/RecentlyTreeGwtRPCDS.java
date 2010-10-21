@@ -15,7 +15,7 @@ import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
@@ -50,9 +50,9 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
-		// TODO: false -> parameter (GetRecentlyModifiedAction)
-		dispatcher.execute(new GetRecentlyModifiedAction(false), new DispatchCallback<GetRecentlyModifiedResult>() {
+		boolean all = request.getCriteria().getAttributeAsBoolean(Constants.ATTR_ALL);
+
+		dispatcher.execute(new GetRecentlyModifiedAction(all), new DispatchCallback<GetRecentlyModifiedResult>() {
 			@Override
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);
@@ -98,11 +98,13 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 			@Override
 			public void callback(PutRecentlyModifiedResult result) {
-				ListGridRecord[] list = new ListGridRecord[1];
-				ListGridRecord newRec = new ListGridRecord();
-				copyValues(testRec, newRec);
-				list[0] = newRec;
-				response.setData(list);
+				if (!result.isFound()) {
+					ListGridRecord[] list = new ListGridRecord[1];
+					ListGridRecord newRec = new ListGridRecord();
+					copyValues(testRec, newRec);
+					list[0] = newRec;
+					response.setData(list);
+				}
 				processResponse(requestId, response);
 			}
 		});
@@ -111,31 +113,32 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	@Override
 	protected void executeUpdate(final String requestId, final DSRequest request, final DSResponse response) {
-		// Retrieve record which should be updated.
-		// Next line would be nice to replace with line:
-		// ListGridRecord rec = request.getEditedRecord ();
-		// ListGridRecord rec = getEditedRecord(request);
-		// InputQueueItem testRec = new InputQueueItem();
-		// copyValues(rec, testRec);
-		// SimpleGwtRPCDSServiceAsync service =
-		// GWT.create(SimpleGwtRPCDSService.class);
-		// service.update(testRec, new DispatchCallback<InputQueueItem>() {
-		// @Override
-		// public void callbackError(Throwable caught) {
-		// response.setStatus(RPCResponse.STATUS_FAILURE);
-		// processResponse(requestId, response);
-		// }
-		//
-		// @Override
-		// public void callback(InputQueueItem result) {
-		// ListGridRecord[] list = new ListGridRecord[1];
-		// ListGridRecord updRec = new ListGridRecord();
-		// copyValues(result, updRec);
-		// list[0] = updRec;
-		// response.setData(list);
-		// processResponse(requestId, response);
-		// }
-		// });
+		ListGridRecord rec = getEditedRecord(request);
+		final RecentlyModifiedItem testRec = new RecentlyModifiedItem();
+		copyValues(rec, testRec);
+
+		dispatcher.execute(new PutRecentlyModifiedAction(testRec), new DispatchCallback<PutRecentlyModifiedResult>() {
+
+			@Override
+			public void callbackError(Throwable caught) {
+				response.setStatus(RPCResponse.STATUS_FAILURE);
+				processResponse(requestId, response);
+			}
+
+			@Override
+			public void callback(PutRecentlyModifiedResult result) {
+				if (!result.isFound()) {
+
+					ListGridRecord[] list = new ListGridRecord[1];
+					ListGridRecord updRec = new ListGridRecord();
+					copyValues(testRec, updRec);
+					list[0] = updRec;
+					response.setData(list);
+					processResponse(requestId, response);
+				}
+				processResponse(requestId, response);
+			}
+		});
 	}
 
 	@Override

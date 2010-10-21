@@ -1,11 +1,11 @@
 package cz.fi.muni.xkremser.editor.fedora;
 
-import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.INTERNALPART;
-import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.MONOGRAPHUNIT;
-import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.PAGE;
-import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.PERIODICALITEM;
-import static cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel.PERIODICALVOLUME;
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import static cz.fi.muni.xkremser.editor.client.KrameriusModel.INTERNALPART;
+import static cz.fi.muni.xkremser.editor.client.KrameriusModel.MONOGRAPHUNIT;
+import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PAGE;
+import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PERIODICALITEM;
+import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PERIODICALVOLUME;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 /**
  * Relationships in fedora

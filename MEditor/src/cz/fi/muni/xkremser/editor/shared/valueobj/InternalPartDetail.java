@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 public class InternalPartDetail extends AbstractDigitalObjectDetail {
 

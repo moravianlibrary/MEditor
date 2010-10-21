@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -20,8 +21,8 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " (uuid, name, description, model, modified) VALUES ((?),(?),(?),(?),(CURRENT_TIMESTAMP))";
 
-	public static final String FIND_ITEM_STATEMENT = "SELECT id FROM " + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE uuid = (?)";
-	public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_INPUT_QUEUE_NAME + "SET modified = CURRENT_TIMESTAMP WHERE id = (?)";
+	public static final String FIND_ITEM_STATEMENT = "SELECT id FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " WHERE uuid = (?)";
+	public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " SET modified = CURRENT_TIMESTAMP WHERE id = (?)";
 
 	@Inject
 	private EditorConfiguration conf;
@@ -36,25 +37,26 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
 			throw new NullPointerException("toPut.getUuid()");
 
-		boolean returnVal = true;
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
 			logger.warn("Unable to set autocommit off", e);
 		}
+		boolean found = true;
 		try {
 
 			PreparedStatement findSt = getConnection().prepareStatement(FIND_ITEM_STATEMENT);
+			findSt.setString(1, toPut.getUuid());
 			// PreparedStatement selectCount =
 			// getConnection().prepareStatement(SELECT_NUMBER_ITEMS_STATEMENT);
 
 			ResultSet rs = findSt.executeQuery();
-			rs.next();
-			int id = rs.getInt(1); // TODO: testnout!!
+			found = rs.next();
 
 			// TX start
 			int modified = 0;
-			if (id != -1) { // is allready in DB
+			if (found) { // is allready in DB
+				int id = rs.getInt(1);
 				PreparedStatement updSt = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
 				updSt.setInt(1, id);
 				modified = updSt.executeUpdate();
@@ -72,21 +74,21 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			} else {
 				getConnection().rollback();
 				logger.debug("DB has not been updated. -> rollback");
-				returnVal = false;
+				found = false;
 			}
 			// TX end
 
 		} catch (SQLException e) {
 			logger.error(e);
-			returnVal = false;
+			found = false;
 		} finally {
 			closeConnection();
 		}
-		return returnVal;
+		return found;
 	}
 
 	@Override
-	public ArrayList<RecentlyModifiedItem> getItems(int nLatest) {
+	public ArrayList<RecentlyModifiedItem> getItems(int nLatest, boolean isForAll) {
 		PreparedStatement selectSt = null;
 		ArrayList<RecentlyModifiedItem> retList = new ArrayList<RecentlyModifiedItem>();
 		try {
@@ -99,8 +101,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			ResultSet rs = selectSt.executeQuery();
 			while (rs.next()) {
 				int modelId = rs.getInt("model");
-				retList.add(new RecentlyModifiedItem(rs.getString("uuid"), rs.getString("name"), rs.getString("description"),
-						Constants.KrameriusModel.values()[modelId]));
+				retList.add(new RecentlyModifiedItem(rs.getString("uuid"), rs.getString("name"), rs.getString("description"), KrameriusModel.values()[modelId]));
 			}
 		} catch (SQLException e) {
 			logger.error(e);

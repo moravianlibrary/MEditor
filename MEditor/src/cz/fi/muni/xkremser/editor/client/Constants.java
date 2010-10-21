@@ -27,30 +27,9 @@ public class Constants {
 	public static final String ATTR_UUID = "uuid";
 	public static final String ATTR_DESC = "description";
 	public static final String ATTR_MODEL = "model";
+	public static final String ATTR_ALL = "all";
 
 	// fedora
 	public static final String FEDORA_MODEL_PREFIX = "model:";
 	public static final String FEDORA_UUID_PREFIX = "uuid:";
-
-	// kramerius
-	public enum KrameriusModel {
-
-		MONOGRAPH("monograph"), MONOGRAPHUNIT("monographunit"), PERIODICAL("periodical"), PERIODICALVOLUME("periodicalvolume"), PERIODICALITEM("periodicalitem"), PAGE(
-				"page"), INTERNALPART("internalpart")/* , DONATOR("donator") */;
-
-		private KrameriusModel(String value) {
-			this.value = value;
-		}
-
-		private final String value;
-
-		public String getValue() {
-			return value;
-		}
-
-		public static String toString(KrameriusModel km) {
-			return km.getValue();
-		}
-	}
-
 }

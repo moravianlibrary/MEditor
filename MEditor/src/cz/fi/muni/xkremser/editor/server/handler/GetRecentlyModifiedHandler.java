@@ -27,7 +27,7 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	@Override
 	public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action, final ExecutionContext context) throws ActionException {
 		logger.debug("Processing action: GetRecentlyModified");
-		return new GetRecentlyModifiedResult(recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber()));
+		return new GetRecentlyModifiedResult(recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), action.isForAllUsers()));
 	}
 
 	@Override

@@ -20,6 +20,8 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
@@ -99,22 +101,27 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// page cc25c992-c94c-11df-84b1-001b63bd97ba
 		// monograph 0eaa6730-9068-11dd-97de-000d606f5dc6
 		// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
-		uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
+		// uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
 
 		if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
 			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
-
 				@Override
 				public void callback(GetDigitalObjectDetailResult result) {
-					InternalPartDetail pageDetail = (InternalPartDetail) result.getDetail();
-					Record[] data = new Record[pageDetail.getPages().size()];
+					InternalPartDetail detail = (InternalPartDetail) result.getDetail();
+					Record[] data = new Record[detail.getPages().size()];
 
-					List<PageDetail> pages = pageDetail.getPages();
+					List<PageDetail> pages = detail.getPages();
 					for (int i = 0, total = pages.size(); i < total; i++) {
 						data[i] = new PageRecord(pages.get(i).getDc().getTitle(), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier().get(0));
 					}
 					getView().setWidgets(true, dispatcher);
 					getView().setData(data);
+					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle(), "", detail.getModel()));
+				}
+
+				@Override
+				public void callbackError(Throwable t) {
+					super.callbackError(t);
 				}
 			});
 		}

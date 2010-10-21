@@ -1,5 +1,6 @@
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -12,13 +13,19 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.grid.ListGrid;
 
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
+import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
+import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -40,6 +47,9 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		void showInputQueue(DispatchAsync dispatcher);
 
 		Refreshable getInputTree();
+
+		// TODO: ListGrid -> na nejake rozhrani
+		ListGrid getRecentlyModifiedTree();
 
 		void setDS(DispatchAsync dispatcher);
 	}
@@ -81,6 +91,15 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 				}
 				if (isInputQueueShown()) {
 					onShowInputQueue();
+				}
+			}
+		});
+
+		addRegisteredHandler(DigitalObjectOpenedEvent.getType(), new DigitalObjectOpenedHandler() {
+			@Override
+			public void onDigitalObjectOpened(DigitalObjectOpenedEvent event) {
+				if (event.isStatusOK()) {
+					onAddDigitalObject(event.getItem());
 				}
 			}
 		});
@@ -127,4 +146,20 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		}));
 	}
 
+	@Override
+	public void onAddDigitalObject(final RecentlyModifiedItem item) {
+		Timer timer = new Timer() {
+			@Override
+			public void run() {
+				RecentlyModifiedRecord record = ClientUtils.toRecord(item);
+				if (getView().getRecentlyModifiedTree().getDataAsRecordList().contains(record)) {
+					getView().getRecentlyModifiedTree().updateData(record);
+				} else {
+					getView().getRecentlyModifiedTree().addData(record);
+				}
+			}
+		};
+		timer.schedule(500);
+
+	}
 }

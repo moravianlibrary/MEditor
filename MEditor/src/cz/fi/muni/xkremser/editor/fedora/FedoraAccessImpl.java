@@ -42,13 +42,14 @@ import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.fedora.utils.LexerException;
 import cz.fi.muni.xkremser.editor.fedora.utils.PIDParser;
 import cz.fi.muni.xkremser.editor.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.fedora.utils.XMLUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
 
 /**
  * Default implementation of fedoraAccess
@@ -101,7 +102,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 				String sform = foundElement.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI, "resource");
 				PIDParser pidParser = new PIDParser(sform);
 				pidParser.disseminationURI();
-				KrameriusModel model = KrameriusModelHelper.parseString(pidParser.getObjectId());
+				KrameriusModel model = KrameriusModel.parseString(pidParser.getObjectId());
 				return model;
 			} else
 				throw new IllegalArgumentException("cannot find model of ");

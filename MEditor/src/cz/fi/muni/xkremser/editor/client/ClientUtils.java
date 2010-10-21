@@ -1,5 +1,7 @@
 package cz.fi.muni.xkremser.editor.client;
 
+import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
+import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 public class ClientUtils {
 
@@ -77,5 +79,9 @@ public class ClientUtils {
 			}
 		}
 		return false;
+	}
+
+	public static RecentlyModifiedRecord toRecord(RecentlyModifiedItem item) {
+		return new RecentlyModifiedRecord(item.getUuid(), item.getName(), item.getDescription(), item.getModel());
 	}
 }

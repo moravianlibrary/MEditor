@@ -13,7 +13,7 @@ import org.fedora.api.ObjectFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cz.fi.muni.xkremser.editor.client.Constants.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 /**
  * This is main point to access to fedora through REST-API
