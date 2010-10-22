@@ -18,7 +18,6 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
@@ -61,7 +60,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		Log.info("Calling doSend");
 
 		// delete
-		dispatcher.execute(new ScanInputQueueAction("", ScanInputQueue.TYPE.DB_GET), new DispatchCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueueAction("", false), new DispatchCallback<ScanInputQueueResult>() {
 			@Override
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);

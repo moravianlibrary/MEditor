@@ -40,9 +40,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		public HasClickHandlers getSend();
 
-		void setData(Record[] data);
-
-		void setWidgets(boolean tileGridVisible, DispatchAsync dispatcher);
+		void addDigitalObject(boolean tileGridVisible, Record[] data, DispatchAsync dispatcher);
 	}
 
 	@ProxyCodeSplit
@@ -114,8 +112,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					for (int i = 0, total = pages.size(); i < total; i++) {
 						data[i] = new PageRecord(pages.get(i).getDc().getTitle(), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier().get(0));
 					}
-					getView().setWidgets(true, dispatcher);
-					getView().setData(data);
+					getView().addDigitalObject(true, data, dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle(), "", detail.getModel()));
 				}
 

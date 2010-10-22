@@ -36,6 +36,9 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		void onShowInputQueue();
 
 		void onAddDigitalObject(RecentlyModifiedItem item);
+
+		void revealModifiedItem(String uuid);
+
 	}
 
 	public interface Refreshable {

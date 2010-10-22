@@ -8,14 +8,22 @@ import com.gwtplatform.mvp.client.EventBus;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.CellClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
+import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
@@ -26,7 +34,6 @@ import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceive
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
@@ -61,16 +68,18 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	private final DispatchAsync dispatcher;
 	private boolean inputQueueShown = false;
+	private final PlaceManager placeManager;
 
 	// @Inject
 	private final EditorClientConfiguration config;
 
 	@Inject
 	public DigitalObjectMenuPresenter(final MyView view, final EventBus eventBus, final MyProxy proxy, final DispatchAsync dispatcher,
-			final EditorClientConfiguration config) {
+			final EditorClientConfiguration config, PlaceManager placeManager) {
 		super(eventBus, view, proxy);
 		this.dispatcher = dispatcher;
 		this.config = config;
+		this.placeManager = placeManager;
 		// getView().setUiHandlers(this);
 		// this.config = config;
 		bind();
@@ -81,6 +90,18 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		super.onBind();
 
 		getView().setDS(dispatcher);
+		getView().getRecentlyModifiedTree().setHoverCustomizer(new HoverCustomizer() {
+			@Override
+			public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
+				return record.getAttribute(Constants.ATTR_DESC);
+			}
+		});
+		getView().getRecentlyModifiedTree().addCellClickHandler(new CellClickHandler() {
+			@Override
+			public void onCellClick(CellClickEvent event) {
+				revealModifiedItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+			}
+		});
 		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
 			@Override
 			public void onConfigReceived(ConfigReceivedEvent event) {
@@ -108,6 +129,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	@Override
 	protected void onUnbind() {
 		super.onUnbind();
+		getView().getRecentlyModifiedTree().setHoverCustomizer(null);
 	}
 
 	public boolean isInputQueueShown() {
@@ -120,7 +142,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	@Override
 	public void onRefresh() {
-		dispatcher.execute(new ScanInputQueueAction(null, ScanInputQueue.TYPE.DB_UPDATE), new DispatchCallback<ScanInputQueueResult>() {
+		dispatcher.execute(new ScanInputQueueAction(null, true), new DispatchCallback<ScanInputQueueResult>() {
 
 			@Override
 			public void callback(ScanInputQueueResult result) {
@@ -161,5 +183,10 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		};
 		timer.schedule(500);
 
+	}
+
+	@Override
+	public void revealModifiedItem(String uuid) {
+		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid));
 	}
 }

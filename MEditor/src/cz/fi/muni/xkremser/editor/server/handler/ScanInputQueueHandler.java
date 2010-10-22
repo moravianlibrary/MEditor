@@ -20,7 +20,6 @@ import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueue;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
@@ -48,12 +47,12 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	public ScanInputQueueResult execute(final ScanInputQueueAction action, final ExecutionContext context) throws ActionException {
 		// parse input
 		final String id = action.getId() == null ? "" : action.getId();
-		final ScanInputQueue.TYPE type = action.getType();
+		final boolean refresh = action.isRefresh();
 		final String base = configuration.getScanInputQueuePath();
 		logger.debug("Processing input queue: " + base + id);
 		ScanInputQueueResult result = null;
 
-		if (type == ScanInputQueue.TYPE.DB_GET) {
+		if (!refresh) {
 			if (base == null || "".equals(base)) {
 				logger.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
@@ -71,7 +70,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 			}
 		}
 
-		if (type == ScanInputQueue.TYPE.DB_UPDATE) {
+		if (refresh) {
 			result = new ScanInputQueueResult(updateDb(base));
 		}
 		return result;
@@ -93,11 +92,16 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		}
 	}
 
-	private ArrayList<InputQueueItem> updateDb(String base) throws ActionException {
+	private ArrayList<InputQueueItem> updateDb(String base) {
 		String[] types = configuration.getDocumentTypes();
 		if (types == null || types.length == 0)
 			types = EditorConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
-		checkDocumentTypes(types);
+		try {
+			checkDocumentTypes(types);
+		} catch (ActionException e) {
+			logger
+					.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
+		}
 		ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();
 		ArrayList<InputQueueItem> listTopLvl = new ArrayList<InputQueueItem>(types.length);
 		for (int i = 0; i < types.length; i++) {

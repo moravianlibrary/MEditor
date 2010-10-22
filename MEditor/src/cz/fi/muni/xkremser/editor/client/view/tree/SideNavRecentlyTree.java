@@ -17,14 +17,7 @@
 package cz.fi.muni.xkremser.editor.client.view.tree;
 
 import com.smartgwt.client.types.SortArrow;
-import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.events.CellClickEvent;
-import com.smartgwt.client.widgets.grid.events.CellClickHandler;
-
-import cz.fi.muni.xkremser.editor.client.Constants;
 
 public class SideNavRecentlyTree extends ListGrid {
 
@@ -38,60 +31,26 @@ public class SideNavRecentlyTree extends ListGrid {
 		setShowAllRecords(true);
 		setAutoFetchData(true);
 		setCanHover(true);
-		addCellClickHandler(new CellClickHandler() {
-			@Override
-			public void onCellClick(CellClickEvent event) {
-				SC.say(event.getRecord().getAttribute(Constants.ATTR_UUID));
-				// TODO: dat do presenteru a udelat at se spusti novy place pres place
-				// mngra
-			}
-		});
+		// addCellClickHandler(new CellClickHandler() {
+		// @Override
+		// public void onCellClick(CellClickEvent event) {
+		// SC.say(event.getRecord().getAttribute(Constants.ATTR_UUID));
+		//
+		// // TODO: dat do presenteru a udelat at se spusti novy place pres place
+		// // mngra
+		// }
+		// });
 
-		setHoverCustomizer(new HoverCustomizer() {
-			@Override
-			public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-				return record.getAttribute(Constants.ATTR_DESC);
-			}
-		});
+		// setHoverCustomizer(new HoverCustomizer() {
+		// @Override
+		// public String hoverHTML(Object value, ListGridRecord record, int rowNum,
+		// int colNum) {
+		// return record.getAttribute(Constants.ATTR_DESC);
+		// }
+		// });
 
 		// setLoadDataOnDemand(false);
 		setCanSort(false);
-
-		// GridField field1 = new TreeGridField();
-		// field1.setCanFilter(true);
-		// field1.setName("name");
-		// field1.setTitle("Recently modified");
-		// TreeGridField field2 = new TreeGridField();
-		// field2.setCanFilter(true);
-		// field2.setName("name2");
-		// field2.setTitle("<b>Recently modified</b>");
-		// setFields(field1, field2);
-
-		// Tree tree = new Tree();
-		// tree.setModelType(TreeModelType.PARENT);
-		// tree.setNameProperty("name");
-		// tree.setOpenProperty("isOpen");
-		// tree.setIdField("nodeID");
-		// tree.setParentIdField("parentNodeID");
-		// tree.setRootValue("root" + idSuffix);
-
-		// tree.setData(showcaseData);
-		// fetchData(criteria, callback, requestProperties)
 	}
-
-	// @Override
-	// public void fetchData(Criteria criteria, DSCallback callback, DSRequest
-	// requestProperties) {
-	// new DSCallback() {
-	// @Override
-	// public void execute(DSResponse response, Object rawData, DSRequest request)
-	// {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	// };
-	// // TODO Auto-generated method stub
-	// super.fetchData(criteria, callback, requestProperties);
-	// }
 
 }

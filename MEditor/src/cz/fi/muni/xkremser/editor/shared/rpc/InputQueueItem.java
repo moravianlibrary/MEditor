@@ -8,8 +8,8 @@ public class InputQueueItem implements IsSerializable {
 	private String name;
 	private String issn;
 
-	// @SuppressWarnings("unused")
-	public InputQueueItem() {
+	@SuppressWarnings("unused")
+	private InputQueueItem() {
 
 	}
 

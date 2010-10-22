@@ -14,12 +14,8 @@ public class ScanInputQueue extends UnsecuredActionImpl<ScanInputQueueResult> {
 	@In(1)
 	private String id;
 
-	public enum TYPE {
-		DB_UPDATE, DB_GET
-	};
-
 	@In(2)
-	private TYPE type;
+	private boolean refresh;
 
 	@Out(1)
 	private ArrayList<InputQueueItem> items;

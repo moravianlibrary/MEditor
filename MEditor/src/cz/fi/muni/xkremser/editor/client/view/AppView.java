@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -30,13 +31,16 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		mainContainer = new VLayout(); // TODO: consider some panel
 		mainContainer.setOverflow(Overflow.AUTO);
 		widget.setWidth("99%");
+		// widget.setWidth("auto");
 		widget.setHeight("98%");
 		// widget.setAutoHeight();
 		widget.setOverflow(Overflow.AUTO);
 		topContainer = new HLayout();
 		topContainer.setWidth100();
 		topContainer.setHeight(90);
-		topContainer.setBorder("1px solid");
+		// topContainer.setBorder("1px solid");
+		Img logo = new Img("mzk_logo.gif", 283, 87);
+		topContainer.addMember(logo);
 		widget.addMember(topContainer);
 
 		HLayout underTop = new HLayout();
