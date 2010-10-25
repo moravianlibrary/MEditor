@@ -142,11 +142,9 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		inputTree = new SideNavInputTree(dispatcher);
 		section1.setItems(inputTree);
 		refreshButton = new ImgButton();
-		refreshButton.setSrc("[SKIN]actions/refresh.png");
+		refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
 		refreshButton.setSize(16);
-		refreshButton.setShowFocused(false);
-		refreshButton.setShowRollOver(false);
-		refreshButton.setShowDown(false);
+		refreshButton.setShowRollOver(true);
 		refreshButton.setCanHover(true);
 		refreshButton.addHoverHandler(new HoverHandler() {
 			@Override

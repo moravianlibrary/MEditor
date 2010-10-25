@@ -11,12 +11,22 @@ import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
-import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.DoubleClickEvent;
 import com.smartgwt.client.widgets.events.DoubleClickHandler;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.DateItem;
+import com.smartgwt.client.widgets.form.fields.FormItem;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
@@ -104,7 +114,21 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
 		topTabSet.setCanDrag(true);
-		IButton closeButton = new IButton("close");
+
+		final ImgButton closeButton = new ImgButton();
+		closeButton.setSrc("[SKIN]headerIcons/close.png");
+		closeButton.setSize(16);
+		// closeButton.setShowFocused(false);
+		closeButton.setShowRollOver(true);
+		closeButton.setCanHover(true);
+		closeButton.addHoverHandler(new HoverHandler() {
+			@Override
+			public void onHover(HoverEvent event) {
+				closeButton.setPrompt("Close this digital object.");
+			}
+		});
+
+		// IButton closeButton = new IButton("close");
 		closeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -118,13 +142,31 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 			}
 		});
 		topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, closeButton);
+		topTabSet.setAnimateTabScrolling(true);
 
 		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_blue.png");
 		tTab1.setPane(imagesLayout);
 
-		Tab tTab2 = new Tab("Dublin Core", "pieces/16/pawn_green.png");
-		Img tImg2 = new Img("pieces/48/pawn_green.png", 48, 48);
-		tTab2.setPane(tImg2);
+		Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
+
+		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setWidth(500);
+
+		sectionStack.addSection(getSimpleStackSection("Title", true, TextAreaItem.class));
+		sectionStack.addSection(getStackSection("Identifiers", "Identifier", true));
+		sectionStack.addSection(getStackSection("Creators", "Creator", true));
+		sectionStack.addSection(getStackSection("Publishers", "Publisher", true));
+		sectionStack.addSection(getStackSection("Contributors", "Contributor", true));
+		sectionStack.addSection(getSimpleStackSection("Date", true, DateItem.class));
+		sectionStack.addSection(getSimpleStackSection("Language", true, TextItem.class));
+		sectionStack.addSection(getSimpleStackSection("Description", false, TextAreaItem.class));
+		sectionStack.addSection(getSimpleStackSection("Format", false, TextItem.class));
+		sectionStack.addSection(getStackSection("Subjects", "Subject", false));
+		sectionStack.addSection(getSimpleStackSection("Type", false, TextItem.class));
+		sectionStack.addSection(getSimpleStackSection("Rights", false, TextAreaItem.class));
+
+		tTab2.setPane(sectionStack);
 
 		Tab tTab3 = new Tab("MODS", "pieces/16/pawn_red.png");
 		Img tImg3 = new Img("pieces/48/pawn_red.png", 48, 48);
@@ -166,6 +208,79 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 			tileGrid.setData(data);
 		}
 		first = !first;
+	}
+
+	private SectionStackSection getSimpleStackSection(final String label, boolean expanded, Class<? extends FormItem> type) {
+		SectionStackSection section = new SectionStackSection(label);
+
+		final DynamicForm form = new DynamicForm();
+		FormItem item = null;
+		if (type.equals(TextAreaItem.class)) {
+			item = new TextAreaItem(label);
+		} else if (type.equals(TextItem.class)) {
+			item = new TextItem(label);
+		} else if (type.equals(DateItem.class)) {
+			item = new DateItem(label);
+			((DateItem) item).setUseTextField(true);
+		}
+		form.setFields(item);
+
+		section.setExpanded(expanded);
+		section.addItem(form);
+
+		return section;
+	}
+
+	private SectionStackSection getStackSection(final String label1, final String label2, boolean expanded) {
+		final SectionStackSection section = new SectionStackSection(label1);
+		final VLayout layout = new VLayout();
+		final DynamicForm form = new DynamicForm();
+		TextItem item = new TextItem(label2);
+		form.setFields(item);
+		layout.addMember(form);
+		section.addItem(layout);
+		section.setExpanded(expanded);
+
+		final ImgButton addButton = new ImgButton();
+		addButton.setSrc("[SKIN]headerIcons/plus.png");
+		addButton.setSize(16);
+		addButton.setShowRollOver(true);
+		addButton.setCanHover(true);
+		addButton.addHoverHandler(new HoverHandler() {
+			@Override
+			public void onHover(HoverEvent event) {
+				addButton.setPrompt("Add new " + label2 + ".");
+			}
+		});
+		addButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final DynamicForm form = new DynamicForm();
+				TextItem identifierItem1 = new TextItem(label2);
+				form.setFields(identifierItem1);
+				layout.addMember(form);
+			}
+		});
+
+		final ImgButton removeButton = new ImgButton();
+		removeButton.setSrc("[SKIN]headerIcons/minus.png");
+		removeButton.setSize(16);
+		removeButton.setShowRollOver(true);
+		removeButton.setCanHover(true);
+		removeButton.addHoverHandler(new HoverHandler() {
+			@Override
+			public void onHover(HoverEvent event) {
+				removeButton.setPrompt("Remove last " + label2 + ".");
+			}
+		});
+		removeButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				layout.removeMember(layout.getMembers()[layout.getMembers().length - 1]);
+			}
+		});
+		section.setControls(addButton, removeButton);
+		return section;
 	}
 
 	private void setTileGrid() {

@@ -1,7 +1,8 @@
 package cz.fi.muni.xkremser.editor.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public enum KrameriusModel {
+public enum KrameriusModel implements IsSerializable {
 
 	MONOGRAPH("monograph"), MONOGRAPHUNIT("monographunit"), PERIODICAL("periodical"), PERIODICALVOLUME("periodicalvolume"), PERIODICALITEM("periodicalitem"), PAGE(
 			"page"), INTERNALPART("internalpart")/* , DONATOR("donator") */;

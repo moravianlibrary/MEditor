@@ -31,7 +31,7 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		mainContainer = new VLayout(); // TODO: consider some panel
 		mainContainer.setOverflow(Overflow.AUTO);
 		widget.setWidth("99%");
-		// widget.setWidth("auto");
+		// widget.setWidth("*");
 		widget.setHeight("98%");
 		// widget.setAutoHeight();
 		widget.setOverflow(Overflow.AUTO);

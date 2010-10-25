@@ -40,7 +40,7 @@ public class SideNavInputTree extends TreeGrid implements Refreshable {
 		setFolderIcon("silk/folder.png");
 		setShowOpenIcons(true);
 		setShowDropIcons(false);
-		setLoadingDataMessage("loading ...");
+		// setLoadingDataMessage("loading ...");
 		setShowSortArrow(SortArrow.CORNER);
 		setShowConnectors(true);
 		setShowAllRecords(true);
