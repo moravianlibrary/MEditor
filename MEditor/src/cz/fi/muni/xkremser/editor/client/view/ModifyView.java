@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
 import com.smartgwt.client.types.VisibilityMode;
@@ -54,7 +55,9 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 
 	public ModifyView() {
 		layout = new VLayout();
-		layout.setCanDragResize(true);
+		layout.setOverflow(Overflow.AUTO);
+		layout.setLeaveScrollbarGap(true);
+		// layout.setCanDragResize(true);
 
 		// HLayout buttons = new HLayout();
 		// buttons.setMembersMargin(15);
@@ -97,7 +100,6 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		for (Record rec : data) {
 			System.out.println(rec.getAttribute(Constants.ATTR_NAME));
 		}
-
 	}
 
 	@Override
@@ -150,8 +152,12 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
 
 		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
-		sectionStack.setWidth(500);
+		// sectionStack.setWidth(500);
+		sectionStack.setWidth100();
+
+		sectionStack.setOverflow(Overflow.AUTO);
 
 		sectionStack.addSection(getSimpleStackSection("Title", true, TextAreaItem.class));
 		sectionStack.addSection(getStackSection("Identifiers", "Identifier", true));
@@ -223,6 +229,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 			item = new DateItem(label);
 			((DateItem) item).setUseTextField(true);
 		}
+		item.setWidth(200);
 		form.setFields(item);
 
 		section.setExpanded(expanded);
@@ -236,6 +243,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		final VLayout layout = new VLayout();
 		final DynamicForm form = new DynamicForm();
 		TextItem item = new TextItem(label2);
+		item.setWidth(200);
 		form.setFields(item);
 		layout.addMember(form);
 		section.addItem(layout);
@@ -256,8 +264,9 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 			@Override
 			public void onClick(ClickEvent event) {
 				final DynamicForm form = new DynamicForm();
-				TextItem identifierItem1 = new TextItem(label2);
-				form.setFields(identifierItem1);
+				TextItem item = new TextItem(label2);
+				item.setWidth(200);
+				form.setFields(item);
 				layout.addMember(form);
 			}
 		});

@@ -25,6 +25,7 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 
 	public AppView() {
 		widget = new VLayout();
+		widget.setLeaveScrollbarGap(true);
 		leftContainer = new VLayout();
 		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
