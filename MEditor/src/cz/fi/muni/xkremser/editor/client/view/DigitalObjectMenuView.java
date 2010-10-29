@@ -105,7 +105,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		sectionStack.setAnimateSections(true);
 		sectionStack.setWidth100();
 		sectionStack.setHeight100();
-		sectionStack.setOverflow(Overflow.AUTO);
+		// sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.setOverflow(Overflow.HIDDEN);
 		layout.addMember(sectionStack);
 	}

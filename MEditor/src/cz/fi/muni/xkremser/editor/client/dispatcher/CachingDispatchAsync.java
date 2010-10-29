@@ -42,7 +42,7 @@ public class CachingDispatchAsync implements DispatchAsync {
 
 				@Override
 				public void onSuccess(R result) {
-					mCache.put((Action) action, (Result) result);
+					mCache.put((Action<Result>) action, (Result) result);
 					callback.onSuccess(result);
 				}
 
