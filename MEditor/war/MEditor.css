@@ -10,8 +10,21 @@
 
 
 .metadata-elements {
-	padding-left: 25px;
-	padding-right: 25px;
+	padding-left: 30px;
+	padding-right: 15px;
+}
+
+.metadata-attributes {
+	margin-left: 25px;
+	margin-right: 25px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.metadata-sectionstack-topmargin {
+	margin-top: 5px;
+	padding-left: 30px;
+	padding-right: 10px;
 }
 
 

@@ -145,6 +145,10 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 
 		Tab tTab2 = new DCTab();
 		Tab tTab3 = new ModsTab();
+		// Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
+		// tTab3.setPane(imagesLayout);
+		// Tab tTab2 = new Tab("DC", "pieces/16/pawn_blue.png");
+		// tTab2.setPane(imagesLayout);
 
 		Tab tTab4 = new Tab("Thumbnail", "pieces/16/pawn_white.png");
 		Img tImg4 = new Img("pieces/48/pawn_white.png", 48, 48);
