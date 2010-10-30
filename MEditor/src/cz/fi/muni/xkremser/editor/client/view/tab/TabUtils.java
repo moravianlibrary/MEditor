@@ -63,33 +63,36 @@ public final class TabUtils {
 	private static final Attribute ATTR_AUTHORITY = new Attribute(TextItem.class, "authority", "Authority",
 			"The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file.");
 
-	private static final Attribute ATTR_LANG = new Attribute(TextItem.class, "lang", "Lang", "This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
+	public static final Attribute ATTR_LANG = new Attribute(TextItem.class, "lang", "Lang", "This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
 
-	private static final Attribute ATTR_XML_LANG = new Attribute(TextItem.class, "xml:lang", "xml:lang", "In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.");
-	private static final Attribute ATTR_TRANSLITERATION = new Attribute(TextItem.class, "transliteration", "Transliteration", "It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ");
-	private static final Attribute ATTR_SCRIPT = new Attribute(TextItem.class, "script", "Script", "This attribute specifies the script used within individual elements, using codes from ISO 15924.");
-	private static final Attribute ATTR_ID = new Attribute(TextItem.class, "id", "ID", "This attribute is used to link internally and to reference an element from outside the instance.");
-	private static final Attribute ATTR_XLINK = new Attribute(TextItem.class, "xlink", "xlink", "This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.");
-	private static final Attribute ATTR_ENCODING = new Attribute(SelectItem.class, "encoding", "Encoding", ENCODING_TOOLTIPS);
-	private static final Attribute ATTR_POINT = new Attribute(SelectItem.class, "point", "Point", POINT_TOOLTIPS);
-	private static final Attribute ATTR_KEY_DATE = new Attribute(CheckboxItem.class, "key_date", "Key Date",
+	public static final Attribute ATTR_XML_LANG = new Attribute(TextItem.class, "xml:lang", "xml:lang", "In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.");
+	public static final Attribute ATTR_TRANSLITERATION = new Attribute(TextItem.class, "transliteration", "Transliteration", "It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ");
+	public static final Attribute ATTR_SCRIPT = new Attribute(TextItem.class, "script", "Script", "This attribute specifies the script used within individual elements, using codes from ISO 15924.");
+	public static final Attribute ATTR_ID = new Attribute(TextItem.class, "id", "ID", "This attribute is used to link internally and to reference an element from outside the instance.");
+	public static final Attribute ATTR_XLINK = new Attribute(TextItem.class, "xlink", "xlink", "This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.");
+	public static final Attribute ATTR_ENCODING = new Attribute(SelectItem.class, "encoding", "Encoding", ENCODING_TOOLTIPS);
+	public static final Attribute ATTR_POINT = new Attribute(SelectItem.class, "point", "Point", POINT_TOOLTIPS);
+	public static final Attribute ATTR_KEY_DATE = new Attribute(CheckboxItem.class, "key_date", "Key Date",
 			"This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.");
-	private static final Attribute ATTR_QUALIFIER = new Attribute(SelectItem.class, "qualifier", "Qualifier", QUALIFIER_TOOLTIPS);
-	private static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, "type", "Type", TYPE_TEXT_CODE_TOOLTIPS);
-	private static final Attribute ATTR_DISPLAY_LABEL = new Attribute(TextItem.class, "display_label", "Display Label",
-			"This attribute is intended to be used when additional text associated with the title is needed for display. It is equivalent to MARC 21 field 246 subfield $i. ");
+	public static final Attribute ATTR_QUALIFIER = new Attribute(SelectItem.class, "qualifier", "Qualifier", QUALIFIER_TOOLTIPS);
+	public static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, "type", "Type", TYPE_TEXT_CODE_TOOLTIPS);
+
+	public static Attribute getDisplayLabel(final String tooltip) {
+		return new Attribute(TextItem.class, "display_label", "Display Label", tooltip);
+	}
 
 	private static final GetLayoutOperation GET_TITLE_INFO_LAYOUT = new GetTitleInfoLayout();
 	private static final GetLayoutOperation GET_NAME_LAYOUT = new GetNameLayout();
-	private static final GetLayoutOperation GET_TYPE_Of_RESOURCE_LAYOUT = new GetTypeOfResourceLayout();
+	private static final GetLayoutOperation GET_TYPE_OF_RESOURCE_LAYOUT = new GetTypeOfResourceLayout();
 	private static final GetLayoutOperation GET_GENRE_LAYOUT = new GetGenreLayout();
 	private static final GetLayoutOperation GET_ORIGIN_INFO_LAYOUT = new GetOriginInfoLayout();
 	private static final GetLayoutOperation GET_PLACE_LAYOUT = new GetPlaceLayout();
 	private static final GetLayoutOperation GET_LANGUAGE_LAYOUT = new GetLanguageLayout();
 	private static final GetLayoutOperation GET_PHYSICIAL_DESCRIPTION_LAYOUT = new GetPhysicialDescriptionLayout();
+	private static final GetLayoutOperation GET_LOCATION_LAYOUT = new GetLocationLayout();
 
-	private interface GetLayoutOperation {
-		VLayout execute();
+	public interface GetLayoutOperation {
+		Canvas execute();
 	}
 
 	private static class GetTitleInfoLayout implements GetLayoutOperation {
@@ -168,6 +171,20 @@ public final class TabUtils {
 		@Override
 		public VLayout execute() {
 			return getSubjectLayout();
+		}
+	}
+
+	private static class GetLocationLayout implements GetLayoutOperation {
+		@Override
+		public VLayout execute() {
+			return getLocationLayout();
+		}
+	}
+
+	private static class GetCopyInformationLayout implements GetLayoutOperation {
+		@Override
+		public VLayout execute() {
+			return getCopyInformationLayout();
 		}
 	}
 
@@ -417,7 +434,7 @@ public final class TabUtils {
 		return item;
 	}
 
-	private static SectionStackSection getSomeStack(boolean expanded, final String label, final GetLayoutOperation operation) {
+	public static SectionStackSection getSomeStack(boolean expanded, final String label, final GetLayoutOperation operation) {
 		final SectionStackSection section = new SectionStackSection(label);
 		final VLayout layout = new VLayout();
 		layout.setLeaveScrollbarGap(true);
@@ -482,7 +499,7 @@ public final class TabUtils {
 	}
 
 	public static SectionStackSection getTypeOfResourceStack(boolean expanded) {
-		return getSomeStack(expanded, "Type of Resource", GET_TYPE_Of_RESOURCE_LAYOUT);
+		return getSomeStack(expanded, "Type of Resource", GET_TYPE_OF_RESOURCE_LAYOUT);
 	}
 
 	public static SectionStackSection getGenreStack(boolean expanded) {
@@ -503,12 +520,14 @@ public final class TabUtils {
 
 	public static SectionStackSection getAbstractStack(boolean expanded) {
 		return getSomeStack(expanded, "Abstract", new GetGeneralLayout(new Attribute(TextAreaItem.class, "abstract", "Abstract", "Roughly equivalent to MARC 21 field 520."), new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), getDisplayLabel("This attribute is intended to be used when additional text associated with the abstract is necessary for display."), ATTR_XLINK,
+				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
 	public static SectionStackSection getTableOfContentsStack(boolean expanded) {
 		return getSomeStack(expanded, "Table of Contents", new GetGeneralLayout(new Attribute(TextAreaItem.class, "table_of_contents", "Table of Contents", "Roughly equivalent to MARC 21 field 505."), new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), getDisplayLabel("This attribute is intended to be used when additional text associated with the table of contents is necessary for display."), ATTR_XLINK,
+				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
 	public static SectionStackSection getTargetAudienceStack(boolean expanded) {
@@ -518,25 +537,33 @@ public final class TabUtils {
 
 	public static SectionStackSection getNoteStack(boolean expanded) {
 		return getSomeStack(expanded, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Roughly equivalent to MARC 21 fields 5XX."), new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK, ATTR_ID,
+				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
 	public static SectionStackSection getSubjectStack(boolean expanded) {
 		return getSomeStack(expanded, "Subject", new GetSubjectLayout());
 	}
 
-	// public static SectionStackSection getClassificationStack(boolean expanded)
-	// {
-	// return getSomeStack(expanded, "Table of Contents", new
-	// GetTextAreaLayout("table_of_contents", "Table of Contents",
-	// "Roughly equivalent to MARC 21 field 505."));
-	// }
-	//
-	// public static SectionStackSection getRelatedItemStack(boolean expanded) {
-	// return getSomeStack(expanded, "Table of Contents", new
-	// GetTextAreaLayout("table_of_contents", "Table of Contents",
-	// "Roughly equivalent to MARC 21 field 505."));
-	// }
+	public static SectionStackSection getClassificationStack(boolean expanded) {
+		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY,
+				new Attribute(TextItem.class, "edition", "Edition", "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."),
+				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
+		return getStackSectionWithAttributes("Classifications", "Classification", "Equivalent to MARC fields 050-08X, subfields $a and $b.", false, attributes);
+	}
+
+	public static SectionStackSection getIdentifierStack(boolean expanded) {
+		Attribute[] attributes = new Attribute[] {
+				new Attribute(TextItem.class, "type", "Type",
+						"There is no controlled list of abstract types. (Suggested values: doi, hdl, isbn, ismn, isrc, issn,	issue number,	istc, lccn, loca, matrix number, music plate, music publisher, sici, stock number, upc, uri, videorecording identifier)"),
+				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT,
+				new Attribute(CheckboxItem.class, "invalid", "Invalid", "If invalid='yes' is not present, the identifier is assumed to be valid.") };
+		return getStackSectionWithAttributes("Identifiers", "Identifier", "Roughly equivalent to MARC fields 010, 020, 022, 024, 856.", false, attributes);
+	}
+
+	public static SectionStackSection getLocationStack(boolean expanded) {
+		return getSomeStack(expanded, "Location", new GetLocationLayout());
+	}
 
 	private static SectionStackSection getPlaceStack(boolean expanded) {
 		return getSomeStack(expanded, "Place", GET_PLACE_LAYOUT);
@@ -552,7 +579,9 @@ public final class TabUtils {
 		tooltips.put("alternative", "equivalent to MARC 21 fields 246, 740");
 		tooltips.put("uniform", "equivalent to MARC 21 fields 130, 240, 730");
 
-		Attribute[] attributes = new Attribute[] { new Attribute(SelectItem.class, "type", "Type", tooltips), ATTR_LANG, ATTR_DISPLAY_LABEL, ATTR_XML_LANG, ATTR_AUTHORITY, ATTR_TRANSLITERATION, ATTR_SCRIPT, ATTR_ID, ATTR_XLINK };
+		Attribute[] attributes = new Attribute[] { new Attribute(SelectItem.class, "type", "Type", tooltips), ATTR_LANG,
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the title is needed for display. It is equivalent to MARC 21 field 246 subfield $i."), ATTR_XML_LANG, ATTR_AUTHORITY, ATTR_TRANSLITERATION, ATTR_SCRIPT,
+				ATTR_ID, ATTR_XLINK };
 		layout.addMember(getAttributes(true, attributes));
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -797,7 +826,7 @@ public final class TabUtils {
 			}
 		}), false, null));
 		attributes = new Attribute[] { new Attribute(TextItem.class, "type", "Type", "Roughly equivalent to the types of notes that may be contained in MARC 21 fields 340, 351 or general 500 notes concerning physical condition, characteristics, etc."),
-				ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
 		sectionStack.addSection(getStackSectionWithAttributes("Notes", new Attribute(TextAreaItem.class, "note", "Note",
 				"Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used."), false, attributes));
 
@@ -866,6 +895,36 @@ public final class TabUtils {
 		return layout;
 	}
 
+	private static VLayout getCopyInformationLayout() {
+		final VLayout layout = new VLayout();
+		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setLeaveScrollbarGap(true);
+		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setStyleName("metadata-elements");
+		sectionStack.setWidth100();
+		sectionStack.setOverflow(Overflow.AUTO);
+
+		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "form", "Form", "Designation of a particular physical presentation of a resource."), false, new Attribute[] { ATTR_AUTHORITY }));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation", "Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "shelf_locator", "Shelf Locator",
+				"Equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."), false));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "electronic_locator", "Electronic Locator", "This is a copy-specific form of the MODS <location><url>, without its attributes."), false));
+		getSomeStack(false, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Note relating to a specific copy of a document. "), new Attribute[] {
+				new Attribute(TextItem.class, "type", "Type", "This attribute is not controlled by a list and thus is open-ended."), getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") }));
+		sectionStack.addSection(getStackSectionWithAttributes("Enumeration and Chronology", new Attribute(TextItem.class, "enumeration_and_chronology", "Enumeration and Chronology",
+				"Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>."), false, new Attribute[] { new Attribute(SelectItem.class, "unit_type",
+				"Unit Type", new HashMap<String, String>() {
+					{
+						put("", "This attribute will be omitted.");
+						put("1", "Information is about the basic bibliographic unit. (863 or 866)");
+						put("2", "Information is about supplementary material to the basic unit. (864 or 867)");
+						put("3", "Information is about index(es) to the basic unit. (865 or 868)");
+					}
+				}) }));
+		layout.addMember(sectionStack);
+		return layout;
+	}
+
 	private static VLayout getSubjectLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -908,7 +967,7 @@ public final class TabUtils {
 		sectionStack.addSection(getStackSectionWithAttributes("Geographic Code", new Attribute(TextItem.class, "geographic_code", "Geographic Code", "Equivalent to MARC 21 field 043."), false, new Attribute[] { new Attribute(SelectItem.class, "authority",
 				"Authority", new HashMap<String, String>() {
 					{
-						put("", "This attribute will be omitted..");
+						put("", "This attribute will be omitted.");
 						put("marcgac", "marcgac");
 						put("marccountry", "marccountry");
 						put("iso3166", "iso3166");
@@ -916,6 +975,41 @@ public final class TabUtils {
 				}) }));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false));
 
+		layout.addMember(sectionStack);
+		return layout;
+	}
+
+	private static VLayout getLocationLayout() {
+		final VLayout layout = new VLayout();
+		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setLeaveScrollbarGap(true);
+		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setStyleName("metadata-elements");
+		sectionStack.setWidth100();
+		sectionStack.setOverflow(Overflow.AUTO);
+		Attribute[] attributes = new Attribute[] { getDisplayLabel("Equivalent to MARC 21 field 852 subfield $3."),
+				new Attribute(TextItem.class, "type", "Type", "This attribute is used to indicate different kinds of locations, e.g. current, discovery, former, creation."), ATTR_AUTHORITY, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
+		sectionStack.addSection(getStackSectionWithAttributes("Physical Location", new Attribute(TextItem.class, "physical_location", "Physical Location", "Equivalent to MARC 21 field 852 subfields $a, $b and $e."), true, attributes));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "shelfLocator", "Shelf Locator",
+				"This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."), false));
+		attributes = new Attribute[] { getDisplayLabel("Equivalent to MARC 21 field 856 subfields $y and $3."), new Attribute(DateItem.class, "date_last_accessed", "Date Last Accessed", "There is no MARC equivalent for 'dateLastAccessed'."),
+				new Attribute(TextAreaItem.class, "note", "Note", "This attribute includes notes that are associated with the link that is included as the value of the <url> element. It is generally free text."),
+				new Attribute(SelectItem.class, "access", "Access", new HashMap<String, String>() {
+					{
+						put("", "This attribute will be omitted.");
+						put("preview", "Indicates a link to a thumbnail or snippet of text.");
+						put("raw object", "Indicates a direct link to the object described (e.g. a jpg or pdf document). Used only when the object is represented by a single file.");
+						put("object in context", "Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)");
+					}
+				}), new Attribute(SelectItem.class, "usage", "Usage", new HashMap<String, String>() {
+					{
+						put("", "This attribute will be omitted.");
+						put("primary display", "Indicates that the link is the most appropriate to display for end users.");
+					}
+				}) };
+		sectionStack.addSection(getSomeStack(false, "Holding Simple", new GetCopyInformationLayout()));
+		sectionStack.addSection(getSimpleSection(new Attribute(TextAreaItem.class, "holding_external", "Holding External",
+				"Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema."), false));
 		layout.addMember(sectionStack);
 		return layout;
 	}

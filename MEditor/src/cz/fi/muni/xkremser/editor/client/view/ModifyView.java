@@ -109,7 +109,6 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
-		topTabSet.setCanDrag(true);
 
 		final ImgButton closeButton = new ImgButton();
 		closeButton.setSrc("[SKIN]headerIcons/close.png");
@@ -140,11 +139,11 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, closeButton);
 		topTabSet.setAnimateTabScrolling(true);
 
-		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_blue.png");
+		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_red.png");
 		tTab1.setPane(imagesLayout);
 
 		Tab tTab2 = new DCTab();
-		Tab tTab3 = new ModsTab();
+		Tab tTab3 = new ModsTab(1, true);
 		// Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
 		// tTab3.setPane(imagesLayout);
 		// Tab tTab2 = new Tab("DC", "pieces/16/pawn_blue.png");
