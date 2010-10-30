@@ -23,13 +23,14 @@ public class ModsTab extends Tab {
 		sectionStack.addSection(TabUtils.getLanguageStack(false));
 		sectionStack.addSection(TabUtils.getPhysicalDescriptionStack(false));
 		sectionStack.addSection(TabUtils.getAbstractStack(false));
-		sectionStack.addSection(TabUtils.getTableOfContentsStack(true));
+		sectionStack.addSection(TabUtils.getTableOfContentsStack(false));
 
-		// sectionStack.addSection(TabUtils.getTargetAudienceStack(false));
-		// sectionStack.addSection(TabUtils.getNoteStack(false));
-		// sectionStack.addSection(TabUtils.getSubjectStack(false));
+		sectionStack.addSection(TabUtils.getTargetAudienceStack(false));
+		sectionStack.addSection(TabUtils.getNoteStack(true));
+		sectionStack.addSection(TabUtils.getSubjectStack(false));
 		// sectionStack.addSection(TabUtils.getClassificationStack(false));
 		// sectionStack.addSection(TabUtils.getRelatedItemStack(false));
+
 		// sectionStack.addSection(TabUtils.getIdentifierStack(false));
 		// sectionStack.addSection(TabUtils.getLocationStack(false));
 		// sectionStack.addSection(TabUtils.getAccessConditionStack(false));

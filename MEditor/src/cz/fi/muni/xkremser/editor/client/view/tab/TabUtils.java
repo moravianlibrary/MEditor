@@ -88,9 +88,6 @@ public final class TabUtils {
 	private static final GetLayoutOperation GET_LANGUAGE_LAYOUT = new GetLanguageLayout();
 	private static final GetLayoutOperation GET_PHYSICIAL_DESCRIPTION_LAYOUT = new GetPhysicialDescriptionLayout();
 
-	// private static final GetLayoutOperation GET_TABLE_OF_CONTENTS_LAYOUT = new
-	// GetTableOfContentsLayout();
-
 	private interface GetLayoutOperation {
 		VLayout execute();
 	}
@@ -137,21 +134,40 @@ public final class TabUtils {
 		}
 	}
 
-	private static class GetAbstractLayout implements GetLayoutOperation {
-		private final String name;
-		private final String title;
-		private final String tooltip;
+	private static class GetGeneralLayout implements GetLayoutOperation {
+		private final Attribute head;
+		private final Attribute[] attributes;
 
-		public GetAbstractLayout(String name, String title, String tooltip) {
+		public GetGeneralLayout(Attribute head, Attribute[] attributes) {
 			super();
-			this.name = name;
-			this.title = title;
-			this.tooltip = tooltip;
+			this.head = head;
+			this.attributes = attributes;
 		}
 
 		@Override
 		public VLayout execute() {
-			return getAbstractLayout(name, title, tooltip);
+			return getGeneralLayout(head, attributes);
+		}
+	}
+
+	private static class GetGeneralDeepLayout implements GetLayoutOperation {
+		private final Attribute[] attributes;
+
+		public GetGeneralDeepLayout(Attribute[] attributes) {
+			super();
+			this.attributes = attributes;
+		}
+
+		@Override
+		public VLayout execute() {
+			return getGeneralDeepLayout(attributes);
+		}
+	}
+
+	private static class GetSubjectLayout implements GetLayoutOperation {
+		@Override
+		public VLayout execute() {
+			return getSubjectLayout();
 		}
 	}
 
@@ -201,11 +217,19 @@ public final class TabUtils {
 		}
 	}
 
+	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded) {
+		return getStackSectionWithAttributes(attribute.getLabel(), attribute.getLabel(), attribute.getTooltip(), expanded, null);
+	}
+
 	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded) {
 		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null);
 	}
 
-	public static SectionStackSection getSimpleStackSection(final Class<? extends FormItem> type, final String label, final String tooltip, final boolean expanded) {
+	public static SectionStackSection getSimpleSection(final Attribute attribute, final boolean expanded) {
+		return getSimpleSectionWithAttributes(attribute, expanded, null);
+	}
+
+	public static SectionStackSection getSimpleSection(final Class<? extends FormItem> type, final String label, final String tooltip, final boolean expanded) {
 		return getSimpleSectionWithAttributes(new Attribute(type, label.toLowerCase().replaceAll(" ", "_"), label, tooltip), expanded, null);
 	}
 
@@ -478,12 +502,41 @@ public final class TabUtils {
 	}
 
 	public static SectionStackSection getAbstractStack(boolean expanded) {
-		return getSomeStack(expanded, "Abstract", new GetAbstractLayout("abstract", "Abstract", "Roughly equivalent to MARC 21 field 520."));
+		return getSomeStack(expanded, "Abstract", new GetGeneralLayout(new Attribute(TextAreaItem.class, "abstract", "Abstract", "Roughly equivalent to MARC 21 field 520."), new Attribute[] {
+				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
 	public static SectionStackSection getTableOfContentsStack(boolean expanded) {
-		return getSomeStack(expanded, "Table of Contents", new GetAbstractLayout("table_of_contents", "Table of Contents", "Roughly equivalent to MARC 21 field 505."));
+		return getSomeStack(expanded, "Table of Contents", new GetGeneralLayout(new Attribute(TextAreaItem.class, "table_of_contents", "Table of Contents", "Roughly equivalent to MARC 21 field 505."), new Attribute[] {
+				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
+
+	public static SectionStackSection getTargetAudienceStack(boolean expanded) {
+		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY, ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
+		return getStackSectionWithAttributes("Target Audience", "Target Audience", "A description of the intellectual level of the audience for which the resource is intended.", false, attributes);
+	}
+
+	public static SectionStackSection getNoteStack(boolean expanded) {
+		return getSomeStack(expanded, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Roughly equivalent to MARC 21 fields 5XX."), new Attribute[] {
+				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+	}
+
+	public static SectionStackSection getSubjectStack(boolean expanded) {
+		return getSomeStack(expanded, "Subject", new GetSubjectLayout());
+	}
+
+	// public static SectionStackSection getClassificationStack(boolean expanded)
+	// {
+	// return getSomeStack(expanded, "Table of Contents", new
+	// GetTextAreaLayout("table_of_contents", "Table of Contents",
+	// "Roughly equivalent to MARC 21 field 505."));
+	// }
+	//
+	// public static SectionStackSection getRelatedItemStack(boolean expanded) {
+	// return getSomeStack(expanded, "Table of Contents", new
+	// GetTextAreaLayout("table_of_contents", "Table of Contents",
+	// "Roughly equivalent to MARC 21 field 505."));
+	// }
 
 	private static SectionStackSection getPlaceStack(boolean expanded) {
 		return getSomeStack(expanded, "Place", GET_PLACE_LAYOUT);
@@ -736,7 +789,7 @@ public final class TabUtils {
 		sectionStack.addSection(getStackSection("Extents", "Extent", "Roughly equivalent to MARC 21 fields 300 subfields $a, $b, $c, and $e and 306 subfield $a.", false));
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, "digital_origin", "Digital Origin", new HashMap<String, String>() {
 			{
-				put("", "This element will be omitted.");
+				put("", "This element will bauthoritye omitted.");
 				put("born digital", "A resource was created and is intended to remain in digital form. (No MARC equivalent, but includes value 'c')");
 				put("reformatted digital", "A resource was created by digitization of the original non-digital form. (MARC 007/11 value 'a')");
 				put("digitized microfilm", "A resource was created by digitizing a microform (MARC 007/11 value 'b')");
@@ -753,16 +806,38 @@ public final class TabUtils {
 		return layout;
 	}
 
-	private static VLayout getAbstractLayout(final String name, final String title, final String tooltip) {
+	private static VLayout getGeneralLayout(final Attribute head, final Attribute[] attribs) {
 		final VLayout layout = new VLayout();
-		layout.addMember(getAttributes(true, new Attribute[] { new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), ATTR_DISPLAY_LABEL, ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+		layout.addMember(getAttributes(true, attribs));
 		DynamicForm form = new DynamicForm();
-		TextAreaItem item = new TextAreaItem(name);
-		item.setTitle(title);
-		item.setTooltip(tooltip);
-		item.setWidth(600);
+
+		FormItem item = newItem(head);
+		if (head.getType() == TextAreaItem.class)
+			item.setWidth(600);
+		else {
+			item.setWidth(200);
+		}
 		form.setItems(item);
 		layout.addMember(form);
+		return layout;
+	}
+
+	private static VLayout getGeneralDeepLayout(final Attribute[] attribs) {
+		final VLayout layout = new VLayout();
+		if (attribs != null || attribs.length > 0) {
+			boolean first = true;
+			for (Attribute attr : attribs) {
+				final SectionStack sectionStack = new SectionStack();
+				sectionStack.setLeaveScrollbarGap(true);
+				sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+				sectionStack.setStyleName("metadata-elements");
+				sectionStack.setWidth100();
+				sectionStack.addSection(getStackSection(attr, first));
+				layout.addMember(sectionStack);
+				if (first)
+					first = false;
+			}
+		}
 		return layout;
 	}
 
@@ -790,4 +865,59 @@ public final class TabUtils {
 		layout.addMember(sectionStack);
 		return layout;
 	}
+
+	private static VLayout getSubjectLayout() {
+		final VLayout layout = new VLayout();
+		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setLeaveScrollbarGap(true);
+		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setStyleName("metadata-elements");
+		sectionStack.setWidth100();
+		sectionStack.setOverflow(Overflow.AUTO);
+		layout.addMember(getAttributes(true, new Attribute[] { ATTR_AUTHORITY, ATTR_XLINK, ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "topic", "Topic", "Equivalent to MARC 21 fields 650 and 6XX subfields $x and $v (with authority attribute defined) and MARC 21 field 653 with no authority attribute."), false));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "geographic", "Geographic", "Equivalent to MARC 21 field 651 and 6XX subfield $z."), false));
+		sectionStack.addSection(getSomeStack(false, "Temporal", new GetDateLayout("temporal", "Temporal", "Equivalent to MARC 21 fields 045 and 6XX subfield $y.")));
+		sectionStack.addSection(getSomeStack(false, "Title Info", GET_TITLE_INFO_LAYOUT));
+		sectionStack.addSection(getSomeStack(false, "Name", GET_NAME_LAYOUT));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false));
+
+		Attribute[] attributes = new Attribute[] { new Attribute(TextItem.class, "continent", "Continent", "Includes Asia, Africa, Europe, North America, South America."),
+				new Attribute(TextItem.class, "province", "Province", "Includes first order political divisions called provinces within a country, e.g. Canada."),
+				new Attribute(TextItem.class, "region", "Region", "Includes regions that have status as a jurisdiction, usually incorporating more than one first level jurisdiction."),
+				new Attribute(TextItem.class, "state", "State", "Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département."),
+				new Attribute(TextItem.class, "territory", "Territory", "Name of a geographical area belonging to or under the jurisdiction of a governmental authority ."),
+				new Attribute(TextItem.class, "county", "County", "Name of the largest local administrative unit in various countries, e.g. England."), new Attribute(TextItem.class, "city", "City", "Name of an inhabited place incorporated as a city, town, etc."),
+				new Attribute(TextItem.class, "city_section", "City Section", "Name of a smaller unit within a populated place, e.g., neighborhoods, parks or streets."),
+				new Attribute(TextItem.class, "island", "Island", "Name of a tract of land surrounded by water and smaller than a continent but is not itself a separate country."),
+				new Attribute(TextItem.class, "area", "Area", "Name of a non-jurisdictional geographic entity."),
+				new Attribute(TextItem.class, "extraterrestrial_area", "Extraterrestrial Area", "Name of any extraterrestrial entity or space, including solar systems, galaxies, star systems, and planets as well as geographic features of individual planets."), };
+		sectionStack.addSection(getSomeStack(false, "Hierarchical Geographic", new GetGeneralDeepLayout(attributes)));
+
+		attributes = new Attribute[] {
+				new Attribute(
+						TextItem.class,
+						"coordinates",
+						"Coordinates",
+						"One or more statements may be supplied. If one is supplied, it is a point (i.e., a single location); if two, it is a line; if more than two, it is a n-sided polygon where n=number of coordinates assigned. No three points should be co-linear, and coordinates should be supplied in polygon-traversal order."),
+				new Attribute(TextItem.class, "scale", "Scale", "It may include any equivalency statements, vertical scales or vertical exaggeration statements for relief models and other three-dimensional items."),
+				new Attribute(TextItem.class, "projection", "Projection", "Provides a statement of projection.") };
+		sectionStack.addSection(getSomeStack(false, "Cartographics", new GetGeneralDeepLayout(attributes)));
+
+		sectionStack.addSection(getStackSectionWithAttributes("Geographic Code", new Attribute(TextItem.class, "geographic_code", "Geographic Code", "Equivalent to MARC 21 field 043."), false, new Attribute[] { new Attribute(SelectItem.class, "authority",
+				"Authority", new HashMap<String, String>() {
+					{
+						put("", "This attribute will be omitted..");
+						put("marcgac", "marcgac");
+						put("marccountry", "marccountry");
+						put("iso3166", "iso3166");
+					}
+				}) }));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false));
+
+		layout.addMember(sectionStack);
+		return layout;
+	}
+
 }

@@ -20,18 +20,18 @@ public class DCTab extends Tab {
 
 		sectionStack.setOverflow(Overflow.AUTO);
 
-		sectionStack.addSection(TabUtils.getSimpleStackSection(TextAreaItem.class, "Title", null, true));
+		sectionStack.addSection(TabUtils.getSimpleSection(TextAreaItem.class, "Title", null, true));
 		sectionStack.addSection(TabUtils.getStackSection("Identifiers", "Identifier", null, true));
 		sectionStack.addSection(TabUtils.getStackSection("Creators", "Creator", null, true));
 		sectionStack.addSection(TabUtils.getStackSection("Publishers", "Publisher", null, true));
 		sectionStack.addSection(TabUtils.getStackSection("Contributors", "Contributor", null, true));
-		sectionStack.addSection(TabUtils.getSimpleStackSection(DateItem.class, "Date", null, true));
-		sectionStack.addSection(TabUtils.getSimpleStackSection(TextItem.class, "Language", null, true));
-		sectionStack.addSection(TabUtils.getSimpleStackSection(TextAreaItem.class, "Description", null, false));
-		sectionStack.addSection(TabUtils.getSimpleStackSection(TextItem.class, "Format", null, false));
+		sectionStack.addSection(TabUtils.getSimpleSection(DateItem.class, "Date", null, true));
+		sectionStack.addSection(TabUtils.getSimpleSection(TextItem.class, "Language", null, true));
+		sectionStack.addSection(TabUtils.getSimpleSection(TextAreaItem.class, "Description", null, false));
+		sectionStack.addSection(TabUtils.getSimpleSection(TextItem.class, "Format", null, false));
 		sectionStack.addSection(TabUtils.getStackSection("Subjects", "Subject", null, false));
-		sectionStack.addSection(TabUtils.getSimpleStackSection(TextItem.class, "Type", null, false));
-		sectionStack.addSection(TabUtils.getSimpleStackSection(TextAreaItem.class, "Rights", null, false));
+		sectionStack.addSection(TabUtils.getSimpleSection(TextItem.class, "Type", null, false));
+		sectionStack.addSection(TabUtils.getSimpleSection(TextAreaItem.class, "Rights", null, false));
 
 		setPane(sectionStack);
 	}
