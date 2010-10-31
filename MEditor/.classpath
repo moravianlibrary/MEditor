@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration-1.6.jar" sourcepath="/home/freon/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.5.jar" sourcepath="/home/freon/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5-sources.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/xalan-2.7.1-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-iface-1_2_3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-z3950-1_2_3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-util.jar"/>
@@ -30,5 +29,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gin-r137.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtp-0.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-incubator-20100204-r1747.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
