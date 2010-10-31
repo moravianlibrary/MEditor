@@ -16,14 +16,14 @@ import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.DoubleClickEvent;
-import com.smartgwt.client.widgets.events.DoubleClickHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
+import com.smartgwt.client.widgets.tile.events.RecordDoubleClickEvent;
+import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
@@ -116,6 +116,8 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		// closeButton.setShowFocused(false);
 		closeButton.setShowRollOver(true);
 		closeButton.setCanHover(true);
+		closeButton.setShowDownIcon(false);
+		closeButton.setShowDown(false);
 		closeButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {
@@ -166,6 +168,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		tTab7.setPane(tImg7);
 
 		topTabSet.setTabs(tTab1, tTab2, tTab3, tTab4, tTab5, tTab6, tTab7);
+		// topTabSet.setSelectedTab(2); // TODO: remove
 		layout.setMembersMargin(15);
 		// layout.addMember(topTabSet);
 		if (first) {
@@ -201,23 +204,30 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		imagePopup = new PopupPanel(true);
 		imagePopup.setGlassEnabled(true);
 		imagePopup.setAnimationEnabled(true);
-		tileGrid.addDoubleClickHandler(new DoubleClickHandler() {
+		tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+
 			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-				if (tileGrid.getSelectedRecord() != null) {
-					final Image full = new Image("images/full/" + tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_UUID));
-					full.setHeight("700px");
-					Timer timer = new Timer() {
-						@Override
-						public void run() {
-							imagePopup.setWidget(full);
-							imagePopup.center();
-						}
-					};
-					timer.schedule(150);
+			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+				if (event.getRecord() != null) {
+					try {
+						final Image full = new Image("images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID));
+						full.setHeight("700px");
+
+						Timer timer = new Timer() {
+							@Override
+							public void run() {
+								imagePopup.setWidget(full);
+								imagePopup.center();
+							}
+						};
+						timer.schedule(150);
+					} catch (Throwable t) {
+						System.out.println("yes sir");
+					}
 				}
 			}
 		});
+
 		DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
 		pictureField.setType("image");
 		pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');

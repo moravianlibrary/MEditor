@@ -28,12 +28,12 @@ public class FullImgServiceImpl extends HttpServlet {
 		// super.doGet(req, resp);
 		// TODO: sekuryta :]
 
-		// char '/' is twice present in "/thumbnail/XYZ"
-		// /meditor ==> nefunguje
 		String uuid = req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_FULL_PREFIX) + Constants.SERVLET_FULL_PREFIX.length() + 1);
 
 		if (uuid != null && !"".equals(uuid)) {
 			resp.setContentType("image/jpeg");
+
+			// TODO: handle djvu mime type
 			StringBuffer sb = new StringBuffer();
 			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_FULL/content");
 			InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());

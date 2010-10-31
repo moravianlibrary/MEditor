@@ -77,15 +77,8 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	}
 
 	private void checkDocumentTypes(String[] types) throws ActionException {
-		// fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX +
-		// "periodical");
-		// fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX +
-		// "bla");
-		// fedoraAccess.isDigitalObjectPresent("uuid:0eaa6730-9068-11dd-97de-000d606f5dc6");
-		// fedoraAccess.isDigitalObjectPresent("0eaa6730-9068-11dd-97de-000d606f5dc6");
-
 		for (String uuid : types) {
-			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + KrameriusModel.parseString(uuid))) {
+			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + KrameriusModel.toString(KrameriusModel.parseString(uuid)))) {
 				logger.error("Model " + uuid + " is not present in repository.");
 				throw new ActionException(Constants.FEDORA_MODEL_PREFIX + uuid);
 			}
@@ -99,8 +92,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		try {
 			checkDocumentTypes(types);
 		} catch (ActionException e) {
-			logger
-					.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
+			logger.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
 		}
 		ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();
 		ArrayList<InputQueueItem> listTopLvl = new ArrayList<InputQueueItem>(types.length);

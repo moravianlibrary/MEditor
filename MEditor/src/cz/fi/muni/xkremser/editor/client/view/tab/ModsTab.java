@@ -39,36 +39,8 @@ public class ModsTab extends Tab {
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
-		topTabSet.setHeight100();
-
-		// final SectionStack sectionStack = new SectionStack();
-		// sectionStack.setLeaveScrollbarGap(true);
-		// sectionStack.setVisibilityMode(VisibilityMode.MUTEX);
-		// sectionStack.setWidth100();
-		// sectionStack.setOverflow(Overflow.AUTO);
-		//
-		// sectionStack.addSection(TabUtils.getTitleInfoStack(false));
-		// sectionStack.addSection(TabUtils.getNameStack(false));
-		// sectionStack.addSection(TabUtils.getTypeOfResourceStack(false));
-		// sectionStack.addSection(TabUtils.getGenreStack(false));
-		// sectionStack.addSection(TabUtils.getOriginInfoStack(false));
-		// sectionStack.addSection(TabUtils.getLanguageStack(false));
-		// sectionStack.addSection(TabUtils.getPhysicalDescriptionStack(false));
-		// sectionStack.addSection(TabUtils.getAbstractStack(false));
-		// sectionStack.addSection(TabUtils.getTableOfContentsStack(false));
-		//
-		// sectionStack.addSection(TabUtils.getTargetAudienceStack(false));
-		// sectionStack.addSection(TabUtils.getNoteStack(true));
-		// sectionStack.addSection(TabUtils.getSubjectStack(false));
-		// sectionStack.addSection(TabUtils.getClassificationStack(false));
-		// sectionStack.addSection(TabUtils.getRelatedItemStack(false));
-
-		// sectionStack.addSection(TabUtils.getIdentifierStack(false));
-		// sectionStack.addSection(TabUtils.getLocationStack(false));
-		// sectionStack.addSection(TabUtils.getAccessConditionStack(false));
-		// sectionStack.addSection(TabUtils.getParteStack(false));
-		// sectionStack.addSection(TabUtils.getExtensionStack(false));
-		// sectionStack.addSection(TabUtils.getRecordInfoStack(false));
+		topTabSet.setOverflow(Overflow.AUTO);
+		// topTabSet.setHeight100();
 
 		if (!topLvl) {
 			final VLayout layout = new VLayout();
@@ -117,12 +89,13 @@ public class ModsTab extends Tab {
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
-		topTabSet.setHeight100();
+		// topTabSet.setHeight100();
 
-		Tab[] tabs = new Tab[] { getTab(TabUtils.getTitleInfoStack(false), "Title Info"), getTab(TabUtils.getTypeOfResourceStack(false), "Type"), getTab(TabUtils.getGenreStack(false), "Genre"), getTab(TabUtils.getOriginInfoStack(false), "Origin"),
-				getTab(TabUtils.getLanguageStack(false), "Language"), getTab(TabUtils.getPhysicalDescriptionStack(false), "Physical desc."), getTab(TabUtils.getAbstractStack(false), "Abstract"), getTab(TabUtils.getTableOfContentsStack(false), "Table of Con."),
-				getTab(TabUtils.getTargetAudienceStack(false), "Audience"), getTab(TabUtils.getNoteStack(false), "Note"), getTab(TabUtils.getSubjectStack(false), "Subject"), getTab(TabUtils.getClassificationStack(false), "Classification"),
-				deep > 0 ? new ModsTab(deep - 1, false) : MAX_DEEP, getTab(TabUtils.getIdentifierStack(false), "Identifier"), getTab(TabUtils.getLocationStack(false), "Location") };
+		Tab[] tabs = new Tab[] { getTab(TabUtils.getTitleInfoStack(true), "Title Info"), getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"), getTab(TabUtils.getOriginInfoStack(true), "Origin"),
+				getTab(TabUtils.getLanguageStack(true), "Language"), getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."), getTab(TabUtils.getAbstractStack(true), "Abstract"), getTab(TabUtils.getTableOfContentsStack(true), "Table of Con."),
+				getTab(TabUtils.getTargetAudienceStack(true), "Audience"), getTab(TabUtils.getNoteStack(true), "Note"), getTab(TabUtils.getSubjectStack(true), "Subject"), getTab(TabUtils.getClassificationStack(true), "Classification"),
+				deep > 0 ? new ModsTab(deep - 1, false) : MAX_DEEP, getTab(TabUtils.getIdentifierStack(true), "Identifier"), getTab(TabUtils.getLocationStack(true), "Location"), getTab(TabUtils.getAccessConditionStack(true), "Access Condition"),
+				getTab(TabUtils.getPartStack(true), "Part"), getTab(TabUtils.getExtensionStack(true), "Extension") };
 		topTabSet.setTabs(tabs);
 		return topTabSet;
 	}

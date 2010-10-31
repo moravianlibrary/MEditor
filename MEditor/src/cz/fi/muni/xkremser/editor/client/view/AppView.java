@@ -34,14 +34,14 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		widget.setWidth("98%");
 		// widget.setWidth("*");
 		// widget.setHeight("97%");
-		widget.setHeight("1900");
+		widget.setHeight("1000");
 		// widget.setAutoHeight();
 		widget.setOverflow(Overflow.AUTO);
 		topContainer = new HLayout();
 		topContainer.setWidth100();
-		topContainer.setHeight(55);
+		topContainer.setHeight(45);
 		// topContainer.setBorder("1px solid");
-		Img logo = new Img("logo_bw.png", 162, 50);
+		Img logo = new Img("logo_bw.png", 140, 40);
 		// Img logo = new Img("mzk_logo.gif", 283, 87);
 		topContainer.addMember(logo);
 		widget.addMember(topContainer);

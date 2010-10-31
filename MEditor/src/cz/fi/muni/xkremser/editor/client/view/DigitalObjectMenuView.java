@@ -146,6 +146,8 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		refreshButton.setSize(16);
 		refreshButton.setShowRollOver(true);
 		refreshButton.setCanHover(true);
+		refreshButton.setShowDownIcon(false);
+		refreshButton.setShowDown(false);
 		refreshButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {

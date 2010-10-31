@@ -32,8 +32,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
 	 */
-	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
+	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network " + "connection and try again.";
 
 	public interface MyView extends View {
 		public HasValue<String> getName();
@@ -56,8 +55,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	private boolean forcedRefresh;
 
 	@Inject
-	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher) {
+	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter, final DispatchAsync dispatcher) {
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
 		this.dispatcher = dispatcher;
@@ -122,6 +120,10 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 				}
 			});
 		}
+
+		// if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
+		// getView().addDigitalObject(false, null, dispatcher);
+		// }
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
 		previousUuid = uuid;
 	}
