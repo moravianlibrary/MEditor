@@ -28,11 +28,21 @@ public final class TabUtils {
 
 	private static final String W3C_ENCODING = "w3cdtf";
 
+	private static final Map<String, String> LANG_AUTHORITY_TOOLTIPS = new HashMap<String, String>() {
+		{
+			put("", "Nothing.");
+			put("iso639-2b", "A bibliographic language code from ISO 639-2 (Codes for the representation of names of languages: alpha-3 code).");
+			put("rfc3066", "A language identifier as specified by the Internet Best Current Practice specification RFC3066.");
+			put("iso639-3", "A language code from ISO 639-3 (Codes for the representation of names of languages - Part 3: Alpha-3 code for comprehensive coverage of languages).");
+			put("rfc4646", "A language identifier as specified by the Internet Best Current Practice specification RFC4646.");
+		}
+	};
+
 	private static final Map<String, String> TYPE_TEXT_CODE_TOOLTIPS = new HashMap<String, String>() {
 		{
 			put("", "This attribute will be omitted.");
-			put("text", "This value is used to express role in a textual form.");
-			put("code", "This value is used to express place in a coded form. The authority attribute may be used to indicate the source of the code.");
+			put("text", "This value is used to express attribute in a textual form.");
+			put("code", "This value is used to express attribute in a coded form. The authority attribute may be used to indicate the source of the code.");
 		}
 	};
 	private static final Map<String, String> ENCODING_TOOLTIPS = new HashMap<String, String>() {
@@ -75,6 +85,7 @@ public final class TabUtils {
 			"This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.");
 	public static final Attribute ATTR_QUALIFIER = new Attribute(SelectItem.class, "qualifier", "Qualifier", QUALIFIER_TOOLTIPS);
 	public static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, "type", "Type", TYPE_TEXT_CODE_TOOLTIPS);
+	public static final Attribute ATTR_LANG_AUTHORITY = new Attribute(SelectItem.class, "authority", "Authority", LANG_AUTHORITY_TOOLTIPS);
 
 	public static Attribute getDisplayLabel(final String tooltip) {
 		return new Attribute(TextItem.class, "display_label", "Display Label", tooltip);
@@ -194,6 +205,13 @@ public final class TabUtils {
 		}
 	}
 
+	private static class GetRecordInfoLayout implements GetLayoutOperation {
+		@Override
+		public VLayout execute() {
+			return getRecordInfoLayout();
+		}
+	}
+
 	private static class GetPlaceLayout implements GetLayoutOperation {
 		@Override
 		public VLayout execute() {
@@ -212,6 +230,13 @@ public final class TabUtils {
 		@Override
 		public VLayout execute() {
 			return getExtentLayout();
+		}
+	}
+
+	private static class GetLanguageOfCatalogingLayout implements GetLayoutOperation {
+		@Override
+		public VLayout execute() {
+			return getLanguageOfCatalogingLayout();
 		}
 	}
 
@@ -593,6 +618,10 @@ public final class TabUtils {
 				"Namespace") }));
 	}
 
+	public static SectionStackSection getRecordInfoStack(boolean expanded) {
+		return getSomeStack(expanded, "Record Info", new GetRecordInfoLayout());
+	}
+
 	public static SectionStackSection getPartStack(boolean expanded) {
 		return getSomeStack(expanded, "Part", new GetPartLayout());
 	}
@@ -920,15 +949,8 @@ public final class TabUtils {
 		layout.addMember(getAttributes(true, new Attribute[] { new Attribute(TextItem.class, "object_part", "Object Part",
 				"Designates which part of the resource is in the language supplied, e.g. <language objectPart='summary'><languageTerm authority='iso639-2b'>spa</languageTerm></language> indicates that only the summary is in Spanish.") }));
 
-		final Map<String, String> tooltips = new HashMap<String, String>();
-		tooltips.put("", "Nothing.");
-		tooltips.put("iso639-2b", "A bibliographic language code from ISO 639-2 (Codes for the representation of names of languages: alpha-3 code).");
-		tooltips.put("rfc3066", "A language identifier as specified by the Internet Best Current Practice specification RFC3066.");
-		tooltips.put("iso639-3", "A language code from ISO 639-3 (Codes for the representation of names of languages - Part 3: Alpha-3 code for comprehensive coverage of languages).");
-		tooltips.put("rfc4646", "A language identifier as specified by the Internet Best Current Practice specification RFC4646.");
-
 		sectionStack.addSection(getStackSectionWithAttributes("Language Terms", "Language Term", "contains the language(s) of the content of the resource. It may be expressed in textual or coded form.", true, new Attribute[] { ATTR_TYPE_TEXT_CODE,
-				new Attribute(SelectItem.class, "authority", "Authority", tooltips) }));
+				ATTR_LANG_AUTHORITY }));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -1108,6 +1130,47 @@ public final class TabUtils {
 		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "end", "End", "Contains the ending unit of the extent within a part."), false));
 		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "total", "Total", "Contains the total number of units within a part, rather than specific units."), false));
 		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "list", "List", "Contains a textual listing of the units within a part (e.g., 'pp. 5-9'.)"), false));
+
+		layout.addMember(sectionStack);
+		return layout;
+	}
+
+	private static VLayout getLanguageOfCatalogingLayout() {
+		final VLayout layout = new VLayout();
+		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setLeaveScrollbarGap(true);
+		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setStyleName("metadata-elements");
+		sectionStack.setWidth100();
+
+		Attribute[] attributes = new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_LANG_AUTHORITY };
+		sectionStack.addSection(getStackSectionWithAttributes("Language Term", new Attribute(TextItem.class, "language_term", "Language Term", "contains the language(s) of the content of the resource. It may be expressed in textual or coded form."), true,
+				attributes));
+
+		layout.addMember(sectionStack);
+		return layout;
+	}
+
+	private static VLayout getRecordInfoLayout() {
+		final VLayout layout = new VLayout();
+		final SectionStack sectionStack = new SectionStack();
+		sectionStack.setLeaveScrollbarGap(true);
+		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setStyleName("metadata-elements");
+		sectionStack.setWidth100();
+		// sectionStack.setOverflow(Overflow.AUTO);
+		Attribute[] attributes = new Attribute[] { ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
+		layout.addMember(getAttributes(true, attributes));
+
+		sectionStack.addSection(getStackSectionWithAttributes("Record Content Source", new Attribute(TextItem.class, "record_content_source", "Record Content Source", "Roughly equivalent to MARC 21 field 040."), false, new Attribute[] { ATTR_AUTHORITY }));
+		sectionStack.addSection(getSomeStack(false, "Record Creation Date", new GetDateLayout("record_creation_date", "Record Creation Date", "Roughly equivalent to MARC 21 field 008/00-05.", null, false)));
+		sectionStack.addSection(getSomeStack(false, "Record Change Date", new GetDateLayout("record_change_date", "Record Creation Date", "May serve as a version identifier for the record. It is roughly equivalent to MARC 21 field 005.", null, false)));
+		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "record_identifier", "Record Identifier", "Roughly equivalent to MARC 21 field 001."), false, new Attribute[] { new Attribute(TextItem.class, "source", "Source",
+				"Roughly equivalent to MARC 21 field 003.") }));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "record_origin", "Record Origin", "Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false));
+		sectionStack.addSection(getSomeStack(false, "Language of Cataloging", new GetLanguageOfCatalogingLayout()));
+		sectionStack.addSection(getStackSectionWithAttributes("Description Standard", new Attribute(TextItem.class, "description_standard", "Description Standard", "Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18."), false,
+				new Attribute[] { ATTR_AUTHORITY }));
 
 		layout.addMember(sectionStack);
 		return layout;

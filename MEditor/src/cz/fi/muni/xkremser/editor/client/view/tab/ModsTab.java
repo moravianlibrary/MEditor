@@ -95,7 +95,7 @@ public class ModsTab extends Tab {
 				getTab(TabUtils.getLanguageStack(true), "Language"), getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."), getTab(TabUtils.getAbstractStack(true), "Abstract"), getTab(TabUtils.getTableOfContentsStack(true), "Table of Con."),
 				getTab(TabUtils.getTargetAudienceStack(true), "Audience"), getTab(TabUtils.getNoteStack(true), "Note"), getTab(TabUtils.getSubjectStack(true), "Subject"), getTab(TabUtils.getClassificationStack(true), "Classification"),
 				deep > 0 ? new ModsTab(deep - 1, false) : MAX_DEEP, getTab(TabUtils.getIdentifierStack(true), "Identifier"), getTab(TabUtils.getLocationStack(true), "Location"), getTab(TabUtils.getAccessConditionStack(true), "Access Condition"),
-				getTab(TabUtils.getPartStack(true), "Part"), getTab(TabUtils.getExtensionStack(true), "Extension") };
+				getTab(TabUtils.getPartStack(true), "Part"), getTab(TabUtils.getExtensionStack(true), "Extension"), getTab(TabUtils.getRecordInfoStack(true), "Record Info") };
 		topTabSet.setTabs(tabs);
 		return topTabSet;
 	}
