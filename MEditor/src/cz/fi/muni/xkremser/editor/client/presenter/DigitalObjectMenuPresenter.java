@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
 import com.google.gwt.user.client.Timer;
@@ -37,6 +42,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DigitalObjectMenuPresenter.
+ */
 public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy> implements MyUiHandlers {
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -44,35 +53,93 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	 */
 	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server.";
 
+	/**
+	 * The Interface MyView.
+	 */
 	public interface MyView extends View/* , HasUiHandlers<MyUiHandlers> */{
+		
+		/**
+		 * Gets the selected.
+		 *
+		 * @return the selected
+		 */
 		HasValue<String> getSelected();
 
+		/**
+		 * Expand node.
+		 *
+		 * @param id the id
+		 */
 		void expandNode(String id);
 
+		/**
+		 * Gets the refresh widget.
+		 *
+		 * @return the refresh widget
+		 */
 		HasClickHandlers getRefreshWidget();
 
+		/**
+		 * Show input queue.
+		 *
+		 * @param dispatcher the dispatcher
+		 */
 		void showInputQueue(DispatchAsync dispatcher);
 
+		/**
+		 * Gets the input tree.
+		 *
+		 * @return the input tree
+		 */
 		Refreshable getInputTree();
 
 		// TODO: ListGrid -> na nejake rozhrani
+		/**
+		 * Gets the recently modified tree.
+		 *
+		 * @return the recently modified tree
+		 */
 		ListGrid getRecentlyModifiedTree();
 
+		/**
+		 * Sets the dS.
+		 *
+		 * @param dispatcher the new dS
+		 */
 		void setDS(DispatchAsync dispatcher);
 	}
 
+	/**
+	 * The Interface MyProxy.
+	 */
 	@ProxyStandard
 	public interface MyProxy extends Proxy<DigitalObjectMenuPresenter> {
 
 	}
 
+	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
+	
+	/** The input queue shown. */
 	private boolean inputQueueShown = false;
+	
+	/** The place manager. */
 	private final PlaceManager placeManager;
 
 	// @Inject
+	/** The config. */
 	private final EditorClientConfiguration config;
 
+	/**
+	 * Instantiates a new digital object menu presenter.
+	 *
+	 * @param view the view
+	 * @param eventBus the event bus
+	 * @param proxy the proxy
+	 * @param dispatcher the dispatcher
+	 * @param config the config
+	 * @param placeManager the place manager
+	 */
 	@Inject
 	public DigitalObjectMenuPresenter(final MyView view, final EventBus eventBus, final MyProxy proxy, final DispatchAsync dispatcher,
 			final EditorClientConfiguration config, PlaceManager placeManager) {
@@ -85,6 +152,9 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		bind();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+	 */
 	@Override
 	protected void onBind() {
 		super.onBind();
@@ -126,20 +196,36 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
+	 */
 	@Override
 	protected void onUnbind() {
 		super.onUnbind();
 		getView().getRecentlyModifiedTree().setHoverCustomizer(null);
 	}
 
+	/**
+	 * Checks if is input queue shown.
+	 *
+	 * @return true, if is input queue shown
+	 */
 	public boolean isInputQueueShown() {
 		return inputQueueShown;
 	}
 
+	/**
+	 * Sets the input queue shown.
+	 *
+	 * @param inputQueueShown the new input queue shown
+	 */
 	public void setInputQueueShown(boolean inputQueueShown) {
 		this.inputQueueShown = inputQueueShown;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#onRefresh()
+	 */
 	@Override
 	public void onRefresh() {
 		dispatcher.execute(new ScanInputQueueAction(null, true), new DispatchCallback<ScanInputQueueResult>() {
@@ -151,11 +237,17 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+	 */
 	@Override
 	protected void revealInParent() {
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, this);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#onShowInputQueue()
+	 */
 	@Override
 	public void onShowInputQueue() {
 		getView().showInputQueue(dispatcher);
@@ -168,6 +260,9 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		}));
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#onAddDigitalObject(cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
+	 */
 	@Override
 	public void onAddDigitalObject(final RecentlyModifiedItem item) {
 		Timer timer = new Timer() {
@@ -185,6 +280,9 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#revealModifiedItem(java.lang.String)
+	 */
 	@Override
 	public void revealModifiedItem(String uuid) {
 		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid));

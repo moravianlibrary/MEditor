@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for DatastreamDef complex type.
  * 
@@ -36,20 +42,24 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DatastreamDef {
 
+    /** The id. */
     @XmlElement(name = "ID", required = true, nillable = true)
     protected String id;
+    
+    /** The label. */
     @XmlElement(required = true, nillable = true)
     protected String label;
+    
+    /** The mime type. */
     @XmlElement(name = "MIMEType", required = true, nillable = true)
     protected String mimeType;
 
     /**
      * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the iD
+     * possible object is
+     * {@link String }
      */
     public String getID() {
         return id;
@@ -69,11 +79,10 @@ public class DatastreamDef {
 
     /**
      * Gets the value of the label property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the label
+     * possible object is
+     * {@link String }
      */
     public String getLabel() {
         return label;
@@ -93,11 +102,10 @@ public class DatastreamDef {
 
     /**
      * Gets the value of the mimeType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the mIME type
+     * possible object is
+     * {@link String }
      */
     public String getMIMEType() {
         return mimeType;

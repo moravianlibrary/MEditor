@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -34,15 +40,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "exportResponse")
 public class ExportResponse {
 
+    /** The object xml. */
     @XmlElement(required = true)
     protected byte[] objectXML;
 
     /**
      * Gets the value of the objectXML property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return the object xml
+     * possible object is
+     * byte[]
      */
     public byte[] getObjectXML() {
         return objectXML;

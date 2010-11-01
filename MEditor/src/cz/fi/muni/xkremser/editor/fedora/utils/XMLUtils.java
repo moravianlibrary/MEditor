@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.fedora.utils;
 
 import java.io.IOException;
@@ -16,13 +21,36 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XMLUtils.
+ */
 public class XMLUtils {
 
+	/**
+	 * Parses the document.
+	 *
+	 * @param is the is
+	 * @return the document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the sAX exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static Document parseDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		return builder.parse(is);
 	}
 
+	/**
+	 * Parses the document.
+	 *
+	 * @param is the is
+	 * @param namespaceaware the namespaceaware
+	 * @return the document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the sAX exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static Document parseDocument(InputStream is, boolean namespaceaware) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(namespaceaware);
@@ -30,6 +58,12 @@ public class XMLUtils {
 		return builder.parse(is);
 	}
 
+	/**
+	 * Gets the elements.
+	 *
+	 * @param topElm the top elm
+	 * @return the elements
+	 */
 	public static List<Element> getElements(Element topElm) {
 		List<Element> retVals = new ArrayList<Element>();
 		NodeList childNodes = topElm.getChildNodes();
@@ -42,6 +76,13 @@ public class XMLUtils {
 		return retVals;
 	}
 
+	/**
+	 * Namespaces are same.
+	 *
+	 * @param fNamespace the f namespace
+	 * @param sNamespace the s namespace
+	 * @return true, if successful
+	 */
 	private static boolean namespacesAreSame(String fNamespace, String sNamespace) {
 		if ((fNamespace == null) && (sNamespace == null)) {
 			return true;
@@ -51,6 +92,14 @@ public class XMLUtils {
 			return false;
 	}
 
+	/**
+	 * Find element.
+	 *
+	 * @param topElm the top elm
+	 * @param localName the local name
+	 * @param namespace the namespace
+	 * @return the element
+	 */
 	public static Element findElement(Element topElm, String localName, String namespace) {
 		Stack<Element> stack = new Stack<Element>();
 		stack.push(topElm);

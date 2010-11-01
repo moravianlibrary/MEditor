@@ -1,18 +1,45 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.widgets.tile.TileRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PageRecord.
+ */
 public class PageRecord extends TileRecord {
 
+	/**
+	 * Instantiates a new page record.
+	 */
 	public PageRecord() {
 	}
 
+	/**
+	 * Instantiates a new page record.
+	 *
+	 * @param name the name
+	 * @param uuid the uuid
+	 * @param picture the picture
+	 */
 	public PageRecord(String name, String uuid, String picture) {
 		this(name, uuid, picture, null);
 	}
 
+	/**
+	 * Instantiates a new page record.
+	 *
+	 * @param name the name
+	 * @param uuid the uuid
+	 * @param picture the picture
+	 * @param description the description
+	 */
 	public PageRecord(String name, String uuid, String picture, String description) {
 		setName(name);
 		setUuid(uuid);
@@ -50,8 +77,8 @@ public class PageRecord extends TileRecord {
 	}
 
 	/**
-	 * Return the uuid
-	 * 
+	 * Return the uuid.
+	 *
 	 * @return the uuid
 	 */
 	public String getUuid() {

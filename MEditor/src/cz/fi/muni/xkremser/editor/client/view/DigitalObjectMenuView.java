@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.HasValue;
@@ -28,30 +33,75 @@ import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyTree;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DigitalObjectMenuView.
+ */
 public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuView.MyUiHandlers> implements DigitalObjectMenuPresenter.MyView {
 
+	/**
+	 * The Interface MyUiHandlers.
+	 */
 	public interface MyUiHandlers extends UiHandlers {
+		
+		/**
+		 * On refresh.
+		 */
 		void onRefresh();
 
+		/**
+		 * On show input queue.
+		 */
 		void onShowInputQueue();
 
+		/**
+		 * On add digital object.
+		 *
+		 * @param item the item
+		 */
 		void onAddDigitalObject(RecentlyModifiedItem item);
 
+		/**
+		 * Reveal modified item.
+		 *
+		 * @param uuid the uuid
+		 */
 		void revealModifiedItem(String uuid);
 
 	}
 
+	/**
+	 * The Interface Refreshable.
+	 */
 	public interface Refreshable {
+		
+		/**
+		 * Refresh tree.
+		 */
 		void refreshTree();
 	}
 
+	/** The input tree. */
 	private SideNavInputTree inputTree;
+	
+	/** The side nav tree. */
 	private final SideNavRecentlyTree sideNavTree;
+	
+	/** The section stack. */
 	private final SectionStack sectionStack;
+	
+	/** The section recently modified. */
 	private final SectionStackSection sectionRecentlyModified;
+	
+	/** The refresh button. */
 	private ImgButton refreshButton;
+	
+	/** The layout. */
 	private final VLayout layout;
 
+	/**
+	 * Instantiates a new digital object menu view.
+	 */
 	public DigitalObjectMenuView() {
 		layout = new VLayout();
 
@@ -112,6 +162,8 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 
 	/**
 	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+	 *
+	 * @return the widget
 	 */
 	@Override
 	public Widget asWidget() {
@@ -125,16 +177,25 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	// }
 	// }
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#getSelected()
+	 */
 	@Override
 	public HasValue<String> getSelected() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#setDS(com.gwtplatform.dispatch.client.DispatchAsync)
+	 */
 	@Override
 	public void setDS(DispatchAsync dispatcher) {
 		this.sideNavTree.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher));
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#showInputQueue(com.gwtplatform.dispatch.client.DispatchAsync)
+	 */
 	@Override
 	public void showInputQueue(DispatchAsync dispatcher) {
 		SectionStackSection section1 = new SectionStackSection();
@@ -162,22 +223,34 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		// inputTree.setHeight("600");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#expandNode(java.lang.String)
+	 */
 	@Override
 	public void expandNode(String id) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#getRefreshWidget()
+	 */
 	@Override
 	public HasClickHandlers getRefreshWidget() {
 		return refreshButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#getInputTree()
+	 */
 	@Override
 	public Refreshable getInputTree() {
 		return inputTree;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyView#getRecentlyModifiedTree()
+	 */
 	@Override
 	public ListGrid getRecentlyModifiedTree() {
 		return sideNavTree;

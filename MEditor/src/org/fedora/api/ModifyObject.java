@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -42,24 +48,32 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "modifyObject")
 public class ModifyObject {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The state. */
     @XmlElement(required = true)
     protected String state;
+    
+    /** The label. */
     @XmlElement(required = true)
     protected String label;
+    
+    /** The owner id. */
     @XmlElement(required = true)
     protected String ownerId;
+    
+    /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -79,11 +93,10 @@ public class ModifyObject {
 
     /**
      * Gets the value of the state property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the state
+     * possible object is
+     * {@link String }
      */
     public String getState() {
         return state;
@@ -103,11 +116,10 @@ public class ModifyObject {
 
     /**
      * Gets the value of the label property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the label
+     * possible object is
+     * {@link String }
      */
     public String getLabel() {
         return label;
@@ -127,11 +139,10 @@ public class ModifyObject {
 
     /**
      * Gets the value of the ownerId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the owner id
+     * possible object is
+     * {@link String }
      */
     public String getOwnerId() {
         return ownerId;
@@ -151,11 +162,10 @@ public class ModifyObject {
 
     /**
      * Gets the value of the logMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the log message
+     * possible object is
+     * {@link String }
      */
     public String getLogMessage() {
         return logMessage;

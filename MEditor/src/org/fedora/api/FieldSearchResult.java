@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -11,6 +16,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for FieldSearchResult complex type.
  * 
@@ -48,18 +54,20 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class FieldSearchResult {
 
+    /** The list session. */
     @XmlElementRef(name = "listSession", type = JAXBElement.class)
     protected JAXBElement<ListSession> listSession;
+    
+    /** The result list. */
     @XmlElement(required = true)
     protected FieldSearchResult.ResultList resultList;
 
     /**
      * Gets the value of the listSession property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link ListSession }{@code >}
-     *     
+     *
+     * @return the list session
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link ListSession }{@code >}
      */
     public JAXBElement<ListSession> getListSession() {
         return listSession;
@@ -79,11 +87,10 @@ public class FieldSearchResult {
 
     /**
      * Gets the value of the resultList property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link FieldSearchResult.ResultList }
-     *     
+     *
+     * @return the result list
+     * possible object is
+     * {@link FieldSearchResult.ResultList }
      */
     public FieldSearchResult.ResultList getResultList() {
         return resultList;
@@ -127,6 +134,7 @@ public class FieldSearchResult {
     })
     public static class ResultList {
 
+        /** The object fields. */
         protected List<ObjectFields> objectFields;
 
         /**
@@ -141,15 +149,15 @@ public class FieldSearchResult {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getObjectFields().add(newItem);
+         * getObjectFields().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the object fields
          * {@link ObjectFields }
-         * 
-         * 
          */
         public List<ObjectFields> getObjectFields() {
             if (objectFields == null) {

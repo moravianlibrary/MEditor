@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.fedora;
 
 import static cz.fi.muni.xkremser.editor.client.KrameriusModel.INTERNALPART;
@@ -7,28 +12,58 @@ import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PERIODICALITEM;
 import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PERIODICALVOLUME;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
+// TODO: Auto-generated Javadoc
 /**
- * Relationships in fedora
- * 
+ * Relationships in fedora.
+ *
  * @author pavels
  */
 public enum FedoraRelationship {
 
 	// our fedora relationship
-	hasPage(PAGE), hasVolume(PERIODICALVOLUME), hasItem(PERIODICALITEM), hasUnit(MONOGRAPHUNIT), hasInternalPart(INTERNALPART), hasIntCompPart(INTERNALPART),
+	/** The has page. */
+	hasPage(PAGE), 
+ /** The has volume. */
+ hasVolume(PERIODICALVOLUME), 
+ /** The has item. */
+ hasItem(PERIODICALITEM), 
+ /** The has unit. */
+ hasUnit(MONOGRAPHUNIT), 
+ /** The has internal part. */
+ hasInternalPart(INTERNALPART), 
+ /** The has int comp part. */
+ hasIntCompPart(INTERNALPART),
 
+	/** The is on page. */
 	isOnPage(null);
 
+	/** The poiting model. */
 	private KrameriusModel poitingModel;
 
+	/**
+	 * Instantiates a new fedora relationship.
+	 *
+	 * @param pointingModel the pointing model
+	 */
 	private FedoraRelationship(KrameriusModel pointingModel) {
 		this.poitingModel = pointingModel;
 	}
 
+	/**
+	 * Gets the pointing model.
+	 *
+	 * @return the pointing model
+	 */
 	public KrameriusModel getPointingModel() {
 		return poitingModel;
 	}
 
+	/**
+	 * Find relation.
+	 *
+	 * @param element the element
+	 * @return the fedora relationship
+	 */
 	public static FedoraRelationship findRelation(String element) {
 		FedoraRelationship[] values = FedoraRelationship.values();
 		for (FedoraRelationship fedoraRelationship : values) {

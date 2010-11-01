@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import com.smartgwt.client.types.Overflow;
@@ -8,8 +13,15 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DCTab.
+ */
 public class DCTab extends Tab {
 
+	/**
+	 * Instantiates a new dC tab.
+	 */
 	public DCTab() {
 		super("DC", "pieces/16/pawn_green.png");
 

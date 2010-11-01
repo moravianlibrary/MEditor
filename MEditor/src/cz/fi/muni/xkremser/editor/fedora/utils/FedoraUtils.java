@@ -31,17 +31,35 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FedoraUtils.
+ */
 public class FedoraUtils {
 
+	/** The Constant LOGGER. */
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(FedoraUtils.class.getName());
 
+	/** The Constant RELS_EXT_STREAM. */
 	public static final String RELS_EXT_STREAM = "RELS-EXT";
+	
+	/** The Constant IMG_THUMB_STREAM. */
 	public static final String IMG_THUMB_STREAM = "IMG_THUMB";
+	
+	/** The Constant IMG_FULL_STREAM. */
 	public static final String IMG_FULL_STREAM = "IMG_FULL";
 
+	/** The configuration. */
 	@Inject
 	private static EditorConfiguration configuration;
 
+	/**
+	 * Gets the rdf pids.
+	 *
+	 * @param pid the pid
+	 * @param relation the relation
+	 * @return the rdf pids
+	 */
 	public static ArrayList<String> getRdfPids(String pid, String relation) {
 		ArrayList<String> pids = new ArrayList<String>();
 		try {
@@ -72,6 +90,12 @@ public class FedoraUtils {
 	// http://localhost:8080/fedora/risearch?type=triples&lang=spo&format=N-Triples&limit=20&query=*%20*%20%3Cinfo:fedora/uuid:4a8a8630-af36-11dd-ae9c-000d606f5dc6%3E
 	// http://localhost:8080/fedora/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20*
 
+	/**
+	 * Gets the subject pids.
+	 *
+	 * @param objectPid the object pid
+	 * @return the subject pids
+	 */
 	public static List<RelationshipTuple> getSubjectPids(String objectPid) {
 		List<RelationshipTuple> retval = new ArrayList<RelationshipTuple>();
 		String command = configuration.getFedoraHost() + "/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20%3Cinfo:fedora/" + objectPid + "%3E";
@@ -100,10 +124,22 @@ public class FedoraUtils {
 		return retval;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		getSubjectPids("uuid:4a8a8630-af36-11dd-ae9c-000d606f5dc6");
 	}
 
+	/**
+	 * Fill first page pid.
+	 *
+	 * @param pids the pids
+	 * @param models the models
+	 * @return true, if successful
+	 */
 	public static boolean fillFirstPagePid(ArrayList<String> pids, ArrayList<String> models) {
 
 		String pid = pids.get(pids.size() - 1);
@@ -147,6 +183,12 @@ public class FedoraUtils {
 		return false;
 	}
 
+	/**
+	 * Find first page pid.
+	 *
+	 * @param pid the pid
+	 * @return the string
+	 */
 	public static String findFirstPagePid(String pid) {
 
 		ArrayList<String> pids = new ArrayList<String>();
@@ -178,11 +220,10 @@ public class FedoraUtils {
 	}
 
 	/**
-	 * Vraci url na stream s DJVU
-	 * 
-	 * @param uuid
-	 *          objektu
-	 * @return
+	 * Vraci url na stream s DJVU.
+	 *
+	 * @param uuid objektu
+	 * @return the dj vu image
 	 */
 	public static String getDjVuImage(String uuid) {
 		String imagePath = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/" + IMG_FULL_STREAM;
@@ -190,16 +231,22 @@ public class FedoraUtils {
 	}
 
 	/**
-	 * Vraci url na stream THUMB
-	 * 
-	 * @param uuid
-	 * @return
+	 * Vraci url na stream THUMB.
+	 *
+	 * @param uuid the uuid
+	 * @return the thumbnail from fedora
 	 */
 	public static String getThumbnailFromFedora(String uuid) {
 		String imagePath = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/" + IMG_THUMB_STREAM;
 		return imagePath;
 	}
 
+	/**
+	 * Gets the fedora datastreams list.
+	 *
+	 * @param uuid the uuid
+	 * @return the fedora datastreams list
+	 */
 	public static String getFedoraDatastreamsList(String uuid) {
 		String datastreamsListPath = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/datastreams?format=xml";
 		return datastreamsListPath;

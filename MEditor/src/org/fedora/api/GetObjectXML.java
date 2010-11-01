@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -34,16 +40,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getObjectXML")
 public class GetObjectXML {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;

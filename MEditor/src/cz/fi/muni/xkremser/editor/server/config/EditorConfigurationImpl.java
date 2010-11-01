@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.config;
 
 import java.io.File;
@@ -16,14 +21,30 @@ import org.apache.commons.logging.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EditorConfigurationImpl.
+ */
 @Singleton
 public class EditorConfigurationImpl extends EditorConfiguration {
+	
+	/** The Constant WORKING_DIR. */
 	public static final String WORKING_DIR = System.getProperty("user.home") + File.separator + ".meditor";
+	
+	/** The Constant DEFAULT_CONF_LOCATION. */
 	public static final String DEFAULT_CONF_LOCATION = "configuration.properties";
+	
+	/** The Constant CONFIGURATION. */
 	public static final String CONFIGURATION = WORKING_DIR + File.separator + DEFAULT_CONF_LOCATION;
 
+	/** The configuration. */
 	private Configuration configuration;
 
+	/**
+	 * Instantiates a new editor configuration impl.
+	 *
+	 * @param logger the logger
+	 */
 	@Inject
 	public EditorConfigurationImpl(final Log logger) {
 		File dir = new File(WORKING_DIR);
@@ -81,11 +102,17 @@ public class EditorConfigurationImpl extends EditorConfiguration {
 		this.configuration = constconf;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.config.EditorConfiguration#getConfiguration()
+	 */
 	@Override
 	public Configuration getConfiguration() {
 		return configuration;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.config.EditorConfiguration#setConfiguration(org.apache.commons.configuration.Configuration)
+	 */
 	@Override
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;

@@ -19,6 +19,7 @@ package cz.fi.muni.xkremser.editor.client;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 
+// TODO: Auto-generated Javadoc
 /**
  * The central location of all name tokens for the application. All
  * {@link ProxyPlace} classes get their tokens from here. This class also makes
@@ -35,12 +36,20 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
  * @author Philippe Beaudoin
  */
 public class NameTokens {
+	
+	/** The Constant HOME. */
 	public static final String HOME = "home";
 
+	/** The Constant MODIFY. */
 	public static final String MODIFY = "modify";
 
 	// public static final String productList = "!productList";
 
+	/**
+	 * Gets the home.
+	 *
+	 * @return the home
+	 */
 	public static String getHome() {
 		return HOME;
 	}
@@ -49,6 +58,11 @@ public class NameTokens {
 	// return productList;
 	// }
 
+	/**
+	 * Gets the modify.
+	 *
+	 * @return the modify
+	 */
 	public static String getModify() {
 		return MODIFY;
 	}

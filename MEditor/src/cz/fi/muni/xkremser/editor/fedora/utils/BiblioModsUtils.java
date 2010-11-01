@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.fedora.utils;
 
 import java.util.logging.Level;
@@ -16,10 +21,21 @@ import org.w3c.dom.Node;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.fedora.FedoraNamespaceContext;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BiblioModsUtils.
+ */
 public class BiblioModsUtils {
 
+	/** The Constant LOGGER. */
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(BiblioModsUtils.class.getName());
 
+	/**
+	 * Gets the page number.
+	 *
+	 * @param doc the doc
+	 * @return the page number
+	 */
 	public static String getPageNumber(Document doc) {
 		try {
 			XPathFactory xpfactory = XPathFactory.newInstance();
@@ -37,6 +53,13 @@ public class BiblioModsUtils {
 		}
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @param doc the doc
+	 * @param model the model
+	 * @return the title
+	 */
 	public static String getTitle(Document doc, KrameriusModel model) {
 		String title = titleFromBiblioMods(doc);
 		if ((title == null) || (title.equals(""))) {
@@ -52,6 +75,12 @@ public class BiblioModsUtils {
 			return title;
 	}
 
+	/**
+	 * Title from biblio mods.
+	 *
+	 * @param doc the doc
+	 * @return the string
+	 */
 	public static String titleFromBiblioMods(Document doc) {
 		try {
 			XPathFactory xpfactory = XPathFactory.newInstance();

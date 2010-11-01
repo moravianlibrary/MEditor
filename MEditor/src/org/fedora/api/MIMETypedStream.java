@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -9,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for MIMETypedStream complex type.
  * 
@@ -48,20 +54,24 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MIMETypedStream {
 
+    /** The mime type. */
     @XmlElement(name = "MIMEType", required = true, nillable = true)
     protected String mimeType;
+    
+    /** The stream. */
     @XmlElement(required = true, nillable = true)
     protected byte[] stream;
+    
+    /** The header. */
     @XmlElement(required = true, nillable = true)
     protected MIMETypedStream.Header header;
 
     /**
      * Gets the value of the mimeType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the mIME type
+     * possible object is
+     * {@link String }
      */
     public String getMIMEType() {
         return mimeType;
@@ -81,10 +91,10 @@ public class MIMETypedStream {
 
     /**
      * Gets the value of the stream property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return the stream
+     * possible object is
+     * byte[]
      */
     public byte[] getStream() {
         return stream;
@@ -103,11 +113,10 @@ public class MIMETypedStream {
 
     /**
      * Gets the value of the header property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MIMETypedStream.Header }
-     *     
+     *
+     * @return the header
+     * possible object is
+     * {@link MIMETypedStream.Header }
      */
     public MIMETypedStream.Header getHeader() {
         return header;
@@ -151,6 +160,7 @@ public class MIMETypedStream {
     })
     public static class Header {
 
+        /** The property. */
         protected List<Property> property;
 
         /**
@@ -165,15 +175,15 @@ public class MIMETypedStream {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getProperty().add(newItem);
+         * getProperty().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the property
          * {@link Property }
-         * 
-         * 
          */
         public List<Property> getProperty() {
             if (property == null) {

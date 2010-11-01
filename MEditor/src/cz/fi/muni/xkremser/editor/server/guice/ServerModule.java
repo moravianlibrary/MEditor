@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.guice;
 
 import javax.xml.namespace.NamespaceContext;
@@ -35,12 +40,15 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
+// TODO: Auto-generated Javadoc
 /**
- * Module which binds the handlers and configurations
- * 
+ * Module which binds the handlers and configurations.
  */
 public class ServerModule extends HandlerModule {
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.dispatch.server.guice.HandlerModule#configureHandlers()
+	 */
 	@Override
 	protected void configureHandlers() {
 		// bindHandler(SendGreeting.class, SendGreetingHandler.class);

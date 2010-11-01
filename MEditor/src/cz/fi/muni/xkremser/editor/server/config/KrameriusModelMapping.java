@@ -18,8 +18,13 @@ import cz.fi.muni.xkremser.editor.server.modelHandler.PeriodicalHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.PeriodicalItemHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.PeriodicalVolumeHandler;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class KrameriusModelMapping.
+ */
 public class KrameriusModelMapping {
 
+	/** The Constant TYPES. */
 	public final static Map<KrameriusModel, Class<? extends CanGetObject>> TYPES;
 
 	static {

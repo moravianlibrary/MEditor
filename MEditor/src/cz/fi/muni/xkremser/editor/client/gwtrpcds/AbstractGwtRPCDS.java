@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
 import com.smartgwt.client.data.DSRequest;
@@ -6,6 +11,7 @@ import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.types.DSDataFormat;
 import com.smartgwt.client.types.DSProtocol;
 
+// TODO: Auto-generated Javadoc
 /**
  * Data source with ability to communicate with server by GWT RPC.
  * <p/>

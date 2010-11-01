@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.fedora.utils;
 
 import static cz.fi.muni.xkremser.editor.fedora.FedoraNamespaces.DC_NAMESPACE_URI;
@@ -8,8 +13,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DCUtils.
+ */
 public class DCUtils {
 
+	/**
+	 * Title from dc.
+	 *
+	 * @param dc the dc
+	 * @return the string
+	 */
 	public static String titleFromDC(org.w3c.dom.Document dc) {
 		Element elm = XMLUtils.findElement(dc.getDocumentElement(), "title", DC_NAMESPACE_URI);
 		if (elm == null)
@@ -18,6 +33,12 @@ public class DCUtils {
 		return title;
 	}
 
+	/**
+	 * Creators from dc.
+	 *
+	 * @param dc the dc
+	 * @return the string[]
+	 */
 	public static String[] creatorsFromDC(org.w3c.dom.Document dc) {
 		ArrayList<String> creator = new ArrayList<String>();
 		Element documentElement = dc.getDocumentElement();

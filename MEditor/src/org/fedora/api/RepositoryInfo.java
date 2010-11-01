@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for RepositoryInfo complex type.
  * 
@@ -56,40 +62,64 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class RepositoryInfo {
 
+    /** The repository name. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryName;
+    
+    /** The repository version. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryVersion;
+    
+    /** The repository base url. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryBaseURL;
+    
+    /** The repository pid namespace. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryPIDNamespace;
+    
+    /** The default export format. */
     @XmlElement(required = true, nillable = true)
     protected String defaultExportFormat;
+    
+    /** The oai namespace. */
     @XmlElement(name = "OAINamespace", required = true, nillable = true)
     protected String oaiNamespace;
+    
+    /** The admin email list. */
     @XmlElement(required = true, nillable = true)
     protected ArrayOfString adminEmailList;
+    
+    /** The sample pid. */
     @XmlElement(required = true, nillable = true)
     protected String samplePID;
+    
+    /** The sample oai identifier. */
     @XmlElement(required = true, nillable = true)
     protected String sampleOAIIdentifier;
+    
+    /** The sample search url. */
     @XmlElement(required = true, nillable = true)
     protected String sampleSearchURL;
+    
+    /** The sample access url. */
     @XmlElement(required = true, nillable = true)
     protected String sampleAccessURL;
+    
+    /** The sample oaiurl. */
     @XmlElement(required = true, nillable = true)
     protected String sampleOAIURL;
+    
+    /** The retain pi ds. */
     @XmlElement(required = true, nillable = true)
     protected ArrayOfString retainPIDs;
 
     /**
      * Gets the value of the repositoryName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the repository name
+     * possible object is
+     * {@link String }
      */
     public String getRepositoryName() {
         return repositoryName;
@@ -109,11 +139,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the repositoryVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the repository version
+     * possible object is
+     * {@link String }
      */
     public String getRepositoryVersion() {
         return repositoryVersion;
@@ -133,11 +162,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the repositoryBaseURL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the repository base url
+     * possible object is
+     * {@link String }
      */
     public String getRepositoryBaseURL() {
         return repositoryBaseURL;
@@ -157,11 +185,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the repositoryPIDNamespace property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the repository pid namespace
+     * possible object is
+     * {@link String }
      */
     public String getRepositoryPIDNamespace() {
         return repositoryPIDNamespace;
@@ -181,11 +208,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the defaultExportFormat property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the default export format
+     * possible object is
+     * {@link String }
      */
     public String getDefaultExportFormat() {
         return defaultExportFormat;
@@ -205,11 +231,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the oaiNamespace property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the oAI namespace
+     * possible object is
+     * {@link String }
      */
     public String getOAINamespace() {
         return oaiNamespace;
@@ -229,11 +254,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the adminEmailList property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfString }
-     *     
+     *
+     * @return the admin email list
+     * possible object is
+     * {@link ArrayOfString }
      */
     public ArrayOfString getAdminEmailList() {
         return adminEmailList;
@@ -253,11 +277,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the samplePID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the sample pid
+     * possible object is
+     * {@link String }
      */
     public String getSamplePID() {
         return samplePID;
@@ -277,11 +300,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleOAIIdentifier property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the sample oai identifier
+     * possible object is
+     * {@link String }
      */
     public String getSampleOAIIdentifier() {
         return sampleOAIIdentifier;
@@ -301,11 +323,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleSearchURL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the sample search url
+     * possible object is
+     * {@link String }
      */
     public String getSampleSearchURL() {
         return sampleSearchURL;
@@ -325,11 +346,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleAccessURL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the sample access url
+     * possible object is
+     * {@link String }
      */
     public String getSampleAccessURL() {
         return sampleAccessURL;
@@ -349,11 +369,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleOAIURL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the sample oaiurl
+     * possible object is
+     * {@link String }
      */
     public String getSampleOAIURL() {
         return sampleOAIURL;
@@ -373,11 +392,10 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the retainPIDs property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfString }
-     *     
+     *
+     * @return the retain pi ds
+     * possible object is
+     * {@link ArrayOfString }
      */
     public ArrayOfString getRetainPIDs() {
         return retainPIDs;

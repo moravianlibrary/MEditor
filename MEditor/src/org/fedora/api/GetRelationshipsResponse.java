@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -9,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -35,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getRelationshipsResponse")
 public class GetRelationshipsResponse {
 
+    /** The relationships. */
     protected List<RelationshipTuple> relationships;
 
     /**
@@ -49,15 +56,15 @@ public class GetRelationshipsResponse {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getRelationships().add(newItem);
+     * getRelationships().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the relationships
      * {@link RelationshipTuple }
-     * 
-     * 
      */
     public List<RelationshipTuple> getRelationships() {
         if (relationships == null) {

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -6,6 +11,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for userInputType.
  * 
@@ -24,18 +30,37 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum UserInputType {
 
+    /** The FEDOR a_ use r_ inpu t_ type. */
     @XmlEnumValue("fedora:userInputType")
     FEDORA_USER_INPUT_TYPE("fedora:userInputType");
+    
+    /** The value. */
     private final String value;
 
+    /**
+     * Instantiates a new user input type.
+     *
+     * @param v the v
+     */
     UserInputType(String v) {
         value = v;
     }
 
+    /**
+     * Value.
+     *
+     * @return the string
+     */
     public String value() {
         return value;
     }
 
+    /**
+     * From value.
+     *
+     * @param v the v
+     * @return the user input type
+     */
     public static UserInputType fromValue(String v) {
         for (UserInputType c: UserInputType.values()) {
             if (c.value.equals(v)) {

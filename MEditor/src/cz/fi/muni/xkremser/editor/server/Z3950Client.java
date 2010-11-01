@@ -45,34 +45,77 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
 import cz.fi.muni.xkremser.editor.shared.DublinCoreXML;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Z3950Client.
+ */
 public class Z3950Client {
 
+	/** The logger. */
 	private final Log logger;
+	
+	/** The configuration. */
 	private final EditorConfiguration configuration;
+	
+	/** The Constant MZK_PROFILE_INDEX. */
 	public static final int MZK_PROFILE_INDEX = 0;
+	
+	/** The Constant MZK_PROFILE_ID. */
 	public static final String MZK_PROFILE_ID = "mzk";
 
+	/** The Constant MUNI_PROFILE_INDEX. */
 	public static final int MUNI_PROFILE_INDEX = 1;
+	
+	/** The Constant MUNI_PROFILE_ID. */
 	public static final String MUNI_PROFILE_ID = "muni";
 
+	/** The Constant NKP_SKC_PROFILE_INDEX. */
 	public static final int NKP_SKC_PROFILE_INDEX = 2;
+	
+	/** The Constant NKP_SKC_PROFILE_ID. */
 	public static final String NKP_SKC_PROFILE_ID = "nkp_skc";
 
+	/** The Constant NKP_NKC_PROFILE_INDEX. */
 	public static final int NKP_NKC_PROFILE_INDEX = 3;
+	
+	/** The Constant NKP_NKC_PROFILE_ID. */
 	public static final String NKP_NKC_PROFILE_ID = "nkp_nkc";
 
+	/**
+	 * The Enum SEARCH_FIELD.
+	 */
 	public static enum SEARCH_FIELD {
-		SYSNO, BAR, TITLE
+		
+		/** The SYSNO. */
+		SYSNO, 
+ /** The BAR. */
+ BAR, 
+ /** The TITLE. */
+ TITLE
 	}
 
+	/** The Constant RECORD_SYNTAX. */
 	public static final String RECORD_SYNTAX = "usmarc";
 
+	/**
+	 * Instantiates a new z3950 client.
+	 *
+	 * @param logger the logger
+	 * @param configuration the configuration
+	 */
 	@Inject
 	public Z3950Client(final Log logger, final EditorConfiguration configuration) {
 		this.configuration = configuration;
 		this.logger = logger;
 	}
 
+	/**
+	 * Search.
+	 *
+	 * @param field the field
+	 * @param what the what
+	 * @return the dublin core xml
+	 */
 	public DublinCoreXML search(Z3950Client.SEARCH_FIELD field, String what) {
 
 		// OIDRegister reg = OIDRegister.getRegister();
@@ -216,6 +259,11 @@ public class Z3950Client {
 		return null;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String args[]) {
 
 	}

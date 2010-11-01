@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for MethodParmDef complex type.
  * 
@@ -54,37 +60,59 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MethodParmDef {
 
+    /** The parm name. */
     @XmlElement(required = true, nillable = true)
     protected String parmName;
+    
+    /** The parm type. */
     @XmlElement(required = true, nillable = true)
     protected String parmType;
+    
+    /** The parm default value. */
     @XmlElement(required = true, nillable = true)
     protected String parmDefaultValue;
+    
+    /** The parm domain values. */
     @XmlElement(required = true, nillable = true)
     protected ArrayOfString parmDomainValues;
+    
+    /** The parm required. */
     protected boolean parmRequired;
+    
+    /** The parm label. */
     @XmlElement(required = true, nillable = true)
     protected String parmLabel;
+    
+    /** The parm pass by. */
     @XmlElement(required = true, nillable = true)
     protected String parmPassBy;
+    
+    /** The passbyref. */
     @XmlElement(name = "PASS_BY_REF", required = true, nillable = true)
     protected PassByRef passbyref;
+    
+    /** The passbyvalue. */
     @XmlElement(name = "PASS_BY_VALUE", required = true, nillable = true)
     protected PassByValue passbyvalue;
+    
+    /** The datastreaminput. */
     @XmlElement(name = "DATASTREAM_INPUT", required = true, nillable = true)
     protected DatastreamInputType datastreaminput;
+    
+    /** The userinput. */
     @XmlElement(name = "USER_INPUT", required = true, nillable = true)
     protected UserInputType userinput;
+    
+    /** The defaultinput. */
     @XmlElement(name = "DEFAULT_INPUT", required = true, nillable = true)
     protected DefaultInputType defaultinput;
 
     /**
      * Gets the value of the parmName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the parm name
+     * possible object is
+     * {@link String }
      */
     public String getParmName() {
         return parmName;
@@ -104,11 +132,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the parmType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the parm type
+     * possible object is
+     * {@link String }
      */
     public String getParmType() {
         return parmType;
@@ -128,11 +155,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the parmDefaultValue property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the parm default value
+     * possible object is
+     * {@link String }
      */
     public String getParmDefaultValue() {
         return parmDefaultValue;
@@ -152,11 +178,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the parmDomainValues property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfString }
-     *     
+     *
+     * @return the parm domain values
+     * possible object is
+     * {@link ArrayOfString }
      */
     public ArrayOfString getParmDomainValues() {
         return parmDomainValues;
@@ -176,7 +201,8 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the parmRequired property.
-     * 
+     *
+     * @return true, if is parm required
      */
     public boolean isParmRequired() {
         return parmRequired;
@@ -184,7 +210,8 @@ public class MethodParmDef {
 
     /**
      * Sets the value of the parmRequired property.
-     * 
+     *
+     * @param value the new parm required
      */
     public void setParmRequired(boolean value) {
         this.parmRequired = value;
@@ -192,11 +219,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the parmLabel property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the parm label
+     * possible object is
+     * {@link String }
      */
     public String getParmLabel() {
         return parmLabel;
@@ -216,11 +242,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the parmPassBy property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the parm pass by
+     * possible object is
+     * {@link String }
      */
     public String getParmPassBy() {
         return parmPassBy;
@@ -240,11 +265,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the passbyref property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PassByRef }
-     *     
+     *
+     * @return the pASSBYREF
+     * possible object is
+     * {@link PassByRef }
      */
     public PassByRef getPASSBYREF() {
         return passbyref;
@@ -264,11 +288,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the passbyvalue property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PassByValue }
-     *     
+     *
+     * @return the pASSBYVALUE
+     * possible object is
+     * {@link PassByValue }
      */
     public PassByValue getPASSBYVALUE() {
         return passbyvalue;
@@ -288,11 +311,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the datastreaminput property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatastreamInputType }
-     *     
+     *
+     * @return the dATASTREAMINPUT
+     * possible object is
+     * {@link DatastreamInputType }
      */
     public DatastreamInputType getDATASTREAMINPUT() {
         return datastreaminput;
@@ -312,11 +334,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the userinput property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link UserInputType }
-     *     
+     *
+     * @return the uSERINPUT
+     * possible object is
+     * {@link UserInputType }
      */
     public UserInputType getUSERINPUT() {
         return userinput;
@@ -336,11 +357,10 @@ public class MethodParmDef {
 
     /**
      * Gets the value of the defaultinput property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DefaultInputType }
-     *     
+     *
+     * @return the dEFAULTINPUT
+     * possible object is
+     * {@link DefaultInputType }
      */
     public DefaultInputType getDEFAULTINPUT() {
         return defaultinput;

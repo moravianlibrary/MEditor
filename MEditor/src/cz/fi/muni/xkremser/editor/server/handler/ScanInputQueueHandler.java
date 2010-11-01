@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.File;
@@ -23,26 +28,46 @@ import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ScanInputQueueHandler.
+ */
 public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction, ScanInputQueueResult> {
+	
+	/** The logger. */
 	private final Log logger;
+	
+	/** The configuration. */
 	private final EditorConfiguration configuration;
 
+	/** The client. */
 	@Inject
 	private Z3950Client client;
 
+	/** The fedora access. */
 	@Inject
 	@Named("securedFedoraAccess")
 	private FedoraAccess fedoraAccess;
 
+	/** The input queue dao. */
 	@Inject
 	private InputQueueItemDAO inputQueueDAO;
 
+	/**
+	 * Instantiates a new scan input queue handler.
+	 *
+	 * @param logger the logger
+	 * @param configuration the configuration
+	 */
 	@Inject
 	public ScanInputQueueHandler(final Log logger, final EditorConfiguration configuration) {
 		this.logger = logger;
 		this.configuration = configuration;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.server.ExecutionContext)
+	 */
 	@Override
 	public ScanInputQueueResult execute(final ScanInputQueueAction action, final ExecutionContext context) throws ActionException {
 		// parse input
@@ -76,6 +101,12 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		return result;
 	}
 
+	/**
+	 * Check document types.
+	 *
+	 * @param types the types
+	 * @throws ActionException the action exception
+	 */
 	private void checkDocumentTypes(String[] types) throws ActionException {
 		for (String uuid : types) {
 			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + KrameriusModel.toString(KrameriusModel.parseString(uuid)))) {
@@ -85,6 +116,12 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		}
 	}
 
+	/**
+	 * Update db.
+	 *
+	 * @param base the base
+	 * @return the array list
+	 */
 	private ArrayList<InputQueueItem> updateDb(String base) {
 		String[] types = configuration.getDocumentTypes();
 		if (types == null || types.length == 0)
@@ -112,10 +149,26 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 	// private
 
+	/**
+	 * Scan directory structure.
+	 *
+	 * @param pathPrefix the path prefix
+	 * @param relativePath the relative path
+	 * @return the list
+	 */
 	private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
 		return scanDirectoryStructure(pathPrefix, relativePath, new ArrayList<InputQueueItem>(), Constants.DIR_MAX_DEPTH);
 	}
 
+	/**
+	 * Scan directory structure.
+	 *
+	 * @param pathPrefix the path prefix
+	 * @param relativePath the relative path
+	 * @param list the list
+	 * @param level the level
+	 * @return the list
+	 */
 	private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath, List<InputQueueItem> list, int level) {
 		if (level == 0)
 			return list;
@@ -136,11 +189,17 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		return list;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
+	 */
 	@Override
 	public Class<ScanInputQueueAction> getActionType() {
 		return ScanInputQueueAction.class;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result, com.gwtplatform.dispatch.server.ExecutionContext)
+	 */
 	@Override
 	public void undo(ScanInputQueueAction action, ScanInputQueueResult result, ExecutionContext context) throws ActionException {
 		// TODO Auto-generated method stub

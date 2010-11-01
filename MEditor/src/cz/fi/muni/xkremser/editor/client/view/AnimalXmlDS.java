@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.data.DSRequest;
@@ -7,10 +12,20 @@ import com.smartgwt.client.data.fields.DataSourceImageField;
 import com.smartgwt.client.data.fields.DataSourceIntegerField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AnimalXmlDS.
+ */
 public class AnimalXmlDS extends DataSource {
 
+    /** The instance. */
     private static AnimalXmlDS instance = null;
 
+    /**
+     * Gets the single instance of AnimalXmlDS.
+     *
+     * @return single instance of AnimalXmlDS
+     */
     public static AnimalXmlDS getInstance() {
         if (instance == null) {
             instance = new AnimalXmlDS("animalDS");
@@ -18,6 +33,11 @@ public class AnimalXmlDS extends DataSource {
         return instance;
     }
 
+    /**
+     * Instantiates a new animal xml ds.
+     *
+     * @param id the id
+     */
     public AnimalXmlDS(String id) {
 
         setID(id);

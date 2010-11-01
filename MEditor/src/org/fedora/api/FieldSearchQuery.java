@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -10,6 +15,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for FieldSearchQuery complex type.
  * 
@@ -47,18 +53,20 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class FieldSearchQuery {
 
+    /** The conditions. */
     @XmlElementRef(name = "conditions", type = JAXBElement.class)
     protected JAXBElement<FieldSearchQuery.Conditions> conditions;
+    
+    /** The terms. */
     @XmlElementRef(name = "terms", type = JAXBElement.class)
     protected JAXBElement<String> terms;
 
     /**
      * Gets the value of the conditions property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link FieldSearchQuery.Conditions }{@code >}
-     *     
+     *
+     * @return the conditions
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link FieldSearchQuery.Conditions }{@code >}
      */
     public JAXBElement<FieldSearchQuery.Conditions> getConditions() {
         return conditions;
@@ -78,11 +86,10 @@ public class FieldSearchQuery {
 
     /**
      * Gets the value of the terms property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the terms
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getTerms() {
         return terms;
@@ -126,6 +133,7 @@ public class FieldSearchQuery {
     })
     public static class Conditions {
 
+        /** The condition. */
         protected List<Condition> condition;
 
         /**
@@ -140,15 +148,15 @@ public class FieldSearchQuery {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getCondition().add(newItem);
+         * getCondition().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the condition
          * {@link Condition }
-         * 
-         * 
          */
         public List<Condition> getCondition() {
             if (condition == null) {

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.fedora;
 
 import static cz.fi.muni.xkremser.editor.fedora.FedoraNamespaces.BIBILO_MODS_URI;
@@ -15,9 +20,16 @@ import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FedoraNamespaceContext.
+ */
 public class FedoraNamespaceContext implements NamespaceContext {
 
+	/** The Constant MAP_PREFIX2URI. */
 	private static final Map<String, String> MAP_PREFIX2URI = new IdentityHashMap<String, String>();
+	
+	/** The Constant MAP_URI2PREFIX. */
 	private static final Map<String, String> MAP_URI2PREFIX = new IdentityHashMap<String, String>();
 
 	static {
@@ -33,16 +45,25 @@ public class FedoraNamespaceContext implements NamespaceContext {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.xml.namespace.NamespaceContext#getNamespaceURI(java.lang.String)
+	 */
 	@Override
 	public String getNamespaceURI(String arg0) {
 		return MAP_PREFIX2URI.get(arg0.intern());
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.xml.namespace.NamespaceContext#getPrefix(java.lang.String)
+	 */
 	@Override
 	public String getPrefix(String arg0) {
 		return MAP_URI2PREFIX.get(arg0.intern());
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.xml.namespace.NamespaceContext#getPrefixes(java.lang.String)
+	 */
 	@Override
 	public Iterator getPrefixes(String arg0) {
 		String prefixInternal = MAP_URI2PREFIX.get(arg0.intern());

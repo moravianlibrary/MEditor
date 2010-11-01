@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -6,6 +11,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for ComparisonOperator.
  * 
@@ -29,28 +35,57 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum ComparisonOperator {
 
+    /** The HAS. */
     @XmlEnumValue("has")
     HAS("has"),
+    
+    /** The EQ. */
     @XmlEnumValue("eq")
     EQ("eq"),
+    
+    /** The LT. */
     @XmlEnumValue("lt")
     LT("lt"),
+    
+    /** The LE. */
     @XmlEnumValue("le")
     LE("le"),
+    
+    /** The GT. */
     @XmlEnumValue("gt")
     GT("gt"),
+    
+    /** The GE. */
     @XmlEnumValue("ge")
     GE("ge");
+    
+    /** The value. */
     private final String value;
 
+    /**
+     * Instantiates a new comparison operator.
+     *
+     * @param v the v
+     */
     ComparisonOperator(String v) {
         value = v;
     }
 
+    /**
+     * Value.
+     *
+     * @return the string
+     */
     public String value() {
         return value;
     }
 
+    /**
+     * From value.
+     *
+     * @param v the v
+     * @return the comparison operator
+     */
     public static ComparisonOperator fromValue(String v) {
         for (ComparisonOperator c: ComparisonOperator.values()) {
             if (c.value.equals(v)) {

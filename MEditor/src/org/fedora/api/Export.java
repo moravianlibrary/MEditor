@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -38,20 +44,24 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "export")
 public class Export {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The format. */
     @XmlElement(required = true)
     protected String format;
+    
+    /** The context. */
     @XmlElement(required = true)
     protected String context;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -71,11 +81,10 @@ public class Export {
 
     /**
      * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the format
+     * possible object is
+     * {@link String }
      */
     public String getFormat() {
         return format;
@@ -95,11 +104,10 @@ public class Export {
 
     /**
      * Gets the value of the context property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the context
+     * possible object is
+     * {@link String }
      */
     public String getContext() {
         return context;

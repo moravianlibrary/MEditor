@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * binding key to datastream association
  * 
@@ -40,22 +46,28 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DatastreamBinding {
 
+    /** The bind key name. */
     @XmlElement(required = true, nillable = true)
     protected String bindKeyName;
+    
+    /** The bind label. */
     @XmlElement(required = true, nillable = true)
     protected String bindLabel;
+    
+    /** The datastream id. */
     @XmlElement(required = true, nillable = true)
     protected String datastreamID;
+    
+    /** The seq no. */
     @XmlElement(required = true, nillable = true)
     protected String seqNo;
 
     /**
      * Gets the value of the bindKeyName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the bind key name
+     * possible object is
+     * {@link String }
      */
     public String getBindKeyName() {
         return bindKeyName;
@@ -75,11 +87,10 @@ public class DatastreamBinding {
 
     /**
      * Gets the value of the bindLabel property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the bind label
+     * possible object is
+     * {@link String }
      */
     public String getBindLabel() {
         return bindLabel;
@@ -99,11 +110,10 @@ public class DatastreamBinding {
 
     /**
      * Gets the value of the datastreamID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the datastream id
+     * possible object is
+     * {@link String }
      */
     public String getDatastreamID() {
         return datastreamID;
@@ -123,11 +133,10 @@ public class DatastreamBinding {
 
     /**
      * Gets the value of the seqNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the seq no
+     * possible object is
+     * {@link String }
      */
     public String getSeqNo() {
         return seqNo;

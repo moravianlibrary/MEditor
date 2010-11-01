@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -36,18 +42,20 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getRelationships")
 public class GetRelationships {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The relationship. */
     @XmlElement(required = true, nillable = true)
     protected String relationship;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -67,11 +75,10 @@ public class GetRelationships {
 
     /**
      * Gets the value of the relationship property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the relationship
+     * possible object is
+     * {@link String }
      */
     public String getRelationship() {
         return relationship;

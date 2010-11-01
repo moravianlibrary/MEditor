@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -9,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * ordered list of datastream binding maps
  * 
@@ -54,24 +60,32 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DatastreamBindingMap {
 
+    /** The ds bind map id. */
     @XmlElement(required = true, nillable = true)
     protected String dsBindMapID;
+    
+    /** The ds bind mechanism pid. */
     @XmlElement(required = true, nillable = true)
     protected String dsBindMechanismPID;
+    
+    /** The ds bind map label. */
     @XmlElement(required = true, nillable = true)
     protected String dsBindMapLabel;
+    
+    /** The state. */
     @XmlElement(required = true, nillable = true)
     protected String state;
+    
+    /** The ds bindings. */
     @XmlElement(required = true, nillable = true)
     protected DatastreamBindingMap.DsBindings dsBindings;
 
     /**
      * Gets the value of the dsBindMapID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds bind map id
+     * possible object is
+     * {@link String }
      */
     public String getDsBindMapID() {
         return dsBindMapID;
@@ -91,11 +105,10 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the dsBindMechanismPID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds bind mechanism pid
+     * possible object is
+     * {@link String }
      */
     public String getDsBindMechanismPID() {
         return dsBindMechanismPID;
@@ -115,11 +128,10 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the dsBindMapLabel property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds bind map label
+     * possible object is
+     * {@link String }
      */
     public String getDsBindMapLabel() {
         return dsBindMapLabel;
@@ -139,11 +151,10 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the state property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the state
+     * possible object is
+     * {@link String }
      */
     public String getState() {
         return state;
@@ -163,11 +174,10 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the dsBindings property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatastreamBindingMap.DsBindings }
-     *     
+     *
+     * @return the ds bindings
+     * possible object is
+     * {@link DatastreamBindingMap.DsBindings }
      */
     public DatastreamBindingMap.DsBindings getDsBindings() {
         return dsBindings;
@@ -211,6 +221,7 @@ public class DatastreamBindingMap {
     })
     public static class DsBindings {
 
+        /** The ds binding. */
         protected List<DatastreamBinding> dsBinding;
 
         /**
@@ -225,15 +236,15 @@ public class DatastreamBindingMap {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getDsBinding().add(newItem);
+         * getDsBinding().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the ds binding
          * {@link DatastreamBinding }
-         * 
-         * 
          */
         public List<DatastreamBinding> getDsBinding() {
             if (dsBinding == null) {

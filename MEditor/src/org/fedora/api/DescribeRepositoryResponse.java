@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -34,16 +40,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "describeRepositoryResponse")
 public class DescribeRepositoryResponse {
 
+    /** The repository info. */
     @XmlElement(required = true)
     protected RepositoryInfo repositoryInfo;
 
     /**
      * Gets the value of the repositoryInfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RepositoryInfo }
-     *     
+     *
+     * @return the repository info
+     * possible object is
+     * {@link RepositoryInfo }
      */
     public RepositoryInfo getRepositoryInfo() {
         return repositoryInfo;

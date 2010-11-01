@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -9,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -35,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getNextPIDResponse")
 public class GetNextPIDResponse {
 
+    /** The pid. */
     protected List<String> pid;
 
     /**
@@ -49,15 +56,15 @@ public class GetNextPIDResponse {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPid().add(newItem);
+     * getPid().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the pid
      * {@link String }
-     * 
-     * 
      */
     public List<String> getPid() {
         if (pid == null) {

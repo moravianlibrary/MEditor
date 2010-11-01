@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -38,19 +44,23 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "purgeObject")
 public class PurgeObject {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
+    
+    /** The force. */
     protected boolean force;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -70,11 +80,10 @@ public class PurgeObject {
 
     /**
      * Gets the value of the logMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the log message
+     * possible object is
+     * {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -94,7 +103,8 @@ public class PurgeObject {
 
     /**
      * Gets the value of the force property.
-     * 
+     *
+     * @return true, if is force
      */
     public boolean isForce() {
         return force;
@@ -102,7 +112,8 @@ public class PurgeObject {
 
     /**
      * Sets the value of the force property.
-     * 
+     *
+     * @param value the new force
      */
     public void setForce(boolean value) {
         this.force = value;

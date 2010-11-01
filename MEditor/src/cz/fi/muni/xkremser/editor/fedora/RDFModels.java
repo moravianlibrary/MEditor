@@ -6,15 +6,24 @@ package cz.fi.muni.xkremser.editor.fedora;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
+ * The Class RDFModels.
+ *
  * @author Administrator
  */
 
 public class RDFModels {
 
+	/** The Constant LOGGER. */
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RDFModels.class.getName());
 
+	/**
+	 * Convert rdf to model.
+	 *
+	 * @param rdf the rdf
+	 * @return the kramerius model
+	 */
 	public static KrameriusModel convertRDFToModel(String rdf) {
 		if (rdf.contains("hasPage")) {
 			return KrameriusModel.PAGE;
@@ -36,6 +45,12 @@ public class RDFModels {
 		}
 	}
 
+	/**
+	 * Convert to rdf.
+	 *
+	 * @param km the km
+	 * @return the string
+	 */
 	public static String convertToRdf(KrameriusModel km) {
 		switch (km) {
 			case MONOGRAPH:

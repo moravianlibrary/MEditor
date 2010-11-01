@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -36,18 +42,20 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getDatastreamHistory")
 public class GetDatastreamHistory {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -67,11 +75,10 @@ public class GetDatastreamHistory {
 
     /**
      * Gets the value of the dsID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds id
+     * possible object is
+     * {@link String }
      */
     public String getDsID() {
         return dsID;

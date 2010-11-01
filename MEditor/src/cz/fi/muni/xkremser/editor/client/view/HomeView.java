@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -10,11 +15,24 @@ import com.gwtplatform.mvp.client.ViewImpl;
 
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HomeView.
+ */
 public class HomeView extends ViewImpl implements HomePresenter.MyView {
+	
+	/** The name. */
 	private final TextBox name;
+	
+	/** The send button. */
 	private final Button sendButton;
+	
+	/** The panel. */
 	private final FlowPanel panel;
 
+	/**
+	 * Instantiates a new home view.
+	 */
 	public HomeView() {
 		panel = new FlowPanel();
 		name = new TextBox();
@@ -30,16 +48,25 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		reset();
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getName()
+	 */
 	@Override
 	public HasValue<String> getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getSend()
+	 */
 	@Override
 	public HasClickHandlers getSend() {
 		return sendButton;
 	}
 
+	/**
+	 * Reset.
+	 */
 	public void reset() {
 		// Focus the cursor on the name field when the app loads
 		name.setFocus(true);
@@ -48,6 +75,8 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 
 	/**
 	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+	 *
+	 * @return the widget
 	 */
 	@Override
 	public Widget asWidget() {

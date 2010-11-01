@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -42,23 +48,31 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "addRelationship")
 public class AddRelationship {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The relationship. */
     @XmlElement(required = true)
     protected String relationship;
+    
+    /** The object. */
     @XmlElement(required = true)
     protected String object;
+    
+    /** The is literal. */
     protected boolean isLiteral;
+    
+    /** The datatype. */
     @XmlElement(required = true, nillable = true)
     protected String datatype;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -78,11 +92,10 @@ public class AddRelationship {
 
     /**
      * Gets the value of the relationship property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the relationship
+     * possible object is
+     * {@link String }
      */
     public String getRelationship() {
         return relationship;
@@ -102,11 +115,10 @@ public class AddRelationship {
 
     /**
      * Gets the value of the object property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the object
+     * possible object is
+     * {@link String }
      */
     public String getObject() {
         return object;
@@ -126,7 +138,8 @@ public class AddRelationship {
 
     /**
      * Gets the value of the isLiteral property.
-     * 
+     *
+     * @return true, if is checks if is literal
      */
     public boolean isIsLiteral() {
         return isLiteral;
@@ -134,7 +147,8 @@ public class AddRelationship {
 
     /**
      * Sets the value of the isLiteral property.
-     * 
+     *
+     * @param value the new checks if is literal
      */
     public void setIsLiteral(boolean value) {
         this.isLiteral = value;
@@ -142,11 +156,10 @@ public class AddRelationship {
 
     /**
      * Gets the value of the datatype property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the datatype
+     * possible object is
+     * {@link String }
      */
     public String getDatatype() {
         return datatype;

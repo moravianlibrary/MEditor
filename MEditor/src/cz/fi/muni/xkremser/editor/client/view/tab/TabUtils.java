@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import java.util.HashMap;
@@ -24,10 +29,16 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TabUtils.
+ */
 public final class TabUtils {
 
+	/** The Constant W3C_ENCODING. */
 	private static final String W3C_ENCODING = "w3cdtf";
 
+	/** The Constant LANG_AUTHORITY_TOOLTIPS. */
 	private static final Map<String, String> LANG_AUTHORITY_TOOLTIPS = new HashMap<String, String>() {
 		{
 			put("", "Nothing.");
@@ -38,6 +49,7 @@ public final class TabUtils {
 		}
 	};
 
+	/** The Constant TYPE_TEXT_CODE_TOOLTIPS. */
 	private static final Map<String, String> TYPE_TEXT_CODE_TOOLTIPS = new HashMap<String, String>() {
 		{
 			put("", "This attribute will be omitted.");
@@ -45,6 +57,8 @@ public final class TabUtils {
 			put("code", "This value is used to express attribute in a coded form. The authority attribute may be used to indicate the source of the code.");
 		}
 	};
+
+	/** The Constant ENCODING_TOOLTIPS. */
 	private static final Map<String, String> ENCODING_TOOLTIPS = new HashMap<String, String>() {
 		{
 			put("", "This attribute will be omitted.");
@@ -53,6 +67,8 @@ public final class TabUtils {
 			put("marc", "This value is used only for dates coded according to MARC 21 rules in field 008/07-14 for dates of publication/issuance.");
 		}
 	};
+
+	/** The Constant POINT_TOOLTIPS. */
 	private static final Map<String, String> POINT_TOOLTIPS = new HashMap<String, String>() {
 		{
 			put("", "This attribute will be omitted.");
@@ -60,6 +76,8 @@ public final class TabUtils {
 			put("end", "This value is used for the end date of a range.");
 		}
 	};
+
+	/** The Constant QUALIFIER_TOOLTIPS. */
 	private static final Map<String, String> QUALIFIER_TOOLTIPS = new HashMap<String, String>() {
 		{
 			put("", "This attribute will be omitted.");
@@ -69,195 +87,504 @@ public final class TabUtils {
 		}
 	};
 
+	/** The Constant ATTR_AUTHORITY. */
 	private static final Attribute ATTR_AUTHORITY = new Attribute(TextItem.class, "authority", "Authority",
 			"The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file.");
 
+	/** The Constant ATTR_LANG. */
 	public static final Attribute ATTR_LANG = new Attribute(TextItem.class, "lang", "Lang", "This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
 
+	/** The Constant ATTR_XML_LANG. */
 	public static final Attribute ATTR_XML_LANG = new Attribute(TextItem.class, "xml:lang", "xml:lang", "In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.");
+
+	/** The Constant ATTR_TRANSLITERATION. */
 	public static final Attribute ATTR_TRANSLITERATION = new Attribute(TextItem.class, "transliteration", "Transliteration", "It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ");
+
+	/** The Constant ATTR_SCRIPT. */
 	public static final Attribute ATTR_SCRIPT = new Attribute(TextItem.class, "script", "Script", "This attribute specifies the script used within individual elements, using codes from ISO 15924.");
+
+	/** The Constant ATTR_ID. */
 	public static final Attribute ATTR_ID = new Attribute(TextItem.class, "id", "ID", "This attribute is used to link internally and to reference an element from outside the instance.");
+
+	/** The Constant ATTR_XLINK. */
 	public static final Attribute ATTR_XLINK = new Attribute(TextItem.class, "xlink", "xlink", "This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.");
+
+	/** The Constant ATTR_ENCODING. */
 	public static final Attribute ATTR_ENCODING = new Attribute(SelectItem.class, "encoding", "Encoding", ENCODING_TOOLTIPS);
+
+	/** The Constant ATTR_POINT. */
 	public static final Attribute ATTR_POINT = new Attribute(SelectItem.class, "point", "Point", POINT_TOOLTIPS);
+
+	/** The Constant ATTR_KEY_DATE. */
 	public static final Attribute ATTR_KEY_DATE = new Attribute(CheckboxItem.class, "key_date", "Key Date",
 			"This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.");
+
+	/** The Constant ATTR_QUALIFIER. */
 	public static final Attribute ATTR_QUALIFIER = new Attribute(SelectItem.class, "qualifier", "Qualifier", QUALIFIER_TOOLTIPS);
+
+	/** The Constant ATTR_TYPE_TEXT_CODE. */
 	public static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, "type", "Type", TYPE_TEXT_CODE_TOOLTIPS);
+
+	/** The Constant ATTR_LANG_AUTHORITY. */
 	public static final Attribute ATTR_LANG_AUTHORITY = new Attribute(SelectItem.class, "authority", "Authority", LANG_AUTHORITY_TOOLTIPS);
 
+	/**
+	 * Gets the display label.
+	 * 
+	 * @param tooltip
+	 *          the tooltip
+	 * @return the display label
+	 */
 	public static Attribute getDisplayLabel(final String tooltip) {
 		return new Attribute(TextItem.class, "display_label", "Display Label", tooltip);
 	}
 
+	/** The Constant GET_TITLE_INFO_LAYOUT. */
 	private static final GetLayoutOperation GET_TITLE_INFO_LAYOUT = new GetTitleInfoLayout();
+
+	/** The Constant GET_NAME_LAYOUT. */
 	private static final GetLayoutOperation GET_NAME_LAYOUT = new GetNameLayout();
+
+	/** The Constant GET_TYPE_OF_RESOURCE_LAYOUT. */
 	private static final GetLayoutOperation GET_TYPE_OF_RESOURCE_LAYOUT = new GetTypeOfResourceLayout();
+
+	/** The Constant GET_GENRE_LAYOUT. */
 	private static final GetLayoutOperation GET_GENRE_LAYOUT = new GetGenreLayout();
+
+	/** The Constant GET_ORIGIN_INFO_LAYOUT. */
 	private static final GetLayoutOperation GET_ORIGIN_INFO_LAYOUT = new GetOriginInfoLayout();
+
+	/** The Constant GET_PLACE_LAYOUT. */
 	private static final GetLayoutOperation GET_PLACE_LAYOUT = new GetPlaceLayout();
+
+	/** The Constant GET_LANGUAGE_LAYOUT. */
 	private static final GetLayoutOperation GET_LANGUAGE_LAYOUT = new GetLanguageLayout();
+
+	/** The Constant GET_PHYSICIAL_DESCRIPTION_LAYOUT. */
 	private static final GetLayoutOperation GET_PHYSICIAL_DESCRIPTION_LAYOUT = new GetPhysicialDescriptionLayout();
+
+	/** The Constant GET_LOCATION_LAYOUT. */
 	private static final GetLayoutOperation GET_LOCATION_LAYOUT = new GetLocationLayout();
 
+	/**
+	 * The Interface GetLayoutOperation.
+	 */
 	public interface GetLayoutOperation {
+
+		/**
+		 * Execute.
+		 * 
+		 * @return the canvas
+		 */
 		Canvas execute();
 	}
 
+	/**
+	 * The Class GetTitleInfoLayout.
+	 */
 	private static class GetTitleInfoLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getTitleInfoLayout();
 		}
 	}
 
+	/**
+	 * The Class GetNameLayout.
+	 */
 	private static class GetNameLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getNameLayout();
 		}
 	}
 
+	/**
+	 * The Class GetTypeOfResourceLayout.
+	 */
 	private static class GetTypeOfResourceLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getTypeOfResourceLayout();
 		}
 	}
 
+	/**
+	 * The Class GetGenreLayout.
+	 */
 	private static class GetGenreLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getGenreLayout();
 		}
 	}
 
+	/**
+	 * The Class GetOriginInfoLayout.
+	 */
 	private static class GetOriginInfoLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getOriginInfoLayout();
 		}
 	}
 
+	/**
+	 * The Class GetPhysicialDescriptionLayout.
+	 */
 	private static class GetPhysicialDescriptionLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getPhysicialDescriptionLayout();
 		}
 	}
 
+	/**
+	 * The Class GetGeneralLayout.
+	 */
 	private static class GetGeneralLayout implements GetLayoutOperation {
+
+		/** The head. */
 		private final Attribute head;
+
+		/** The attributes. */
 		private final Attribute[] attributes;
 
+		/**
+		 * Instantiates a new gets the general layout.
+		 * 
+		 * @param head
+		 *          the head
+		 * @param attributes
+		 *          the attributes
+		 */
 		public GetGeneralLayout(Attribute head, Attribute[] attributes) {
 			super();
 			this.head = head;
 			this.attributes = attributes;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getGeneralLayout(head, attributes);
 		}
 	}
 
+	/**
+	 * The Class GetGeneralDeepLayout.
+	 */
 	private static class GetGeneralDeepLayout implements GetLayoutOperation {
+
+		/** The attributes. */
 		private final Attribute[] attributes;
 
+		/**
+		 * Instantiates a new gets the general deep layout.
+		 * 
+		 * @param attributes
+		 *          the attributes
+		 */
 		public GetGeneralDeepLayout(Attribute[] attributes) {
 			super();
 			this.attributes = attributes;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getGeneralDeepLayout(attributes);
 		}
 	}
 
+	/**
+	 * The Class GetSubjectLayout.
+	 */
 	private static class GetSubjectLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getSubjectLayout();
 		}
 	}
 
+	/**
+	 * The Class GetLocationLayout.
+	 */
 	private static class GetLocationLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getLocationLayout();
 		}
 	}
 
+	/**
+	 * The Class GetCopyInformationLayout.
+	 */
 	private static class GetCopyInformationLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getCopyInformationLayout();
 		}
 	}
 
+	/**
+	 * The Class GetPartLayout.
+	 */
 	private static class GetPartLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getPartLayout();
 		}
 	}
 
+	/**
+	 * The Class GetRecordInfoLayout.
+	 */
 	private static class GetRecordInfoLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getRecordInfoLayout();
 		}
 	}
 
+	/**
+	 * The Class GetPlaceLayout.
+	 */
 	private static class GetPlaceLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getPlaceLayout();
 		}
 	}
 
+	/**
+	 * The Class GetDetailLayout.
+	 */
 	private static class GetDetailLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getDetailLayout();
 		}
 	}
 
+	/**
+	 * The Class GetExtentLayout.
+	 */
 	private static class GetExtentLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getExtentLayout();
 		}
 	}
 
+	/**
+	 * The Class GetLanguageOfCatalogingLayout.
+	 */
 	private static class GetLanguageOfCatalogingLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getLanguageOfCatalogingLayout();
 		}
 	}
 
+	/**
+	 * The Class GetLanguageLayout.
+	 */
 	private static class GetLanguageLayout implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getLanguageLayout();
 		}
 	}
 
+	/**
+	 * The Class GetDateLayout.
+	 */
 	private static class GetDateLayout implements GetLayoutOperation {
+
+		/** The name. */
 		private final String name;
+
+		/** The title. */
 		private final String title;
+
+		/** The tooltip. */
 		private final String tooltip;
+
+		/** The attribute. */
 		private final Attribute attribute;
+
+		/** The key date. */
 		private final boolean keyDate;
 
+		/**
+		 * Instantiates a new gets the date layout.
+		 * 
+		 * @param name
+		 *          the name
+		 * @param title
+		 *          the title
+		 * @param tooltip
+		 *          the tooltip
+		 */
 		public GetDateLayout(String name, String title, String tooltip) {
 			this(name, title, tooltip, null, true);
 		}
 
+		/**
+		 * Instantiates a new gets the date layout.
+		 * 
+		 * @param name
+		 *          the name
+		 * @param title
+		 *          the title
+		 * @param tooltip
+		 *          the tooltip
+		 * @param attribute
+		 *          the attribute
+		 * @param keyDate
+		 *          the key date
+		 */
 		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate) {
 			super();
 			this.name = name;
@@ -267,32 +594,109 @@ public final class TabUtils {
 			this.keyDate = keyDate;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public VLayout execute() {
 			return getDateLayout(name, title, tooltip, attribute, keyDate);
 		}
 	}
 
+	/**
+	 * Gets the stack section.
+	 * 
+	 * @param attribute
+	 *          the attribute
+	 * @param expanded
+	 *          the expanded
+	 * @return the stack section
+	 */
 	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded) {
 		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null);
 	}
 
+	/**
+	 * Gets the stack section.
+	 * 
+	 * @param label1
+	 *          the label1
+	 * @param label2
+	 *          the label2
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
+	 * @return the stack section
+	 */
 	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded) {
 		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null);
 	}
 
+	/**
+	 * Gets the simple section.
+	 * 
+	 * @param attribute
+	 *          the attribute
+	 * @param expanded
+	 *          the expanded
+	 * @return the simple section
+	 */
 	public static SectionStackSection getSimpleSection(final Attribute attribute, final boolean expanded) {
 		return getSimpleSectionWithAttributes(attribute, expanded, null);
 	}
 
+	/**
+	 * Gets the simple section.
+	 * 
+	 * @param type
+	 *          the type
+	 * @param label
+	 *          the label
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
+	 * @return the simple section
+	 */
 	public static SectionStackSection getSimpleSection(final Class<? extends FormItem> type, final String label, final String tooltip, final boolean expanded) {
 		return getSimpleSectionWithAttributes(new Attribute(type, label.toLowerCase().replaceAll(" ", "_"), label, tooltip), expanded, null);
 	}
 
+	/**
+	 * Gets the stack section with attributes.
+	 * 
+	 * @param label1
+	 *          the label1
+	 * @param label2
+	 *          the label2
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @return the stack section with attributes
+	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded, final Attribute[] attributes) {
 		return getStackSectionWithAttributes(label1, new Attribute(TextItem.class, label2.toLowerCase().replaceAll(" ", "_"), label2, tooltip), expanded, attributes);
 	}
 
+	/**
+	 * Gets the simple section with attributes.
+	 * 
+	 * @param mainAttr
+	 *          the main attr
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @return the simple section with attributes
+	 */
 	public static SectionStackSection getSimpleSectionWithAttributes(final Attribute mainAttr, final boolean expanded, Attribute[] attributes) {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
@@ -323,6 +727,19 @@ public final class TabUtils {
 		return section;
 	}
 
+	/**
+	 * Gets the stack section with attributes.
+	 * 
+	 * @param stackLabel
+	 *          the stack label
+	 * @param mainAttr
+	 *          the main attr
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @return the stack section with attributes
+	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded, final Attribute[] attributes) {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
@@ -414,6 +831,15 @@ public final class TabUtils {
 		return section;
 	}
 
+	/**
+	 * Gets the attributes.
+	 * 
+	 * @param group
+	 *          the group
+	 * @param attributes
+	 *          the attributes
+	 * @return the attributes
+	 */
 	public static DynamicForm getAttributes(final boolean group, final Attribute... attributes) {
 		final DynamicForm form = new DynamicForm();
 		form.setStyleName("metadata-attributes");
@@ -442,6 +868,13 @@ public final class TabUtils {
 		return form;
 	}
 
+	/**
+	 * New item.
+	 * 
+	 * @param attr
+	 *          the attr
+	 * @return the form item
+	 */
 	private static FormItem newItem(final Attribute attr) {
 		FormItem item = null;
 		Class<? extends FormItem> type = attr.getType();
@@ -474,6 +907,17 @@ public final class TabUtils {
 		return item;
 	}
 
+	/**
+	 * Gets the some stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param label
+	 *          the label
+	 * @param operation
+	 *          the operation
+	 * @return the some stack
+	 */
 	public static SectionStackSection getSomeStack(boolean expanded, final String label, final GetLayoutOperation operation) {
 		final SectionStackSection section = new SectionStackSection(label);
 		final VLayout layout = new VLayout();
@@ -531,61 +975,152 @@ public final class TabUtils {
 		return section;
 	}
 
+	/**
+	 * Gets the title info stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the title info stack
+	 */
 	public static SectionStackSection getTitleInfoStack(boolean expanded) {
 		return getSomeStack(expanded, "Title Info", GET_TITLE_INFO_LAYOUT);
 	}
 
+	/**
+	 * Gets the name stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the name stack
+	 */
 	public static SectionStackSection getNameStack(boolean expanded) {
 		return getSomeStack(expanded, "Name", GET_NAME_LAYOUT);
 	}
 
+	/**
+	 * Gets the type of resource stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the type of resource stack
+	 */
 	public static SectionStackSection getTypeOfResourceStack(boolean expanded) {
 		return getSomeStack(expanded, "Type of Resource", GET_TYPE_OF_RESOURCE_LAYOUT);
 	}
 
+	/**
+	 * Gets the genre stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the genre stack
+	 */
 	public static SectionStackSection getGenreStack(boolean expanded) {
 		return getSomeStack(expanded, "Genre", GET_GENRE_LAYOUT);
 	}
 
+	/**
+	 * Gets the origin info stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the origin info stack
+	 */
 	public static SectionStackSection getOriginInfoStack(boolean expanded) {
 		return getSomeStack(expanded, "Origin Info", GET_ORIGIN_INFO_LAYOUT);
 	}
 
+	/**
+	 * Gets the language stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the language stack
+	 */
 	public static SectionStackSection getLanguageStack(boolean expanded) {
 		return getSomeStack(expanded, "Language", GET_LANGUAGE_LAYOUT);
 	}
 
+	/**
+	 * Gets the physical description stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the physical description stack
+	 */
 	public static SectionStackSection getPhysicalDescriptionStack(boolean expanded) {
 		return getSomeStack(expanded, "Physicial Description", GET_PHYSICIAL_DESCRIPTION_LAYOUT);
 	}
 
+	/**
+	 * Gets the abstract stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the abstract stack
+	 */
 	public static SectionStackSection getAbstractStack(boolean expanded) {
 		return getSomeStack(expanded, "Abstract", new GetGeneralLayout(new Attribute(TextAreaItem.class, "abstract", "Abstract", "Roughly equivalent to MARC 21 field 520."), new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), getDisplayLabel("This attribute is intended to be used when additional text associated with the abstract is necessary for display."), ATTR_XLINK,
 				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
+	/**
+	 * Gets the table of contents stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the table of contents stack
+	 */
 	public static SectionStackSection getTableOfContentsStack(boolean expanded) {
 		return getSomeStack(expanded, "Table of Contents", new GetGeneralLayout(new Attribute(TextAreaItem.class, "table_of_contents", "Table of Contents", "Roughly equivalent to MARC 21 field 505."), new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), getDisplayLabel("This attribute is intended to be used when additional text associated with the table of contents is necessary for display."), ATTR_XLINK,
 				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
+	/**
+	 * Gets the target audience stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the target audience stack
+	 */
 	public static SectionStackSection getTargetAudienceStack(boolean expanded) {
 		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY, ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
 		return getStackSectionWithAttributes("Target Audience", "Target Audience", "A description of the intellectual level of the audience for which the resource is intended.", true, attributes);
 	}
 
+	/**
+	 * Gets the note stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the note stack
+	 */
 	public static SectionStackSection getNoteStack(boolean expanded) {
 		return getSomeStack(expanded, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Roughly equivalent to MARC 21 fields 5XX."), new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."), getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK, ATTR_ID,
 				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
+	/**
+	 * Gets the subject stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the subject stack
+	 */
 	public static SectionStackSection getSubjectStack(boolean expanded) {
 		return getSomeStack(expanded, "Subject", new GetSubjectLayout());
 	}
 
+	/**
+	 * Gets the classification stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the classification stack
+	 */
 	public static SectionStackSection getClassificationStack(boolean expanded) {
 		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY,
 				new Attribute(TextItem.class, "edition", "Edition", "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."),
@@ -593,6 +1128,13 @@ public final class TabUtils {
 		return getStackSectionWithAttributes("Classifications", "Classification", "Equivalent to MARC fields 050-08X, subfields $a and $b.", true, attributes);
 	}
 
+	/**
+	 * Gets the identifier stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the identifier stack
+	 */
 	public static SectionStackSection getIdentifierStack(boolean expanded) {
 		Attribute[] attributes = new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type",
@@ -602,34 +1144,81 @@ public final class TabUtils {
 		return getStackSectionWithAttributes("Identifiers", "Identifier", "Roughly equivalent to MARC fields 010, 020, 022, 024, 856.", true, attributes);
 	}
 
+	/**
+	 * Gets the location stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the location stack
+	 */
 	public static SectionStackSection getLocationStack(boolean expanded) {
 		return getSomeStack(expanded, "Location", new GetLocationLayout());
 	}
 
+	/**
+	 * Gets the access condition stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the access condition stack
+	 */
 	public static SectionStackSection getAccessConditionStack(boolean expanded) {
 		return getSomeStack(expanded, "Access Condition", new GetGeneralLayout(new Attribute(TextAreaItem.class, "access_condition", "Access Condition", "Roughly equivalent to MARC 21 fields 506 and 540."), new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types. Suggested values are: restriction on access (equivalent to MARC 21 field 506) and use and reproduction (equivalent to MARC 21 field 540)."),
 				getDisplayLabel("This attribute is intended to be used when additional text associated with the access conditions is necessary for display."), ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 	}
 
+	/**
+	 * Gets the extension stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the extension stack
+	 */
 	public static SectionStackSection getExtensionStack(boolean expanded) {
 		return getSomeStack(expanded, "Access Condition", new GetGeneralLayout(new Attribute(TextAreaItem.class, "extension", "Extension",
 				"Used to provide for additional information not covered by MODS. It may be used for elements that are local to the creator of the data, similar to MARC 21 9XX fields."), new Attribute[] { new Attribute(TextItem.class, "namespace", "Namespace",
 				"Namespace") }));
 	}
 
+	/**
+	 * Gets the record info stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the record info stack
+	 */
 	public static SectionStackSection getRecordInfoStack(boolean expanded) {
 		return getSomeStack(expanded, "Record Info", new GetRecordInfoLayout());
 	}
 
+	/**
+	 * Gets the part stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the part stack
+	 */
 	public static SectionStackSection getPartStack(boolean expanded) {
 		return getSomeStack(expanded, "Part", new GetPartLayout());
 	}
 
+	/**
+	 * Gets the place stack.
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @return the place stack
+	 */
 	private static SectionStackSection getPlaceStack(boolean expanded) {
 		return getSomeStack(expanded, "Place", GET_PLACE_LAYOUT);
 	}
 
+	/**
+	 * Gets the title info layout.
+	 * 
+	 * @return the title info layout
+	 */
 	public static VLayout getTitleInfoLayout() {
 		final VLayout layout = new VLayout();
 
@@ -661,6 +1250,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the name layout.
+	 * 
+	 * @return the name layout
+	 */
 	public static VLayout getNameLayout() {
 		final VLayout layout = new VLayout();
 
@@ -699,6 +1293,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the type of resource layout.
+	 * 
+	 * @return the type of resource layout
+	 */
 	public static VLayout getTypeOfResourceLayout() {
 		final VLayout layout = new VLayout();
 
@@ -725,6 +1324,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the genre layout.
+	 * 
+	 * @return the genre layout
+	 */
 	public static VLayout getGenreLayout() {
 		final VLayout layout = new VLayout();
 		Attribute[] attributes = new Attribute[] { new Attribute(TextItem.class, "type", "Type", "This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style."), ATTR_XML_LANG, ATTR_AUTHORITY, ATTR_XML_LANG,
@@ -738,6 +1342,21 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the date layout.
+	 * 
+	 * @param name
+	 *          the name
+	 * @param title
+	 *          the title
+	 * @param tooltip
+	 *          the tooltip
+	 * @param attribute
+	 *          the attribute
+	 * @param keyDate
+	 *          the key date
+	 * @return the date layout
+	 */
 	public static VLayout getDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate) {
 		final VLayout layout = new VLayout();
 		Attribute[] attributes = null;
@@ -801,6 +1420,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the place layout.
+	 * 
+	 * @return the place layout
+	 */
 	private static VLayout getPlaceLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -818,6 +1442,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the origin info layout.
+	 * 
+	 * @return the origin info layout
+	 */
 	public static VLayout getOriginInfoLayout() {
 		final VLayout layout = new VLayout();
 
@@ -859,6 +1488,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the physicial description layout.
+	 * 
+	 * @return the physicial description layout
+	 */
 	private static VLayout getPhysicialDescriptionLayout() {
 
 		final VLayout layout = new VLayout();
@@ -903,6 +1537,15 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the general layout.
+	 * 
+	 * @param head
+	 *          the head
+	 * @param attribs
+	 *          the attribs
+	 * @return the general layout
+	 */
 	private static VLayout getGeneralLayout(final Attribute head, final Attribute[] attribs) {
 		final VLayout layout = new VLayout();
 		layout.addMember(getAttributes(true, attribs));
@@ -919,6 +1562,13 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the general deep layout.
+	 * 
+	 * @param attribs
+	 *          the attribs
+	 * @return the general deep layout
+	 */
 	private static VLayout getGeneralDeepLayout(final Attribute[] attribs) {
 		final VLayout layout = new VLayout();
 		if (attribs != null || attribs.length > 0) {
@@ -938,6 +1588,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the language layout.
+	 * 
+	 * @return the language layout
+	 */
 	private static VLayout getLanguageLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -956,6 +1611,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the copy information layout.
+	 * 
+	 * @return the copy information layout
+	 */
 	private static VLayout getCopyInformationLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -986,6 +1646,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the subject layout.
+	 * 
+	 * @return the subject layout
+	 */
 	private static VLayout getSubjectLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -1040,6 +1705,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the location layout.
+	 * 
+	 * @return the location layout
+	 */
 	private static VLayout getLocationLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -1075,6 +1745,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the part layout.
+	 * 
+	 * @return the part layout
+	 */
 	private static VLayout getPartLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -1096,6 +1771,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the detail layout.
+	 * 
+	 * @return the detail layout
+	 */
 	private static VLayout getDetailLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -1115,6 +1795,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the extent layout.
+	 * 
+	 * @return the extent layout
+	 */
 	private static VLayout getExtentLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -1135,6 +1820,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the language of cataloging layout.
+	 * 
+	 * @return the language of cataloging layout
+	 */
 	private static VLayout getLanguageOfCatalogingLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
@@ -1151,6 +1841,11 @@ public final class TabUtils {
 		return layout;
 	}
 
+	/**
+	 * Gets the record info layout.
+	 * 
+	 * @return the record info layout
+	 */
 	private static VLayout getRecordInfoLayout() {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -32,21 +37,41 @@ import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ModifyView.
+ */
 public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
+	
+	/** The tile grid. */
 	private TileGrid tileGrid;
+	
+	/** The layout. */
 	private final VLayout layout;
+	
+	/** The images layout. */
 	private VLayout imagesLayout;
+	
+	/** The top tab set1. */
 	private TabSet topTabSet1;
+	
+	/** The top tab set2. */
 	private TabSet topTabSet2;
 	// private VLayout imagesLayout1;
 	// private VLayout imagesLayout2;
+	/** The image popup. */
 	private PopupPanel imagePopup;
+	
+	/** The first. */
 	private boolean first = true;
 
 	// private boolean first = true;
 
 	// private final GlassPanel glassPanel;
 
+	/**
+	 * Instantiates a new modify view.
+	 */
 	public ModifyView() {
 		layout = new VLayout();
 		layout.setOverflow(Overflow.AUTO);
@@ -79,16 +104,25 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getName()
+	 */
 	@Override
 	public HasValue<String> getName() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getSend()
+	 */
 	@Override
 	public HasClickHandlers getSend() {
 		return null;
 	}
 
+	/**
+	 * Prints the.
+	 */
 	public void print() {
 		Record[] data = tileGrid.getData();
 		for (Record rec : data) {
@@ -96,6 +130,9 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#addDigitalObject(boolean, com.smartgwt.client.data.Record[], com.gwtplatform.dispatch.client.DispatchAsync)
+	 */
 	@Override
 	public void addDigitalObject(boolean tileGridVisible, Record[] data, DispatchAsync dispatcher) {
 		// if (first) {
@@ -190,6 +227,9 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		first = !first;
 	}
 
+	/**
+	 * Sets the tile grid.
+	 */
 	private void setTileGrid() {
 		tileGrid = new TileGrid();
 		// tileGrid.setCanSelectText(true);
@@ -250,6 +290,8 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 
 	/**
 	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+	 *
+	 * @return the widget
 	 */
 	@Override
 	public Widget asWidget() {

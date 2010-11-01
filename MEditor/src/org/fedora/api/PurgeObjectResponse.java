@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -34,16 +40,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "purgeObjectResponse")
 public class PurgeObjectResponse {
 
+    /** The purged date. */
     @XmlElement(required = true)
     protected String purgedDate;
 
     /**
      * Gets the value of the purgedDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the purged date
+     * possible object is
+     * {@link String }
      */
     public String getPurgedDate() {
         return purgedDate;

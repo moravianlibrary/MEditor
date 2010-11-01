@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -34,16 +40,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "addDatastreamResponse")
 public class AddDatastreamResponse {
 
+    /** The datastream id. */
     @XmlElement(required = true)
     protected String datastreamID;
 
     /**
      * Gets the value of the datastreamID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the datastream id
+     * possible object is
+     * {@link String }
      */
     public String getDatastreamID() {
         return datastreamID;

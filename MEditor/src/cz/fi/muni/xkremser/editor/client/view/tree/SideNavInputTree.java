@@ -25,10 +25,20 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SideNavInputTree.
+ */
 public class SideNavInputTree extends TreeGrid implements Refreshable {
 
+	/** The id suffix. */
 	private final String idSuffix = "";
 
+	/**
+	 * Instantiates a new side nav input tree.
+	 *
+	 * @param dispatcher the dispatcher
+	 */
 	public SideNavInputTree(DispatchAsync dispatcher) {
 		setWidth100();
 		setHeight100();
@@ -63,6 +73,9 @@ public class SideNavInputTree extends TreeGrid implements Refreshable {
 		setDataSource(new InputTreeGwtRPCDS(dispatcher));
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable#refreshTree()
+	 */
 	@Override
 	public void refreshTree() {
 		fetchData();

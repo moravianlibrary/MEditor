@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -10,6 +15,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -38,19 +44,21 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getNextPID")
 public class GetNextPID {
 
+    /** The num pi ds. */
     @XmlElement(required = true, nillable = true)
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger numPIDs;
+    
+    /** The pid namespace. */
     @XmlElement(required = true, nillable = true)
     protected String pidNamespace;
 
     /**
      * Gets the value of the numPIDs property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return the num pi ds
+     * possible object is
+     * {@link BigInteger }
      */
     public BigInteger getNumPIDs() {
         return numPIDs;
@@ -70,11 +78,10 @@ public class GetNextPID {
 
     /**
      * Gets the value of the pidNamespace property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid namespace
+     * possible object is
+     * {@link String }
      */
     public String getPidNamespace() {
         return pidNamespace;

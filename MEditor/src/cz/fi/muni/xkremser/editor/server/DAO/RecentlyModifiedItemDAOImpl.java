@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.sql.PreparedStatement;
@@ -14,22 +19,37 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RecentlyModifiedItemDAOImpl.
+ */
 public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements RecentlyModifiedItemDAO {
 
+	/** The Constant SELECT_LAST_N_STATEMENT. */
 	public static final String SELECT_LAST_N_STATEMENT = "SELECT uuid, name, description, model FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " ORDER BY modified DESC LIMIT (?)";
+	
+	/** The Constant INSERT_ITEM_STATEMENT. */
 	public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " (uuid, name, description, model, modified) VALUES ((?),(?),(?),(?),(CURRENT_TIMESTAMP))";
 
+	/** The Constant FIND_ITEM_STATEMENT. */
 	public static final String FIND_ITEM_STATEMENT = "SELECT id FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " WHERE uuid = (?)";
+	
+	/** The Constant UPDATE_ITEM_STATEMENT. */
 	public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " SET modified = CURRENT_TIMESTAMP WHERE id = (?)";
 
+	/** The conf. */
 	@Inject
 	private EditorConfiguration conf;
 
+	/** The logger. */
 	@Inject
 	public Log logger = null;
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#put(cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
+	 */
 	@Override
 	public boolean put(RecentlyModifiedItem toPut) {
 		if (toPut == null)
@@ -87,6 +107,9 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return found;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#getItems(int, boolean)
+	 */
 	@Override
 	public ArrayList<RecentlyModifiedItem> getItems(int nLatest, boolean isForAll) {
 		PreparedStatement selectSt = null;

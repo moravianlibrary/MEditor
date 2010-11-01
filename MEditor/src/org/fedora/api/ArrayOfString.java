@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for ArrayOfString complex type.
  * 
@@ -33,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ArrayOfString {
 
+    /** The item. */
     protected List<String> item;
 
     /**
@@ -47,15 +54,15 @@ public class ArrayOfString {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getItem().add(newItem);
+     * getItem().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the item
      * {@link String }
-     * 
-     * 
      */
     public List<String> getItem() {
         if (item == null) {

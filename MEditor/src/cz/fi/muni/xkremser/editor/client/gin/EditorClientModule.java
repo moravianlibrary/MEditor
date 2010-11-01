@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.gin;
 
 import com.google.inject.Singleton;
@@ -25,8 +30,15 @@ import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EditorClientModule.
+ */
 public class EditorClientModule extends AbstractPresenterModule {
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.inject.client.AbstractGinModule#configure()
+	 */
 	@Override
 	protected void configure() {
 		// Singletons

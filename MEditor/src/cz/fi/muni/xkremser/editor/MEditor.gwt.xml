@@ -7,6 +7,9 @@
   <inherits name='com.smartgwt.SmartGwt'/>
   <inherits name='com.smartgwt.SmartGwtNoScript'/>
   <inherits name='com.smartgwt.tools.SmartGwtTools'/>
+  
+  <super-source path="jaxb"/>
+  
   <!-- SmartGWT EE 									
   <inherits name="com.smartgwtee.SmartGwtEE"/>
   <inherits name="com.smartgwtee.tools.Tools"/>
@@ -23,6 +26,7 @@
  <!-- <inherits name='com.smartclient.theme.silverwave.SilverWave'/> -->
  <!-- <inherits name='com.smartclient.theme.blackops.BlackOps'/> -->
   <!-- <inherits name='com.smartclient.theme.treefrog.TreeFrog' /> -->
+  <!-- <inherits name="com.smartclient.theme.enterprise.Enterprise" /> -->
 
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
@@ -57,6 +61,6 @@
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="cs"/>
   <set-property-fallback name="locale" value="en"/>
--->
-<set-property name="user.agent" value="gecko1_8"/> 
+
+<set-property name="user.agent" value="gecko1_8"/> -->
 </module>

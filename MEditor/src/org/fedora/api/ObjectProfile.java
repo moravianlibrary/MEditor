@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -9,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for ObjectProfile complex type.
  * 
@@ -56,28 +62,40 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ObjectProfile {
 
+    /** The pid. */
     @XmlElement(required = true, nillable = true)
     protected String pid;
+    
+    /** The obj label. */
     @XmlElement(required = true, nillable = true)
     protected String objLabel;
+    
+    /** The obj models. */
     @XmlElement(required = true, nillable = true)
     protected ObjectProfile.ObjModels objModels;
+    
+    /** The obj create date. */
     @XmlElement(required = true, nillable = true)
     protected String objCreateDate;
+    
+    /** The obj last mod date. */
     @XmlElement(required = true, nillable = true)
     protected String objLastModDate;
+    
+    /** The obj diss index view url. */
     @XmlElement(required = true, nillable = true)
     protected String objDissIndexViewURL;
+    
+    /** The obj item index view url. */
     @XmlElement(required = true, nillable = true)
     protected String objItemIndexViewURL;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -97,11 +115,10 @@ public class ObjectProfile {
 
     /**
      * Gets the value of the objLabel property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the obj label
+     * possible object is
+     * {@link String }
      */
     public String getObjLabel() {
         return objLabel;
@@ -121,11 +138,10 @@ public class ObjectProfile {
 
     /**
      * Gets the value of the objModels property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ObjectProfile.ObjModels }
-     *     
+     *
+     * @return the obj models
+     * possible object is
+     * {@link ObjectProfile.ObjModels }
      */
     public ObjectProfile.ObjModels getObjModels() {
         return objModels;
@@ -145,11 +161,10 @@ public class ObjectProfile {
 
     /**
      * Gets the value of the objCreateDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the obj create date
+     * possible object is
+     * {@link String }
      */
     public String getObjCreateDate() {
         return objCreateDate;
@@ -169,11 +184,10 @@ public class ObjectProfile {
 
     /**
      * Gets the value of the objLastModDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the obj last mod date
+     * possible object is
+     * {@link String }
      */
     public String getObjLastModDate() {
         return objLastModDate;
@@ -193,11 +207,10 @@ public class ObjectProfile {
 
     /**
      * Gets the value of the objDissIndexViewURL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the obj diss index view url
+     * possible object is
+     * {@link String }
      */
     public String getObjDissIndexViewURL() {
         return objDissIndexViewURL;
@@ -217,11 +230,10 @@ public class ObjectProfile {
 
     /**
      * Gets the value of the objItemIndexViewURL property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the obj item index view url
+     * possible object is
+     * {@link String }
      */
     public String getObjItemIndexViewURL() {
         return objItemIndexViewURL;
@@ -265,6 +277,7 @@ public class ObjectProfile {
     })
     public static class ObjModels {
 
+        /** The model. */
         protected List<String> model;
 
         /**
@@ -279,15 +292,15 @@ public class ObjectProfile {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getModel().add(newItem);
+         * getModel().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the model
          * {@link String }
-         * 
-         * 
          */
         public List<String> getModel() {
             if (model == null) {

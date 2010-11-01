@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -9,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for ObjectMethodsDef complex type.
  * 
@@ -52,24 +58,32 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ObjectMethodsDef {
 
+    /** The pid. */
     @XmlElement(name = "PID", required = true)
     protected String pid;
+    
+    /** The service definition pid. */
     @XmlElement(required = true)
     protected String serviceDefinitionPID;
+    
+    /** The method name. */
     @XmlElement(required = true)
     protected String methodName;
+    
+    /** The method parm defs. */
     @XmlElement(required = true)
     protected ObjectMethodsDef.MethodParmDefs methodParmDefs;
+    
+    /** The as of date. */
     @XmlElement(required = true, nillable = true)
     protected String asOfDate;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pID
+     * possible object is
+     * {@link String }
      */
     public String getPID() {
         return pid;
@@ -89,11 +103,10 @@ public class ObjectMethodsDef {
 
     /**
      * Gets the value of the serviceDefinitionPID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the service definition pid
+     * possible object is
+     * {@link String }
      */
     public String getServiceDefinitionPID() {
         return serviceDefinitionPID;
@@ -113,11 +126,10 @@ public class ObjectMethodsDef {
 
     /**
      * Gets the value of the methodName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the method name
+     * possible object is
+     * {@link String }
      */
     public String getMethodName() {
         return methodName;
@@ -137,11 +149,10 @@ public class ObjectMethodsDef {
 
     /**
      * Gets the value of the methodParmDefs property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ObjectMethodsDef.MethodParmDefs }
-     *     
+     *
+     * @return the method parm defs
+     * possible object is
+     * {@link ObjectMethodsDef.MethodParmDefs }
      */
     public ObjectMethodsDef.MethodParmDefs getMethodParmDefs() {
         return methodParmDefs;
@@ -161,11 +172,10 @@ public class ObjectMethodsDef {
 
     /**
      * Gets the value of the asOfDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the as of date
+     * possible object is
+     * {@link String }
      */
     public String getAsOfDate() {
         return asOfDate;
@@ -209,6 +219,7 @@ public class ObjectMethodsDef {
     })
     public static class MethodParmDefs {
 
+        /** The method parm def. */
         protected List<MethodParmDef> methodParmDef;
 
         /**
@@ -223,15 +234,15 @@ public class ObjectMethodsDef {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getMethodParmDef().add(newItem);
+         * getMethodParmDef().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the method parm def
          * {@link MethodParmDef }
-         * 
-         * 
          */
         public List<MethodParmDef> getMethodParmDef() {
             if (methodParmDef == null) {

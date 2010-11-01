@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -33,11 +39,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "addRelationshipResponse")
 public class AddRelationshipResponse {
 
+    /** The added. */
     protected boolean added;
 
     /**
      * Gets the value of the added property.
-     * 
+     *
+     * @return true, if is added
      */
     public boolean isAdded() {
         return added;
@@ -45,7 +53,8 @@ public class AddRelationshipResponse {
 
     /**
      * Sets the value of the added property.
-     * 
+     *
+     * @param value the new added
      */
     public void setAdded(boolean value) {
         this.added = value;

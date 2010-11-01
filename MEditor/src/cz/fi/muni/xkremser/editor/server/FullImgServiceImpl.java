@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
@@ -18,11 +23,19 @@ import cz.fi.muni.xkremser.editor.fedora.utils.IOUtils;
 import cz.fi.muni.xkremser.editor.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FullImgServiceImpl.
+ */
 public class FullImgServiceImpl extends HttpServlet {
 
+	/** The config. */
 	@Inject
 	private EditorConfiguration config;
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// super.doGet(req, resp);
@@ -62,14 +75,27 @@ public class FullImgServiceImpl extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Gets the config.
+	 *
+	 * @return the config
+	 */
 	public EditorConfiguration getConfig() {
 		return config;
 	}
 
+	/**
+	 * Sets the config.
+	 *
+	 * @param config the new config
+	 */
 	public void setConfig(EditorConfiguration config) {
 		this.config = config;
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#init()
+	 */
 	@Override
 	public void init() throws ServletException {
 		super.init();
@@ -77,6 +103,9 @@ public class FullImgServiceImpl extends HttpServlet {
 		injector.injectMembers(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+	 */
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -84,6 +113,11 @@ public class FullImgServiceImpl extends HttpServlet {
 		injector.injectMembers(this);
 	}
 
+	/**
+	 * Gets the injector.
+	 *
+	 * @return the injector
+	 */
 	protected Injector getInjector() {
 		return (Injector) getServletContext().getAttribute(Injector.class.getName());
 	}

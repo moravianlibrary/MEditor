@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import java.util.HashMap;
@@ -15,22 +20,48 @@ import com.smartgwt.client.widgets.tab.TabSet;
 
 import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ModsTab.
+ */
 public class ModsTab extends Tab {
 	// TODO: dat do konstanty, nebo resource bundlu
+	/** The Constant MAX_DEEP. */
 	public static final Tab MAX_DEEP = new Tab("Related Item", "pieces/16/piece_blue.png") {
 		{
 			setPane(new Label("Maximum level of recursion of element Related Item has been reached."));
 		}
 	};
+
+	/** The deep. */
 	private final int deep;
 
+	/**
+	 * The Class GetRelatedItem.
+	 */
 	private class GetRelatedItem implements GetLayoutOperation {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+		 * #execute()
+		 */
 		@Override
 		public TabSet execute() {
 			return getModsTabSet();
 		}
 	}
 
+	/**
+	 * Instantiates a new mods tab.
+	 * 
+	 * @param deep
+	 *          the deep
+	 * @param topLvl
+	 *          the top lvl
+	 */
 	public ModsTab(int deep, boolean topLvl) {
 		super(topLvl ? "MODS" : "Related Item", topLvl ? "pieces/16/pawn_blue.png" : "pieces/16/piece_blue.png");
 
@@ -73,6 +104,15 @@ public class ModsTab extends Tab {
 		}
 	}
 
+	/**
+	 * Gets the tab.
+	 * 
+	 * @param section
+	 *          the section
+	 * @param name
+	 *          the name
+	 * @return the tab
+	 */
 	private static Tab getTab(final SectionStackSection section, final String name) {
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -85,6 +125,11 @@ public class ModsTab extends Tab {
 		return tab;
 	}
 
+	/**
+	 * Gets the mods tab set.
+	 * 
+	 * @return the mods tab set
+	 */
 	private TabSet getModsTabSet() {
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);

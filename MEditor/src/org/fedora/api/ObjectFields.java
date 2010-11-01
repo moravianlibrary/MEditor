@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -11,6 +16,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for ObjectFields complex type.
  * 
@@ -78,58 +84,100 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ObjectFields {
 
+    /** The pid. */
     @XmlElementRef(name = "pid", type = JAXBElement.class)
     protected JAXBElement<String> pid;
+    
+    /** The label. */
     @XmlElementRef(name = "label", type = JAXBElement.class)
     protected JAXBElement<String> label;
+    
+    /** The state. */
     @XmlElementRef(name = "state", type = JAXBElement.class)
     protected JAXBElement<String> state;
+    
+    /** The owner id. */
     @XmlElementRef(name = "ownerId", type = JAXBElement.class)
     protected JAXBElement<String> ownerId;
+    
+    /** The c date. */
     @XmlElementRef(name = "cDate", type = JAXBElement.class)
     protected JAXBElement<String> cDate;
+    
+    /** The m date. */
     @XmlElementRef(name = "mDate", type = JAXBElement.class)
     protected JAXBElement<String> mDate;
+    
+    /** The dcm date. */
     @XmlElementRef(name = "dcmDate", type = JAXBElement.class)
     protected JAXBElement<String> dcmDate;
+    
+    /** The title. */
     @XmlElement(nillable = true)
     protected List<String> title;
+    
+    /** The creator. */
     @XmlElement(nillable = true)
     protected List<String> creator;
+    
+    /** The subject. */
     @XmlElement(nillable = true)
     protected List<String> subject;
+    
+    /** The description. */
     @XmlElement(nillable = true)
     protected List<String> description;
+    
+    /** The publisher. */
     @XmlElement(nillable = true)
     protected List<String> publisher;
+    
+    /** The contributor. */
     @XmlElement(nillable = true)
     protected List<String> contributor;
+    
+    /** The date. */
     @XmlElement(nillable = true)
     protected List<String> date;
+    
+    /** The type. */
     @XmlElement(nillable = true)
     protected List<String> type;
+    
+    /** The format. */
     @XmlElement(nillable = true)
     protected List<String> format;
+    
+    /** The identifier. */
     @XmlElement(nillable = true)
     protected List<String> identifier;
+    
+    /** The source. */
     @XmlElement(nillable = true)
     protected List<String> source;
+    
+    /** The language. */
     @XmlElement(nillable = true)
     protected List<String> language;
+    
+    /** The relation. */
     @XmlElement(nillable = true)
     protected List<String> relation;
+    
+    /** The coverage. */
     @XmlElement(nillable = true)
     protected List<String> coverage;
+    
+    /** The rights. */
     @XmlElement(nillable = true)
     protected List<String> rights;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getPid() {
         return pid;
@@ -149,11 +197,10 @@ public class ObjectFields {
 
     /**
      * Gets the value of the label property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the label
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getLabel() {
         return label;
@@ -173,11 +220,10 @@ public class ObjectFields {
 
     /**
      * Gets the value of the state property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the state
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getState() {
         return state;
@@ -197,11 +243,10 @@ public class ObjectFields {
 
     /**
      * Gets the value of the ownerId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the owner id
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getOwnerId() {
         return ownerId;
@@ -221,11 +266,10 @@ public class ObjectFields {
 
     /**
      * Gets the value of the cDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the c date
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getCDate() {
         return cDate;
@@ -245,11 +289,10 @@ public class ObjectFields {
 
     /**
      * Gets the value of the mDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the m date
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getMDate() {
         return mDate;
@@ -269,11 +312,10 @@ public class ObjectFields {
 
     /**
      * Gets the value of the dcmDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the dcm date
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getDcmDate() {
         return dcmDate;
@@ -303,15 +345,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getTitle().add(newItem);
+     * getTitle().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the title
      * {@link String }
-     * 
-     * 
      */
     public List<String> getTitle() {
         if (title == null) {
@@ -332,15 +374,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCreator().add(newItem);
+     * getCreator().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the creator
      * {@link String }
-     * 
-     * 
      */
     public List<String> getCreator() {
         if (creator == null) {
@@ -361,15 +403,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSubject().add(newItem);
+     * getSubject().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the subject
      * {@link String }
-     * 
-     * 
      */
     public List<String> getSubject() {
         if (subject == null) {
@@ -390,15 +432,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDescription().add(newItem);
+     * getDescription().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the description
      * {@link String }
-     * 
-     * 
      */
     public List<String> getDescription() {
         if (description == null) {
@@ -419,15 +461,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPublisher().add(newItem);
+     * getPublisher().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the publisher
      * {@link String }
-     * 
-     * 
      */
     public List<String> getPublisher() {
         if (publisher == null) {
@@ -448,15 +490,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getContributor().add(newItem);
+     * getContributor().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the contributor
      * {@link String }
-     * 
-     * 
      */
     public List<String> getContributor() {
         if (contributor == null) {
@@ -477,15 +519,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDate().add(newItem);
+     * getDate().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the date
      * {@link String }
-     * 
-     * 
      */
     public List<String> getDate() {
         if (date == null) {
@@ -506,15 +548,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getType().add(newItem);
+     * getType().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the type
      * {@link String }
-     * 
-     * 
      */
     public List<String> getType() {
         if (type == null) {
@@ -535,15 +577,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFormat().add(newItem);
+     * getFormat().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the format
      * {@link String }
-     * 
-     * 
      */
     public List<String> getFormat() {
         if (format == null) {
@@ -564,15 +606,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getIdentifier().add(newItem);
+     * getIdentifier().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the identifier
      * {@link String }
-     * 
-     * 
      */
     public List<String> getIdentifier() {
         if (identifier == null) {
@@ -593,15 +635,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSource().add(newItem);
+     * getSource().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the source
      * {@link String }
-     * 
-     * 
      */
     public List<String> getSource() {
         if (source == null) {
@@ -622,15 +664,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getLanguage().add(newItem);
+     * getLanguage().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the language
      * {@link String }
-     * 
-     * 
      */
     public List<String> getLanguage() {
         if (language == null) {
@@ -651,15 +693,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getRelation().add(newItem);
+     * getRelation().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the relation
      * {@link String }
-     * 
-     * 
      */
     public List<String> getRelation() {
         if (relation == null) {
@@ -680,15 +722,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCoverage().add(newItem);
+     * getCoverage().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the coverage
      * {@link String }
-     * 
-     * 
      */
     public List<String> getCoverage() {
         if (coverage == null) {
@@ -709,15 +751,15 @@ public class ObjectFields {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getRights().add(newItem);
+     * getRights().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return the rights
      * {@link String }
-     * 
-     * 
      */
     public List<String> getRights() {
         if (rights == null) {

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -11,6 +16,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for ListSession complex type.
  * 
@@ -42,22 +48,28 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ListSession {
 
+    /** The token. */
     @XmlElement(required = true, nillable = true)
     protected String token;
+    
+    /** The cursor. */
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger cursor;
+    
+    /** The complete list size. */
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger completeListSize;
+    
+    /** The expiration date. */
     @XmlElementRef(name = "expirationDate", type = JAXBElement.class)
     protected JAXBElement<String> expirationDate;
 
     /**
      * Gets the value of the token property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the token
+     * possible object is
+     * {@link String }
      */
     public String getToken() {
         return token;
@@ -77,11 +89,10 @@ public class ListSession {
 
     /**
      * Gets the value of the cursor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return the cursor
+     * possible object is
+     * {@link BigInteger }
      */
     public BigInteger getCursor() {
         return cursor;
@@ -101,11 +112,10 @@ public class ListSession {
 
     /**
      * Gets the value of the completeListSize property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return the complete list size
+     * possible object is
+     * {@link BigInteger }
      */
     public BigInteger getCompleteListSize() {
         return completeListSize;
@@ -125,11 +135,10 @@ public class ListSession {
 
     /**
      * Gets the value of the expirationDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *
+     * @return the expiration date
+     * possible object is
+     * {@link JAXBElement }{@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getExpirationDate() {
         return expirationDate;

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -10,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -54,24 +60,32 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getDissemination")
 public class GetDissemination {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The service definition pid. */
     @XmlElement(required = true)
     protected String serviceDefinitionPid;
+    
+    /** The method name. */
     @XmlElement(required = true)
     protected String methodName;
+    
+    /** The parameters. */
     @XmlElement(required = true)
     protected GetDissemination.Parameters parameters;
+    
+    /** The as of date time. */
     @XmlElement(required = true, nillable = true)
     protected String asOfDateTime;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -91,11 +105,10 @@ public class GetDissemination {
 
     /**
      * Gets the value of the serviceDefinitionPid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the service definition pid
+     * possible object is
+     * {@link String }
      */
     public String getServiceDefinitionPid() {
         return serviceDefinitionPid;
@@ -115,11 +128,10 @@ public class GetDissemination {
 
     /**
      * Gets the value of the methodName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the method name
+     * possible object is
+     * {@link String }
      */
     public String getMethodName() {
         return methodName;
@@ -139,11 +151,10 @@ public class GetDissemination {
 
     /**
      * Gets the value of the parameters property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link GetDissemination.Parameters }
-     *     
+     *
+     * @return the parameters
+     * possible object is
+     * {@link GetDissemination.Parameters }
      */
     public GetDissemination.Parameters getParameters() {
         return parameters;
@@ -163,11 +174,10 @@ public class GetDissemination {
 
     /**
      * Gets the value of the asOfDateTime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the as of date time
+     * possible object is
+     * {@link String }
      */
     public String getAsOfDateTime() {
         return asOfDateTime;
@@ -211,6 +221,7 @@ public class GetDissemination {
     })
     public static class Parameters {
 
+        /** The parameter. */
         protected List<Property> parameter;
 
         /**
@@ -225,15 +236,15 @@ public class GetDissemination {
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getParameter().add(newItem);
+         * getParameter().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
+         *
+         * @return the parameter
          * {@link Property }
-         * 
-         * 
          */
         public List<Property> getParameter() {
             if (parameter == null) {

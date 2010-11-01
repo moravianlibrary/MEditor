@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -6,6 +11,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for datastreamInputType.
  * 
@@ -24,18 +30,37 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum DatastreamInputType {
 
+    /** The FEDOR a_ datastrea m_ inpu t_ type. */
     @XmlEnumValue("fedora:datastreamInputType")
     FEDORA_DATASTREAM_INPUT_TYPE("fedora:datastreamInputType");
+    
+    /** The value. */
     private final String value;
 
+    /**
+     * Instantiates a new datastream input type.
+     *
+     * @param v the v
+     */
     DatastreamInputType(String v) {
         value = v;
     }
 
+    /**
+     * Value.
+     *
+     * @return the string
+     */
     public String value() {
         return value;
     }
 
+    /**
+     * From value.
+     *
+     * @param v the v
+     * @return the datastream input type
+     */
     public static DatastreamInputType fromValue(String v) {
         for (DatastreamInputType c: DatastreamInputType.values()) {
             if (c.value.equals(v)) {

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -38,19 +44,24 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ingest")
 public class Ingest {
 
+    /** The object xml. */
     @XmlElement(required = true)
     protected byte[] objectXML;
+    
+    /** The format. */
     @XmlElement(required = true)
     protected String format;
+    
+    /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
 
     /**
      * Gets the value of the objectXML property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return the object xml
+     * possible object is
+     * byte[]
      */
     public byte[] getObjectXML() {
         return objectXML;
@@ -69,11 +80,10 @@ public class Ingest {
 
     /**
      * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the format
+     * possible object is
+     * {@link String }
      */
     public String getFormat() {
         return format;
@@ -93,11 +103,10 @@ public class Ingest {
 
     /**
      * Gets the value of the logMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the log message
+     * possible object is
+     * {@link String }
      */
     public String getLogMessage() {
         return logMessage;

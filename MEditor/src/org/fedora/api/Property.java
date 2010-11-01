@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for Property complex type.
  * 
@@ -34,18 +40,20 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Property {
 
+    /** The name. */
     @XmlElement(required = true)
     protected String name;
+    
+    /** The value. */
     @XmlElement(required = true)
     protected String value;
 
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the name
+     * possible object is
+     * {@link String }
      */
     public String getName() {
         return name;
@@ -65,11 +73,10 @@ public class Property {
 
     /**
      * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the value
+     * possible object is
+     * {@link String }
      */
     public String getValue() {
         return value;

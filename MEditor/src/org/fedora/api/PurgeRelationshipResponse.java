@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -33,11 +39,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "purgeRelationshipResponse")
 public class PurgeRelationshipResponse {
 
+    /** The purged. */
     protected boolean purged;
 
     /**
      * Gets the value of the purged property.
-     * 
+     *
+     * @return true, if is purged
      */
     public boolean isPurged() {
         return purged;
@@ -45,7 +53,8 @@ public class PurgeRelationshipResponse {
 
     /**
      * Sets the value of the purged property.
-     * 
+     *
+     * @param value the new purged
      */
     public void setPurged(boolean value) {
         this.purged = value;

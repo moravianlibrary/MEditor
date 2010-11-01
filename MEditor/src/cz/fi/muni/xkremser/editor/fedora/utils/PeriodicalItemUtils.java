@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.fedora.utils;
 
 import java.util.logging.Level;
@@ -13,10 +18,21 @@ import org.w3c.dom.Document;
 
 import cz.fi.muni.xkremser.editor.fedora.FedoraNamespaceContext;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PeriodicalItemUtils.
+ */
 public class PeriodicalItemUtils {
 
+	/** The Constant LOGGER. */
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(PeriodicalItemUtils.class.getName());
 
+	/**
+	 * Gets the date.
+	 *
+	 * @param doc the doc
+	 * @return the date
+	 */
 	public static String getDate(Document doc) {
 		try {
 			XPathFactory xpfactory = XPathFactory.newInstance();
@@ -34,6 +50,12 @@ public class PeriodicalItemUtils {
 		}
 	}
 
+	/**
+	 * Gets the item number.
+	 *
+	 * @param doc the doc
+	 * @return the item number
+	 */
 	public static String getItemNumber(Document doc) {
 		try {
 			XPathFactory xpfactory = XPathFactory.newInstance();

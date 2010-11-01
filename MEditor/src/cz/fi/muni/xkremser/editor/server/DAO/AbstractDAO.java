@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.sql.Connection;
@@ -10,16 +15,26 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AbstractDAO.
+ */
 public class AbstractDAO {
 
+	/** The conn. */
 	private Connection conn = null;
 
+	/** The conf. */
 	@Inject
 	private EditorConfiguration conf;
 
+	/** The logger. */
 	@Inject
 	public Log logger = null;
 
+	/**
+	 * Inits the connection.
+	 */
 	private void initConnection() {
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -43,6 +58,11 @@ public class AbstractDAO {
 		}
 	}
 
+	/**
+	 * Gets the connection.
+	 *
+	 * @return the connection
+	 */
 	protected Connection getConnection() {
 		if (conn == null) {
 			initConnection();
@@ -50,6 +70,9 @@ public class AbstractDAO {
 		return conn;
 	}
 
+	/**
+	 * Close connection.
+	 */
 	protected void closeConnection() {
 		try {
 			if (conn != null) {

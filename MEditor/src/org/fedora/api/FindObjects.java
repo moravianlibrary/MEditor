@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -10,6 +15,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -40,21 +46,25 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "findObjects")
 public class FindObjects {
 
+    /** The result fields. */
     @XmlElement(required = true)
     protected ArrayOfString resultFields;
+    
+    /** The max results. */
     @XmlElement(required = true)
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger maxResults;
+    
+    /** The query. */
     @XmlElement(required = true)
     protected FieldSearchQuery query;
 
     /**
      * Gets the value of the resultFields property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfString }
-     *     
+     *
+     * @return the result fields
+     * possible object is
+     * {@link ArrayOfString }
      */
     public ArrayOfString getResultFields() {
         return resultFields;
@@ -74,11 +84,10 @@ public class FindObjects {
 
     /**
      * Gets the value of the maxResults property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return the max results
+     * possible object is
+     * {@link BigInteger }
      */
     public BigInteger getMaxResults() {
         return maxResults;
@@ -98,11 +107,10 @@ public class FindObjects {
 
     /**
      * Gets the value of the query property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link FieldSearchQuery }
-     *     
+     *
+     * @return the query
+     * possible object is
+     * {@link FieldSearchQuery }
      */
     public FieldSearchQuery getQuery() {
         return query;

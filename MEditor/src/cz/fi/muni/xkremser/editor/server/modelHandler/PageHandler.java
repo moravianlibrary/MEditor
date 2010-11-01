@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
 import java.io.IOException;
@@ -16,13 +21,26 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PageHandler.
+ */
 public class PageHandler extends DigitalObjectHandler {
 
+	/**
+	 * Instantiates a new page handler.
+	 *
+	 * @param logger the logger
+	 * @param fedoraAccess the fedora access
+	 */
 	@Inject
 	public PageHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
 		super(logger, fedoraAccess);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#getDigitalObject(java.lang.String)
+	 */
 	@Override
 	public AbstractDigitalObjectDetail getDigitalObject(final String uuid) {
 		PageDetail detail = new PageDetail();

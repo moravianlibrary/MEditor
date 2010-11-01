@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -21,6 +26,10 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HomePresenter.
+ */
 public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter.MyProxy> {
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -29,21 +38,49 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 
+	/**
+	 * The Interface MyView.
+	 */
 	public interface MyView extends View {
+		
+		/**
+		 * Gets the name.
+		 *
+		 * @return the name
+		 */
 		public HasValue<String> getName();
 
+		/**
+		 * Gets the send.
+		 *
+		 * @return the send
+		 */
 		public HasClickHandlers getSend();
 	}
 
+	/**
+	 * The Interface MyProxy.
+	 */
 	@ProxyCodeSplit
 	@NameToken(NameTokens.HOME)
 	public interface MyProxy extends ProxyPlace<HomePresenter> {
 
 	}
 
+	/** The dispatcher. */
 	private DispatchAsync dispatcher;
+	
+	/** The left presenter. */
 	private final DigitalObjectMenuPresenter leftPresenter;
 
+	/**
+	 * Instantiates a new home presenter.
+	 *
+	 * @param eventBus the event bus
+	 * @param view the view
+	 * @param proxy the proxy
+	 * @param leftPresenter the left presenter
+	 */
 	@Inject
 	// public HomePresenter(final MyView display, final EventBus eventBus, final
 	// DispatchAsync dispatcher, final DigitalObjectMenuPresenter treePresenter) {
@@ -54,7 +91,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	}
 
 	/**
-	 * Try to send the greeting message
+	 * Try to send the greeting message.
 	 */
 	private void doSend() {
 		Log.info("Calling doSend");
@@ -78,6 +115,9 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+	 */
 	@Override
 	protected void onBind() {
 		// If you add a handler, register it by calling registerHandler() so that it
@@ -92,16 +132,25 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
+	 */
 	@Override
 	protected void onUnbind() {
 		// Add unbind functionality here for more complex presenters.
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
+	 */
 	@Override
 	protected void onReset() {
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+	 */
 	@Override
 	protected void revealInParent() {
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);

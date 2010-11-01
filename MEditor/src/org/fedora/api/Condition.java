@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for Condition complex type.
  * 
@@ -36,20 +42,24 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Condition {
 
+    /** The property. */
     @XmlElement(required = true, nillable = true)
     protected String property;
+    
+    /** The operator. */
     @XmlElement(required = true, nillable = true)
     protected ComparisonOperator operator;
+    
+    /** The value. */
     @XmlElement(required = true, nillable = true)
     protected String value;
 
     /**
      * Gets the value of the property property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the property
+     * possible object is
+     * {@link String }
      */
     public String getProperty() {
         return property;
@@ -69,11 +79,10 @@ public class Condition {
 
     /**
      * Gets the value of the operator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ComparisonOperator }
-     *     
+     *
+     * @return the operator
+     * possible object is
+     * {@link ComparisonOperator }
      */
     public ComparisonOperator getOperator() {
         return operator;
@@ -93,11 +102,10 @@ public class Condition {
 
     /**
      * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the value
+     * possible object is
+     * {@link String }
      */
     public String getValue() {
         return value;

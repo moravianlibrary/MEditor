@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -7,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * content stream of a digital object
  * 
@@ -60,40 +66,66 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Datastream {
 
+    /** The control group. */
     @XmlElement(required = true)
     protected DatastreamControlGroup controlGroup;
+    
+    /** The id. */
     @XmlElement(name = "ID", required = true)
     protected String id;
+    
+    /** The version id. */
     @XmlElement(required = true)
     protected String versionID;
+    
+    /** The alt i ds. */
     @XmlElement(required = true, nillable = true)
     protected ArrayOfString altIDs;
+    
+    /** The label. */
     @XmlElement(required = true, nillable = true)
     protected String label;
+    
+    /** The versionable. */
     protected boolean versionable;
+    
+    /** The mime type. */
     @XmlElement(name = "MIMEType", required = true, nillable = true)
     protected String mimeType;
+    
+    /** The format uri. */
     @XmlElement(required = true, nillable = true)
     protected String formatURI;
+    
+    /** The create date. */
     @XmlElement(required = true)
     protected String createDate;
+    
+    /** The size. */
     protected long size;
+    
+    /** The state. */
     @XmlElement(required = true)
     protected String state;
+    
+    /** The location. */
     @XmlElement(required = true, nillable = true)
     protected String location;
+    
+    /** The checksum type. */
     @XmlElement(required = true, nillable = true)
     protected String checksumType;
+    
+    /** The checksum. */
     @XmlElement(required = true, nillable = true)
     protected String checksum;
 
     /**
      * Gets the value of the controlGroup property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatastreamControlGroup }
-     *     
+     *
+     * @return the control group
+     * possible object is
+     * {@link DatastreamControlGroup }
      */
     public DatastreamControlGroup getControlGroup() {
         return controlGroup;
@@ -113,11 +145,10 @@ public class Datastream {
 
     /**
      * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the iD
+     * possible object is
+     * {@link String }
      */
     public String getID() {
         return id;
@@ -137,11 +168,10 @@ public class Datastream {
 
     /**
      * Gets the value of the versionID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the version id
+     * possible object is
+     * {@link String }
      */
     public String getVersionID() {
         return versionID;
@@ -161,11 +191,10 @@ public class Datastream {
 
     /**
      * Gets the value of the altIDs property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfString }
-     *     
+     *
+     * @return the alt i ds
+     * possible object is
+     * {@link ArrayOfString }
      */
     public ArrayOfString getAltIDs() {
         return altIDs;
@@ -185,11 +214,10 @@ public class Datastream {
 
     /**
      * Gets the value of the label property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the label
+     * possible object is
+     * {@link String }
      */
     public String getLabel() {
         return label;
@@ -209,7 +237,8 @@ public class Datastream {
 
     /**
      * Gets the value of the versionable property.
-     * 
+     *
+     * @return true, if is versionable
      */
     public boolean isVersionable() {
         return versionable;
@@ -217,7 +246,8 @@ public class Datastream {
 
     /**
      * Sets the value of the versionable property.
-     * 
+     *
+     * @param value the new versionable
      */
     public void setVersionable(boolean value) {
         this.versionable = value;
@@ -225,11 +255,10 @@ public class Datastream {
 
     /**
      * Gets the value of the mimeType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the mIME type
+     * possible object is
+     * {@link String }
      */
     public String getMIMEType() {
         return mimeType;
@@ -249,11 +278,10 @@ public class Datastream {
 
     /**
      * Gets the value of the formatURI property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the format uri
+     * possible object is
+     * {@link String }
      */
     public String getFormatURI() {
         return formatURI;
@@ -273,11 +301,10 @@ public class Datastream {
 
     /**
      * Gets the value of the createDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the creates the date
+     * possible object is
+     * {@link String }
      */
     public String getCreateDate() {
         return createDate;
@@ -297,7 +324,8 @@ public class Datastream {
 
     /**
      * Gets the value of the size property.
-     * 
+     *
+     * @return the size
      */
     public long getSize() {
         return size;
@@ -305,7 +333,8 @@ public class Datastream {
 
     /**
      * Sets the value of the size property.
-     * 
+     *
+     * @param value the new size
      */
     public void setSize(long value) {
         this.size = value;
@@ -313,11 +342,10 @@ public class Datastream {
 
     /**
      * Gets the value of the state property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the state
+     * possible object is
+     * {@link String }
      */
     public String getState() {
         return state;
@@ -337,11 +365,10 @@ public class Datastream {
 
     /**
      * Gets the value of the location property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the location
+     * possible object is
+     * {@link String }
      */
     public String getLocation() {
         return location;
@@ -361,11 +388,10 @@ public class Datastream {
 
     /**
      * Gets the value of the checksumType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the checksum type
+     * possible object is
+     * {@link String }
      */
     public String getChecksumType() {
         return checksumType;
@@ -385,11 +411,10 @@ public class Datastream {
 
     /**
      * Gets the value of the checksum property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the checksum
+     * possible object is
+     * {@link String }
      */
     public String getChecksum() {
         return checksum;

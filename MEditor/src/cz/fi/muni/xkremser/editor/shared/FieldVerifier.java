@@ -1,5 +1,11 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.shared;
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>
  * FieldVerifier validates that the name the user enters is valid.

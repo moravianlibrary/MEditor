@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -38,20 +44,24 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "compareDatastreamChecksum")
 public class CompareDatastreamChecksum {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
+    
+    /** The version date. */
     @XmlElement(required = true, nillable = true)
     protected String versionDate;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -71,11 +81,10 @@ public class CompareDatastreamChecksum {
 
     /**
      * Gets the value of the dsID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds id
+     * possible object is
+     * {@link String }
      */
     public String getDsID() {
         return dsID;
@@ -95,11 +104,10 @@ public class CompareDatastreamChecksum {
 
     /**
      * Gets the value of the versionDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the version date
+     * possible object is
+     * {@link String }
      */
     public String getVersionDate() {
         return versionDate;

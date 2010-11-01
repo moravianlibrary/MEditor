@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
 import java.util.ArrayList;
@@ -23,10 +28,20 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RecentlyTreeGwtRPCDS.
+ */
 public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 
+	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
 
+	/**
+	 * Instantiates a new recently tree gwt rpcds.
+	 *
+	 * @param dispatcher the dispatcher
+	 */
 	public RecentlyTreeGwtRPCDS(DispatchAsync dispatcher) {
 		this.dispatcher = dispatcher;
 		DataSourceField field;
@@ -48,6 +63,9 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	 */
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 		boolean all = request.getCriteria().getAttributeAsBoolean(Constants.ATTR_ALL);
@@ -80,6 +98,9 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	 */
 	@Override
 	protected void executeAdd(final String requestId, final DSRequest request, final DSResponse response) {
 		// Retrieve record which should be added.
@@ -111,6 +132,9 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	 */
 	@Override
 	protected void executeUpdate(final String requestId, final DSRequest request, final DSResponse response) {
 		ListGridRecord rec = getEditedRecord(request);
@@ -141,6 +165,9 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	 */
 	@Override
 	protected void executeRemove(final String requestId, final DSRequest request, final DSResponse response) {
 		// Retrieve record which should be removed.
@@ -170,6 +197,12 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		// });
 	}
 
+	/**
+	 * Copy values.
+	 *
+	 * @param from the from
+	 * @param to the to
+	 */
 	private static void copyValues(ListGridRecord from, RecentlyModifiedItem to) {
 		to.setUuid(from.getAttributeAsString(Constants.ATTR_UUID));
 		to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
@@ -177,6 +210,12 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		to.setModel((KrameriusModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
 	}
 
+	/**
+	 * Copy values.
+	 *
+	 * @param from the from
+	 * @param to the to
+	 */
 	private static void copyValues(RecentlyModifiedItem from, ListGridRecord to) {
 		to.setAttribute(Constants.ATTR_UUID, from.getUuid());
 		to.setAttribute(Constants.ATTR_NAME, from.getName());
@@ -184,6 +223,12 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		to.setAttribute(Constants.ATTR_MODEL, from.getModel());
 	}
 
+	/**
+	 * Gets the edited record.
+	 *
+	 * @param request the request
+	 * @return the edited record
+	 */
 	private ListGridRecord getEditedRecord(DSRequest request) {
 		// Retrieving values before edit
 		JavaScriptObject oldValues = request.getAttributeAsJavaScriptObject("oldValues");

@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -11,18 +16,35 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AppView.
+ */
 public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements AppPresenter.MyView {
 
+	/**
+	 * The Interface MyUiHandlers.
+	 */
 	public interface MyUiHandlers extends UiHandlers {
 	}
 
+	/** The left container. */
 	private final Layout leftContainer;
+	
+	/** The top container. */
 	private final Layout topContainer;
+	
+	/** The main container. */
 	private final Layout mainContainer;
+	
+	/** The widget. */
 	public VLayout widget;
 
 	// private HasWidgets mainContainer;
 
+	/**
+	 * Instantiates a new app view.
+	 */
 	public AppView() {
 		widget = new VLayout();
 		widget.setLeaveScrollbarGap(true);
@@ -58,11 +80,17 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		underTop.addMember(mainContainer);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.View#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return widget;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gwtplatform.mvp.client.ViewImpl#setInSlot(java.lang.Object, com.google.gwt.user.client.ui.Widget)
+	 */
 	@Override
 	public void setInSlot(Object slot, Widget content) {
 		if (slot == AppPresenter.TYPE_SetMainContent) {
@@ -76,6 +104,11 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		}
 	}
 
+	/**
+	 * Sets the main content.
+	 *
+	 * @param content the new main content
+	 */
 	private void setMainContent(Widget content) {
 		mainContainer.clear();
 		if (content != null) {
@@ -83,6 +116,11 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		}
 	}
 
+	/**
+	 * Sets the left content.
+	 *
+	 * @param content the new left content
+	 */
 	private void setLeftContent(Widget content) {
 		// leftContainer.clear();
 		if (content != null) {

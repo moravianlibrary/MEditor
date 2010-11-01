@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -44,25 +50,35 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "purgeDatastream")
 public class PurgeDatastream {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
+    
+    /** The start dt. */
     @XmlElement(required = true, nillable = true)
     protected String startDT;
+    
+    /** The end dt. */
     @XmlElement(required = true, nillable = true)
     protected String endDT;
+    
+    /** The log message. */
     @XmlElement(required = true, nillable = true)
     protected String logMessage;
+    
+    /** The force. */
     protected boolean force;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -82,11 +98,10 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the dsID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds id
+     * possible object is
+     * {@link String }
      */
     public String getDsID() {
         return dsID;
@@ -106,11 +121,10 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the startDT property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the start dt
+     * possible object is
+     * {@link String }
      */
     public String getStartDT() {
         return startDT;
@@ -130,11 +144,10 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the endDT property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the end dt
+     * possible object is
+     * {@link String }
      */
     public String getEndDT() {
         return endDT;
@@ -154,11 +167,10 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the logMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the log message
+     * possible object is
+     * {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -178,7 +190,8 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the force property.
-     * 
+     *
+     * @return true, if is force
      */
     public boolean isForce() {
         return force;
@@ -186,7 +199,8 @@ public class PurgeDatastream {
 
     /**
      * Sets the value of the force property.
-     * 
+     *
+     * @param value the new force
      */
     public void setForce(boolean value) {
         this.force = value;

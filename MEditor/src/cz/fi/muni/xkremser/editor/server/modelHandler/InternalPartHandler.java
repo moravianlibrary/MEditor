@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
 import java.io.IOException;
@@ -18,15 +23,31 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class InternalPartHandler.
+ */
 public class InternalPartHandler extends DigitalObjectHandler {
+	
+	/** The page handler. */
 	private transient final PageHandler pageHandler;
 
+	/**
+	 * Instantiates a new internal part handler.
+	 *
+	 * @param logger the logger
+	 * @param fedoraAccess the fedora access
+	 * @param pageHandler the page handler
+	 */
 	@Inject
 	public InternalPartHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler) {
 		super(logger, fedoraAccess);
 		this.pageHandler = pageHandler;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#getDigitalObject(java.lang.String)
+	 */
 	@Override
 	public AbstractDigitalObjectDetail getDigitalObject(String uuid) {
 		// uuid = "0eaa6730-9068-11dd-97de-000d606f5dc6";

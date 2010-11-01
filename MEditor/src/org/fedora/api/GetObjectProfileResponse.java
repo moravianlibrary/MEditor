@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -34,16 +40,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getObjectProfileResponse")
 public class GetObjectProfileResponse {
 
+    /** The object profile. */
     @XmlElement(required = true)
     protected ObjectProfile objectProfile;
 
     /**
      * Gets the value of the objectProfile property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ObjectProfile }
-     *     
+     *
+     * @return the object profile
+     * possible object is
+     * {@link ObjectProfile }
      */
     public ObjectProfile getObjectProfile() {
         return objectProfile;

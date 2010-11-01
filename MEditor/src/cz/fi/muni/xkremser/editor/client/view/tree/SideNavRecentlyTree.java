@@ -19,10 +19,18 @@ package cz.fi.muni.xkremser.editor.client.view.tree;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.grid.ListGrid;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SideNavRecentlyTree.
+ */
 public class SideNavRecentlyTree extends ListGrid {
 
+	/** The id suffix. */
 	private final String idSuffix = "";
 
+	/**
+	 * Instantiates a new side nav recently tree.
+	 */
 	public SideNavRecentlyTree() {
 		setWidth100();
 		setHeight100();

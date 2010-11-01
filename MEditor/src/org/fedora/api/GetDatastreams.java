@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 
 package org.fedora.api;
 
@@ -8,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -38,20 +44,24 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "getDatastreams")
 public class GetDatastreams {
 
+    /** The pid. */
     @XmlElement(required = true)
     protected String pid;
+    
+    /** The as of date time. */
     @XmlElement(required = true)
     protected String asOfDateTime;
+    
+    /** The ds state. */
     @XmlElement(required = true)
     protected String dsState;
 
     /**
      * Gets the value of the pid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the pid
+     * possible object is
+     * {@link String }
      */
     public String getPid() {
         return pid;
@@ -71,11 +81,10 @@ public class GetDatastreams {
 
     /**
      * Gets the value of the asOfDateTime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the as of date time
+     * possible object is
+     * {@link String }
      */
     public String getAsOfDateTime() {
         return asOfDateTime;
@@ -95,11 +104,10 @@ public class GetDatastreams {
 
     /**
      * Gets the value of the dsState property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return the ds state
+     * possible object is
+     * {@link String }
      */
     public String getDsState() {
         return dsState;

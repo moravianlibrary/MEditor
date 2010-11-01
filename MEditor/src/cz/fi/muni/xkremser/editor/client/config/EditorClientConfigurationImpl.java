@@ -1,3 +1,8 @@
+/**
+ * Metadata Editor
+ * @author Jiri Kremser
+ *  
+ */
 package cz.fi.muni.xkremser.editor.client.config;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -13,13 +18,25 @@ import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EditorClientConfigurationImpl.
+ */
 @Singleton
 public class EditorClientConfigurationImpl extends EditorClientConfiguration implements HasEventBus {
 
+	/** The configuration. */
 	private MyConfiguration configuration;
+	
+	/** The event bus. */
 	@Inject
 	private EventBus eventBus;
 
+	/**
+	 * Instantiates a new editor client configuration impl.
+	 *
+	 * @param dispatcher the dispatcher
+	 */
 	@Inject
 	public EditorClientConfigurationImpl(final DispatchAsync dispatcher) {
 		if (configuration == null) {
@@ -40,16 +57,25 @@ public class EditorClientConfigurationImpl extends EditorClientConfiguration imp
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration#getConfiguration()
+	 */
 	@Override
 	public MyConfiguration getConfiguration() {
 		return configuration;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration#setConfiguration(cz.fi.muni.xkremser.editor.client.config.MyConfiguration)
+	 */
 	@Override
 	public void setConfiguration(MyConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		eventBus.fireEvent(this, event);
