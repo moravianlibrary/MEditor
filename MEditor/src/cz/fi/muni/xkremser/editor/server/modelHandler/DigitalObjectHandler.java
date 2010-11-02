@@ -14,8 +14,8 @@ import com.google.inject.Injector;
 import com.google.inject.name.Named;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
-import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc

@@ -5,8 +5,9 @@
  */
 package cz.fi.muni.xkremser.editor.server;
 
+import java.awt.Image;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,14 +15,17 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.xpath.XPathExpressionException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.name.Named;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.fedora.utils.IOUtils;
-import cz.fi.muni.xkremser.editor.fedora.utils.RESTHelper;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.ImageMimeType;
+import cz.fi.muni.xkremser.editor.server.fedora.KrameriusImageSupport;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -29,71 +33,47 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
  */
 public class FullImgServiceImpl extends HttpServlet {
 
-	/** The config. */
 	@Inject
-	private EditorConfiguration config;
+	@Named("securedFedoraAccess")
+	private FedoraAccess fedoraAccess;
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// super.doGet(req, resp);
 		// TODO: sekuryta :]
+		// resp.setDateHeader("Last Modified", lastModifiedDate.getTime());
+		// resp.setDateHeader("Last Fetched", System.currentTimeMillis());
+		// resp.setDateHeader("Expires", instance.getTime().getTime());
 
 		String uuid = req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_FULL_PREFIX) + Constants.SERVLET_FULL_PREFIX.length() + 1);
-
+		ServletOutputStream os = resp.getOutputStream();
 		if (uuid != null && !"".equals(uuid)) {
-			resp.setContentType("image/jpeg");
-
-			// TODO: handle djvu mime type
-			StringBuffer sb = new StringBuffer();
-			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_FULL/content");
-			InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
-			ServletOutputStream os = resp.getOutputStream();
-
+			Image rawImg;
 			try {
-				IOUtils.copyStreams(is, os);
-
-			} catch (IOException e) {
-				// TODO: zalogovat
+				rawImg = KrameriusImageSupport.readImage(uuid, FedoraUtils.IMG_FULL_STREAM, this.fedoraAccess, 0);
+				KrameriusImageSupport.writeImageToStream(rawImg, "JPG", os);
+				resp.setContentType(ImageMimeType.JPEG.getValue());
+				resp.setStatus(HttpURLConnection.HTTP_OK);
+			} catch (XPathExpressionException e1) {
+				resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
+				e1.printStackTrace();
+				// TODO: log exception
 			} finally {
 				os.flush();
-				if (is != null) {
-					try {
-						is.close();
-					} catch (IOException e) {
-						// TODO: zalogovat
-					} finally {
-						is = null;
-					}
-				}
 			}
-			resp.setStatus(200);
-		} else {
-			resp.setStatus(404);
+
 		}
 	}
 
-	/**
-	 * Gets the config.
-	 *
-	 * @return the config
-	 */
-	public EditorConfiguration getConfig() {
-		return config;
-	}
-
-	/**
-	 * Sets the config.
-	 *
-	 * @param config the new config
-	 */
-	public void setConfig(EditorConfiguration config) {
-		this.config = config;
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init()
 	 */
 	@Override
@@ -103,7 +83,9 @@ public class FullImgServiceImpl extends HttpServlet {
 		injector.injectMembers(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
 	@Override
@@ -115,7 +97,7 @@ public class FullImgServiceImpl extends HttpServlet {
 
 	/**
 	 * Gets the injector.
-	 *
+	 * 
 	 * @return the injector
 	 */
 	protected Injector getInjector() {

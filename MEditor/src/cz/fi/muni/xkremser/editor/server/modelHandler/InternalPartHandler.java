@@ -16,8 +16,8 @@ import org.w3c.dom.Document;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.fedora.utils.DCUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;

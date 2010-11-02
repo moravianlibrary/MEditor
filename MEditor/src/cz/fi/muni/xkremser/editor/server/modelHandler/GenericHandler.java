@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import cz.fi.muni.xkremser.editor.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
