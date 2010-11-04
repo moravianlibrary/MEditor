@@ -23,7 +23,7 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 /**
  * The Class SideNavRecentlyTree.
  */
-public class SideNavRecentlyTree extends ListGrid {
+public class SideNavRecentlyGrid extends ListGrid {
 
 	/** The id suffix. */
 	private final String idSuffix = "";
@@ -31,34 +31,14 @@ public class SideNavRecentlyTree extends ListGrid {
 	/**
 	 * Instantiates a new side nav recently tree.
 	 */
-	public SideNavRecentlyTree() {
+	public SideNavRecentlyGrid() {
 		setWidth100();
 		setHeight100();
-		// setCustomIconProperty("icon");
 		setShowSortArrow(SortArrow.CORNER);
 		setShowAllRecords(true);
 		setAutoFetchData(true);
 		setCanHover(true);
-		// addCellClickHandler(new CellClickHandler() {
-		// @Override
-		// public void onCellClick(CellClickEvent event) {
-		// SC.say(event.getRecord().getAttribute(Constants.ATTR_UUID));
-		//
-		// // TODO: dat do presenteru a udelat at se spusti novy place pres place
-		// // mngra
-		// }
-		// });
-
-		// setHoverCustomizer(new HoverCustomizer() {
-		// @Override
-		// public String hoverHTML(Object value, ListGridRecord record, int rowNum,
-		// int colNum) {
-		// return record.getAttribute(Constants.ATTR_DESC);
-		// }
-		// });
-
-		// setLoadDataOnDemand(false);
-		setCanSort(false);
+		setCanSort(false); // TODO: sort by date (define in datasource)
 	}
 
 }

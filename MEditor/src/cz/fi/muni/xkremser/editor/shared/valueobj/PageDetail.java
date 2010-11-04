@@ -5,6 +5,8 @@
  */
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
+import java.util.ArrayList;
+
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 
 // TODO: Auto-generated Javadoc
@@ -13,12 +15,24 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
  */
 public class PageDetail extends AbstractDigitalObjectDetail {
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getModel()
+	public PageDetail(ArrayList<ArrayList<String>> related) {
+		super(related);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getModel()
 	 */
 	@Override
 	public KrameriusModel getModel() {
 		return KrameriusModel.PAGE;
+	}
+
+	private PageDetail() {
+		super();
 	}
 
 	// file (literal)
@@ -37,8 +51,12 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 	/** The dc. */
 	private DublinCore dc;
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getDc()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getDc()
 	 */
 	@Override
 	public DublinCore getDc() {
@@ -47,15 +65,20 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the dc.
-	 *
-	 * @param dc the new dc
+	 * 
+	 * @param dc
+	 *          the new dc
 	 */
 	public void setDc(DublinCore dc) {
 		this.dc = dc;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#hasPages()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasPages()
 	 */
 	@Override
 	public boolean hasPages() {

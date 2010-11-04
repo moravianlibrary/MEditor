@@ -5,6 +5,9 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -57,38 +60,40 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	 * The Interface MyView.
 	 */
 	public interface MyView extends View/* , HasUiHandlers<MyUiHandlers> */{
-		
+
 		/**
 		 * Gets the selected.
-		 *
+		 * 
 		 * @return the selected
 		 */
 		HasValue<String> getSelected();
 
 		/**
 		 * Expand node.
-		 *
-		 * @param id the id
+		 * 
+		 * @param id
+		 *          the id
 		 */
 		void expandNode(String id);
 
 		/**
 		 * Gets the refresh widget.
-		 *
+		 * 
 		 * @return the refresh widget
 		 */
 		HasClickHandlers getRefreshWidget();
 
 		/**
 		 * Show input queue.
-		 *
-		 * @param dispatcher the dispatcher
+		 * 
+		 * @param dispatcher
+		 *          the dispatcher
 		 */
 		void showInputQueue(DispatchAsync dispatcher);
 
 		/**
 		 * Gets the input tree.
-		 *
+		 * 
 		 * @return the input tree
 		 */
 		Refreshable getInputTree();
@@ -96,17 +101,22 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		// TODO: ListGrid -> na nejake rozhrani
 		/**
 		 * Gets the recently modified tree.
-		 *
+		 * 
 		 * @return the recently modified tree
 		 */
-		ListGrid getRecentlyModifiedTree();
+		ListGrid getRecentlyModifiedGrid();
+
+		ListGrid getRelatedGrid();
 
 		/**
 		 * Sets the dS.
-		 *
-		 * @param dispatcher the new dS
+		 * 
+		 * @param dispatcher
+		 *          the new dS
 		 */
 		void setDS(DispatchAsync dispatcher);
+
+		void setRelatedDocuments(List<? extends List<String>> data);
 	}
 
 	/**
@@ -119,10 +129,10 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
-	
+
 	/** The input queue shown. */
 	private boolean inputQueueShown = false;
-	
+
 	/** The place manager. */
 	private final PlaceManager placeManager;
 
@@ -132,13 +142,19 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	/**
 	 * Instantiates a new digital object menu presenter.
-	 *
-	 * @param view the view
-	 * @param eventBus the event bus
-	 * @param proxy the proxy
-	 * @param dispatcher the dispatcher
-	 * @param config the config
-	 * @param placeManager the place manager
+	 * 
+	 * @param view
+	 *          the view
+	 * @param eventBus
+	 *          the event bus
+	 * @param proxy
+	 *          the proxy
+	 * @param dispatcher
+	 *          the dispatcher
+	 * @param config
+	 *          the config
+	 * @param placeManager
+	 *          the place manager
 	 */
 	@Inject
 	public DigitalObjectMenuPresenter(final MyView view, final EventBus eventBus, final MyProxy proxy, final DispatchAsync dispatcher,
@@ -152,7 +168,9 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		bind();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
 	 */
 	@Override
@@ -160,18 +178,25 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		super.onBind();
 
 		getView().setDS(dispatcher);
-		getView().getRecentlyModifiedTree().setHoverCustomizer(new HoverCustomizer() {
+		getView().getRecentlyModifiedGrid().setHoverCustomizer(new HoverCustomizer() {
 			@Override
 			public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
 				return record.getAttribute(Constants.ATTR_DESC);
 			}
 		});
-		getView().getRecentlyModifiedTree().addCellClickHandler(new CellClickHandler() {
+		getView().getRecentlyModifiedGrid().addCellClickHandler(new CellClickHandler() {
 			@Override
 			public void onCellClick(CellClickEvent event) {
-				revealModifiedItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+				revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
 			}
 		});
+		getView().getRelatedGrid().addCellClickHandler(new CellClickHandler() {
+			@Override
+			public void onCellClick(CellClickEvent event) {
+				revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+			}
+		});
+
 		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
 			@Override
 			public void onConfigReceived(ConfigReceivedEvent event) {
@@ -190,24 +215,26 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 			@Override
 			public void onDigitalObjectOpened(DigitalObjectOpenedEvent event) {
 				if (event.isStatusOK()) {
-					onAddDigitalObject(event.getItem());
+					onAddDigitalObject(event.getItem(), event.getRelated());
 				}
 			}
 		});
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
 	 */
 	@Override
 	protected void onUnbind() {
 		super.onUnbind();
-		getView().getRecentlyModifiedTree().setHoverCustomizer(null);
+		getView().getRecentlyModifiedGrid().setHoverCustomizer(null);
 	}
 
 	/**
 	 * Checks if is input queue shown.
-	 *
+	 * 
 	 * @return true, if is input queue shown
 	 */
 	public boolean isInputQueueShown() {
@@ -216,15 +243,20 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	/**
 	 * Sets the input queue shown.
-	 *
-	 * @param inputQueueShown the new input queue shown
+	 * 
+	 * @param inputQueueShown
+	 *          the new input queue shown
 	 */
 	public void setInputQueueShown(boolean inputQueueShown) {
 		this.inputQueueShown = inputQueueShown;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#onRefresh()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+	 * #onRefresh()
 	 */
 	@Override
 	public void onRefresh() {
@@ -237,7 +269,9 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		});
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
 	 */
 	@Override
@@ -245,8 +279,12 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, this);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#onShowInputQueue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+	 * #onShowInputQueue()
 	 */
 	@Override
 	public void onShowInputQueue() {
@@ -260,19 +298,25 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		}));
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#onAddDigitalObject(cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+	 * #onAddDigitalObject
+	 * (cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
 	 */
 	@Override
-	public void onAddDigitalObject(final RecentlyModifiedItem item) {
+	public void onAddDigitalObject(final RecentlyModifiedItem item, final List<ArrayList<String>> related) {
+		getView().setRelatedDocuments(related);
 		Timer timer = new Timer() {
 			@Override
 			public void run() {
 				RecentlyModifiedRecord record = ClientUtils.toRecord(item);
-				if (getView().getRecentlyModifiedTree().getDataAsRecordList().contains(record)) {
-					getView().getRecentlyModifiedTree().updateData(record);
+				if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
+					getView().getRecentlyModifiedGrid().updateData(record);
 				} else {
-					getView().getRecentlyModifiedTree().addData(record);
+					getView().getRecentlyModifiedGrid().addData(record);
 				}
 			}
 		};
@@ -280,11 +324,15 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers#revealModifiedItem(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+	 * #revealModifiedItem(java.lang.String)
 	 */
 	@Override
-	public void revealModifiedItem(String uuid) {
+	public void revealItem(String uuid) {
 		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid));
 	}
 }

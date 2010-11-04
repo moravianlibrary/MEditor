@@ -41,33 +41,37 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
 	 */
-	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network " + "connection and try again.";
+	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
+			+ "connection and try again.";
 
 	/**
 	 * The Interface MyView.
 	 */
 	public interface MyView extends View {
-		
+
 		/**
 		 * Gets the name.
-		 *
+		 * 
 		 * @return the name
 		 */
 		public HasValue<String> getName();
 
 		/**
 		 * Gets the send.
-		 *
+		 * 
 		 * @return the send
 		 */
 		public HasClickHandlers getSend();
 
 		/**
 		 * Adds the digital object.
-		 *
-		 * @param tileGridVisible the tile grid visible
-		 * @param data the data
-		 * @param dispatcher the dispatcher
+		 * 
+		 * @param tileGridVisible
+		 *          the tile grid visible
+		 * @param data
+		 *          the data
+		 * @param dispatcher
+		 *          the dispatcher
 		 */
 		void addDigitalObject(boolean tileGridVisible, Record[] data, DispatchAsync dispatcher);
 	}
@@ -83,37 +87,45 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
-	
+
 	/** The left presenter. */
 	private final DigitalObjectMenuPresenter leftPresenter;
-	
+
 	/** The uuid. */
 	private String uuid;
-	
+
 	/** The previous uuid. */
 	private String previousUuid;
-	
+
 	/** The forced refresh. */
 	private boolean forcedRefresh;
 
 	/**
 	 * Instantiates a new modify presenter.
-	 *
-	 * @param eventBus the event bus
-	 * @param view the view
-	 * @param proxy the proxy
-	 * @param leftPresenter the left presenter
-	 * @param dispatcher the dispatcher
+	 * 
+	 * @param eventBus
+	 *          the event bus
+	 * @param view
+	 *          the view
+	 * @param proxy
+	 *          the proxy
+	 * @param leftPresenter
+	 *          the left presenter
+	 * @param dispatcher
+	 *          the dispatcher
 	 */
 	@Inject
-	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter, final DispatchAsync dispatcher) {
+	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
+			final DispatchAsync dispatcher) {
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
 		this.dispatcher = dispatcher;
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
 	 */
 	@Override
@@ -122,8 +134,12 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	};
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.mvp.client.Presenter#prepareFromRequest(com.gwtplatform.mvp.client.proxy.PlaceRequest)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.mvp.client.Presenter#prepareFromRequest(com.gwtplatform
+	 * .mvp.client.proxy.PlaceRequest)
 	 */
 	@Override
 	public void prepareFromRequest(PlaceRequest request) {
@@ -140,7 +156,9 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// > getProxy().manualReveal(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
 	 */
 	@Override
@@ -149,7 +167,9 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// Add unbind functionality here for more complex presenters.
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
 	 */
 	@Override
@@ -171,10 +191,12 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 					List<PageDetail> pages = detail.getPages();
 					for (int i = 0, total = pages.size(); i < total; i++) {
-						data[i] = new PageRecord(pages.get(i).getDc().getTitle(), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier().get(0));
+						data[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier()
+								.get(0));
 					}
 					getView().addDigitalObject(true, data, dispatcher);
-					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle(), "", detail.getModel()));
+					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
+							result.getDetail().getRelated());
 				}
 
 				@Override
@@ -191,7 +213,9 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		previousUuid = uuid;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
 	 */
 	@Override

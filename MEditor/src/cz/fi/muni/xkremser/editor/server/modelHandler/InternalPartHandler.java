@@ -28,16 +28,19 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
  * The Class InternalPartHandler.
  */
 public class InternalPartHandler extends DigitalObjectHandler {
-	
+
 	/** The page handler. */
 	private transient final PageHandler pageHandler;
 
 	/**
 	 * Instantiates a new internal part handler.
-	 *
-	 * @param logger the logger
-	 * @param fedoraAccess the fedora access
-	 * @param pageHandler the page handler
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param fedoraAccess
+	 *          the fedora access
+	 * @param pageHandler
+	 *          the page handler
 	 */
 	@Inject
 	public InternalPartHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler) {
@@ -45,13 +48,16 @@ public class InternalPartHandler extends DigitalObjectHandler {
 		this.pageHandler = pageHandler;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#getDigitalObject(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#
+	 * getDigitalObject(java.lang.String)
 	 */
 	@Override
-	public AbstractDigitalObjectDetail getDigitalObject(String uuid) {
+	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
 		// uuid = "0eaa6730-9068-11dd-97de-000d606f5dc6";
-		InternalPartDetail detail = new InternalPartDetail();
+		InternalPartDetail detail = new InternalPartDetail(findRelated ? getRelated(uuid) : null);
 		DublinCore dc = new DublinCore();
 		ArrayList<PageDetail> pages = new ArrayList<PageDetail>();
 		Document dcDocument = null;
@@ -60,7 +66,7 @@ public class InternalPartHandler extends DigitalObjectHandler {
 			List<String> pageUuids = getFedoraAccess().getIsOnPagesUuid(uuid);
 			// List<String> pageUuids = getFedoraAccess().getPagesUuid(uuid);
 			for (String pageUuid : pageUuids) {
-				pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid));
+				pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
 			}
 
 		} catch (IOException e) {
@@ -68,7 +74,7 @@ public class InternalPartHandler extends DigitalObjectHandler {
 			e.printStackTrace();
 		}
 
-		dc.setTitle(DCUtils.titleFromDC(dcDocument));
+		dc.addTitle(DCUtils.titleFromDC(dcDocument));
 		dc.setCreator(Arrays.asList(DCUtils.creatorsFromDC(dcDocument)));
 		detail.setDc(dc);
 		detail.setPages(pages);

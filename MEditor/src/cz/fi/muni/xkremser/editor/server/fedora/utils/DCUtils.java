@@ -21,8 +21,9 @@ public class DCUtils {
 
 	/**
 	 * Title from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the string
 	 */
 	public static String titleFromDC(org.w3c.dom.Document dc) {
@@ -33,12 +34,28 @@ public class DCUtils {
 		return title;
 	}
 
-	/**
-	 * Creators from dc.
-	 *
-	 * @param dc the dc
-	 * @return the string[]
-	 */
+	// /**
+	// * Creators from dc.
+	// *
+	// * @param dc
+	// * the dc
+	// * @return the string[]
+	// */
+	// public static String[] creatorsFromDC(org.w3c.dom.Document dc) {
+	// ArrayList<String> creator = new ArrayList<String>();
+	// Element documentElement = dc.getDocumentElement();
+	// NodeList childNodes = documentElement.getChildNodes();
+	// for (int i = 0; i < childNodes.getLength(); i++) {
+	// Node item = childNodes.item(i);
+	// if (item.getNodeType() == Node.ELEMENT_NODE) {
+	// if (item.getLocalName().equals("creator")) {
+	// creator.add(item.getTextContent().trim());
+	// }
+	// }
+	// }
+	// return creator.toArray(new String[creator.size()]);
+	// }
+
 	public static String[] creatorsFromDC(org.w3c.dom.Document dc) {
 		ArrayList<String> creator = new ArrayList<String>();
 		Element documentElement = dc.getDocumentElement();

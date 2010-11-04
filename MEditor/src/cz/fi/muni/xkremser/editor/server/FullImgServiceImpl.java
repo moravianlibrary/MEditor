@@ -57,7 +57,8 @@ public class FullImgServiceImpl extends HttpServlet {
 			Image rawImg;
 			try {
 				rawImg = KrameriusImageSupport.readImage(uuid, FedoraUtils.IMG_FULL_STREAM, this.fedoraAccess, 0);
-				KrameriusImageSupport.writeImageToStream(rawImg, "JPG", os);
+				// KrameriusImageSupport.getScaledInstanceJava2D()
+				KrameriusImageSupport.writeImageToStream(rawImg, "JPG", os, 0.5f);
 				resp.setContentType(ImageMimeType.JPEG.getValue());
 				resp.setStatus(HttpURLConnection.HTTP_OK);
 			} catch (XPathExpressionException e1) {
@@ -67,7 +68,6 @@ public class FullImgServiceImpl extends HttpServlet {
 			} finally {
 				os.flush();
 			}
-
 		}
 	}
 

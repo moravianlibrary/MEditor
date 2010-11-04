@@ -19,7 +19,6 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
 import javax.swing.JPanel;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -91,7 +90,7 @@ public class KrameriusImageSupport {
 	}
 
 	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os) throws IOException {
-		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
 		gr.dispose();
@@ -101,10 +100,11 @@ public class KrameriusImageSupport {
 		IOUtils.copyStreams(new ByteArrayInputStream(bos.toByteArray()), os);
 	}
 
-	public static void writeImageToStream(Image scaledImage, String javaFormat, FileImageOutputStream os, float quality) throws IOException {
+	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os, float quality) throws IOException {
 		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
+		BufferedImage bufImage2 = getScaledInstanceJava2D(bufImage, 600, 800, "", false);
 		gr.dispose();
 
 		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(javaFormat);
@@ -114,7 +114,7 @@ public class KrameriusImageSupport {
 			iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 			iwp.setCompressionQuality(quality); // an integer between 0 and 1
 			writer.setOutput(os);
-			IIOImage image = new IIOImage(bufImage, null, null);
+			IIOImage image = new IIOImage(bufImage2, null, null);
 			writer.write(null, image, iwp);
 			writer.dispose();
 

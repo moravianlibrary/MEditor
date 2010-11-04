@@ -24,8 +24,20 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 	// type (= model:internalpart)
 	// rights (treba policy:private)
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getModel()
+	private InternalPartDetail() {
+		super();
+	}
+
+	public InternalPartDetail(ArrayList<ArrayList<String>> related) {
+		super(related);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getModel()
 	 */
 	@Override
 	public KrameriusModel getModel() {
@@ -40,7 +52,7 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Gets the pages.
-	 *
+	 * 
 	 * @return the pages
 	 */
 	public ArrayList<PageDetail> getPages() {
@@ -49,8 +61,9 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the pages.
-	 *
-	 * @param pages the new pages
+	 * 
+	 * @param pages
+	 *          the new pages
 	 */
 	public void setPages(ArrayList<PageDetail> pages) {
 		this.pages = pages;
@@ -58,23 +71,32 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the dc.
-	 *
-	 * @param dc the new dc
+	 * 
+	 * @param dc
+	 *          the new dc
 	 */
 	public void setDc(DublinCore dc) {
 		this.dc = dc;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getDc()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getDc()
 	 */
 	@Override
 	public DublinCore getDc() {
 		return dc;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#hasPages()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasPages()
 	 */
 	@Override
 	public boolean hasPages() {

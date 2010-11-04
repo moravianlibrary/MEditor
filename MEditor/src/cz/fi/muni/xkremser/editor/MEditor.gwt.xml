@@ -8,7 +8,6 @@
   <inherits name='com.smartgwt.SmartGwtNoScript'/>
   <inherits name='com.smartgwt.tools.SmartGwtTools'/>
   
-  <super-source path="jaxb"/>
   
   <!-- SmartGWT EE 									
   <inherits name="com.smartgwtee.SmartGwtEE"/>

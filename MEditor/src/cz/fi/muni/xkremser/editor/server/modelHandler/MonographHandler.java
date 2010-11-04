@@ -21,20 +21,25 @@ public class MonographHandler extends DigitalObjectHandler implements CanGetObje
 
 	/**
 	 * Instantiates a new monograph handler.
-	 *
-	 * @param logger the logger
-	 * @param fedoraAccess the fedora access
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param fedoraAccess
+	 *          the fedora access
 	 */
 	@Inject
 	public MonographHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
 		super(logger, fedoraAccess);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#getDigitalObject(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#
+	 * getDigitalObject(java.lang.String)
 	 */
 	@Override
-	public AbstractDigitalObjectDetail getDigitalObject(String uuid) {
+	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
 		System.out.println("ahoj");
 		return null;
 	}

@@ -29,21 +29,26 @@ public class PageHandler extends DigitalObjectHandler {
 
 	/**
 	 * Instantiates a new page handler.
-	 *
-	 * @param logger the logger
-	 * @param fedoraAccess the fedora access
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param fedoraAccess
+	 *          the fedora access
 	 */
 	@Inject
 	public PageHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
 		super(logger, fedoraAccess);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#getDigitalObject(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler#
+	 * getDigitalObject(java.lang.String)
 	 */
 	@Override
-	public AbstractDigitalObjectDetail getDigitalObject(final String uuid) {
-		PageDetail detail = new PageDetail();
+	public AbstractDigitalObjectDetail getDigitalObject(final String uuid, final boolean findRelated) {
+		PageDetail detail = new PageDetail(findRelated ? getRelated(uuid) : null);
 		DublinCore dc = new DublinCore();
 		Document dcDocument = null;
 		try {
@@ -53,7 +58,7 @@ public class PageHandler extends DigitalObjectHandler {
 			e.printStackTrace();
 		}
 
-		dc.setTitle(DCUtils.titleFromDC(dcDocument));
+		dc.addTitle(DCUtils.titleFromDC(dcDocument));
 		dc.setCreator(Arrays.asList(DCUtils.creatorsFromDC(dcDocument)));
 		ArrayList<String> ids = new ArrayList<String>();
 		ids.add(uuid);

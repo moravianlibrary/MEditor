@@ -13,16 +13,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 // TODO: Auto-generated Javadoc
 /**
  * Value object pro Dublin core stream.
- *
+ * 
  * @author xholcik
  */
 public class DublinCore implements IsSerializable {
 
 	/** The title. */
-	private String title;
+	private List<String> title;
 
 	/** The identifier. */
 	private List<String> identifier;
+
+	private List<String> coverage;
+
+	private List<String> relation;
+
+	private List<String> source;
 
 	/** The creator. */
 	private List<String> creator;
@@ -34,120 +40,31 @@ public class DublinCore implements IsSerializable {
 	private List<String> contributor;
 
 	/** The date. */
-	private String date;
+	private List<String> date;
 
 	/** The language. */
-	private String language;
+	private List<String> language;
 
 	/** The description. */
-	private String description;
+	private List<String> description;
 
 	/** The format. */
-	private String format;
+	private List<String> format;
 
 	/** The subject. */
 	private List<String> subject;
 
 	/** The type. */
-	private String type;
+	private List<String> type;
 
 	/** The rights. */
-	private String rights;
-
-	/**
-	 * Gets the title.
-	 *
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * Sets the title.
-	 *
-	 * @param title the new title
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * Gets the creator.
-	 *
-	 * @return the creator
-	 */
-	public List<String> getCreator() {
-		return creator;
-	}
-
-	/**
-	 * Sets the creator.
-	 *
-	 * @param creator the new creator
-	 */
-	public void setCreator(List<String> creator) {
-		this.creator = creator;
-	}
-
-	/**
-	 * Gets the publisher.
-	 *
-	 * @return the publisher
-	 */
-	public List<String> getPublisher() {
-		return publisher;
-	}
-
-	/**
-	 * Sets the publisher.
-	 *
-	 * @param publisher the new publisher
-	 */
-	public void setPublisher(List<String> publisher) {
-		this.publisher = publisher;
-	}
-
-	/**
-	 * Gets the contributor.
-	 *
-	 * @return the contributor
-	 */
-	public List<String> getContributor() {
-		return contributor;
-	}
-
-	/**
-	 * Sets the contributor.
-	 *
-	 * @param contributor the new contributor
-	 */
-	public void setContributor(List<String> contributor) {
-		this.contributor = contributor;
-	}
-
-	/**
-	 * Gets the identifier.
-	 *
-	 * @return the identifier
-	 */
-	public List<String> getIdentifier() {
-		return identifier;
-	}
-
-	/**
-	 * Sets the identifier.
-	 *
-	 * @param identifier the new identifier
-	 */
-	public void setIdentifier(List<String> identifier) {
-		this.identifier = identifier;
-	}
+	private List<String> rights;
 
 	/**
 	 * Adds the identifier.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *          the id
 	 */
 	public void addIdentifier(String id) {
 		if (id == null || "".equals(id))
@@ -160,9 +77,11 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Adds the qualified identifier.
-	 *
-	 * @param prefix the prefix
-	 * @param id the id
+	 * 
+	 * @param prefix
+	 *          the prefix
+	 * @param id
+	 *          the id
 	 */
 	public void addQualifiedIdentifier(String prefix, String id) {
 		if (id == null || "".equals(id))
@@ -173,154 +92,140 @@ public class DublinCore implements IsSerializable {
 		this.identifier.add(prefix + ":" + id);
 	}
 
-	/**
-	 * Gets the date.
-	 *
-	 * @return the date
-	 */
-	public String getDate() {
+	public void addTitle(String title) {
+		if (title == null || "".equals(title))
+			return;
+		if (this.title == null) {
+			this.title = new ArrayList<String>();
+		}
+		this.title.add(title);
+	}
+
+	public List<String> getTitle() {
+		return title;
+	}
+
+	public void setTitle(List<String> title) {
+		this.title = title;
+	}
+
+	public List<String> getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(List<String> identifier) {
+		this.identifier = identifier;
+	}
+
+	public List<String> getCreator() {
+		return creator;
+	}
+
+	public void setCreator(List<String> creator) {
+		this.creator = creator;
+	}
+
+	public List<String> getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(List<String> publisher) {
+		this.publisher = publisher;
+	}
+
+	public List<String> getContributor() {
+		return contributor;
+	}
+
+	public void setContributor(List<String> contributor) {
+		this.contributor = contributor;
+	}
+
+	public List<String> getDate() {
 		return date;
 	}
 
-	/**
-	 * Sets the date.
-	 *
-	 * @param date the new date
-	 */
-	public void setDate(String date) {
+	public void setDate(List<String> date) {
 		this.date = date;
 	}
 
-	/**
-	 * Gets the language.
-	 *
-	 * @return the language
-	 */
-	public String getLanguage() {
+	public List<String> getLanguage() {
 		return language;
 	}
 
-	/**
-	 * Sets the language.
-	 *
-	 * @param language the new language
-	 */
-	public void setLanguage(String language) {
+	public void setLanguage(List<String> language) {
 		this.language = language;
 	}
 
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
+	public List<String> getDescription() {
 		return description;
 	}
 
-	/**
-	 * Sets the description.
-	 *
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
+	public void setDescription(List<String> description) {
 		this.description = description;
 	}
 
-	/**
-	 * Gets the format.
-	 *
-	 * @return the format
-	 */
-	public String getFormat() {
+	public List<String> getFormat() {
 		return format;
 	}
 
-	/**
-	 * Sets the format.
-	 *
-	 * @param format the new format
-	 */
-	public void setFormat(String format) {
+	public void setFormat(List<String> format) {
 		this.format = format;
 	}
 
-	/**
-	 * Gets the subject.
-	 *
-	 * @return the subject
-	 */
 	public List<String> getSubject() {
 		return subject;
 	}
 
-	/**
-	 * Sets the subject.
-	 *
-	 * @param subject the new subject
-	 */
 	public void setSubject(List<String> subject) {
 		this.subject = subject;
 	}
 
-	/**
-	 * Adds the subject.
-	 *
-	 * @param subj the subj
-	 */
-	public void addSubject(String subj) {
-		if (subj == null || "".equals(subj))
-			return;
-		if (this.subject == null) {
-			this.subject = new ArrayList<String>();
-		}
-		this.subject.add(subj);
-	}
-
-	/**
-	 * Gets the type.
-	 *
-	 * @return the type
-	 */
-	public String getType() {
+	public List<String> getType() {
 		return type;
 	}
 
-	/**
-	 * Sets the type.
-	 *
-	 * @param type the new type
-	 */
-	public void setType(String type) {
+	public void setType(List<String> type) {
 		this.type = type;
 	}
 
-	/**
-	 * Gets the rights.
-	 *
-	 * @return the rights
-	 */
-	public String getRights() {
+	public List<String> getRights() {
 		return rights;
 	}
 
-	/**
-	 * Sets the rights.
-	 *
-	 * @param rights the new rights
-	 */
-	public void setRights(String rights) {
+	public void setRights(List<String> rights) {
 		this.rights = rights;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public List<String> getCoverage() {
+		return coverage;
+	}
+
+	public void setCoverage(List<String> coverage) {
+		this.coverage = coverage;
+	}
+
+	public List<String> getRelation() {
+		return relation;
+	}
+
+	public void setRelation(List<String> relation) {
+		this.relation = relation;
+	}
+
+	public List<String> getSource() {
+		return source;
+	}
+
+	public void setSource(List<String> source) {
+		this.source = source;
+	}
+
 	@Override
 	public String toString() {
-		return "DublinCore [title=" + title + ", identifier=" + identifier + ", creator=" + creator + ", publisher=" + publisher + ", contributor=" + contributor
-				+ ", date=" + date + ", language=" + language + ", description=" + description + ", format=" + format + ", subject=" + subject + ", type=" + type
-				+ ", rights=" + rights + "]";
+		return "DublinCore [title=" + title + ", identifier=" + identifier + ", coverage=" + coverage + ", relation=" + relation + ", source=" + source
+				+ ", creator=" + creator + ", publisher=" + publisher + ", contributor=" + contributor + ", date=" + date + ", language=" + language + ", description="
+				+ description + ", format=" + format + ", subject=" + subject + ", type=" + type + ", rights=" + rights + "]";
 	}
 
 }

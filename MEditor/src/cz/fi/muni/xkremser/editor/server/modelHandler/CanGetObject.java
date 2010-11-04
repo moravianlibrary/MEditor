@@ -12,12 +12,13 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
  * The Interface CanGetObject.
  */
 public interface CanGetObject {
-	
+
 	/**
 	 * Gets the digital object.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the digital object
 	 */
-	AbstractDigitalObjectDetail getDigitalObject(String uuid);
+	AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated);
 }
