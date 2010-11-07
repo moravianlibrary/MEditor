@@ -6,8 +6,6 @@
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.w3c.dom.Document;
@@ -49,7 +47,7 @@ public class PageHandler extends DigitalObjectHandler {
 	@Override
 	public AbstractDigitalObjectDetail getDigitalObject(final String uuid, final boolean findRelated) {
 		PageDetail detail = new PageDetail(findRelated ? getRelated(uuid) : null);
-		DublinCore dc = new DublinCore();
+		DublinCore dc = null;
 		Document dcDocument = null;
 		try {
 			dcDocument = getFedoraAccess().getDC(uuid);
@@ -57,12 +55,13 @@ public class PageHandler extends DigitalObjectHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		dc.addTitle(DCUtils.titleFromDC(dcDocument));
-		dc.setCreator(Arrays.asList(DCUtils.creatorsFromDC(dcDocument)));
-		ArrayList<String> ids = new ArrayList<String>();
-		ids.add(uuid);
-		dc.setIdentifier(ids);
+		if (findRelated) {
+			dc = DCUtils.getDC(dcDocument);
+		} else {
+			dc = new DublinCore();
+			dc.addTitle(DCUtils.titleFromDC(dcDocument));
+			dc.addIdentifier(uuid);
+		}
 		detail.setDc(dc);
 
 		return detail;

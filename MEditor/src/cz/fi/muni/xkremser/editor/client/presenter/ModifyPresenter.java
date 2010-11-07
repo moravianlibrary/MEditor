@@ -29,6 +29,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 
@@ -73,7 +74,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 * @param dispatcher
 		 *          the dispatcher
 		 */
-		void addDigitalObject(boolean tileGridVisible, Record[] data, DispatchAsync dispatcher);
+		void addDigitalObject(boolean tileGridVisible, Record[] data, DublinCore dc, DispatchAsync dispatcher);
 	}
 
 	/**
@@ -182,7 +183,11 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
 		// uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
 
-		if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
+		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid)))) {
+			// final ModalWindow mw = new
+			// ModalWindow((com.smartgwt.client.widgets.Canvas) getView().asWidget());
+			// mw.setLoadingIcon("loadingAnimation.gif");
+			// mw.show(true);
 			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
 				@Override
 				public void callback(GetDigitalObjectDetailResult result) {
@@ -194,7 +199,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						data[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier()
 								.get(0));
 					}
-					getView().addDigitalObject(true, data, dispatcher);
+					getView().addDigitalObject(true, data, detail.getDc(), dispatcher);
+					System.out.println("");
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
 				}
@@ -204,6 +210,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					super.callbackError(t);
 				}
 			});
+			// mw.show(false);
 		}
 
 		// if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {

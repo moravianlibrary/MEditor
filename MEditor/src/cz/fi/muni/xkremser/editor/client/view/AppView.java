@@ -30,13 +30,13 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 
 	/** The left container. */
 	private final Layout leftContainer;
-	
+
 	/** The top container. */
 	private final Layout topContainer;
-	
+
 	/** The main container. */
 	private final Layout mainContainer;
-	
+
 	/** The widget. */
 	public VLayout widget;
 
@@ -48,6 +48,7 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	public AppView() {
 		widget = new VLayout();
 		widget.setLeaveScrollbarGap(true);
+
 		leftContainer = new VLayout();
 		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
@@ -80,7 +81,9 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		underTop.addMember(mainContainer);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.View#asWidget()
 	 */
 	@Override
@@ -88,8 +91,11 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		return widget;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.mvp.client.ViewImpl#setInSlot(java.lang.Object, com.google.gwt.user.client.ui.Widget)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.mvp.client.ViewImpl#setInSlot(java.lang.Object,
+	 * com.google.gwt.user.client.ui.Widget)
 	 */
 	@Override
 	public void setInSlot(Object slot, Widget content) {
@@ -106,8 +112,9 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 
 	/**
 	 * Sets the main content.
-	 *
-	 * @param content the new main content
+	 * 
+	 * @param content
+	 *          the new main content
 	 */
 	private void setMainContent(Widget content) {
 		mainContainer.clear();
@@ -118,8 +125,9 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 
 	/**
 	 * Sets the left content.
-	 *
-	 * @param content the new left content
+	 * 
+	 * @param content
+	 *          the new left content
 	 */
 	private void setLeftContent(Widget content) {
 		// leftContainer.clear();

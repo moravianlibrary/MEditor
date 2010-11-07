@@ -6,6 +6,8 @@
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
@@ -26,6 +28,8 @@ import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
+import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
+import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
@@ -36,32 +40,36 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ModifyView.
  */
 public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
-	
+
+	private static final String ID_DC = "dc";
+	private static final String ID_MODS = "mods";
+
 	/** The tile grid. */
 	private TileGrid tileGrid;
-	
+
 	/** The layout. */
 	private final VLayout layout;
-	
+
 	/** The images layout. */
 	private VLayout imagesLayout;
-	
+
 	/** The top tab set1. */
 	private TabSet topTabSet1;
-	
+
 	/** The top tab set2. */
 	private TabSet topTabSet2;
 	// private VLayout imagesLayout1;
 	// private VLayout imagesLayout2;
 	/** The image popup. */
 	private PopupPanel imagePopup;
-	
+
 	/** The first. */
 	private boolean first = true;
 
@@ -104,16 +112,24 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getName()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getName
+	 * ()
 	 */
 	@Override
 	public HasValue<String> getName() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getSend()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getSend
+	 * ()
 	 */
 	@Override
 	public HasClickHandlers getSend() {
@@ -130,11 +146,15 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#addDigitalObject(boolean, com.smartgwt.client.data.Record[], com.gwtplatform.dispatch.client.DispatchAsync)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#
+	 * addDigitalObject(boolean, com.smartgwt.client.data.Record[],
+	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(boolean tileGridVisible, Record[] data, DispatchAsync dispatcher) {
+	public void addDigitalObject(boolean tileGridVisible, Record[] data, final DublinCore dc, DispatchAsync dispatcher) {
 		// if (first) {
 		// imagesLayout1 = new VLayout();
 		// } else {
@@ -181,12 +201,10 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_red.png");
 		tTab1.setPane(imagesLayout);
 
-		Tab tTab2 = new DCTab();
-		Tab tTab3 = new ModsTab(1, true);
-		// Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
-		// tTab3.setPane(imagesLayout);
-		// Tab tTab2 = new Tab("DC", "pieces/16/pawn_blue.png");
-		// tTab2.setPane(imagesLayout);
+		final Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
+		tTab2.setID(ID_DC + (first ? "_1" : "_0"));
+		final Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
+		tTab3.setID(ID_MODS + (first ? "_1" : "_0"));
 
 		Tab tTab4 = new Tab("Thumbnail", "pieces/16/pawn_white.png");
 		Img tImg4 = new Img("pieces/48/pawn_white.png", 48, 48);
@@ -205,6 +223,40 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		tTab7.setPane(tImg7);
 
 		topTabSet.setTabs(tTab1, tTab2, tTab3, tTab4, tTab5, tTab6, tTab7);
+		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
+			@Override
+			public void onTabSelected(TabSelectedEvent event) {
+				if (((first ? "_1" : "_0") + ID_MODS).equals(event.getTab().getID()) && tTab3.getPane() == null) {
+					final ModalWindow mw = new ModalWindow(topTabSet);
+					mw.setLoadingIcon("loadingAnimation.gif");
+					mw.show(true);
+					Timer timer = new Timer() {
+						@Override
+						public void run() {
+							Tab t = new ModsTab(1, true);
+							topTabSet.setTabPane(ID_MODS, t.getPane());
+							mw.hide();
+						}
+					};
+					timer.schedule(25);
+				}
+				if ((ID_DC + (first ? "_1" : "_0")).equals(event.getTab().getID()) && tTab2.getPane() == null) {
+					final ModalWindow mw = new ModalWindow(topTabSet);
+					mw.setLoadingIcon("loadingAnimation.gif");
+					mw.show(true);
+					Timer timer = new Timer() {
+						@Override
+						public void run() {
+							Tab t = new DCTab(dc);
+							topTabSet.setTabPane(ID_DC, t.getPane());
+							mw.hide();
+						}
+					};
+					timer.schedule(25);
+				}
+			}
+		});
+
 		// topTabSet.setSelectedTab(2); // TODO: remove
 		layout.setMembersMargin(15);
 		// layout.addMember(topTabSet);
@@ -247,25 +299,50 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
 			@Override
-			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+			public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
 				if (event.getRecord() != null) {
 					try {
+						final ModalWindow mw = new ModalWindow(layout);
+						mw.setLoadingIcon("loadingAnimation.gif");
+						mw.show(true);
 						final Image full = new Image("images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID));
 						full.setHeight("700px");
-
-						Timer timer = new Timer() {
+						full.addLoadHandler(new LoadHandler() {
 							@Override
-							public void run() {
-								imagePopup.setWidget(full);
+							public void onLoad(LoadEvent event) {
+								mw.hide();
+								imagePopup.setVisible(true);
 								imagePopup.center();
+
 							}
-						};
-						timer.schedule(150);
+						});
+						imagePopup.setWidget(full);
+						imagePopup.center();
+						imagePopup.setVisible(false);
+
 					} catch (Throwable t) {
 						System.out.println("yes sir");
 					}
 				}
 			}
+
+			/*
+			 * if (event.getRecord() != null) { try { final String url =
+			 * "images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID);
+			 * final Image full = new Image(); Image.prefetch(url); final ModalWindow
+			 * mw = new ModalWindow(layout);
+			 * mw.setLoadingIcon("loadingAnimation.gif"); mw.show(true); Timer timer1
+			 * = new Timer() {
+			 * 
+			 * @Override public void run() { full.setUrl(url);
+			 * full.setHeight("700px"); full.addLoadHandler(new LoadHandler() {
+			 * 
+			 * @Override public void onLoad(LoadEvent event) { mw.hide();
+			 * imagePopup.setWidget(full); imagePopup.center(); } }); } };
+			 * timer1.schedule(150);
+			 * 
+			 * } catch (Throwable t) { System.out.println("yes sir"); } } }
+			 */
 		});
 
 		DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
@@ -290,7 +367,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 
 	/**
 	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
-	 *
+	 * 
 	 * @return the widget
 	 */
 	@Override

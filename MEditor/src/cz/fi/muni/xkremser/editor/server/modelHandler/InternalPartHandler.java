@@ -7,7 +7,6 @@ package cz.fi.muni.xkremser.editor.server.modelHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -56,13 +55,19 @@ public class InternalPartHandler extends DigitalObjectHandler {
 	 */
 	@Override
 	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
-		// uuid = "0eaa6730-9068-11dd-97de-000d606f5dc6";
 		InternalPartDetail detail = new InternalPartDetail(findRelated ? getRelated(uuid) : null);
-		DublinCore dc = new DublinCore();
+		DublinCore dc = null;
 		ArrayList<PageDetail> pages = new ArrayList<PageDetail>();
 		Document dcDocument = null;
 		try {
 			dcDocument = getFedoraAccess().getDC(uuid);
+			if (findRelated) {
+				dc = DCUtils.getDC(dcDocument);
+			} else {
+				dc = new DublinCore();
+				dc.addTitle(DCUtils.titleFromDC(dcDocument));
+				dc.addIdentifier(uuid);
+			}
 			List<String> pageUuids = getFedoraAccess().getIsOnPagesUuid(uuid);
 			// List<String> pageUuids = getFedoraAccess().getPagesUuid(uuid);
 			for (String pageUuid : pageUuids) {
@@ -73,9 +78,6 @@ public class InternalPartHandler extends DigitalObjectHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		dc.addTitle(DCUtils.titleFromDC(dcDocument));
-		dc.setCreator(Arrays.asList(DCUtils.creatorsFromDC(dcDocument)));
 		detail.setDc(dc);
 		detail.setPages(pages);
 

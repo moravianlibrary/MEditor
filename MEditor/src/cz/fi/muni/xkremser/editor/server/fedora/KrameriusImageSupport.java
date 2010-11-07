@@ -42,11 +42,10 @@ public class KrameriusImageSupport {
 		});
 	}
 
-	public static Image readImage(String uuid, String stream, FedoraAccess fedoraAccess, int page) throws XPathExpressionException, IOException {
-		String mimetype = fedoraAccess.getMimeTypeForStream("uuid:" + uuid, stream);
-		ImageMimeType loadFromMimeType = ImageMimeType.loadFromMimeType(mimetype);
+	public static Image readImage(String uuid, String stream, FedoraAccess fedoraAccess, int page, ImageMimeType mime) throws XPathExpressionException,
+			IOException {
 		URL url = new URL("fedora", "", 0, uuid + "/" + stream, new Handler(fedoraAccess));
-		return readImage(url, loadFromMimeType, page);
+		return readImage(url, mime, page);
 	}
 
 	public static Image readImage(URL url, ImageMimeType type, int page) throws IOException {
@@ -90,7 +89,7 @@ public class KrameriusImageSupport {
 	}
 
 	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os) throws IOException {
-		BufferedImage bufImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
 		gr.dispose();
@@ -100,11 +99,46 @@ public class KrameriusImageSupport {
 		IOUtils.copyStreams(new ByteArrayInputStream(bos.toByteArray()), os);
 	}
 
-	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os, float quality) throws IOException {
-		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+	public static BufferedImage getSmallerImage(Image scaledImage) throws IOException {
+		int width = scaledImage.getWidth(null);
+		int height = scaledImage.getHeight(null);
+		BufferedImage bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
-		BufferedImage bufImage2 = getScaledInstanceJava2D(bufImage, 600, 800, "", false);
+		if ((width > 800 && width < 1600) || height > 800 && height < 1600) {
+			width /= 2;
+			height /= 2;
+		}
+		if ((width > 800 && width < 1600) || height > 800 && height < 1600) {
+			width /= 2;
+			height /= 2;
+		}
+		if ((width > 800 && width < 1600) || height > 800 && height < 1600) {
+			width /= 2;
+			height /= 2;
+		}
+		return getScaledInstanceJava2D(bufImage, width, height, "", false);
+	}
+
+	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os, float quality) throws IOException {
+		int width = scaledImage.getWidth(null);
+		int height = scaledImage.getHeight(null);
+		BufferedImage bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics gr = bufImage.getGraphics();
+		gr.drawImage(scaledImage, 0, 0, null);
+		if (width > 1200 || height > 1200) {
+			width /= 2;
+			height /= 2;
+		}
+		if (width > 1200 || height > 1200) {
+			width /= 2;
+			height /= 2;
+		}
+		if (width > 1200 || height > 1200) {
+			width /= 2;
+			height /= 2;
+		}
+		BufferedImage bufImage2 = getScaledInstanceJava2D(bufImage, width, height, "", false);
 		gr.dispose();
 
 		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(javaFormat);
@@ -218,7 +252,7 @@ public class KrameriusImageSupport {
 
 			BufferedImage tmp = new BufferedImage(w, h, type);
 			Graphics2D g2 = tmp.createGraphics();
-			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 			g2.drawImage(ret, 0, 0, w, h, null);
 			g2.dispose();
 

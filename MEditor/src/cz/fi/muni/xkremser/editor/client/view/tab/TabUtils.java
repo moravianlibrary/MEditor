@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.smartgwt.client.types.VisibilityMode;
@@ -632,6 +633,14 @@ public final class TabUtils {
 	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded) {
 		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null);
 	}
+	
+	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded, List<String> values) {
+		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null, values);
+	}
+
+	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded) {
+		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null, null);
+	}
 
 	/**
 	 * Gets the stack section.
@@ -646,8 +655,8 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the stack section
 	 */
-	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded) {
-		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null);
+	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded, List<String> values) {
+		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null, values);
 	}
 
 	/**
@@ -680,6 +689,11 @@ public final class TabUtils {
 		return getSimpleSectionWithAttributes(new Attribute(type, label.toLowerCase().replaceAll(" ", "_"), label, tooltip), expanded, null);
 	}
 
+	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
+			final Attribute[] attributes) {
+		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, attributes, null);
+	}
+
 	/**
 	 * Gets the stack section with attributes.
 	 * 
@@ -696,9 +710,9 @@ public final class TabUtils {
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
-			final Attribute[] attributes) {
+			final Attribute[] attributes, List<String> values) {
 		return getStackSectionWithAttributes(label1, new Attribute(TextItem.class, label2.toLowerCase().replaceAll(" ", "_"), label2, tooltip), expanded,
-				attributes);
+				attributes, values);
 	}
 
 	/**
@@ -742,6 +756,11 @@ public final class TabUtils {
 		return section;
 	}
 
+	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded,
+			final Attribute[] attributes) {
+		return getStackSectionWithAttributes(stackLabel, mainAttr, expanded, attributes, null);
+	}
+
 	/**
 	 * Gets the stack section with attributes.
 	 * 
@@ -756,7 +775,7 @@ public final class TabUtils {
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded,
-			final Attribute[] attributes) {
+			final Attribute[] attributes, List<String> values) {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
 		// layout.setOverflow(Overflow.AUTO);
@@ -823,23 +842,47 @@ public final class TabUtils {
 		});
 		section.setControls(addButton, removeButton);
 
-		final DynamicForm form = new DynamicForm();
-		FormItem item = newItem(mainAttr);
-		item.setWidth(200);
-		if (isAttribPresent) {
-			FormItem[] items = getAttributes(false, attributes).getFields();
-			FormItem[] itemsToAdd = new FormItem[items.length + 1];
-			itemsToAdd[0] = item;
-			for (int i = 0; i < items.length; i++) {
-				itemsToAdd[i + 1] = items[i];
+		if (values != null && values.size() > 0) {
+			for (String value : values) {
+				final DynamicForm form = new DynamicForm();
+				FormItem item = newItem(mainAttr);
+				item.setValue(value);
+				item.setWidth(200);
+				if (isAttribPresent) {
+					FormItem[] items = getAttributes(false, attributes).getFields();
+					FormItem[] itemsToAdd = new FormItem[items.length + 1];
+					itemsToAdd[0] = item;
+					for (int i = 0; i < items.length; i++) {
+						itemsToAdd[i + 1] = items[i];
+					}
+					form.setFields(itemsToAdd);
+					form.setNumCols(4);
+				} else {
+					form.setFields(item);
+				}
+				form.setPadding(5);
+				layout.addMember(form);
 			}
-			form.setFields(itemsToAdd);
-			form.setNumCols(4);
 		} else {
-			form.setFields(item);
+			final DynamicForm form = new DynamicForm();
+			FormItem item = newItem(mainAttr);
+			item.setWidth(200);
+			if (isAttribPresent) {
+				FormItem[] items = getAttributes(false, attributes).getFields();
+				FormItem[] itemsToAdd = new FormItem[items.length + 1];
+				itemsToAdd[0] = item;
+				for (int i = 0; i < items.length; i++) {
+					itemsToAdd[i + 1] = items[i];
+				}
+				form.setFields(itemsToAdd);
+				form.setNumCols(4);
+			} else {
+				form.setFields(item);
+			}
+			form.setPadding(5);
+			layout.addMember(form);
 		}
-		form.setPadding(5);
-		layout.addMember(form);
+
 		// layout.setAutoHeight(); // todo: ???
 		section.addItem(layout);
 		section.setExpanded(expanded);
