@@ -54,16 +54,9 @@
             font: normal 10px arial, tahoma, sans-serif;
         }
     </style>
-    
-<div id="loadingWrapper">
-<div id="loading">
-    <div class="loadingIndicator">
-        <img src="images/loadingAnimation2.gif" width="100" height="100" style="margin-right:8px;float:left;vertical-align:top;"/>Metadata Editor<br/>
-        <span id="loadingMsg">Loading styles and images...</span></div>
-</div>
-</div>
+   
 
-<script SRC=/meditor/sc/system/development/ISC_FileLoader.js></script>
+
 
 <!--
 <script type="text/javascript" src="meditor/jquery.js"></script>
@@ -73,6 +66,28 @@
 
 
 
+
+<body>
+
+
+
+<!-- <a href="meditor/single.jpg" title="add a caption to title attribute / or leave blank" class="thickbox"><img src="meditor/single_t.jpg" alt="Single Image"/></a> -->
+<!-- OPTIONAL: include this if you want history support -->
+<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+	style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+	
+<div id="loadingWrapper">
+	<div id="loading">
+    	<div class="loadingIndicator">
+        	<img src="images/loadingAnimation2.gif" width="100" height="100" style="margin-right:8px;float:left;vertical-align:top;"/>Metadata Editor<br/>
+        	<span id="loadingMsg">Loading styles and images...</span>
+       	</div>
+	</div>
+</div>
+
+
+<script SRC=/meditor/sc/system/development/ISC_FileLoader.js></script>
+
 <!--                                           -->
 <!-- This script loads your compiled module.   -->
 <!-- If you add any GWT meta tags, they must   -->
@@ -81,17 +96,6 @@
 <script type="text/javascript" language="javascript"
 	src="meditor/meditor.nocache.js"></script>
 </head>
-
-<!--                                           -->
-<!-- The body can have arbitrary html, or      -->
-<!-- you can leave the body empty if you want  -->
-<!-- to create a completely dynamic UI.        -->
-<!--                                           -->
-<body>
-<!-- <a href="meditor/single.jpg" title="add a caption to title attribute / or leave blank" class="thickbox"><img src="meditor/single_t.jpg" alt="Single Image"/></a> -->
-<!-- OPTIONAL: include this if you want history support -->
-<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
-	style="position: absolute; width: 0; height: 0; border: 0"></iframe>
 
 <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
 <noscript>

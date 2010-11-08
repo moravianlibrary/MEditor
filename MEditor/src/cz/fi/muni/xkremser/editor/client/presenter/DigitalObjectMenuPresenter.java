@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.Timer;
@@ -307,7 +306,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	 * (cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
 	 */
 	@Override
-	public void onAddDigitalObject(final RecentlyModifiedItem item, final List<ArrayList<String>> related) {
+	public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
 		getView().setRelatedDocuments(related);
 		Timer timer = new Timer() {
 			@Override

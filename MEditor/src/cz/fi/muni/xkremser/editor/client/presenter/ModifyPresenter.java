@@ -25,6 +25,8 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
@@ -74,7 +76,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 * @param dispatcher
 		 *          the dispatcher
 		 */
-		void addDigitalObject(boolean tileGridVisible, Record[] data, DublinCore dc, DispatchAsync dispatcher);
+		void addDigitalObject(boolean tileGridVisible, Record[] data, DublinCore dc, String uuid, DispatchAsync dispatcher);
 	}
 
 	/**
@@ -96,7 +98,9 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	private String uuid;
 
 	/** The previous uuid. */
-	private String previousUuid;
+	private String previousUuid1;
+
+	private String previousUuid2;
 
 	/** The forced refresh. */
 	private boolean forcedRefresh;
@@ -132,6 +136,25 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	@Override
 	protected void onBind() {
 		super.onBind();
+
+		addRegisteredHandler(DigitalObjectClosedEvent.getType(), new DigitalObjectClosedHandler() {
+			@Override
+			public void onDigitalObjectClosed(DigitalObjectClosedEvent event) {
+				String uuid = event.getUuid();
+				if (uuid != null) {
+					if (uuid.equals(previousUuid2)) {
+						previousUuid2 = null;
+					} else if (uuid.equals(previousUuid1)) {
+						if (previousUuid2 == null) {
+							previousUuid1 = null;
+						} else { // move
+							previousUuid1 = previousUuid2;
+							previousUuid2 = null;
+						}
+					}
+				}
+			}
+		});
 
 	};
 
@@ -183,7 +206,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
 		// uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
 
-		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid)))) {
+		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)))) {
 			// final ModalWindow mw = new
 			// ModalWindow((com.smartgwt.client.widgets.Canvas) getView().asWidget());
 			// mw.setLoadingIcon("loadingAnimation.gif");
@@ -199,8 +222,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						data[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier()
 								.get(0));
 					}
-					getView().addDigitalObject(true, data, detail.getDc(), dispatcher);
-					System.out.println("");
+					getView().addDigitalObject(true, data, detail.getDc(), uuid, dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
 				}
@@ -211,13 +233,18 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 				}
 			});
 			// mw.show(false);
+
+			if (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)) {
+				previousUuid2 = previousUuid1;
+				previousUuid1 = uuid;
+			}
 		}
+		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
 
 		// if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
 		// getView().addDigitalObject(false, null, dispatcher);
 		// }
-		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
-		previousUuid = uuid;
+
 	}
 
 	/*

@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.xkremser.editor.shared.event;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gwtplatform.annotation.GenEvent;
@@ -29,5 +28,5 @@ public class DigitalObjectOpened {
 	RecentlyModifiedItem item;
 
 	@Order(3)
-	List<ArrayList<String>> related;
+	List<? extends List<String>> related;
 }

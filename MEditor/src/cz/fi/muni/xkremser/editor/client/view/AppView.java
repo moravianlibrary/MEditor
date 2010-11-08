@@ -47,23 +47,24 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	 */
 	public AppView() {
 		widget = new VLayout();
-		widget.setLeaveScrollbarGap(true);
 
 		leftContainer = new VLayout();
 		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
 		mainContainer = new VLayout(); // TODO: consider some panel
-		mainContainer.setOverflow(Overflow.AUTO);
-		widget.setWidth("98%");
+		// mainContainer.setOverflow(Overflow.AUTO);
+		// mainContainer.setLeaveScrollbarGap(true);
+		// widget.setWidth("98%");
+		widget.setWidth100();
 		// widget.setWidth("*");
 		// widget.setHeight("97%");
-		widget.setHeight("1000");
-		// widget.setAutoHeight();
+		widget.setHeight100();
+		// widget.setHeight("2000");
+		widget.setLeaveScrollbarGap(true);
 		widget.setOverflow(Overflow.AUTO);
 		topContainer = new HLayout();
 		topContainer.setWidth100();
 		topContainer.setHeight(45);
-		// topContainer.setBorder("1px solid");
 		Img logo = new Img("logo_bw.png", 140, 40);
 		// Img logo = new Img("mzk_logo.gif", 283, 87);
 		topContainer.addMember(logo);

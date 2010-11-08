@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.HasValue;
@@ -68,7 +67,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		 * @param item
 		 *          the item
 		 */
-		void onAddDigitalObject(final RecentlyModifiedItem item, final List<ArrayList<String>> related);
+		void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related);
 
 		/**
 		 * Reveal modified item.

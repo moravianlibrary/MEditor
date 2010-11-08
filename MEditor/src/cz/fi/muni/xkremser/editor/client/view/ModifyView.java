@@ -8,12 +8,16 @@ package cz.fi.muni.xkremser.editor.client.view;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.mvp.client.EventBus;
+import com.gwtplatform.mvp.client.HasEventBus;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
@@ -40,16 +44,21 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ModifyView.
  */
-public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
+public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasEventBus {
 
 	private static final String ID_DC = "dc";
 	private static final String ID_MODS = "mods";
+	private static final String ID_TAB = "tab";
+
+	@Inject
+	private EventBus eventBus;
 
 	/** The tile grid. */
 	private TileGrid tileGrid;
@@ -154,15 +163,15 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(boolean tileGridVisible, Record[] data, final DublinCore dc, DispatchAsync dispatcher) {
-		// if (first) {
-		// imagesLayout1 = new VLayout();
-		// } else {
-		// imagesLayout2 = new VLayout();
-		// }
+	public void addDigitalObject(final boolean tileGridVisible, final Record[] data, final DublinCore dc, final String uuid, final DispatchAsync dispatcher) {
+		// final ModalWindow modal = new ModalWindow(layout);
+		// modal.setLoadingIcon("loadingAnimation.gif");
+		// modal.show("Loading digital object data...", true);
+
 		imagesLayout = new VLayout();
 
 		final TabSet topTabSet = new TabSet();
+		// topTabSet.setID(uuid);
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
@@ -182,15 +191,23 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 			}
 		});
 
-		// IButton closeButton = new IButton("close");
 		closeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				DigitalObjectClosedEvent.fire(ModifyView.this, uuid);
 				layout.removeMember(topTabSet);
-				first = !first;
+				if (first || topTabSet1 == null || topTabSet2 == null) {
+					first = !first;
+				}
 				if (topTabSet1 == topTabSet) {
+					topTabSet1.destroy();
 					topTabSet1 = null;
+					if (topTabSet2 != null) { // move up
+						topTabSet1 = topTabSet2;
+						topTabSet2 = null;
+					}
 				} else {
+					topTabSet2.destroy();
 					topTabSet2 = null;
 				}
 			}
@@ -202,9 +219,10 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		tTab1.setPane(imagesLayout);
 
 		final Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
-		tTab2.setID(ID_DC + (first ? "_1" : "_0"));
+		tTab2.setAttribute(ID_TAB, ID_DC + (first ? "_1" : "_0"));
+
 		final Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
-		tTab3.setID(ID_MODS + (first ? "_1" : "_0"));
+		tTab3.setAttribute(ID_TAB, ID_MODS + (first ? "_1" : "_0"));
 
 		Tab tTab4 = new Tab("Thumbnail", "pieces/16/pawn_white.png");
 		Img tImg4 = new Img("pieces/48/pawn_white.png", 48, 48);
@@ -225,8 +243,8 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		topTabSet.setTabs(tTab1, tTab2, tTab3, tTab4, tTab5, tTab6, tTab7);
 		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
-			public void onTabSelected(TabSelectedEvent event) {
-				if (((first ? "_1" : "_0") + ID_MODS).equals(event.getTab().getID()) && tTab3.getPane() == null) {
+			public void onTabSelected(final TabSelectedEvent event) {
+				if (event.getTab().getAttribute(ID_TAB).equals(ID_MODS) && event.getTab().getPane() == null) {
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");
 					mw.show(true);
@@ -234,13 +252,14 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 						@Override
 						public void run() {
 							Tab t = new ModsTab(1, true);
-							topTabSet.setTabPane(ID_MODS, t.getPane());
+							TabSet ts = event.getTab().getTabSet();
+							ts.setTabPane(event.getTab().getID(), t.getPane());
 							mw.hide();
 						}
 					};
 					timer.schedule(25);
 				}
-				if ((ID_DC + (first ? "_1" : "_0")).equals(event.getTab().getID()) && tTab2.getPane() == null) {
+				if (event.getTab().getAttribute(ID_TAB).equals(ID_DC) && event.getTab().getPane() == null) {
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");
 					mw.show(true);
@@ -248,7 +267,8 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 						@Override
 						public void run() {
 							Tab t = new DCTab(dc);
-							topTabSet.setTabPane(ID_DC, t.getPane());
+							TabSet ts = event.getTab().getTabSet();
+							ts.setTabPane(event.getTab().getID(), t.getPane());
 							mw.hide();
 						}
 					};
@@ -261,13 +281,19 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 		layout.setMembersMargin(15);
 		// layout.addMember(topTabSet);
 		if (first) {
-			if (topTabSet1 != null)
+			if (topTabSet1 != null) {
 				layout.removeMember(topTabSet1);
+				topTabSet1.destroy();
+				topTabSet1 = null;
+			}
 			topTabSet1 = topTabSet;
 			layout.addMember(topTabSet1, 0);
 		} else {
-			if (topTabSet2 != null)
+			if (topTabSet2 != null) {
 				layout.removeMember(topTabSet2);
+				topTabSet2.destroy();
+				topTabSet2 = null;
+			}
 			topTabSet2 = topTabSet;
 			layout.addMember(topTabSet2, 1);
 		}
@@ -373,5 +399,10 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView {
 	@Override
 	public Widget asWidget() {
 		return layout;
+	}
+
+	@Override
+	public void fireEvent(GwtEvent<?> event) {
+		eventBus.fireEvent(this, event);
 	}
 }
