@@ -30,6 +30,10 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.menu.IMenuButton;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
@@ -176,6 +180,22 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
 
+		Menu menu = new Menu();
+		menu.setShowShadow(true);
+		menu.setShadowDepth(10);
+
+		MenuItem newItem = new MenuItem("New", "icons/16/document_plain_new.png", "Ctrl+N");
+		MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png", "Ctrl+O");
+		MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png", "Ctrl+S");
+		MenuItem downloadItem = new MenuItem("Download", "icons/16/download.png");
+		MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
+		MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
+		MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
+		menu.setItems(newItem, openItem, saveItem, refreshItem, downloadItem, removeItem, publishItem);
+		IMenuButton menuButton = new IMenuButton("Menu", menu);
+		menuButton.setWidth(60);
+		menuButton.setHeight(16);
+
 		final ImgButton closeButton = new ImgButton();
 		closeButton.setSrc("[SKIN]headerIcons/close.png");
 		closeButton.setSize(16);
@@ -212,17 +232,17 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 				}
 			}
 		});
-		topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, closeButton);
+		topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, menuButton, closeButton);
 		topTabSet.setAnimateTabScrolling(true);
 
 		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_red.png");
 		tTab1.setPane(imagesLayout);
 
 		final Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
-		tTab2.setAttribute(ID_TAB, ID_DC + (first ? "_1" : "_0"));
+		tTab2.setAttribute(ID_TAB, ID_DC);
 
 		final Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
-		tTab3.setAttribute(ID_TAB, ID_MODS + (first ? "_1" : "_0"));
+		tTab3.setAttribute(ID_TAB, ID_MODS);
 
 		Tab tTab4 = new Tab("Thumbnail", "pieces/16/pawn_white.png");
 		Img tImg4 = new Img("pieces/48/pawn_white.png", 48, 48);
@@ -244,7 +264,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(final TabSelectedEvent event) {
-				if (event.getTab().getAttribute(ID_TAB).equals(ID_MODS) && event.getTab().getPane() == null) {
+				if (ID_MODS.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");
 					mw.show(true);
@@ -259,7 +279,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 					};
 					timer.schedule(25);
 				}
-				if (event.getTab().getAttribute(ID_TAB).equals(ID_DC) && event.getTab().getPane() == null) {
+				if (ID_DC.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");
 					mw.show(true);
@@ -309,7 +329,47 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 	 * Sets the tile grid.
 	 */
 	private void setTileGrid() {
+		Menu menu = new Menu();
+		menu.setShowShadow(true);
+		menu.setShadowDepth(10);
+
+		MenuItem selectAllItem = new MenuItem("Select all", "icons/16/document_plain_new.png");
+		selectAllItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				tileGrid.selectAllRecords();
+			}
+		});
+		MenuItem invertSelectionItem = new MenuItem("Invert selection", "icons/16/invert.png");
+		invertSelectionItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				Record[] selected = tileGrid.getSelection();
+				tileGrid.selectAllRecords();
+				tileGrid.deselectRecords(selected);
+			}
+		});
+
+		MenuItem deselectAllItem = new MenuItem("Deselect all", "icons/16/document_plain_new_Disabled.png");
+		deselectAllItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				tileGrid.deselectAllRecords();
+			}
+		});
+		// MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png",
+		// "Ctrl+O");
+		// MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png",
+		// "Ctrl+S");
+		// MenuItem downloadItem = new MenuItem("Download",
+		// "icons/16/download.png");
+		// MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
+		// MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
+		// MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
+		menu.setItems(selectAllItem, deselectAllItem, invertSelectionItem);
+
 		tileGrid = new TileGrid();
+		tileGrid.setContextMenu(menu);
 		// tileGrid.setCanSelectText(true);
 		tileGrid.setTileWidth(110);
 		tileGrid.setTileHeight(140);
