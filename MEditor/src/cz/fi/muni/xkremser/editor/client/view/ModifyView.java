@@ -5,10 +5,10 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
@@ -17,12 +17,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.EventBus;
-import com.gwtplatform.mvp.client.HasEventBus;
-import com.gwtplatform.mvp.client.ViewImpl;
+import com.gwtplatform.mvp.client.UiHandlers;
+import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -33,7 +34,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
-import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
+import com.smartgwt.client.widgets.menu.MenuItemSeparator;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
@@ -45,27 +47,45 @@ import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
+import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
-import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ModifyView.
  */
-public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasEventBus {
+public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
+
+	public interface MyUiHandlers extends UiHandlers {
+
+		void onAddDigitalObject(final TileGrid tileGrid, final Menu menu);
+
+	}
 
 	private static final String ID_DC = "dc";
 	private static final String ID_MODS = "mods";
 	private static final String ID_TAB = "tab";
 
+	public static final String ID_NAME = "name";
+	public static final String ID_EDIT = "edit";
+	public static final String ID_SEPARATOR = "separator";
+	public static final String ID_SEL_ALL = "all";
+	public static final String ID_SEL_NONE = "none";
+	public static final String ID_SEL_INV = "invert";
+	public static final String ID_COPY = "copy";
+	public static final String ID_PASTE = "paste";
+	public static final String ID_DELETE = "delete";
+
+	private Record[] clipboard;
+
 	@Inject
 	private EventBus eventBus;
 
 	/** The tile grid. */
-	private TileGrid tileGrid;
+	// private TileGrid tileGrid;
 
 	/** The layout. */
 	private final VLayout layout;
@@ -97,6 +117,9 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		layout = new VLayout();
 		layout.setOverflow(Overflow.AUTO);
 		layout.setLeaveScrollbarGap(true);
+		imagePopup = new PopupPanel(true);
+		imagePopup.setGlassEnabled(true);
+		imagePopup.setAnimationEnabled(true);
 		// layout.setCanDragResize(true);
 
 		// HLayout buttons = new HLayout();
@@ -137,26 +160,24 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getSend
-	 * ()
-	 */
 	@Override
-	public HasClickHandlers getSend() {
-		return null;
+	public Record[] fromClipboard() {
+		return this.clipboard;
+	}
+
+	@Override
+	public void toClipboard(Record[] data) {
+		this.clipboard = data;
 	}
 
 	/**
 	 * Prints the.
 	 */
 	public void print() {
-		Record[] data = tileGrid.getData();
-		for (Record rec : data) {
-			System.out.println(rec.getAttribute(Constants.ATTR_NAME));
-		}
+		// Record[] data = tileGrid.getData();
+		// for (Record rec : data) {
+		// System.out.println(rec.getAttribute(Constants.ATTR_NAME));
+		// }
 	}
 
 	/*
@@ -214,7 +235,7 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		closeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				DigitalObjectClosedEvent.fire(ModifyView.this, uuid);
+				// DigitalObjectClosedEvent.fire(ModifyView.this, uuid);
 				layout.removeMember(topTabSet);
 				if (first || topTabSet1 == null || topTabSet2 == null) {
 					first = !first;
@@ -319,8 +340,8 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		}
 
 		if (tileGridVisible == true) {
-			setTileGrid();
-			tileGrid.setData(data);
+			getTileGrid().setData(data);
+			// tileGrid
 		}
 		first = !first;
 	}
@@ -328,35 +349,68 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 	/**
 	 * Sets the tile grid.
 	 */
-	private void setTileGrid() {
+	private TileGrid getTileGrid() {
+
+		final TileGrid tileGrid = new TileGrid();
+		// tileGrid.setCanSelectText(true);
+		tileGrid.setTileWidth(110);
+		tileGrid.setTileHeight(140);
+		tileGrid.setHeight100();
+		tileGrid.setWidth100();
+		tileGrid.setCanDrag(true);
+		tileGrid.setCanAcceptDrop(true);
+		tileGrid.setShowAllRecords(true);
 		Menu menu = new Menu();
 		menu.setShowShadow(true);
 		menu.setShadowDepth(10);
+		MenuItem editItem = new MenuItem("Edit", "icons/16/edit.png");
+		editItem.setAttribute(ID_NAME, ID_EDIT);
+		editItem.setEnableIfCondition(new MenuItemIfFunction() {
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return tileGrid.getSelection() != null && tileGrid.getSelection().length == 1;
+			}
+		});
 
 		MenuItem selectAllItem = new MenuItem("Select all", "icons/16/document_plain_new.png");
-		selectAllItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				tileGrid.selectAllRecords();
-			}
-		});
+		selectAllItem.setAttribute(ID_NAME, ID_SEL_ALL);
+
+		MenuItem deselectAllItem = new MenuItem("Deselect all", "icons/16/document_plain_new_Disabled.png");
+		deselectAllItem.setAttribute(ID_NAME, ID_SEL_NONE);
+
 		MenuItem invertSelectionItem = new MenuItem("Invert selection", "icons/16/invert.png");
-		invertSelectionItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+		invertSelectionItem.setAttribute(ID_NAME, ID_SEL_INV);
+
+		MenuItemSeparator separator = new MenuItemSeparator();
+		separator.setAttribute(ID_NAME, ID_SEPARATOR);
+
+		MenuItem copyItem = new MenuItem("Copy selected", "icons/16/copy.png");
+		copyItem.setAttribute(ID_NAME, ID_COPY);
+		copyItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
-			public void onClick(MenuItemClickEvent event) {
-				Record[] selected = tileGrid.getSelection();
-				tileGrid.selectAllRecords();
-				tileGrid.deselectRecords(selected);
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return tileGrid.getSelection().length > 0;
 			}
 		});
 
-		MenuItem deselectAllItem = new MenuItem("Deselect all", "icons/16/document_plain_new_Disabled.png");
-		deselectAllItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+		MenuItem pasteItem = new MenuItem("Paste", "icons/16/paste.png");
+		pasteItem.setAttribute(ID_NAME, ID_PASTE);
+		pasteItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
-			public void onClick(MenuItemClickEvent event) {
-				tileGrid.deselectAllRecords();
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return ModifyView.this.clipboard != null && ModifyView.this.clipboard.length > 0;
 			}
 		});
+
+		MenuItem removeSelectedItem = new MenuItem("Remove selected", "icons/16/close.png");
+		removeSelectedItem.setAttribute(ID_NAME, ID_DELETE);
+		removeSelectedItem.setEnableIfCondition(new MenuItemIfFunction() {
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return tileGrid.getSelection().length > 0;
+			}
+		});
+
 		// MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png",
 		// "Ctrl+O");
 		// MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png",
@@ -366,18 +420,9 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 		// MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
 		// MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
 		// MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
-		menu.setItems(selectAllItem, deselectAllItem, invertSelectionItem);
-
-		tileGrid = new TileGrid();
+		menu.setItems(editItem, separator, selectAllItem, deselectAllItem, invertSelectionItem, separator, copyItem, pasteItem, removeSelectedItem);
 		tileGrid.setContextMenu(menu);
-		// tileGrid.setCanSelectText(true);
-		tileGrid.setTileWidth(110);
-		tileGrid.setTileHeight(140);
-		tileGrid.setHeight100();
-		tileGrid.setWidth100();
-		tileGrid.setCanDrag(true);
-		tileGrid.setCanAcceptDrop(true);
-		tileGrid.setShowAllRecords(true);
+
 		// tileGrid.setCanDragResize(true);
 		imagePopup = new PopupPanel(true);
 		imagePopup.setGlassEnabled(true);
@@ -399,14 +444,22 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 								mw.hide();
 								imagePopup.setVisible(true);
 								imagePopup.center();
-
 							}
 						});
 						imagePopup.setWidget(full);
+						imagePopup.addCloseHandler(new CloseHandler<PopupPanel>() {
+							@Override
+							public void onClose(CloseEvent<PopupPanel> event) {
+								mw.hide();
+								imagePopup.setWidget(null);
+							}
+						});
 						imagePopup.center();
 						imagePopup.setVisible(false);
 
 					} catch (Throwable t) {
+
+						// TODO: handle
 						System.out.println("yes sir");
 					}
 				}
@@ -444,11 +497,12 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 				return "Title: " + value;
 			}
 		});
-
 		DetailViewerField descField = new DetailViewerField(Constants.ATTR_DESC);
 
 		tileGrid.setFields(pictureField, nameField, descField);
 		imagesLayout.addMember(tileGrid);
+		getUiHandlers().onAddDigitalObject(tileGrid, menu);
+		return tileGrid;
 	}
 
 	/**
@@ -462,7 +516,13 @@ public class ModifyView extends ViewImpl implements ModifyPresenter.MyView, HasE
 	}
 
 	@Override
-	public void fireEvent(GwtEvent<?> event) {
-		eventBus.fireEvent(this, event);
+	public PopupPanel getPopupPanel() {
+		return imagePopup;
 	}
+
+	// @Override
+	// public void fireEvent(GwtEvent<?> event) {
+	// eventBus.fireEvent(this, event);
+	// }
+
 }

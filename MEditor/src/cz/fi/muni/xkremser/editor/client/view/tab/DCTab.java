@@ -19,12 +19,14 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
  * The Class DCTab.
  */
 public class DCTab extends Tab {
+	private DublinCore dc;
 
 	/**
 	 * Instantiates a new dC tab.
 	 */
 	public DCTab(DublinCore dc) {
 		super("DC", "pieces/16/pawn_green.png");
+		this.dc = dc;
 
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -61,4 +63,13 @@ public class DCTab extends Tab {
 
 		setPane(sectionStack);
 	}
+
+	public DublinCore getDc() {
+		return dc;
+	}
+
+	public void setDc(DublinCore dc) {
+		this.dc = dc;
+	}
+
 }

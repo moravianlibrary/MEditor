@@ -7,23 +7,32 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.EventBus;
+import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.widgets.Progressbar;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tile.TileGrid;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.view.ModifyView;
+import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
@@ -39,7 +48,8 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 /**
  * The Class ModifyPresenter.
  */
-public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy> {
+public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy> implements MyUiHandlers {
+
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -50,7 +60,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	/**
 	 * The Interface MyView.
 	 */
-	public interface MyView extends View {
+	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
 
 		/**
 		 * Gets the name.
@@ -59,12 +69,11 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 */
 		public HasValue<String> getName();
 
-		/**
-		 * Gets the send.
-		 * 
-		 * @return the send
-		 */
-		public HasClickHandlers getSend();
+		public Record[] fromClipboard();
+
+		public void toClipboard(Record[] data);
+
+		public PopupPanel getPopupPanel();
 
 		/**
 		 * Adds the digital object.
@@ -88,6 +97,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	}
 
+	private Record[] clipboard;
+
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
 
@@ -105,6 +116,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	/** The forced refresh. */
 	private boolean forcedRefresh;
 
+	private final PlaceManager placeManager;
+
 	/**
 	 * Instantiates a new modify presenter.
 	 * 
@@ -121,11 +134,12 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 */
 	@Inject
 	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher) {
+			final DispatchAsync dispatcher, final PlaceManager placeManager) {
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
 		this.dispatcher = dispatcher;
-
+		this.placeManager = placeManager;
+		getView().setUiHandlers(this);
 	}
 
 	/*
@@ -247,14 +261,104 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
-	 */
+	@Override
+	public void onAddDigitalObject(final TileGrid tileGrid, final Menu menu) {
+		MenuItem[] items = menu.getItems();
+		if (!ModifyView.ID_EDIT.equals(items[0].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+		items[0].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				String uuidToEdit = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID);
+				placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuidToEdit));
+			}
+		});
+		if (!ModifyView.ID_SEL_ALL.equals(items[2].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+		items[2].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				tileGrid.selectAllRecords();
+			}
+		});
+		if (!ModifyView.ID_SEL_NONE.equals(items[3].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+		items[3].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				tileGrid.deselectAllRecords();
+			}
+		});
+		if (!ModifyView.ID_SEL_INV.equals(items[4].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+		items[4].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				Record[] selected = tileGrid.getSelection();
+				tileGrid.selectAllRecords();
+				tileGrid.deselectRecords(selected);
+			}
+		});
+		if (!ModifyView.ID_COPY.equals(items[6].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+		items[6].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				getView().toClipboard(tileGrid.getSelection());
+			}
+		});
+		if (!ModifyView.ID_PASTE.equals(items[7].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+		items[7].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				Record[] data = getView().fromClipboard();
+				boolean progressbar = false;
+				Progressbar hBar1 = null;
+				if (data.length > Constants.CLIPBOARD_MAX_WITHOUT_PROGRESSBAR) {
+					progressbar = true;
+					hBar1 = new Progressbar();
+					hBar1.setHeight(24);
+					hBar1.setVertical(false);
+					hBar1.setPercentDone(0);
+					getView().getPopupPanel().setWidget(hBar1);
+					getView().getPopupPanel().setVisible(true);
+					getView().getPopupPanel().center();
+
+					// horizontalBars.addMember(hBar1);
+				}
+
+				for (int i = 0; i < data.length; i++) {
+					if (progressbar) {
+						hBar1.setPercentDone((i / data.length));
+					}
+					tileGrid.addData(((PageRecord) data[i]).deepCopy());
+				}
+				if (progressbar)
+					getView().getPopupPanel().hide();
+				// getView().getPopupPanel().setWidget(null);
+			}
+		});
+		if (!ModifyView.ID_DELETE.equals(items[8].getAttributeAsObject(ModifyView.ID_NAME))) {
+			throw new IllegalStateException("Inconsistent gui.");
+		}
+
+		items[8].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				tileGrid.removeSelectedData();
+			}
+		});
+	}
+
 	@Override
 	protected void revealInParent() {
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
 	}
-
 }

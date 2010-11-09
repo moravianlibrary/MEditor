@@ -23,10 +23,13 @@ public class PageRecord extends TileRecord {
 
 	/**
 	 * Instantiates a new page record.
-	 *
-	 * @param name the name
-	 * @param uuid the uuid
-	 * @param picture the picture
+	 * 
+	 * @param name
+	 *          the name
+	 * @param uuid
+	 *          the uuid
+	 * @param picture
+	 *          the picture
 	 */
 	public PageRecord(String name, String uuid, String picture) {
 		this(name, uuid, picture, null);
@@ -34,11 +37,15 @@ public class PageRecord extends TileRecord {
 
 	/**
 	 * Instantiates a new page record.
-	 *
-	 * @param name the name
-	 * @param uuid the uuid
-	 * @param picture the picture
-	 * @param description the description
+	 * 
+	 * @param name
+	 *          the name
+	 * @param uuid
+	 *          the uuid
+	 * @param picture
+	 *          the picture
+	 * @param description
+	 *          the description
 	 */
 	public PageRecord(String name, String uuid, String picture, String description) {
 		setName(name);
@@ -78,7 +85,7 @@ public class PageRecord extends TileRecord {
 
 	/**
 	 * Return the uuid.
-	 *
+	 * 
 	 * @return the uuid
 	 */
 	public String getUuid() {
@@ -121,6 +128,10 @@ public class PageRecord extends TileRecord {
 	 */
 	public String getDescription() {
 		return getAttribute(Constants.ATTR_DESC);
+	}
+
+	public PageRecord deepCopy() {
+		return new PageRecord(getName(), getUuid(), getPicture(), getDescription());
 	}
 
 }

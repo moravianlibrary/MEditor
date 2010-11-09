@@ -55,12 +55,16 @@ public class Constants {
 	/** The Constant DIR_MAX_DEPTH. */
 	public static final int DIR_MAX_DEPTH = 5;
 
+	public static final int CLIPBOARD_MAX_WITHOUT_PROGRESSBAR = 20;
+
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "/";
 
 	// recently modified tree
 	/** The Constant ATTR_UUID. */
 	public static final String ATTR_UUID = "uuid";
+
+	public static final String ATTR_FOO = "foo";
 
 	/** The Constant ATTR_DESC. */
 	public static final String ATTR_DESC = "description";
