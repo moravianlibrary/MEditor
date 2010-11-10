@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -74,16 +75,24 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 		this.dc = dc;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
-	 * hasPages()
-	 */
 	@Override
 	public boolean hasPages() {
 		return false;
+	}
+
+	@Override
+	public boolean hasContainers() {
+		return false;
+	}
+
+	@Override
+	public List<PageDetail> getPages() {
+		return null;
+	}
+
+	@Override
+	public List<AbstractDigitalObjectDetail> getContainers() {
+		return null;
 	}
 
 }

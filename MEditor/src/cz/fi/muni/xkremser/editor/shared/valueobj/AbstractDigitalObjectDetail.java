@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -42,7 +43,6 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 * 
 	 * @return true, if successful
 	 */
-	public abstract boolean hasPages();
 
 	// public abstract boolean hasMods();
 
@@ -69,5 +69,13 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	public String toString() {
 		return "model: " + getModel() + "\nDC: " + getDc();
 	}
+
+	public abstract boolean hasPages();
+
+	public abstract boolean hasContainers();
+
+	public abstract List<PageDetail> getPages();
+
+	public abstract List<? extends AbstractDigitalObjectDetail> getContainers();
 
 }

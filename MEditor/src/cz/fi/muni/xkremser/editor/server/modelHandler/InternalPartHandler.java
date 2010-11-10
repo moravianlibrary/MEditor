@@ -63,15 +63,14 @@ public class InternalPartHandler extends DigitalObjectHandler {
 			dcDocument = getFedoraAccess().getDC(uuid);
 			if (findRelated) {
 				dc = DCUtils.getDC(dcDocument);
+				List<String> pageUuids = getFedoraAccess().getIsOnPagesUuid(uuid);
+				for (String pageUuid : pageUuids) {
+					pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
+				}
 			} else {
 				dc = new DublinCore();
 				dc.addTitle(DCUtils.titleFromDC(dcDocument));
 				dc.addIdentifier(uuid);
-			}
-			List<String> pageUuids = getFedoraAccess().getIsOnPagesUuid(uuid);
-			// List<String> pageUuids = getFedoraAccess().getPagesUuid(uuid);
-			for (String pageUuid : pageUuids) {
-				pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
 			}
 
 		} catch (IOException e) {

@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -36,6 +35,7 @@ import com.smartgwt.client.widgets.tile.TileGrid;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
@@ -45,7 +45,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
@@ -90,7 +90,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 * @param dispatcher
 		 *          the dispatcher
 		 */
-		void addDigitalObject(boolean tileGridVisible, Record[] data, DublinCore dc, String uuid, DispatchAsync dispatcher);
+		void addDigitalObject(boolean tileGridVisible, Record[] pageData, Record[] containerData, DublinCore dc, String uuid, DispatchAsync dispatcher);
 	}
 
 	/**
@@ -233,15 +233,28 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
 				@Override
 				public void callback(GetDigitalObjectDetailResult result) {
-					InternalPartDetail detail = (InternalPartDetail) result.getDetail();
-					Record[] data = new Record[detail.getPages().size()];
-
-					List<PageDetail> pages = detail.getPages();
-					for (int i = 0, total = pages.size(); i < total; i++) {
-						data[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc().getIdentifier()
-								.get(0));
+					AbstractDigitalObjectDetail detail = result.getDetail();
+					Record[] pagesData = null;
+					Record[] containerData = null;
+					if (detail.hasPages()) {
+						pagesData = new Record[detail.getPages().size()];
+						List<PageDetail> pages = detail.getPages();
+						for (int i = 0, total = pages.size(); i < total; i++) {
+							pagesData[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc()
+									.getIdentifier().get(0));
+						}
 					}
-					getView().addDigitalObject(true, data, detail.getDc(), uuid, dispatcher);
+
+					if (detail.hasContainers()) {
+						containerData = new Record[detail.getContainers().size()];
+						List<? extends AbstractDigitalObjectDetail> containers = detail.getContainers();
+						for (int i = 0, total = containers.size(); i < total; i++) {
+							containerData[i] = new ContainerRecord(containers.get(i).getDc().getTitle().get(0), containers.get(i).getDc().getIdentifier().get(0),
+									"icons/48/reset.png");
+						}
+					}
+
+					getView().addDigitalObject(true, pagesData, containerData, detail.getDc(), uuid, dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
 				}
@@ -342,7 +355,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 							if (++done != data.length) {
 								schedule(15);
 							} else {
-								 getView().getPopupPanel().setVisible(false);
+								getView().getPopupPanel().setVisible(false);
 								getView().getPopupPanel().hide();
 							}
 						}

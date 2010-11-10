@@ -6,7 +6,6 @@
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -15,7 +14,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 /**
  * The Class InternalPartDetail.
  */
-public class InternalPartDetail extends AbstractDigitalObjectDetail {
+public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 
 	// DC
 	// title
@@ -26,11 +25,11 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 	// type (= model:internalpart)
 	// rights (treba policy:private)
 
-	private InternalPartDetail() {
+	private MonographUnitDetail() {
 		super();
 	}
 
-	public InternalPartDetail(ArrayList<ArrayList<String>> related) {
+	public MonographUnitDetail(ArrayList<ArrayList<String>> related) {
 		super(related);
 	}
 
@@ -43,11 +42,13 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 	 */
 	@Override
 	public KrameriusModel getModel() {
-		return KrameriusModel.INTERNALPART;
+		return KrameriusModel.MONOGRAPHUNIT;
 	}
 
 	/** The pages. */
 	private ArrayList<PageDetail> pages;
+
+	private ArrayList<InternalPartDetail> intParts;
 
 	/** The dc. */
 	private DublinCore dc;
@@ -72,6 +73,14 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 		this.pages = pages;
 	}
 
+	public ArrayList<InternalPartDetail> getIntParts() {
+		return intParts;
+	}
+
+	public void setIntParts(ArrayList<InternalPartDetail> intParts) {
+		this.intParts = intParts;
+	}
+
 	/**
 	 * Sets the dc.
 	 * 
@@ -94,13 +103,6 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 		return dc;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
-	 * hasPages()
-	 */
 	@Override
 	public boolean hasPages() {
 		return true;
@@ -108,12 +110,12 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 
 	@Override
 	public boolean hasContainers() {
-		return false;
+		return true;
 	}
 
 	@Override
-	public List<AbstractDigitalObjectDetail> getContainers() {
-		return null;
+	public ArrayList<InternalPartDetail> getContainers() {
+		return intParts;
 	}
 
 	// handle

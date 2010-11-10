@@ -161,7 +161,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(final boolean tileGridVisible, final Record[] data, final DublinCore dc, final String uuid, final DispatchAsync dispatcher) {
+	public void addDigitalObject(final boolean tileGridVisible, final Record[] pageData, final Record[] containerData, final DublinCore dc, final String uuid,
+			final DispatchAsync dispatcher) {
 		// final ModalWindow modal = new ModalWindow(layout);
 		// modal.setLoadingIcon("loadingAnimation.gif");
 		// modal.show("Loading digital object data...", true);
@@ -335,8 +336,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		}
 
 		if (tileGridVisible == true) {
-			getTileGrid().setData(data);
-			// tileGrid
+			if (pageData != null)
+				getPageTileGrid(true).setData(pageData);
+
+			if (containerData != null)
+				getPageTileGrid(false).setData(containerData);
 		}
 		getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
 		first = !first;
@@ -345,7 +349,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	/**
 	 * Sets the tile grid.
 	 */
-	private TileGrid getTileGrid() {
+	private TileGrid getPageTileGrid(final boolean pages) {
 
 		final TileGrid tileGrid = new TileGrid();
 		// tileGrid.setCanSelectText(true);
@@ -410,51 +414,54 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		menu.setItems(editItem, separator, selectAllItem, deselectAllItem, invertSelectionItem, separator, copyItem, pasteItem, removeSelectedItem);
 		tileGrid.setContextMenu(menu);
 
-		imagePopup = new PopupPanel(true);
-		imagePopup.setGlassEnabled(true);
-		imagePopup.setAnimationEnabled(true);
-		tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+		if (pages) {
+			imagePopup = new PopupPanel(true);
+			imagePopup.setGlassEnabled(true);
+			imagePopup.setAnimationEnabled(true);
+			tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
-			@Override
-			public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
-				if (event.getRecord() != null) {
-					try {
-						final ModalWindow mw = new ModalWindow(layout);
-						mw.setLoadingIcon("loadingAnimation.gif");
-						mw.show(true);
-						final Image full = new Image("images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID));
-						full.setHeight("700px");
-						full.addLoadHandler(new LoadHandler() {
-							@Override
-							public void onLoad(LoadEvent event) {
-								mw.hide();
-								imagePopup.setVisible(true);
-								imagePopup.center();
-							}
-						});
-						imagePopup.setWidget(full);
-						imagePopup.addCloseHandler(new CloseHandler<PopupPanel>() {
-							@Override
-							public void onClose(CloseEvent<PopupPanel> event) {
-								mw.hide();
-								imagePopup.setWidget(null);
-							}
-						});
-						imagePopup.center();
-						imagePopup.setVisible(false);
+				@Override
+				public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
+					if (event.getRecord() != null) {
+						try {
+							final ModalWindow mw = new ModalWindow(layout);
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							final Image full = new Image("images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID));
+							full.setHeight("700px");
+							full.addLoadHandler(new LoadHandler() {
+								@Override
+								public void onLoad(LoadEvent event) {
+									mw.hide();
+									imagePopup.setVisible(true);
+									imagePopup.center();
+								}
+							});
+							imagePopup.setWidget(full);
+							imagePopup.addCloseHandler(new CloseHandler<PopupPanel>() {
+								@Override
+								public void onClose(CloseEvent<PopupPanel> event) {
+									mw.hide();
+									imagePopup.setWidget(null);
+								}
+							});
+							imagePopup.center();
+							imagePopup.setVisible(false);
 
-					} catch (Throwable t) {
+						} catch (Throwable t) {
 
-						// TODO: handle
-						System.out.println("yes sir");
+							// TODO: handle
+							System.out.println("yes sir");
+						}
 					}
 				}
-			}
-		});
+			});
+		}
 
 		DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
 		pictureField.setType("image");
-		pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');
+		if (pages)
+			pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');
 		pictureField.setImageWidth(80);
 		pictureField.setImageHeight(120);
 
