@@ -8,6 +8,7 @@ package cz.fi.muni.xkremser.editor.shared.valueobj;
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

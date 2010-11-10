@@ -5,6 +5,9 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -14,15 +17,14 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
-import com.gwtplatform.mvp.client.EventBus;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
@@ -36,6 +38,7 @@ import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.MenuItemSeparator;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
@@ -51,7 +54,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
-import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -63,11 +66,14 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		void onAddDigitalObject(final TileGrid tileGrid, final Menu menu);
 
+		void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu);
+
 	}
 
 	private static final String ID_DC = "dc";
 	private static final String ID_MODS = "mods";
 	private static final String ID_TAB = "tab";
+	public static final String ID_TABSET = "tabset";
 
 	public static final String ID_NAME = "name";
 	public static final String ID_EDIT = "edit";
@@ -79,13 +85,12 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	public static final String ID_PASTE = "paste";
 	public static final String ID_DELETE = "delete";
 
+	public static final int DC_TAB_INDEX = 1;
+	public static final String TAB_INITIALIZED = "initialized";
+
+	private final Map<TabSet, DCTab> dcTab = new HashMap<TabSet, DCTab>();
+
 	private Record[] clipboard;
-
-	@Inject
-	private EventBus eventBus;
-
-	/** The tile grid. */
-	// private TileGrid tileGrid;
 
 	/** The layout. */
 	private final VLayout layout;
@@ -98,17 +103,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 	/** The top tab set2. */
 	private TabSet topTabSet2;
-	// private VLayout imagesLayout1;
-	// private VLayout imagesLayout2;
 	/** The image popup. */
 	private PopupPanel imagePopup;
 
 	/** The first. */
 	private boolean first = true;
-
-	// private boolean first = true;
-
-	// private final GlassPanel glassPanel;
 
 	/**
 	 * Instantiates a new modify view.
@@ -120,32 +119,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		imagePopup = new PopupPanel(true);
 		imagePopup.setGlassEnabled(true);
 		imagePopup.setAnimationEnabled(true);
-		// layout.setCanDragResize(true);
-
-		// HLayout buttons = new HLayout();
-		// buttons.setMembersMargin(15);
-
-		// IButton blueButton = new IButton("Select Blue");
-		// blueButton.addClickHandler(new ClickHandler() {
-		// @Override
-		// public void onClick(ClickEvent event) {
-		// topTabSet.selectTab(0);
-		// }
-		// });
-
-		// buttons.addMember(blueButton);
-
-		// layout.addMember(buttons);
-
-		// IButton print = new IButton("print");
-		// print.addClickHandler(new ClickHandler() {
-		// @Override
-		// public void onClick(ClickEvent event) {
-		// print();
-		// }
-		// });
-		// imagesLayout.addMember(print);
-
 	}
 
 	/*
@@ -194,73 +167,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		// modal.show("Loading digital object data...", true);
 
 		imagesLayout = new VLayout();
-
 		final TabSet topTabSet = new TabSet();
 		// topTabSet.setID(uuid);
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
 
-		Menu menu = new Menu();
-		menu.setShowShadow(true);
-		menu.setShadowDepth(10);
-
-		MenuItem newItem = new MenuItem("New", "icons/16/document_plain_new.png", "Ctrl+N");
-		MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png", "Ctrl+O");
-		MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png", "Ctrl+S");
-		MenuItem downloadItem = new MenuItem("Download", "icons/16/download.png");
-		MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
-		MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
-		MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
-		menu.setItems(newItem, openItem, saveItem, refreshItem, downloadItem, removeItem, publishItem);
-		IMenuButton menuButton = new IMenuButton("Menu", menu);
-		menuButton.setWidth(60);
-		menuButton.setHeight(16);
-
-		final ImgButton closeButton = new ImgButton();
-		closeButton.setSrc("[SKIN]headerIcons/close.png");
-		closeButton.setSize(16);
-		// closeButton.setShowFocused(false);
-		closeButton.setShowRollOver(true);
-		closeButton.setCanHover(true);
-		closeButton.setShowDownIcon(false);
-		closeButton.setShowDown(false);
-		closeButton.addHoverHandler(new HoverHandler() {
-			@Override
-			public void onHover(HoverEvent event) {
-				closeButton.setPrompt("Close this digital object.");
-			}
-		});
-
-		closeButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				// DigitalObjectClosedEvent.fire(ModifyView.this, uuid);
-				layout.removeMember(topTabSet);
-				if (first || topTabSet1 == null || topTabSet2 == null) {
-					first = !first;
-				}
-				if (topTabSet1 == topTabSet) {
-					topTabSet1.destroy();
-					topTabSet1 = null;
-					if (topTabSet2 != null) { // move up
-						topTabSet1 = topTabSet2;
-						topTabSet2 = null;
-					}
-				} else {
-					topTabSet2.destroy();
-					topTabSet2 = null;
-				}
-			}
-		});
-		topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, menuButton, closeButton);
-		topTabSet.setAnimateTabScrolling(true);
-
 		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_red.png");
 		tTab1.setPane(imagesLayout);
 
-		final Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
+		final DCTab tTab2 = new DCTab("DC", "pieces/16/pawn_green.png");
+		tTab2.setAttribute(TAB_INITIALIZED, false);
 		tTab2.setAttribute(ID_TAB, ID_DC);
+		dcTab.put(topTabSet, tTab2);
 
 		final Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
 		tTab3.setAttribute(ID_TAB, ID_MODS);
@@ -307,9 +226,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					Timer timer = new Timer() {
 						@Override
 						public void run() {
-							Tab t = new DCTab(dc);
+							DCTab t = new DCTab(dc);
+							dcTab.put(topTabSet, t);
 							TabSet ts = event.getTab().getTabSet();
 							ts.setTabPane(event.getTab().getID(), t.getPane());
+							t.setAttribute(TAB_INITIALIZED, true);
 							mw.hide();
 						}
 					};
@@ -318,9 +239,83 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
+		// MENU
+		Menu menu = new Menu();
+		menu.setShowShadow(true);
+		menu.setShadowDepth(10);
+
+		MenuItem newItem = new MenuItem("New", "icons/16/document_plain_new.png", "Ctrl+N");
+		MenuItem descItem = new MenuItem("Add desciption", "icons/16/message.png");
+		MenuItem loadItem = new MenuItem("Load metadata", "icons/16/document_plain_new.png");
+		MenuItem lockItem = new MenuItem("Lock digital object", "icons/16/lock_lock_all.png");
+		MenuItem lockTabItem = new MenuItem("Lock opened tab", "icons/16/lock_lock.png");
+		MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png", "Ctrl+O");
+		MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png", "Ctrl+S");
+		MenuItem downloadItem = new MenuItem("Download", "icons/16/download.png");
+		MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
+		MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
+		MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
+		publishItem.setAttribute(ID_TABSET, topTabSet);
+		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+				DCTab tab = dcTab.get(ts);
+				if (tab.getAttributeAsBoolean(TAB_INITIALIZED)) {
+					SC.say(tab.getDc().toString());
+					System.out.println(tab.getDc());
+				} else {
+					SC.say(dc.toString());
+					System.out.println(dc);
+				}
+			}
+		});
+
+		menu.setItems(newItem, descItem, loadItem, lockItem, lockTabItem, openItem, saveItem, refreshItem, downloadItem, removeItem, publishItem);
+		IMenuButton menuButton = new IMenuButton("Menu", menu);
+		menuButton.setWidth(60);
+		menuButton.setHeight(16);
+
+		final ImgButton closeButton = new ImgButton();
+		closeButton.setSrc("[SKIN]headerIcons/close.png");
+		closeButton.setSize(16);
+		// closeButton.setShowFocused(false);
+		closeButton.setShowRollOver(true);
+		closeButton.setCanHover(true);
+		closeButton.setShowDownIcon(false);
+		closeButton.setShowDown(false);
+		closeButton.addHoverHandler(new HoverHandler() {
+			@Override
+			public void onHover(HoverEvent event) {
+				closeButton.setPrompt("Close this digital object.");
+			}
+		});
+
+		closeButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				layout.removeMember(topTabSet);
+				if (first || topTabSet1 == null || topTabSet2 == null) {
+					first = !first;
+				}
+				if (topTabSet1 == topTabSet) {
+					topTabSet1.destroy();
+					topTabSet1 = null;
+					if (topTabSet2 != null) { // move up
+						topTabSet1 = topTabSet2;
+						topTabSet2 = null;
+					}
+				} else {
+					topTabSet2.destroy();
+					topTabSet2 = null;
+				}
+			}
+		});
+		topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, menuButton, closeButton);
+		topTabSet.setAnimateTabScrolling(true);
+
 		// topTabSet.setSelectedTab(2); // TODO: remove
 		layout.setMembersMargin(15);
-		// layout.addMember(topTabSet);
 		if (first) {
 			if (topTabSet1 != null) {
 				layout.removeMember(topTabSet1);
@@ -343,6 +338,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			getTileGrid().setData(data);
 			// tileGrid
 		}
+		getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
 		first = !first;
 	}
 
@@ -411,19 +407,9 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
-		// MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png",
-		// "Ctrl+O");
-		// MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png",
-		// "Ctrl+S");
-		// MenuItem downloadItem = new MenuItem("Download",
-		// "icons/16/download.png");
-		// MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
-		// MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
-		// MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
 		menu.setItems(editItem, separator, selectAllItem, deselectAllItem, invertSelectionItem, separator, copyItem, pasteItem, removeSelectedItem);
 		tileGrid.setContextMenu(menu);
 
-		// tileGrid.setCanDragResize(true);
 		imagePopup = new PopupPanel(true);
 		imagePopup.setGlassEnabled(true);
 		imagePopup.setAnimationEnabled(true);
@@ -464,24 +450,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					}
 				}
 			}
-
-			/*
-			 * if (event.getRecord() != null) { try { final String url =
-			 * "images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID);
-			 * final Image full = new Image(); Image.prefetch(url); final ModalWindow
-			 * mw = new ModalWindow(layout);
-			 * mw.setLoadingIcon("loadingAnimation.gif"); mw.show(true); Timer timer1
-			 * = new Timer() {
-			 * 
-			 * @Override public void run() { full.setUrl(url);
-			 * full.setHeight("700px"); full.addLoadHandler(new LoadHandler() {
-			 * 
-			 * @Override public void onLoad(LoadEvent event) { mw.hide();
-			 * imagePopup.setWidget(full); imagePopup.center(); } }); } };
-			 * timer1.schedule(150);
-			 * 
-			 * } catch (Throwable t) { System.out.println("yes sir"); } } }
-			 */
 		});
 
 		DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
@@ -519,10 +487,5 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	public PopupPanel getPopupPanel() {
 		return imagePopup;
 	}
-
-	// @Override
-	// public void fireEvent(GwtEvent<?> event) {
-	// eventBus.fireEvent(this, event);
-	// }
 
 }

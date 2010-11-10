@@ -3,7 +3,7 @@
  * @author Jiri Kremser
  *  
  */
-package cz.fi.muni.xkremser.editor.shared.valueobj;
+package cz.fi.muni.xkremser.editor.shared.valueobj.metadata;
 
 import java.util.ArrayList;
 import java.util.List;

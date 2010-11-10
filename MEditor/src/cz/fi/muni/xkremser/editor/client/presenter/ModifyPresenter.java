@@ -7,7 +7,9 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -22,7 +24,10 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Progressbar;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
@@ -40,9 +45,9 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -97,7 +102,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	}
 
-	private Record[] clipboard;
+	private int done = 0;
 
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
@@ -318,31 +323,36 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		items[7].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				Record[] data = getView().fromClipboard();
-				boolean progressbar = false;
-				Progressbar hBar1 = null;
-				if (data.length > Constants.CLIPBOARD_MAX_WITHOUT_PROGRESSBAR) {
-					progressbar = true;
-					hBar1 = new Progressbar();
+				final Record[] data = getView().fromClipboard();
+				final boolean progressbar = data.length > Constants.CLIPBOARD_MAX_WITHOUT_PROGRESSBAR;
+				final Progressbar hBar1 = progressbar ? new Progressbar() : null;
+				if (progressbar) {
 					hBar1.setHeight(24);
 					hBar1.setVertical(false);
 					hBar1.setPercentDone(0);
 					getView().getPopupPanel().setWidget(hBar1);
 					getView().getPopupPanel().setVisible(true);
 					getView().getPopupPanel().center();
-
-					// horizontalBars.addMember(hBar1);
-				}
-
-				for (int i = 0; i < data.length; i++) {
-					if (progressbar) {
-						hBar1.setPercentDone((i / data.length));
+					done = 0;
+					Timer timer = new Timer() {
+						@Override
+						public void run() {
+							hBar1.setPercentDone(((100 * (done + 1)) / data.length));
+							tileGrid.addData(((PageRecord) data[done]).deepCopy());
+							if (++done != data.length) {
+								schedule(15);
+							} else {
+								 getView().getPopupPanel().setVisible(false);
+								getView().getPopupPanel().hide();
+							}
+						}
+					};
+					timer.schedule(40);
+				} else {
+					for (int i = 0; i < data.length; i++) {
+						tileGrid.addData(((PageRecord) data[i]).deepCopy());
 					}
-					tileGrid.addData(((PageRecord) data[i]).deepCopy());
 				}
-				if (progressbar)
-					getView().getPopupPanel().hide();
-				// getView().getPopupPanel().setWidget(null);
 			}
 		});
 		if (!ModifyView.ID_DELETE.equals(items[8].getAttributeAsObject(ModifyView.ID_NAME))) {
@@ -360,5 +370,15 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	@Override
 	protected void revealInParent() {
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
+	}
+
+	@Override
+	public void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu) {
+		closeButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				DigitalObjectClosedEvent.fire(ModifyPresenter.this, uuid);
+			}
+		});
 	}
 }

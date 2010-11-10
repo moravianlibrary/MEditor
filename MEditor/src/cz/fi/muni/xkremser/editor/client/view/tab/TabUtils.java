@@ -630,12 +630,12 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the stack section
 	 */
-	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded) {
-		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null);
+	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded, MetadataHolder holder) {
+		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null, holder);
 	}
-	
-	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded, List<String> values) {
-		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null, values);
+
+	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded, List<String> values, MetadataHolder holder) {
+		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null, values, holder);
 	}
 
 	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded) {
@@ -655,8 +655,9 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the stack section
 	 */
-	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded, List<String> values) {
-		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null, values);
+	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded,
+			List<String> values, MetadataHolder holder) {
+		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, null, values, holder);
 	}
 
 	/**
@@ -690,8 +691,8 @@ public final class TabUtils {
 	}
 
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
-			final Attribute[] attributes) {
-		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, attributes, null);
+			final Attribute[] attributes, MetadataHolder holder) {
+		return getStackSectionWithAttributes(label1, label2, tooltip, expanded, attributes, null, holder);
 	}
 
 	/**
@@ -710,9 +711,9 @@ public final class TabUtils {
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
-			final Attribute[] attributes, List<String> values) {
+			final Attribute[] attributes, List<String> values, MetadataHolder holder) {
 		return getStackSectionWithAttributes(label1, new Attribute(TextItem.class, label2.toLowerCase().replaceAll(" ", "_"), label2, tooltip), expanded,
-				attributes, values);
+				attributes, values, holder);
 	}
 
 	/**
@@ -757,8 +758,8 @@ public final class TabUtils {
 	}
 
 	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded,
-			final Attribute[] attributes) {
-		return getStackSectionWithAttributes(stackLabel, mainAttr, expanded, attributes, null);
+			final Attribute[] attributes, MetadataHolder holder) {
+		return getStackSectionWithAttributes(stackLabel, mainAttr, expanded, attributes, null, holder);
 	}
 
 	/**
@@ -775,9 +776,12 @@ public final class TabUtils {
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded,
-			final Attribute[] attributes, List<String> values) {
+			final Attribute[] attributes, List<String> values, MetadataHolder holder) {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
+		if (holder != null) {
+			holder.setLayout(layout);
+		}
 		// layout.setOverflow(Overflow.AUTO);
 		// layout.setLeaveScrollbarGap(true);
 		SectionStackSection section = new SectionStackSection(stackLabel.toLowerCase().replaceAll(" ", "_"));
@@ -1151,7 +1155,7 @@ public final class TabUtils {
 	public static SectionStackSection getTargetAudienceStack(boolean expanded) {
 		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY, ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
 		return getStackSectionWithAttributes("Target Audience", "Target Audience",
-				"A description of the intellectual level of the audience for which the resource is intended.", true, attributes);
+				"A description of the intellectual level of the audience for which the resource is intended.", true, attributes, null);
 	}
 
 	/**
@@ -1195,7 +1199,7 @@ public final class TabUtils {
 						"Edition",
 						"This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."),
 				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
-		return getStackSectionWithAttributes("Classifications", "Classification", "Equivalent to MARC fields 050-08X, subfields $a and $b.", true, attributes);
+		return getStackSectionWithAttributes("Classifications", "Classification", "Equivalent to MARC fields 050-08X, subfields $a and $b.", true, attributes, null);
 	}
 
 	/**
@@ -1214,7 +1218,7 @@ public final class TabUtils {
 						"There is no controlled list of abstract types. (Suggested values: doi, hdl, isbn, ismn, isrc, issn,	issue number,	istc, lccn, loca, matrix number, music plate, music publisher, sici, stock number, upc, uri, videorecording identifier)"),
 				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT,
 				new Attribute(CheckboxItem.class, "invalid", "Invalid", "If invalid='yes' is not present, the identifier is assumed to be valid.") };
-		return getStackSectionWithAttributes("Identifiers", "Identifier", "Roughly equivalent to MARC fields 010, 020, 022, 024, 856.", true, attributes);
+		return getStackSectionWithAttributes("Identifiers", "Identifier", "Roughly equivalent to MARC fields 010, 020, 022, 024, 856.", true, attributes, null);
 	}
 
 	/**
@@ -1381,7 +1385,7 @@ public final class TabUtils {
 						"Name Parts",
 						"Name Part",
 						"Includes each part of the name that is parsed. Parsing is used to indicate a date associated with the name, to parse the parts of a corporate name (MARC 21 fields X10 subfields $a and $b).",
-						false, new Attribute[] { new Attribute(SelectItem.class, "type", "Type", tooltips) }));
+						false, new Attribute[] { new Attribute(SelectItem.class, "type", "Type", tooltips) }, null));
 		sectionStack.addSection(getStackSection("Display Forms", "Display Form", "This data is usually carried in MARC 21 field 245 subfield $c.", false));
 		sectionStack
 				.addSection(getStackSection(
@@ -1390,7 +1394,7 @@ public final class TabUtils {
 						"Contains the name of an organization, institution, etc. with which the entity recorded in <name> was associated at the time that the resource was created. (MARS21 100, 700 $u)",
 						false));
 
-		sectionStack.addSection(getStackSectionWithAttributes("Roles", "Role", "", false, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }));
+		sectionStack.addSection(getStackSectionWithAttributes("Roles", "Role", "", false, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, null));
 
 		layout.addMember(sectionStack);
 
@@ -1552,7 +1556,7 @@ public final class TabUtils {
 						"Place Terms",
 						"Place Term",
 						"Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>.",
-						true, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }));
+						true, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, null));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -1626,7 +1630,7 @@ public final class TabUtils {
 						"Frequencies",
 						"Frequency",
 						"Equivalent to the information in MARC 21 008/18 (Frequency) for Continuing Resources, where it is given in coded form or in field 310 (Current Publication Frequency), where it is given in textual form.",
-						false, new Attribute[] { ATTR_AUTHORITY }));
+						false, new Attribute[] { ATTR_AUTHORITY }, null));
 
 		layout.addMember(sectionStack);
 
@@ -1660,7 +1664,7 @@ public final class TabUtils {
 						"Forms",
 						"Form",
 						"Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used.",
-						false, attributes));
+						false, attributes, null));
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, "reformatting_quality", "Reformatting Quality",
 				new HashMap<String, String>() {
 					{
@@ -1700,7 +1704,7 @@ public final class TabUtils {
 						"Notes",
 						new Attribute(TextAreaItem.class, "note", "Note",
 								"Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used."),
-						false, attributes));
+						false, attributes, null));
 
 		layout.addMember(sectionStack);
 
@@ -1749,7 +1753,7 @@ public final class TabUtils {
 				sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 				sectionStack.setStyleName("metadata-elements");
 				sectionStack.setWidth100();
-				sectionStack.addSection(getStackSection(attr, first));
+				sectionStack.addSection(getStackSection(attr, first, null));
 				layout.addMember(sectionStack);
 				if (first)
 					first = false;
@@ -1782,7 +1786,7 @@ public final class TabUtils {
 
 		sectionStack.addSection(getStackSectionWithAttributes("Language Terms", "Language Term",
 				"contains the language(s) of the content of the resource. It may be expressed in textual or coded form.", true, new Attribute[] { ATTR_TYPE_TEXT_CODE,
-						ATTR_LANG_AUTHORITY }));
+						ATTR_LANG_AUTHORITY }, null));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -1804,8 +1808,10 @@ public final class TabUtils {
 
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "form", "Form",
 				"Designation of a particular physical presentation of a resource."), false, new Attribute[] { ATTR_AUTHORITY }));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation",
-				"Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false));
+		sectionStack
+				.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation",
+						"Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false,
+						null));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(
@@ -1813,9 +1819,9 @@ public final class TabUtils {
 								"shelf_locator",
 								"Shelf Locator",
 								"Equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
-						false));
+						false, null));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "electronic_locator", "Electronic Locator",
-				"This is a copy-specific form of the MODS <location><url>, without its attributes."), false));
+				"This is a copy-specific form of the MODS <location><url>, without its attributes."), false, null));
 		getSomeStack(false, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Note relating to a specific copy of a document. "),
 				new Attribute[] { new Attribute(TextItem.class, "type", "Type", "This attribute is not controlled by a list and thus is open-ended."),
 						getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") }));
@@ -1834,7 +1840,7 @@ public final class TabUtils {
 								put("2", "Information is about supplementary material to the basic unit. (864 or 867)");
 								put("3", "Information is about index(es) to the basic unit. (865 or 868)");
 							}
-						}) }));
+						}) }, null));
 		layout.addMember(sectionStack);
 		return layout;
 	}
@@ -1856,14 +1862,14 @@ public final class TabUtils {
 
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "topic", "Topic",
 				"Equivalent to MARC 21 fields 650 and 6XX subfields $x and $v (with authority attribute defined) and MARC 21 field 653 with no authority attribute."),
-				false));
+				false, null));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "geographic", "Geographic", "Equivalent to MARC 21 field 651 and 6XX subfield $z."),
-				false));
+				false, null));
 		sectionStack
 				.addSection(getSomeStack(false, "Temporal", new GetDateLayout("temporal", "Temporal", "Equivalent to MARC 21 fields 045 and 6XX subfield $y.")));
 		sectionStack.addSection(getSomeStack(false, "Title Info", GET_TITLE_INFO_LAYOUT));
 		sectionStack.addSection(getSomeStack(false, "Name", GET_NAME_LAYOUT));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false, null));
 
 		Attribute[] attributes = new Attribute[] {
 				new Attribute(TextItem.class, "continent", "Continent", "Includes Asia, Africa, Europe, North America, South America."),
@@ -1906,8 +1912,9 @@ public final class TabUtils {
 				put("marccountry", "marccountry");
 				put("iso3166", "iso3166");
 			}
-		}) }));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false));
+		}) }, null));
+		sectionStack
+				.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false, null));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -1932,7 +1939,7 @@ public final class TabUtils {
 						"This attribute is used to indicate different kinds of locations, e.g. current, discovery, former, creation."), ATTR_AUTHORITY, ATTR_XLINK,
 				ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
 		sectionStack.addSection(getStackSectionWithAttributes("Physical Location", new Attribute(TextItem.class, "physical_location", "Physical Location",
-				"Equivalent to MARC 21 field 852 subfields $a, $b and $e."), true, attributes));
+				"Equivalent to MARC 21 field 852 subfields $a, $b and $e."), true, attributes, null));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(
@@ -1940,7 +1947,7 @@ public final class TabUtils {
 								"shelfLocator",
 								"Shelf Locator",
 								"This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
-						false));
+						false, null));
 		attributes = new Attribute[] {
 				getDisplayLabel("Equivalent to MARC 21 field 856 subfields $y and $3."),
 				new Attribute(DateItem.class, "date_last_accessed", "Date Last Accessed", "There is no MARC equivalent for 'dateLastAccessed'."),
@@ -2000,7 +2007,7 @@ public final class TabUtils {
 				.addSection(getStackSection(
 						new Attribute(TextAreaItem.class, "text", "Text",
 								"Contains unparsed information in textual form about the part. When used in relatedItem type='host', it is equivalent to MARC 21 field 773 subfield $g."),
-						false));
+						false, null));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2029,12 +2036,12 @@ public final class TabUtils {
 						"Level",
 						"Describes the level of numbering in the host/parent item. This is used to ensure that the numbering is retained in the proper order. An example is: 'v.2, no. 3'.") };
 		layout.addMember(getAttributes(true, attributes));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "number", "Number", "Contains the actual number within the part."), false));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "number", "Number", "Contains the actual number within the part."), false, null));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "caption", "Caption",
 				"Contains the caption describing the enumeration within a part. This may be the same as type, but conveys what is on the item being described. "),
-				false));
+				false, null));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "title", "Title",
-				"Contains the title of the part. Only include if this is different than the title in <titleInfo><title>."), false));
+				"Contains the title of the part. Only include if this is different than the title in <titleInfo><title>."), false, null));
 		layout.addMember(sectionStack);
 		return layout;
 	}
@@ -2082,7 +2089,7 @@ public final class TabUtils {
 
 		Attribute[] attributes = new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_LANG_AUTHORITY };
 		sectionStack.addSection(getStackSectionWithAttributes("Language Term", new Attribute(TextItem.class, "language_term", "Language Term",
-				"contains the language(s) of the content of the resource. It may be expressed in textual or coded form."), true, attributes));
+				"contains the language(s) of the content of the resource. It may be expressed in textual or coded form."), true, attributes, null));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2105,7 +2112,7 @@ public final class TabUtils {
 		layout.addMember(getAttributes(true, attributes));
 
 		sectionStack.addSection(getStackSectionWithAttributes("Record Content Source", new Attribute(TextItem.class, "record_content_source",
-				"Record Content Source", "Roughly equivalent to MARC 21 field 040."), false, new Attribute[] { ATTR_AUTHORITY }));
+				"Record Content Source", "Roughly equivalent to MARC 21 field 040."), false, new Attribute[] { ATTR_AUTHORITY }, null));
 		sectionStack.addSection(getSomeStack(false, "Record Creation Date", new GetDateLayout("record_creation_date", "Record Creation Date",
 				"Roughly equivalent to MARC 21 field 008/00-05.", null, false)));
 		sectionStack.addSection(getSomeStack(false, "Record Change Date", new GetDateLayout("record_change_date", "Record Creation Date",
@@ -2114,10 +2121,10 @@ public final class TabUtils {
 				"Roughly equivalent to MARC 21 field 001."), false, new Attribute[] { new Attribute(TextItem.class, "source", "Source",
 				"Roughly equivalent to MARC 21 field 003.") }));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "record_origin", "Record Origin",
-				"Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false));
+				"Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false, null));
 		sectionStack.addSection(getSomeStack(false, "Language of Cataloging", new GetLanguageOfCatalogingLayout()));
 		sectionStack.addSection(getStackSectionWithAttributes("Description Standard", new Attribute(TextItem.class, "description_standard", "Description Standard",
-				"Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18."), false, new Attribute[] { ATTR_AUTHORITY }));
+				"Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18."), false, new Attribute[] { ATTR_AUTHORITY }, null));
 
 		layout.addMember(sectionStack);
 		return layout;

@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
-import cz.fi.muni.xkremser.editor.shared.valueobj.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

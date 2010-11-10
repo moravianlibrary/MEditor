@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
