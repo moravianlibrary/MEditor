@@ -5,7 +5,9 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.LoadEvent;
@@ -95,9 +97,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	/** The layout. */
 	private final VLayout layout;
 
-	/** The images layout. */
-	private VLayout imagesLayout;
-
 	/** The top tab set1. */
 	private TabSet topTabSet1;
 
@@ -167,15 +166,29 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		// modal.setLoadingIcon("loadingAnimation.gif");
 		// modal.show("Loading digital object data...", true);
 
-		imagesLayout = new VLayout();
 		final TabSet topTabSet = new TabSet();
-		// topTabSet.setID(uuid);
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
 
-		Tab tTab1 = new Tab("Relations", "pieces/16/pawn_red.png");
-		tTab1.setPane(imagesLayout);
+		Tab pageTab = null;
+		Tab containerTab = null;
+		if (tileGridVisible == true) {
+			if (pageData != null) {
+				TileGrid grid = getPageTileGrid(true);
+				grid.setData(pageData);
+				pageTab = new Tab("Relations", "pieces/16/pawn_red.png");
+				pageTab.setPane(grid);
+			}
+
+			if (containerData != null) {
+				TileGrid grid = getPageTileGrid(false);
+				grid.setData(containerData);
+				// TODO: int. part / volume ...
+				containerTab = new Tab("Internal parts", "pieces/16/pawn_red.png");
+				containerTab.setPane(grid);
+			}
+		}
 
 		final DCTab tTab2 = new DCTab("DC", "pieces/16/pawn_green.png");
 		tTab2.setAttribute(TAB_INITIALIZED, false);
@@ -201,7 +214,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		Img tImg7 = new Img("pieces/48/piece_green.png", 48, 48);
 		tTab7.setPane(tImg7);
 
-		topTabSet.setTabs(tTab1, tTab2, tTab3, tTab4, tTab5, tTab6, tTab7);
+		List<Tab> tabList = new ArrayList<Tab>();
+		if (pageTab != null)
+			tabList.add(pageTab);
+		if (containerTab != null)
+			tabList.add(containerTab);
+		tabList.add(tTab2);
+		tabList.add(tTab3);
+		tabList.add(tTab4);
+		tabList.add(tTab5);
+		tabList.add(tTab6);
+		tabList.add(tTab7);
+
+		topTabSet.setTabs(tabList.toArray(new Tab[] {}));
 		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(final TabSelectedEvent event) {
@@ -335,13 +360,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			layout.addMember(topTabSet2, 1);
 		}
 
-		if (tileGridVisible == true) {
-			if (pageData != null)
-				getPageTileGrid(true).setData(pageData);
-
-			if (containerData != null)
-				getPageTileGrid(false).setData(containerData);
-		}
 		getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
 		first = !first;
 	}
@@ -475,7 +493,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		DetailViewerField descField = new DetailViewerField(Constants.ATTR_DESC);
 
 		tileGrid.setFields(pictureField, nameField, descField);
-		imagesLayout.addMember(tileGrid);
 		getUiHandlers().onAddDigitalObject(tileGrid, menu);
 		return tileGrid;
 	}
