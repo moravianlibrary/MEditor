@@ -55,11 +55,13 @@
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
   <source path='shared'/>
+  <!--<super-source path="jaxb" /> -->
+  <super-source path="jre" />
   
     <!-- Internationalization support. 
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="cs"/>
   <set-property-fallback name="locale" value="en"/>
-
-<set-property name="user.agent" value="gecko1_8"/>   -->
+ -->
+<set-property name="user.agent" value="gecko1_8"/>  
 </module>
