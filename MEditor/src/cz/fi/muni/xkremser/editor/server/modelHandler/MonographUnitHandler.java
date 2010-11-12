@@ -19,8 +19,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.MonographUnitDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PeriodicalItemDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -56,7 +56,7 @@ public class MonographUnitHandler extends DigitalObjectHandler {
 	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
 
 		// TODO: create MonographUnitDetail
-		PeriodicalItemDetail detail = new PeriodicalItemDetail(findRelated ? getRelated(uuid) : null);
+		MonographUnitDetail detail = new MonographUnitDetail(findRelated ? getRelated(uuid) : null);
 		DublinCore dc = null;
 		ArrayList<PageDetail> pages = new ArrayList<PageDetail>();
 		ArrayList<InternalPartDetail> intParts = new ArrayList<InternalPartDetail>();
@@ -65,11 +65,12 @@ public class MonographUnitHandler extends DigitalObjectHandler {
 			dcDocument = getFedoraAccess().getDC(uuid);
 			if (findRelated) {
 				dc = DCUtils.getDC(dcDocument);
+
 				List<String> pageUuids = getFedoraAccess().getPagesUuid(uuid);
 				for (String pageUuid : pageUuids) {
 					pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
 				}
-				List<String> internalPartsUuids = getFedoraAccess().getIntCompPartUuid(uuid);
+				List<String> internalPartsUuids = getFedoraAccess().getIntCompPartsUuid(uuid);
 				for (String intPartUuid : internalPartsUuids) {
 					intParts.add((InternalPartDetail) intPartHandler.getDigitalObject(intPartUuid, false));
 				}

@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -25,6 +26,7 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 	// type (= model:internalpart)
 	// rights (treba policy:private)
 
+	@SuppressWarnings("unused")
 	private MonographUnitDetail() {
 		super();
 	}
@@ -109,13 +111,26 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 	}
 
 	@Override
-	public boolean hasContainers() {
-		return true;
+	public int hasContainers() {
+		return 1;
 	}
 
 	@Override
-	public ArrayList<InternalPartDetail> getContainers() {
-		return intParts;
+	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
+		return new ArrayList<ArrayList<? extends AbstractDigitalObjectDetail>>() {
+			{
+				add(intParts);
+			}
+		};
+	}
+
+	@Override
+	public List<KrameriusModel> getChildContainerModels() {
+		return new ArrayList<KrameriusModel>() {
+			{
+				add(KrameriusModel.INTERNALPART);
+			}
+		};
 	}
 
 	// handle

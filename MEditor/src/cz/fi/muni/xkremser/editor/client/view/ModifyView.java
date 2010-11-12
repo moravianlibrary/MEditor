@@ -52,6 +52,7 @@ import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
@@ -160,8 +161,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(final boolean tileGridVisible, final Record[] pageData, final Record[] containerData, final DublinCore dc, final String uuid,
-			final DispatchAsync dispatcher) {
+	public void addDigitalObject(final boolean tileGridVisible, final Record[] pageData, final List<Record[]> containerDataList,
+			final List<KrameriusModel> containerModelList, final DublinCore dc, final String uuid, final DispatchAsync dispatcher) {
 		// final ModalWindow modal = new ModalWindow(layout);
 		// modal.setLoadingIcon("loadingAnimation.gif");
 		// modal.show("Loading digital object data...", true);
@@ -172,21 +173,25 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		topTabSet.setHeight100();
 
 		Tab pageTab = null;
-		Tab containerTab = null;
+		List<Tab> containerTabs = null;
 		if (tileGridVisible == true) {
 			if (pageData != null) {
-				TileGrid grid = getPageTileGrid(true);
+				TileGrid grid = getTileGrid(true);
 				grid.setData(pageData);
 				pageTab = new Tab("Relations", "pieces/16/pawn_red.png");
 				pageTab.setPane(grid);
 			}
 
-			if (containerData != null) {
-				TileGrid grid = getPageTileGrid(false);
-				grid.setData(containerData);
-				// TODO: int. part / volume ...
-				containerTab = new Tab("Internal parts", "pieces/16/pawn_red.png");
-				containerTab.setPane(grid);
+			if (containerDataList != null) {
+				containerTabs = new ArrayList<Tab>(containerModelList.size());
+				for (int i = 0; i < containerModelList.size(); i++) {
+					TileGrid grid = getTileGrid(false);
+					grid.setData(containerDataList.get(i));
+					// TODO: localization
+					Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
+					containerTab.setPane(grid);
+					containerTabs.add(containerTab);
+				}
 			}
 		}
 
@@ -217,8 +222,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		List<Tab> tabList = new ArrayList<Tab>();
 		if (pageTab != null)
 			tabList.add(pageTab);
-		if (containerTab != null)
-			tabList.add(containerTab);
+		if (containerTabs != null && containerTabs.size() > 0)
+			tabList.addAll(containerTabs);
 		tabList.add(tTab2);
 		tabList.add(tTab3);
 		tabList.add(tTab4);
@@ -325,6 +330,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					first = !first;
 				}
 				if (topTabSet1 == topTabSet) {
+					dcTab.put(topTabSet1, null);
 					topTabSet1.destroy();
 					topTabSet1 = null;
 					if (topTabSet2 != null) { // move up
@@ -332,6 +338,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 						topTabSet2 = null;
 					}
 				} else {
+					dcTab.put(topTabSet2, null);
 					topTabSet2.destroy();
 					topTabSet2 = null;
 				}
@@ -344,6 +351,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		layout.setMembersMargin(15);
 		if (first) {
 			if (topTabSet1 != null) {
+				dcTab.put(topTabSet1, null);
 				layout.removeMember(topTabSet1);
 				topTabSet1.destroy();
 				topTabSet1 = null;
@@ -352,6 +360,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			layout.addMember(topTabSet1, 0);
 		} else {
 			if (topTabSet2 != null) {
+				dcTab.put(topTabSet2, null);
 				layout.removeMember(topTabSet2);
 				topTabSet2.destroy();
 				topTabSet2 = null;
@@ -367,12 +376,16 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	/**
 	 * Sets the tile grid.
 	 */
-	private TileGrid getPageTileGrid(final boolean pages) {
+	private TileGrid getTileGrid(final boolean pages) {
 
 		final TileGrid tileGrid = new TileGrid();
-		// tileGrid.setCanSelectText(true);
-		tileGrid.setTileWidth(110);
-		tileGrid.setTileHeight(140);
+		if (pages) {
+			tileGrid.setTileWidth(90);
+			tileGrid.setTileHeight(135);
+		} else {
+			tileGrid.setTileWidth(115);
+			tileGrid.setTileHeight(125);
+		}
 		tileGrid.setHeight100();
 		tileGrid.setWidth100();
 		tileGrid.setCanDrag(true);
@@ -478,10 +491,14 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
 		pictureField.setType("image");
-		if (pages)
+		if (pages) {
 			pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');
-		pictureField.setImageWidth(80);
-		pictureField.setImageHeight(120);
+			pictureField.setImageWidth(80);
+			pictureField.setImageHeight(120);
+		} else {
+			pictureField.setImageWidth(110);
+			pictureField.setImageHeight(110);
+		}
 
 		DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
 		nameField.setDetailFormatter(new DetailFormatter() {

@@ -69,7 +69,7 @@ public class PeriodicalItemHandler extends DigitalObjectHandler {
 				for (String pageUuid : pageUuids) {
 					pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
 				}
-				List<String> internalPartsUuids = getFedoraAccess().getIntCompPartUuid(uuid);
+				List<String> internalPartsUuids = getFedoraAccess().getIntCompPartsUuid(uuid);
 				for (String intPartUuid : internalPartsUuids) {
 					intParts.add((InternalPartDetail) intPartHandler.getDigitalObject(intPartUuid, false));
 				}

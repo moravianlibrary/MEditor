@@ -15,7 +15,17 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 /**
  * The Class InternalPartDetail.
  */
-public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
+public class MonographDetail extends AbstractDigitalObjectDetail {
+
+	private ArrayList<InternalPartDetail> intParts;
+
+	private ArrayList<MonographUnitDetail> monUnits;
+
+	/** The pages. */
+	private ArrayList<PageDetail> pages;
+
+	/** The dc. */
+	private DublinCore dc;
 
 	// DC
 	// title
@@ -27,11 +37,11 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 	// rights (treba policy:private)
 
 	@SuppressWarnings("unused")
-	private PeriodicalItemDetail() {
+	private MonographDetail() {
 		super();
 	}
 
-	public PeriodicalItemDetail(ArrayList<ArrayList<String>> related) {
+	public MonographDetail(ArrayList<ArrayList<String>> related) {
 		super(related);
 	}
 
@@ -44,16 +54,8 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 	 */
 	@Override
 	public KrameriusModel getModel() {
-		return KrameriusModel.PERIODICALITEM;
+		return KrameriusModel.MONOGRAPH;
 	}
-
-	/** The pages. */
-	private ArrayList<PageDetail> pages;
-
-	private ArrayList<InternalPartDetail> intParts;
-
-	/** The dc. */
-	private DublinCore dc;
 
 	/**
 	 * Gets the pages.
@@ -75,12 +77,12 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 		this.pages = pages;
 	}
 
-	public ArrayList<InternalPartDetail> getIntParts() {
-		return intParts;
-	}
-
 	public void setIntParts(ArrayList<InternalPartDetail> intParts) {
 		this.intParts = intParts;
+	}
+
+	public void setMonUnits(ArrayList<MonographUnitDetail> monUnits) {
+		this.monUnits = monUnits;
 	}
 
 	/**
@@ -105,6 +107,13 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 		return dc;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasPages()
+	 */
 	@Override
 	public boolean hasPages() {
 		return true;
@@ -112,7 +121,7 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 
 	@Override
 	public int hasContainers() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -120,6 +129,7 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 		return new ArrayList<ArrayList<? extends AbstractDigitalObjectDetail>>() {
 			{
 				add(intParts);
+				add(monUnits);
 			}
 		};
 	}
@@ -129,6 +139,7 @@ public class PeriodicalItemDetail extends AbstractDigitalObjectDetail {
 		return new ArrayList<KrameriusModel>() {
 			{
 				add(KrameriusModel.INTERNALPART);
+				add(KrameriusModel.MONOGRAPHUNIT);
 			}
 		};
 	}

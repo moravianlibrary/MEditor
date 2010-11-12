@@ -5,6 +5,7 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.Timer;
@@ -33,6 +34,7 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
@@ -76,7 +78,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		public Record[] fromClipboard();
 
-		public void toClipboard(Record[] data);
+		public void toClipboard(final Record[] data);
 
 		public PopupPanel getPopupPanel();
 
@@ -90,7 +92,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 * @param dispatcher
 		 *          the dispatcher
 		 */
-		void addDigitalObject(boolean tileGridVisible, Record[] pageData, Record[] containerData, DublinCore dc, String uuid, DispatchAsync dispatcher);
+		void addDigitalObject(final boolean tileGridVisible, final Record[] pageData, final List<Record[]> containerDataList,
+				final List<KrameriusModel> containerModelList, final DublinCore dc, final String uuid, final DispatchAsync dispatcher);
 	}
 
 	/**
@@ -235,7 +238,10 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 				public void callback(GetDigitalObjectDetailResult result) {
 					AbstractDigitalObjectDetail detail = result.getDetail();
 					Record[] pagesData = null;
-					Record[] containerData = null;
+					List<Record[]> containerDataList = null;
+					List<KrameriusModel> containerModelList = null;
+					List<? extends List<? extends AbstractDigitalObjectDetail>> containers = null;
+
 					if (detail.hasPages()) {
 						pagesData = new Record[detail.getPages().size()];
 						List<PageDetail> pages = detail.getPages();
@@ -244,17 +250,30 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 									.getIdentifier().get(0));
 						}
 					}
+					int containerNumber = detail.hasContainers();
+					if (containerNumber != 0) {
+						containerDataList = new ArrayList<Record[]>();
+						containerModelList = new ArrayList<KrameriusModel>();
+						containers = detail.getContainers();
 
-					if (detail.hasContainers()) {
-						containerData = new Record[detail.getContainers().size()];
-						List<? extends AbstractDigitalObjectDetail> containers = detail.getContainers();
-						for (int i = 0, total = containers.size(); i < total; i++) {
-							containerData[i] = new ContainerRecord(containers.get(i).getDc().getTitle().get(0), containers.get(i).getDc().getIdentifier().get(0),
-									"icons/48/reset.png");
+					}
+					for (int i = 0; i < containerNumber; i++) {
+						Record[] containerData = null;
+						containerData = new Record[detail.getContainers().get(i).size()];
+						List<? extends AbstractDigitalObjectDetail> container = containers.get(i);
+						// if (container == null || container.size() == 0)
+						// continue;
+						// copy data
+						for (int j = 0, total = containers.get(i).size(); j < total; j++) {
+							AbstractDigitalObjectDetail aDetail = container.get(j);
+							containerData[j] = new ContainerRecord(aDetail.getDc().getTitle().get(0), aDetail.getDc().getIdentifier().get(0), detail
+									.getChildContainerModels().get(i).getIcon());
 						}
+						containerDataList.add(containerData);
+						containerModelList.add(detail.getChildContainerModels().get(i));
 					}
 
-					getView().addDigitalObject(true, pagesData, containerData, detail.getDc(), uuid, dispatcher);
+					getView().addDigitalObject(true, pagesData, containerDataList, containerModelList, detail.getDc(), uuid, dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
 				}
@@ -275,7 +294,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		// if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
 		// getView().addDigitalObject(false, null, dispatcher);
-		// }
+		// }MonographDetail
 
 	}
 

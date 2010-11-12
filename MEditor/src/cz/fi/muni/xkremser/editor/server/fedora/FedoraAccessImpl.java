@@ -443,8 +443,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 	}
 
 	@Override
-	public List<String> getIntCompPartUuid(String uuid) throws IOException {
+	public List<String> getIntCompPartsUuid(String uuid) throws IOException {
 		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart/@rdf:resource");
+	}
+
+	@Override
+	public List<String> getMonographUnitsUuid(String uuid) throws IOException {
+		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasUnit/@rdf:resource");
 	}
 
 	/*

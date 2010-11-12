@@ -323,6 +323,8 @@ public interface FedoraAccess {
 	 */
 	public List<String> getPagesUuid(String uuid) throws IOException;
 
-	public List<String> getIntCompPartUuid(String uuid) throws IOException;
+	public List<String> getIntCompPartsUuid(String uuid) throws IOException;
+
+	public List<String> getMonographUnitsUuid(String uuid) throws IOException;
 
 }

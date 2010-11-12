@@ -72,10 +72,13 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	public abstract boolean hasPages();
 
-	public abstract boolean hasContainers();
+	public abstract int hasContainers();
 
 	public abstract List<PageDetail> getPages();
 
-	public abstract List<? extends AbstractDigitalObjectDetail> getContainers();
+	// TODO: consider strategy DP
+	public abstract List<KrameriusModel> getChildContainerModels();
+
+	public abstract List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers();
 
 }

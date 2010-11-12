@@ -134,4 +134,10 @@ public class ContainerRecord extends TileRecord {
 		return new ContainerRecord(getName(), getUuid(), getPicture(), getDescription());
 	}
 
+	@Override
+	public String toString() {
+		return "ContainerRecord [getName()=" + getName() + ", getUuid()=" + getUuid() + ", getPicture()=" + getPicture() + ", getDescription()=" + getDescription()
+				+ ", deepCopy()=" + deepCopy() + "]";
+	}
+
 }

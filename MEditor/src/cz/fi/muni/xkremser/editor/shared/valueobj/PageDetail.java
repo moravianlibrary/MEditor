@@ -33,6 +33,7 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 		return KrameriusModel.PAGE;
 	}
 
+	@SuppressWarnings("unused")
 	private PageDetail() {
 		super();
 	}
@@ -81,8 +82,8 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 	}
 
 	@Override
-	public boolean hasContainers() {
-		return false;
+	public int hasContainers() {
+		return 0;
 	}
 
 	@Override
@@ -91,7 +92,12 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 	}
 
 	@Override
-	public List<AbstractDigitalObjectDetail> getContainers() {
+	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
+		return null;
+	}
+
+	@Override
+	public List<KrameriusModel> getChildContainerModels() {
 		return null;
 	}
 

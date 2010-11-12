@@ -5,16 +5,17 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.resources.MEditorResources;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -65,7 +66,9 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		topContainer = new HLayout();
 		topContainer.setWidth100();
 		topContainer.setHeight(45);
-		Img logo = new Img("logo_bw.png", 140, 40);
+
+		Image logo = new Image(MEditorResources.INSTANCE.logo());
+		// Img logo = new Img("logo_bw.png", 140, 40);
 		// Img logo = new Img("mzk_logo.gif", 283, 87);
 		topContainer.addMember(logo);
 		widget.addMember(topContainer);

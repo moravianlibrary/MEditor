@@ -449,8 +449,13 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 	}
 
 	@Override
-	public List<String> getIntCompPartUuid(String uuid) throws IOException {
-		return rawAccess.getIntCompPartUuid(uuid);
+	public List<String> getIntCompPartsUuid(String uuid) throws IOException {
+		return rawAccess.getIntCompPartsUuid(uuid);
+	}
+
+	@Override
+	public List<String> getMonographUnitsUuid(String uuid) throws IOException {
+		return rawAccess.getMonographUnitsUuid(uuid);
 	}
 
 }

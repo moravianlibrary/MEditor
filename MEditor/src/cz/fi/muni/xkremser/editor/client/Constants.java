@@ -83,4 +83,12 @@ public class Constants {
 	public static final String FEDORA_UUID_PREFIX = "uuid:";
 
 	public static final String FEDORA_INFO_PREFIX = "info:fedora/";
+
+	public static final String MONOGRAPH_UNIT_ICON = "icons/128/monograph_unit.png";
+
+	public static final String VOLUME_ICON = "icons/128/volume.png";
+
+	public static final String INTERNAL_PART_ICON = "icons/128/internal_part.png";
+
+	public static final String PERIODICAL_ITEM_ICON = "icons/128/periodical_item.png";
 }

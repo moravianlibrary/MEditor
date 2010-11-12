@@ -26,6 +26,7 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 	// type (= model:internalpart)
 	// rights (treba policy:private)
 
+	@SuppressWarnings("unused")
 	private InternalPartDetail() {
 		super();
 	}
@@ -107,12 +108,17 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 	}
 
 	@Override
-	public boolean hasContainers() {
-		return false;
+	public int hasContainers() {
+		return 0;
 	}
 
 	@Override
-	public List<AbstractDigitalObjectDetail> getContainers() {
+	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
+		return null;
+	}
+
+	@Override
+	public List<KrameriusModel> getChildContainerModels() {
 		return null;
 	}
 
