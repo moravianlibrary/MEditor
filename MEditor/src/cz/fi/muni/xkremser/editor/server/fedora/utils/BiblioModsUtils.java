@@ -7,6 +7,9 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
 import java.util.logging.Level;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -19,7 +22,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaceContext;
+import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,8 +37,9 @@ public class BiblioModsUtils {
 
 	/**
 	 * Gets the page number.
-	 *
-	 * @param doc the doc
+	 * 
+	 * @param doc
+	 *          the doc
 	 * @return the page number
 	 */
 	public static String getPageNumber(Document doc) {
@@ -55,9 +61,11 @@ public class BiblioModsUtils {
 
 	/**
 	 * Gets the title.
-	 *
-	 * @param doc the doc
-	 * @param model the model
+	 * 
+	 * @param doc
+	 *          the doc
+	 * @param model
+	 *          the model
 	 * @return the title
 	 */
 	public static String getTitle(Document doc, KrameriusModel model) {
@@ -77,8 +85,9 @@ public class BiblioModsUtils {
 
 	/**
 	 * Title from biblio mods.
-	 *
-	 * @param doc the doc
+	 * 
+	 * @param doc
+	 *          the doc
 	 * @return the string
 	 */
 	public static String titleFromBiblioMods(Document doc) {
@@ -103,5 +112,24 @@ public class BiblioModsUtils {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
+	}
+
+	public static ModsCollection getMods(org.w3c.dom.Document doc) {
+		ModsCollection collection = null;
+		try {
+			JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.client.mods");
+			Unmarshaller unmarshaller = jc.createUnmarshaller();
+			collection = (ModsCollection) unmarshaller.unmarshal(doc);
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return collection;
+	}
+
+	public static void copy(ModsCollection mods, ModsCollectionClient modsClient) {
+		// TODO Auto-generated method stub a naopak
+
 	}
 }

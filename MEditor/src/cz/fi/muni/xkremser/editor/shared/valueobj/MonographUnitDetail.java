@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -52,9 +51,6 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 
 	private ArrayList<InternalPartDetail> intParts;
 
-	/** The dc. */
-	private DublinCore dc;
-
 	/**
 	 * Gets the pages.
 	 * 
@@ -81,28 +77,6 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 
 	public void setIntParts(ArrayList<InternalPartDetail> intParts) {
 		this.intParts = intParts;
-	}
-
-	/**
-	 * Sets the dc.
-	 * 
-	 * @param dc
-	 *          the new dc
-	 */
-	public void setDc(DublinCore dc) {
-		this.dc = dc;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
-	 * getDc()
-	 */
-	@Override
-	public DublinCore getDc() {
-		return dc;
 	}
 
 	@Override

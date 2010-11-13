@@ -57,6 +57,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -161,8 +162,9 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(final boolean tileGridVisible, final Record[] pageData, final List<Record[]> containerDataList,
-			final List<KrameriusModel> containerModelList, final DublinCore dc, final String uuid, final DispatchAsync dispatcher) {
+	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
+			final Streams streams, final String uuid, final DispatchAsync dispatcher) {
+		final DublinCore dc = streams.getDc();
 		// final ModalWindow modal = new ModalWindow(layout);
 		// modal.setLoadingIcon("loadingAnimation.gif");
 		// modal.show("Loading digital object data...", true);
@@ -174,24 +176,22 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		Tab pageTab = null;
 		List<Tab> containerTabs = null;
-		if (tileGridVisible == true) {
-			if (pageData != null) {
-				TileGrid grid = getTileGrid(true);
-				grid.setData(pageData);
-				pageTab = new Tab("Relations", "pieces/16/pawn_red.png");
-				pageTab.setPane(grid);
-			}
+		if (pageData != null) {
+			TileGrid grid = getTileGrid(true);
+			grid.setData(pageData);
+			pageTab = new Tab("Relations", "pieces/16/pawn_red.png");
+			pageTab.setPane(grid);
+		}
 
-			if (containerDataList != null) {
-				containerTabs = new ArrayList<Tab>(containerModelList.size());
-				for (int i = 0; i < containerModelList.size(); i++) {
-					TileGrid grid = getTileGrid(false);
-					grid.setData(containerDataList.get(i));
-					// TODO: localization
-					Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
-					containerTab.setPane(grid);
-					containerTabs.add(containerTab);
-				}
+		if (containerDataList != null) {
+			containerTabs = new ArrayList<Tab>(containerModelList.size());
+			for (int i = 0; i < containerModelList.size(); i++) {
+				TileGrid grid = getTileGrid(false);
+				grid.setData(containerDataList.get(i));
+				// TODO: localization
+				Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
+				containerTab.setPane(grid);
+				containerTabs.add(containerTab);
 			}
 		}
 
@@ -296,8 +296,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					SC.say(tab.getDc().toString());
 					System.out.println(tab.getDc());
 				} else {
-					SC.say(dc.toString());
-					System.out.println(dc);
+					SC.say(streams.toString());
+					System.out.println(streams);
 				}
 			}
 		});

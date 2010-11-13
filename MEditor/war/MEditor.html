@@ -25,36 +25,39 @@
 <script>window.isomorphicDir='sc/'</script>
 -->
 <!--add loading indicator while the app is being loaded-->
- <style type="text/css">
-        body { overflow:hidden }
-        #loading {
-            border: 1px solid #ccc;
-            position: absolute;
-            left: 45%;
-            top: 40%;
-            padding: 2px;
-            z-index: 20001;
-            height: auto;
-        }
+<style type="text/css">
+body {
+	overflow: hidden
+}
 
-        #loading a {
-            color: #225588;
-        }
+#loading {
+	border: 1px solid #ccc;
+	position: absolute;
+	left: 45%;
+	top: 40%;
+	padding: 2px;
+	z-index: 20001;
+	height: auto;
+}
 
-        #loading .loadingIndicator {
-            background: white;
-            font: bold 13px tahoma, arial, helvetica;
-            padding: 10px;
-            margin: 0;
-            height: auto;
-            color: #444;
-        }
+#loading a {
+	color: #225588;
+}
 
-        #loadingMsg {
-            font: normal 10px arial, tahoma, sans-serif;
-        }
-    </style>
-   
+#loading .loadingIndicator {
+	background: white;
+	font: bold 13px tahoma, arial, helvetica;
+	padding: 10px;
+	margin: 0;
+	height: auto;
+	color: #444;
+}
+
+#loadingMsg {
+	font: normal 10px arial, tahoma, sans-serif;
+}
+</style>
+
 
 
 
@@ -66,7 +69,7 @@
 
 
 
-
+</head>
 <body>
 
 
@@ -75,14 +78,15 @@
 <!-- OPTIONAL: include this if you want history support -->
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
 	style="position: absolute; width: 0; height: 0; border: 0"></iframe>
-	
+
 <div id="loadingWrapper">
-	<div id="loading">
-    	<div class="loadingIndicator">
-        	<img src="images/loadingAnimation2.gif" width="100" height="100" style="margin-right:8px;float:left;vertical-align:top;"/>Metadata Editor<br/>
-        	<span id="loadingMsg">Loading styles and images...</span>
-       	</div>
-	</div>
+<div id="loading">
+<div class="loadingIndicator"><img
+	src="images/loadingAnimation2.gif" width="100" height="100"
+	style="margin-right: 8px; float: left; vertical-align: top;" />Metadata
+Editor<br />
+<span id="loadingMsg">Loading styles and images...</span></div>
+</div>
 </div>
 
 <!--
@@ -95,7 +99,7 @@
 <!--                                           -->
 <script type="text/javascript" language="javascript"
 	src="meditor/meditor.nocache.js"></script>
-</head>
+
 
 <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
 <noscript>

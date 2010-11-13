@@ -49,7 +49,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -92,8 +92,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 * @param dispatcher
 		 *          the dispatcher
 		 */
-		void addDigitalObject(final boolean tileGridVisible, final Record[] pageData, final List<Record[]> containerDataList,
-				final List<KrameriusModel> containerModelList, final DublinCore dc, final String uuid, final DispatchAsync dispatcher);
+		void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList, final Streams dc,
+				final String uuid, final DispatchAsync dispatcher);
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						containerModelList.add(detail.getChildContainerModels().get(i));
 					}
 
-					getView().addDigitalObject(true, pagesData, containerDataList, containerModelList, detail.getDc(), uuid, dispatcher);
+					getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
 				}

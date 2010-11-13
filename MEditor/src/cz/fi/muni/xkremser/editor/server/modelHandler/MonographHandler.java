@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.w3c.dom.Document;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.MonographDetail;
@@ -59,15 +57,12 @@ public class MonographHandler extends DigitalObjectHandler implements CanGetObje
 	@Override
 	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
 		MonographDetail detail = new MonographDetail(findRelated ? getRelated(uuid) : null);
-		DublinCore dc = null;
+		DublinCore dc = handleDc(uuid, findRelated);
 		ArrayList<PageDetail> pages = new ArrayList<PageDetail>();
 		ArrayList<InternalPartDetail> intParts = new ArrayList<InternalPartDetail>();
 		ArrayList<MonographUnitDetail> monUnits = new ArrayList<MonographUnitDetail>();
-		Document dcDocument = null;
 		try {
-			dcDocument = getFedoraAccess().getDC(uuid);
 			if (findRelated) {
-				dc = DCUtils.getDC(dcDocument);
 				List<String> pageUuids = getFedoraAccess().getPagesUuid(uuid);
 				for (String pageUuid : pageUuids) {
 					pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
@@ -80,10 +75,6 @@ public class MonographHandler extends DigitalObjectHandler implements CanGetObje
 				for (String monUnitUuid : monographUnitsUuids) {
 					monUnits.add((MonographUnitDetail) monUnitHandler.getDigitalObject(monUnitUuid, false));
 				}
-			} else {
-				dc = new DublinCore();
-				dc.addTitle(DCUtils.titleFromDC(dcDocument));
-				dc.addIdentifier(uuid);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

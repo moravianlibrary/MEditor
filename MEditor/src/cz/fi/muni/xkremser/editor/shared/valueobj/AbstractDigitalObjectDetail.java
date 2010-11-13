@@ -11,6 +11,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -18,7 +19,19 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class AbstractDigitalObjectDetail.
  */
 public abstract class AbstractDigitalObjectDetail implements IsSerializable {
+
+	private Streams streams;
 	private ArrayList<ArrayList<String>> related;
+
+	public AbstractDigitalObjectDetail() {
+	}
+
+	/**
+	 * Instantiates a new abstract digital object detail.
+	 */
+	public AbstractDigitalObjectDetail(ArrayList<ArrayList<String>> related) {
+		this.related = related;
+	}
 
 	/**
 	 * Gets the model.
@@ -31,33 +44,40 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 		return related;
 	}
 
-	/**
-	 * Gets the dc.
-	 * 
-	 * @return the dc
-	 */
-	public abstract DublinCore getDc();
-
-	/**
-	 * Checks for pages.
-	 * 
-	 * @return true, if successful
-	 */
-
-	// public abstract boolean hasMods();
-
-	// public Class<? extends AbstractDigitalObjectDetail> getClazz() {
-	// return getClass();
-	// }
-
-	public AbstractDigitalObjectDetail() {
+	public Streams getStreams() {
+		return this.streams;
 	}
 
-	/**
-	 * Instantiates a new abstract digital object detail.
-	 */
-	public AbstractDigitalObjectDetail(ArrayList<ArrayList<String>> related) {
-		this.related = related;
+	public void setStreams(Streams streams) {
+		this.streams = streams;
+	}
+
+	public void setDc(DublinCore dc) {
+		if (getStreams() == null) {
+			setStreams(new Streams());
+		}
+		getStreams().setDc(dc);
+	}
+
+	public DublinCore getDc() {
+		if (getStreams() != null)
+			return getStreams().getDc();
+		else
+			return null;
+	}
+
+	public void setMods(ModsCollectionClient mods) {
+		if (getStreams() == null) {
+			setStreams(new Streams());
+		}
+		getStreams().setMods(mods);
+	}
+
+	public ModsCollectionClient getMods() {
+		if (getStreams() != null)
+			return getStreams().getMods();
+		else
+			return null;
 	}
 
 	/*
@@ -67,7 +87,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 */
 	@Override
 	public String toString() {
-		return "model: " + getModel() + "\nDC: " + getDc();
+		return "model: " + getModel() + "\nStreams: " + getStreams();
 	}
 
 	public abstract boolean hasPages();

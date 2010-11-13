@@ -7,6 +7,8 @@
 		Metadata editor
     </display-name>
 
+
+
 	<filter>
 		<filter-name>guiceFilter</filter-name>
 		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
@@ -28,7 +30,7 @@
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
 		<url-pattern>/gwt-log</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Servlet for generating thumbnails -->
 	<servlet>
 		<servlet-name>ThumbnailService</servlet-name>
@@ -40,7 +42,7 @@
 		<servlet-name>ThumbnailService</servlet-name>
 		<url-pattern>/images/thumbnail/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Servlet for generating full images -->
 	<servlet>
 		<servlet-name>FullImgService</servlet-name>
@@ -52,10 +54,6 @@
 		<servlet-name>FullImgService</servlet-name>
 		<url-pattern>/images/full/*</url-pattern>
 	</servlet-mapping>
-	
-
-
-
 
 	<session-config>
 		<session-timeout>30</session-timeout>
@@ -64,5 +62,10 @@
 	<welcome-file-list>
 		<welcome-file>MEditor.html</welcome-file>
 	</welcome-file-list>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+	</error-page>
 
 </web-app>

@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.w3c.dom.Document;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
@@ -56,25 +54,16 @@ public class InternalPartHandler extends DigitalObjectHandler {
 	@Override
 	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
 		InternalPartDetail detail = new InternalPartDetail(findRelated ? getRelated(uuid) : null);
-		DublinCore dc = null;
+		DublinCore dc = handleDc(uuid, findRelated);
 		ArrayList<PageDetail> pages = new ArrayList<PageDetail>();
-		Document dcDocument = null;
 		try {
-			dcDocument = getFedoraAccess().getDC(uuid);
 			if (findRelated) {
-				dc = DCUtils.getDC(dcDocument);
 				List<String> pageUuids = getFedoraAccess().getIsOnPagesUuid(uuid);
 				for (String pageUuid : pageUuids) {
 					pages.add((PageDetail) pageHandler.getDigitalObject(pageUuid, false));
 				}
-			} else {
-				dc = new DublinCore();
-				dc.addTitle(DCUtils.titleFromDC(dcDocument));
-				dc.addIdentifier(uuid);
 			}
-
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		detail.setDc(dc);
