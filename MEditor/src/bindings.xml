@@ -4,38 +4,38 @@
 	<jxb:bindings schemaLocation="mods-3-3.xsd" node="/xsd:schema">
 		<jxb:bindings node="//xsd:complexType[@name='relatedItemType']">
 			<jxb:bindings node=".//xsd:attribute[@name='type']">
-				<jxb:property name="ValueToFixError1" />
+				<jxb:property name="atType" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<jxb:bindings node="//xsd:complexType[@name='nameType']">
 			<jxb:bindings node=".//xsd:attribute[@name='type']">
-				<jxb:property name="ValueToFixError2" />
+				<jxb:property name="atType" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<jxb:bindings node="//xsd:attributeGroup[@name='language']">
 			<jxb:bindings node=".//xsd:attribute[@name='lang']">
-				<jxb:property name="ValueToFixError3" />
+				<jxb:property name="xmlLang" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<jxb:bindings node="//xsd:extension[@base='baseTitleInfoType']">
 			<jxb:bindings node=".//xsd:attribute[@name='type']">
-				<jxb:property name="ValueToFixError4" />
+				<jxb:property name="atType" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<jxb:bindings node="//xsd:extension[@base='stringPlusDisplayLabel']">
 			<jxb:bindings node=".//xsd:attribute[@name='type']">
-				<jxb:property name="ValueToFixError5" />
+				<jxb:property name="atType" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<jxb:bindings node="//xsd:extension[@base='extensionType']">
 			<jxb:bindings node=".//xsd:attribute[@name='type']">
-				<jxb:property name="ValueToFixError6" />
+				<jxb:property name="atType" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<jxb:bindings
 			node="//xsd:complexType[@name='stringPlusAuthorityPlusTypePlusLanguage']/xsd:simpleContent/xsd:extension[@base='stringPlusAuthorityPlusLanguage']">
 			<jxb:bindings node=".//xsd:attribute[@name='type']">
-				<jxb:property name="ValueToFixError7" />
+				<jxb:property name="atType" />
 			</jxb:bindings>
 		</jxb:bindings>
 		<!-- <jxb:bindings node="//xsd:complexType[@name='nameType']"> <jxb:bindings 

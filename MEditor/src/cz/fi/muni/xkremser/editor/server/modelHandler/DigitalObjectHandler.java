@@ -95,7 +95,7 @@ public class DigitalObjectHandler implements CanGetObject {
 			handler = injector.getInstance(GenericHandler.class);
 		}
 		AbstractDigitalObjectDetail detail = handler.getDigitalObject(uuid, findRelated);
-		// detail.setMods(handleMods(uuid));
+		detail.setMods(handleMods(uuid));
 		return detail;
 	}
 
@@ -133,7 +133,7 @@ public class DigitalObjectHandler implements CanGetObject {
 		try {
 			modsDocument = getFedoraAccess().getBiblioMods(uuid);
 			mods = BiblioModsUtils.getMods(modsDocument);
-			BiblioModsUtils.copy(mods, modsClient);
+			modsClient = BiblioModsUtils.toModsClient(mods);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

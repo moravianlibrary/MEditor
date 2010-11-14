@@ -53,6 +53,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
@@ -165,6 +166,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
 			final Streams streams, final String uuid, final DispatchAsync dispatcher) {
 		final DublinCore dc = streams.getDc();
+		final ModsCollectionClient mods = streams.getMods();
 		// final ModalWindow modal = new ModalWindow(layout);
 		// modal.setLoadingIcon("loadingAnimation.gif");
 		// modal.show("Loading digital object data...", true);
@@ -242,7 +244,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					Timer timer = new Timer() {
 						@Override
 						public void run() {
-							Tab t = new ModsTab(1, true);
+							Tab t = new ModsTab(1, true, mods.getMods().get(0));
 							TabSet ts = event.getTab().getTabSet();
 							ts.setTabPane(event.getTab().getID(), t.getPane());
 							mw.hide();
