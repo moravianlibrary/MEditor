@@ -28,7 +28,6 @@ public class SubjectTypeClient implements IsSerializable {
 
 	protected String id;
 	protected String authority;
-	protected String type;
 	protected String xlink;
 	protected String xmlLang;
 	protected String lang;
@@ -129,14 +128,6 @@ public class SubjectTypeClient implements IsSerializable {
 
 	public void setAuthority(String authority) {
 		this.authority = authority;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public String getXlink() {

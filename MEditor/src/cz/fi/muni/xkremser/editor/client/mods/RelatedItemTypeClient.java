@@ -7,22 +7,20 @@
 
 package cz.fi.muni.xkremser.editor.client.mods;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RelatedItemTypeClient implements IsSerializable {
-	protected List<ModsTypeClient> mods;
+	protected ModsTypeClient mods;
 	protected String displayLabel;
 	protected String id;
 	protected String type;
 	protected String xlink;
 
-	public List<ModsTypeClient> getMods() {
+	public ModsTypeClient getMods() {
 		return mods;
 	}
 
-	public void setMods(List<ModsTypeClient> mods) {
+	public void setMods(ModsTypeClient mods) {
 		this.mods = mods;
 	}
 

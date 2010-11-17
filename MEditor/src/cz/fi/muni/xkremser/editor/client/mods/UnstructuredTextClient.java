@@ -16,8 +16,6 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 	protected String script;
 	protected String transliteration;
 	protected String xlink;
-	protected String show;
-	protected String actuate;
 
 	public String getXmlLang() {
 		return xmlLang;
@@ -57,21 +55,5 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	public void setXlink(String xlink) {
 		this.xlink = xlink;
-	}
-
-	public String getShow() {
-		return show;
-	}
-
-	public void setShow(String show) {
-		this.show = show;
-	}
-
-	public String getActuate() {
-		return actuate;
-	}
-
-	public void setActuate(String actuate) {
-		this.actuate = actuate;
 	}
 }

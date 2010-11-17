@@ -5,9 +5,13 @@
  */
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.fedora.api.RelationshipTuple;
@@ -132,9 +136,18 @@ public class DigitalObjectHandler implements CanGetObject {
 		Document modsDocument = null;
 		try {
 			modsDocument = getFedoraAccess().getBiblioMods(uuid);
-			mods = BiblioModsUtils.getMods(modsDocument);
+			File file = new File("/home/kremser/workspace/MEditor/test/cz/fi/muni/xkremser/editor/client/Website_mods.xml");
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document mockModsDocument = db.parse(file);
+			long start = System.currentTimeMillis();
+			mods = BiblioModsUtils.getMods(mockModsDocument);
 			modsClient = BiblioModsUtils.toModsClient(mods);
+			System.out.println("duration: " + (System.currentTimeMillis() - start) + " ms.");
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) { // TODO: remove
 			e.printStackTrace();
 		}
 		return modsClient;

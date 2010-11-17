@@ -17,7 +17,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 	protected List<String> reformattingQuality;
 	protected List<String> internetMediaType;
 	protected List<String> extent;
-	protected List<String> dataOrigin;
+	protected List<String> digitalOrigin;
 	protected List<NoteTypeClient> note;
 
 	protected String xmlLang;
@@ -57,12 +57,12 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 		this.extent = extent;
 	}
 
-	public List<String> getDataOrigin() {
-		return dataOrigin;
+	public List<String> getDigitalOrigin() {
+		return digitalOrigin;
 	}
 
-	public void setDataOrigin(List<String> dataOrigin) {
-		this.dataOrigin = dataOrigin;
+	public void setDigitalOrigin(List<String> digitalOrigin) {
+		this.digitalOrigin = digitalOrigin;
 	}
 
 	public List<NoteTypeClient> getNote() {

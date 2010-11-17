@@ -22,6 +22,24 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 	protected List<String> county;
 	protected List<String> city;
 	protected List<String> citySection;
+	protected List<String> island;
+	protected List<String> area;
+
+	public List<String> getIsland() {
+		return island;
+	}
+
+	public void setIsland(List<String> island) {
+		this.island = island;
+	}
+
+	public List<String> getArea() {
+		return area;
+	}
+
+	public void setArea(List<String> area) {
+		this.area = area;
+	}
 
 	public List<String> getExtraterrestrialArea() {
 		return extraterrestrialArea;

@@ -193,4 +193,24 @@ public class CopyInformationTypeClient implements IsSerializable {
 		return this.enumerationAndChronology;
 	}
 
+	public void setSubLocation(List<String> subLocation) {
+		this.subLocation = subLocation;
+	}
+
+	public void setShelfLocator(List<String> shelfLocator) {
+		this.shelfLocator = shelfLocator;
+	}
+
+	public void setElectronicLocator(List<String> electronicLocator) {
+		this.electronicLocator = electronicLocator;
+	}
+
+	public void setNote(List<StringPlusDisplayLabelPlusTypeClient> note) {
+		this.note = note;
+	}
+
+	public void setEnumerationAndChronology(List<EnumerationAndChronologyTypeClient> enumerationAndChronology) {
+		this.enumerationAndChronology = enumerationAndChronology;
+	}
+
 }
