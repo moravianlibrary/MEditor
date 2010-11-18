@@ -92,6 +92,10 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	public abstract boolean hasPages();
 
+	public boolean isImage() {
+		return false;
+	}
+
 	public abstract int hasContainers();
 
 	public abstract List<PageDetail> getPages();

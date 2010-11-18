@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
@@ -19,6 +20,7 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 
 // TODO: Auto-generated Javadoc
@@ -36,11 +38,13 @@ public class ModsTab extends Tab {
 
 	/** The deep. */
 	private final int deep;
+	private ModsTypeClient modsTypeClient;
+	private List<TitleInfoTypeClient> titleInfo;
 
 	/**
 	 * The Class GetRelatedItem.
 	 */
-	private class GetRelatedItem implements GetLayoutOperation {
+	private class GetRelatedItem extends GetLayoutOperation {
 		private final ModsTypeClient modsTypeClient;
 
 		public GetRelatedItem(ModsTypeClient modsTypeClient) {
@@ -109,6 +113,7 @@ public class ModsTab extends Tab {
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MUTEX);
 		sectionStack.setWidth100();
+		sectionStack.setHeight100();
 		sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.addSection(section);
 		Tab tab = new Tab(name, "pieces/16/piece_blue.png");
@@ -143,24 +148,16 @@ public class ModsTab extends Tab {
 				}
 			}), TabUtils.ATTR_XLINK, TabUtils.getDisplayLabel("Equivalent to MARC 21 fields 76X-78X subfields $i and $3."), TabUtils.ATTR_ID };
 			layout.addMember(TabUtils.getAttributes(false, attributes));
-			// final SectionStack sectionStack = new SectionStack();
-			// sectionStack.setLeaveScrollbarGap(true);
-			// sectionStack.setVisibilityMode(VisibilityMode.MUTEX);
-			// sectionStack.setWidth100();
-			// sectionStack.setOverflow(Overflow.AUTO);
-			// sectionStack.addSection(TabUtils.getSomeStack(true, "Related Item", new
-			// GetRelatedItem(modsTypeClient)));
-			// layout.addMember(sectionStack);
-			// setPane(layout);
 		}
 
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		// topTabSet.setHeight100();
-
-		Tab[] tabs = new Tab[] { getTab(TabUtils.getTitleInfoStack(true), "Title Info"), getTab(TabUtils.getNameStack(true), "Name"),
-				getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"),
+		if (modsTypeClient == null)
+			return layout; // TODO: handle
+		Tab[] tabs = new Tab[] { getTab(TabUtils.getTitleInfoStack(true, modsTypeClient.getTitleInfo(), null/* holders */), "Title Info"),
+				getTab(TabUtils.getNameStack(true), "Name"), getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"),
 				getTab(TabUtils.getOriginInfoStack(true), "Origin"), getTab(TabUtils.getLanguageStack(true), "Language"),
 				getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."), getTab(TabUtils.getAbstractStack(true), "Abstract"),
 				getTab(TabUtils.getTableOfContentsStack(true), "Table of Con."), getTab(TabUtils.getTargetAudienceStack(true), "Audience"),
@@ -172,6 +169,17 @@ public class ModsTab extends Tab {
 		topTabSet.setTabs(tabs);
 		layout.addMember(topTabSet);
 		return layout;
+	}
+
+	public ModsTypeClient getDc() {
+		if (modsTypeClient == null)
+			return null;
+		modsTypeClient.setTitleInfo(titleInfo);
+		return modsTypeClient;
+	}
+
+	public void setDc(ModsTypeClient modsTypeClient) {
+		this.modsTypeClient = modsTypeClient;
 	}
 
 }

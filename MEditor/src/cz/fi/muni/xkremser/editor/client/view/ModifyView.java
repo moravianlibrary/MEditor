@@ -77,6 +77,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 	private static final String ID_DC = "dc";
 	private static final String ID_MODS = "mods";
+	private static final String ID_FULL = "full";
+	private static final String ID_THUMB = "thumb";
 	private static final String ID_TAB = "tab";
 	public static final String ID_TABSET = "tabset";
 
@@ -164,7 +166,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 */
 	@Override
 	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
-			final Streams streams, final String uuid, final DispatchAsync dispatcher) {
+			final Streams streams, final String uuid, final boolean picture, final DispatchAsync dispatcher) {
 		final DublinCore dc = streams.getDc();
 		final ModsCollectionClient mods = streams.getMods();
 		// final ModalWindow modal = new ModalWindow(layout);
@@ -205,13 +207,30 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		final Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
 		tTab3.setAttribute(ID_TAB, ID_MODS);
 
-		Tab tTab4 = new Tab("Thumbnail", "pieces/16/pawn_white.png");
-		Img tImg4 = new Img("pieces/48/pawn_white.png", 48, 48);
-		tTab4.setPane(tImg4);
+		Tab tTab4 = null;
+		Tab tTab5 = null;
+		if (picture) {
+			tTab4 = new Tab("Thumbnail", "pieces/16/pawn_white.png");
+			final Image full2 = new Image("images/thumbnail/" + uuid);
+			final Img image = new Img("thumbnail/" + uuid, full2.getWidth(), full2.getHeight());
+			image.setAnimateTime(500);
+			image.addClickHandler(new ClickHandler() {
+				private boolean turn = false;
 
-		Tab tTab5 = new Tab("Full image", "pieces/16/pawn_yellow.png");
-		Img tImg5 = new Img("pieces/48/pawn_yellow.png", 48, 48);
-		tTab5.setPane(tImg5);
+				@Override
+				public void onClick(ClickEvent event) {
+					if (turn) {
+						image.animateRect(5, 5, full2.getWidth(), full2.getHeight());
+					} else {
+						image.animateRect(5, 5, full2.getWidth() * 2, full2.getHeight() * 2);
+					}
+					turn = !turn;
+				}
+			});
+			tTab4.setPane(image);
+			tTab5 = new Tab("Full image", "pieces/16/pawn_yellow.png");
+			tTab5.setAttribute(ID_TAB, ID_FULL);
+		}
 
 		Tab tTab6 = new Tab("IMG ADM", "pieces/16/piece_blue.png");
 		Img tImg6 = new Img("pieces/48/piece_blue.png", 48, 48);
@@ -228,8 +247,10 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			tabList.addAll(containerTabs);
 		tabList.add(tTab2);
 		tabList.add(tTab3);
-		tabList.add(tTab4);
-		tabList.add(tTab5);
+		if (picture) {
+			tabList.add(tTab4);
+			tabList.add(tTab5);
+		}
 		tabList.add(tTab6);
 		tabList.add(tTab7);
 
@@ -251,8 +272,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 						}
 					};
 					timer.schedule(25);
-				}
-				if (ID_DC.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
+				} else if (ID_DC.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");
 					mw.show(true);
@@ -264,6 +284,35 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 							TabSet ts = event.getTab().getTabSet();
 							ts.setTabPane(event.getTab().getID(), t.getPane());
 							t.setAttribute(TAB_INITIALIZED, true);
+							mw.hide();
+						}
+					};
+					timer.schedule(25);
+				} else if (ID_FULL.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
+					final ModalWindow mw = new ModalWindow(topTabSet);
+					mw.setLoadingIcon("loadingAnimation.gif");
+					mw.show(true);
+					Timer timer = new Timer() {
+						@Override
+						public void run() {
+							final Image full2 = new Image("images/full/" + uuid);
+							final Img full = new Img("full/" + uuid, full2.getWidth(), full2.getHeight());
+							full.addClickHandler(new ClickHandler() {
+								private boolean turn = false;
+
+								@Override
+								public void onClick(ClickEvent event) {
+									if (turn) {
+										full.animateRect(5, 5, full2.getWidth() / 2, full2.getHeight() / 2);
+									} else {
+										full.animateRect(5, 5, full2.getWidth(), full2.getHeight());
+									}
+									turn = !turn;
+								}
+							});
+
+							TabSet ts = event.getTab().getTabSet();
+							ts.setTabPane(event.getTab().getID(), full);
 							mw.hide();
 						}
 					};

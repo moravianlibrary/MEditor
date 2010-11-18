@@ -75,4 +75,9 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 		return null;
 	}
 
+	@Override
+	public boolean isImage() {
+		return true;
+	}
+
 }

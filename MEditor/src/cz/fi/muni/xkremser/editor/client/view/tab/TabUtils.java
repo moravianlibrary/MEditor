@@ -30,6 +30,8 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class TabUtils.
@@ -183,20 +185,47 @@ public final class TabUtils {
 	/**
 	 * The Interface GetLayoutOperation.
 	 */
-	public interface GetLayoutOperation {
+	public static abstract class GetLayoutOperation {
+		private List<? extends Object> holders;
+		private List<? extends Object> values;
+		protected int counter = 0;
+
+		public void resetCounter() {
+			counter = 0;
+		}
+
+		public int getElementNumber() {
+			return values.size();
+		}
+
+		public List<? extends Object> getHolders() {
+			return holders;
+		}
+
+		public void setHolders(List<? extends Object> holders) {
+			this.holders = holders;
+		}
+
+		public List<? extends Object> getValues() {
+			return values;
+		}
+
+		public void setValues(List<? extends Object> values) {
+			this.values = values;
+		}
 
 		/**
 		 * Execute.
 		 * 
 		 * @return the canvas
 		 */
-		Canvas execute();
+		abstract Canvas execute();
 	}
 
 	/**
 	 * The Class GetTitleInfoLayout.
 	 */
-	private static class GetTitleInfoLayout implements GetLayoutOperation {
+	private static class GetTitleInfoLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -207,14 +236,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getTitleInfoLayout();
+			return getTitleInfoLayout((TitleInfoTypeClient) getValues().get(counter++), (TitleInfoHolder) getHolders().get(counter++));
 		}
 	}
 
 	/**
 	 * The Class GetNameLayout.
 	 */
-	private static class GetNameLayout implements GetLayoutOperation {
+	private static class GetNameLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -232,7 +261,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetTypeOfResourceLayout.
 	 */
-	private static class GetTypeOfResourceLayout implements GetLayoutOperation {
+	private static class GetTypeOfResourceLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -250,7 +279,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetGenreLayout.
 	 */
-	private static class GetGenreLayout implements GetLayoutOperation {
+	private static class GetGenreLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -268,7 +297,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetOriginInfoLayout.
 	 */
-	private static class GetOriginInfoLayout implements GetLayoutOperation {
+	private static class GetOriginInfoLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -286,7 +315,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetPhysicialDescriptionLayout.
 	 */
-	private static class GetPhysicialDescriptionLayout implements GetLayoutOperation {
+	private static class GetPhysicialDescriptionLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -304,7 +333,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetGeneralLayout.
 	 */
-	private static class GetGeneralLayout implements GetLayoutOperation {
+	private static class GetGeneralLayout extends GetLayoutOperation {
 
 		/** The head. */
 		private final Attribute head;
@@ -342,7 +371,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetGeneralDeepLayout.
 	 */
-	private static class GetGeneralDeepLayout implements GetLayoutOperation {
+	private static class GetGeneralDeepLayout extends GetLayoutOperation {
 
 		/** The attributes. */
 		private final Attribute[] attributes;
@@ -374,7 +403,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetSubjectLayout.
 	 */
-	private static class GetSubjectLayout implements GetLayoutOperation {
+	private static class GetSubjectLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -392,7 +421,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetLocationLayout.
 	 */
-	private static class GetLocationLayout implements GetLayoutOperation {
+	private static class GetLocationLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -410,7 +439,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetCopyInformationLayout.
 	 */
-	private static class GetCopyInformationLayout implements GetLayoutOperation {
+	private static class GetCopyInformationLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -428,7 +457,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetPartLayout.
 	 */
-	private static class GetPartLayout implements GetLayoutOperation {
+	private static class GetPartLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -446,7 +475,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetRecordInfoLayout.
 	 */
-	private static class GetRecordInfoLayout implements GetLayoutOperation {
+	private static class GetRecordInfoLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -464,7 +493,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetPlaceLayout.
 	 */
-	private static class GetPlaceLayout implements GetLayoutOperation {
+	private static class GetPlaceLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -482,7 +511,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetDetailLayout.
 	 */
-	private static class GetDetailLayout implements GetLayoutOperation {
+	private static class GetDetailLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -500,7 +529,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetExtentLayout.
 	 */
-	private static class GetExtentLayout implements GetLayoutOperation {
+	private static class GetExtentLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -518,7 +547,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetLanguageOfCatalogingLayout.
 	 */
-	private static class GetLanguageOfCatalogingLayout implements GetLayoutOperation {
+	private static class GetLanguageOfCatalogingLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -536,7 +565,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetLanguageLayout.
 	 */
-	private static class GetLanguageLayout implements GetLayoutOperation {
+	private static class GetLanguageLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -554,7 +583,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetDateLayout.
 	 */
-	private static class GetDateLayout implements GetLayoutOperation {
+	private static class GetDateLayout extends GetLayoutOperation {
 
 		/** The name. */
 		private final String name;
@@ -986,6 +1015,8 @@ public final class TabUtils {
 		final VLayout layout = new VLayout();
 		layout.setLeaveScrollbarGap(true);
 		layout.setWidth100();
+		// int i = operation.getElementNumber();
+		// while (i-- > 0)
 		layout.addMember(operation.execute());
 
 		final ImgButton addButton = new ImgButton();
@@ -1045,7 +1076,9 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the title info stack
 	 */
-	public static SectionStackSection getTitleInfoStack(boolean expanded) {
+	public static SectionStackSection getTitleInfoStack(boolean expanded, List<TitleInfoTypeClient> values, List<TitleInfoHolder> holders) {
+		GET_TITLE_INFO_LAYOUT.setHolders(holders);
+		GET_TITLE_INFO_LAYOUT.setValues(values);
 		return getSomeStack(expanded, "Title Info", GET_TITLE_INFO_LAYOUT);
 	}
 
@@ -1313,7 +1346,7 @@ public final class TabUtils {
 	 * 
 	 * @return the title info layout
 	 */
-	public static VLayout getTitleInfoLayout() {
+	public static VLayout getTitleInfoLayout(TitleInfoTypeClient values, TitleInfoHolder holder) {
 		final VLayout layout = new VLayout();
 
 		final Map<String, String> tooltips = new HashMap<String, String>();

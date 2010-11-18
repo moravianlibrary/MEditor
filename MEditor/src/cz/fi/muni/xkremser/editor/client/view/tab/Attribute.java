@@ -34,6 +34,8 @@ public class Attribute {
 	/** The tooltips. */
 	private Map<String, String> tooltips;
 
+	private String value;
+
 	/**
 	 * Instantiates a new attribute.
 	 */
