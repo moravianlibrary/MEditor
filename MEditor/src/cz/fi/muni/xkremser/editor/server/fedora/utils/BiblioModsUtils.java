@@ -27,12 +27,16 @@ import org.w3c.dom.Node;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.AccessConditionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.BaseDateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ClassificationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.CodeOrTextClient;
 import cz.fi.muni.xkremser.editor.client.mods.CopyInformationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateOtherTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.EnumerationAndChronologyTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ExtensionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.HierarchicalGeographicTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.HoldingSimpleTypeClient;
@@ -47,11 +51,14 @@ import cz.fi.muni.xkremser.editor.client.mods.NameTypeAttributeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalLocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient.RecordIdentifierClient;
 import cz.fi.muni.xkremser.editor.client.mods.RelatedItemTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
@@ -73,12 +80,15 @@ import cz.fi.muni.xkremser.editor.client.mods.YesClient;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaceContext;
 import cz.fi.muni.xkremser.editor.server.mods.AbstractType;
 import cz.fi.muni.xkremser.editor.server.mods.AccessConditionType;
+import cz.fi.muni.xkremser.editor.server.mods.BaseDateType;
 import cz.fi.muni.xkremser.editor.server.mods.ClassificationType;
 import cz.fi.muni.xkremser.editor.server.mods.CopyInformationType;
 import cz.fi.muni.xkremser.editor.server.mods.DateOtherType;
 import cz.fi.muni.xkremser.editor.server.mods.DateType;
+import cz.fi.muni.xkremser.editor.server.mods.DetailType;
 import cz.fi.muni.xkremser.editor.server.mods.EnumerationAndChronologyType;
 import cz.fi.muni.xkremser.editor.server.mods.ExtensionType;
+import cz.fi.muni.xkremser.editor.server.mods.ExtentType;
 import cz.fi.muni.xkremser.editor.server.mods.GenreType;
 import cz.fi.muni.xkremser.editor.server.mods.HierarchicalGeographicType;
 import cz.fi.muni.xkremser.editor.server.mods.IdentifierType;
@@ -97,6 +107,7 @@ import cz.fi.muni.xkremser.editor.server.mods.PhysicalLocationType;
 import cz.fi.muni.xkremser.editor.server.mods.PlaceTermType;
 import cz.fi.muni.xkremser.editor.server.mods.PlaceType;
 import cz.fi.muni.xkremser.editor.server.mods.RecordInfoType;
+import cz.fi.muni.xkremser.editor.server.mods.RecordInfoType.RecordIdentifier;
 import cz.fi.muni.xkremser.editor.server.mods.RelatedItemType;
 import cz.fi.muni.xkremser.editor.server.mods.RoleType;
 import cz.fi.muni.xkremser.editor.server.mods.RoleType.RoleTerm;
@@ -928,19 +939,46 @@ public final class BiblioModsUtils {
 
 				// PART ELEMENT
 			} else if (modsElement instanceof PartType) {
+				if (modsTypeClient.getPart() == null) {
+					modsTypeClient.setPart(new ArrayList<PartTypeClient>());
+				}
+				modsTypeClient.getPart().add(toModsClient((PartType) modsElement));
 
 				// EXTENSION ELEMENT
 			} else if (modsElement instanceof ExtensionType) {
+				if (modsTypeClient.getExtension() == null) {
+					modsTypeClient.setExtension(new ArrayList<ExtensionTypeClient>());
+				}
+				modsTypeClient.getExtension().add(toModsClient((ExtensionType) modsElement));
 
 				// RECORD INFO ELEMENT
 			} else if (modsElement instanceof RecordInfoType) {
+				if (modsTypeClient.getRecordInfo() == null) {
+					modsTypeClient.setRecordInfo(new ArrayList<RecordInfoTypeClient>());
+				}
+				modsTypeClient.getRecordInfo().add(toModsClient((RecordInfoType) modsElement));
 			}
 		}
 	}
 
 	private static AccessConditionTypeClient toModsClient(AccessConditionType accessConditionType) {
-		// TODO Auto-generated method stub
-		return null;
+		if (accessConditionType == null)
+			return null;
+		AccessConditionTypeClient accessConditionTypeClient = new AccessConditionTypeClient();
+		accessConditionTypeClient.setDisplayLabel(accessConditionType.getDisplayLabel());
+		accessConditionTypeClient.setType(accessConditionType.getAtType());
+		accessConditionTypeClient.setXlink(accessConditionType.getHref());
+		accessConditionTypeClient.setXmlLang(accessConditionType.getXmlLang());
+		accessConditionTypeClient.setLang(accessConditionType.getLang());
+		accessConditionTypeClient.setScript(accessConditionType.getScript());
+		accessConditionTypeClient.setTransliteration(accessConditionType.getTransliteration());
+		if (accessConditionType.getContent() == null && accessConditionType.getContent().size() > 0) {
+			accessConditionTypeClient.setContent(new ArrayList<String>());
+		}
+		for (Object content : accessConditionType.getContent()) {
+			accessConditionTypeClient.getContent().add((String) content);
+		}
+		return accessConditionTypeClient;
 	}
 
 	private static LocationTypeClient toModsClient(LocationType locationType) {
@@ -1031,5 +1069,148 @@ public final class BiblioModsUtils {
 			relatedItemTypeClient.setMods(modsTypeClient);
 		}
 		return relatedItemTypeClient;
+	}
+
+	private static RecordInfoTypeClient toModsClient(RecordInfoType recordInfoType) {
+		if (recordInfoType == null)
+			return null;
+		RecordInfoTypeClient recordInfoTypeClient = new RecordInfoTypeClient();
+		recordInfoTypeClient.setXmlLang(recordInfoType.getXmlLang());
+		recordInfoTypeClient.setLang(recordInfoType.getLang());
+		recordInfoTypeClient.setScript(recordInfoType.getScript());
+		recordInfoTypeClient.setTransliteration(recordInfoType.getTransliteration());
+
+		List<JAXBElement<?>> subElements = recordInfoType.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate();
+		for (JAXBElement<?> subElement : subElements) {
+			if (subElement.getName().getLocalPart().equals("recordChangeDate")) {
+				if (recordInfoTypeClient.getRecordChangeDate() == null) {
+					recordInfoTypeClient.setRecordChangeDate(new ArrayList<DateTypeClient>());
+				}
+				recordInfoTypeClient.getRecordChangeDate().add(toModsClient((DateType) subElement.getValue()));
+			} else if (subElement.getName().getLocalPart().equals("recordIdentifier")) {
+				if (recordInfoTypeClient.getRecordIdentifier() == null) {
+					recordInfoTypeClient.setRecordIdentifier(new ArrayList<RecordIdentifierClient>());
+				}
+				RecordIdentifierClient recordIdentifierClient = new RecordIdentifierClient();
+				RecordIdentifier recordIdentifier = (RecordIdentifier) subElement.getValue();
+				recordIdentifierClient.setValue(recordIdentifier.getValue());
+				recordIdentifierClient.setSource(recordIdentifier.getSource());
+				recordInfoTypeClient.getRecordIdentifier().add(recordIdentifierClient);
+			} else if (subElement.getName().getLocalPart().equals("recordOrigin")) {
+				if (recordInfoTypeClient.getRecordOrigin() == null) {
+					recordInfoTypeClient.setRecordOrigin(new ArrayList<String>());
+				}
+				recordInfoTypeClient.getRecordOrigin().add((String) subElement.getValue());
+			} else if (subElement.getName().getLocalPart().equals("recordCreationDate")) {
+				if (recordInfoTypeClient.getRecordCreationDate() == null) {
+					recordInfoTypeClient.setRecordCreationDate(new ArrayList<DateTypeClient>());
+				}
+				recordInfoTypeClient.getRecordCreationDate().add(toModsClient((DateType) subElement.getValue()));
+			} else if (subElement.getName().getLocalPart().equals("descriptionStandard")) {
+				if (recordInfoTypeClient.getDescriptionStandard() == null) {
+					recordInfoTypeClient.setDescriptionStandard(new ArrayList<StringPlusAuthorityClient>());
+				}
+				recordInfoTypeClient.getDescriptionStandard().add(toModsClient((StringPlusAuthority) subElement.getValue(), StringPlusAuthorityClient.class));
+			} else if (subElement.getName().getLocalPart().equals("languageOfCataloging")) {
+				if (recordInfoTypeClient.getLanguageOfCataloging() == null) {
+					recordInfoTypeClient.setLanguageOfCataloging(new ArrayList<LanguageTypeClient>());
+				}
+				recordInfoTypeClient.getLanguageOfCataloging().add(toModsClient((LanguageType) subElement.getValue()));
+			} else if (subElement.getName().getLocalPart().equals("recordContentSource")) {
+				if (recordInfoTypeClient.getRecordContentSource() == null) {
+					recordInfoTypeClient.setRecordContentSource(new ArrayList<StringPlusAuthorityPlusLanguageClient>());
+				}
+				recordInfoTypeClient.getRecordContentSource().add(
+						(StringPlusAuthorityPlusLanguageClient) toModsClient((StringPlusAuthorityPlusLanguage) subElement.getValue(),
+								StringPlusAuthorityPlusLanguageClient.class));
+			}
+		}
+		return recordInfoTypeClient;
+	}
+
+	private static ExtensionTypeClient toModsClient(ExtensionType extensionType) {
+		if (extensionType == null)
+			return null;
+		ExtensionTypeClient extensionTypeClient = new ExtensionTypeClient();
+		if (extensionType.getContent() == null && extensionType.getContent().size() > 0) {
+			extensionTypeClient.setContent(new ArrayList<String>());
+		}
+		for (Object content : extensionType.getContent()) {
+			extensionTypeClient.getContent().add((String) content);
+		}
+		return extensionTypeClient;
+	}
+
+	private static PartTypeClient toModsClient(PartType partType) {
+		if (partType == null)
+			return null;
+		PartTypeClient partTypeClient = new PartTypeClient();
+		partTypeClient.setOrder(partType.getOrder());
+		partTypeClient.setId(partType.getID());
+		partTypeClient.setType(partType.getType());
+
+		List<Object> subElements = partType.getDetailOrExtentOrDate();
+		for (Object subElement : subElements) {
+			if (subElement instanceof DetailType) {
+				DetailType detailType = (DetailType) subElement;
+				if (partTypeClient.getDetail() == null) {
+					partTypeClient.setDetail(new ArrayList<DetailTypeClient>());
+				}
+				DetailTypeClient detailTypeClient = new DetailTypeClient();
+				detailTypeClient.setType(detailType.getType());
+				detailTypeClient.setLevel(detailType.getLevel());
+				if (detailType.getNumberOrCaptionOrTitle() != null && detailType.getNumberOrCaptionOrTitle().size() > 0) {
+					List<JAXBElement<String>> subSubElements = detailType.getNumberOrCaptionOrTitle();
+					for (JAXBElement<String> subSubElement : subSubElements) {
+						if (subSubElement.getName().getLocalPart().equals("number")) {
+							if (detailTypeClient.getNumber() == null) {
+								detailTypeClient.setNumber(new ArrayList<String>());
+							}
+							detailTypeClient.getNumber().add(subSubElement.getValue());
+						} else if (subSubElement.getName().getLocalPart().equals("title")) {
+							if (detailTypeClient.getTitle() == null) {
+								detailTypeClient.setTitle(new ArrayList<String>());
+							}
+							detailTypeClient.getTitle().add(subSubElement.getValue());
+						} else if (subSubElement.getName().getLocalPart().equals("caption")) {
+							if (detailTypeClient.getCaption() == null) {
+								detailTypeClient.setCaption(new ArrayList<String>());
+							}
+							detailTypeClient.getCaption().add(subSubElement.getValue());
+						}
+					}
+				}
+				partTypeClient.getDetail().add(detailTypeClient);
+			} else if (subElement instanceof BaseDateType) {
+				if (partTypeClient.getDate() == null) {
+					partTypeClient.setDate(new ArrayList<BaseDateTypeClient>());
+				}
+				BaseDateTypeClient baseDateTypeClient = new BaseDateTypeClient();
+				BaseDateType baseDateType = (BaseDateType) subElement;
+				baseDateTypeClient.setValue(baseDateType.getValue());
+				baseDateTypeClient.setEncoding(baseDateType.getEncoding());
+				baseDateTypeClient.setQualifier(baseDateType.getQualifier());
+				baseDateTypeClient.setPoint(baseDateType.getPoint());
+				partTypeClient.getDate().add(baseDateTypeClient);
+			} else if (subElement instanceof ExtentType) {
+				if (partTypeClient.getExtent() == null) {
+					partTypeClient.setExtent(new ArrayList<ExtentTypeClient>());
+				}
+				ExtentTypeClient extentTypeClient = new ExtentTypeClient();
+				ExtentType extentType = (ExtentType) subElement;
+				extentTypeClient.setStart(extentType.getStart());
+				extentTypeClient.setEnd(extentType.getEnd());
+				extentTypeClient.setTotal(extentType.getTotal());
+				extentTypeClient.setList(extentType.getList());
+				extentTypeClient.setUnit(extentType.getUnit());
+				partTypeClient.getExtent().add(extentTypeClient);
+			} else if (subElement instanceof UnstructuredText) {
+				if (partTypeClient.getText() == null) {
+					partTypeClient.setText(new ArrayList<String>());
+				}
+				partTypeClient.getText().add(((UnstructuredText) subElement).getValue());
+			}
+		}
+		return partTypeClient;
 	}
 }
