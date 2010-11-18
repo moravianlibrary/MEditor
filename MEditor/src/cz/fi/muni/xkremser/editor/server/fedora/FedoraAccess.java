@@ -327,4 +327,6 @@ public interface FedoraAccess {
 
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException;
 
+	public String getFOXML(String uuid);
+
 }

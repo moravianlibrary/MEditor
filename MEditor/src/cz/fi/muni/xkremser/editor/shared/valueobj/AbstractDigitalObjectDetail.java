@@ -21,6 +21,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	private Streams streams;
+	private String foxml;
 	private ArrayList<ArrayList<String>> related;
 
 	public AbstractDigitalObjectDetail() {
@@ -105,4 +106,15 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	public abstract List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers();
 
+	public String getFoxml() {
+		return foxml;
+	}
+
+	public void setFoxml(String foxml) {
+		this.foxml = foxml;
+	}
+
+	public void setRelated(ArrayList<ArrayList<String>> related) {
+		this.related = related;
+	}
 }

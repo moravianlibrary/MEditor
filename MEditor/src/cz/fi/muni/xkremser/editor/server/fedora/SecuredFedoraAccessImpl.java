@@ -458,4 +458,9 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.getMonographUnitsUuid(uuid);
 	}
 
+	@Override
+	public String getFOXML(String uuid) {
+		return rawAccess.getFOXML(uuid);
+	}
+
 }

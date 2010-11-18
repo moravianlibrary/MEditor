@@ -30,6 +30,7 @@ import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
@@ -51,6 +52,7 @@ import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
@@ -166,7 +168,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 */
 	@Override
 	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
-			final Streams streams, final String uuid, final boolean picture, final DispatchAsync dispatcher) {
+			final Streams streams, final String uuid, final boolean picture, final String foxml, final DispatchAsync dispatcher) {
 		final DublinCore dc = streams.getDc();
 		final ModsCollectionClient mods = streams.getMods();
 		// final ModalWindow modal = new ModalWindow(layout);
@@ -240,6 +242,14 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		Img tImg7 = new Img("pieces/48/piece_green.png", 48, 48);
 		tTab7.setPane(tImg7);
 
+		Tab tTab8 = null;
+		boolean fox = foxml != null && !"".equals(foxml);
+		if (fox) {
+			tTab8 = new Tab("FOXML", "pieces/16/piece_blue.png");
+			String text = ClientUtils.escapeHtml(foxml);
+			tTab8.setPane(new Label(text.replaceAll("\\n", "<br/>")));
+		}
+
 		List<Tab> tabList = new ArrayList<Tab>();
 		if (pageTab != null)
 			tabList.add(pageTab);
@@ -253,6 +263,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		}
 		tabList.add(tTab6);
 		tabList.add(tTab7);
+		if (fox)
+			tabList.add(tTab8);
 
 		topTabSet.setTabs(tabList.toArray(new Tab[] {}));
 		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {

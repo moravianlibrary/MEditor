@@ -5,6 +5,8 @@
  */
 package cz.fi.muni.xkremser.editor.client;
 
+import com.google.gwt.user.client.DOM;
+
 import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -92,11 +94,18 @@ public class ClientUtils {
 
 	/**
 	 * To record.
-	 *
-	 * @param item the item
+	 * 
+	 * @param item
+	 *          the item
 	 * @return the recently modified record
 	 */
 	public static RecentlyModifiedRecord toRecord(RecentlyModifiedItem item) {
 		return new RecentlyModifiedRecord(item.getUuid(), item.getName(), item.getDescription(), item.getModel());
+	}
+
+	public static String escapeHtml(String maybeHtml) {
+		final com.google.gwt.user.client.Element div = DOM.createDiv();
+		DOM.setInnerText(div, maybeHtml);
+		return DOM.getInnerHTML(div);
 	}
 }

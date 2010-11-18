@@ -8,8 +8,10 @@ package cz.fi.muni.xkremser.editor.server.fedora;
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils.getDjVuImage;
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils.getFedoraDatastreamsList;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -763,6 +765,11 @@ public class FedoraAccessImpl implements FedoraAccess {
 		return fedoraObject;
 	}
 
+	public String objFoxml(String uuid) {
+		String fedoraObject = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/objectXML";
+		return fedoraObject;
+	}
+
 	/**
 	 * Rels ext url.
 	 * 
@@ -989,5 +996,58 @@ public class FedoraAccessImpl implements FedoraAccess {
 			return false;
 		}
 		return bytes != null;
+	}
+
+	@Override
+	public String getFOXML(String uuid) {
+		String objUrl = objFoxml(uuid);
+		LOGGER.info("Reading foxml +" + objUrl);
+		InputStream docStream = null;
+		try {
+			docStream = RESTHelper.inputStream(objUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		} catch (IOException e1) {
+			try {
+				if (docStream != null)
+					docStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				docStream = null;
+			}
+			LOGGER.log(Level.SEVERE, "Reading foxml +" + objUrl, e1);
+			e1.printStackTrace();
+			return null;
+		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(docStream));
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				sb.append(line).append('\n');
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Reading foxml +" + objUrl);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					LOGGER.log(Level.SEVERE, "Closing stream +" + objUrl);
+					e.printStackTrace();
+				} finally {
+					br = null;
+				}
+			}
+			try {
+				if (docStream != null)
+					docStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				docStream = null;
+			}
+		}
+		return sb.toString();
 	}
 }

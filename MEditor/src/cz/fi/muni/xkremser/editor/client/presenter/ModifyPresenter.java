@@ -93,7 +93,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 *          the dispatcher
 		 */
 		void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList, final Streams dc,
-				final String uuid, final boolean picture, final DispatchAsync dispatcher);
+				final String uuid, final boolean picture, String foxml, final DispatchAsync dispatcher);
 	}
 
 	/**
@@ -273,7 +273,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						containerModelList.add(detail.getChildContainerModels().get(i));
 					}
 
-					getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), dispatcher);
+					getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
+							dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
 				}
