@@ -69,6 +69,7 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypePlusLan
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.CartographicsClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.GeographicCodeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TargetAudienceTypeClient;
@@ -118,6 +119,7 @@ import cz.fi.muni.xkremser.editor.server.mods.StringPlusAuthorityPlusTypePlusLan
 import cz.fi.muni.xkremser.editor.server.mods.StringPlusDisplayLabel;
 import cz.fi.muni.xkremser.editor.server.mods.StringPlusDisplayLabelPlusType;
 import cz.fi.muni.xkremser.editor.server.mods.SubjectType;
+import cz.fi.muni.xkremser.editor.server.mods.SubjectType.Cartographics;
 import cz.fi.muni.xkremser.editor.server.mods.SubjectType.GeographicCode;
 import cz.fi.muni.xkremser.editor.server.mods.TableOfContentsType;
 import cz.fi.muni.xkremser.editor.server.mods.TargetAudienceType;
@@ -778,10 +780,15 @@ public final class BiblioModsUtils {
 					subjectTypeClient.getHierarchicalGeographic().add(hierarchicalGeographicTypeClient);
 				}
 			} else if (subElement.getName().getLocalPart().equals("cartographics")) {
-				if (subjectTypeClient.getTitleInfo() == null) {
-					subjectTypeClient.setTitleInfo(new ArrayList<TitleInfoTypeClient>());
+				if (subjectTypeClient.getCartographics() == null) {
+					subjectTypeClient.setCartographics(new ArrayList<CartographicsClient>());
 				}
-				subjectTypeClient.getTitleInfo().add(toModsClient((TitleInfoType) subElement.getValue()));
+				CartographicsClient cartographicsClient = new CartographicsClient();
+				Cartographics cartographics = (Cartographics) subElement.getValue();
+				cartographicsClient.setProjection(cartographics.getProjection());
+				cartographicsClient.setScale(cartographics.getScale());
+				cartographicsClient.setCoordinates(cartographics.getCoordinates());
+				subjectTypeClient.getCartographics().add(cartographicsClient);
 			}
 		}
 		return subjectTypeClient;

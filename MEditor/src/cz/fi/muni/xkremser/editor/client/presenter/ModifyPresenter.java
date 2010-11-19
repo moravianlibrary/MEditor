@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -230,9 +231,15 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)))) {
 			// final ModalWindow mw = new
-			// ModalWindow((com.smartgwt.client.widgets.Canvas) getView().asWidget());
+			// ModalWindow((com.smartgwt.client.widgets.Canvas)
+			// getView().getPopupPanel());
 			// mw.setLoadingIcon("loadingAnimation.gif");
 			// mw.show(true);
+			Image loader = new Image("images/loadingAnimation3.gif");
+			getView().getPopupPanel().setWidget(loader);
+			getView().getPopupPanel().setVisible(true);
+			getView().getPopupPanel().center();
+
 			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
 				@Override
 				public void callback(GetDigitalObjectDetailResult result) {
@@ -272,19 +279,21 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						containerDataList.add(containerData);
 						containerModelList.add(detail.getChildContainerModels().get(i));
 					}
-
 					getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
 							dispatcher);
 					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 							result.getDetail().getRelated());
+					getView().getPopupPanel().setVisible(false);
+					getView().getPopupPanel().hide();
 				}
 
 				@Override
 				public void callbackError(Throwable t) {
 					super.callbackError(t);
+					getView().getPopupPanel().setVisible(false);
+					getView().getPopupPanel().hide();
 				}
 			});
-			// mw.show(false);
 
 			if (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)) {
 				previousUuid2 = previousUuid1;

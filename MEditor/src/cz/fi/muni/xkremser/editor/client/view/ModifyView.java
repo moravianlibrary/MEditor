@@ -23,9 +23,12 @@ import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.DragAppearance;
+import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
+import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
@@ -33,6 +36,8 @@ import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.DropEvent;
+import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -52,7 +57,6 @@ import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
@@ -83,6 +87,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	private static final String ID_THUMB = "thumb";
 	private static final String ID_TAB = "tab";
 	public static final String ID_TABSET = "tabset";
+	public static final String ID_MODEL = "model";
 
 	public static final String ID_NAME = "name";
 	public static final String ID_EDIT = "edit";
@@ -183,19 +188,22 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		Tab pageTab = null;
 		List<Tab> containerTabs = null;
 		if (pageData != null) {
-			TileGrid grid = getTileGrid(true);
+			TileGrid grid = getTileGrid(true, "page");
 			grid.setData(pageData);
-			pageTab = new Tab("Relations", "pieces/16/pawn_red.png");
+			pageTab = new Tab("Images", "pieces/16/pawn_red.png");
 			pageTab.setPane(grid);
 		}
 
 		if (containerDataList != null) {
 			containerTabs = new ArrayList<Tab>(containerModelList.size());
 			for (int i = 0; i < containerModelList.size(); i++) {
-				TileGrid grid = getTileGrid(false);
+				String label = containerModelList.get(i).getValue();
+				String newLabel = label.substring(0, 1).toUpperCase() + label.substring(1) + "s";
+				TileGrid grid = getTileGrid(false, newLabel);
 				grid.setData(containerDataList.get(i));
 				// TODO: localization
 				Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
+				containerTab.setAttribute(ID_MODEL, containerModelList.get(i).getValue());
 				containerTab.setPane(grid);
 				containerTabs.add(containerTab);
 			}
@@ -246,8 +254,9 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		boolean fox = foxml != null && !"".equals(foxml);
 		if (fox) {
 			tTab8 = new Tab("FOXML", "pieces/16/piece_blue.png");
-			String text = ClientUtils.escapeHtml(foxml);
-			tTab8.setPane(new Label(text.replaceAll("\\n", "<br/>")));
+			Label l = new Label("<code>" + foxml + "</code>");
+			l.setCanSelectText(true);
+			tTab8.setPane(l);
 		}
 
 		List<Tab> tabList = new ArrayList<Tab>();
@@ -439,7 +448,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	/**
 	 * Sets the tile grid.
 	 */
-	private TileGrid getTileGrid(final boolean pages) {
+	private TileGrid getTileGrid(final boolean pages, final String model) {
 
 		final TileGrid tileGrid = new TileGrid();
 		if (pages) {
@@ -507,11 +516,53 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		menu.setItems(editItem, separator, selectAllItem, deselectAllItem, invertSelectionItem, separator, copyItem, pasteItem, removeSelectedItem);
 		tileGrid.setContextMenu(menu);
+		tileGrid.setDropTypes(model);
+		tileGrid.setDragType(model);
+		tileGrid.setDragAppearance(DragAppearance.TRACKER);
+
+		// tileGrid.addDropOverHandler(new DropOverHandler() {
+		// @Override
+		// public void onDropOver(DropOverEvent event) {
+		// // event.get
+		// // System.out.println("piip");
+		// // String html = Canvas.imgHTML("pieces/24/pawn_blue.png", 24, 24);
+		// Object draggable = EventHandler.getDragTarget();
+		// Canvas droppable = EventHandler.getDragTarget();
+		// System.out.println("onDropOver START on " + droppable.getID());
+		// System.out.println("drag object : " + draggable.getClass());
+		// System.out.println("onDropOver STOP on " + droppable.getID());
+		//
+		// }
+		// });
+		tileGrid.addDropHandler(new DropHandler() {
+
+			@Override
+			public void onDrop(DropEvent event) {
+				if (event.isCtrlKeyDown()) {
+					Canvas droppable = EventHandler.getDragTarget();
+					droppable.getID();
+					tileGrid.setDragDataAction(DragDataAction.COPY);
+				} else {
+					tileGrid.setDragDataAction(DragDataAction.MOVE);
+				}
+			}
+		});
+
+		// tileGrid.addDragRepositionMoveHandler(new DragRepositionMoveHandler() {
+		// @Override
+		// public void onDragRepositionMove(DragRepositionMoveEvent event) {
+		// if (event.isCtrlKeyDown()) {
+		// System.out.println("FUnguju");
+		// String html = Canvas.imgHTML("pieces/24/pawn_blue.png", 24, 24);
+		// EventHandler.setDragTracker(html);
+		// } else {
+		// EventHandler.setDragTracker("ee");
+		// }
+		// }
+		// });
 
 		if (pages) {
-			imagePopup = new PopupPanel(true);
-			imagePopup.setGlassEnabled(true);
-			imagePopup.setAnimationEnabled(true);
+			getPopupPanel();
 			tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
 				@Override
@@ -545,7 +596,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 						} catch (Throwable t) {
 
 							// TODO: handle
-							System.out.println("yes sir");
 						}
 					}
 				}
@@ -589,6 +639,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 	@Override
 	public PopupPanel getPopupPanel() {
+		if (imagePopup == null) {
+			imagePopup = new PopupPanel(true);
+			imagePopup.setGlassEnabled(true);
+			imagePopup.setAnimationEnabled(true);
+		}
 		return imagePopup;
 	}
 

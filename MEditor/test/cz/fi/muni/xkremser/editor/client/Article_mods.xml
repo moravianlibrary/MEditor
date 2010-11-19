@@ -1,0 +1,61 @@
+<modsCollection xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+<mods version="3.3">
+  	<titleInfo>
+  	  	<title>Hiring and recruitment practices in academic libraries</title>
+  	</titleInfo>
+  	<name type="personal">
+  	  	<namePart>Raschke, Gregory K.</namePart>
+  	  	<displayForm>Gregory K. Raschke</displayForm>
+  	</name>
+  	<typeOfResource>text</typeOfResource>
+  	<genre>journal article</genre>
+  	<originInfo>
+  	  	<place>
+  	  	  	<text>Baltimore, Md.</text>
+  	  	</place>
+  	  	<publisher>Johns Hopkins University Press</publisher>
+  	  	<dateIssued>2003</dateIssued>
+  	  	<issuance>monographic</issuance>
+  	</originInfo>
+  	<language authority="iso639-2b">eng</language>
+  	<physicalDescription>
+  	  	<form authority="marcform">print</form>
+  	  	<extent>15 p.</extent>
+  	</physicalDescription>
+  	<abstract>
+Academic libraries need to change their recruiting and hiring procedures to stay competitive in today's changing marketplace. By taking too long to find and to hire talented professionals in a tight labor market, academic libraries are losing out on top candidates and limiting their ability to become innovative and dynamic organizations. Traditional, deliberate, and risk-averse hiring models lead to positions remaining open for long periods, opportunities lost as top prospects find other positions, and a reduction in the overall talent level of the organization. To be more competitive and effective in their recruitment and hiring processes, academic libraries must foster manageable internal solutions, look to other professions for effective hiring techniques and models, and employ innovative concepts from modern personnel management literature. </abstract>
+  	<subject>
+  	  	<topic>College librarians</topic>
+  	  	<topic>Recruiting</topic>
+  	  	<geographic>United States</geographic>
+  	</subject>
+  	<subject>
+  	  	<topic>College librarians</topic>
+  	  	<topic>Selection and appointment</topic>
+  	  	<geographic>United States</geographic>
+  	</subject>
+  	<relatedItem type="host">
+  	  	<titleInfo>
+  	  	  	<title>portal: libraries and the academy</title>
+  	  	</titleInfo>
+  	  	<part>
+  	  	  	<detail type="volume">
+  	  	  	  	<number>3</number>
+  	  	  	  	<caption>vol.</caption>
+  	  	  	</detail>
+  	  	  	<detail type="number">
+  	  	  	  	<number>1</number>
+  	  	  	  	<caption>no.</caption>
+  	  	  	</detail>
+  	  	  	<extent unit="page">
+  	  	  	  	<start>53</start>
+  	  	  	  	<end>57</end>
+  	  	  	</extent>
+  	  	  	<date>Jan. 2003</date>
+  	  	</part>
+  	  	<identifier type="issn">1531-2542</identifier>
+  	</relatedItem>
+
+</mods>
+
+</modsCollection>

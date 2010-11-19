@@ -2,6 +2,41 @@
 
 
 
+/** Xml syntax highliter */
+.xml_plain {
+color: rgb(0,0,0);
+}
+.xml_tag_name {
+color: rgb(0,55,255);
+}
+.xml_comment {
+color: rgb(147,147,147); background-color: rgb(247,247,247);
+}
+.xml_tag_symbols {
+color: rgb(0,59,255);
+}
+.xml_rife_tag {
+color: rgb(0,0,0); background-color: rgb(228,230,160);
+}
+.xml_attribute_value {
+color: rgb(193,0,0);
+}
+.xml_attribute_name {
+color: rgb(0,0,0); font-weight: bold;
+}
+.xml_char_data {
+color: rgb(0,0,0);
+}
+code {
+color: rgb(0,0,0); font-family: monospace; font-size: 12px; white-space: nowrap;
+}
+.xml_rife_name {
+color: rgb(0,0,196); background-color: rgb(228,230,160);
+}
+.xml_processing_instruction {
+color: rgb(0,0,0); font-weight: bold; font-style: italic;
+}
+
 
 
 

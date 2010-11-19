@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
+import com.uwyn.jhighlight.renderer.XhtmlRendererFactory;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
@@ -130,7 +131,14 @@ public class DigitalObjectHandler implements CanGetObject {
 	protected String handleFOXML(String uuid) {
 		String returnString = null;
 		returnString = getFedoraAccess().getFOXML(uuid);
-		return returnString;
+		String highlighted = null;
+		try {
+			highlighted = XhtmlRendererFactory.getRenderer("xml").highlight("foxml", returnString, "UTF-8", true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return returnString;
+		}
+		return highlighted.substring(highlighted.indexOf('\n'));
 	}
 
 	protected ModsCollectionClient handleMods(String uuid) {

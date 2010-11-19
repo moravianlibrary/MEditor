@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modsCollection xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+<mods version="3.3">
+  	<titleInfo>
+  	  	<title>FranUlmer.com -- Home Page</title>
+  	</titleInfo>
+  	<titleInfo type="alternative"><title>Fran Ulmer, Democratic candidate for Governor, Alaska, 2002</title>
+  	</titleInfo>
+  	<name type="personal">
+  	  	<namePart>Ulmer, Fran</namePart>
+  	</name>
+  	<genre>Web site</genre>
+  	<originInfo>
+  	  	<dateCaptured point="start" encoding="iso8601">20020702 </dateCaptured>
+  	  	<dateCaptured point="end" encoding="iso8601"> 20021203</dateCaptured>
+  	</originInfo>
+  	<language>
+  	  	<languageTerm authority="iso639-2b">eng</languageTerm>
+  	</language>
+  	<physicalDescription>
+  	  	<internetMediaType>text/html</internetMediaType>
+  	  	<internetMediaType>image/jpg</internetMediaType>
+  	</physicalDescription>
+  	<abstract>Web site promoting the candidacy of Fran Ulmer, Democratic candidate for Governor, Alaska, 2002. Includes candidate biography, issue position statements, campaign contact information, privacy policy and campaign news press releases. Site features enable visitors to sign up for campaign email list, volunteer, make campaign contributions and follow links to other internet locations. </abstract>
+  	<subject>
+  	  	<topic>Elections</topic>
+  	  	<geographic>Alaska</geographic>
+  	</subject>
+  	<subject>
+  	  	<topic>Governors</topic>
+  	  	<geographic>Alaska</geographic>
+  	  	<topic>Election</topic>
+  	</subject>
+  	<subject>
+  	  	<topic>Democratic Party (AK)</topic>
+  	</subject>
+  	<relatedItem type="host">
+  	  	<titleInfo>
+  	  	  	<title>Election 2002 Web Archive</title>
+  	  	</titleInfo>
+  	  	<location>
+  	  	  	<url>http://www.loc.gov/minerva/collect/elec2002/</url>
+  	  	</location>
+  	</relatedItem>
+  	<location>
+  	  	<url displayLabel="Active site (if available)">http://www.franulmer.com/</url>
+  	</location>
+  	<location>
+  	  	<url displayLabel="Archived site">http://wayback-cgi1.alexa.com/e2002/*/http://www.franulmer.com/</url>
+  	</location>
+
+<part>
+ 	<detail type="page number">
+ 	 	<number>3</number>
+ 	</detail>
+ 	<extent unit="pages">
+ 	 	<start>3</start>
+ 	</extent>
+<text>
+ahoooooj
+</text>
+</part>
+
+</mods>
+</modsCollection>
