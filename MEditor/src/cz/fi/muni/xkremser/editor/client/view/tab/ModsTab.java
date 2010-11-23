@@ -154,9 +154,10 @@ public class ModsTab extends Tab {
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		// topTabSet.setHeight100();
-		if (modsTypeClient == null)
-			return layout; // TODO: handle
-		Tab[] tabs = new Tab[] { getTab(TabUtils.getTitleInfoStack(true, modsTypeClient.getTitleInfo(), null/* holders */), "Title Info"),
+		// if (modsTypeClient == null)
+		// return layout; // TODO: handle
+		Tab[] tabs = new Tab[] {
+				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getTitleInfo(), null/* holders */), "Title Info"),
 				getTab(TabUtils.getNameStack(true), "Name"), getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"),
 				getTab(TabUtils.getOriginInfoStack(true), "Origin"), getTab(TabUtils.getLanguageStack(true), "Language"),
 				getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."), getTab(TabUtils.getAbstractStack(true), "Abstract"),

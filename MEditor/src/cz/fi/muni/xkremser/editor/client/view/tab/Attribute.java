@@ -62,6 +62,15 @@ public class Attribute {
 		this.tooltip = tooltip;
 	}
 
+	public Attribute(Class<? extends FormItem> type, String name, String label, String tooltip, String value) {
+		super();
+		this.type = type;
+		this.name = name;
+		this.label = label;
+		this.tooltip = tooltip;
+		this.value = value;
+	}
+
 	/**
 	 * Instantiates a new attribute.
 	 * 
@@ -83,6 +92,18 @@ public class Attribute {
 		String[] labels = tooltips.keySet().toArray(new String[] {});
 		Arrays.sort(labels);
 		this.labels = labels;
+	}
+
+	public Attribute(Class<? extends FormItem> type, String name, String label, Map<String, String> tooltips, String value) {
+		super();
+		this.type = type;
+		this.name = name;
+		this.label = label;
+		this.tooltips = tooltips;
+		String[] labels = tooltips.keySet().toArray(new String[] {});
+		Arrays.sort(labels);
+		this.labels = labels;
+		this.value = value;
 	}
 
 	/**
@@ -197,5 +218,13 @@ public class Attribute {
 	 */
 	public void setTooltips(Map<String, String> tooltips) {
 		this.tooltips = tooltips;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

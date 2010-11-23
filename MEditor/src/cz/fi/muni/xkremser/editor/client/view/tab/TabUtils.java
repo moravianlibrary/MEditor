@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
@@ -91,6 +92,15 @@ public final class TabUtils {
 		}
 	};
 
+	private static final Attribute ATTR_AUTHORITY(String value) {
+		return new Attribute(
+				TextItem.class,
+				"authority",
+				"Authority",
+				"The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file.",
+				value);
+	}
+
 	/** The Constant ATTR_AUTHORITY. */
 	private static final Attribute ATTR_AUTHORITY = new Attribute(
 			TextItem.class,
@@ -99,24 +109,53 @@ public final class TabUtils {
 			"The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file.");
 
 	/** The Constant ATTR_LANG. */
+	public static final Attribute ATTR_LANG(String value) {
+		return new Attribute(TextItem.class, "lang", "Lang",
+				"This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
+	}
+
 	public static final Attribute ATTR_LANG = new Attribute(TextItem.class, "lang", "Lang",
 			"This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
+
+	public static final Attribute ATTR_XML_LANG(String value) {
+		return new Attribute(TextItem.class, "xml:lang", "xml:lang",
+				"In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.", value);
+	}
 
 	/** The Constant ATTR_XML_LANG. */
 	public static final Attribute ATTR_XML_LANG = new Attribute(TextItem.class, "xml:lang", "xml:lang",
 			"In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.");
 
+	public static final Attribute ATTR_TRANSLITERATION(String value) {
+		return new Attribute(TextItem.class, "transliteration", "Transliteration",
+				"It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ", value);
+	}
+
 	/** The Constant ATTR_TRANSLITERATION. */
 	public static final Attribute ATTR_TRANSLITERATION = new Attribute(TextItem.class, "transliteration", "Transliteration",
 			"It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ");
+
+	public static final Attribute ATTR_SCRIPT(String value) {
+		return new Attribute(TextItem.class, "script", "Script",
+				"This attribute specifies the script used within individual elements, using codes from ISO 15924.", value);
+	}
 
 	/** The Constant ATTR_SCRIPT. */
 	public static final Attribute ATTR_SCRIPT = new Attribute(TextItem.class, "script", "Script",
 			"This attribute specifies the script used within individual elements, using codes from ISO 15924.");
 
+	public static final Attribute ATTR_ID(String value) {
+		return new Attribute(TextItem.class, "id", "ID", "This attribute is used to link internally and to reference an element from outside the instance.", value);
+	}
+
 	/** The Constant ATTR_ID. */
 	public static final Attribute ATTR_ID = new Attribute(TextItem.class, "id", "ID",
 			"This attribute is used to link internally and to reference an element from outside the instance.");
+
+	public static final Attribute ATTR_XLINK(String value) {
+		return new Attribute(TextItem.class, "xlink", "xlink",
+				"This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.", value);
+	}
 
 	/** The Constant ATTR_XLINK. */
 	public static final Attribute ATTR_XLINK = new Attribute(TextItem.class, "xlink", "xlink",
@@ -151,6 +190,10 @@ public final class TabUtils {
 	 *          the tooltip
 	 * @return the display label
 	 */
+	public static Attribute getDisplayLabel(final String tooltip, final String value) {
+		return new Attribute(TextItem.class, "display_label", "Display Label", tooltip, value);
+	}
+
 	public static Attribute getDisplayLabel(final String tooltip) {
 		return new Attribute(TextItem.class, "display_label", "Display Label", tooltip);
 	}
@@ -195,7 +238,7 @@ public final class TabUtils {
 		}
 
 		public int getElementNumber() {
-			return values.size();
+			return values == null ? 1 : values.size();
 		}
 
 		public List<? extends Object> getHolders() {
@@ -236,8 +279,19 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getTitleInfoLayout((TitleInfoTypeClient) getValues().get(counter++), (TitleInfoHolder) getHolders().get(counter++));
+			TitleInfoTypeClient titleInfoTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				titleInfoTypeClient = (TitleInfoTypeClient) getValues().get(counter);
+			}
+			TitleInfoHolder titleInfoHolder = null;
+			if (getHolders() != null && getHolders().size() > counter && getHolders().get(counter) != null) {
+				titleInfoTypeClient = (TitleInfoTypeClient) getHolders().get(counter);
+			}
+			counter++;
+
+			return getTitleInfoLayout(titleInfoTypeClient, titleInfoHolder);
 		}
+
 	}
 
 	/**
@@ -808,6 +862,9 @@ public final class TabUtils {
 			final Attribute[] attributes, List<String> values, MetadataHolder holder) {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
+		layout.setOverflow(Overflow.VISIBLE);
+		// layout.setMinHeight(500);
+		// layout.setMinMemberSize(300);
 		if (holder != null) {
 			holder.setLayout(layout);
 		}
@@ -992,6 +1049,9 @@ public final class TabUtils {
 				}
 			});
 		}
+		if (attr.getValue() != null && !"".equals(attr.getValue())) {
+			item.setValue(attr.getValue());
+		}
 		if (attr.getTooltip() != null && !"".equals(attr.getTooltip())) {
 			item.setTooltip(attr.getTooltip());
 		}
@@ -1013,11 +1073,12 @@ public final class TabUtils {
 	public static SectionStackSection getSomeStack(boolean expanded, final String label, final GetLayoutOperation operation) {
 		final SectionStackSection section = new SectionStackSection(label);
 		final VLayout layout = new VLayout();
-		layout.setLeaveScrollbarGap(true);
 		layout.setWidth100();
-		// int i = operation.getElementNumber();
-		// while (i-- > 0)
-		layout.addMember(operation.execute());
+		layout.setHeight100();
+		int i = operation.getElementNumber();
+		while (i-- > 0)
+			layout.addMember(operation.execute());
+		operation.resetCounter();
 
 		final ImgButton addButton = new ImgButton();
 		addButton.setSrc("[SKIN]headerIcons/plus.png");
@@ -1036,6 +1097,7 @@ public final class TabUtils {
 			@Override
 			public void onClick(ClickEvent event) {
 				layout.addMember(operation.execute());
+				layout.redraw();
 			}
 		});
 
@@ -1062,6 +1124,7 @@ public final class TabUtils {
 			}
 		});
 		section.setControls(addButton, removeButton);
+		section.setResizeable(true);
 		// layout.setHeight100();
 		section.addItem(layout);
 		section.setExpanded(expanded);
@@ -1346,7 +1409,7 @@ public final class TabUtils {
 	 * 
 	 * @return the title info layout
 	 */
-	public static VLayout getTitleInfoLayout(TitleInfoTypeClient values, TitleInfoHolder holder) {
+	public static VLayout getTitleInfoLayout(final TitleInfoTypeClient values, final TitleInfoHolder holder) {
 		final VLayout layout = new VLayout();
 
 		final Map<String, String> tooltips = new HashMap<String, String>();
@@ -1357,27 +1420,36 @@ public final class TabUtils {
 		tooltips.put("uniform", "equivalent to MARC 21 fields 130, 240, 730");
 
 		Attribute[] attributes = new Attribute[] {
-				new Attribute(SelectItem.class, "type", "Type", tooltips),
-				ATTR_LANG,
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the title is needed for display. It is equivalent to MARC 21 field 246 subfield $i."),
-				ATTR_XML_LANG, ATTR_AUTHORITY, ATTR_TRANSLITERATION, ATTR_SCRIPT, ATTR_ID, ATTR_XLINK };
+				new Attribute(SelectItem.class, "type", "Type", tooltips, values == null ? "" : values.getType()),
+				ATTR_LANG(values == null ? "" : values.getLang()),
+				getDisplayLabel(
+						"This attribute is intended to be used when additional text associated with the title is needed for display. It is equivalent to MARC 21 field 246 subfield $i.",
+						values == null ? "" : values.getDisplayLabel()), ATTR_XML_LANG(values == null ? "" : values.getXmlLang()),
+				ATTR_AUTHORITY(values == null ? "" : values.getAuthority()), ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()),
+				ATTR_SCRIPT(values == null ? "" : values.getScript()), ATTR_ID, ATTR_XLINK(values == null ? "" : values.getXlink()) };
 		layout.addMember(getAttributes(true, attributes));
+		layout.setLeaveScrollbarGap(true);
 		final SectionStack sectionStack = new SectionStack();
 		// sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
-		// sectionStack.setOverflow(Overflow.AUTO);
+		sectionStack.setOverflow(Overflow.VISIBLE);
+		layout.setExtraSpace(40);
+		// sectionStack.
 
+		sectionStack.addSection(getStackSection("Titles", "Title", "title without the <titleInfo> type attribute is roughly equivalent to MARC 21 field 245", true,
+				values == null ? null : values.getTitle(), holder));
+		sectionStack.addSection(getStackSection("Sub Titles", "Sub Title", "Equivalent to MARC 21 fields 242, 245, 246 subfield $b.", false, values == null ? null
+				: values.getSubTitle(), holder));
 		sectionStack
-				.addSection(getStackSection("Titles", "Title", "title without the <titleInfo> type attribute is roughly equivalent to MARC 21 field 245", true));
-		sectionStack.addSection(getStackSection("Sub Titles", "Sub Title", "Equivalent to MARC 21 fields 242, 245, 246 subfield $b.", false));
-		sectionStack.addSection(getStackSection("Part Numbers", "Part Number",
-				"Equivalent to MARC 21 fields 130, 240, 242, 243, 245, 246, 247, 730, 740 subfield $n.", false));
+				.addSection(getStackSection("Part Numbers", "Part Number", "Equivalent to MARC 21 fields 130, 240, 242, 243, 245, 246, 247, 730, 740 subfield $n.",
+						false, values == null ? null : values.getPartNumber(), holder));
 		sectionStack.addSection(getStackSection("Part Names", "Part Name", "Equivalent to MARC 21 fields 130, 240, 242, 243, 245, 246, 247, 730, 740 subfield $p.",
-				false));
+				false, values == null ? null : values.getPartName(), holder));
 		sectionStack.addSection(getStackSection("Non Sort", "Non Sort",
-				"It is equivalent to the new technique in MARC 21 that uses control characters to surround data disregarded for sorting.", false));
+				"It is equivalent to the new technique in MARC 21 that uses control characters to surround data disregarded for sorting.", false, values == null ? null
+						: values.getNonSort(), holder));
 		layout.addMember(sectionStack);
 
 		return layout;
@@ -1402,6 +1474,9 @@ public final class TabUtils {
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
 		// sectionStack.setOverflow(Overflow.AUTO);
@@ -1611,6 +1686,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.addSection(getPlaceStack(false));
 		sectionStack.addSection(getStackSection("Publishers", "Publisher", "It is equivalent to MARC 21 field 260 subfield $b.", false));
@@ -1686,6 +1764,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 
 		attributes = new Attribute[] {
@@ -1807,6 +1888,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		layout
 				.addMember(getAttributes(
@@ -1890,6 +1974,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		layout.addMember(getAttributes(true, new Attribute[] { ATTR_AUTHORITY, ATTR_XLINK, ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 
@@ -1965,6 +2052,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		Attribute[] attributes = new Attribute[] {
 				getDisplayLabel("Equivalent to MARC 21 field 852 subfield $3."),
@@ -2025,6 +2115,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		Attribute[] attributes = new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type",
@@ -2140,6 +2233,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
+		sectionStack.setMinHeight(500);
+		sectionStack.setMinMemberSize(300);
+		sectionStack.setOverflow(Overflow.VISIBLE);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		Attribute[] attributes = new Attribute[] { ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
 		layout.addMember(getAttributes(true, attributes));
