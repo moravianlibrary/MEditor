@@ -12,6 +12,8 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
+import cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -51,24 +53,23 @@ public class DCTab extends Tab {
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setWidth100();
-
 		sectionStack.setOverflow(Overflow.AUTO);
 
-		contributor = new DublinCoreHolder("contributor");
-		coverage = new DublinCoreHolder("coverage");
-		creator = new DublinCoreHolder("creator");
-		date = new DublinCoreHolder("date");
-		description = new DublinCoreHolder("description");
-		format = new DublinCoreHolder("format");
-		identifier = new DublinCoreHolder("identifiers");
-		language = new DublinCoreHolder("language");
-		publisher = new DublinCoreHolder("publisher");
-		relation = new DublinCoreHolder("realtion");
-		rights = new DublinCoreHolder("rights");
-		source = new DublinCoreHolder("source");
-		subject = new DublinCoreHolder("subject");
-		title = new DublinCoreHolder("titles");
-		type = new DublinCoreHolder("type");
+		contributor = new ListOfSimpleValuesHolder();
+		coverage = new ListOfSimpleValuesHolder();
+		creator = new ListOfSimpleValuesHolder();
+		date = new ListOfSimpleValuesHolder();
+		description = new ListOfSimpleValuesHolder();
+		format = new ListOfSimpleValuesHolder();
+		identifier = new ListOfSimpleValuesHolder();
+		language = new ListOfSimpleValuesHolder();
+		publisher = new ListOfSimpleValuesHolder();
+		relation = new ListOfSimpleValuesHolder();
+		rights = new ListOfSimpleValuesHolder();
+		source = new ListOfSimpleValuesHolder();
+		subject = new ListOfSimpleValuesHolder();
+		title = new ListOfSimpleValuesHolder();
+		type = new ListOfSimpleValuesHolder();
 
 		sectionStack.addSection(TabUtils.getStackSection("Titles", "Title", "A name given to the resource.", true, dc.getTitle(), title));
 		sectionStack.addSection(TabUtils.getStackSection("Identifiers", "Identifier", "An unambiguous reference to the resource within a given context.", true,

@@ -102,7 +102,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	public static final int DC_TAB_INDEX = 1;
 	public static final String TAB_INITIALIZED = "initialized";
 
-	private final Map<TabSet, DCTab> dcTab = new HashMap<TabSet, DCTab>();
+	private final Map<TabSet, Tab> dcTab = new HashMap<TabSet, Tab>();
+	private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
 
 	private Record[] clipboard;
 
@@ -209,13 +210,15 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		}
 
-		final DCTab tTab2 = new DCTab("DC", "pieces/16/pawn_green.png");
+		final Tab tTab2 = new Tab("DC", "pieces/16/pawn_green.png");
 		tTab2.setAttribute(TAB_INITIALIZED, false);
 		tTab2.setAttribute(ID_TAB, ID_DC);
 		dcTab.put(topTabSet, tTab2);
 
 		final Tab tTab3 = new Tab("MODS", "pieces/16/pawn_blue.png");
+		tTab3.setAttribute(TAB_INITIALIZED, false);
 		tTab3.setAttribute(ID_TAB, ID_MODS);
+		modsTab.put(topTabSet, tTab3);
 
 		Tab tTab4 = null;
 		Tab tTab5 = null;
@@ -286,9 +289,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					Timer timer = new Timer() {
 						@Override
 						public void run() {
-							Tab t = new ModsTab(1, true, mods.getMods().get(0));
+							ModsTab t = new ModsTab(1, true, mods.getMods().get(0));
+							modsTab.put(topTabSet, t);
 							TabSet ts = event.getTab().getTabSet();
 							ts.setTabPane(event.getTab().getID(), t.getPane());
+							t.setAttribute(TAB_INITIALIZED, true);
 							mw.hide();
 						}
 					};
@@ -363,12 +368,23 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-				DCTab tab = dcTab.get(ts);
-				if (tab.getAttributeAsBoolean(TAB_INITIALIZED)) {
-					SC.say(tab.getDc().toString());
-					System.out.println(tab.getDc());
+				Tab dcT = dcTab.get(ts);
+				Tab modsT = modsTab.get(ts);
+				if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+					DCTab dcT_ = (DCTab) dcT;
+					SC.say(dcT_.getDc().toString());
+					System.out.println(dcT_.getDc());
 				} else {
-					SC.say(streams.toString());
+					SC.say(streams.getDc().toString());
+					System.out.println(streams);
+				}
+
+				if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+					ModsTab modsT_ = (ModsTab) modsT;
+					SC.say(modsT_.getMods().toString());
+					System.out.println(modsT_.getMods());
+				} else {
+					SC.say(streams.getMods().toString());
 					System.out.println(streams);
 				}
 			}
@@ -403,6 +419,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				}
 				if (topTabSet1 == topTabSet) {
 					dcTab.put(topTabSet1, null);
+					modsTab.put(topTabSet1, null);
 					topTabSet1.destroy();
 					topTabSet1 = null;
 					if (topTabSet2 != null) { // move up
@@ -411,6 +428,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					}
 				} else {
 					dcTab.put(topTabSet2, null);
+					modsTab.put(topTabSet2, null);
 					topTabSet2.destroy();
 					topTabSet2 = null;
 				}
@@ -424,6 +442,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		if (first) {
 			if (topTabSet1 != null) {
 				dcTab.put(topTabSet1, null);
+				modsTab.put(topTabSet1, null);
 				layout.removeMember(topTabSet1);
 				topTabSet1.destroy();
 				topTabSet1 = null;
@@ -433,6 +452,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		} else {
 			if (topTabSet2 != null) {
 				dcTab.put(topTabSet2, null);
+				modsTab.put(topTabSet2, null);
 				layout.removeMember(topTabSet2);
 				topTabSet2.destroy();
 				topTabSet2 = null;

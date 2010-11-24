@@ -5,6 +5,7 @@
  */
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +20,10 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
+import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 
@@ -39,7 +43,8 @@ public class ModsTab extends Tab {
 	/** The deep. */
 	private final int deep;
 	private ModsTypeClient modsTypeClient;
-	private List<TitleInfoTypeClient> titleInfo;
+	private final List<TitleInfoHolder> titleInfoHolders;
+	private final List<NameHolder> nameHolders;
 
 	/**
 	 * The Class GetRelatedItem.
@@ -75,24 +80,22 @@ public class ModsTab extends Tab {
 	 */
 	public ModsTab(int deep, boolean topLvl, ModsTypeClient modsTypeClient) {
 		super(topLvl ? "MODS" : "Related Item", topLvl ? "pieces/16/pawn_blue.png" : "pieces/16/piece_blue.png");
+		titleInfoHolders = new ArrayList<TitleInfoHolder>();
+		nameHolders = new ArrayList<NameHolder>();
 		this.deep = deep;
 
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setOverflow(Overflow.AUTO);
-		// topTabSet.setHeight100();
 
 		if (!topLvl) {
-			// Layout layout = getModsLayout(modsTypeClient, true);
-
 			final SectionStack sectionStack = new SectionStack();
 			sectionStack.setLeaveScrollbarGap(true);
 			sectionStack.setVisibilityMode(VisibilityMode.MUTEX);
 			sectionStack.setWidth100();
 			sectionStack.setOverflow(Overflow.AUTO);
 			sectionStack.addSection(TabUtils.getSomeStack(true, "Related Item", new GetRelatedItem(modsTypeClient)));
-			// layout.addMember(sectionStack);
 			setPane(sectionStack);
 		} else {
 			setPane(getModsLayout(modsTypeClient, false));
@@ -157,8 +160,9 @@ public class ModsTab extends Tab {
 		// if (modsTypeClient == null)
 		// return layout; // TODO: handle
 		Tab[] tabs = new Tab[] {
-				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getTitleInfo(), null/* holders */), "Title Info"),
-				getTab(TabUtils.getNameStack(true), "Name"), getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"),
+				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getTitleInfo(), titleInfoHolders), "Title Info"),
+				getTab(TabUtils.getNameStack(true, modsTypeClient == null ? null : modsTypeClient.getName(), nameHolders), "Name"),
+				getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"),
 				getTab(TabUtils.getOriginInfoStack(true), "Origin"), getTab(TabUtils.getLanguageStack(true), "Language"),
 				getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."), getTab(TabUtils.getAbstractStack(true), "Abstract"),
 				getTab(TabUtils.getTableOfContentsStack(true), "Table of Con."), getTab(TabUtils.getTargetAudienceStack(true), "Audience"),
@@ -172,14 +176,26 @@ public class ModsTab extends Tab {
 		return layout;
 	}
 
-	public ModsTypeClient getDc() {
-		if (modsTypeClient == null)
-			return null;
+	public ModsTypeClient getMods() {
+		// title info
+		ModsTypeClient modsTypeClient = new ModsTypeClient();
+		List<TitleInfoTypeClient> titleInfo = new ArrayList<TitleInfoTypeClient>(titleInfoHolders.size());
+		for (TitleInfoHolder holder : titleInfoHolders) {
+			titleInfo.add(holder.getTitleInfo());
+		}
 		modsTypeClient.setTitleInfo(titleInfo);
+
+		// name
+		List<NameTypeClient> names = new ArrayList<NameTypeClient>(nameHolders.size());
+		for (NameHolder holder : nameHolders) {
+			names.add(holder.getName());
+		}
+		modsTypeClient.setName(names);
+
 		return modsTypeClient;
 	}
 
-	public void setDc(ModsTypeClient modsTypeClient) {
+	public void setMods(ModsTypeClient modsTypeClient) {
 		this.modsTypeClient = modsTypeClient;
 	}
 

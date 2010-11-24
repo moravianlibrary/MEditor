@@ -1,15 +1,23 @@
-package cz.fi.muni.xkremser.editor.client.view.tab;
+package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
 
+import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.layout.Layout;
 
 public abstract class MetadataHolder {
-	private final String name;
 	protected Layout layout;
+	private DynamicForm attributeForm;
 
-	public MetadataHolder(final String name) {
-		this.name = name;
+	public MetadataHolder() {
+	}
+
+	public void setAttributeForm(DynamicForm form) {
+		this.attributeForm = form;
+	}
+
+	public DynamicForm getAttributeForm() {
+		return this.attributeForm;
 	}
 
 	public abstract List<MetadataHolder> getSubelements();
@@ -26,11 +34,6 @@ public abstract class MetadataHolder {
 
 	public void setLayout(Layout layout) {
 		this.layout = layout;
-	}
-
-	@Override
-	public String toString() {
-		return "MetadataHolder [name=" + name + ", getSubelements()=" + getSubelements() + ", getAttributes()=" + getAttributes() + "]";
 	}
 
 }

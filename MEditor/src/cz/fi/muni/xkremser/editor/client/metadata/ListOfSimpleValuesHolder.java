@@ -1,4 +1,4 @@
-package cz.fi.muni.xkremser.editor.client.view.tab;
+package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,23 +6,19 @@ import java.util.List;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.form.DynamicForm;
 
-import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
+public class ListOfSimpleValuesHolder extends MetadataHolder {
 
-public class TitleInfoHolder extends MetadataHolder {
-	private List<TitleInfoTypeClient> titleInfos;
-
-	public TitleInfoHolder(String name) {
-		super(name);
+	public ListOfSimpleValuesHolder() {
 	}
 
 	@Override
 	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getValue() {
-		throw new UnsupportedOperationException("DC");
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -44,7 +40,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	@Override
 	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("unqualified Dublin Core does not have any attributes");
+		throw new UnsupportedOperationException();
 	}
 
 }
