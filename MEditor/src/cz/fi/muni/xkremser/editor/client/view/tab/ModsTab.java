@@ -20,11 +20,18 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
+import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
+import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 
 // TODO: Auto-generated Javadoc
@@ -42,9 +49,12 @@ public class ModsTab extends Tab {
 
 	/** The deep. */
 	private final int deep;
-	private ModsTypeClient modsTypeClient;
 	private final List<TitleInfoHolder> titleInfoHolders;
 	private final List<NameHolder> nameHolders;
+	private final List<TypeOfResourceHolder> typeOfResourceHolders;
+	private final List<GenreHolder> genreHolders;
+	private final List<OriginInfoHolder> originInfoHolders;
+	private final List<LanguageHolder> languageHolders;
 
 	/**
 	 * The Class GetRelatedItem.
@@ -82,6 +92,11 @@ public class ModsTab extends Tab {
 		super(topLvl ? "MODS" : "Related Item", topLvl ? "pieces/16/pawn_blue.png" : "pieces/16/piece_blue.png");
 		titleInfoHolders = new ArrayList<TitleInfoHolder>();
 		nameHolders = new ArrayList<NameHolder>();
+		typeOfResourceHolders = new ArrayList<TypeOfResourceHolder>();
+		genreHolders = new ArrayList<GenreHolder>();
+		originInfoHolders = new ArrayList<OriginInfoHolder>();
+		languageHolders = new ArrayList<LanguageHolder>();
+
 		this.deep = deep;
 
 		final TabSet topTabSet = new TabSet();
@@ -162,15 +177,17 @@ public class ModsTab extends Tab {
 		Tab[] tabs = new Tab[] {
 				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getTitleInfo(), titleInfoHolders), "Title Info"),
 				getTab(TabUtils.getNameStack(true, modsTypeClient == null ? null : modsTypeClient.getName(), nameHolders), "Name"),
-				getTab(TabUtils.getTypeOfResourceStack(true), "Type"), getTab(TabUtils.getGenreStack(true), "Genre"),
-				getTab(TabUtils.getOriginInfoStack(true), "Origin"), getTab(TabUtils.getLanguageStack(true), "Language"),
-				getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."), getTab(TabUtils.getAbstractStack(true), "Abstract"),
-				getTab(TabUtils.getTableOfContentsStack(true), "Table of Con."), getTab(TabUtils.getTargetAudienceStack(true), "Audience"),
-				getTab(TabUtils.getNoteStack(true), "Note"), getTab(TabUtils.getSubjectStack(true), "Subject"),
-				getTab(TabUtils.getClassificationStack(true), "Classification"), deep > 0 ? new ModsTab(deep - 1, false, null) : MAX_DEEP,
-				getTab(TabUtils.getIdentifierStack(true), "Identifier"), getTab(TabUtils.getLocationStack(true), "Location"),
-				getTab(TabUtils.getAccessConditionStack(true), "Access Condition"), getTab(TabUtils.getPartStack(true), "Part"),
-				getTab(TabUtils.getExtensionStack(true), "Extension"), getTab(TabUtils.getRecordInfoStack(true), "Record Info") };
+				getTab(TabUtils.getTypeOfResourceStack(true, modsTypeClient == null ? null : modsTypeClient.getTypeOfResource(), typeOfResourceHolders), "Type"),
+				getTab(TabUtils.getGenreStack(true, modsTypeClient == null ? null : modsTypeClient.getGenre(), genreHolders), "Genre"),
+				getTab(TabUtils.getOriginInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getOriginInfo(), originInfoHolders), "Origin"),
+				getTab(TabUtils.getLanguageStack(true), "Language"), getTab(TabUtils.getPhysicalDescriptionStack(true), "Physical desc."),
+				getTab(TabUtils.getAbstractStack(true), "Abstract"), getTab(TabUtils.getTableOfContentsStack(true), "Table of Con."),
+				getTab(TabUtils.getTargetAudienceStack(true), "Audience"), getTab(TabUtils.getNoteStack(true), "Note"),
+				getTab(TabUtils.getSubjectStack(true), "Subject"), getTab(TabUtils.getClassificationStack(true), "Classification"),
+				deep > 0 ? new ModsTab(deep - 1, false, null) : MAX_DEEP, getTab(TabUtils.getIdentifierStack(true), "Identifier"),
+				getTab(TabUtils.getLocationStack(true), "Location"), getTab(TabUtils.getAccessConditionStack(true), "Access Condition"),
+				getTab(TabUtils.getPartStack(true), "Part"), getTab(TabUtils.getExtensionStack(true), "Extension"),
+				getTab(TabUtils.getRecordInfoStack(true), "Record Info") };
 		topTabSet.setTabs(tabs);
 		layout.addMember(topTabSet);
 		return layout;
@@ -192,11 +209,36 @@ public class ModsTab extends Tab {
 		}
 		modsTypeClient.setName(names);
 
-		return modsTypeClient;
-	}
+		// type of resource
+		List<TypeOfResourceTypeClient> typesOfResource = new ArrayList<TypeOfResourceTypeClient>(typeOfResourceHolders.size());
+		for (TypeOfResourceHolder holder : typeOfResourceHolders) {
+			typesOfResource.add(holder.getType());
+		}
+		modsTypeClient.setTypeOfResource(typesOfResource);
 
-	public void setMods(ModsTypeClient modsTypeClient) {
-		this.modsTypeClient = modsTypeClient;
+		// genre
+		List<GenreTypeClient> genre = new ArrayList<GenreTypeClient>(genreHolders.size());
+		for (GenreHolder holder : genreHolders) {
+			genre.add(holder.getGenre());
+		}
+		modsTypeClient.setGenre(genre);
+
+		// origin info
+		List<OriginInfoTypeClient> origin = new ArrayList<OriginInfoTypeClient>(originInfoHolders.size());
+		for (OriginInfoHolder holder : originInfoHolders) {
+			origin.add(holder.getOriginInfo());
+		}
+		modsTypeClient.setOriginInfo(origin);
+
+		// // language
+		// List<LanguageTypeClient> language = new
+		// ArrayList<LanguageTypeClient>(languageHolders.size());
+		// for (LanguageHolder holder : languageHolders) {
+		// language.add(holder.getLanguage());
+		// }
+		// modsTypeClient.setLanguage(language);
+
+		return modsTypeClient;
 	}
 
 }

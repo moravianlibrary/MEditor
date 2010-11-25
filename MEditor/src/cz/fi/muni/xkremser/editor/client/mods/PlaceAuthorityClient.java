@@ -28,7 +28,7 @@ public enum PlaceAuthorityClient implements IsSerializable {
 				return c;
 			}
 		}
-		throw new IllegalArgumentException(v);
+		return null;
 	}
 
 }

@@ -44,7 +44,7 @@ public enum NameTypeAttributeClient implements IsSerializable {
 				return c;
 			}
 		}
-		throw new IllegalArgumentException(v);
+		return null;
 	}
 
 }

@@ -13,6 +13,7 @@ import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
 public class NameHolder extends MetadataHolder {
 	private final ListOfSimpleValuesHolder displayForms;
 	private final ListOfSimpleValuesHolder affiliations;
+	private final ListOfSimpleValuesHolder descriptions;
 
 	private final ListOfListOfSimpleValuesHolder nameParts;
 	private final ListOfListOfSimpleValuesHolder roles;
@@ -20,6 +21,7 @@ public class NameHolder extends MetadataHolder {
 	public NameHolder() {
 		this.displayForms = new ListOfSimpleValuesHolder();
 		this.affiliations = new ListOfSimpleValuesHolder();
+		this.descriptions = new ListOfSimpleValuesHolder();
 		this.nameParts = new ListOfListOfSimpleValuesHolder(ModsConstants.NAME_PART, ModsConstants.TYPE);
 		this.roles = new ListOfListOfSimpleValuesHolder(ModsConstants.ROLE, ModsConstants.TYPE, ModsConstants.AUTHORITY);
 	}
@@ -38,6 +40,7 @@ public class NameHolder extends MetadataHolder {
 		}
 		nameTypeClient.setDisplayForm(displayForms.getValues());
 		nameTypeClient.setAffiliation(affiliations.getValues());
+		nameTypeClient.setDescription(affiliations.getValues());
 
 		List<NamePartTypeClient> list1 = new ArrayList<NamePartTypeClient>();
 		for (List<String> values : nameParts.getListOfList()) {
@@ -84,4 +87,23 @@ public class NameHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	public ListOfSimpleValuesHolder getDisplayForms() {
+		return displayForms;
+	}
+
+	public ListOfSimpleValuesHolder getAffiliations() {
+		return affiliations;
+	}
+
+	public ListOfListOfSimpleValuesHolder getNameParts() {
+		return nameParts;
+	}
+
+	public ListOfListOfSimpleValuesHolder getRoles() {
+		return roles;
+	}
+
+	public ListOfSimpleValuesHolder getDescriptions() {
+		return descriptions;
+	}
 }

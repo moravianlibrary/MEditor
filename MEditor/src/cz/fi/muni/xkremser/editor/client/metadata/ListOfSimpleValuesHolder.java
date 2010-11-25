@@ -23,6 +23,8 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 
 	@Override
 	public List<String> getValues() {
+		if (layout == null)
+			return null;
 		List<String> values = new ArrayList<String>();
 		Canvas[] canvases = this.layout.getMembers();
 		for (Canvas canvas : canvases) {

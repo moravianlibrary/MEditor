@@ -32,15 +32,26 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
+import cz.fi.muni.xkremser.editor.client.metadata.DateHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.PlaceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
+import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NamePartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -174,18 +185,39 @@ public final class TabUtils {
 	/** The Constant ATTR_ENCODING. */
 	public static final Attribute ATTR_ENCODING = new Attribute(SelectItem.class, "encoding", "Encoding", ENCODING_TOOLTIPS);
 
+	public static final Attribute ATTR_ENCODING(String value) {
+		return new Attribute(SelectItem.class, ModsConstants.ENCODING, "Encoding", ENCODING_TOOLTIPS, value);
+	}
+
 	/** The Constant ATTR_POINT. */
 	public static final Attribute ATTR_POINT = new Attribute(SelectItem.class, "point", "Point", POINT_TOOLTIPS);
+
+	public static final Attribute ATTR_POINT(String value) {
+		return new Attribute(SelectItem.class, ModsConstants.POINT, "Point", POINT_TOOLTIPS, value);
+	}
 
 	/** The Constant ATTR_KEY_DATE. */
 	public static final Attribute ATTR_KEY_DATE = new Attribute(
 			CheckboxItem.class,
-			"key_date",
+			ModsConstants.KEY_DATE,
 			"Key Date",
 			"This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.");
 
+	public static final Attribute ATTR_KEY_DATE(String value) {
+		return new Attribute(
+				CheckboxItem.class,
+				ModsConstants.KEY_DATE,
+				"Key Date",
+				"This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.",
+				value);
+	}
+
 	/** The Constant ATTR_QUALIFIER. */
 	public static final Attribute ATTR_QUALIFIER = new Attribute(SelectItem.class, "qualifier", "Qualifier", QUALIFIER_TOOLTIPS);
+
+	public static final Attribute ATTR_QUALIFIER(String value) {
+		return new Attribute(SelectItem.class, ModsConstants.QUALIFIER, "Qualifier", QUALIFIER_TOOLTIPS, value);
+	}
 
 	/** The Constant ATTR_TYPE_TEXT_CODE. */
 	public static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, "type", "Type", TYPE_TEXT_CODE_TOOLTIPS);
@@ -347,7 +379,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getTypeOfResourceLayout();
+			TypeOfResourceTypeClient typeOfResourceTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				typeOfResourceTypeClient = (TypeOfResourceTypeClient) getValues().get(counter);
+			}
+			TypeOfResourceHolder holder = new TypeOfResourceHolder();
+			((List<TypeOfResourceHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getTypeOfResourceLayout(typeOfResourceTypeClient, holder);
 		}
 	}
 
@@ -365,7 +404,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getGenreLayout();
+			GenreTypeClient genreTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				genreTypeClient = (GenreTypeClient) getValues().get(counter);
+			}
+			GenreHolder holder = new GenreHolder();
+			((List<GenreHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getGenreLayout(genreTypeClient, holder);
 		}
 	}
 
@@ -383,7 +429,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getOriginInfoLayout();
+			OriginInfoTypeClient originInfoTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				originInfoTypeClient = (OriginInfoTypeClient) getValues().get(counter);
+			}
+			OriginInfoHolder holder = new OriginInfoHolder();
+			((List<OriginInfoHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getOriginInfoLayout(originInfoTypeClient, holder);
 		}
 	}
 
@@ -579,7 +632,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getPlaceLayout();
+			PlaceTypeClient placeTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				placeTypeClient = (PlaceTypeClient) getValues().get(counter);
+			}
+			PlaceHolder holder = new PlaceHolder();
+			((List<PlaceHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getPlaceLayout(placeTypeClient, holder);
 		}
 	}
 
@@ -675,6 +735,8 @@ public final class TabUtils {
 		/** The key date. */
 		private final boolean keyDate;
 
+		private final boolean isOtherDate;
+
 		/**
 		 * Instantiates a new gets the date layout.
 		 * 
@@ -685,8 +747,8 @@ public final class TabUtils {
 		 * @param tooltip
 		 *          the tooltip
 		 */
-		public GetDateLayout(String name, String title, String tooltip) {
-			this(name, title, tooltip, null, true);
+		public GetDateLayout(String name, String title, String tooltip, List<DateTypeClient> values, List<DateHolder> holders) {
+			this(name, title, tooltip, null, true, values, holders);
 		}
 
 		/**
@@ -703,13 +765,29 @@ public final class TabUtils {
 		 * @param keyDate
 		 *          the key date
 		 */
-		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate) {
+		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, List<DateTypeClient> values, List<DateHolder> holders) {
 			super();
 			this.name = name;
 			this.title = title;
 			this.tooltip = tooltip;
 			this.attribute = attribute;
 			this.keyDate = keyDate;
+			isOtherDate = false;
+			setHolders(holders == null ? new ArrayList<DateHolder>() : holders);
+			setValues(values);
+		}
+
+		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, List<? extends DateTypeClient> values,
+				List<DateHolder> holders, boolean isOtherDate) {
+			super();
+			this.name = name;
+			this.title = title;
+			this.tooltip = tooltip;
+			this.attribute = attribute;
+			this.keyDate = keyDate;
+			this.isOtherDate = isOtherDate;
+			setHolders(holders == null ? new ArrayList<DateHolder>() : holders);
+			setValues(values);
 		}
 
 		/*
@@ -721,7 +799,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getDateLayout(name, title, tooltip, attribute, keyDate);
+			DateTypeClient dateTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				dateTypeClient = (DateTypeClient) getValues().get(counter);
+			}
+			DateHolder holder = new DateHolder(name, isOtherDate);
+			((List<DateHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getDateLayout(name, title, tooltip, attribute, keyDate, dateTypeClient, holder);
 		}
 	}
 
@@ -782,7 +867,7 @@ public final class TabUtils {
 	 * @return the simple section
 	 */
 	public static SectionStackSection getSimpleSection(final Attribute attribute, final boolean expanded) {
-		return getSimpleSectionWithAttributes(attribute, expanded, null);
+		return getSimpleSectionWithAttributes(attribute, expanded, null, null);
 	}
 
 	/**
@@ -799,7 +884,7 @@ public final class TabUtils {
 	 * @return the simple section
 	 */
 	public static SectionStackSection getSimpleSection(final Class<? extends FormItem> type, final String label, final String tooltip, final boolean expanded) {
-		return getSimpleSectionWithAttributes(new Attribute(type, label.toLowerCase().replaceAll(" ", "_"), label, tooltip), expanded, null);
+		return getSimpleSectionWithAttributes(new Attribute(type, label.toLowerCase().replaceAll(" ", "_"), label, tooltip), expanded, null, null);
 	}
 
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
@@ -813,24 +898,16 @@ public final class TabUtils {
 				attributes, values, holder, flat);
 	}
 
-	/**
-	 * Gets the simple section with attributes.
-	 * 
-	 * @param mainAttr
-	 *          the main attr
-	 * @param expanded
-	 *          the expanded
-	 * @param attributes
-	 *          the attributes
-	 * @return the simple section with attributes
-	 */
-	public static SectionStackSection getSimpleSectionWithAttributes(final Attribute mainAttr, final boolean expanded, Attribute[] attributes) {
+	public static SectionStackSection getSimpleSectionWithAttributes(final Attribute mainAttr, final boolean expanded, Attribute[] attributes,
+			MetadataHolder holder) {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
 		if (isAttribPresent) {
-			// layout.setOverflow(Overflow.AUTO);
-			// layout.setLeaveScrollbarGap(true);
 			layout.addMember(getAttributes(true, attributes));
+		}
+
+		if (holder != null) {
+			holder.setLayout(layout);
 		}
 
 		SectionStackSection section = new SectionStackSection(mainAttr.getName());
@@ -1042,12 +1119,14 @@ public final class TabUtils {
 	 */
 	private static FormItem newItem(final Attribute attr) {
 		FormItem item = null;
+		boolean isCheckbox = false;
 		Class<? extends FormItem> type = attr.getType();
 		if (type.equals(TextAreaItem.class)) {
 			item = new TextAreaItem(attr.getName());
 		} else if (type.equals(TextItem.class)) {
 			item = new TextItem(attr.getName());
 		} else if (type.equals(CheckboxItem.class)) {
+			isCheckbox = true;
 			item = new CheckboxItem(attr.getName());
 		} else if (type.equals(DateItem.class)) {
 			item = new DateItem(attr.getName());
@@ -1066,7 +1145,11 @@ public final class TabUtils {
 			});
 		}
 		if (attr.getValue() != null && !"".equals(attr.getValue())) {
-			item.setValue(attr.getValue());
+			if (isCheckbox) {
+				item.setValue(ClientUtils.toBoolean(attr.getValue()));
+			} else {
+				item.setValue(attr.getValue());
+			}
 		}
 		if (attr.getTooltip() != null && !"".equals(attr.getTooltip())) {
 			item.setTooltip(attr.getTooltip());
@@ -1184,8 +1267,11 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the type of resource stack
 	 */
-	public static SectionStackSection getTypeOfResourceStack(boolean expanded) {
-		return getSomeStack(expanded, "Type of Resource", GET_TYPE_OF_RESOURCE_LAYOUT);
+	public static SectionStackSection getTypeOfResourceStack(boolean expanded, List<TypeOfResourceTypeClient> values, List<TypeOfResourceHolder> holders) {
+		GetTypeOfResourceLayout getTypeOfResourceLayout = new GetTypeOfResourceLayout();
+		getTypeOfResourceLayout.setHolders(holders);
+		getTypeOfResourceLayout.setValues(values);
+		return getSomeStack(expanded, "Type of Resource", getTypeOfResourceLayout);
 	}
 
 	/**
@@ -1195,8 +1281,11 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the genre stack
 	 */
-	public static SectionStackSection getGenreStack(boolean expanded) {
-		return getSomeStack(expanded, "Genre", GET_GENRE_LAYOUT);
+	public static SectionStackSection getGenreStack(boolean expanded, List<GenreTypeClient> values, List<GenreHolder> holders) {
+		GetGenreLayout getLayout = new GetGenreLayout();
+		getLayout.setHolders(holders);
+		getLayout.setValues(values);
+		return getSomeStack(expanded, "Genre", getLayout);
 	}
 
 	/**
@@ -1206,8 +1295,11 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the origin info stack
 	 */
-	public static SectionStackSection getOriginInfoStack(boolean expanded) {
-		return getSomeStack(expanded, "Origin Info", GET_ORIGIN_INFO_LAYOUT);
+	public static SectionStackSection getOriginInfoStack(boolean expanded, List<OriginInfoTypeClient> values, List<OriginInfoHolder> holders) {
+		GetOriginInfoLayout getOriginInfoLayout = new GetOriginInfoLayout();
+		getOriginInfoLayout.setValues(values);
+		getOriginInfoLayout.setHolders(holders);
+		return getSomeStack(expanded, "Origin Info", getOriginInfoLayout);
 	}
 
 	/**
@@ -1421,8 +1513,11 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the place stack
 	 */
-	private static SectionStackSection getPlaceStack(boolean expanded) {
-		return getSomeStack(expanded, "Place", GET_PLACE_LAYOUT);
+	private static SectionStackSection getPlaceStack(boolean expanded, List<PlaceTypeClient> values, List<PlaceHolder> holders) {
+		GetPlaceLayout getPlaceLayout = new GetPlaceLayout();
+		getPlaceLayout.setHolders(holders);
+		getPlaceLayout.setValues(values);
+		return getSomeStack(expanded, "Place", getPlaceLayout);
 	}
 
 	/**
@@ -1506,6 +1601,7 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
+		layout.setExtraSpace(40);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
 
@@ -1533,15 +1629,15 @@ public final class TabUtils {
 						"Name Parts",
 						"Name Part",
 						"Includes each part of the name that is parsed. Parsing is used to indicate a date associated with the name, to parse the parts of a corporate name (MARC 21 fields X10 subfields $a and $b).",
-						false, new Attribute[] { new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", tooltips) }, vals, null, false));
+						false, new Attribute[] { new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", tooltips) }, vals, holder.getNameParts(), false));
 		sectionStack.addSection(getStackSection("Display Forms", "Display Form", "This data is usually carried in MARC 21 field 245 subfield $c.", false,
-				values == null ? null : values.getDisplayForm(), holder));
+				values == null ? null : values.getDisplayForm(), holder.getDisplayForms()));
 		sectionStack
 				.addSection(getStackSection(
 						"Affiliations",
 						"Affiliation",
 						"Contains the name of an organization, institution, etc. with which the entity recorded in <name> was associated at the time that the resource was created. (MARS21 100, 700 $u)",
-						false, values == null ? null : values.getAffiliation(), holder));
+						false, values == null ? null : values.getAffiliation(), holder.getAffiliations()));
 		if (values != null && values.getRole() != null && values.getRole().size() > 0) {
 			vals = new ArrayList<List<String>>();
 			for (RoleTypeClient roleTypeClient : values.getRole()) {
@@ -1559,8 +1655,11 @@ public final class TabUtils {
 				}
 			}
 		}
-		sectionStack.addSection(getStackSectionWithAttributes("Roles", "Role", "", false, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, vals, null,
-				false));
+		sectionStack.addSection(getStackSectionWithAttributes("Roles", "Role", "", false, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, vals,
+				holder.getRoles(), false));
+		sectionStack.addSection(getStackSection("Descriptions", "Description",
+				"May be used to give a textual description for a name when necessary, for example, to distinguish from other names.", false, values == null ? null
+						: values.getDescription(), holder.getDescriptions()));
 
 		layout.addMember(sectionStack);
 
@@ -1572,15 +1671,20 @@ public final class TabUtils {
 	 * 
 	 * @return the type of resource layout
 	 */
-	public static VLayout getTypeOfResourceLayout() {
+	public static VLayout getTypeOfResourceLayout(final TypeOfResourceTypeClient values, final TypeOfResourceHolder holder) {
 		final VLayout layout = new VLayout();
 
 		Attribute[] attributes = new Attribute[] {
-				new Attribute(CheckboxItem.class, "collection", "Collection",
-						"This attribute is used as collection='yes' when the resource is a collection. (Leader/07 code 'c')"),
-				new Attribute(CheckboxItem.class, "manuscript", "Manuscript",
-						"This attribute is used as manuscript='yes' when the resource is written in handwriting or typescript. (Leader/06 values 'd', 'f' and 't')") };
-		layout.addMember(getAttributes(true, attributes));
+				new Attribute(CheckboxItem.class, ModsConstants.COLLECTION, "Collection",
+						"This attribute is used as collection='yes' when the resource is a collection. (Leader/07 code 'c')", values == null ? ""
+								: values.getCollection() == null ? "" : values.getCollection().value()),
+				new Attribute(CheckboxItem.class, ModsConstants.MANUSCRIPT, "Manuscript",
+						"This attribute is used as manuscript='yes' when the resource is written in handwriting or typescript. (Leader/06 values 'd', 'f' and 't')",
+						values == null ? "" : values.getManuscript() == null ? "" : values.getManuscript().value()) };
+		DynamicForm form = getAttributes(true, attributes);
+		layout.addMember(form);
+		holder.setAttributeForm(form);
+		layout.setExtraSpace(40);
 
 		final Map<String, String> tooltips = new HashMap<String, String>();
 		tooltips.put("", "Nothing.");
@@ -1597,9 +1701,10 @@ public final class TabUtils {
 		tooltips.put("three dimensional object", "This is roughly equivalent to MARC 21 Leader/06 value 'r'.");
 		tooltips.put("software, multimedia", "This is roughly equivalent to MARC 21 Leader/06 value 'm'.");
 		tooltips.put("mixed material", "This is roughly equivalent to MARC 21 Leader/06 value 'p'.");
-		DynamicForm form = new DynamicForm();
-		form.setItems(newItem(new Attribute(SelectItem.class, "type", "Type", tooltips)));
+		form = new DynamicForm();
+		form.setItems(newItem(new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", tooltips, values == null ? "" : values.getValue())));
 		layout.addMember(form);
+		holder.setAttributeForm2(form);
 
 		return layout;
 	}
@@ -1609,18 +1714,25 @@ public final class TabUtils {
 	 * 
 	 * @return the genre layout
 	 */
-	public static VLayout getGenreLayout() {
+	public static VLayout getGenreLayout(final GenreTypeClient values, final GenreHolder holder) {
 		final VLayout layout = new VLayout();
 		Attribute[] attributes = new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type",
-						"This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style."), ATTR_LANG, ATTR_AUTHORITY,
-				ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
-		layout.addMember(getAttributes(true, attributes));
-
-		DynamicForm form = new DynamicForm();
-		form.setItems(newItem(new Attribute(TextItem.class, "genre", "Genre",
-				"A term(s) that designates a category characterizing a particular style, form, or content, such as artistic, musical, literary composition, etc. ")));
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type",
+						"This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style."),
+				ATTR_LANG(values == null ? "" : values.getLang()), ATTR_AUTHORITY(values == null ? "" : values.getAuthority()),
+				ATTR_XML_LANG(values == null ? "" : values.getXmlLang()), ATTR_SCRIPT(values == null ? "" : values.getScript()),
+				ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()) };
+		DynamicForm form = getAttributes(true, attributes);
 		layout.addMember(form);
+		holder.setAttributeForm(form);
+		layout.setExtraSpace(40);
+
+		form = new DynamicForm();
+		form.setItems(newItem(new Attribute(TextItem.class, ModsConstants.GENRE, "Genre",
+				"A term(s) that designates a category characterizing a particular style, form, or content, such as artistic, musical, literary composition, etc. ",
+				values == null ? "" : values.getValue())));
+		layout.addMember(form);
+		holder.setAttributeForm2(form);
 
 		return layout;
 	}
@@ -1640,26 +1752,35 @@ public final class TabUtils {
 	 *          the key date
 	 * @return the date layout
 	 */
-	public static VLayout getDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate) {
+	public static VLayout getDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, DateTypeClient value, DateHolder holder) {
 		final VLayout layout = new VLayout();
 		Attribute[] attributes = null;
+		final Attribute encoding = ATTR_ENCODING(value == null ? "" : value.getEncoding());
 		if (attribute != null) {
+			attribute.setValue(value == null ? "" : value.getValue());
 			if (keyDate) {
-				attributes = new Attribute[] { attribute, ATTR_ENCODING, ATTR_POINT, ATTR_KEY_DATE, ATTR_QUALIFIER };
+				attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
+						ATTR_KEY_DATE(value == null ? "" : value.getKeyDate() == null ? "" : value.getKeyDate().value()),
+						ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 			} else {
-				attributes = new Attribute[] { attribute, ATTR_ENCODING, ATTR_POINT, ATTR_QUALIFIER };
+				attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
+						ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 			}
-			attributes = new Attribute[] { attribute, ATTR_ENCODING, ATTR_POINT, ATTR_KEY_DATE, ATTR_QUALIFIER };
+			attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
+					ATTR_KEY_DATE(value == null ? "" : value.getKeyDate() == null ? "" : value.getKeyDate().value()),
+					ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 		} else if (keyDate) {
-			attributes = new Attribute[] { ATTR_ENCODING, ATTR_POINT, ATTR_KEY_DATE, ATTR_QUALIFIER };
+			attributes = new Attribute[] { encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
+					ATTR_KEY_DATE(value == null ? "" : value.getKeyDate() == null ? "" : value.getKeyDate().value()),
+					ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 		} else {
-			attributes = new Attribute[] { ATTR_ENCODING, ATTR_POINT, ATTR_QUALIFIER };
+			attributes = new Attribute[] { encoding, ATTR_POINT(value == null ? "" : value.getPoint()), ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 		}
 
 		final DynamicForm formAttr = getAttributes(true, attributes);
 
-		FormItem item1 = newItem(new Attribute(TextItem.class, name, title, tooltip));
-		FormItem item2 = newItem(new Attribute(DateItem.class, name, title, tooltip));
+		FormItem item1 = newItem(new Attribute(TextItem.class, name, title, tooltip, value == null ? "" : value.getValue()));
+		FormItem item2 = newItem(new Attribute(DateItem.class, name, title, tooltip, value == null ? "" : value.getValue()));
 
 		FormItem[] items = formAttr.getFields();
 		FormItem[] itemsToAdd = new FormItem[items.length + 2];
@@ -1672,13 +1793,13 @@ public final class TabUtils {
 		item1.setShowIfCondition(new FormItemIfFunction() {
 			@Override
 			public boolean execute(FormItem item, Object value, DynamicForm form) {
-				if (ATTR_ENCODING.getName() == null || "".equals(ATTR_ENCODING.getName())) {
+				if (encoding.getName() == null || "".equals(encoding.getName())) {
 					return false;
 				}
-				String encoding = (String) form.getValue(ATTR_ENCODING.getName());
+				String encodingString = (String) form.getValue(encoding.getName());
 				boolean returnVal = false;
-				if (encoding != null && !"".equals(encoding)) {
-					returnVal = !W3C_ENCODING.equals(encoding);
+				if (encodingString != null && !"".equals(encodingString)) {
+					returnVal = !W3C_ENCODING.equals(encodingString);
 				}
 				return returnVal;
 			}
@@ -1686,17 +1807,18 @@ public final class TabUtils {
 		item2.setShowIfCondition(new FormItemIfFunction() {
 			@Override
 			public boolean execute(FormItem item, Object value, DynamicForm form) {
-				if (ATTR_ENCODING.getName() == null || "".equals(ATTR_ENCODING.getName())) {
+				if (encoding.getName() == null || "".equals(encoding.getName())) {
 					return true;
 				}
-				String encoding = (String) form.getValue(ATTR_ENCODING.getName());
+				String encodingString = (String) form.getValue(encoding.getName());
 				boolean returnVal = true;
-				if (encoding != null && !"".equals(encoding)) {
-					returnVal = W3C_ENCODING.equals(encoding);
+				if (encodingString != null && !"".equals(encodingString)) {
+					returnVal = W3C_ENCODING.equals(encodingString);
 				}
 				return returnVal;
 			}
 		});
+		holder.setAttributeForm(formAttr);
 		formAttr.setItems(itemsToAdd);
 		layout.addMember(formAttr);
 
@@ -1708,7 +1830,7 @@ public final class TabUtils {
 	 * 
 	 * @return the place layout
 	 */
-	private static VLayout getPlaceLayout() {
+	private static VLayout getPlaceLayout(PlaceTypeClient value, PlaceHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -1733,11 +1855,14 @@ public final class TabUtils {
 	 * 
 	 * @return the origin info layout
 	 */
-	public static VLayout getOriginInfoLayout() {
+	public static VLayout getOriginInfoLayout(OriginInfoTypeClient values, OriginInfoHolder holder) {
 		final VLayout layout = new VLayout();
 
-		Attribute[] attributes = new Attribute[] { ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
-		layout.addMember(getAttributes(true, attributes));
+		Attribute[] attributes = new Attribute[] { ATTR_LANG(values == null ? "" : values.getLang()), ATTR_XML_LANG(values == null ? "" : values.getXmlLang()),
+				ATTR_SCRIPT(values == null ? "" : values.getScript()), ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()) };
+		DynamicForm formAttr = getAttributes(true, attributes);
+		holder.setAttributeForm(formAttr);
+		layout.addMember(formAttr);
 
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -1747,59 +1872,73 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
-		// sectionStack.setOverflow(Overflow.AUTO);
-		sectionStack.addSection(getPlaceStack(false));
-		sectionStack.addSection(getStackSection("Publishers", "Publisher", "It is equivalent to MARC 21 field 260 subfield $b.", false));
+		layout.setExtraSpace(40);
+		sectionStack.addSection(getPlaceStack(false, values == null ? null : values.getPlace(), holder.getPlaces()));
+		sectionStack.addSection(getStackSection("Publishers", "Publisher", "It is equivalent to MARC 21 field 260 subfield $b.", false, values == null ? null
+				: values.getPublisher(), holder.getPublishers()));
 		sectionStack
 				.addSection(getSomeStack(
 						false,
 						"Dates Issued",
 						new GetDateLayout(
-								"date_issued",
+								ModsConstants.DATE_ISSUED,
 								"Issued Date",
-								"Equivalent to dates in MARC 21 field 260 subfield $c. It may be in textual or structured form. <dateIssued> may be recorded according to the MARC 21 rules for field 008/07-14 with encoding='marc.'")));
+								"Equivalent to dates in MARC 21 field 260 subfield $c. It may be in textual or structured form. <dateIssued> may be recorded according to the MARC 21 rules for field 008/07-14 with encoding='marc.'",
+								values == null ? null : values.getDateIssued(), holder.getDatesIssued())));
 		sectionStack
 				.addSection(getSomeStack(
 						false,
 						"Dates Created",
 						new GetDateLayout(
-								"date_created",
+								ModsConstants.DATE_CREATED,
 								"Created Date",
-								"This type of date is recorded in various places in MARC 21: field 260 subfield $g, for some types of material in field 260 subfield $c, date of original in field 534 subfield $c and date of reproduction in field 533 subfield $d.")));
-		sectionStack.addSection(getSomeStack(false, "Dates Captured", new GetDateLayout("date_captured", "Captured Date",
-				"This could be a date that the resource was captured or could also be the date of creation. This is roughly equivalent to MARC field 033.")));
-		sectionStack.addSection(getSomeStack(false, "Dates Valid", new GetDateLayout("date_valid", " Valid Date",
-				"Roughly equivalent to MARC 21 field 046 subfields $m and $n. ")));
-		sectionStack.addSection(getSomeStack(false, "Dates Modified", new GetDateLayout("date_modified", "Modified Date",
-				"Roughly equivalent to MARC 21 field 046 subfield $j.")));
-		sectionStack.addSection(getSomeStack(false, "Dates Copyright", new GetDateLayout("date_copyright", "Copyright Date",
-				"A copyright date may be used in 260$c preceded by the letter 'c' if it appears that way on the resource.")));
+								"This type of date is recorded in various places in MARC 21: field 260 subfield $g, for some types of material in field 260 subfield $c, date of original in field 534 subfield $c and date of reproduction in field 533 subfield $d.",
+								values == null ? null : values.getDateCreated(), holder.getDatesCreated())));
+		sectionStack.addSection(getSomeStack(false, "Dates Captured", new GetDateLayout(ModsConstants.DATE_CAPTURED, "Captured Date",
+				"This could be a date that the resource was captured or could also be the date of creation. This is roughly equivalent to MARC field 033.",
+				values == null ? null : values.getDateCaptured(), holder.getDatesCaptured())));
+		sectionStack.addSection(getSomeStack(false, "Dates Valid", new GetDateLayout(ModsConstants.DATE_VALID, " Valid Date",
+				"Roughly equivalent to MARC 21 field 046 subfields $m and $n. ", values == null ? null : values.getDateValid(), holder.getDatesValid())));
+		sectionStack.addSection(getSomeStack(false, "Dates Modified", new GetDateLayout(ModsConstants.DATE_MODIFIED, "Modified Date",
+				"Roughly equivalent to MARC 21 field 046 subfield $j.", values == null ? null : values.getDateModified(), holder.getDatesModified())));
+		sectionStack.addSection(getSomeStack(
+				false,
+				"Dates Copyright",
+				new GetDateLayout(ModsConstants.DATE_COPYRIGHT, "Copyright Date",
+						"A copyright date may be used in 260$c preceded by the letter 'c' if it appears that way on the resource.", values == null ? null : values
+								.getCopyrightDate(), holder.getDatesCopyright())));
 		sectionStack
 				.addSection(getSomeStack(
 						false,
-						"Dates Other",
+						"Other Dates",
 						new GetDateLayout(
-								"date_other",
+								ModsConstants.DATE_OTHER,
 								"Other Date",
 								"Roughly equivalent to MARC 21 field 046 subfield $j.",
 								new Attribute(TextItem.class, "type", "Type",
-										"This attribute allows for extensibility of date types so that other specific date types may be designated if not given a separate element in MODS."),
-								true)));
+										"This attribute allows for extensiblity of date types so that other specific date types may be designated if not given a separate element in MODS."),
+								true, values == null ? null : values.getDateOther(), holder.getDatesOther(), true)));
 		sectionStack.addSection(getStackSection("Editions", "Edition", "Equivalent to MARC 21 fields 242, 245, 246 subfield $b.", false));
 
-		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, "issuance", "Issuance", new HashMap<String, String>() {
+		// getStackSectionWithAttributes(final String label1, final String label2,
+		// final String tooltip, final boolean expanded,
+		// final Attribute[] attributes, final List<List<String>> values,
+		// MetadataHolder holder, boolean flat)
+
+		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, ModsConstants.ISSUANCE, "Issuance", new HashMap<String, String>() {
 			{
 				put("", "This element will be omitted.");
 				put("continuing", "The value is equivalent to codes 'b,' 'i' and 's' in Leader/07.");
 				put("monographic", "The value is equivalent to codes 'a,' 'c,' 'd' and 'm' in Leader/07.");
 			}
-		}), false, null));
+		}, values == null ? null : values.getIssuance() == null ? null : values.getIssuance().get(0)), false, null, holder.getIssuances()));
 		sectionStack
 				.addSection(getStackSectionWithAttributes(
 						"Frequencies",
 						"Frequency",
 						"Equivalent to the information in MARC 21 008/18 (Frequency) for Continuing Resources, where it is given in coded form or in field 310 (Current Publication Frequency), where it is given in textual form.",
-						false, new Attribute[] { ATTR_AUTHORITY }, null));
+						false, new Attribute[] { ATTR_AUTHORITY("") }, values == null ? null : ClientUtils.toListOfListOfStrings(values.getFrequency()),
+						holder.getFrequencies(), false));
 
 		layout.addMember(sectionStack);
 
@@ -1825,6 +1964,7 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
+		layout.setExtraSpace(40);
 		// sectionStack.setOverflow(Overflow.AUTO);
 
 		attributes = new Attribute[] {
@@ -1848,7 +1988,7 @@ public final class TabUtils {
 						put("replacement",
 								"The electronic resource is of high enough quality to serve as a replacement if the original is lost, damaged, or destroyed. If serving more than one purpose, the element may be repeated. ");
 					}
-				}), false, null));
+				}), false, null, null));
 		sectionStack.addSection(getStackSection("Internet Media Types", "Internet Media Type",
 				"Roughly equivalent to MARC 21 field 856 subfield $q, although subfield $q may also contain other designations of electronic format.", false));
 		sectionStack.addSection(getStackSection("Extents", "Extent", "Roughly equivalent to MARC 21 fields 300 subfields $a, $b, $c, and $e and 306 subfield $a.",
@@ -1862,7 +2002,7 @@ public final class TabUtils {
 				put("digitized other analog",
 						"A resource was created by digitizing another form of the resource not covered by the other values, e.g. an intermediate form such as photocopy, transparency, slide, etc. (MARC 007/11 value 'd')");
 			}
-		}), false, null));
+		}), false, null, null));
 		attributes = new Attribute[] {
 				new Attribute(
 						TextItem.class,
@@ -1905,6 +2045,7 @@ public final class TabUtils {
 		}
 		form.setItems(item);
 		layout.addMember(form);
+		layout.setExtraSpace(40);
 		return layout;
 	}
 
@@ -1917,6 +2058,7 @@ public final class TabUtils {
 	 */
 	private static VLayout getGeneralDeepLayout(final Attribute[] attribs) {
 		final VLayout layout = new VLayout();
+		layout.setExtraSpace(40);
 		if (attribs != null || attribs.length > 0) {
 			boolean first = true;
 			for (Attribute attr : attribs) {
@@ -1950,6 +2092,7 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
+		layout.setExtraSpace(40);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		layout
 				.addMember(getAttributes(
@@ -1983,7 +2126,7 @@ public final class TabUtils {
 		// sectionStack.setOverflow(Overflow.AUTO);
 
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "form", "Form",
-				"Designation of a particular physical presentation of a resource."), false, new Attribute[] { ATTR_AUTHORITY }));
+				"Designation of a particular physical presentation of a resource."), false, new Attribute[] { ATTR_AUTHORITY }, null));
 		sectionStack
 				.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation",
 						"Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false,
@@ -2036,6 +2179,7 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
+		layout.setExtraSpace(40);
 		// sectionStack.setOverflow(Overflow.AUTO);
 		layout.addMember(getAttributes(true, new Attribute[] { ATTR_AUTHORITY, ATTR_XLINK, ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
 
@@ -2044,8 +2188,8 @@ public final class TabUtils {
 				false, null));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "geographic", "Geographic", "Equivalent to MARC 21 field 651 and 6XX subfield $z."),
 				false, null));
-		sectionStack
-				.addSection(getSomeStack(false, "Temporal", new GetDateLayout("temporal", "Temporal", "Equivalent to MARC 21 fields 045 and 6XX subfield $y.")));
+		sectionStack.addSection(getSomeStack(false, "Temporal", new GetDateLayout("temporal", "Temporal", "Equivalent to MARC 21 fields 045 and 6XX subfield $y.",
+				null, null)));
 		// TODO: handle
 		GetTitleInfoLayout getTitleInfoLayout = new GetTitleInfoLayout();
 		getTitleInfoLayout.setHolders(new ArrayList<Object>());
@@ -2120,7 +2264,6 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
-		// sectionStack.setOverflow(Overflow.AUTO);
 		Attribute[] attributes = new Attribute[] {
 				getDisplayLabel("Equivalent to MARC 21 field 852 subfield $3."),
 				new Attribute(TextItem.class, "type", "Type",
@@ -2183,7 +2326,6 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
-		// sectionStack.setOverflow(Overflow.AUTO);
 		Attribute[] attributes = new Attribute[] {
 				new Attribute(TextItem.class, "type", "Type",
 						"A designation of a document segment type. Suggested values include volume, issue, chapter, section, paragraph, track. Other values may be used as needed."),
@@ -2193,7 +2335,7 @@ public final class TabUtils {
 		sectionStack.addSection(getSomeStack(false, "Detail", new GetDetailLayout()));
 		sectionStack.addSection(getSomeStack(false, "Extent", new GetExtentLayout()));
 		sectionStack.addSection(getSomeStack(false, "Date", new GetDateLayout("date", "Date", "Contains date information relevant to the part described.", null,
-				false)));
+				false, null, null)));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(TextAreaItem.class, "text", "Text",
@@ -2308,12 +2450,12 @@ public final class TabUtils {
 		sectionStack.addSection(getStackSectionWithAttributes("Record Content Source", new Attribute(TextItem.class, "record_content_source",
 				"Record Content Source", "Roughly equivalent to MARC 21 field 040."), false, new Attribute[] { ATTR_AUTHORITY }, null));
 		sectionStack.addSection(getSomeStack(false, "Record Creation Date", new GetDateLayout("record_creation_date", "Record Creation Date",
-				"Roughly equivalent to MARC 21 field 008/00-05.", null, false)));
+				"Roughly equivalent to MARC 21 field 008/00-05.", null, false, null, null)));
 		sectionStack.addSection(getSomeStack(false, "Record Change Date", new GetDateLayout("record_change_date", "Record Creation Date",
-				"May serve as a version identifier for the record. It is roughly equivalent to MARC 21 field 005.", null, false)));
+				"May serve as a version identifier for the record. It is roughly equivalent to MARC 21 field 005.", null, false, null, null)));
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "record_identifier", "Record Identifier",
 				"Roughly equivalent to MARC 21 field 001."), false, new Attribute[] { new Attribute(TextItem.class, "source", "Source",
-				"Roughly equivalent to MARC 21 field 003.") }));
+				"Roughly equivalent to MARC 21 field 003.") }, null));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "record_origin", "Record Origin",
 				"Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false, null));
 		sectionStack.addSection(getSomeStack(false, "Language of Cataloging", new GetLanguageOfCatalogingLayout()));

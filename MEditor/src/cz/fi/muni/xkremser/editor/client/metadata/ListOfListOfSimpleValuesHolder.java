@@ -34,8 +34,8 @@ public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
 			for (String key : keys) {
 				String value = form.getValueAsString(key);
 				values.get(i).add(value == null ? null : value.trim());
-				i++;
 			}
+			i++;
 		}
 		return values;
 	}

@@ -28,7 +28,7 @@ public enum YesClient implements IsSerializable {
 				return c;
 			}
 		}
-		throw new IllegalArgumentException(v);
+		return null;
 	}
 
 }

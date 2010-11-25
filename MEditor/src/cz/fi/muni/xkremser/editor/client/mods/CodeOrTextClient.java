@@ -28,7 +28,7 @@ public enum CodeOrTextClient implements IsSerializable {
 				return c;
 			}
 		}
-		throw new IllegalArgumentException(v);
+		return null;
 	}
 
 }

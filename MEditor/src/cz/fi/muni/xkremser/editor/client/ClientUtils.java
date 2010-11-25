@@ -5,8 +5,12 @@
  */
 package cz.fi.muni.xkremser.editor.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.DOM;
 
+import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -107,5 +111,20 @@ public class ClientUtils {
 		final com.google.gwt.user.client.Element div = DOM.createDiv();
 		DOM.setInnerText(div, maybeHtml);
 		return DOM.getInnerHTML(div);
+	}
+
+	public static List<List<String>> toListOfListOfStrings(List<StringPlusAuthorityClient> frequency) {
+		if (frequency == null)
+			return null;
+		List<List<String>> outerList = new ArrayList<List<String>>(frequency.size());
+		for (StringPlusAuthorityClient value : frequency) {
+			if (value == null)
+				continue;
+			List<String> innerList = new ArrayList<String>(2);
+			innerList.add(value.getValue());
+			innerList.add(value.getAuthority());
+			outerList.add(innerList);
+		}
+		return outerList;
 	}
 }
