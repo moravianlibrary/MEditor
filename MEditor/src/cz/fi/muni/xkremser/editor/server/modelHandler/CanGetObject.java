@@ -5,6 +5,8 @@
  */
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
+import java.io.IOException;
+
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
@@ -19,6 +21,7 @@ public interface CanGetObject {
 	 * @param uuid
 	 *          the uuid
 	 * @return the digital object
+	 * @throws IOException
 	 */
-	AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated);
+	AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) throws IOException;
 }

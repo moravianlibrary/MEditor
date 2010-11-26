@@ -23,6 +23,8 @@ public class Constants {
 	/** The Constant URL_PARAM_UUID. */
 	public static final String URL_PARAM_UUID = "uuid";
 
+	public static final String URL_PARAM_REFRESH = "refresh";
+
 	/** The Constant URL_PARAM_ACTION. */
 	public static final String URL_PARAM_ACTION = "action";
 

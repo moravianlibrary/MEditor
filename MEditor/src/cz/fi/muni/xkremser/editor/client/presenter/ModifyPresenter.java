@@ -25,6 +25,9 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Progressbar;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -32,8 +35,10 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
@@ -46,8 +51,12 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
@@ -83,6 +92,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		public PopupPanel getPopupPanel();
 
+		public Canvas getEditor(String text, String uuid);
+
 		/**
 		 * Adds the digital object.
 		 * 
@@ -94,7 +105,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 *          the dispatcher
 		 */
 		void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList, final Streams dc,
-				final String uuid, final boolean picture, String foxml, final DispatchAsync dispatcher);
+				final String uuid, final boolean picture, String foxml, final String ocr, final boolean refresh);
 	}
 
 	/**
@@ -192,6 +203,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	public void prepareFromRequest(PlaceRequest request) {
 		super.prepareFromRequest(request);
 		uuid = request.getParameter(Constants.URL_PARAM_UUID, null);
+		forcedRefresh = ClientUtils.toBoolean(request.getParameter(Constants.URL_PARAM_REFRESH, "no"));
 
 		// SC.say(uuid);
 		// if(anything wrong)
@@ -230,71 +242,11 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		// uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
 
 		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)))) {
-			// final ModalWindow mw = new
-			// ModalWindow((com.smartgwt.client.widgets.Canvas)
-			// getView().getPopupPanel());
-			// mw.setLoadingIcon("loadingAnimation.gif");
-			// mw.show(true);
 			Image loader = new Image("images/loadingAnimation3.gif");
 			getView().getPopupPanel().setWidget(loader);
 			getView().getPopupPanel().setVisible(true);
 			getView().getPopupPanel().center();
-
-			dispatcher.execute(new GetDigitalObjectDetailAction(uuid), new DispatchCallback<GetDigitalObjectDetailResult>() {
-				@Override
-				public void callback(GetDigitalObjectDetailResult result) {
-					AbstractDigitalObjectDetail detail = result.getDetail();
-					Record[] pagesData = null;
-					List<Record[]> containerDataList = null;
-					List<KrameriusModel> containerModelList = null;
-					List<? extends List<? extends AbstractDigitalObjectDetail>> containers = null;
-
-					if (detail.hasPages()) {
-						pagesData = new Record[detail.getPages().size()];
-						List<PageDetail> pages = detail.getPages();
-						for (int i = 0, total = pages.size(); i < total; i++) {
-							pagesData[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc()
-									.getIdentifier().get(0));
-						}
-					}
-					int containerNumber = detail.hasContainers();
-					if (containerNumber != 0) {
-						containerDataList = new ArrayList<Record[]>();
-						containerModelList = new ArrayList<KrameriusModel>();
-						containers = detail.getContainers();
-
-					}
-					for (int i = 0; i < containerNumber; i++) {
-						Record[] containerData = null;
-						containerData = new Record[detail.getContainers().get(i).size()];
-						List<? extends AbstractDigitalObjectDetail> container = containers.get(i);
-						// if (container == null || container.size() == 0)
-						// continue;
-						// copy data
-						for (int j = 0, total = containers.get(i).size(); j < total; j++) {
-							AbstractDigitalObjectDetail aDetail = container.get(j);
-							containerData[j] = new ContainerRecord(aDetail.getDc().getTitle().get(0), aDetail.getDc().getIdentifier().get(0), detail
-									.getChildContainerModels().get(i).getIcon());
-						}
-						containerDataList.add(containerData);
-						containerModelList.add(detail.getChildContainerModels().get(i));
-					}
-					getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
-							dispatcher);
-					DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
-							result.getDetail().getRelated());
-					getView().getPopupPanel().setVisible(false);
-					getView().getPopupPanel().hide();
-				}
-
-				@Override
-				public void callbackError(Throwable t) {
-					super.callbackError(t);
-					getView().getPopupPanel().setVisible(false);
-					getView().getPopupPanel().hide();
-				}
-			});
-
+			getObject();
 			if (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)) {
 				previousUuid2 = previousUuid1;
 				previousUuid1 = uuid;
@@ -423,4 +375,93 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 			}
 		});
 	}
+
+	private void getObject() {
+		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid);
+		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
+			@Override
+			public void callback(GetDigitalObjectDetailResult result) {
+				AbstractDigitalObjectDetail detail = result.getDetail();
+				Record[] pagesData = null;
+				List<Record[]> containerDataList = null;
+				List<KrameriusModel> containerModelList = null;
+				List<? extends List<? extends AbstractDigitalObjectDetail>> containers = null;
+
+				if (detail.hasPages()) {
+					pagesData = new Record[detail.getPages().size()];
+					List<PageDetail> pages = detail.getPages();
+					for (int i = 0, total = pages.size(); i < total; i++) {
+						pagesData[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc()
+								.getIdentifier().get(0));
+					}
+				}
+				int containerNumber = detail.hasContainers();
+				if (containerNumber != 0) {
+					containerDataList = new ArrayList<Record[]>();
+					containerModelList = new ArrayList<KrameriusModel>();
+					containers = detail.getContainers();
+
+				}
+				for (int i = 0; i < containerNumber; i++) {
+					Record[] containerData = null;
+					containerData = new Record[detail.getContainers().get(i).size()];
+					List<? extends AbstractDigitalObjectDetail> container = containers.get(i);
+					// if (container == null || container.size() == 0)
+					// continue;
+					// copy data
+					for (int j = 0, total = containers.get(i).size(); j < total; j++) {
+						AbstractDigitalObjectDetail aDetail = container.get(j);
+						containerData[j] = new ContainerRecord(aDetail.getDc().getTitle().get(0), aDetail.getDc().getIdentifier().get(0), detail.getChildContainerModels()
+								.get(i).getIcon());
+					}
+					containerDataList.add(containerData);
+					containerModelList.add(detail.getChildContainerModels().get(i));
+				}
+				getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(), null,
+						forcedRefresh);
+				DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
+						result.getDetail().getRelated());
+				getView().getPopupPanel().setVisible(false);
+				getView().getPopupPanel().hide();
+			}
+
+			@Override
+			public void callbackError(Throwable t) {
+				SC.ask(t.getMessage() + " Do you want to try it again?", new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value != null && value) {
+							getObject();
+						} else {
+							// labelAnswer.setContents("No");
+						}
+					}
+				});
+				getView().getPopupPanel().setVisible(false);
+				getView().getPopupPanel().hide();
+			}
+		};
+
+		dispatcher.execute(action, callback);
+	}
+
+	@Override
+	public void getDescription(final String uuid, final TabSet tabSet, final String tabId) {
+		dispatcher.execute(new GetDescriptionAction(uuid), new DispatchCallback<GetDescriptionResult>() {
+			@Override
+			public void callback(GetDescriptionResult result) {
+				tabSet.setTabPane(tabId, getView().getEditor(result.getDescription(), uuid));
+			}
+		});
+	}
+
+	@Override
+	public void putDescription(String uuid, String description) {
+		dispatcher.execute(new PutDescriptionAction(uuid, description), new DispatchCallback<PutDescriptionResult>() {
+			@Override
+			public void callback(PutDescriptionResult result) {
+			}
+		});
+	}
+
 }

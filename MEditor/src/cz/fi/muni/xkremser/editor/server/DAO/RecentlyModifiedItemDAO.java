@@ -17,17 +17,24 @@ public interface RecentlyModifiedItemDAO {
 
 	/**
 	 * Put.
-	 *
-	 * @param toPut the to put
+	 * 
+	 * @param toPut
+	 *          the to put
 	 * @return true, if successful
 	 */
 	boolean put(RecentlyModifiedItem toPut);
 
+	boolean putDescription(String uuid, String description);
+
+	String getDescription(String uuid);
+
 	/**
 	 * Gets the items.
-	 *
-	 * @param nLatest the n latest
-	 * @param isForAll the is for all
+	 * 
+	 * @param nLatest
+	 *          the n latest
+	 * @param isForAll
+	 *          the is for all
 	 * @return the items
 	 */
 	ArrayList<RecentlyModifiedItem> getItems(int nLatest, boolean isForAll);

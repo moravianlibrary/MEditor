@@ -5,6 +5,9 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Inject;
@@ -13,6 +16,8 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.client.ConnectionException;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
@@ -64,7 +69,19 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 		// for (RelationshipTuple triplet : triplets) {
 		// System.out.println(triplet);
 		// }
-		return new GetDigitalObjectDetailResult(handler.getDigitalObject(uuid, true));
+		try {
+			return new GetDigitalObjectDetailResult(handler.getDigitalObject(uuid, true));
+		} catch (IOException e) {
+			String msg = null;
+			if (ServerUtils.isCausedByException(e, FileNotFoundException.class)) {
+				msg = "Digital object with uuid " + uuid + " is not present in the repository. ";
+			} else if (ServerUtils.isCausedByException(e, ConnectionException.class)) {
+				msg = "Connection cannot be established. Please check whether Fedora is running. ";
+			} else {
+				msg = "Unable to obtain digital object with uuid " + uuid + ". ";
+			}
+			throw new ActionException(msg);
+		}
 	}
 
 	/*

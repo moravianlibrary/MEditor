@@ -30,13 +30,17 @@ import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
+import cz.fi.muni.xkremser.editor.server.handler.PutDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
@@ -46,8 +50,11 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
  */
 public class ServerModule extends HandlerModule {
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.guice.HandlerModule#configureHandlers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.guice.HandlerModule#configureHandlers()
 	 */
 	@Override
 	protected void configureHandlers() {
@@ -57,6 +64,8 @@ public class ServerModule extends HandlerModule {
 		bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
 		bindHandler(GetRecentlyModifiedAction.class, GetRecentlyModifiedHandler.class);
 		bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
+		bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
+		bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();

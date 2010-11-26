@@ -82,12 +82,13 @@ public class DigitalObjectHandler implements CanGetObject {
 	 * (java.lang.String)
 	 */
 	@Override
-	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) {
+	public AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) throws IOException {
 		KrameriusModel model = null;
 		try {
 			model = fedoraAccess.getKrameriusModel(uuid);
 		} catch (IOException e) {
 			logger.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);
+			throw e;
 		}
 		CanGetObject handler = null;
 		if (model != null) {

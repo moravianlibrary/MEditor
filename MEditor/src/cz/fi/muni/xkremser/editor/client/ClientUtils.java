@@ -16,7 +16,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ClientUtils.
+ * The Class ServerUtils.
  */
 public class ClientUtils {
 
@@ -127,4 +127,5 @@ public class ClientUtils {
 		}
 		return outerList;
 	}
+
 }
