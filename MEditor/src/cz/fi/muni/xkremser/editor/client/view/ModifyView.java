@@ -712,8 +712,9 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		richTextEditor.setOverflow(Overflow.HIDDEN);
 		richTextEditor.setValue(text);
 		layout.addMember(richTextEditor);
-		IButton button = new IButton("Set Canvas HTML");
+		IButton button = new IButton("Save");
 		button.setWidth(150);
+		button.setMargin(20);
 		button.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
