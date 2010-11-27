@@ -25,6 +25,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
+import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -141,24 +143,28 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		sectionRelated.setExpanded(false);
 
 		sideNavGrid = new SideNavRecentlyGrid();
+		sideNavGrid.setHoverOpacity(75);
+		sideNavGrid.setHoverStyle("interactImageHover");
 
 		final DynamicForm form = new DynamicForm();
 		form.setHeight(1);
 		form.setWidth(60);
 		form.setNumCols(1);
-		form.setCanHover(true);
-		form.addHoverHandler(new HoverHandler() {
-			@Override
-			public void onHover(HoverEvent event) {
-				form.setPrompt("Show only objects modified by...");
-			}
-		});
 
 		final SelectItem selectItem = new SelectItem();
 		selectItem.setWidth(60);
 		selectItem.setShowTitle(false);
 		selectItem.setValueMap("me", "all");
 		selectItem.setDefaultValue("me");
+		selectItem.setHoverOpacity(75);
+		selectItem.setHoverStyle("interactImageHover");
+		selectItem.addItemHoverHandler(new ItemHoverHandler() {
+			@Override
+			public void onItemHover(ItemHoverEvent event) {
+				selectItem.setPrompt("Show only objects modified by " + selectItem.getValue());
+
+			}
+		});
 		selectItem.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -187,7 +193,6 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		sectionStack.setAnimateSections(true);
 		sectionStack.setWidth100();
 		sectionStack.setHeight100();
-		// sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.setOverflow(Overflow.HIDDEN);
 		layout.addMember(sectionStack);
 	}
@@ -253,6 +258,9 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		refreshButton.setCanHover(true);
 		refreshButton.setShowDownIcon(false);
 		refreshButton.setShowDown(false);
+		refreshButton.setHoverOpacity(75);
+		refreshButton.setHoverStyle("interactImageHover");
+		refreshButton.setHoverOpacity(75);
 		refreshButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {

@@ -29,8 +29,9 @@ import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Dialog;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
@@ -41,6 +42,10 @@ import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
+import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -324,7 +329,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					Timer timer = new Timer() {
 						@Override
 						public void run() {
-							final Img full = new Img("full/" + uuid, full2.getWidth() == 0 ? 400 : full2.getWidth(), full2.getHeight() == 0 ? 700 : full2.getHeight());
+							final Img full = new Img("full/" + uuid, full2.getWidth() == 0 ? 400 : full2.getWidth(), full2.getHeight() == 0 ? 600 : full2.getHeight());
 							full.addClickHandler(new ClickHandler() {
 								private boolean turn = false;
 
@@ -369,37 +374,43 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
 		MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
 
-		// descItem.addClickHandler(new
-		// com.smartgwt.client.widgets.menu.events.ClickHandler() {
-		// @Override
-		// public void onClick(MenuItemClickEvent event) {
-		// final Window winModal = new Window();
-		// // winModal.setResizeFrom("B", "R", "BR");
-		// winModal.setHeight(200);
-		// winModal.setWidth(600);
-		// winModal.setCanDragResize(true);
-		// winModal.setShowEdges(true);
-		// winModal.setTitle("Description");
-		// winModal.setShowMinimizeButton(false);
-		// winModal.setIsModal(true);
-		// winModal.setShowModalMask(true);
-		// winModal.centerInPage();
-		// winModal.addCloseClickHandler(new CloseClickHandler() {
-		// @Override
-		// public void onCloseClick(CloseClientEvent event) {
-		// winModal.destroy();
-		// // TODO: save
-		// }
-		// });
-		//
-		// final RichTextEditor richTextEditor = new RichTextEditor();
-		// richTextEditor.setHeight100();
-		// richTextEditor.setWidth100();
-		// richTextEditor.setOverflow(Overflow.HIDDEN);
-		// winModal.addItem(richTextEditor);
-		// winModal.show();
-		// }
-		// });
+		openItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+
+				Dialog dialog = new Dialog();
+				// dialog.
+
+				SC.askforValue("Open digital object", "uuid", new ValueCallback() {
+
+					@Override
+					public void execute(String value) {
+						System.out.println(value);
+					}
+				});
+				// final Window winModal = new Window();
+				// // winModal.setResizeFrom("B", "R", "BR");
+				// winModal.setHeight(200);
+				// winModal.setWidth(600);
+				// winModal.setCanDragResize(true);
+				// winModal.setShowEdges(true);
+				// winModal.setTitle("Description");
+				// winModal.setShowMinimizeButton(false);
+				// winModal.setIsModal(true);
+				// winModal.setShowModalMask(true);
+				// winModal.centerInPage();
+				// winModal.addCloseClickHandler(new CloseClickHandler() {
+				// @Override
+				// public void onCloseClick(CloseClientEvent event) {
+				// winModal.destroy();
+				// // TODO: save
+				// }
+				// });
+				//
+				// winModal.show();
+			}
+		});
+
 		publishItem.setAttribute(ID_TABSET, topTabSet);
 		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 			@Override
@@ -440,6 +451,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		closeButton.setCanHover(true);
 		closeButton.setShowDownIcon(false);
 		closeButton.setShowDown(false);
+		closeButton.setHoverOpacity(75);
+		closeButton.setHoverStyle("interactImageHover");
 		closeButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {
@@ -712,17 +725,26 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		richTextEditor.setOverflow(Overflow.HIDDEN);
 		richTextEditor.setValue(text);
 		layout.addMember(richTextEditor);
-		IButton button = new IButton("Save");
+		DynamicForm form = new DynamicForm();
+		form.setExtraSpace(10);
+		final ButtonItem button = new ButtonItem("Save");
 		button.setWidth(150);
-		button.setMargin(20);
-		button.addClickHandler(new ClickHandler() {
+		button.setHoverOpacity(75);
+		button.setHoverStyle("interactImageHover");
+		button.addItemHoverHandler(new ItemHoverHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onItemHover(ItemHoverEvent event) {
+				button.setPrompt("Save the description into database.");
+			}
+		});
+		button.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 				getUiHandlers().putDescription(uuid, richTextEditor.getValue());
 			}
 		});
-
-		layout.addMember(button);
+		form.setItems(button);
+		layout.addMember(form);
 		return layout;
 	}
 

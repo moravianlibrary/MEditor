@@ -18,26 +18,31 @@ import cz.fi.muni.xkremser.editor.client.gin.DefaultPlace;
  * The Class EditorPlaceManager.
  */
 public class EditorPlaceManager extends PlaceManagerImpl {
-	
+
 	/** The default place request. */
 	private final PlaceRequest defaultPlaceRequest;
 
 	/**
 	 * Instantiates a new editor place manager.
-	 *
-	 * @param eventBus the event bus
-	 * @param tokenFormatter the token formatter
-	 * @param defaultNameToken the default name token
+	 * 
+	 * @param eventBus
+	 *          the event bus
+	 * @param tokenFormatter
+	 *          the token formatter
+	 * @param defaultNameToken
+	 *          the default name token
 	 */
 	@Inject
 	public EditorPlaceManager(final EventBus eventBus, final TokenFormatter tokenFormatter, @DefaultPlace String defaultNameToken) {
 		super(eventBus, tokenFormatter);
 
-		this.defaultPlaceRequest = new PlaceRequest("modify");
+		this.defaultPlaceRequest = new PlaceRequest("home");
 		// this.defaultPlaceRequest = new PlaceRequest("home");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.proxy.PlaceManager#revealDefaultPlace()
 	 */
 	@Override

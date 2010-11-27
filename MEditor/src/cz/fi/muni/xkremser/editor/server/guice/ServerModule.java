@@ -29,6 +29,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
+import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
@@ -36,6 +37,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
@@ -66,6 +68,7 @@ public class ServerModule extends HandlerModule {
 		bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
 		bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
 		bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
+		bindHandler(CheckAvailabilityAction.class, CheckAvailabilityHandler.class);
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();

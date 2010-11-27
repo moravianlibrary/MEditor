@@ -24,18 +24,20 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
  * The Class GetClientConfigHandler.
  */
 public class GetClientConfigHandler implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
-	
+
 	/** The logger. */
 	private final Log logger;
-	
+
 	/** The configuration. */
 	private final EditorConfiguration configuration;
 
 	/**
 	 * Instantiates a new gets the client config handler.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param configuration
+	 *          the configuration
 	 */
 	@Inject
 	public GetClientConfigHandler(final Log logger, final EditorConfiguration configuration) {
@@ -43,8 +45,13 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfigActi
 		this.configuration = configuration;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+	 * .gwtplatform.dispatch.shared.Action,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context) throws ActionException {
@@ -54,20 +61,28 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfigActi
 			String key = it.next();
 			result.put(key, configuration.getConfiguration().getProperty(EditorConfiguration.Constants.GUI_CONFIGURATION_PPREFIX + '.' + key));
 		}
-
+		result.put(EditorConfiguration.Constants.FEDORA_HOST, configuration.getFedoraHost());
+		result.put(EditorConfiguration.Constants.KRAMERIUS_HOST, configuration.getKrameriusHost());
 		return new GetClientConfigResult(result);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
 	public Class<GetClientConfigAction> getActionType() {
 		return GetClientConfigAction.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public void undo(GetClientConfigAction action, GetClientConfigResult result, ExecutionContext context) throws ActionException {

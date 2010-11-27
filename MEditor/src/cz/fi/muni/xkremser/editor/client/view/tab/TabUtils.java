@@ -966,6 +966,8 @@ public final class TabUtils {
 		addButton.setSize(16);
 		addButton.setShowRollOver(true);
 		addButton.setCanHover(true);
+		addButton.setHoverOpacity(75);
+		addButton.setHoverStyle("interactImageHover");
 		addButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {
@@ -1002,6 +1004,8 @@ public final class TabUtils {
 		removeButton.setSize(16);
 		removeButton.setShowRollOver(true);
 		removeButton.setCanHover(true);
+		removeButton.setHoverOpacity(75);
+		removeButton.setHoverStyle("interactImageHover");
 		removeButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {
@@ -1066,7 +1070,6 @@ public final class TabUtils {
 			}
 		}
 
-		// layout.setAutoHeight(); // todo: ???
 		section.addItem(layout);
 		section.setExpanded(expanded);
 
@@ -1134,6 +1137,9 @@ public final class TabUtils {
 		} else if (type.equals(SelectItem.class)) {
 			item = new SelectItem(attr.getName());
 			item.setValueMap(attr.getLabels());
+			item.setHoverOpacity(75);
+			item.setHoverWidth(330);
+			item.setHoverStyle("interactImageHover");
 			final FormItem finalItem = item;
 			item.addItemHoverHandler(new ItemHoverHandler() {
 				@Override
@@ -1152,6 +1158,9 @@ public final class TabUtils {
 			}
 		}
 		if (attr.getTooltip() != null && !"".equals(attr.getTooltip())) {
+			item.setHoverOpacity(75);
+			item.setHoverWidth(330);
+			item.setHoverStyle("interactImageHover");
 			item.setTooltip(attr.getTooltip());
 		}
 		item.setTitle(attr.getLabel());
@@ -1185,6 +1194,8 @@ public final class TabUtils {
 		addButton.setSize(16);
 		addButton.setShowRollOver(true);
 		addButton.setCanHover(true);
+		addButton.setHoverOpacity(75);
+		addButton.setHoverStyle("interactImageHover");
 		addButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {
@@ -1206,6 +1217,8 @@ public final class TabUtils {
 		removeButton.setSize(16);
 		removeButton.setShowRollOver(true);
 		removeButton.setCanHover(true);
+		removeButton.setHoverOpacity(75);
+		removeButton.setHoverStyle("interactImageHover");
 		removeButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {

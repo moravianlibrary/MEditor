@@ -40,6 +40,40 @@ color: rgb(0,0,0); font-weight: bold; font-style: italic;
 
 
 
+.interactImageHover {
+    font-family:Verdana,Bitstream Vera Sans,sans-serif;
+    font-size:11px;
+    border:1px solid #808080;
+    padding:5px;
+    background-color:#bad4ee;
+    color:black;
+}
+
+.greenFont {
+    font-family:Verdana,Bitstream Vera Sans,sans-serif;
+    color:green;
+    width: 100px;
+}
+
+.loading {
+	font-family:Verdana,Bitstream Vera Sans,sans-serif;
+    color:black;
+    width: 100px;
+}
+
+.noFx {
+    color:black;
+    text-decoration: none;
+    border: none;
+}
+
+
+.redFont {
+    font-family:Verdana,Bitstream Vera Sans,sans-serif;
+    color:red;
+    width: 100px;
+}
+
 
 
 

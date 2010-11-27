@@ -97,9 +97,11 @@ public abstract class EditorConfiguration {
 		/** The Constant ACCESS_ADMIN_PATTERNS_DEFAULT. */
 		public static final String ACCESS_ADMIN_PATTERNS_DEFAULT = "127.*" + ACCESS_PATTERN_SEPARATOR + "localhost";
 
+		public static final String KRAMERIUS_HOST = EditorClientConfiguration.Constants.KRAMERIUS_HOST;
+
 		// fedora
 		/** The Constant FEDORA_HOST. */
-		public static final String FEDORA_HOST = "fedoraHost";
+		public static final String FEDORA_HOST = EditorClientConfiguration.Constants.FEDORA_HOST;
 
 		/** The Constant FEDORA_HOST_DEFAULT. */
 		public static final String FEDORA_HOST_DEFAULT = "10.2.2.219"; // virtual
@@ -115,9 +117,6 @@ public abstract class EditorConfiguration {
 
 		/** The Constant FEDORA_PASSWORD. */
 		public static final String FEDORA_PASSWORD = "fedoraPassword";
-
-		/** The Constant FEDORA_PASSWORD_DEFAULT. */
-		public static final String FEDORA_PASSWORD_DEFAULT = "fedoraAdmin";
 
 		// database
 		/** The Constant DB_HOST. */
@@ -236,6 +235,10 @@ public abstract class EditorConfiguration {
 		return getConfiguration().getInteger(Constants.Z3950_BAR_LENGTH, Constants.UNDEF);
 	}
 
+	public String getKrameriusHost() {
+		return getConfiguration().getString(Constants.KRAMERIUS_HOST, Constants.FEDORA_HOST_DEFAULT + "/search");
+	}
+
 	/**
 	 * Gets the fedora host.
 	 * 
@@ -260,7 +263,7 @@ public abstract class EditorConfiguration {
 	 * @return the fedora password
 	 */
 	public String getFedoraPassword() {
-		return getConfiguration().getString(Constants.FEDORA_PASSWORD, Constants.FEDORA_PASSWORD_DEFAULT);
+		return getConfiguration().getString(Constants.FEDORA_PASSWORD);
 	}
 
 	/**

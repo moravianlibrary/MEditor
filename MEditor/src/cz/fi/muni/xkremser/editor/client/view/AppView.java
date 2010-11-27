@@ -5,17 +5,16 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
-import cz.fi.muni.xkremser.editor.client.resources.MEditorResources;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,21 +52,16 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
 		mainContainer = new VLayout(); // TODO: consider some panel
-		// mainContainer.setOverflow(Overflow.AUTO);
-		// mainContainer.setLeaveScrollbarGap(true);
-		// widget.setWidth("98%");
 		widget.setWidth100();
-		// widget.setWidth("*");
-		// widget.setHeight("97%");
 		widget.setHeight100();
-		// widget.setHeight("2000");
 		widget.setLeaveScrollbarGap(true);
 		widget.setOverflow(Overflow.AUTO);
 		topContainer = new HLayout();
 		topContainer.setWidth100();
 		topContainer.setHeight(45);
 
-		Image logo = new Image(MEditorResources.INSTANCE.logo());
+		// Image logo = new Image(MEditorResources.INSTANCE.logo());
+		HTMLFlow logo = new HTMLFlow("<a href='/'><img class='noFx' src='images/logo_bw.png' alt='logo'></a>");
 		// Img logo = new Img("logo_bw.png", 140, 40);
 		// Img logo = new Img("mzk_logo.gif", 283, 87);
 		topContainer.addMember(logo);

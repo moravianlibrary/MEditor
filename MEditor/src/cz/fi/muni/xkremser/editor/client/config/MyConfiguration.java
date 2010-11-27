@@ -20,8 +20,9 @@ public class MyConfiguration {
 
 	/**
 	 * Instantiates a new my configuration.
-	 *
-	 * @param configuration the configuration
+	 * 
+	 * @param configuration
+	 *          the configuration
 	 */
 	public MyConfiguration(Map<String, Object> configuration) {
 		this.configuration = configuration;
@@ -29,9 +30,11 @@ public class MyConfiguration {
 
 	/**
 	 * Gets the boolean.
-	 *
-	 * @param key the key
-	 * @param defaultValue the default value
+	 * 
+	 * @param key
+	 *          the key
+	 * @param defaultValue
+	 *          the default value
 	 * @return the boolean
 	 */
 	public boolean getBoolean(String key, boolean defaultValue) {
@@ -41,10 +44,18 @@ public class MyConfiguration {
 		return ClientUtils.toBoolean((String) configuration.get(key));
 	}
 
+	public String getString(String key, String defaultValue) {
+		if (configuration.get(key) == null) {
+			return defaultValue;
+		}
+		return (String) configuration.get(key);
+	}
+
 	/**
 	 * Gets the string array.
-	 *
-	 * @param key the key
+	 * 
+	 * @param key
+	 *          the key
 	 * @return the string array
 	 */
 	public String[] getStringArray(String key) {
@@ -53,7 +64,7 @@ public class MyConfiguration {
 
 	/**
 	 * Gets the configuration.
-	 *
+	 * 
 	 * @return the configuration
 	 */
 	public Map<String, Object> getConfiguration() {
