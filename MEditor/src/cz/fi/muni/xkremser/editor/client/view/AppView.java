@@ -115,7 +115,7 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 	 *          the new main content
 	 */
 	private void setMainContent(Widget content) {
-		mainContainer.clear();
+		mainContainer.removeMembers(mainContainer.getMembers());
 		if (content != null) {
 			mainContainer.addMember(content);
 		}

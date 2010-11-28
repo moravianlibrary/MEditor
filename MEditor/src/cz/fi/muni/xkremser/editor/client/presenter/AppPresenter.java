@@ -59,11 +59,15 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 
 	/**
 	 * Instantiates a new app presenter.
-	 *
-	 * @param eventBus the event bus
-	 * @param view the view
-	 * @param proxy the proxy
-	 * @param leftPresenter the left presenter
+	 * 
+	 * @param eventBus
+	 *          the event bus
+	 * @param view
+	 *          the view
+	 * @param proxy
+	 *          the proxy
+	 * @param leftPresenter
+	 *          the left presenter
 	 */
 	@Inject
 	// public AppPresenter(final DispatchAsync dispatcher, final HomePresenter
@@ -71,14 +75,14 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	// final DigitalObjectMenuPresenter digitalObjectMenuPresenter, final
 	// EditorClientConfiguration config) {
 	public AppPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter) {
-		// this.homePresenter = homePresenter;
-		// this.treePresenter = treePresenter;
-		// this.config = config;
+
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
 	 */
 	@Override

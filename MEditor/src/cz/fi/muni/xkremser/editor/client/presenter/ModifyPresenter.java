@@ -204,15 +204,6 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		super.prepareFromRequest(request);
 		uuid = request.getParameter(Constants.URL_PARAM_UUID, null);
 		forcedRefresh = ClientUtils.toBoolean(request.getParameter(Constants.URL_PARAM_REFRESH, "no"));
-
-		// SC.say(uuid);
-		// if(anything wrong)
-		// > {
-		// > getProxy().manualRevealFailed();
-		// > placeManager.revealErrorPlace( placeRequest.getNameToken() );
-		// > return;
-		// > }
-		// > getProxy().manualReveal(this);
 	}
 
 	/*
@@ -235,12 +226,6 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	protected void onReset() {
 		super.onReset();
 
-		// test
-		// page cc25c992-c94c-11df-84b1-001b63bd97ba
-		// monograph 0eaa6730-9068-11dd-97de-000d606f5dc6
-		// internal part 1118b1bf-c94d-11df-84b1-001b63bd97ba
-		// uuid = "1118b1bf-c94d-11df-84b1-001b63bd97ba";
-
 		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)))) {
 			Image loader = new Image("images/loadingAnimation3.gif");
 			getView().getPopupPanel().setWidget(loader);
@@ -253,10 +238,6 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 			}
 		}
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
-
-		// if (uuid != null && (forcedRefresh || (uuid != previousUuid))) {
-		// getView().addDigitalObject(false, null, dispatcher);
-		// }MonographDetail
 
 	}
 

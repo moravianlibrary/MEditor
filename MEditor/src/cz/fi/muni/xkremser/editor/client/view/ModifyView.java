@@ -94,7 +94,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	private static final String ID_MODS = "mods";
 	private static final String ID_FULL = "full";
 	private static final String ID_DESC = "desc";
-	private static final String ID_THUMB = "thumb";
 	private static final String ID_TAB = "tab";
 	public static final String ID_TABSET = "tabset";
 	public static final String ID_MODEL = "model";
@@ -114,7 +113,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 	private final Map<TabSet, Tab> dcTab = new HashMap<TabSet, Tab>();
 	private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
-	private final Map<TabSet, Tab> descTab = new HashMap<TabSet, Tab>();
 
 	private final Map<String, TabSet> openedObjectsTabsets = new HashMap<String, TabSet>();
 	private final Map<TabSet, String> openedObjectsUuids = new HashMap<TabSet, String>();
@@ -140,6 +138,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 */
 	public ModifyView() {
 		layout = new VLayout();
+		// layout.addMember(new Label("working"));
 		layout.setOverflow(Overflow.AUTO);
 		layout.setLeaveScrollbarGap(true);
 		imagePopup = new PopupPanel(true);
@@ -515,10 +514,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				layout.addMember(topTabSet2, 1);
 			}
 			first = !first;
-		} else {
-			layout.redraw();
 		}
-
+		layout.redraw();
 		getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
 	}
 

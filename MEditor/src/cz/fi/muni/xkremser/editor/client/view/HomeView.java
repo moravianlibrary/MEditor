@@ -7,9 +7,15 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewImpl;
+import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
+import com.smartgwt.client.widgets.form.validator.RegExpValidator;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
@@ -33,25 +39,62 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 
 	private final HTMLFlow status;
 
+	private final DynamicForm form;
+
+	private final IButton open;
+
+	private final TextItem uuidField;
+
 	/**
 	 * Instantiates a new home view.
 	 */
 	public HomeView() {
 		layout = new VStack();
 		layout.setPadding(15);
-		HTMLFlow html = new HTMLFlow();
-		html.setContents("<h1>Metadata Editor</h1>"
-				+ "Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>."
-				+ "<br/><h2>Availability of cooperating systems</h2>");
+		HTMLFlow html1 = new HTMLFlow();
+		html1
+				.setContents("<h1>Metadata Editor</h1>"
+						+ "Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>."
+						+ "<br/><br/><h2>Availability of cooperating systems</h2>");
 
 		status = new HTMLFlow(getStatusString());
 
 		checkButton = new IButton("Check availability");
 		checkButton.setAutoFit(true);
+		checkButton.setExtraSpace(60);
 
-		layout.addMember(html);
+		HTMLFlow html2 = new HTMLFlow();
+		html2.setContents("<h2>Open digital object</h2>");
+
+		DataSource dataSource = new DataSource();
+		dataSource.setID("regularExpression");
+
+		RegExpValidator regExpValidator = new RegExpValidator();
+		regExpValidator.setExpression("^([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
+
+		uuidField = new TextItem();
+		uuidField.setTitle("uuid");
+		uuidField.setHint("<nobr>Without \"uuid:\" prefix</nobr>");
+		uuidField.setValidators(regExpValidator);
+
+		form = new DynamicForm();
+		form.setWidth(300);
+		form.setFields(uuidField);
+
+		open = new IButton();
+		open.setTitle("Open");
+		open.setDisabled(true);
+
+		HLayout hLayout = new HLayout();
+		hLayout.setMembersMargin(10);
+		hLayout.addMember(form);
+		hLayout.addMember(open);
+
+		layout.addMember(html1);
 		layout.addMember(status);
 		layout.addMember(checkButton);
+		layout.addMember(html2);
+		layout.addMember(hLayout);
 	}
 
 	/**
@@ -128,6 +171,26 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		this.krameriusStatus = LOADING;
 		this.fedoraStatus = LOADING;
 		status.setContents(getStatusString());
+	}
+
+	@Override
+	public IButton getOpen() {
+		return open;
+	}
+
+	@Override
+	public DynamicForm getForm() {
+		return form;
+	}
+
+	@Override
+	public String getUuid() {
+		return (String) uuidField.getValue();
+	}
+
+	@Override
+	public HasChangedHandlers getUuidItem() {
+		return uuidField;
 	}
 
 }

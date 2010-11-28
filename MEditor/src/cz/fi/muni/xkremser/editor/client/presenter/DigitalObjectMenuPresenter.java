@@ -162,8 +162,6 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		this.dispatcher = dispatcher;
 		this.config = config;
 		this.placeManager = placeManager;
-		// getView().setUiHandlers(this);
-		// this.config = config;
 		bind();
 	}
 

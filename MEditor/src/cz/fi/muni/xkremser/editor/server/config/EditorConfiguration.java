@@ -236,7 +236,7 @@ public abstract class EditorConfiguration {
 	}
 
 	public String getKrameriusHost() {
-		return getConfiguration().getString(Constants.KRAMERIUS_HOST, Constants.FEDORA_HOST_DEFAULT + "/search");
+		return getConfiguration().getString(Constants.KRAMERIUS_HOST, null);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public abstract class EditorConfiguration {
 	 * @return the fedora host
 	 */
 	public String getFedoraHost() {
-		return getConfiguration().getString(Constants.FEDORA_HOST, Constants.FEDORA_HOST_DEFAULT);
+		return getConfiguration().getString(Constants.FEDORA_HOST, null);
 	}
 
 	/**

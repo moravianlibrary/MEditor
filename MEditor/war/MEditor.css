@@ -62,8 +62,6 @@ color: rgb(0,0,0); font-weight: bold; font-style: italic;
 }
 
 .noFx {
-    color:black;
-    text-decoration: none;
     border: none;
 }
 

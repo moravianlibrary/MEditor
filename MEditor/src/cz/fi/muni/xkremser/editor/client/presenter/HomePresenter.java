@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -14,33 +13,33 @@ import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 
+import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailability;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HomePresenter.
  */
 public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter.MyProxy> {
-
-	// @Inject
-	/** The config. */
-	private final EditorClientConfiguration config;
 
 	/**
 	 * The Interface MyView.
@@ -60,7 +59,15 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 
 		public void setLoading();
 
+		public String getUuid();
+
 		public HasClickHandlers getCheckAvailability();
+
+		public HasChangedHandlers getUuidItem();
+
+		public IButton getOpen();
+
+		public DynamicForm getForm();
 	}
 
 	/**
@@ -78,7 +85,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	/** The left presenter. */
 	private final DigitalObjectMenuPresenter leftPresenter;
 
-	private volatile boolean configReceived = false;
+	private final PlaceManager placeManager;
 
 	/**
 	 * Instantiates a new home presenter.
@@ -93,37 +100,13 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	 *          the left presenter
 	 */
 	@Inject
-	// public HomePresenter(final MyView display, final EventBus eventBus, final
-	// DispatchAsync dispatcher, final DigitalObjectMenuPresenter treePresenter) {
 	public HomePresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final EditorClientConfiguration config, final DispatchAsync dispatcher) {
+			final DispatchAsync dispatcher, final PlaceManager placeManager) {
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
-		this.config = config;
 		this.dispatcher = dispatcher;
-	}
-
-	/**
-	 * Try to send the greeting message.
-	 */
-	private void doSend() {
-		Log.info("Calling doSend");
-
-		// delete
-		dispatcher.execute(new ScanInputQueueAction("", false), new DispatchCallback<ScanInputQueueResult>() {
-			@Override
-			public void callbackError(final Throwable cause) {
-				Log.error("Handle Failure:", cause);
-			}
-
-			@Override
-			public void callback(final ScanInputQueueResult result) {
-				// take the result from the server and notify client
-				// interested
-
-			}
-
-		});
+		this.placeManager = placeManager;
+		bind();
 	}
 
 	/*
@@ -134,20 +117,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	@Override
 	protected void onBind() {
 		super.onBind();
-
-		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
-			@Override
-			public void onConfigReceived(ConfigReceivedEvent event) {
-				configReceived = true;
-				if (config == null) {
-					SC.warn("Could not find the system config file.");
-				}
-				getView().setURLs(config == null || config.getFedoraHost() == null ? "#" : config.getFedoraHost(),
-						config == null || config.getKrameriusHost() == null ? "#" : config.getKrameriusHost());
-
-				checkAvailability();
-			}
-		});
+		checkAvailability();
 		getView().getCheckAvailability().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -158,7 +128,26 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 						checkAvailability();
 					}
 				};
-				timer.schedule(150);
+				timer.schedule(100);
+			}
+		});
+		getView().getOpen().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (getView().getForm().validate())
+					placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, getView().getUuid()));
+			}
+		});
+
+		getView().getUuidItem().addChangedHandler(new ChangedHandler() {
+			@Override
+			public void onChanged(ChangedEvent event) {
+				String text = (String) event.getValue();
+				if (text != null && !"".equals(text)) {
+					getView().getOpen().setDisabled(false);
+				} else {
+					getView().getOpen().setDisabled(true);
+				}
 			}
 		});
 
@@ -185,32 +174,14 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	}
 
 	private void checkAvailability() {
-		String fedoraURL = config.getFedoraHost();
-		if (fedoraURL == null || "".equals(fedoraURL)) {
-			SC.warn("Please set " + EditorClientConfiguration.Constants.FEDORA_HOST + " in system configuration.");
-		}
-		String krameriusURL = config.getKrameriusHost();
-		if (krameriusURL == null || "".equals(krameriusURL)) {
-			SC.warn("Please set " + EditorClientConfiguration.Constants.KRAMERIUS_HOST + " in system configuration.");
-		}
-
-		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID), new DispatchCallback<CheckAvailabilityResult>() {
-			@Override
-			public void callback(CheckAvailabilityResult result) {
-				getView().refreshFedora(result.isAvailability(), result.getUrl());
-			}
-
-			@Override
-			public void callbackError(Throwable t) {
-				SC.warn(t.getMessage());
-				getView().refreshFedora(false, null);
-			}
-		});
-
 		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID), new DispatchCallback<CheckAvailabilityResult>() {
 			@Override
 			public void callback(CheckAvailabilityResult result) {
-				getView().refreshKramerius(result.isAvailability(), result.getUrl());
+				String krameriusURL = result.getUrl();
+				getView().refreshKramerius(result.isAvailability(), krameriusURL);
+				if (krameriusURL == null || "".equals(krameriusURL)) {
+					SC.warn("Please set " + EditorClientConfiguration.Constants.KRAMERIUS_HOST + " in system configuration.");
+				}
 			}
 
 			@Override
@@ -220,5 +191,21 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 			}
 		});
 
+		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID), new DispatchCallback<CheckAvailabilityResult>() {
+			@Override
+			public void callback(CheckAvailabilityResult result) {
+				String fedoraURL = result.getUrl();
+				getView().refreshFedora(result.isAvailability(), fedoraURL);
+				if (fedoraURL == null || "".equals(fedoraURL)) {
+					SC.warn("Please set " + EditorClientConfiguration.Constants.FEDORA_HOST + " in system configuration.");
+				}
+			}
+
+			@Override
+			public void callbackError(Throwable t) {
+				SC.warn(t.getMessage());
+				getView().refreshFedora(false, null);
+			}
+		});
 	}
 }
