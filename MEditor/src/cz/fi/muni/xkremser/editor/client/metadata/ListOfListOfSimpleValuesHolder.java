@@ -24,7 +24,6 @@ public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
 	}
 
 	public List<List<String>> getListOfList() {
-
 		Canvas[] canvases = this.layout.getMembers();
 		List<List<String>> values = new ArrayList<List<String>>(canvases.length);
 		int i = 0;

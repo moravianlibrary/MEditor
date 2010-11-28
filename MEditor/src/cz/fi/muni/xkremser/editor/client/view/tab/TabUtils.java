@@ -35,18 +35,25 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.metadata.DateHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.PhysicalDescriptionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PlaceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient.LanguageTermClient;
 import cz.fi.muni.xkremser.editor.client.mods.NamePartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
@@ -240,32 +247,6 @@ public final class TabUtils {
 		return new Attribute(TextItem.class, ModsConstants.DISPLAY_LABEL, "Display Label", tooltip);
 	}
 
-	/** The Constant GET_TITLE_INFO_LAYOUT. */
-	// private static final GetLayoutOperation GET_TITLE_INFO_LAYOUT = new
-	// GetTitleInfoLayout();
-
-	/** The Constant GET_NAME_LAYOUT. */
-	// private static final GetLayoutOperation GET_NAME_LAYOUT = new
-	// GetNameLayout();
-
-	/** The Constant GET_TYPE_OF_RESOURCE_LAYOUT. */
-	private static final GetLayoutOperation GET_TYPE_OF_RESOURCE_LAYOUT = new GetTypeOfResourceLayout();
-
-	/** The Constant GET_GENRE_LAYOUT. */
-	private static final GetLayoutOperation GET_GENRE_LAYOUT = new GetGenreLayout();
-
-	/** The Constant GET_ORIGIN_INFO_LAYOUT. */
-	private static final GetLayoutOperation GET_ORIGIN_INFO_LAYOUT = new GetOriginInfoLayout();
-
-	/** The Constant GET_PLACE_LAYOUT. */
-	private static final GetLayoutOperation GET_PLACE_LAYOUT = new GetPlaceLayout();
-
-	/** The Constant GET_LANGUAGE_LAYOUT. */
-	private static final GetLayoutOperation GET_LANGUAGE_LAYOUT = new GetLanguageLayout();
-
-	/** The Constant GET_PHYSICIAL_DESCRIPTION_LAYOUT. */
-	private static final GetLayoutOperation GET_PHYSICIAL_DESCRIPTION_LAYOUT = new GetPhysicialDescriptionLayout();
-
 	/**
 	 * The Interface GetLayoutOperation.
 	 */
@@ -443,7 +424,7 @@ public final class TabUtils {
 	/**
 	 * The Class GetPhysicialDescriptionLayout.
 	 */
-	private static class GetPhysicialDescriptionLayout extends GetLayoutOperation {
+	private static class GetPhysicalDescriptionLayout extends GetLayoutOperation {
 
 		/*
 		 * (non-Javadoc)
@@ -454,7 +435,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getPhysicialDescriptionLayout();
+			PhysicalDescriptionTypeClient values = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				values = (PhysicalDescriptionTypeClient) getValues().get(counter);
+			}
+			PhysicalDescriptionHolder holder = new PhysicalDescriptionHolder();
+			((List<PhysicalDescriptionHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getPhysicialDescriptionLayout(values, holder);
 		}
 	}
 
@@ -711,7 +699,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getLanguageLayout();
+			LanguageTypeClient languageTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				languageTypeClient = (LanguageTypeClient) getValues().get(counter);
+			}
+			LanguageHolder holder = new LanguageHolder();
+			((List<LanguageHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getLanguageLayout(languageTypeClient, holder);
 		}
 	}
 
@@ -906,10 +901,6 @@ public final class TabUtils {
 			layout.addMember(getAttributes(true, attributes));
 		}
 
-		if (holder != null) {
-			holder.setLayout(layout);
-		}
-
 		SectionStackSection section = new SectionStackSection(mainAttr.getName());
 		section.setTitle(mainAttr.getLabel());
 
@@ -923,8 +914,14 @@ public final class TabUtils {
 			form.setGroupTitle("Values");
 			layout.addMember(form);
 			section.addItem(layout);
+			if (holder != null) {
+				holder.setLayout(layout);
+			}
 		} else {
 			section.addItem(form);
+			if (holder != null) {
+				holder.setAttributeForm(form);
+			}
 		}
 		section.setExpanded(expanded);
 
@@ -1023,11 +1020,33 @@ public final class TabUtils {
 		});
 		section.setControls(addButton, removeButton);
 
-		if (!flat && values != null && values.size() > 0) {
-			for (List<String> valueVector : values) {
+		// TODO: refactoring (code duplication)
+		if (!flat) {
+			if (values != null && values.size() > 0) {
+				for (List<String> valueVector : values) {
+					final DynamicForm form = new DynamicForm();
+					FormItem item = newItem(mainAttr);
+					item.setValue(valueVector == null ? "" : valueVector.get(0));
+					item.setWidth(200);
+					if (isAttribPresent) {
+						FormItem[] items = getAttributes(false, attributes).getFields();
+						FormItem[] itemsToAdd = new FormItem[items.length + 1];
+						itemsToAdd[0] = item;
+						for (int i = 0; i < items.length; i++) {
+							itemsToAdd[i + 1] = items[i];
+							itemsToAdd[i + 1].setValue(valueVector == null ? "" : valueVector.get(i + 1) == null ? "" : valueVector.get(i + 1));
+						}
+						form.setFields(itemsToAdd);
+						form.setNumCols(4);
+					} else {
+						form.setFields(item);
+					}
+					form.setPadding(5);
+					layout.addMember(form);
+				}
+			} else {
 				final DynamicForm form = new DynamicForm();
 				FormItem item = newItem(mainAttr);
-				item.setValue(valueVector == null ? "" : valueVector.get(0));
 				item.setWidth(200);
 				if (isAttribPresent) {
 					FormItem[] items = getAttributes(false, attributes).getFields();
@@ -1035,7 +1054,6 @@ public final class TabUtils {
 					itemsToAdd[0] = item;
 					for (int i = 0; i < items.length; i++) {
 						itemsToAdd[i + 1] = items[i];
-						itemsToAdd[i + 1].setValue(valueVector == null ? "" : valueVector.get(i + 1) == null ? "" : valueVector.get(i + 1));
 					}
 					form.setFields(itemsToAdd);
 					form.setNumCols(4);
@@ -1322,8 +1340,11 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the language stack
 	 */
-	public static SectionStackSection getLanguageStack(boolean expanded) {
-		return getSomeStack(expanded, "Language", GET_LANGUAGE_LAYOUT);
+	public static SectionStackSection getLanguageStack(boolean expanded, List<LanguageTypeClient> values, List<LanguageHolder> holders) {
+		GetLanguageLayout getLanguageLayout = new GetLanguageLayout();
+		getLanguageLayout.setValues(values);
+		getLanguageLayout.setHolders(holders);
+		return getSomeStack(expanded, "Language", getLanguageLayout);
 	}
 
 	/**
@@ -1333,8 +1354,12 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the physical description stack
 	 */
-	public static SectionStackSection getPhysicalDescriptionStack(boolean expanded) {
-		return getSomeStack(expanded, "Physicial Description", GET_PHYSICIAL_DESCRIPTION_LAYOUT);
+	public static SectionStackSection getPhysicalDescriptionStack(boolean expanded, List<PhysicalDescriptionTypeClient> values,
+			List<PhysicalDescriptionHolder> holders) {
+		GetPhysicalDescriptionLayout getPhysicialDescriptionLayout = new GetPhysicalDescriptionLayout();
+		getPhysicialDescriptionLayout.setValues(values);
+		getPhysicialDescriptionLayout.setHolders(holders);
+		return getSomeStack(expanded, "Physicial Description", getPhysicialDescriptionLayout);
 	}
 
 	/**
@@ -1848,16 +1873,28 @@ public final class TabUtils {
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
-		sectionStack.setStyleName("metadata-elements");
+		// sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
-		// sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.setStyleName("metadata-sectionstack-topmargin");
+		List<List<String>> vals = null;
+		if (value != null && value.getPlaceTerm() != null && value.getPlaceTerm().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (PlaceTermTypeClient placeTermClient : value.getPlaceTerm()) {
+				if (placeTermClient != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(placeTermClient.getValue());
+					list.add(placeTermClient.getType() == null ? null : placeTermClient.getType().value());
+					list.add(placeTermClient.getAuthority() == null ? null : placeTermClient.getAuthority().value());
+					vals.add(list);
+				}
+			}
+		}
 		sectionStack
 				.addSection(getStackSectionWithAttributes(
 						"Place Terms",
 						"Place Term",
 						"Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>.",
-						true, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, null));
+						true, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, vals, holder, false));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -1963,12 +2000,15 @@ public final class TabUtils {
 	 * 
 	 * @return the physicial description layout
 	 */
-	private static VLayout getPhysicialDescriptionLayout() {
+	private static VLayout getPhysicialDescriptionLayout(PhysicalDescriptionTypeClient values, PhysicalDescriptionHolder holder) {
 
 		final VLayout layout = new VLayout();
 
-		Attribute[] attributes = new Attribute[] { ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
-		layout.addMember(getAttributes(true, attributes));
+		Attribute[] attributes = new Attribute[] { ATTR_LANG(values == null ? null : values.getLang()), ATTR_XML_LANG(values == null ? null : values.getXmlLang()),
+				ATTR_TRANSLITERATION(values == null ? null : values.getTransliteration()), ATTR_SCRIPT(values == null ? null : values.getScript()) };
+		DynamicForm formAttr = getAttributes(true, attributes);
+		holder.setAttributeForm(formAttr);
+		layout.addMember(formAttr);
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
@@ -1978,19 +2018,18 @@ public final class TabUtils {
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
 		layout.setExtraSpace(40);
-		// sectionStack.setOverflow(Overflow.AUTO);
 
 		attributes = new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type",
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type",
 						"Used if desired to specify whether the form concerns materials or techniques, e.g. type='material': oil paint; type='technique': painting."),
-				ATTR_AUTHORITY };
+				ATTR_AUTHORITY("") };
 		sectionStack
 				.addSection(getStackSectionWithAttributes(
 						"Forms",
 						"Form",
 						"Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used.",
-						false, attributes, null));
-		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, "reformatting_quality", "Reformatting Quality",
+						false, attributes, values == null ? null : ClientUtils.toListOfListOfStrings(values.getForm(), false), holder.getForms(), false));
+		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, ModsConstants.REFORMATTING, "Reformatting Quality",
 				new HashMap<String, String>() {
 					{
 						put("", "This element will be omitted.");
@@ -2001,35 +2040,58 @@ public final class TabUtils {
 						put("replacement",
 								"The electronic resource is of high enough quality to serve as a replacement if the original is lost, damaged, or destroyed. If serving more than one purpose, the element may be repeated. ");
 					}
-				}), false, null, null));
+				}, values == null || values.getReformattingQuality() == null || values.getReformattingQuality().size() == 0 ? "" : values.getReformattingQuality().get(
+						0)), false, null, holder.getReformattingQuality()));
 		sectionStack.addSection(getStackSection("Internet Media Types", "Internet Media Type",
-				"Roughly equivalent to MARC 21 field 856 subfield $q, although subfield $q may also contain other designations of electronic format.", false));
+				"Roughly equivalent to MARC 21 field 856 subfield $q, although subfield $q may also contain other designations of electronic format.", false,
+				values == null ? null : values.getInternetMediaType(), holder.getInternetTypes()));
 		sectionStack.addSection(getStackSection("Extents", "Extent", "Roughly equivalent to MARC 21 fields 300 subfields $a, $b, $c, and $e and 306 subfield $a.",
-				false));
-		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class, "digital_origin", "Digital Origin", new HashMap<String, String>() {
-			{
-				put("", "This element will bauthoritye omitted.");
-				put("born digital", "A resource was created and is intended to remain in digital form. (No MARC equivalent, but includes value 'c')");
-				put("reformatted digital", "A resource was created by digitization of the original non-digital form. (MARC 007/11 value 'a')");
-				put("digitized microfilm", "A resource was created by digitizing a microform (MARC 007/11 value 'b')");
-				put("digitized other analog",
-						"A resource was created by digitizing another form of the resource not covered by the other values, e.g. an intermediate form such as photocopy, transparency, slide, etc. (MARC 007/11 value 'd')");
-			}
-		}), false, null, null));
+				false, values == null ? null : values.getExtent(), holder.getExtents()));
+		sectionStack.addSection(getSimpleSectionWithAttributes(
+				new Attribute(SelectItem.class, ModsConstants.DIGITAL_ORIGIN, "Digital Origin", new HashMap<String, String>() {
+					{
+						put("", "This element will bauthoritye omitted.");
+						put("born digital", "A resource was created and is intended to remain in digital form. (No MARC equivalent, but includes value 'c')");
+						put("reformatted digital", "A resource was created by digitization of the original non-digital form. (MARC 007/11 value 'a')");
+						put("digitized microfilm", "A resource was created by digitizing a microform (MARC 007/11 value 'b')");
+						put("digitized other analog",
+								"A resource was created by digitizing another form of the resource not covered by the other values, e.g. an intermediate form such as photocopy, transparency, slide, etc. (MARC 007/11 value 'd')");
+					}
+				}, values == null || values.getDigitalOrigin() == null || values.getDigitalOrigin().size() == 0 ? "" : values.getDigitalOrigin().get(0)), false, null,
+				holder.getDigitalOrigin()));
 		attributes = new Attribute[] {
 				new Attribute(
 						TextItem.class,
-						"type",
+						ModsConstants.TYPE,
 						"Type",
 						"Roughly equivalent to the types of notes that may be contained in MARC 21 fields 340, 351 or general 500 notes concerning physical condition, characteristics, etc."),
 				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK,
-				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
+				ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") };
+
+		List<List<String>> vals = null;
+		if (values != null && values.getNote() != null && values.getNote().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (NoteTypeClient noteClient : values.getNote()) {
+				if (noteClient != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(noteClient.getValue());
+					list.add(noteClient.getAtType() == null ? null : noteClient.getAtType());
+					list.add(noteClient.getDisplayLabel() == null ? null : noteClient.getDisplayLabel());
+					list.add(noteClient.getXlink() == null ? null : noteClient.getXlink());
+					list.add(noteClient.getLang() == null ? null : noteClient.getLang());
+					list.add(noteClient.getXmlLang() == null ? null : noteClient.getXmlLang());
+					list.add(noteClient.getScript() == null ? null : noteClient.getScript());
+					list.add(noteClient.getTransliteration() == null ? null : noteClient.getTransliteration());
+					vals.add(list);
+				}
+			}
+		}
 		sectionStack
 				.addSection(getStackSectionWithAttributes(
 						"Notes",
-						new Attribute(TextAreaItem.class, "note", "Note",
+						new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
 								"Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used."),
-						false, attributes, null));
+						false, attributes, vals, holder.getNotes(), false));
 
 		layout.addMember(sectionStack);
 
@@ -2095,7 +2157,7 @@ public final class TabUtils {
 	 * 
 	 * @return the language layout
 	 */
-	private static VLayout getLanguageLayout() {
+	private static VLayout getLanguageLayout(LanguageTypeClient values, LanguageHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -2106,19 +2168,34 @@ public final class TabUtils {
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
 		layout.setExtraSpace(40);
-		// sectionStack.setOverflow(Overflow.AUTO);
-		layout
-				.addMember(getAttributes(
-						true,
-						new Attribute[] { new Attribute(
-								TextItem.class,
-								"object_part",
-								"Object Part",
-								"Designates which part of the resource is in the language supplied, e.g. <language objectPart='summary'><languageTerm authority='iso639-2b'>spa</languageTerm></language> indicates that only the summary is in Spanish.") }));
+		DynamicForm formAttr = getAttributes(
+				true,
+				new Attribute[] { new Attribute(
+						TextItem.class,
+						ModsConstants.OBJECT_PART,
+						"Object Part",
+						"Designates which part of the resource is in the language supplied, e.g. <language objectPart='summary'><languageTerm authority='iso639-2b'>spa</languageTerm></language> indicates that only the summary is in Spanish.",
+						values == null ? "" : values.getObjectPart()) });
+		holder.setAttributeForm(formAttr);
+		layout.addMember(formAttr);
 
+		layout.addMember(formAttr);
+		List<List<String>> vals = null;
+		if (values != null && values.getLanguageTerm() != null && values.getLanguageTerm().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (LanguageTermClient languageTermClient : values.getLanguageTerm()) {
+				if (languageTermClient != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(languageTermClient.getValue());
+					list.add(languageTermClient.getType() == null ? null : languageTermClient.getType().value());
+					list.add(languageTermClient.getAuthority() == null ? null : languageTermClient.getAuthority());
+					vals.add(list);
+				}
+			}
+		}
 		sectionStack.addSection(getStackSectionWithAttributes("Language Terms", "Language Term",
 				"contains the language(s) of the content of the resource. It may be expressed in textual or coded form.", true, new Attribute[] { ATTR_TYPE_TEXT_CODE,
-						ATTR_LANG_AUTHORITY }, null));
+						ATTR_LANG_AUTHORITY }, vals, holder.getLangTerms(), false));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2456,7 +2533,6 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
-		// sectionStack.setOverflow(Overflow.AUTO);
 		Attribute[] attributes = new Attribute[] { ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
 		layout.addMember(getAttributes(true, attributes));
 

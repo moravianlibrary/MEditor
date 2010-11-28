@@ -11,6 +11,7 @@ import java.util.List;
 import com.google.gwt.user.client.DOM;
 
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
+import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -122,6 +123,22 @@ public class ClientUtils {
 				continue;
 			List<String> innerList = new ArrayList<String>(2);
 			innerList.add(value.getValue());
+			innerList.add(value.getAuthority());
+			outerList.add(innerList);
+		}
+		return outerList;
+	}
+
+	public static List<List<String>> toListOfListOfStrings(List<StringPlusAuthorityPlusTypeClient> toConvert, boolean something) {
+		if (toConvert == null)
+			return null;
+		List<List<String>> outerList = new ArrayList<List<String>>(toConvert.size());
+		for (StringPlusAuthorityPlusTypeClient value : toConvert) {
+			if (value == null)
+				continue;
+			List<String> innerList = new ArrayList<String>(2);
+			innerList.add(value.getValue());
+			innerList.add(value.getType());
 			innerList.add(value.getAuthority());
 			outerList.add(innerList);
 		}

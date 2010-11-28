@@ -8,6 +8,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.DataSource;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
@@ -50,6 +51,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 	 */
 	public HomeView() {
 		layout = new VStack();
+		layout.setHeight100();
 		layout.setPadding(15);
 		HTMLFlow html1 = new HTMLFlow();
 		html1
@@ -90,11 +92,19 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		hLayout.addMember(form);
 		hLayout.addMember(open);
 
+		HTMLFlow html3 = new HTMLFlow();
+		// html3.setAlign(Alignment.RIGHT);
+		html3.setHeight("*");
+		html3.setLayoutAlign(VerticalAlignment.BOTTOM);
+		html3.setContents("Created by Jiri Kremser.");
+		html3.setHeight(20);
+
 		layout.addMember(html1);
 		layout.addMember(status);
 		layout.addMember(checkButton);
 		layout.addMember(html2);
 		layout.addMember(hLayout);
+		layout.addMember(html3);
 	}
 
 	/**

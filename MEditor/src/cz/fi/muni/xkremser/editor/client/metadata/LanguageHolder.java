@@ -1,30 +1,41 @@
 package cz.fi.muni.xkremser.editor.client.metadata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
-import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
-import cz.fi.muni.xkremser.editor.client.mods.YesClient;
+import cz.fi.muni.xkremser.editor.client.mods.CodeOrTextClient;
+import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient.LanguageTermClient;
 
 public class LanguageHolder extends ListOfSimpleValuesHolder {
-	private DynamicForm attributeForm2;
+	private DynamicForm attributeForm;
+	private final ListOfListOfSimpleValuesHolder langTerms;
 
-	public TypeOfResourceTypeClient getType() {
-		TypeOfResourceTypeClient typeOfResourceTypeClient = new TypeOfResourceTypeClient();
+	public LanguageHolder() {
+		this.langTerms = new ListOfListOfSimpleValuesHolder("language_term", ModsConstants.TYPE, ModsConstants.AUTHORITY);
+	}
+
+	public LanguageTypeClient getLanguage() {
+		LanguageTypeClient languageTypeClient = new LanguageTypeClient();
 		if (getAttributeForm() != null) {
-			String val = getAttributeForm().getValueAsString(ModsConstants.COLLECTION);
-			if (val != null && ClientUtils.toBoolean(val)) {
-				typeOfResourceTypeClient.setCollection(YesClient.YES);
-			}
-			val = getAttributeForm().getValueAsString(ModsConstants.MANUSCRIPT);
-			if (val != null && ClientUtils.toBoolean(val)) {
-				typeOfResourceTypeClient.setManuscript(YesClient.YES);
+			languageTypeClient.setObjectPart(getAttributeForm().getValueAsString(ModsConstants.OBJECT_PART));
+		}
+		List<LanguageTermClient> list = null;
+		List<List<String>> listOfValues = langTerms.getListOfList();
+		if (listOfValues != null && listOfValues.size() != 0) {
+			list = new ArrayList<LanguageTermClient>();
+			for (List<String> values : listOfValues) {
+				LanguageTermClient languageTermClient = new LanguageTermClient();
+				languageTermClient.setValue(values.get(0));
+				languageTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+				languageTermClient.setAuthority(values.get(2));
+				list.add(languageTermClient);
 			}
 		}
-		typeOfResourceTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TYPE));
-		return typeOfResourceTypeClient;
+		languageTypeClient.setLanguageTerm(list);
+		return languageTypeClient;
 	}
 
 	@Override
@@ -47,12 +58,18 @@ public class LanguageHolder extends ListOfSimpleValuesHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	public DynamicForm getAttributeForm2() {
-		return attributeForm2;
+	@Override
+	public DynamicForm getAttributeForm() {
+		return attributeForm;
 	}
 
-	public void setAttributeForm2(DynamicForm attributeForm2) {
-		this.attributeForm2 = attributeForm2;
+	@Override
+	public void setAttributeForm(DynamicForm attributeForm) {
+		this.attributeForm = attributeForm;
+	}
+
+	public ListOfListOfSimpleValuesHolder getLangTerms() {
+		return langTerms;
 	}
 
 }

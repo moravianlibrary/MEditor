@@ -6,6 +6,7 @@ import java.util.List;
 import cz.fi.muni.xkremser.editor.client.mods.DateOtherTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 
 public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 	private final ListOfSimpleValuesHolder publishers;
@@ -59,7 +60,12 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 			dates.add((DateOtherTypeClient) holder.getDate());
 		}
 		originInfoTypeClient.setDateOther(dates);
-		// TODO: place
+
+		List<PlaceTypeClient> placeList = new ArrayList<PlaceTypeClient>();
+		for (PlaceHolder holder : places) {
+			placeList.add(holder.getPlace());
+		}
+		originInfoTypeClient.setPlace(placeList);
 
 		return originInfoTypeClient;
 	}

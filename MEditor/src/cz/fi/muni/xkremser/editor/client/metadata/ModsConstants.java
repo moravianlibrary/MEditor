@@ -28,5 +28,9 @@ public class ModsConstants {
 	public static final String DATE_VALID = "date_valid";
 	public static final String DATE_MODIFIED = "date_modified";
 	public static final String DATE_COPYRIGHT = "date_copyright";
+	public static final String OBJECT_PART = "object_part";
+	public static final String NOTE = "note";
+	public static final String REFORMATTING = "reformatting_quality";
+	public static final String DIGITAL_ORIGIN = "digital_origin";
 
 }

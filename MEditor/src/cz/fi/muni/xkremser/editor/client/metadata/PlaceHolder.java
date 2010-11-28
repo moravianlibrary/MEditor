@@ -1,26 +1,35 @@
 package cz.fi.muni.xkremser.editor.client.metadata;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.smartgwt.client.widgets.form.DynamicForm;
+import cz.fi.muni.xkremser.editor.client.mods.CodeOrTextClient;
+import cz.fi.muni.xkremser.editor.client.mods.PlaceAuthorityClient;
+import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 
-import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
+public class PlaceHolder extends ListOfListOfSimpleValuesHolder {
 
-public class PlaceHolder extends ListOfSimpleValuesHolder {
-	private DynamicForm attributeForm2;
+	public PlaceHolder() {
+		super("place_term", ModsConstants.TYPE, ModsConstants.AUTHORITY);
+	}
 
-	public GenreTypeClient getGenre() {
-		GenreTypeClient genreTypeClient = new GenreTypeClient();
-		if (getAttributeForm() != null) {
-			genreTypeClient.setAuthority(getAttributeForm().getValueAsString(ModsConstants.AUTHORITY));
-			genreTypeClient.setType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
-			genreTypeClient.setLang(getAttributeForm().getValueAsString(ModsConstants.LANG));
-			genreTypeClient.setXmlLang(getAttributeForm().getValueAsString(ModsConstants.XML_LANG));
-			genreTypeClient.setTransliteration(getAttributeForm().getValueAsString(ModsConstants.TRANSLITERATION));
-			genreTypeClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
+	public PlaceTypeClient getPlace() {
+		List<List<String>> listOfValues = getListOfList();
+		if (listOfValues == null || listOfValues.size() == 0) {
+			return null;
 		}
-		genreTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.GENRE));
-		return genreTypeClient;
+		PlaceTypeClient placeTypeClient = new PlaceTypeClient();
+		List<PlaceTermTypeClient> list = new ArrayList<PlaceTermTypeClient>();
+		for (List<String> values : listOfValues) {
+			PlaceTermTypeClient placeTermClient = new PlaceTermTypeClient();
+			placeTermClient.setValue(values.get(0));
+			placeTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+			placeTermClient.setAuthority(PlaceAuthorityClient.fromValue(values.get(2)));
+			list.add(placeTermClient);
+		}
+		placeTypeClient.setPlaceTerm(list);
+		return placeTypeClient;
 	}
 
 	@Override
@@ -41,14 +50,6 @@ public class PlaceHolder extends ListOfSimpleValuesHolder {
 	@Override
 	public List<String> getAttributes() {
 		throw new UnsupportedOperationException("Mods");
-	}
-
-	public DynamicForm getAttributeForm2() {
-		return attributeForm2;
-	}
-
-	public void setAttributeForm2(DynamicForm attributeForm2) {
-		this.attributeForm2 = attributeForm2;
 	}
 
 }
