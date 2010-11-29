@@ -33,17 +33,24 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
+import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.DateHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.NoteHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PhysicalDescriptionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PlaceHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.SubjectHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.TableOfContentsHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
+import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
@@ -57,8 +64,13 @@ import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
+import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.GeographicCodeClient;
+import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.TargetAudienceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.UnstructuredTextClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -451,11 +463,21 @@ public final class TabUtils {
 	 */
 	private static class GetGeneralLayout extends GetLayoutOperation {
 
+		public static final int ABSTRACT = 0;
+
+		public static final int TOC = 1;
+
+		private static final int AUDIENCE = 2;
+
+		private static final int NOTE = 3;
+
 		/** The head. */
 		private final Attribute head;
 
 		/** The attributes. */
 		private final Attribute[] attributes;
+
+		private final int type;
 
 		/**
 		 * Instantiates a new gets the general layout.
@@ -465,10 +487,11 @@ public final class TabUtils {
 		 * @param attributes
 		 *          the attributes
 		 */
-		public GetGeneralLayout(Attribute head, Attribute[] attributes) {
+		public GetGeneralLayout(Attribute head, Attribute[] attributes, int type) {
 			super();
 			this.head = head;
 			this.attributes = attributes;
+			this.type = type;
 		}
 
 		/*
@@ -480,7 +503,37 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getGeneralLayout(head, attributes);
+			Map<String, String> values = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				values = (HashMap<String, String>) getValues().get(counter);
+			}
+			ListOfSimpleValuesHolder holder = null;
+			switch (type) {
+				case ABSTRACT:
+					holder = new AbstractHolder();
+				break;
+				case TOC:
+					holder = new TableOfContentsHolder();
+				break;
+				// case AUDIENCE:
+				// holder = new AudienceHolder();
+				// break;
+				case NOTE:
+					holder = new NoteHolder();
+				break;
+				default:
+					throw new IllegalStateException("unknown holder type");
+			}
+
+			((List<ListOfSimpleValuesHolder>) getHolders()).add(holder);
+			increaseCounter();
+			if (values != null) {
+				head.setValue(values.get(head.getName()));
+				for (Attribute att : attributes) {
+					att.setValue(values.get(att.getName()));
+				}
+			}
+			return getGeneralLayout(head, attributes, holder);
 		}
 	}
 
@@ -530,7 +583,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getSubjectLayout();
+			SubjectTypeClient values = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				values = (SubjectTypeClient) getValues().get(counter);
+			}
+			SubjectHolder holder = new SubjectHolder();
+			((List<SubjectHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getSubjectLayout(values, holder);
 		}
 	}
 
@@ -1369,12 +1429,15 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the abstract stack
 	 */
-	public static SectionStackSection getAbstractStack(boolean expanded) {
-		return getSomeStack(expanded, "Abstract", new GetGeneralLayout(new Attribute(TextAreaItem.class, "abstract", "Abstract",
+	public static SectionStackSection getAbstractStack(boolean expanded, List<AbstractTypeClient> values, List<AbstractHolder> holders) {
+		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.ABSTRACT, "Abstract",
 				"Roughly equivalent to MARC 21 field 520."), new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."),
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the abstract is necessary for display."), ATTR_XLINK,
-				ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "There is no controlled list of abstract types."),
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the abstract is necessary for display."), ATTR_XLINK(""),
+				ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.ABSTRACT);
+		getGeneralLayout.setValues(getValues(values, ModsConstants.ABSTRACT));
+		getGeneralLayout.setHolders(holders);
+		return getSomeStack(expanded, "Abstract", getGeneralLayout);
 	}
 
 	/**
@@ -1384,12 +1447,15 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the table of contents stack
 	 */
-	public static SectionStackSection getTableOfContentsStack(boolean expanded) {
-		return getSomeStack(expanded, "Table of Contents", new GetGeneralLayout(new Attribute(TextAreaItem.class, "table_of_contents", "Table of Contents",
+	public static SectionStackSection getTableOfContentsStack(boolean expanded, List<TableOfContentsTypeClient> values, List<TableOfContentsHolder> holders) {
+		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.TOC, "Table of Contents",
 				"Roughly equivalent to MARC 21 field 505."), new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."),
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "There is no controlled list of abstract types."),
 				getDisplayLabel("This attribute is intended to be used when additional text associated with the table of contents is necessary for display."),
-				ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+				ATTR_XLINK(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.TOC);
+		getGeneralLayout.setValues(getValues(values, ModsConstants.TOC));
+		getGeneralLayout.setHolders(holders);
+		return getSomeStack(expanded, "Table of Contents", getGeneralLayout);
 	}
 
 	/**
@@ -1399,10 +1465,26 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the target audience stack
 	 */
-	public static SectionStackSection getTargetAudienceStack(boolean expanded) {
-		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY, ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
+	public static SectionStackSection getTargetAudienceStack(boolean expanded, List<TargetAudienceTypeClient> values, AudienceHolder holder) {
+		Attribute[] attributes = new Attribute[] { ATTR_AUTHORITY(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT("") };
+		List<List<String>> vals = null;
+		if (values != null && values.size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (TargetAudienceTypeClient audience : values) {
+				if (audience != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(audience.getValue());
+					list.add(audience.getAuthority());
+					list.add(audience.getLang());
+					list.add(audience.getXmlLang());
+					list.add(audience.getTransliteration());
+					list.add(audience.getScript());
+					vals.add(list);
+				}
+			}
+		}
 		return getStackSectionWithAttributes("Target Audience", "Target Audience",
-				"A description of the intellectual level of the audience for which the resource is intended.", true, attributes, null);
+				"A description of the intellectual level of the audience for which the resource is intended.", true, attributes, vals, holder, false);
 	}
 
 	/**
@@ -1412,11 +1494,45 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the note stack
 	 */
-	public static SectionStackSection getNoteStack(boolean expanded) {
-		return getSomeStack(expanded, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Roughly equivalent to MARC 21 fields 5XX."),
-				new Attribute[] { new Attribute(TextItem.class, "type", "Type", "There is no controlled list of abstract types."),
-						getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK,
-						ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+	public static SectionStackSection getNoteStack(boolean expanded, List<NoteTypeClient> values, List<NoteHolder> holders) {
+		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
+				"Roughly equivalent to MARC 21 fields 5XX."), new Attribute[] {
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "There is no controlled list of abstract types."),
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK(""),
+				ATTR_ID(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.NOTE);
+
+		List<Map<String, String>> valueList = null;
+		if (values != null && values.size() > 0) {
+			valueList = new ArrayList<Map<String, String>>();
+			Map<String, String> valueMap = new HashMap<String, String>();
+			for (NoteTypeClient value : values) {
+				if (value != null) {
+					if (value.getAtType() != null && !"".equals(value.getAtType()))
+						valueMap.put(ModsConstants.TYPE, value.getAtType());
+					if (value.getDisplayLabel() != null && !"".equals(value.getDisplayLabel()))
+						valueMap.put(ModsConstants.DISPLAY_LABEL, value.getDisplayLabel());
+					if (value.getLang() != null && !"".equals(value.getLang()))
+						valueMap.put(ModsConstants.LANG, value.getLang());
+					if (value.getXmlLang() != null && !"".equals(value.getXmlLang()))
+						valueMap.put(ModsConstants.XML_LANG, value.getXmlLang());
+					if (value.getXlink() != null && !"".equals(value.getXlink()))
+						valueMap.put(ModsConstants.XLINK, value.getXlink());
+					if (value.getScript() != null && !"".equals(value.getScript()))
+						valueMap.put(ModsConstants.SCRIPT, value.getScript());
+					if (value.getTransliteration() != null && !"".equals(value.getTransliteration()))
+						valueMap.put(ModsConstants.TRANSLITERATION, value.getTransliteration());
+					if (value.getID() != null && !"".equals(value.getID()))
+						valueMap.put(ModsConstants.ID, value.getID());
+					if (value.getValue() != null && !"".equals(value.getValue()))
+						valueMap.put(ModsConstants.NOTE, value.getValue());
+				}
+				valueList.add(valueMap);
+			}
+		}
+		getGeneralLayout.setValues(valueList);
+		getGeneralLayout.setHolders(holders);
+
+		return getSomeStack(expanded, "Note", getGeneralLayout);
 	}
 
 	/**
@@ -1426,8 +1542,11 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the subject stack
 	 */
-	public static SectionStackSection getSubjectStack(boolean expanded) {
-		return getSomeStack(expanded, "Subject", new GetSubjectLayout());
+	public static SectionStackSection getSubjectStack(boolean expanded, List<SubjectTypeClient> values, List<SubjectHolder> holders) {
+		GetSubjectLayout getSubjectLayout = new GetSubjectLayout();
+		getSubjectLayout.setValues(values);
+		getSubjectLayout.setHolders(holders);
+		return getSomeStack(expanded, "Subject", getSubjectLayout);
 	}
 
 	/**
@@ -1499,7 +1618,7 @@ public final class TabUtils {
 										"Type",
 										"There is no controlled list of abstract types. Suggested values are: restriction on access (equivalent to MARC 21 field 506) and use and reproduction (equivalent to MARC 21 field 540)."),
 								getDisplayLabel("This attribute is intended to be used when additional text associated with the access conditions is necessary for display."),
-								ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+								ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }, GetGeneralLayout.ABSTRACT));
 	}
 
 	/**
@@ -1519,7 +1638,7 @@ public final class TabUtils {
 								"extension",
 								"Extension",
 								"Used to provide for additional information not covered by MODS. It may be used for elements that are local to the creator of the data, similar to MARC 21 9XX fields."),
-						new Attribute[] { new Attribute(TextItem.class, "namespace", "Namespace", "Namespace") }));
+						new Attribute[] { new Attribute(TextItem.class, "namespace", "Namespace", "Namespace") }, GetGeneralLayout.ABSTRACT));
 	}
 
 	/**
@@ -2107,10 +2226,13 @@ public final class TabUtils {
 	 *          the attribs
 	 * @return the general layout
 	 */
-	private static VLayout getGeneralLayout(final Attribute head, final Attribute[] attribs) {
+	private static VLayout getGeneralLayout(final Attribute head, final Attribute[] attribs, final ListOfSimpleValuesHolder holder) {
 		final VLayout layout = new VLayout();
-		layout.addMember(getAttributes(true, attribs));
+		DynamicForm form1 = getAttributes(true, attribs);
+		layout.addMember(form1);
+		holder.setAttributeForm(form1);
 		DynamicForm form = new DynamicForm();
+		holder.setAttributeForm2(form);
 
 		FormItem item = newItem(head);
 		if (head.getType() == TextAreaItem.class)
@@ -2233,7 +2355,8 @@ public final class TabUtils {
 				"This is a copy-specific form of the MODS <location><url>, without its attributes."), false, null));
 		getSomeStack(false, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Note relating to a specific copy of a document. "),
 				new Attribute[] { new Attribute(TextItem.class, "type", "Type", "This attribute is not controlled by a list and thus is open-ended."),
-						getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") }));
+						getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") },
+				GetGeneralLayout.ABSTRACT));
 		sectionStack
 				.addSection(getStackSectionWithAttributes(
 						"Enumeration and Chronology",
@@ -2259,7 +2382,7 @@ public final class TabUtils {
 	 * 
 	 * @return the subject layout
 	 */
-	private static VLayout getSubjectLayout() {
+	private static VLayout getSubjectLayout(SubjectTypeClient values, SubjectHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -2270,28 +2393,34 @@ public final class TabUtils {
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
 		layout.setExtraSpace(40);
-		// sectionStack.setOverflow(Overflow.AUTO);
-		layout.addMember(getAttributes(true, new Attribute[] { ATTR_AUTHORITY, ATTR_XLINK, ATTR_ID, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }));
+		DynamicForm form = getAttributes(true, new Attribute[] { ATTR_AUTHORITY(values == null ? "" : values.getAuthority()),
+				ATTR_XLINK(values == null ? "" : values.getXlink()), ATTR_ID(values == null ? "" : values.getId()), ATTR_LANG(values == null ? "" : values.getLang()),
+				ATTR_XML_LANG(values == null ? "" : values.getXmlLang()), ATTR_SCRIPT(values == null ? "" : values.getScript()),
+				ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()) });
+		layout.addMember(form);
+		holder.setAttributeForm(form);
 
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "topic", "Topic",
 				"Equivalent to MARC 21 fields 650 and 6XX subfields $x and $v (with authority attribute defined) and MARC 21 field 653 with no authority attribute."),
-				false, null));
+				false, values == null ? null : values.getTopic(), holder.getTopics()));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "geographic", "Geographic", "Equivalent to MARC 21 field 651 and 6XX subfield $z."),
-				false, null));
+				false, values == null ? null : values.getGeographic(), holder.getGeographics()));
 		sectionStack.addSection(getSomeStack(false, "Temporal", new GetDateLayout("temporal", "Temporal", "Equivalent to MARC 21 fields 045 and 6XX subfield $y.",
-				null, null)));
-		// TODO: handle
+				values == null ? null : values.getTemporal(), holder.getTemporals())));
 		GetTitleInfoLayout getTitleInfoLayout = new GetTitleInfoLayout();
-		getTitleInfoLayout.setHolders(new ArrayList<Object>());
+		getTitleInfoLayout.setHolders(holder.getTitleInfo());
+		getTitleInfoLayout.setValues(values.getTitleInfo());
 		sectionStack.addSection(getSomeStack(false, "Title Info", getTitleInfoLayout));
-		// TODO: handle
 		GetNameLayout getNameLayout = new GetNameLayout();
-		getNameLayout.setHolders(new ArrayList<Object>());
+		getNameLayout.setHolders(holder.getNames());
+		getNameLayout.setValues(values.getName());
 		sectionStack.addSection(getSomeStack(false, "Name", getNameLayout));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false, null));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false,
+				values == null ? null : values.getGenre(), holder.getGenres()));
 
 		Attribute[] attributes = new Attribute[] {
 				new Attribute(TextItem.class, "continent", "Continent", "Includes Asia, Africa, Europe, North America, South America."),
+				new Attribute(TextItem.class, "country", "Country", "Name of a country, i.e. a political entity considered a country."),
 				new Attribute(TextItem.class, "province", "Province", "Includes first order political divisions called provinces within a country, e.g. Canada."),
 				new Attribute(TextItem.class, "region", "Region",
 						"Includes regions that have status as a jurisdiction, usually incorporating more than one first level jurisdiction."),
@@ -2310,6 +2439,8 @@ public final class TabUtils {
 						"extraterrestrial_area",
 						"Extraterrestrial Area",
 						"Name of any extraterrestrial entity or space, including solar systems, galaxies, star systems, and planets as well as geographic features of individual planets."), };
+
+		// TODO: values&holders pass
 		sectionStack.addSection(getSomeStack(false, "Hierarchical Geographic", new GetGeneralDeepLayout(attributes)));
 
 		attributes = new Attribute[] {
@@ -2321,19 +2452,34 @@ public final class TabUtils {
 				new Attribute(TextItem.class, "scale", "Scale",
 						"It may include any equivalency statements, vertical scales or vertical exaggeration statements for relief models and other three-dimensional items."),
 				new Attribute(TextItem.class, "projection", "Projection", "Provides a statement of projection.") };
+		// TODO: values&holders pass
 		sectionStack.addSection(getSomeStack(false, "Cartographics", new GetGeneralDeepLayout(attributes)));
 
-		sectionStack.addSection(getStackSectionWithAttributes("Geographic Code", new Attribute(TextItem.class, "geographic_code", "Geographic Code",
-				"Equivalent to MARC 21 field 043."), false, new Attribute[] { new Attribute(SelectItem.class, "authority", "Authority", new HashMap<String, String>() {
-			{
-				put("", "This attribute will be omitted.");
-				put("marcgac", "marcgac");
-				put("marccountry", "marccountry");
-				put("iso3166", "iso3166");
+		List<List<String>> vals = null;
+		if (values != null && values.getGeographicCode() != null && values.getGeographicCode().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (GeographicCodeClient code : values.getGeographicCode()) {
+				if (code != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(code.getValue());
+					if (code.getAuthority() != null)
+						list.add(code.getAuthority().value());
+					vals.add(list);
+				}
 			}
-		}) }, null));
-		sectionStack
-				.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false, null));
+		}
+		sectionStack.addSection(getStackSectionWithAttributes("Geographic Code", new Attribute(TextItem.class, ModsConstants.GEO_CODE, "Geographic Code",
+				"Equivalent to MARC 21 field 043."), false, new Attribute[] { new Attribute(SelectItem.class, ModsConstants.AUTHORITY, "Authority",
+				new HashMap<String, String>() {
+					{
+						put("", "This attribute will be omitted.");
+						put("marcgac", "marcgac");
+						put("marccountry", "marccountry");
+						put("iso3166", "iso3166");
+					}
+				}) }, vals, holder.getGeoCodes(), false));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false,
+				values == null ? null : values.getOccupation(), holder.getOccupations()));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2553,6 +2699,36 @@ public final class TabUtils {
 
 		layout.addMember(sectionStack);
 		return layout;
+	}
+
+	private static List<Map<String, String>> getValues(List<? extends UnstructuredTextClient> values, String valueKey) {
+		List<Map<String, String>> valueList = null;
+		if (values != null && values.size() > 0) {
+			valueList = new ArrayList<Map<String, String>>();
+			Map<String, String> valueMap = new HashMap<String, String>();
+			for (UnstructuredTextClient value : values) {
+				if (value != null) {
+					if (value.getAtType() != null && !"".equals(value.getAtType()))
+						valueMap.put(ModsConstants.TYPE, value.getAtType());
+					if (value.getDisplayLabel() != null && !"".equals(value.getDisplayLabel()))
+						valueMap.put(ModsConstants.DISPLAY_LABEL, value.getDisplayLabel());
+					if (value.getLang() != null && !"".equals(value.getLang()))
+						valueMap.put(ModsConstants.LANG, value.getLang());
+					if (value.getXmlLang() != null && !"".equals(value.getXmlLang()))
+						valueMap.put(ModsConstants.XML_LANG, value.getXmlLang());
+					if (value.getXlink() != null && !"".equals(value.getXlink()))
+						valueMap.put(ModsConstants.XLINK, value.getXlink());
+					if (value.getScript() != null && !"".equals(value.getScript()))
+						valueMap.put(ModsConstants.SCRIPT, value.getScript());
+					if (value.getTransliteration() != null && !"".equals(value.getTransliteration()))
+						valueMap.put(ModsConstants.TRANSLITERATION, value.getTransliteration());
+					if (value.getValue() != null && !"".equals(value.getValue()))
+						valueMap.put(valueKey, value.getValue());
+				}
+				valueList.add(valueMap);
+			}
+		}
+		return valueList;
 	}
 
 }

@@ -32,5 +32,8 @@ public class ModsConstants {
 	public static final String NOTE = "note";
 	public static final String REFORMATTING = "reformatting_quality";
 	public static final String DIGITAL_ORIGIN = "digital_origin";
+	public static final String ABSTRACT = "abstract";
+	public static final String TOC = "table_of_contents";
+	public static final String GEO_CODE = "geographic_code";
 
 }

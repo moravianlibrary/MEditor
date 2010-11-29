@@ -8,6 +8,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 
 public class ListOfSimpleValuesHolder extends MetadataHolder {
 
+	private DynamicForm attributeForm2;
+
 	public ListOfSimpleValuesHolder() {
 	}
 
@@ -43,6 +45,14 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 	@Override
 	public List<String> getAttributes() {
 		throw new UnsupportedOperationException();
+	}
+
+	public DynamicForm getAttributeForm2() {
+		return attributeForm2;
+	}
+
+	public void setAttributeForm2(DynamicForm attributeForm2) {
+		this.attributeForm2 = attributeForm2;
 	}
 
 }

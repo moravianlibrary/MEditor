@@ -48,6 +48,7 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		DataSourceField field;
 		field = new DataSourceTextField(Constants.ATTR_NAME, "name");
 		field.setRequired(true);
+		field.setAttribute("width", "40%");
 		addField(field);
 		field = new DataSourceTextField(Constants.ATTR_UUID, "uuid");
 		field.setPrimaryKey(true);

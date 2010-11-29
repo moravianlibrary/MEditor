@@ -7,6 +7,7 @@ import cz.fi.muni.xkremser.editor.client.mods.DateOtherTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 
 public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 	private final ListOfSimpleValuesHolder publishers;
@@ -66,6 +67,19 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 			placeList.add(holder.getPlace());
 		}
 		originInfoTypeClient.setPlace(placeList);
+
+		List<StringPlusAuthorityClient> list = null;
+		List<List<String>> listOfValues = frequencies.getListOfList();
+		if (listOfValues != null && listOfValues.size() != 0) {
+			list = new ArrayList<StringPlusAuthorityClient>();
+			for (List<String> values : listOfValues) {
+				StringPlusAuthorityClient val = new StringPlusAuthorityClient();
+				val.setValue(values.get(0));
+				val.setAuthority(values.get(1));
+				list.add(val);
+			}
+		}
+		originInfoTypeClient.setFrequency(list);
 
 		return originInfoTypeClient;
 	}
