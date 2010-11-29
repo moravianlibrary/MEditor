@@ -143,8 +143,6 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		sectionRelated.setExpanded(false);
 
 		sideNavGrid = new SideNavRecentlyGrid();
-		sideNavGrid.setHoverOpacity(75);
-		sideNavGrid.setHoverStyle("interactImageHover");
 
 		final DynamicForm form = new DynamicForm();
 		form.setHeight(1);

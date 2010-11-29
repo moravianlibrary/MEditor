@@ -39,6 +39,9 @@ public class SideNavRecentlyGrid extends ListGrid {
 		setAutoFetchData(true);
 		setCanHover(true);
 		setCanSort(false); // TODO: sort by date (define in datasource)
+		setHoverOpacity(75);
+		setHoverStyle("interactImageHover");
+		setHoverWidth(350);
 	}
 
 }
