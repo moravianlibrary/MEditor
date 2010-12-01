@@ -85,6 +85,7 @@ import cz.fi.muni.xkremser.editor.server.mods.AbstractType;
 import cz.fi.muni.xkremser.editor.server.mods.AccessConditionType;
 import cz.fi.muni.xkremser.editor.server.mods.BaseDateType;
 import cz.fi.muni.xkremser.editor.server.mods.ClassificationType;
+import cz.fi.muni.xkremser.editor.server.mods.CodeOrText;
 import cz.fi.muni.xkremser.editor.server.mods.CopyInformationType;
 import cz.fi.muni.xkremser.editor.server.mods.DateOtherType;
 import cz.fi.muni.xkremser.editor.server.mods.DateType;
@@ -102,12 +103,14 @@ import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 import cz.fi.muni.xkremser.editor.server.mods.ModsType;
 import cz.fi.muni.xkremser.editor.server.mods.NamePartType;
 import cz.fi.muni.xkremser.editor.server.mods.NameType;
+import cz.fi.muni.xkremser.editor.server.mods.NameTypeAttribute;
 import cz.fi.muni.xkremser.editor.server.mods.NoteType;
 import cz.fi.muni.xkremser.editor.server.mods.ObjectFactory;
 import cz.fi.muni.xkremser.editor.server.mods.OriginInfoType;
 import cz.fi.muni.xkremser.editor.server.mods.PartType;
 import cz.fi.muni.xkremser.editor.server.mods.PhysicalDescriptionType;
 import cz.fi.muni.xkremser.editor.server.mods.PhysicalLocationType;
+import cz.fi.muni.xkremser.editor.server.mods.PlaceAuthority;
 import cz.fi.muni.xkremser.editor.server.mods.PlaceTermType;
 import cz.fi.muni.xkremser.editor.server.mods.PlaceType;
 import cz.fi.muni.xkremser.editor.server.mods.RecordInfoType;
@@ -130,6 +133,7 @@ import cz.fi.muni.xkremser.editor.server.mods.TitleInfoType;
 import cz.fi.muni.xkremser.editor.server.mods.TypeOfResourceType;
 import cz.fi.muni.xkremser.editor.server.mods.UnstructuredText;
 import cz.fi.muni.xkremser.editor.server.mods.UrlType;
+import cz.fi.muni.xkremser.editor.server.mods.Yes;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1271,12 +1275,26 @@ public final class BiblioModsUtils {
 	private static void handleModsGroupClient(ModsTypeClient modsTypeClient, ModsType modsType) {
 		List<Object> modsGroup = modsType.getModsGroup();
 		handleTitleInfo(modsTypeClient.getTitleInfo(), modsGroup);
+		handleName(modsTypeClient.getName(), modsGroup);
+		handleTypeOfResource(modsTypeClient.getTypeOfResource(), modsGroup);
+		handleGenre(modsTypeClient.getGenre(), modsGroup);
+		handleOrigin(modsTypeClient.getOriginInfo(), modsGroup);
+		handleLanguage(modsTypeClient.getLanguage(), modsGroup);
+		handlePhysicalDescription(modsTypeClient.getPhysicalDescription(), modsGroup);
+		handleAbstract(modsTypeClient.getAbstrac(), modsGroup);
+		handleTableOfContents(modsTypeClient.getTableOfContents(), modsGroup);
+		handleAudience(modsTypeClient.getTargetAudience(), modsGroup);
+		handleNote(modsTypeClient.getNote(), modsGroup);
+		handleSubject(modsTypeClient.getSubject(), modsGroup);
+		handleClassification(modsTypeClient.getClassification(), modsGroup);
 	}
 
 	private static void handleTitleInfo(final List<TitleInfoTypeClient> titleInfoClientList, final List<Object> modsGroup) {
 		if (titleInfoClientList != null && titleInfoClientList.size() > 0) {
 			for (TitleInfoTypeClient valueClient : titleInfoClientList) {
-				TitleInfoType value = new TitleInfoType();
+				if (valueClient == null)
+					continue;
+				TitleInfoType value = factory.createTitleInfoType();
 				value.setAtType(valueClient.getType());
 				value.setID(valueClient.getId());
 				value.setDisplayLabel(valueClient.getDisplayLabel());
@@ -1319,6 +1337,267 @@ public final class BiblioModsUtils {
 				modsGroup.add(value);
 			}
 		}
+	}
+
+	private static void handleName(final List<NameTypeClient> valueList, final List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (NameTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				NameType value = factory.createNameType();
+				value.setAtType(valueClient.getType() == null || valueClient.getType().value() == null ? null : NameTypeAttribute.fromValue(valueClient.getType()
+						.value()));
+				value.setID(valueClient.getId());
+				value.setAuthority(valueClient.getAuthority());
+				value.setScript(valueClient.getScript());
+				value.setHref(valueClient.getXlink());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				if (valueClient.getNamePart() != null) {
+					for (NamePartTypeClient namePartClient : valueClient.getNamePart()) {
+						if (namePartClient != null) {
+							NamePartType namePart = factory.createNamePartType();
+							namePart.setType(namePartClient.getType());
+							namePart.setValue(namePartClient.getValue());
+							value.getNamePartOrDisplayFormOrAffiliation().add(factory.createNameTypeNamePart(namePart));
+						}
+					}
+				}
+				if (valueClient.getDisplayForm() != null) {
+					for (String strVal : valueClient.getDisplayForm()) {
+						if (strVal != null)
+							value.getNamePartOrDisplayFormOrAffiliation().add(factory.createNameTypeDisplayForm(strVal));
+					}
+				}
+				if (valueClient.getAffiliation() != null) {
+					for (String strVal : valueClient.getAffiliation()) {
+						if (strVal != null)
+							value.getNamePartOrDisplayFormOrAffiliation().add(factory.createNameTypeAffiliation(strVal));
+					}
+				}
+				if (valueClient.getRole() != null) {
+					for (RoleTypeClient roleTypeClient : valueClient.getRole()) {
+						if (roleTypeClient != null) {
+							RoleType roleType = factory.createRoleType();
+							List<RoleTermClient> roleTermClientList = roleTypeClient.getRoleTerm();
+							if (roleTermClientList != null) {
+								for (RoleTermClient roleTermClient : roleTermClientList) {
+									if (roleTermClient != null) {
+										RoleTerm roleTerm = factory.createRoleTypeRoleTerm();
+										roleTerm.setAuthority(roleTermClient.getAuthority());
+										roleTerm.setType(roleTermClient.getType() == null ? null : CodeOrText.fromValue(roleTermClient.getType().value()));
+										roleTerm.setValue(roleTermClient.getValue());
+										roleType.getRoleTerm().add(roleTerm);
+									}
+								}
+							}
+							value.getNamePartOrDisplayFormOrAffiliation().add(factory.createNameTypeRole(roleType));
+						}
+					}
+				}
+				if (valueClient.getDescription() != null) {
+					for (String strVal : valueClient.getDescription()) {
+						if (strVal != null)
+							value.getNamePartOrDisplayFormOrAffiliation().add(factory.createNameTypeDescription(strVal));
+					}
+				}
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleTypeOfResource(final List<TypeOfResourceTypeClient> valueList, final List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (TypeOfResourceTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				TypeOfResourceType value = factory.createTypeOfResourceType();
+				value.setValue(valueClient.getValue());
+				value.setManuscript(valueClient.getManuscript() == null || valueClient.getManuscript().value() == null ? null : Yes.fromValue(valueClient
+						.getManuscript().value()));
+				value.setManuscript(valueClient.getCollection() == null || valueClient.getCollection().value() == null ? null : Yes.fromValue(valueClient
+						.getCollection().value()));
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleGenre(final List<GenreTypeClient> valueList, final List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (GenreTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				GenreType value = factory.createGenreType();
+				value.setAtType(valueClient.getType());
+				value.setAuthority(valueClient.getAuthority());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				value.setValue(valueClient.getValue());
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleDate(final DateTypeClient valueClient, final DateType value) {
+		value.setValue(valueClient.getValue());
+		value.setEncoding(valueClient.getEncoding());
+		value.setKeyDate(valueClient.getKeyDate() == null || valueClient.getKeyDate().value() == null ? null : Yes.fromValue(valueClient.getKeyDate().value()));
+		value.setPoint(valueClient.getPoint());
+		value.setQualifier(valueClient.getQualifier());
+	}
+
+	private static void handleOrigin(final List<OriginInfoTypeClient> valueList, final List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (OriginInfoTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				OriginInfoType value = factory.createOriginInfoType();
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				if (valueClient.getPlace() != null) {
+					for (PlaceTypeClient placeTypeClient : valueClient.getPlace()) {
+						if (placeTypeClient != null) {
+							PlaceType placeType = factory.createPlaceType();
+							List<PlaceTermTypeClient> placeTermClientList = placeTypeClient.getPlaceTerm();
+							if (placeTermClientList != null) {
+								for (PlaceTermTypeClient placeTermClient : placeTermClientList) {
+									if (placeTermClient != null) {
+										PlaceTermType placeTerm = factory.createPlaceTermType();
+										placeTerm.setAuthority(placeTermClient.getAuthority() == null ? null : PlaceAuthority.fromValue(placeTermClient.getAuthority().value()));
+										placeTerm.setType(placeTermClient.getType() == null ? null : CodeOrText.fromValue(placeTermClient.getType().value()));
+										placeTerm.setValue(placeTermClient.getValue());
+										placeType.getPlaceTerm().add(placeTerm);
+									}
+								}
+							}
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypePlace(placeType));
+						}
+					}
+				}
+				if (valueClient.getEdition() != null) {
+					for (String strVal : valueClient.getEdition()) {
+						if (strVal != null)
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeEdition(strVal));
+					}
+				}
+				if (valueClient.getIssuance() != null) {
+					for (String strVal : valueClient.getIssuance()) {
+						if (strVal != null)
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeIssuance(strVal));
+					}
+				}
+				if (valueClient.getPublisher() != null) {
+					for (String strVal : valueClient.getPublisher()) {
+						if (strVal != null)
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypePublisher(strVal));
+					}
+				}
+				if (valueClient.getDateIssued() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getDateIssued()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDate(dateTypeClient, dateType);
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateIssued(dateType));
+						}
+					}
+				}
+				if (valueClient.getDateCreated() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getDateCreated()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDate(dateTypeClient, dateType);
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateCreated(dateType));
+						}
+					}
+				}
+				if (valueClient.getDateCaptured() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getDateCaptured()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDate(dateTypeClient, dateType);
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateCaptured(dateType));
+						}
+					}
+				}
+				if (valueClient.getDateValid() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getDateValid()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDate(dateTypeClient, dateType);
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateValid(dateType));
+						}
+					}
+				}
+				if (valueClient.getDateModified() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getDateModified()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDate(dateTypeClient, dateType);
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateModified(dateType));
+						}
+					}
+				}
+				if (valueClient.getCopyrightDate() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getCopyrightDate()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDate(dateTypeClient, dateType);
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeCopyrightDate(dateType));
+						}
+					}
+				}
+				if (valueClient.getDateOther() != null) {
+					for (DateOtherTypeClient dateTypeClient : valueClient.getDateOther()) {
+						if (dateTypeClient != null) {
+							DateOtherType dateType = factory.createDateOtherType();
+							handleDate(dateTypeClient, dateType);
+							dateType.setType(dateTypeClient.getType());
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateOther(dateType));
+						}
+					}
+				}
+				if (valueClient.getFrequency() != null) {
+					for (StringPlusAuthorityClient strVal : valueClient.getFrequency()) {
+						if (strVal != null) {
+							StringPlusAuthority frequency = factory.createStringPlusAuthority();
+							frequency.setAuthority(strVal.getAuthority());
+							frequency.setValue(strVal.getValue());
+							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeFrequency(frequency));
+						}
+					}
+				}
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleLanguage(List<LanguageTypeClient> valueClient, List<Object> modsGroup) {
+	}
+
+	private static void handlePhysicalDescription(List<PhysicalDescriptionTypeClient> physicalDescriptionClientList, List<Object> modsGroup) {
+	}
+
+	private static void handleAbstract(List<AbstractTypeClient> abstractClientList, List<Object> modsGroup) {
+	}
+
+	private static void handleTableOfContents(List<TableOfContentsTypeClient> tableOfContentsClientList, List<Object> modsGroup) {
+	}
+
+	private static void handleAudience(List<TargetAudienceTypeClient> targetAudienceClientList, List<Object> modsGroup) {
+	}
+
+	private static void handleNote(List<NoteTypeClient> noteClientList, List<Object> modsGroup) {
+	}
+
+	private static void handleSubject(List<SubjectTypeClient> subjectClientList, List<Object> modsGroup) {
+	}
+
+	private static void handleClassification(List<ClassificationTypeClient> classificationClientList, List<Object> modsGroup) {
 	}
 
 }
