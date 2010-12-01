@@ -7,6 +7,10 @@ import cz.fi.muni.xkremser.editor.client.mods.TargetAudienceTypeClient;
 
 public class AudienceHolder extends ListOfListOfSimpleValuesHolder {
 
+	public AudienceHolder() {
+		this("target_audience", ModsConstants.AUTHORITY, ModsConstants.LANG, ModsConstants.XML_LANG, ModsConstants.TRANSLITERATION, ModsConstants.SCRIPT);
+	}
+
 	public AudienceHolder(String... keys) {
 		super(keys);
 	}

@@ -36,4 +36,12 @@ public class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkCli
 		this.displayLabel = value;
 	}
 
+	public String getXlink() {
+		return xlink;
+	}
+
+	public void setXlink(String xlink) {
+		this.xlink = xlink;
+	}
+
 }

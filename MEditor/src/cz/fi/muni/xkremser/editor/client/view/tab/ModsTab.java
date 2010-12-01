@@ -25,8 +25,10 @@ import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ClassificationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.IdentifierHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.LocationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.NoteHolder;
@@ -40,6 +42,7 @@ import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.LocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
@@ -85,6 +88,8 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 	private final ClassificationHolder classificationHolder;
 	private final List<RelatedItemHolder> relatedItemHolders;
 	private final ListOfListOfSimpleValuesHolder relatedItemAttributeHolder;
+	private final IdentifierHolder identifierHolder;
+	private final List<LocationHolder> locationHolders;
 
 	/**
 	 * The Class GetRelatedItem.
@@ -135,14 +140,14 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 		physicalDescriptionHolders = new ArrayList<PhysicalDescriptionHolder>();
 		abstractHolders = new ArrayList<AbstractHolder>();
 		tableOfContentsHolders = new ArrayList<TableOfContentsHolder>();
-		audienceHolder = new AudienceHolder("target_audience", ModsConstants.AUTHORITY, ModsConstants.LANG, ModsConstants.XML_LANG, ModsConstants.TRANSLITERATION,
-				ModsConstants.SCRIPT);
+		audienceHolder = new AudienceHolder();
 		noteHolders = new ArrayList<NoteHolder>();
 		subjectHolders = new ArrayList<SubjectHolder>();
-		classificationHolder = new ClassificationHolder("classification", ModsConstants.AUTHORITY, ModsConstants.EDITION, ModsConstants.DISPLAY_LABEL,
-				ModsConstants.LANG, ModsConstants.XML_LANG, ModsConstants.TRANSLITERATION, ModsConstants.SCRIPT);
+		classificationHolder = new ClassificationHolder();
 		relatedItemHolders = new ArrayList<RelatedItemHolder>();
 		relatedItemAttributeHolder = new ListOfListOfSimpleValuesHolder();
+		identifierHolder = new IdentifierHolder();
+		locationHolders = new ArrayList<LocationHolder>();
 		this.deep = deep;
 	}
 
@@ -238,7 +243,9 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 				getTab(TabUtils.getNoteStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getNote(), noteHolders), "Note"),
 				getTab(TabUtils.getSubjectStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getSubject(), subjectHolders), "Subject"),
 				getTab(TabUtils.getClassificationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getClassification(), classificationHolder),
-						"Classification"), rel, getTab(TabUtils.getIdentifierStack(true), "Identifier"), getTab(TabUtils.getLocationStack(true), "Location"),
+						"Classification"), rel,
+				getTab(TabUtils.getIdentifierStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getIdentifier(), identifierHolder), "Identifier"),
+				getTab(TabUtils.getLocationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLocation(), locationHolders), "Location"),
 				getTab(TabUtils.getAccessConditionStack(true), "Access Condition"), getTab(TabUtils.getPartStack(true), "Part"),
 				getTab(TabUtils.getExtensionStack(true), "Extension"), getTab(TabUtils.getRecordInfoStack(true), "Record Info") };
 		topTabSet.setTabs(tabs);
@@ -349,6 +356,16 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 			items.add(relatedItemTypeClient);
 		}
 		modsTypeClient.setRelatedItem(items);
+
+		// identifier
+		modsTypeClient.setIdentifier(identifierHolder.getIdentifier());
+
+		// location
+		List<LocationTypeClient> location = new ArrayList<LocationTypeClient>(locationHolders.size());
+		for (LocationHolder holder : locationHolders) {
+			location.add(holder.getLocation());
+		}
+		modsTypeClient.setLocation(location);
 
 		return modsTypeClient;
 	}

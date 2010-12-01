@@ -17,7 +17,8 @@ public class NoteHolder extends ListOfSimpleValuesHolder {
 			abstractTypeClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
 			abstractTypeClient.setDisplayLabel(getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
 		}
-		abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.NOTE));
+		if (getAttributeForm2() != null)
+			abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.NOTE));
 		return abstractTypeClient;
 	}
 

@@ -7,6 +7,11 @@ import cz.fi.muni.xkremser.editor.client.mods.ClassificationTypeClient;
 
 public class ClassificationHolder extends ListOfListOfSimpleValuesHolder {
 
+	public ClassificationHolder() {
+		this("classification", ModsConstants.AUTHORITY, ModsConstants.EDITION, ModsConstants.DISPLAY_LABEL, ModsConstants.LANG, ModsConstants.XML_LANG,
+				ModsConstants.TRANSLITERATION, ModsConstants.SCRIPT);
+	}
+
 	public ClassificationHolder(String... keys) {
 		super(keys);
 	}

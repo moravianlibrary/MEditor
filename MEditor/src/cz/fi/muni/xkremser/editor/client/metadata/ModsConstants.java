@@ -36,5 +36,13 @@ public class ModsConstants {
 	public static final String TOC = "table_of_contents";
 	public static final String GEO_CODE = "geographic_code";
 	public static final String EDITION = "edition";
+	public static final String INVALID = "invalid";
+	public static final String PHYSICAL_LOCATION = "physical_location";
+	public static final String URL = "url";
+	public static final String DATE_LAST_ACCESSED = "date_last_accessed";
+	public static final String ACCESS = "access";
+	public static final String USAGE = "usage";
+	public static final String ENUM_CHRONO = "enumeration_and_chronology";
+	public static final String UNIT_TYPE = "unit_type";
 
 }

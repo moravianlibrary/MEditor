@@ -36,10 +36,13 @@ import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ClassificationHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.CopyInformationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.DateHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.IdentifierHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.LocationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
@@ -53,19 +56,25 @@ import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ClassificationTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.CopyInformationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.EnumerationAndChronologyTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.IdentifierTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient.LanguageTermClient;
+import cz.fi.muni.xkremser.editor.client.mods.LocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NamePartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PhysicalLocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
+import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.GeographicCodeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
@@ -73,6 +82,7 @@ import cz.fi.muni.xkremser.editor.client.mods.TargetAudienceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.UnstructuredTextClient;
+import cz.fi.muni.xkremser.editor.client.mods.UrlTypeClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -473,6 +483,8 @@ public final class TabUtils {
 
 		private static final int NOTE = 3;
 
+		private static final int SIMPLE_NOTE = 4;
+
 		/** The head. */
 		private final Attribute head;
 
@@ -555,6 +567,9 @@ public final class TabUtils {
 				// break;
 				case NOTE:
 					holder = new NoteHolder();
+				break;
+				case SIMPLE_NOTE:
+					holder = new ListOfSimpleValuesHolder();
 				break;
 				// default:
 				// throw new IllegalStateException("unknown holder type");
@@ -645,7 +660,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getLocationLayout();
+			LocationTypeClient values = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				values = (LocationTypeClient) getValues().get(counter);
+			}
+			LocationHolder holder = new LocationHolder();
+			((List<LocationHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getLocationLayout(values, holder);
 		}
 	}
 
@@ -663,7 +685,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getCopyInformationLayout();
+			CopyInformationTypeClient values = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				values = (CopyInformationTypeClient) getValues().get(counter);
+			}
+			CopyInformationHolder holder = new CopyInformationHolder();
+			((List<CopyInformationHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getCopyInformationLayout(values, holder);
 		}
 	}
 
@@ -995,7 +1024,10 @@ public final class TabUtils {
 		final boolean isAttribPresent = attributes != null && attributes.length != 0;
 		final VLayout layout = new VLayout();
 		if (isAttribPresent) {
-			layout.addMember(getAttributes(true, attributes));
+			DynamicForm f = getAttributes(true, attributes);
+			if (holder != null) // should not
+				holder.setAttributeForm(f);
+			layout.addMember(f);
 		}
 
 		SectionStackSection section = new SectionStackSection(mainAttr.getName());
@@ -1131,7 +1163,12 @@ public final class TabUtils {
 						itemsToAdd[0] = item;
 						for (int i = 0; i < items.length; i++) {
 							itemsToAdd[i + 1] = items[i];
-							itemsToAdd[i + 1].setValue(valueVector == null ? "" : valueVector.get(i + 1) == null ? "" : valueVector.get(i + 1));
+							if (itemsToAdd[i + 1] instanceof CheckboxItem) {
+								itemsToAdd[i + 1]
+										.setValue(valueVector == null ? false : valueVector.get(i + 1) == null ? false : ClientUtils.toBoolean(valueVector.get(i + 1)));
+							} else {
+								itemsToAdd[i + 1].setValue(valueVector == null ? "" : valueVector.get(i + 1) == null ? "" : valueVector.get(i + 1));
+							}
 						}
 						form.setFields(itemsToAdd);
 						form.setNumCols(4);
@@ -1629,18 +1666,40 @@ public final class TabUtils {
 	 * 
 	 * @param expanded
 	 *          the expanded
+	 * @param identifierHolder
+	 * @param list
 	 * @return the identifier stack
 	 */
-	public static SectionStackSection getIdentifierStack(boolean expanded) {
+	public static SectionStackSection getIdentifierStack(boolean expanded, List<IdentifierTypeClient> values, IdentifierHolder holder) {
 		Attribute[] attributes = new Attribute[] {
 				new Attribute(
 						TextItem.class,
-						"type",
+						ModsConstants.TYPE,
 						"Type",
 						"There is no controlled list of abstract types. (Suggested values: doi, hdl, isbn, ismn, isrc, issn,	issue number,	istc, lccn, loca, matrix number, music plate, music publisher, sici, stock number, upc, uri, videorecording identifier)"),
-				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT,
-				new Attribute(CheckboxItem.class, "invalid", "Invalid", "If invalid='yes' is not present, the identifier is assumed to be valid.") };
-		return getStackSectionWithAttributes("Identifiers", "Identifier", "Roughly equivalent to MARC fields 010, 020, 022, 024, 856.", true, attributes, null);
+				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT(""),
+				new Attribute(CheckboxItem.class, ModsConstants.INVALID, "Invalid", "If invalid='yes' is not present, the identifier is assumed to be valid.") };
+
+		List<List<String>> vals = null;
+		if (values != null && values.size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (IdentifierTypeClient value : values) {
+				if (value != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(value.getValue());
+					list.add(value.getType());
+					list.add(value.getDisplayLabel());
+					list.add(value.getLang());
+					list.add(value.getXmlLang());
+					list.add(value.getTransliteration());
+					list.add(value.getScript());
+					list.add(value.getInvalid() == null ? null : value.getInvalid().value());
+					vals.add(list);
+				}
+			}
+		}
+		return getStackSectionWithAttributes("Identifiers", "Identifier", "Roughly equivalent to MARC fields 010, 020, 022, 024, 856.", true, attributes, vals,
+				holder, false);
 	}
 
 	/**
@@ -1648,10 +1707,15 @@ public final class TabUtils {
 	 * 
 	 * @param expanded
 	 *          the expanded
+	 * @param locationHolders
+	 * @param list
 	 * @return the location stack
 	 */
-	public static SectionStackSection getLocationStack(boolean expanded) {
-		return getSomeStack(expanded, "Location", new GetLocationLayout());
+	public static SectionStackSection getLocationStack(boolean expanded, List<LocationTypeClient> values, List<LocationHolder> holders) {
+		GetLocationLayout getLocationLayout = new GetLocationLayout();
+		getLocationLayout.setHolders(holders);
+		getLocationLayout.setValues(values);
+		return getSomeStack(expanded, "Location", getLocationLayout);
 	}
 
 	/**
@@ -2284,7 +2348,7 @@ public final class TabUtils {
 	private static VLayout getGeneralLayout(final Attribute head, final Attribute[] attribs, final ListOfSimpleValuesHolder holder) {
 		final VLayout layout = new VLayout();
 		DynamicForm form1 = getAttributes(true, attribs);
-		layout.addMember(form1);
+
 		holder.setAttributeForm(form1);
 		DynamicForm form = new DynamicForm();
 		holder.setAttributeForm2(form);
@@ -2297,6 +2361,8 @@ public final class TabUtils {
 		}
 		form.setItems(item);
 		layout.addMember(form);
+		layout.addMember(form1);
+		layout.setOverflow(Overflow.VISIBLE);
 		layout.setExtraSpace(40);
 		return layout;
 	}
@@ -2326,6 +2392,8 @@ public final class TabUtils {
 					first = false;
 			}
 		}
+		layout.setOverflow(Overflow.VISIBLE);
+		layout.setExtraSpace(40);
 		return layout;
 	}
 
@@ -2381,23 +2449,24 @@ public final class TabUtils {
 	/**
 	 * Gets the copy information layout.
 	 * 
+	 * @param holder
+	 * @param values
+	 * 
 	 * @return the copy information layout
 	 */
-	private static VLayout getCopyInformationLayout() {
+	private static VLayout getCopyInformationLayout(CopyInformationTypeClient values, CopyInformationHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
-		// sectionStack.setOverflow(Overflow.AUTO);
-
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "form", "Form",
-				"Designation of a particular physical presentation of a resource."), false, new Attribute[] { ATTR_AUTHORITY }, null));
-		sectionStack
-				.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation",
-						"Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false,
-						null));
+				"Designation of a particular physical presentation of a resource.", values == null || values.getForm() == null ? "" : values.getForm().getValue()),
+				false, new Attribute[] { ATTR_AUTHORITY(values == null || values.getForm() == null ? "" : values.getForm().getAuthority()) }, holder.getForm()));
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation",
+				"Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false,
+				values == null ? null : values.getSubLocation(), holder.getSubLocations()));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(
@@ -2405,29 +2474,63 @@ public final class TabUtils {
 								"shelf_locator",
 								"Shelf Locator",
 								"Equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
-						false, null));
+						false, values == null ? null : values.getShelfLocator(), holder.getShelfLocators()));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "electronic_locator", "Electronic Locator",
-				"This is a copy-specific form of the MODS <location><url>, without its attributes."), false, null));
-		getSomeStack(false, "Note", new GetGeneralLayout(new Attribute(TextAreaItem.class, "note", "Note", "Note relating to a specific copy of a document. "),
-				new Attribute[] { new Attribute(TextItem.class, "type", "Type", "This attribute is not controlled by a list and thus is open-ended."),
-						getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") },
-				GetGeneralLayout.ABSTRACT));
+				"This is a copy-specific form of the MODS <location><url>, without its attributes."), false, values == null ? null : values.getElectronicLocator(),
+				holder.getElectronicLocators()));
+		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
+				"Note relating to a specific copy of a document. "), new Attribute[] {
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "This attribute is not controlled by a list and thus is open-ended."),
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") },
+				GetGeneralLayout.NOTE);
+		List<Map<String, String>> valueList = null;
+		if (values != null && values.getNote() != null && values.getNote().size() > 0) {
+			valueList = new ArrayList<Map<String, String>>();
+			Map<String, String> valueMap = new HashMap<String, String>();
+			for (StringPlusDisplayLabelPlusTypeClient value : values.getNote()) {
+				if (value != null) {
+					if (value.getAtType() != null && !"".equals(value.getAtType()))
+						valueMap.put(ModsConstants.TYPE, value.getAtType());
+					if (value.getDisplayLabel() != null && !"".equals(value.getDisplayLabel()))
+						valueMap.put(ModsConstants.DISPLAY_LABEL, value.getDisplayLabel());
+					if (value.getValue() != null && !"".equals(value.getValue()))
+						valueMap.put(ModsConstants.NOTE, value.getValue());
+				}
+				valueList.add(valueMap);
+			}
+		}
+
+		getGeneralLayout.setValues(valueList);
+		getGeneralLayout.setHolders(holder.getNotes());
+		sectionStack.addSection(getSomeStack(false, "Note", getGeneralLayout));
+		List<List<String>> vals = null;
+		if (values != null && values.getEnumerationAndChronology() != null && values.getEnumerationAndChronology().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (EnumerationAndChronologyTypeClient val : values.getEnumerationAndChronology()) {
+				if (val != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(val.getValue());
+					list.add(val.getUnitType());
+					vals.add(list);
+				}
+			}
+		}
 		sectionStack
 				.addSection(getStackSectionWithAttributes(
 						"Enumeration and Chronology",
 						new Attribute(
 								TextItem.class,
-								"enumeration_and_chronology",
+								ModsConstants.ENUM_CHRONO,
 								"Enumeration and Chronology",
 								"Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>."),
-						false, new Attribute[] { new Attribute(SelectItem.class, "unit_type", "Unit Type", new HashMap<String, String>() {
+						false, new Attribute[] { new Attribute(SelectItem.class, ModsConstants.UNIT_TYPE, "Unit Type", new HashMap<String, String>() {
 							{
 								put("", "This attribute will be omitted.");
 								put("1", "Information is about the basic bibliographic unit. (863 or 866)");
 								put("2", "Information is about supplementary material to the basic unit. (864 or 867)");
 								put("3", "Information is about index(es) to the basic unit. (865 or 868)");
 							}
-						}) }, null));
+						}) }, vals, holder.getEnumChrono(), false));
 		layout.addMember(sectionStack);
 		return layout;
 	}
@@ -2543,9 +2646,12 @@ public final class TabUtils {
 	/**
 	 * Gets the location layout.
 	 * 
+	 * @param holder
+	 * @param values
+	 * 
 	 * @return the location layout
 	 */
-	private static VLayout getLocationLayout() {
+	private static VLayout getLocationLayout(LocationTypeClient values, LocationHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -2555,13 +2661,31 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
+		List<List<String>> vals = null;
+		if (values != null && values.getPhysicalLocation() != null && values.getPhysicalLocation().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (PhysicalLocationTypeClient val : values.getPhysicalLocation()) {
+				if (val != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(val.getValue());
+					list.add(val.getDisplayLabel());
+					list.add(val.getType());
+					list.add(val.getAuthority());
+					list.add(val.getXlink());
+					list.add(val.getLang());
+					list.add(val.getTransliteration());
+					list.add(val.getScript());
+					vals.add(list);
+				}
+			}
+		}
 		Attribute[] attributes = new Attribute[] {
 				getDisplayLabel("Equivalent to MARC 21 field 852 subfield $3."),
 				new Attribute(TextItem.class, "type", "Type",
-						"This attribute is used to indicate different kinds of locations, e.g. current, discovery, former, creation."), ATTR_AUTHORITY, ATTR_XLINK,
-				ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
-		sectionStack.addSection(getStackSectionWithAttributes("Physical Location", new Attribute(TextItem.class, "physical_location", "Physical Location",
-				"Equivalent to MARC 21 field 852 subfields $a, $b and $e."), true, attributes, null));
+						"This attribute is used to indicate different kinds of locations, e.g. current, discovery, former, creation."), ATTR_AUTHORITY(""), ATTR_XLINK(""),
+				ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT("") };
+		sectionStack.addSection(getStackSectionWithAttributes("Physical Location", new Attribute(TextItem.class, ModsConstants.PHYSICAL_LOCATION,
+				"Physical Location", "Equivalent to MARC 21 field 852 subfields $a, $b and $e."), true, attributes, vals, holder.getPhysicalLocations(), false));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(
@@ -2569,13 +2693,13 @@ public final class TabUtils {
 								"shelfLocator",
 								"Shelf Locator",
 								"This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
-						false, null));
+						false, values == null ? null : values.getShelfLocator(), holder.getShelfLocators()));
 		attributes = new Attribute[] {
 				getDisplayLabel("Equivalent to MARC 21 field 856 subfields $y and $3."),
-				new Attribute(DateItem.class, "date_last_accessed", "Date Last Accessed", "There is no MARC equivalent for 'dateLastAccessed'."),
-				new Attribute(TextAreaItem.class, "note", "Note",
+				new Attribute(DateItem.class, ModsConstants.DATE_LAST_ACCESSED, "Date Last Accessed", "There is no MARC equivalent for 'dateLastAccessed'."),
+				new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
 						"This attribute includes notes that are associated with the link that is included as the value of the <url> element. It is generally free text."),
-				new Attribute(SelectItem.class, "access", "Access", new HashMap<String, String>() {
+				new Attribute(SelectItem.class, ModsConstants.ACCESS, "Access", new HashMap<String, String>() {
 					{
 						put("", "This attribute will be omitted.");
 						put("preview", "Indicates a link to a thumbnail or snippet of text.");
@@ -2583,21 +2707,45 @@ public final class TabUtils {
 								"Indicates a direct link to the object described (e.g. a jpg or pdf document). Used only when the object is represented by a single file.");
 						put("object in context", "Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)");
 					}
-				}), new Attribute(SelectItem.class, "usage", "Usage", new HashMap<String, String>() {
+				}), new Attribute(SelectItem.class, ModsConstants.USAGE, "Usage", new HashMap<String, String>() {
 					{
 						put("", "This attribute will be omitted.");
 						put("primary display", "Indicates that the link is the most appropriate to display for end users.");
 					}
 				}) };
-		sectionStack.addSection(getSomeStack(false, "Holding Simple", new GetCopyInformationLayout()));
+		vals = null;
+		if (values != null && values.getUrl() != null && values.getUrl().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (UrlTypeClient val : values.getUrl()) {
+				if (val != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(val.getValue());
+					list.add(val.getDisplayLabel());
+					list.add(val.getDateLastAccessed());
+					list.add(val.getNote());
+					list.add(val.getAccess());
+					list.add(val.getUsage());
+					vals.add(list);
+				}
+			}
+		}
+		sectionStack.addSection(getStackSectionWithAttributes("Url", new Attribute(TextItem.class, ModsConstants.URL, "URL",
+				"\"url\" is for a networked location. Note that <identifier> is used for persistent identifiers that may or may not be resolvable."), true, attributes,
+				vals, holder.getUrls(), false));
+
+		GetCopyInformationLayout getCopyInformationLayout = new GetCopyInformationLayout();
+		getCopyInformationLayout.setValues(values == null || values.getHoldingSimple() == null ? null : values.getHoldingSimple().getCopyInformation());
+		getCopyInformationLayout.setHolders(holder.getHoldingSimples());
+		sectionStack.addSection(getSomeStack(false, "Holding Simple", getCopyInformationLayout));
 		sectionStack
-				.addSection(getSimpleSection(
+				.addSection(getStackSection(
 						new Attribute(
 								TextAreaItem.class,
 								"holding_external",
 								"Holding External",
 								"Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema."),
-						false));
+						false, values != null && values.getHoldingExternal() != null && values.getHoldingExternal().getContent() != null ? values.getHoldingExternal()
+								.getContent() : null, holder.getHoldingExternals()));
 		layout.addMember(sectionStack);
 		return layout;
 	}
