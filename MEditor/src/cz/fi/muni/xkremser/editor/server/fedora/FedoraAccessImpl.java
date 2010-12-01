@@ -454,6 +454,16 @@ public class FedoraAccessImpl implements FedoraAccess {
 		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasUnit/@rdf:resource");
 	}
 
+	@Override
+	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException {
+		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasItem/@rdf:resource");
+	}
+
+	@Override
+	public List<String> getVolumesUuid(String uuid) throws IOException {
+		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasVolume/@rdf:resource");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1050,4 +1060,5 @@ public class FedoraAccessImpl implements FedoraAccess {
 		}
 		return sb.toString();
 	}
+
 }

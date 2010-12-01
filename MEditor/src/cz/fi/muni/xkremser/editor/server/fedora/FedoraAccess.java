@@ -327,6 +327,10 @@ public interface FedoraAccess {
 
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException;
 
+	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException;
+
+	public List<String> getVolumesUuid(String uuid) throws IOException;
+
 	public String getFOXML(String uuid);
 
 }

@@ -394,8 +394,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					// copy data
 					for (int j = 0, total = containers.get(i).size(); j < total; j++) {
 						AbstractDigitalObjectDetail aDetail = container.get(j);
-						containerData[j] = new ContainerRecord(aDetail.getDc().getTitle().get(0), aDetail.getDc().getIdentifier().get(0), detail.getChildContainerModels()
-								.get(i).getIcon());
+						String title = aDetail.getDc().getTitle() == null ? "no title" : aDetail.getDc().getTitle().get(0);
+						containerData[j] = new ContainerRecord(title, aDetail.getDc().getIdentifier().get(0), detail.getChildContainerModels().get(i).getIcon());
 					}
 					containerDataList.add(containerData);
 					containerModelList.add(detail.getChildContainerModels().get(i));

@@ -463,4 +463,14 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.getFOXML(uuid);
 	}
 
+	@Override
+	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException {
+		return rawAccess.getPeriodicalItemsUuid(uuid);
+	}
+
+	@Override
+	public List<String> getVolumesUuid(String uuid) throws IOException {
+		return rawAccess.getVolumesUuid(uuid);
+	}
+
 }
