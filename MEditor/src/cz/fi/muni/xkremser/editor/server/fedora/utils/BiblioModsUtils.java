@@ -5,6 +5,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,6 +13,7 @@ import java.util.logging.Level;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -101,6 +103,7 @@ import cz.fi.muni.xkremser.editor.server.mods.ModsType;
 import cz.fi.muni.xkremser.editor.server.mods.NamePartType;
 import cz.fi.muni.xkremser.editor.server.mods.NameType;
 import cz.fi.muni.xkremser.editor.server.mods.NoteType;
+import cz.fi.muni.xkremser.editor.server.mods.ObjectFactory;
 import cz.fi.muni.xkremser.editor.server.mods.OriginInfoType;
 import cz.fi.muni.xkremser.editor.server.mods.PartType;
 import cz.fi.muni.xkremser.editor.server.mods.PhysicalDescriptionType;
@@ -136,6 +139,7 @@ public final class BiblioModsUtils {
 
 	/** The Constant LOGGER. */
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(BiblioModsUtils.class.getName());
+	private static final ObjectFactory factory = new ObjectFactory();
 
 	/**
 	 * Gets the page number.
@@ -228,6 +232,25 @@ public final class BiblioModsUtils {
 		}
 
 		return collection;
+	}
+
+	public static String toXML(ModsCollection collection) {
+		try {
+			JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.server.mods");
+
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+			StringWriter sw = new StringWriter();
+
+			marshaller.marshal(collection, sw);
+			System.out.println(sw.toString());
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static ModsCollectionClient toModsClient(ModsCollection mods) {
@@ -815,7 +838,6 @@ public final class BiblioModsUtils {
 		if (modsGroup != null && modsGroup.size() != 0) {
 			handleModsGroup(modsGroup, modsTypeClient);
 		}
-		System.out.println("neco");
 		return modsTypeClient;
 	}
 
@@ -1220,4 +1242,83 @@ public final class BiblioModsUtils {
 		}
 		return partTypeClient;
 	}
+
+	public static ModsCollection toMods(ModsCollectionClient modsClient) {
+		if (modsClient == null)
+			throw new NullPointerException("modsClient");
+		ModsCollection mods = factory.createModsCollection();
+		List<ModsTypeClient> modssClient = modsClient.getMods();
+		if (modssClient != null && modssClient.size() != 0) {
+			List<ModsType> modsList = mods.getMods();
+			for (ModsTypeClient modsTypeClient : modssClient) {
+				modsList.add(toMods(modsTypeClient));
+			}
+		}
+		return mods;
+	}
+
+	private static ModsType toMods(ModsTypeClient modsTypeClient) {
+		if (modsTypeClient != null) {
+			ModsType modsType = factory.createModsType();
+			modsType.setID(modsTypeClient.getId());
+			modsType.setVersion(modsTypeClient.getVersion());
+			handleModsGroupClient(modsTypeClient, modsType);
+			return modsType;
+		} else
+			return null;
+	}
+
+	private static void handleModsGroupClient(ModsTypeClient modsTypeClient, ModsType modsType) {
+		List<Object> modsGroup = modsType.getModsGroup();
+		handleTitleInfo(modsTypeClient.getTitleInfo(), modsGroup);
+	}
+
+	private static void handleTitleInfo(final List<TitleInfoTypeClient> titleInfoClientList, final List<Object> modsGroup) {
+		if (titleInfoClientList != null && titleInfoClientList.size() > 0) {
+			for (TitleInfoTypeClient valueClient : titleInfoClientList) {
+				TitleInfoType value = new TitleInfoType();
+				value.setAtType(valueClient.getType());
+				value.setID(valueClient.getId());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setAuthority(valueClient.getAuthority());
+				value.setScript(valueClient.getScript());
+				value.setHref(valueClient.getXlink());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				if (valueClient.getTitle() != null) {
+					for (String strVal : valueClient.getTitle()) {
+						if (strVal != null)
+							value.getTitleOrSubTitleOrPartNumber().add(factory.createBaseTitleInfoTypeTitle(strVal));
+					}
+				}
+				if (valueClient.getSubTitle() != null) {
+					for (String strVal : valueClient.getSubTitle()) {
+						if (strVal != null)
+							value.getTitleOrSubTitleOrPartNumber().add(factory.createBaseTitleInfoTypeSubTitle(strVal));
+					}
+				}
+				if (valueClient.getPartName() != null) {
+					for (String strVal : valueClient.getPartName()) {
+						if (strVal != null)
+							value.getTitleOrSubTitleOrPartNumber().add(factory.createBaseTitleInfoTypePartName(strVal));
+					}
+				}
+				if (valueClient.getPartNumber() != null) {
+					for (String strVal : valueClient.getPartNumber()) {
+						if (strVal != null)
+							value.getTitleOrSubTitleOrPartNumber().add(factory.createBaseTitleInfoTypePartNumber(strVal));
+					}
+				}
+				if (valueClient.getNonSort() != null) {
+					for (String strVal : valueClient.getNonSort()) {
+						if (strVal != null)
+							value.getTitleOrSubTitleOrPartNumber().add(factory.createBaseTitleInfoTypeNonSort(strVal));
+					}
+				}
+				modsGroup.add(value);
+			}
+		}
+	}
+
 }

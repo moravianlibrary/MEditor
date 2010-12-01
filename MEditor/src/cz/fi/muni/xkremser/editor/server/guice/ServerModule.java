@@ -35,6 +35,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDescriptionHandler;
+import cz.fi.muni.xkremser.editor.server.handler.PutDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
@@ -43,6 +44,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
@@ -64,6 +66,7 @@ public class ServerModule extends HandlerModule {
 		bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
 		bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
 		bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
+		bindHandler(PutDigitalObjectDetailAction.class, PutDigitalObjectDetailHandler.class);
 		bindHandler(GetRecentlyModifiedAction.class, GetRecentlyModifiedHandler.class);
 		bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
 		bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);

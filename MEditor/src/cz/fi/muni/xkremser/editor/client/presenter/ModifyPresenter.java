@@ -57,6 +57,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
@@ -441,6 +443,16 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		dispatcher.execute(new PutDescriptionAction(uuid, description), new DispatchCallback<PutDescriptionResult>() {
 			@Override
 			public void callback(PutDescriptionResult result) {
+			}
+		});
+	}
+
+	@Override
+	public void onSaveDigitalObject(AbstractDigitalObjectDetail digitalObject) {
+		dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject), new DispatchCallback<PutDigitalObjectDetailResult>() {
+			@Override
+			public void callback(PutDigitalObjectDetailResult result) {
+				// TODO: vypnout progressbar
 			}
 		});
 	}

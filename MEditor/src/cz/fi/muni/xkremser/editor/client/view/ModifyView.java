@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.client.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,8 @@ import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
@@ -84,6 +87,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		void onAddDigitalObject(final TileGrid tileGrid, final Menu menu);
 
 		void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu);
+
+		void onSaveDigitalObject(final AbstractDigitalObjectDetail digitalObject);
 
 		void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
@@ -295,10 +300,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					Timer timer = new Timer() {
 						@Override
 						public void run() {
-							ModsTab t = new ModsTab(1, true, mods.getMods().get(0));
+							ModsTab t = new ModsTab(1, false);
+							VLayout modsLayout = t.getModsLayout(mods.getMods().get(0), false, null, 0);
 							modsTab.put(topTabSet, t);
 							TabSet ts = event.getTab().getTabSet();
-							ts.setTabPane(event.getTab().getID(), t.getPane());
+							ts.setTabPane(event.getTab().getID(), modsLayout);
 							t.setAttribute(TAB_INITIALIZED, true);
 							mw.hide();
 						}
@@ -428,8 +434,12 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 				if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
 					ModsTab modsT_ = (ModsTab) modsT;
-					SC.say(modsT_.getMods().toString());
-					System.out.println(modsT_.getMods());
+					// SC.say(modsT_.getMods().toString());
+					AbstractDigitalObjectDetail page = new PageDetail(null);
+					ModsCollectionClient collection = new ModsCollectionClient();
+					collection.setMods(Arrays.asList(modsT_.getMods()));
+					page.setMods(collection);
+					getUiHandlers().onSaveDigitalObject(page);
 				} else {
 					SC.say(streams.getMods().toString());
 					System.out.println(streams);

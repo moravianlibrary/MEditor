@@ -13,6 +13,7 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
@@ -22,13 +23,16 @@ import com.smartgwt.client.widgets.tab.TabSet;
 
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ClassificationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.NoteHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PhysicalDescriptionHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.RelatedItemHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.SubjectHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TableOfContentsHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
@@ -41,6 +45,7 @@ import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.RelatedItemTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
@@ -51,14 +56,17 @@ import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 /**
  * The Class ModsTab.
  */
-public class ModsTab extends Tab {
+public class ModsTab extends Tab implements RelatedItemHolder {
 	// TODO: dat do konstanty, nebo resource bundlu
 	/** The Constant MAX_DEEP. */
-	public static final Tab MAX_DEEP = new Tab("Related Item", "pieces/16/piece_blue.png") {
-		{
-			setPane(new Label("Maximum level of recursion of element Related Item has been reached."));
-		}
-	};
+	public static final Tab MAX_DEEP(final String id) {
+		return new Tab("Related Item", "pieces/16/piece_blue.png") {
+			{
+				setID(id);
+				setPane(new Label("Maximum level of recursion of element Related Item has been reached."));
+			}
+		};
+	}
 
 	/** The deep. */
 	private final int deep;
@@ -74,17 +82,16 @@ public class ModsTab extends Tab {
 	private final AudienceHolder audienceHolder;
 	private final List<NoteHolder> noteHolders;
 	private final List<SubjectHolder> subjectHolders;
-
-	// private final List<ClassificationtHolder> classificationHolders;
+	private final ClassificationHolder classificationHolder;
+	private final List<RelatedItemHolder> relatedItemHolders;
+	private final ListOfListOfSimpleValuesHolder relatedItemAttributeHolder;
 
 	/**
 	 * The Class GetRelatedItem.
 	 */
 	private class GetRelatedItem extends GetLayoutOperation {
-		private final ModsTypeClient modsTypeClient;
 
-		public GetRelatedItem(ModsTypeClient modsTypeClient) {
-			this.modsTypeClient = modsTypeClient;
+		public GetRelatedItem() {
 		}
 
 		/*
@@ -96,7 +103,15 @@ public class ModsTab extends Tab {
 		 */
 		@Override
 		public VLayout execute() {
-			return getModsLayout(modsTypeClient, true);
+			RelatedItemTypeClient modsTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				modsTypeClient = (RelatedItemTypeClient) getValues().get(counter);
+			}
+
+			ModsTab modsTab = new ModsTab(deep - 1, false);
+			((List<ModsTab>) getHolders()).add(modsTab);
+			increaseCounter();
+			return modsTab.getModsLayout(null, true, modsTypeClient, getCounter());
 		}
 	}
 
@@ -109,7 +124,7 @@ public class ModsTab extends Tab {
 	 *          the top lvl
 	 * @param modsTypeClient
 	 */
-	public ModsTab(int deep, boolean topLvl, ModsTypeClient modsTypeClient) {
+	public ModsTab(int deep, boolean topLvl) {
 		super(topLvl ? "MODS" : "Related Item", topLvl ? "pieces/16/pawn_blue.png" : "pieces/16/piece_blue.png");
 		titleInfoHolders = new ArrayList<TitleInfoHolder>();
 		nameHolders = new ArrayList<NameHolder>();
@@ -124,27 +139,11 @@ public class ModsTab extends Tab {
 				ModsConstants.SCRIPT);
 		noteHolders = new ArrayList<NoteHolder>();
 		subjectHolders = new ArrayList<SubjectHolder>();
-
-		// classificationHolders = new ArrayList<ClassificationtHolder>();
-
+		classificationHolder = new ClassificationHolder("classification", ModsConstants.AUTHORITY, ModsConstants.EDITION, ModsConstants.DISPLAY_LABEL,
+				ModsConstants.LANG, ModsConstants.XML_LANG, ModsConstants.TRANSLITERATION, ModsConstants.SCRIPT);
+		relatedItemHolders = new ArrayList<RelatedItemHolder>();
+		relatedItemAttributeHolder = new ListOfListOfSimpleValuesHolder();
 		this.deep = deep;
-
-		final TabSet topTabSet = new TabSet();
-		topTabSet.setTabBarPosition(Side.TOP);
-		topTabSet.setWidth100();
-		topTabSet.setOverflow(Overflow.AUTO);
-
-		if (!topLvl) {
-			final SectionStack sectionStack = new SectionStack();
-			sectionStack.setLeaveScrollbarGap(true);
-			sectionStack.setVisibilityMode(VisibilityMode.MUTEX);
-			sectionStack.setWidth100();
-			sectionStack.setOverflow(Overflow.AUTO);
-			sectionStack.addSection(TabUtils.getSomeStack(true, "Related Item", new GetRelatedItem(modsTypeClient)));
-			setPane(sectionStack);
-		} else {
-			setPane(getModsLayout(modsTypeClient, false));
-		}
 	}
 
 	/**
@@ -174,66 +173,82 @@ public class ModsTab extends Tab {
 	 * 
 	 * @return the mods tab set
 	 */
-	private VLayout getModsLayout(ModsTypeClient modsTypeClient, boolean attributesPresent) {
-		final VLayout layout = new VLayout();
+	public VLayout getModsLayout(ModsTypeClient modsTypeClient, boolean attributePresent, RelatedItemTypeClient relatedItem, int counter) {
+		VLayout layout = new VLayout();
 
-		if (attributesPresent) {
-			Attribute[] attributes = new Attribute[] { new Attribute(SelectItem.class, "type", "Type", new HashMap<String, String>() {
-				{
-					put("", "This attribute will be omitted.");
-					put("preceding", "Information concerning a predecessor to the resource (Equivalent to MARC 21 field 780).");
-					put("succeeding", "Information concerning a successor to the resource (Equivalent to MARC 21 field 785).");
-					put("original", "Information concerning an original form of the resource (Equivalent to MARC 21 fields 534, 786).");
-					put("host",
-							"Information concerning a host or parent resource for the resource described; this may be a parent collection (Equivalent to MARC 21 fields 760, 772, 773).");
-					put("constituent",
-							"Information concerning a constituent unit of the resource. This allows for more specific parsed information than may be used in <tableOfContents>. (Equivalent to MARC 21 fields 762, 770, 774; fields 700, 710, 711 with subfield $t).");
-					put("series", "Information concerning the series in which a resource is issued.");
-					put("otherVersion", "Information concerning another version (i.e. change in intellectual content) of the resource (Equivalent to MARC 21 field 775).");
-					put("otherFormat", "Information concerning another format (i.e. change in physical format) of the resource (Equivalent to MARC 21 field 776). ");
-					put("isReferencedBy",
-							"Citations or references to published bibliographic descriptions, reviews, abstracts, or indexes of the content of the resource (Roughly equivalent to MARC 21 field 510, but allows for additional parsing of data).");
-				}
-			}), TabUtils.ATTR_XLINK, TabUtils.getDisplayLabel("Equivalent to MARC 21 fields 76X-78X subfields $i and $3."), TabUtils.ATTR_ID };
-			layout.addMember(TabUtils.getAttributes(false, attributes));
+		ModsTypeClient modsTypeClient_ = modsTypeClient;
+		if (attributePresent) {
+			modsTypeClient_ = relatedItem == null ? null : relatedItem.getMods();
+			Attribute[] attributes = new Attribute[] {
+					new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", new HashMap<String, String>() {
+						{
+							put("", "This attribute will be omitted.");
+							put("preceding", "Information concerning a predecessor to the resource (Equivalent to MARC 21 field 780).");
+							put("succeeding", "Information concerning a successor to the resource (Equivalent to MARC 21 field 785).");
+							put("original", "Information concerning an original form of the resource (Equivalent to MARC 21 fields 534, 786).");
+							put("host",
+									"Information concerning a host or parent resource for the resource described; this may be a parent collection (Equivalent to MARC 21 fields 760, 772, 773).");
+							put("constituent",
+									"Information concerning a constituent unit of the resource. This allows for more specific parsed information than may be used in <tableOfContents>. (Equivalent to MARC 21 fields 762, 770, 774; fields 700, 710, 711 with subfield $t).");
+							put("series", "Information concerning the series in which a resource is issued.");
+							put("otherVersion",
+									"Information concerning another version (i.e. change in intellectual content) of the resource (Equivalent to MARC 21 field 775).");
+							put("otherFormat", "Information concerning another format (i.e. change in physical format) of the resource (Equivalent to MARC 21 field 776). ");
+							put("isReferencedBy",
+									"Citations or references to published bibliographic descriptions, reviews, abstracts, or indexes of the content of the resource (Roughly equivalent to MARC 21 field 510, but allows for additional parsing of data).");
+						}
+					}, relatedItem == null ? "" : relatedItem.getType()), TabUtils.ATTR_XLINK(relatedItem == null ? "" : relatedItem.getXlink()),
+					TabUtils.getDisplayLabel("Equivalent to MARC 21 fields 76X-78X subfields $i and $3.", (relatedItem == null ? "" : relatedItem.getDisplayLabel())),
+					TabUtils.ATTR_ID(relatedItem == null ? "" : relatedItem.getId()) };
+			DynamicForm form = TabUtils.getAttributes(true, attributes);
+			layout.addMember(form);
+			relatedItemAttributeHolder.setAttributeForm(form);
 		}
 
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
-		// topTabSet.setHeight100();
-		// if (modsTypeClient == null)
-		// return layout; // TODO: handle
+		List<RelatedItemTypeClient> relatedItems = modsTypeClient_ == null ? null : modsTypeClient_.getRelatedItem();
+
+		Tab rel = null;
+		if (deep > 0) {
+			GetRelatedItem getRelatedItem = new GetRelatedItem();
+			getRelatedItem.setValues(relatedItems);
+			getRelatedItem.setHolders(relatedItemHolders);
+			rel = getTab(TabUtils.getSomeStack(true, "Related Item", getRelatedItem), "Related Item");
+		} else {
+			rel = MAX_DEEP(deep + ":" + counter);
+		}
+
+		// relatedItems.g
 		Tab[] tabs = new Tab[] {
-				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getTitleInfo(), titleInfoHolders), "Title Info"),
-				getTab(TabUtils.getNameStack(true, modsTypeClient == null ? null : modsTypeClient.getName(), nameHolders), "Name"),
-				getTab(TabUtils.getTypeOfResourceStack(true, modsTypeClient == null ? null : modsTypeClient.getTypeOfResource(), typeOfResourceHolders), "Type"),
-				getTab(TabUtils.getGenreStack(true, modsTypeClient == null ? null : modsTypeClient.getGenre(), genreHolders), "Genre"),
-				getTab(TabUtils.getOriginInfoStack(true, modsTypeClient == null ? null : modsTypeClient.getOriginInfo(), originInfoHolders), "Origin"),
-				getTab(TabUtils.getLanguageStack(true, modsTypeClient == null ? null : modsTypeClient.getLanguage(), languageHolders), "Language"),
-				getTab(TabUtils.getPhysicalDescriptionStack(true, modsTypeClient == null ? null : modsTypeClient.getPhysicalDescription(), physicalDescriptionHolders),
+				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTitleInfo(), titleInfoHolders), "Title Info"),
+				getTab(TabUtils.getNameStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getName(), nameHolders), "Name"),
+				getTab(TabUtils.getTypeOfResourceStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTypeOfResource(), typeOfResourceHolders), "Type"),
+				getTab(TabUtils.getGenreStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getGenre(), genreHolders), "Genre"),
+				getTab(TabUtils.getOriginInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getOriginInfo(), originInfoHolders), "Origin"),
+				getTab(TabUtils.getLanguageStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLanguage(), languageHolders), "Language"),
+				getTab(
+						TabUtils.getPhysicalDescriptionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getPhysicalDescription(), physicalDescriptionHolders),
 						"Physical desc."),
-				getTab(TabUtils.getAbstractStack(true, modsTypeClient == null ? null : modsTypeClient.getAbstrac(), abstractHolders), "Abstract"),
-				getTab(TabUtils.getTableOfContentsStack(true, modsTypeClient == null ? null : modsTypeClient.getTableOfContents(), tableOfContentsHolders),
+				getTab(TabUtils.getAbstractStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getAbstrac(), abstractHolders), "Abstract"),
+				getTab(TabUtils.getTableOfContentsStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTableOfContents(), tableOfContentsHolders),
 						"Table of Con."),
-				getTab(TabUtils.getTargetAudienceStack(true, modsTypeClient == null ? null : modsTypeClient.getTargetAudience(), audienceHolder), "Audience"),
-				getTab(TabUtils.getNoteStack(true, modsTypeClient == null ? null : modsTypeClient.getNote(), noteHolders), "Note"),
-				getTab(TabUtils.getSubjectStack(true, modsTypeClient == null ? null : modsTypeClient.getSubject(), subjectHolders), "Subject"),
-		// getTab(TabUtils.getClassificationStack(true), "Classification"), deep > 0
-		// ? new ModsTab(deep - 1, false, null) : MAX_DEEP,
-		// getTab(TabUtils.getIdentifierStack(true), "Identifier"),
-		// getTab(TabUtils.getLocationStack(true), "Location"),
-		// getTab(TabUtils.getAccessConditionStack(true), "Access Condition"),
-		// getTab(TabUtils.getPartStack(true), "Part"),
-		// getTab(TabUtils.getExtensionStack(true), "Extension"),
-		// getTab(TabUtils.getRecordInfoStack(true), "Record Info")
-		};
+				getTab(TabUtils.getTargetAudienceStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTargetAudience(), audienceHolder), "Audience"),
+				getTab(TabUtils.getNoteStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getNote(), noteHolders), "Note"),
+				getTab(TabUtils.getSubjectStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getSubject(), subjectHolders), "Subject"),
+				getTab(TabUtils.getClassificationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getClassification(), classificationHolder),
+						"Classification"), rel, getTab(TabUtils.getIdentifierStack(true), "Identifier"), getTab(TabUtils.getLocationStack(true), "Location"),
+				getTab(TabUtils.getAccessConditionStack(true), "Access Condition"), getTab(TabUtils.getPartStack(true), "Part"),
+				getTab(TabUtils.getExtensionStack(true), "Extension"), getTab(TabUtils.getRecordInfoStack(true), "Record Info") };
 		topTabSet.setTabs(tabs);
 		layout.addMember(topTabSet);
 		return layout;
 	}
 
+	@Override
 	public ModsTypeClient getMods() {
+
 		// title info
 		ModsTypeClient modsTypeClient = new ModsTypeClient();
 		List<TitleInfoTypeClient> titleInfo = new ArrayList<TitleInfoTypeClient>(titleInfoHolders.size());
@@ -298,6 +313,7 @@ public class ModsTab extends Tab {
 		}
 		modsTypeClient.setTableOfContents(toc);
 
+		// audience
 		modsTypeClient.setTargetAudience(audienceHolder.getAudience());
 
 		// note
@@ -314,7 +330,32 @@ public class ModsTab extends Tab {
 		}
 		modsTypeClient.setSubject(subject);
 
+		// classification
+		modsTypeClient.setClassification(classificationHolder.getClassification());
+
+		// related item
+		List<RelatedItemTypeClient> items = new ArrayList<RelatedItemTypeClient>(relatedItemHolders.size());
+		for (RelatedItemHolder item : relatedItemHolders) {
+			RelatedItemTypeClient relatedItemTypeClient = new RelatedItemTypeClient();
+			if (item != null) {
+				if (item.getRelatedItemAttributeHolder().getAttributeForm() != null) {
+					relatedItemTypeClient.setDisplayLabel(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
+					relatedItemTypeClient.setId(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.ID));
+					relatedItemTypeClient.setType(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.TYPE));
+					relatedItemTypeClient.setXlink(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.XLINK));
+				}
+				relatedItemTypeClient.setMods(item.getMods());
+			}
+			items.add(relatedItemTypeClient);
+		}
+		modsTypeClient.setRelatedItem(items);
+
 		return modsTypeClient;
+	}
+
+	@Override
+	public ListOfListOfSimpleValuesHolder getRelatedItemAttributeHolder() {
+		return relatedItemAttributeHolder;
 	}
 
 }

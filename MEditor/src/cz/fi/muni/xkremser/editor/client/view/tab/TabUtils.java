@@ -35,6 +35,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ClassificationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.DateHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
@@ -51,6 +52,7 @@ import cz.fi.muni.xkremser.editor.client.metadata.TableOfContentsHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ClassificationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
@@ -503,6 +505,39 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
+			// Map<String, String> values = null;
+			// if (getValues() != null && getValues().size() > counter &&
+			// getValues().get(counter) != null) {
+			// values = (HashMap<String, String>) getValues().get(counter);
+			// }
+			// ListOfSimpleValuesHolder holder = null;
+			// switch (type) {
+			// case ABSTRACT:
+			// holder = new AbstractHolder();
+			// break;
+			// case TOC:
+			// holder = new TableOfContentsHolder();
+			// break;
+			// // case AUDIENCE:
+			// // holder = new AudienceHolder();
+			// // break;
+			// case NOTE:
+			// holder = new NoteHolder();
+			// break;
+			// default:
+			// throw new IllegalStateException("unknown holder type");
+			// }
+			//
+			// ((List<ListOfSimpleValuesHolder>) getHolders()).add(holder);
+			// increaseCounter();
+			// if (values != null) {
+			// head.setValue(values.get(head.getName()));
+			// for (Attribute att : attributes) {
+			// att.setValue(values.get(att.getName()));
+			// }
+			// }
+			// return getGeneralLayout(head, attributes, holder);
+
 			Map<String, String> values = null;
 			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
 				values = (HashMap<String, String>) getValues().get(counter);
@@ -521,11 +556,12 @@ public final class TabUtils {
 				case NOTE:
 					holder = new NoteHolder();
 				break;
-				default:
-					throw new IllegalStateException("unknown holder type");
+				// default:
+				// throw new IllegalStateException("unknown holder type");
 			}
 
-			((List<ListOfSimpleValuesHolder>) getHolders()).add(holder);
+			if (getHolders() != null)
+				((List<ListOfSimpleValuesHolder>) getHolders()).add(holder);
 			increaseCounter();
 			if (values != null) {
 				head.setValue(values.get(head.getName()));
@@ -534,6 +570,7 @@ public final class TabUtils {
 				}
 			}
 			return getGeneralLayout(head, attributes, holder);
+
 		}
 	}
 
@@ -1556,16 +1593,35 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the classification stack
 	 */
-	public static SectionStackSection getClassificationStack(boolean expanded) {
+	public static SectionStackSection getClassificationStack(boolean expanded, List<ClassificationTypeClient> values, ClassificationHolder holder) {
 		Attribute[] attributes = new Attribute[] {
-				ATTR_AUTHORITY,
+				ATTR_AUTHORITY(""),
 				new Attribute(
 						TextItem.class,
-						"edition",
+						ModsConstants.EDITION,
 						"Edition",
 						"This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."),
-				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG, ATTR_XML_LANG, ATTR_TRANSLITERATION, ATTR_SCRIPT };
-		return getStackSectionWithAttributes("Classifications", "Classification", "Equivalent to MARC fields 050-08X, subfields $a and $b.", true, attributes, null);
+				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT("") };
+		List<List<String>> vals = null;
+		if (values != null && values.size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (ClassificationTypeClient classification : values) {
+				if (classification != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(classification.getValue());
+					list.add(classification.getAuthority());
+					list.add(classification.getEdition());
+					list.add(classification.getDisplayLabel());
+					list.add(classification.getLang());
+					list.add(classification.getXmlLang());
+					list.add(classification.getTransliteration());
+					list.add(classification.getScript());
+					vals.add(list);
+				}
+			}
+		}
+		return getStackSectionWithAttributes("Classifications", "Classification", "Equivalent to MARC fields 050-08X, subfields $a and $b.", true, attributes,
+				vals, holder, false);
 	}
 
 	/**
@@ -1699,19 +1755,18 @@ public final class TabUtils {
 						"This attribute is intended to be used when additional text associated with the title is needed for display. It is equivalent to MARC 21 field 246 subfield $i.",
 						values == null ? "" : values.getDisplayLabel()), ATTR_XML_LANG(values == null ? "" : values.getXmlLang()),
 				ATTR_AUTHORITY(values == null ? "" : values.getAuthority()), ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()),
-				ATTR_SCRIPT(values == null ? "" : values.getScript()), ATTR_ID, ATTR_XLINK(values == null ? "" : values.getXlink()) };
+				ATTR_SCRIPT(values == null ? "" : values.getScript()), ATTR_ID(values == null ? "" : values.getId()),
+				ATTR_XLINK(values == null ? "" : values.getXlink()) };
 		DynamicForm form = getAttributes(true, attributes);
 		layout.addMember(form);
 		holder.setAttributeForm(form);
 		layout.setLeaveScrollbarGap(true);
 		final SectionStack sectionStack = new SectionStack();
-		// sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
 		sectionStack.setOverflow(Overflow.VISIBLE);
 		layout.setExtraSpace(40);
-		// sectionStack.
 
 		sectionStack.addSection(getStackSection("Titles", "Title", "title without the <titleInfo> type attribute is roughly equivalent to MARC 21 field 245", true,
 				values == null ? null : values.getTitle(), holder.getTitles()));
@@ -2409,11 +2464,11 @@ public final class TabUtils {
 				values == null ? null : values.getTemporal(), holder.getTemporals())));
 		GetTitleInfoLayout getTitleInfoLayout = new GetTitleInfoLayout();
 		getTitleInfoLayout.setHolders(holder.getTitleInfo());
-		getTitleInfoLayout.setValues(values.getTitleInfo());
+		getTitleInfoLayout.setValues(values == null ? null : values.getTitleInfo());
 		sectionStack.addSection(getSomeStack(false, "Title Info", getTitleInfoLayout));
 		GetNameLayout getNameLayout = new GetNameLayout();
 		getNameLayout.setHolders(holder.getNames());
-		getNameLayout.setValues(values.getName());
+		getNameLayout.setValues(values == null ? null : values.getName());
 		sectionStack.addSection(getSomeStack(false, "Name", getNameLayout));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false,
 				values == null ? null : values.getGenre(), holder.getGenres()));

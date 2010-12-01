@@ -35,5 +35,6 @@ public class ModsConstants {
 	public static final String ABSTRACT = "abstract";
 	public static final String TOC = "table_of_contents";
 	public static final String GEO_CODE = "geographic_code";
+	public static final String EDITION = "edition";
 
 }
