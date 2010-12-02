@@ -1005,12 +1005,14 @@ public final class BiblioModsUtils {
 		accessConditionTypeClient.setLang(accessConditionType.getLang());
 		accessConditionTypeClient.setScript(accessConditionType.getScript());
 		accessConditionTypeClient.setTransliteration(accessConditionType.getTransliteration());
-		if (accessConditionType.getContent() == null && accessConditionType.getContent().size() > 0) {
-			accessConditionTypeClient.setContent(new ArrayList<String>());
-		}
+		StringBuilder sb = new StringBuilder();
 		for (Object content : accessConditionType.getContent()) {
-			accessConditionTypeClient.getContent().add((String) content);
+			sb.append((String) content).append('\n');
 		}
+		if (!"".equals(sb.toString())) {
+			accessConditionTypeClient.setContent(sb.toString());
+		}
+
 		return accessConditionTypeClient;
 	}
 
@@ -1165,11 +1167,12 @@ public final class BiblioModsUtils {
 		if (extensionType == null)
 			return null;
 		ExtensionTypeClient extensionTypeClient = new ExtensionTypeClient();
-		if (extensionType.getContent() == null && extensionType.getContent().size() > 0) {
-			extensionTypeClient.setContent(new ArrayList<String>());
-		}
+		StringBuilder sb = new StringBuilder();
 		for (Object content : extensionType.getContent()) {
-			extensionTypeClient.getContent().add((String) content);
+			sb.append((String) content).append('\n');
+		}
+		if (!"".equals(sb.toString())) {
+			extensionTypeClient.setContent(sb.toString());
 		}
 		return extensionTypeClient;
 	}

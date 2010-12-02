@@ -33,8 +33,14 @@ public class LocationHolder extends MetadataHolder {
 		locationTypeClient.setShelfLocator(shelfLocators.getValues());
 		if (holdingExternals.getValues() != null && holdingExternals.getValues().size() > 0) {
 			ExtensionTypeClient ex = new ExtensionTypeClient();
-			ex.setContent(holdingExternals.getValues());
-			locationTypeClient.setHoldingExternal(ex);
+			StringBuilder sb = new StringBuilder();
+			for (String val : holdingExternals.getValues()) {
+				sb.append(val).append('\n');
+			}
+			if (!"".equals(sb.toString())) {
+				ex.setContent(sb.toString());
+				locationTypeClient.setHoldingExternal(ex);
+			}
 		}
 
 		// physical locations

@@ -22,8 +22,10 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.AccessConditionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ClassificationHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ExtensionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.IdentifierHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
@@ -33,13 +35,17 @@ import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.NoteHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.PartHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PhysicalDescriptionHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.RecordInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.RelatedItemHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.SubjectHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TableOfContentsHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.AccessConditionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ExtensionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LocationTypeClient;
@@ -47,7 +53,9 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RelatedItemTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
@@ -90,6 +98,10 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 	private final ListOfListOfSimpleValuesHolder relatedItemAttributeHolder;
 	private final IdentifierHolder identifierHolder;
 	private final List<LocationHolder> locationHolders;
+	private final List<AccessConditionHolder> accessConditionHolders;
+	private final List<PartHolder> partHolders;
+	private final List<ExtensionHolder> extensionHolders;
+	private final List<RecordInfoHolder> recordInfoHolders;
 
 	/**
 	 * The Class GetRelatedItem.
@@ -125,7 +137,7 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 	 * 
 	 * @param deep
 	 *          the deep
-	 * @param topLvl
+	 * @param topLvlaccessConditionHolder
 	 *          the top lvl
 	 * @param modsTypeClient
 	 */
@@ -148,6 +160,10 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 		relatedItemAttributeHolder = new ListOfListOfSimpleValuesHolder();
 		identifierHolder = new IdentifierHolder();
 		locationHolders = new ArrayList<LocationHolder>();
+		accessConditionHolders = new ArrayList<AccessConditionHolder>();
+		partHolders = new ArrayList<PartHolder>();
+		extensionHolders = new ArrayList<ExtensionHolder>();
+		recordInfoHolders = new ArrayList<RecordInfoHolder>();
 		this.deep = deep;
 	}
 
@@ -243,11 +259,14 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 				getTab(TabUtils.getNoteStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getNote(), noteHolders), "Note"),
 				getTab(TabUtils.getSubjectStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getSubject(), subjectHolders), "Subject"),
 				getTab(TabUtils.getClassificationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getClassification(), classificationHolder),
-						"Classification"), rel,
+						"Classification"),
+				rel,
 				getTab(TabUtils.getIdentifierStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getIdentifier(), identifierHolder), "Identifier"),
 				getTab(TabUtils.getLocationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLocation(), locationHolders), "Location"),
-				getTab(TabUtils.getAccessConditionStack(true), "Access Condition"), getTab(TabUtils.getPartStack(true), "Part"),
-				getTab(TabUtils.getExtensionStack(true), "Extension"), getTab(TabUtils.getRecordInfoStack(true), "Record Info") };
+				getTab(TabUtils.getAccessConditionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getAccessCondition(), accessConditionHolders),
+						"Access Condition"), getTab(TabUtils.getPartStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getPart(), partHolders), "Part"),
+				getTab(TabUtils.getExtensionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getExtension(), extensionHolders), "Extension"),
+				getTab(TabUtils.getRecordInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getRecordInfo(), recordInfoHolders), "Record Info") };
 		topTabSet.setTabs(tabs);
 		layout.addMember(topTabSet);
 		return layout;
@@ -366,6 +385,34 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 			location.add(holder.getLocation());
 		}
 		modsTypeClient.setLocation(location);
+
+		// access condition
+		List<AccessConditionTypeClient> acc = new ArrayList<AccessConditionTypeClient>(accessConditionHolders.size());
+		for (AccessConditionHolder holder : accessConditionHolders) {
+			acc.add(holder.getAccessCondition());
+		}
+		modsTypeClient.setAccessCondition(acc);
+
+		// part
+		List<PartTypeClient> part = new ArrayList<PartTypeClient>(partHolders.size());
+		for (PartHolder holder : partHolders) {
+			part.add(holder.getPart());
+		}
+		modsTypeClient.setPart(part);
+
+		// extension
+		List<ExtensionTypeClient> extension = new ArrayList<ExtensionTypeClient>(extensionHolders.size());
+		for (ExtensionHolder holder : extensionHolders) {
+			extension.add(holder.getExtension());
+		}
+		modsTypeClient.setExtension(extension);
+
+		// record info
+		List<RecordInfoTypeClient> record = new ArrayList<RecordInfoTypeClient>(recordInfoHolders.size());
+		for (RecordInfoHolder holder : recordInfoHolders) {
+			record.add(holder.getRecordInfo());
+		}
+		modsTypeClient.setRecordInfo(record);
 
 		return modsTypeClient;
 	}

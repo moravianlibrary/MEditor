@@ -7,20 +7,27 @@
 
 package cz.fi.muni.xkremser.editor.client.mods;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ExtensionTypeClient implements IsSerializable {
 
-	protected List<String> content;
+	protected String content;
+	protected String nameSpace;
 
-	public List<String> getContent() {
+	public String getContent() {
 		return this.content;
 	}
 
-	public void setContent(List<String> content) {
+	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getNameSpace() {
+		return nameSpace;
+	}
+
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
 	}
 
 }

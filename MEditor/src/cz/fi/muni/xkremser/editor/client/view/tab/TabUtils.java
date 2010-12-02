@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,14 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.AccessConditionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.ClassificationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.CopyInformationHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.DateHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.DetailHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ExtensionHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.ExtentHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.GenreHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.IdentifierHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.LanguageHolder;
@@ -48,17 +53,24 @@ import cz.fi.muni.xkremser.editor.client.metadata.ModsConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.NameHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.NoteHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.OriginInfoHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.PartHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PhysicalDescriptionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.PlaceHolder;
+import cz.fi.muni.xkremser.editor.client.metadata.RecordInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.SubjectHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TableOfContentsHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TitleInfoHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.TypeOfResourceHolder;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.AccessConditionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.BaseDateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ClassificationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.CopyInformationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.EnumerationAndChronologyTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ExtensionTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.IdentifierTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
@@ -68,12 +80,17 @@ import cz.fi.muni.xkremser.editor.client.mods.NamePartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalLocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient.RecordIdentifierClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
+import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
+import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusLanguageClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.GeographicCodeClient;
@@ -152,87 +169,44 @@ public final class TabUtils {
 				value);
 	}
 
-	/** The Constant ATTR_AUTHORITY. */
-	private static final Attribute ATTR_AUTHORITY = new Attribute(
-			TextItem.class,
-			ModsConstants.AUTHORITY,
-			"Authority",
-			"The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file.");
-
 	/** The Constant ATTR_LANG. */
 	public static final Attribute ATTR_LANG(String value) {
 		return new Attribute(TextItem.class, ModsConstants.LANG, "Lang",
 				"This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
 	}
 
-	public static final Attribute ATTR_LANG = new Attribute(TextItem.class, ModsConstants.LANG, "Lang",
-			"This attribute is used to specify the language used within individual elements, using the codes from ISO 639-2/b.");
-
 	public static final Attribute ATTR_XML_LANG(String value) {
 		return new Attribute(TextItem.class, ModsConstants.XML_LANG, "xml:lang",
 				"In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.", value);
 	}
-
-	/** The Constant ATTR_XML_LANG. */
-	public static final Attribute ATTR_XML_LANG = new Attribute(TextItem.class, ModsConstants.XML_LANG, "xml:lang",
-			"In the XML standard, this attribute is used to specify the language used within individual elements, using specifications in RFC 3066.");
 
 	public static final Attribute ATTR_TRANSLITERATION(String value) {
 		return new Attribute(TextItem.class, ModsConstants.TRANSLITERATION, "Transliteration",
 				"It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ", value);
 	}
 
-	/** The Constant ATTR_TRANSLITERATION. */
-	public static final Attribute ATTR_TRANSLITERATION = new Attribute(TextItem.class, "transliteration", "Transliteration",
-			"It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ");
-
 	public static final Attribute ATTR_SCRIPT(String value) {
 		return new Attribute(TextItem.class, ModsConstants.SCRIPT, "Script",
 				"This attribute specifies the script used within individual elements, using codes from ISO 15924.", value);
 	}
-
-	/** The Constant ATTR_SCRIPT. */
-	public static final Attribute ATTR_SCRIPT = new Attribute(TextItem.class, ModsConstants.SCRIPT, "Script",
-			"This attribute specifies the script used within individual elements, using codes from ISO 15924.");
 
 	public static final Attribute ATTR_ID(String value) {
 		return new Attribute(TextItem.class, ModsConstants.ID, "ID",
 				"This attribute is used to link internally and to reference an element from outside the instance.", value);
 	}
 
-	/** The Constant ATTR_ID. */
-	public static final Attribute ATTR_ID = new Attribute(TextItem.class, ModsConstants.ID, "ID",
-			"This attribute is used to link internally and to reference an element from outside the instance.");
-
 	public static final Attribute ATTR_XLINK(String value) {
 		return new Attribute(TextItem.class, ModsConstants.XLINK, "xlink",
 				"This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.", value);
 	}
 
-	/** The Constant ATTR_XLINK. */
-	public static final Attribute ATTR_XLINK = new Attribute(TextItem.class, ModsConstants.XLINK, "xlink",
-			"This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.");
-
-	/** The Constant ATTR_ENCODING. */
-	public static final Attribute ATTR_ENCODING = new Attribute(SelectItem.class, "encoding", "Encoding", ENCODING_TOOLTIPS);
-
 	public static final Attribute ATTR_ENCODING(String value) {
 		return new Attribute(SelectItem.class, ModsConstants.ENCODING, "Encoding", ENCODING_TOOLTIPS, value);
 	}
 
-	/** The Constant ATTR_POINT. */
-	public static final Attribute ATTR_POINT = new Attribute(SelectItem.class, "point", "Point", POINT_TOOLTIPS);
-
 	public static final Attribute ATTR_POINT(String value) {
 		return new Attribute(SelectItem.class, ModsConstants.POINT, "Point", POINT_TOOLTIPS, value);
 	}
-
-	/** The Constant ATTR_KEY_DATE. */
-	public static final Attribute ATTR_KEY_DATE = new Attribute(
-			CheckboxItem.class,
-			ModsConstants.KEY_DATE,
-			"Key Date",
-			"This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.");
 
 	public static final Attribute ATTR_KEY_DATE(String value) {
 		return new Attribute(
@@ -243,18 +217,15 @@ public final class TabUtils {
 				value);
 	}
 
-	/** The Constant ATTR_QUALIFIER. */
-	public static final Attribute ATTR_QUALIFIER = new Attribute(SelectItem.class, "qualifier", "Qualifier", QUALIFIER_TOOLTIPS);
-
 	public static final Attribute ATTR_QUALIFIER(String value) {
 		return new Attribute(SelectItem.class, ModsConstants.QUALIFIER, "Qualifier", QUALIFIER_TOOLTIPS, value);
 	}
 
 	/** The Constant ATTR_TYPE_TEXT_CODE. */
-	public static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, "type", "Type", TYPE_TEXT_CODE_TOOLTIPS);
+	public static final Attribute ATTR_TYPE_TEXT_CODE = new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", TYPE_TEXT_CODE_TOOLTIPS);
 
 	/** The Constant ATTR_LANG_AUTHORITY. */
-	public static final Attribute ATTR_LANG_AUTHORITY = new Attribute(SelectItem.class, "authority", "Authority", LANG_AUTHORITY_TOOLTIPS);
+	public static final Attribute ATTR_LANG_AUTHORITY = new Attribute(SelectItem.class, ModsConstants.AUTHORITY, "Authority", LANG_AUTHORITY_TOOLTIPS);
 
 	/**
 	 * Gets the display label.
@@ -265,10 +236,6 @@ public final class TabUtils {
 	 */
 	public static Attribute getDisplayLabel(final String tooltip, final String value) {
 		return new Attribute(TextItem.class, ModsConstants.DISPLAY_LABEL, "Display Label", tooltip, value);
-	}
-
-	public static Attribute getDisplayLabel(final String tooltip) {
-		return new Attribute(TextItem.class, ModsConstants.DISPLAY_LABEL, "Display Label", tooltip);
 	}
 
 	/**
@@ -479,11 +446,13 @@ public final class TabUtils {
 
 		public static final int TOC = 1;
 
-		private static final int AUDIENCE = 2;
+		private static final int NOTE = 2;
 
-		private static final int NOTE = 3;
+		private static final int SIMPLE_NOTE = 3;
 
-		private static final int SIMPLE_NOTE = 4;
+		private static final int ACCESS_CONDITION = 4;
+
+		private static final int EXTENSION = 5;
 
 		/** The head. */
 		private final Attribute head;
@@ -517,39 +486,6 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			// Map<String, String> values = null;
-			// if (getValues() != null && getValues().size() > counter &&
-			// getValues().get(counter) != null) {
-			// values = (HashMap<String, String>) getValues().get(counter);
-			// }
-			// ListOfSimpleValuesHolder holder = null;
-			// switch (type) {
-			// case ABSTRACT:
-			// holder = new AbstractHolder();
-			// break;
-			// case TOC:
-			// holder = new TableOfContentsHolder();
-			// break;
-			// // case AUDIENCE:
-			// // holder = new AudienceHolder();
-			// // break;
-			// case NOTE:
-			// holder = new NoteHolder();
-			// break;
-			// default:
-			// throw new IllegalStateException("unknown holder type");
-			// }
-			//
-			// ((List<ListOfSimpleValuesHolder>) getHolders()).add(holder);
-			// increaseCounter();
-			// if (values != null) {
-			// head.setValue(values.get(head.getName()));
-			// for (Attribute att : attributes) {
-			// att.setValue(values.get(att.getName()));
-			// }
-			// }
-			// return getGeneralLayout(head, attributes, holder);
-
 			Map<String, String> values = null;
 			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
 				values = (HashMap<String, String>) getValues().get(counter);
@@ -562,17 +498,20 @@ public final class TabUtils {
 				case TOC:
 					holder = new TableOfContentsHolder();
 				break;
-				// case AUDIENCE:
-				// holder = new AudienceHolder();
-				// break;
 				case NOTE:
 					holder = new NoteHolder();
 				break;
 				case SIMPLE_NOTE:
 					holder = new ListOfSimpleValuesHolder();
 				break;
-				// default:
-				// throw new IllegalStateException("unknown holder type");
+				case ACCESS_CONDITION:
+					holder = new AccessConditionHolder();
+				break;
+				case EXTENSION:
+					holder = new ExtensionHolder();
+				break;
+				default:
+					throw new IllegalStateException("unknown holder type");
 			}
 
 			if (getHolders() != null)
@@ -710,7 +649,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getPartLayout();
+			PartTypeClient value = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				value = (PartTypeClient) getValues().get(counter);
+			}
+			PartHolder holder = new PartHolder();
+			((List<PartHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getPartLayout(value, holder);
 		}
 	}
 
@@ -728,7 +674,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getRecordInfoLayout();
+			RecordInfoTypeClient value = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				value = (RecordInfoTypeClient) getValues().get(counter);
+			}
+			RecordInfoHolder holder = new RecordInfoHolder();
+			((List<RecordInfoHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getRecordInfoLayout(value, holder);
 		}
 	}
 
@@ -771,7 +724,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getDetailLayout();
+			DetailTypeClient detailTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				detailTypeClient = (DetailTypeClient) getValues().get(counter);
+			}
+			DetailHolder holder = new DetailHolder();
+			((List<DetailHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getDetailLayout(detailTypeClient, holder);
 		}
 	}
 
@@ -789,25 +749,14 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			return getExtentLayout();
-		}
-	}
-
-	/**
-	 * The Class GetLanguageOfCatalogingLayout.
-	 */
-	private static class GetLanguageOfCatalogingLayout extends GetLayoutOperation {
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
-		 * #execute()
-		 */
-		@Override
-		public VLayout execute() {
-			return getLanguageOfCatalogingLayout();
+			ExtentTypeClient extentTypeClient = null;
+			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
+				extentTypeClient = (ExtentTypeClient) getValues().get(counter);
+			}
+			ExtentHolder holder = new ExtentHolder();
+			((List<ExtentHolder>) getHolders()).add(holder);
+			increaseCounter();
+			return getExtentLayout(extentTypeClient, holder);
 		}
 	}
 
@@ -868,7 +817,7 @@ public final class TabUtils {
 		 * @param tooltip
 		 *          the tooltip
 		 */
-		public GetDateLayout(String name, String title, String tooltip, List<DateTypeClient> values, List<DateHolder> holders) {
+		public GetDateLayout(String name, String title, String tooltip, List<? extends BaseDateTypeClient> values, List<DateHolder> holders) {
 			this(name, title, tooltip, null, true, values, holders);
 		}
 
@@ -886,7 +835,8 @@ public final class TabUtils {
 		 * @param keyDate
 		 *          the key date
 		 */
-		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, List<DateTypeClient> values, List<DateHolder> holders) {
+		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, List<? extends BaseDateTypeClient> values,
+				List<DateHolder> holders) {
 			super();
 			this.name = name;
 			this.title = title;
@@ -920,9 +870,9 @@ public final class TabUtils {
 		 */
 		@Override
 		public VLayout execute() {
-			DateTypeClient dateTypeClient = null;
+			BaseDateTypeClient dateTypeClient = null;
 			if (getValues() != null && getValues().size() > counter && getValues().get(counter) != null) {
-				dateTypeClient = (DateTypeClient) getValues().get(counter);
+				dateTypeClient = (BaseDateTypeClient) getValues().get(counter);
 			}
 			DateHolder holder = new DateHolder(name, isOtherDate);
 			((List<DateHolder>) getHolders()).add(holder);
@@ -987,8 +937,8 @@ public final class TabUtils {
 	 *          the expanded
 	 * @return the simple section
 	 */
-	public static SectionStackSection getSimpleSection(final Attribute attribute, final boolean expanded) {
-		return getSimpleSectionWithAttributes(attribute, expanded, null, null);
+	public static SectionStackSection getSimpleSection(final Attribute attribute, final boolean expanded, MetadataHolder holder) {
+		return getSimpleSectionWithAttributes(attribute, expanded, null, holder);
 	}
 
 	/**
@@ -1507,8 +1457,8 @@ public final class TabUtils {
 		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.ABSTRACT, "Abstract",
 				"Roughly equivalent to MARC 21 field 520."), new Attribute[] {
 				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "There is no controlled list of abstract types."),
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the abstract is necessary for display."), ATTR_XLINK(""),
-				ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.ABSTRACT);
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the abstract is necessary for display.", ""),
+				ATTR_XLINK(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.ABSTRACT);
 		getGeneralLayout.setValues(getValues(values, ModsConstants.ABSTRACT));
 		getGeneralLayout.setHolders(holders);
 		return getSomeStack(expanded, "Abstract", getGeneralLayout);
@@ -1525,7 +1475,7 @@ public final class TabUtils {
 		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.TOC, "Table of Contents",
 				"Roughly equivalent to MARC 21 field 505."), new Attribute[] {
 				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "There is no controlled list of abstract types."),
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the table of contents is necessary for display."),
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the table of contents is necessary for display.", ""),
 				ATTR_XLINK(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.TOC);
 		getGeneralLayout.setValues(getValues(values, ModsConstants.TOC));
 		getGeneralLayout.setHolders(holders);
@@ -1572,7 +1522,7 @@ public final class TabUtils {
 		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
 				"Roughly equivalent to MARC 21 fields 5XX."), new Attribute[] {
 				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "There is no controlled list of abstract types."),
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK(""),
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display.", ""), ATTR_XLINK(""),
 				ATTR_ID(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.NOTE);
 
 		List<Map<String, String>> valueList = null;
@@ -1638,7 +1588,7 @@ public final class TabUtils {
 						ModsConstants.EDITION,
 						"Edition",
 						"This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."),
-				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT("") };
+				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3.", ""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT("") };
 		List<List<String>> vals = null;
 		if (values != null && values.size() > 0) {
 			vals = new ArrayList<List<String>>();
@@ -1677,7 +1627,7 @@ public final class TabUtils {
 						ModsConstants.TYPE,
 						"Type",
 						"There is no controlled list of abstract types. (Suggested values: doi, hdl, isbn, ismn, isrc, issn,	issue number,	istc, lccn, loca, matrix number, music plate, music publisher, sici, stock number, upc, uri, videorecording identifier)"),
-				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3."), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT(""),
+				getDisplayLabel("Equivalent to MARC 21 field 050 subfield $3.", ""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT(""),
 				new Attribute(CheckboxItem.class, ModsConstants.INVALID, "Invalid", "If invalid='yes' is not present, the identifier is assumed to be valid.") };
 
 		List<List<String>> vals = null;
@@ -1723,22 +1673,26 @@ public final class TabUtils {
 	 * 
 	 * @param expanded
 	 *          the expanded
+	 * @param holder
+	 * @param values
 	 * @return the access condition stack
 	 */
-	public static SectionStackSection getAccessConditionStack(boolean expanded) {
-		return getSomeStack(
-				expanded,
-				"Access Condition",
-				new GetGeneralLayout(
-						new Attribute(TextAreaItem.class, "access_condition", "Access Condition", "Roughly equivalent to MARC 21 fields 506 and 540."),
-						new Attribute[] {
-								new Attribute(
-										TextItem.class,
-										"type",
-										"Type",
-										"There is no controlled list of abstract types. Suggested values are: restriction on access (equivalent to MARC 21 field 506) and use and reproduction (equivalent to MARC 21 field 540)."),
-								getDisplayLabel("This attribute is intended to be used when additional text associated with the access conditions is necessary for display."),
-								ATTR_XLINK, ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION }, GetGeneralLayout.ABSTRACT));
+	public static SectionStackSection getAccessConditionStack(boolean expanded, List<AccessConditionTypeClient> values, List<AccessConditionHolder> holders) {
+
+		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(
+				new Attribute(TextAreaItem.class, ModsConstants.ACCESS_CONDITION, "Access Condition", "Roughly equivalent to MARC 21 fields 506 and 540."),
+				new Attribute[] {
+						new Attribute(
+								TextItem.class,
+								ModsConstants.TYPE,
+								"Type",
+								"There is no controlled list of abstract types. Suggested values are: restriction on access (equivalent to MARC 21 field 506) and use and reproduction (equivalent to MARC 21 field 540)."),
+						getDisplayLabel("This attribute is intended to be used when additional text associated with the access conditions is necessary for display.", ""),
+						ATTR_XLINK(""), ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, GetGeneralLayout.ACCESS_CONDITION);
+		getGeneralLayout.setValues(values);
+		getGeneralLayout.setHolders(holders);
+
+		return getSomeStack(expanded, "Access Condition", getGeneralLayout);
 	}
 
 	/**
@@ -1746,19 +1700,21 @@ public final class TabUtils {
 	 * 
 	 * @param expanded
 	 *          the expanded
+	 * @param holders
+	 * @param values
 	 * @return the extension stack
 	 */
-	public static SectionStackSection getExtensionStack(boolean expanded) {
-		return getSomeStack(
-				expanded,
-				"Access Condition",
-				new GetGeneralLayout(
-						new Attribute(
-								TextAreaItem.class,
-								"extension",
-								"Extension",
-								"Used to provide for additional information not covered by MODS. It may be used for elements that are local to the creator of the data, similar to MARC 21 9XX fields."),
-						new Attribute[] { new Attribute(TextItem.class, "namespace", "Namespace", "Namespace") }, GetGeneralLayout.ABSTRACT));
+	public static SectionStackSection getExtensionStack(boolean expanded, List<ExtensionTypeClient> values, List<ExtensionHolder> holders) {
+		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(
+				new Attribute(
+						TextAreaItem.class,
+						ModsConstants.EXTENSION,
+						"Extension",
+						"Used to provide for additional information not covered by MODS. It may be used for elements that are local to the creator of the data, similar to MARC 21 9XX fields."),
+				new Attribute[] { new Attribute(TextItem.class, ModsConstants.NAMESPACE, "Namespace", "Namespace") }, GetGeneralLayout.EXTENSION);
+		getGeneralLayout.setValues(values);
+		getGeneralLayout.setHolders(holders);
+		return getSomeStack(expanded, "Access Condition", getGeneralLayout);
 	}
 
 	/**
@@ -1766,10 +1722,15 @@ public final class TabUtils {
 	 * 
 	 * @param expanded
 	 *          the expanded
+	 * @param holders
+	 * @param values
 	 * @return the record info stack
 	 */
-	public static SectionStackSection getRecordInfoStack(boolean expanded) {
-		return getSomeStack(expanded, "Record Info", new GetRecordInfoLayout());
+	public static SectionStackSection getRecordInfoStack(boolean expanded, List<RecordInfoTypeClient> values, List<RecordInfoHolder> holders) {
+		GetRecordInfoLayout getRecordInfoLayout = new GetRecordInfoLayout();
+		getRecordInfoLayout.setValues(values);
+		getRecordInfoLayout.setHolders(holders);
+		return getSomeStack(expanded, "Record Info", getRecordInfoLayout);
 	}
 
 	/**
@@ -1777,10 +1738,15 @@ public final class TabUtils {
 	 * 
 	 * @param expanded
 	 *          the expanded
+	 * @param partHolders
+	 * @param list
 	 * @return the part stack
 	 */
-	public static SectionStackSection getPartStack(boolean expanded) {
-		return getSomeStack(expanded, "Part", new GetPartLayout());
+	public static SectionStackSection getPartStack(boolean expanded, List<PartTypeClient> values, List<PartHolder> holders) {
+		GetPartLayout getPartLayout = new GetPartLayout();
+		getPartLayout.setValues(values);
+		getPartLayout.setHolders(holders);
+		return getSomeStack(expanded, "Part", getPartLayout);
 	}
 
 	/**
@@ -1931,7 +1897,7 @@ public final class TabUtils {
 				}
 			}
 		}
-		sectionStack.addSection(getStackSectionWithAttributes("Roles", "Role", "", false, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, vals,
+		sectionStack.addSection(getStackSectionWithAttributes("Roles", "Role", "", false, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY("") }, vals,
 				holder.getRoles(), false));
 		sectionStack.addSection(getStackSection("Descriptions", "Description",
 				"May be used to give a textual description for a name when necessary, for example, to distinguish from other names.", false, values == null ? null
@@ -2028,26 +1994,24 @@ public final class TabUtils {
 	 *          the key date
 	 * @return the date layout
 	 */
-	public static VLayout getDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, DateTypeClient value, DateHolder holder) {
+	public static VLayout getDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, BaseDateTypeClient value,
+			DateHolder holder) {
 		final VLayout layout = new VLayout();
 		Attribute[] attributes = null;
 		final Attribute encoding = ATTR_ENCODING(value == null ? "" : value.getEncoding());
 		if (attribute != null) {
 			attribute.setValue(value == null ? "" : value.getValue());
 			if (keyDate) {
-				attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
-						ATTR_KEY_DATE(value == null ? "" : value.getKeyDate() == null ? "" : value.getKeyDate().value()),
+				String key = value == null ? "" : ((DateTypeClient) value).getKeyDate() == null ? "" : ((DateTypeClient) value).getKeyDate().value();
+				attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()), ATTR_KEY_DATE(key),
 						ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 			} else {
 				attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
 						ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 			}
-			attributes = new Attribute[] { attribute, encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
-					ATTR_KEY_DATE(value == null ? "" : value.getKeyDate() == null ? "" : value.getKeyDate().value()),
-					ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 		} else if (keyDate) {
-			attributes = new Attribute[] { encoding, ATTR_POINT(value == null ? "" : value.getPoint()),
-					ATTR_KEY_DATE(value == null ? "" : value.getKeyDate() == null ? "" : value.getKeyDate().value()),
+			String key = value == null ? "" : ((DateTypeClient) value).getKeyDate() == null ? "" : ((DateTypeClient) value).getKeyDate().value();
+			attributes = new Attribute[] { encoding, ATTR_POINT(value == null ? "" : value.getPoint()), ATTR_KEY_DATE(key),
 					ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
 		} else {
 			attributes = new Attribute[] { encoding, ATTR_POINT(value == null ? "" : value.getPoint()), ATTR_QUALIFIER(value == null ? "" : value.getQualifier()) };
@@ -2132,7 +2096,7 @@ public final class TabUtils {
 						"Place Terms",
 						"Place Term",
 						"Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>.",
-						true, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY }, vals, holder, false));
+						true, new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_AUTHORITY("") }, vals, holder, false));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2203,7 +2167,7 @@ public final class TabUtils {
 								ModsConstants.DATE_OTHER,
 								"Other Date",
 								"Roughly equivalent to MARC 21 field 046 subfield $j.",
-								new Attribute(TextItem.class, "type", "Type",
+								new Attribute(TextItem.class, ModsConstants.TYPE, "Type",
 										"This attribute allows for extensiblity of date types so that other specific date types may be designated if not given a separate element in MODS."),
 								true, values == null ? null : values.getDateOther(), holder.getDatesOther(), true)));
 		sectionStack.addSection(getStackSection("Editions", "Edition", "Equivalent to MARC 21 fields 242, 245, 246 subfield $b.", false));
@@ -2303,7 +2267,7 @@ public final class TabUtils {
 						ModsConstants.TYPE,
 						"Type",
 						"Roughly equivalent to the types of notes that may be contained in MARC 21 fields 340, 351 or general 500 notes concerning physical condition, characteristics, etc."),
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display."), ATTR_XLINK,
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display.", ""), ATTR_XLINK(""),
 				ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") };
 
 		List<List<String>> vals = null;
@@ -2313,13 +2277,13 @@ public final class TabUtils {
 				if (noteClient != null) {
 					List<String> list = new ArrayList<String>();
 					list.add(noteClient.getValue());
-					list.add(noteClient.getAtType() == null ? null : noteClient.getAtType());
-					list.add(noteClient.getDisplayLabel() == null ? null : noteClient.getDisplayLabel());
-					list.add(noteClient.getXlink() == null ? null : noteClient.getXlink());
-					list.add(noteClient.getLang() == null ? null : noteClient.getLang());
-					list.add(noteClient.getXmlLang() == null ? null : noteClient.getXmlLang());
-					list.add(noteClient.getScript() == null ? null : noteClient.getScript());
-					list.add(noteClient.getTransliteration() == null ? null : noteClient.getTransliteration());
+					list.add(noteClient.getAtType());
+					list.add(noteClient.getDisplayLabel());
+					list.add(noteClient.getXlink());
+					list.add(noteClient.getLang());
+					list.add(noteClient.getXmlLang());
+					list.add(noteClient.getScript());
+					list.add(noteClient.getTransliteration());
 					vals.add(list);
 				}
 			}
@@ -2433,7 +2397,7 @@ public final class TabUtils {
 					List<String> list = new ArrayList<String>();
 					list.add(languageTermClient.getValue());
 					list.add(languageTermClient.getType() == null ? null : languageTermClient.getType().value());
-					list.add(languageTermClient.getAuthority() == null ? null : languageTermClient.getAuthority());
+					list.add(languageTermClient.getAuthority());
 					vals.add(list);
 				}
 			}
@@ -2481,7 +2445,7 @@ public final class TabUtils {
 		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
 				"Note relating to a specific copy of a document. "), new Attribute[] {
 				new Attribute(TextItem.class, ModsConstants.TYPE, "Type", "This attribute is not controlled by a list and thus is open-ended."),
-				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ") },
+				getDisplayLabel("This attribute is intended to be used when additional text associated with the note is necessary for display. ", "") },
 				GetGeneralLayout.NOTE);
 		List<Map<String, String>> valueList = null;
 		if (values != null && values.getNote() != null && values.getNote().size() > 0) {
@@ -2680,8 +2644,8 @@ public final class TabUtils {
 			}
 		}
 		Attribute[] attributes = new Attribute[] {
-				getDisplayLabel("Equivalent to MARC 21 field 852 subfield $3."),
-				new Attribute(TextItem.class, "type", "Type",
+				getDisplayLabel("Equivalent to MARC 21 field 852 subfield $3.", ""),
+				new Attribute(TextItem.class, ModsConstants.TYPE, "Type",
 						"This attribute is used to indicate different kinds of locations, e.g. current, discovery, former, creation."), ATTR_AUTHORITY(""), ATTR_XLINK(""),
 				ATTR_LANG(""), ATTR_XML_LANG(""), ATTR_TRANSLITERATION(""), ATTR_SCRIPT("") };
 		sectionStack.addSection(getStackSectionWithAttributes("Physical Location", new Attribute(TextItem.class, ModsConstants.PHYSICAL_LOCATION,
@@ -2695,7 +2659,7 @@ public final class TabUtils {
 								"This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
 						false, values == null ? null : values.getShelfLocator(), holder.getShelfLocators()));
 		attributes = new Attribute[] {
-				getDisplayLabel("Equivalent to MARC 21 field 856 subfields $y and $3."),
+				getDisplayLabel("Equivalent to MARC 21 field 856 subfields $y and $3.", ""),
 				new Attribute(DateItem.class, ModsConstants.DATE_LAST_ACCESSED, "Date Last Accessed", "There is no MARC equivalent for 'dateLastAccessed'."),
 				new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
 						"This attribute includes notes that are associated with the link that is included as the value of the <url> element. It is generally free text."),
@@ -2744,8 +2708,9 @@ public final class TabUtils {
 								"holding_external",
 								"Holding External",
 								"Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema."),
-						false, values != null && values.getHoldingExternal() != null && values.getHoldingExternal().getContent() != null ? values.getHoldingExternal()
-								.getContent() : null, holder.getHoldingExternals()));
+						false,
+						values != null && values.getHoldingExternal() != null && values.getHoldingExternal().getContent() != null ? Arrays.asList(values
+								.getHoldingExternal().getContent()) : null, holder.getHoldingExternals()));
 		layout.addMember(sectionStack);
 		return layout;
 	}
@@ -2753,9 +2718,12 @@ public final class TabUtils {
 	/**
 	 * Gets the part layout.
 	 * 
+	 * @param holder
+	 * @param value
+	 * 
 	 * @return the part layout
 	 */
-	private static VLayout getPartLayout() {
+	private static VLayout getPartLayout(PartTypeClient values, PartHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -2766,20 +2734,36 @@ public final class TabUtils {
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
 		Attribute[] attributes = new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type",
-						"A designation of a document segment type. Suggested values include volume, issue, chapter, section, paragraph, track. Other values may be used as needed."),
-				new Attribute(TextItem.class, "order", "Order", "An integer that designates the sequence of parts."), ATTR_ID };
+				new Attribute(
+						TextItem.class,
+						ModsConstants.TYPE,
+						"Type",
+						"A designation of a document segment type. Suggested values include volume, issue, chapter, section, paragraph, track. Other values may be used as needed.",
+						values == null ? "" : values.getType()),
+				new Attribute(TextItem.class, "order", "Order", "An integer that designates the sequence of parts.", values == null ? "" : values.getOrder()),
+				ATTR_ID(values == null ? "" : values.getId()) };
 
-		layout.addMember(getAttributes(true, attributes));
-		sectionStack.addSection(getSomeStack(false, "Detail", new GetDetailLayout()));
-		sectionStack.addSection(getSomeStack(false, "Extent", new GetExtentLayout()));
-		sectionStack.addSection(getSomeStack(false, "Date", new GetDateLayout("date", "Date", "Contains date information relevant to the part described.", null,
-				false, null, null)));
+		DynamicForm formAttr = getAttributes(true, attributes);
+		holder.setAttributeForm(formAttr);
+		layout.addMember(formAttr);
+		GetDetailLayout getDetailLayout = new GetDetailLayout();
+		getDetailLayout.setValues(values == null ? null : values.getDetail());
+		getDetailLayout.setHolders(holder.getDetails());
+		sectionStack.addSection(getSomeStack(false, "Detail", getDetailLayout));
+
+		GetExtentLayout getExtentLayout = new GetExtentLayout();
+		getExtentLayout.setValues(values == null ? null : values.getExtent());
+		getExtentLayout.setHolders(holder.getExtents());
+		sectionStack.addSection(getSomeStack(false, "Extent", getExtentLayout));
+
+		GetDateLayout getDateLayout = new GetDateLayout("date", "Date", "Contains date information relevant to the part described.", null, false,
+				values == null ? null : values.getDate(), holder.getDates());
+		sectionStack.addSection(getSomeStack(false, "Date", getDateLayout));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(TextAreaItem.class, "text", "Text",
 								"Contains unparsed information in textual form about the part. When used in relatedItem type='host', it is equivalent to MARC 21 field 773 subfield $g."),
-						false, null));
+						false, values == null ? null : values.getText(), holder.getTexts()));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2788,32 +2772,44 @@ public final class TabUtils {
 	/**
 	 * Gets the detail layout.
 	 * 
+	 * @param holder
+	 * @param values
+	 * 
 	 * @return the detail layout
 	 */
-	private static VLayout getDetailLayout() {
+	private static VLayout getDetailLayout(DetailTypeClient values, DetailHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
-		// sectionStack.setOverflow(Overflow.AUTO);
 
 		Attribute[] attributes = new Attribute[] {
-				new Attribute(TextItem.class, "type", "Type",
-						"The type of part described. Suggested values include part, volume, issue, chapter, section, paragraph, track. Other values may be used as needed."),
 				new Attribute(
 						TextItem.class,
-						"level",
+						ModsConstants.TYPE,
+						"Type",
+						"The type of part described. Suggested values include part, volume, issue, chapter, section, paragraph, track. Other values may be used as needed.",
+						values == null ? "" : values.getType()),
+				new Attribute(
+						TextItem.class,
+						ModsConstants.LEVEL,
 						"Level",
-						"Describes the level of numbering in the host/parent item. This is used to ensure that the numbering is retained in the proper order. An example is: 'v.2, no. 3'.") };
-		layout.addMember(getAttributes(true, attributes));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "number", "Number", "Contains the actual number within the part."), false, null));
+						"Describes the level of numbering in the host/parent item. This is used to ensure that the numbering is retained in the proper order. An example is: 'v.2, no. 3'.",
+						values == null ? "" : values.getLevel()) };
+		DynamicForm form = getAttributes(true, attributes);
+		layout.addMember(form);
+		holder.setAttributeForm(form);
+
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "number", "Number", "Contains the actual number within the part."), false,
+				values == null ? null : values.getNumber(), holder.getNumbers()));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "caption", "Caption",
 				"Contains the caption describing the enumeration within a part. This may be the same as type, but conveys what is on the item being described. "),
-				false, null));
+				false, values == null ? null : values.getCaption(), holder.getCaptions()));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "title", "Title",
-				"Contains the title of the part. Only include if this is different than the title in <titleInfo><title>."), false, null));
+				"Contains the title of the part. Only include if this is different than the title in <titleInfo><title>."), false,
+				values == null ? null : values.getTitle(), holder.getTitles()));
 		layout.addMember(sectionStack);
 		return layout;
 	}
@@ -2821,37 +2817,12 @@ public final class TabUtils {
 	/**
 	 * Gets the extent layout.
 	 * 
+	 * @param holder
+	 * @param values
+	 * 
 	 * @return the extent layout
 	 */
-	private static VLayout getExtentLayout() {
-		final VLayout layout = new VLayout();
-		final SectionStack sectionStack = new SectionStack();
-		sectionStack.setLeaveScrollbarGap(true);
-		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
-		sectionStack.setStyleName("metadata-elements");
-		sectionStack.setWidth100();
-		// sectionStack.setOverflow(Overflow.AUTO);
-
-		Attribute[] attributes = new Attribute[] { new Attribute(TextItem.class, "unit", "Unit", "Suggested values include page, minute, etc.") };
-		layout.addMember(getAttributes(false, attributes));
-		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "start", "Start",
-				"Contains the beginning unit of the extent within a part (e.g., first page)."), false));
-		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "end", "End", "Contains the ending unit of the extent within a part."), false));
-		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "total", "Total",
-				"Contains the total number of units within a part, rather than specific units."), false));
-		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, "list", "List",
-				"Contains a textual listing of the units within a part (e.g., 'pp. 5-9'.)"), false));
-
-		layout.addMember(sectionStack);
-		return layout;
-	}
-
-	/**
-	 * Gets the language of cataloging layout.
-	 * 
-	 * @return the language of cataloging layout
-	 */
-	private static VLayout getLanguageOfCatalogingLayout() {
+	private static VLayout getExtentLayout(ExtentTypeClient values, ExtentHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -2859,9 +2830,19 @@ public final class TabUtils {
 		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
 
-		Attribute[] attributes = new Attribute[] { ATTR_TYPE_TEXT_CODE, ATTR_LANG_AUTHORITY };
-		sectionStack.addSection(getStackSectionWithAttributes("Language Term", new Attribute(TextItem.class, "language_term", "Language Term",
-				"contains the language(s) of the content of the resource. It may be expressed in textual or coded form."), true, attributes, null));
+		Attribute[] attributes = new Attribute[] { new Attribute(TextItem.class, ModsConstants.UNIT, "Unit", "Suggested values include page, minute, etc.",
+				values == null ? "" : values.getUnit()) };
+		DynamicForm form = getAttributes(false, attributes);
+		layout.addMember(form);
+		holder.setAttributeForm(form);
+		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, ModsConstants.START, "Start",
+				"Contains the beginning unit of the extent within a part (e.g., first page).", values == null ? "" : values.getStart()), false, holder.getStart()));
+		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, ModsConstants.END, "End", "Contains the ending unit of the extent within a part.",
+				values == null ? "" : values.getEnd()), false, holder.getEnd()));
+		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, ModsConstants.TOTAL, "Total",
+				"Contains the total number of units within a part, rather than specific units.", values == null ? "" : values.getTotal()), false, holder.getTotal()));
+		sectionStack.addSection(getSimpleSection(new Attribute(TextItem.class, ModsConstants.LIST, "List",
+				"Contains a textual listing of the units within a part (e.g., 'pp. 5-9'.)", values == null ? "" : values.getList()), false, holder.getList()));
 
 		layout.addMember(sectionStack);
 		return layout;
@@ -2870,9 +2851,12 @@ public final class TabUtils {
 	/**
 	 * Gets the record info layout.
 	 * 
+	 * @param holder
+	 * @param values
+	 * 
 	 * @return the record info layout
 	 */
-	private static VLayout getRecordInfoLayout() {
+	private static VLayout getRecordInfoLayout(RecordInfoTypeClient values, RecordInfoHolder holder) {
 		final VLayout layout = new VLayout();
 		final SectionStack sectionStack = new SectionStack();
 		sectionStack.setLeaveScrollbarGap(true);
@@ -2882,23 +2866,75 @@ public final class TabUtils {
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
 		sectionStack.setOverflow(Overflow.VISIBLE);
-		Attribute[] attributes = new Attribute[] { ATTR_LANG, ATTR_XML_LANG, ATTR_SCRIPT, ATTR_TRANSLITERATION };
-		layout.addMember(getAttributes(true, attributes));
-
-		sectionStack.addSection(getStackSectionWithAttributes("Record Content Source", new Attribute(TextItem.class, "record_content_source",
-				"Record Content Source", "Roughly equivalent to MARC 21 field 040."), false, new Attribute[] { ATTR_AUTHORITY }, null));
+		Attribute[] attributes = new Attribute[] { ATTR_LANG(values == null ? "" : values.getLang()), ATTR_XML_LANG(values == null ? "" : values.getXmlLang()),
+				ATTR_SCRIPT(values == null ? "" : values.getScript()), ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()) };
+		DynamicForm form = getAttributes(false, attributes);
+		layout.addMember(form);
+		holder.setAttributeForm(form);
+		List<List<String>> vals = null;
+		if (values != null && values.getRecordContentSource() != null && values.getRecordContentSource().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (StringPlusAuthorityPlusLanguageClient val : values.getRecordContentSource()) {
+				if (val != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(val.getValue());
+					list.add(val.getAuthority());
+					list.add(val.getLang());
+					list.add(val.getXmlLang());
+					list.add(val.getScript());
+					list.add(val.getTransliteration());
+					vals.add(list);
+				}
+			}
+		}
+		sectionStack.addSection(getStackSectionWithAttributes("Record Content Source", new Attribute(TextItem.class, ModsConstants.RECORD_CONTENT_SOURCE,
+				"Record Content Source", "Roughly equivalent to MARC 21 field 040."), false, new Attribute[] { ATTR_AUTHORITY(""), ATTR_LANG(""), ATTR_XML_LANG(""),
+				ATTR_SCRIPT(""), ATTR_TRANSLITERATION("") }, vals, holder.getRecordContentSource(), false));
 		sectionStack.addSection(getSomeStack(false, "Record Creation Date", new GetDateLayout("record_creation_date", "Record Creation Date",
-				"Roughly equivalent to MARC 21 field 008/00-05.", null, false, null, null)));
-		sectionStack.addSection(getSomeStack(false, "Record Change Date", new GetDateLayout("record_change_date", "Record Creation Date",
-				"May serve as a version identifier for the record. It is roughly equivalent to MARC 21 field 005.", null, false, null, null)));
-		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "record_identifier", "Record Identifier",
-				"Roughly equivalent to MARC 21 field 001."), false, new Attribute[] { new Attribute(TextItem.class, "source", "Source",
-				"Roughly equivalent to MARC 21 field 003.") }, null));
+				"Roughly equivalent to MARC 21 field 008/00-05.", null, false, values == null ? null : values.getRecordCreationDate(), holder.getCreationDate())));
+		sectionStack.addSection(getSomeStack(
+				false,
+				"Record Change Date",
+				new GetDateLayout("record_change_date", "Record Creation Date",
+						"May serve as a version identifier for the record. It is roughly equivalent to MARC 21 field 005.", null, false, values == null ? null : values
+								.getRecordChangeDate(), holder.getChangeDate())));
+		vals = null;
+		if (values != null && values.getRecordIdentifier() != null && values.getRecordIdentifier().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (RecordIdentifierClient val : values.getRecordIdentifier()) {
+				if (val != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(val.getValue());
+					list.add(val.getSource());
+					vals.add(list);
+				}
+			}
+		}
+		sectionStack.addSection(getStackSectionWithAttributes("Record Identifiers", new Attribute(TextItem.class, ModsConstants.RECORD_IDENTIFIER,
+				"Record Identifier", "Roughly equivalent to MARC 21 field 001."), false, new Attribute[] { new Attribute(TextItem.class, ModsConstants.SOURCE,
+				"Source", "Roughly equivalent to MARC 21 field 003.") }, vals, holder.getRecordIdentifier(), false));
 		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "record_origin", "Record Origin",
-				"Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false, null));
-		sectionStack.addSection(getSomeStack(false, "Language of Cataloging", new GetLanguageOfCatalogingLayout()));
-		sectionStack.addSection(getStackSectionWithAttributes("Description Standard", new Attribute(TextItem.class, "description_standard", "Description Standard",
-				"Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18."), false, new Attribute[] { ATTR_AUTHORITY }, null));
+				"Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false,
+				values == null ? null : values.getRecordOrigin(), holder.getRecordOrigin()));
+
+		GetLanguageLayout getLanguageLayout = new GetLanguageLayout();
+		getLanguageLayout.setValues(values == null ? null : values.getLanguageOfCataloging());
+		getLanguageLayout.setHolders(holder.getLanguage());
+		sectionStack.addSection(getSomeStack(false, "Language of Cataloging", getLanguageLayout));
+		if (values != null && values.getDescriptionStandard() != null && values.getDescriptionStandard().size() > 0) {
+			vals = new ArrayList<List<String>>();
+			for (StringPlusAuthorityClient val : values.getDescriptionStandard()) {
+				if (val != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(val.getValue());
+					list.add(val.getAuthority());
+					vals.add(list);
+				}
+			}
+		}
+		sectionStack.addSection(getStackSectionWithAttributes("Description Standard", new Attribute(TextItem.class, ModsConstants.DESCRIPTION_STANDARD,
+				"Description Standard", "Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18."), false,
+				new Attribute[] { ATTR_AUTHORITY("") }, vals, holder.getDescriptionStandard(), false));
 
 		layout.addMember(sectionStack);
 		return layout;

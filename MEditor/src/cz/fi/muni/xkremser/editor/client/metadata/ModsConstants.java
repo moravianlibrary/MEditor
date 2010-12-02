@@ -44,5 +44,19 @@ public class ModsConstants {
 	public static final String USAGE = "usage";
 	public static final String ENUM_CHRONO = "enumeration_and_chronology";
 	public static final String UNIT_TYPE = "unit_type";
+	public static final String ACCESS_CONDITION = "access_condition";
+	public static final String ORDER = "order";
+	public static final String UNIT = "unit";
+	public static final String START = "start";
+	public static final String END = "end";
+	public static final String TOTAL = "total";
+	public static final String LIST = "list";
+	public static final String LEVEL = "level";
+	public static final String NAMESPACE = "namespace";
+	public static final String EXTENSION = "extension";
+	public static final String RECORD_CONTENT_SOURCE = "record_content_source";
+	public static final String DESCRIPTION_STANDARD = "description_standard";
+	public static final String RECORD_IDENTIFIER = "record_identifier";
+	public static final String SOURCE = "source";
 
 }
