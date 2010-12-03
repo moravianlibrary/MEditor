@@ -1842,9 +1842,9 @@ public final class TabUtils {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setMinHeight(500);
 		sectionStack.setMinMemberSize(300);
+		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setOverflow(Overflow.VISIBLE);
 		layout.setExtraSpace(40);
-		sectionStack.setStyleName("metadata-elements");
 		sectionStack.setWidth100();
 
 		tooltips = new HashMap<String, String>();

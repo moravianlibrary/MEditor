@@ -293,6 +293,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(final TabSelectedEvent event) {
+				// TODO: string(ID_MODS) -> int
 				if (ID_MODS.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");

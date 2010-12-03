@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.VisibilityMode;
@@ -20,6 +21,8 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
+import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
+import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AccessConditionHolder;
@@ -61,6 +64,7 @@ import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
+import cz.fi.muni.xkremser.editor.client.view.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 
 // TODO: Auto-generated Javadoc
@@ -70,6 +74,28 @@ import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 public class ModsTab extends Tab implements RelatedItemHolder {
 	// TODO: dat do konstanty, nebo resource bundlu
 	/** The Constant MAX_DEEP. */
+	private static final String TAB_TYPE = "type";
+	private static final int MODS_TITLE = 0;
+	private static final int MODS_NAME = 1;
+	private static final int MODS_TYPE = 2;
+	private static final int MODS_GENRE = 3;
+	private static final int MODS_ORIGIN = 4;
+	private static final int MODS_LANG = 5;
+	private static final int MODS_PHYS = 6;
+	private static final int MODS_ABSTRACT = 7;
+	private static final int MODS_TOC = 8;
+	private static final int MODS_TARGET = 9;
+	private static final int MODS_NOTE = 10;
+	private static final int MODS_SUBJECT = 11;
+	private static final int MODS_CLASS = 12;
+	private static final int MODS_RELATED = 13;
+	private static final int MODS_IDENTIFIER = 14;
+	private static final int MODS_LOCATION = 15;
+	private static final int MODS_ACCESS = 16;
+	private static final int MODS_PART = 17;
+	private static final int MODS_EXTENSION = 18;
+	private static final int MODS_RECORD = 19;
+
 	public static final Tab MAX_DEEP(final String id) {
 		return new Tab("Related Item", "pieces/16/piece_blue.png") {
 			{
@@ -102,6 +128,9 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 	private final List<PartHolder> partHolders;
 	private final List<ExtensionHolder> extensionHolders;
 	private final List<RecordInfoHolder> recordInfoHolders;
+	private final boolean[] tabsInitialized = new boolean[20];
+
+	private ModsTypeClient modsTypeClient_;
 
 	/**
 	 * The Class GetRelatedItem.
@@ -184,7 +213,7 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 		sectionStack.setHeight100();
 		sectionStack.setOverflow(Overflow.AUTO);
 		sectionStack.addSection(section);
-		Tab tab = new Tab(name, "pieces/16/piece_blue.png");
+		Tab tab = new Tab(name);
 		tab.setPane(sectionStack);
 		return tab;
 	}
@@ -194,10 +223,10 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 	 * 
 	 * @return the mods tab set
 	 */
-	public VLayout getModsLayout(ModsTypeClient modsTypeClient, boolean attributePresent, RelatedItemTypeClient relatedItem, int counter) {
+	public VLayout getModsLayout(ModsTypeClient modsTypeClient, boolean attributePresent, RelatedItemTypeClient relatedItem, final int counter) {
 		VLayout layout = new VLayout();
 
-		ModsTypeClient modsTypeClient_ = modsTypeClient;
+		modsTypeClient_ = modsTypeClient;
 		if (attributePresent) {
 			modsTypeClient_ = relatedItem == null ? null : relatedItem.getMods();
 			Attribute[] attributes = new Attribute[] {
@@ -229,190 +258,599 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
-		List<RelatedItemTypeClient> relatedItems = modsTypeClient_ == null ? null : modsTypeClient_.getRelatedItem();
+		final List<RelatedItemTypeClient> relatedItems = modsTypeClient_ == null ? null : modsTypeClient_.getRelatedItem();
+		Tab name = new Tab("Name");
+		name.setAttribute(TAB_TYPE, MODS_NAME);
+		Tab type = new Tab("Type");
+		type.setAttribute(TAB_TYPE, MODS_TYPE);
+		Tab genre = new Tab("Genre");
+		genre.setAttribute(TAB_TYPE, MODS_GENRE);
+		Tab origin = new Tab("Origin");
+		origin.setAttribute(TAB_TYPE, MODS_ORIGIN);
+		Tab language = new Tab("Language");
+		language.setAttribute(TAB_TYPE, MODS_LANG);
+		Tab physical = new Tab("Physical desc.");
+		physical.setAttribute(TAB_TYPE, MODS_PHYS);
+		Tab abstractt = new Tab("Abstract");
+		abstractt.setAttribute(TAB_TYPE, MODS_ABSTRACT);
+		Tab toc = new Tab("Table of Con.");
+		toc.setAttribute(TAB_TYPE, MODS_TOC);
+		Tab audience = new Tab("Audience");
+		audience.setAttribute(TAB_TYPE, MODS_TARGET);
+		Tab note = new Tab("Note");
+		note.setAttribute(TAB_TYPE, MODS_NOTE);
+		Tab subject = new Tab("Subject");
+		subject.setAttribute(TAB_TYPE, MODS_SUBJECT);
+		Tab classification = new Tab("Classification");
+		classification.setAttribute(TAB_TYPE, MODS_CLASS);
+		Tab related = new Tab("Related Item");
+		related.setAttribute(TAB_TYPE, MODS_RELATED);
+		Tab identifier = new Tab("Identifier");
+		identifier.setAttribute(TAB_TYPE, MODS_IDENTIFIER);
+		Tab location = new Tab("Location");
+		location.setAttribute(TAB_TYPE, MODS_LOCATION);
+		Tab access = new Tab("Access Conditio");
+		access.setAttribute(TAB_TYPE, MODS_ACCESS);
+		Tab part = new Tab("Part");
+		part.setAttribute(TAB_TYPE, MODS_PART);
+		Tab extension = new Tab("Extension");
+		extension.setAttribute(TAB_TYPE, MODS_EXTENSION);
+		Tab record = new Tab("Record Info");
+		record.setAttribute(TAB_TYPE, MODS_RECORD);
 
-		Tab rel = null;
-		if (deep > 0) {
-			GetRelatedItem getRelatedItem = new GetRelatedItem();
-			getRelatedItem.setValues(relatedItems);
-			getRelatedItem.setHolders(relatedItemHolders);
-			rel = getTab(TabUtils.getSomeStack(true, "Related Item", getRelatedItem), "Related Item");
-		} else {
-			rel = MAX_DEEP(deep + ":" + counter);
-		}
+		Tab[] lazyTabs = new Tab[] {
+				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTitleInfo(), titleInfoHolders), "Title Info"), name, type,
+				genre, origin, language, physical, abstractt, toc, audience, note, subject, classification, related, identifier, location, access, part, extension,
+				record };
+		tabsInitialized[MODS_TITLE] = true;
 
-		// relatedItems.g
-		Tab[] tabs = new Tab[] {
-				getTab(TabUtils.getTitleInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTitleInfo(), titleInfoHolders), "Title Info"),
-				getTab(TabUtils.getNameStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getName(), nameHolders), "Name"),
-				getTab(TabUtils.getTypeOfResourceStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTypeOfResource(), typeOfResourceHolders), "Type"),
-				getTab(TabUtils.getGenreStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getGenre(), genreHolders), "Genre"),
-				getTab(TabUtils.getOriginInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getOriginInfo(), originInfoHolders), "Origin"),
-				getTab(TabUtils.getLanguageStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLanguage(), languageHolders), "Language"),
-				getTab(
-						TabUtils.getPhysicalDescriptionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getPhysicalDescription(), physicalDescriptionHolders),
-						"Physical desc."),
-				getTab(TabUtils.getAbstractStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getAbstrac(), abstractHolders), "Abstract"),
-				getTab(TabUtils.getTableOfContentsStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTableOfContents(), tableOfContentsHolders),
-						"Table of Con."),
-				getTab(TabUtils.getTargetAudienceStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTargetAudience(), audienceHolder), "Audience"),
-				getTab(TabUtils.getNoteStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getNote(), noteHolders), "Note"),
-				getTab(TabUtils.getSubjectStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getSubject(), subjectHolders), "Subject"),
-				getTab(TabUtils.getClassificationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getClassification(), classificationHolder),
-						"Classification"),
-				rel,
-				getTab(TabUtils.getIdentifierStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getIdentifier(), identifierHolder), "Identifier"),
-				getTab(TabUtils.getLocationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLocation(), locationHolders), "Location"),
-				getTab(TabUtils.getAccessConditionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getAccessCondition(), accessConditionHolders),
-						"Access Condition"), getTab(TabUtils.getPartStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getPart(), partHolders), "Part"),
-				getTab(TabUtils.getExtensionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getExtension(), extensionHolders), "Extension"),
-				getTab(TabUtils.getRecordInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getRecordInfo(), recordInfoHolders), "Record Info") };
-		topTabSet.setTabs(tabs);
+		topTabSet.setTabs(lazyTabs);
+		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
+			@Override
+			public void onTabSelected(final TabSelectedEvent event) {
+				if (event.getTab().getPane() == null) {
+					final ModalWindow mw = new ModalWindow(topTabSet);
+					Timer timer = null;
+					switch (event.getTab().getAttributeAsInt(TAB_TYPE)) {
+
+						case MODS_NAME:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getNameStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getName(), nameHolders), "Name");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_NAME, t.getPane());
+									tabsInitialized[MODS_NAME] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_TYPE:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(
+											TabUtils.getTypeOfResourceStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTypeOfResource(), typeOfResourceHolders),
+											"Type");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_TYPE, t.getPane());
+									tabsInitialized[MODS_TYPE] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_GENRE:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getGenreStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getGenre(), genreHolders), "Genre");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_GENRE, t.getPane());
+									tabsInitialized[MODS_GENRE] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_ORIGIN:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getOriginInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getOriginInfo(), originInfoHolders),
+											"Origin");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_ORIGIN, t.getPane());
+									tabsInitialized[MODS_ORIGIN] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_LANG:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getLanguageStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLanguage(), languageHolders), "Language");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_LANG, t.getPane());
+									tabsInitialized[MODS_LANG] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_ABSTRACT:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getAbstractStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getAbstrac(), abstractHolders), "Abstract");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_ABSTRACT, t.getPane());
+									tabsInitialized[MODS_ABSTRACT] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_PHYS:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getPhysicalDescriptionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getPhysicalDescription(),
+											physicalDescriptionHolders), "Physical desc.");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_PHYS, t.getPane());
+									tabsInitialized[MODS_PHYS] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_TOC:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(
+											TabUtils.getTableOfContentsStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTableOfContents(), tableOfContentsHolders),
+											"Table of Con.");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_TOC, t.getPane());
+									tabsInitialized[MODS_TOC] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_TARGET:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getTargetAudienceStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getTargetAudience(), audienceHolder),
+											"Audience");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_TARGET, t.getPane());
+									tabsInitialized[MODS_TARGET] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_NOTE:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getNoteStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getNote(), noteHolders), "Note");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_NOTE, t.getPane());
+									tabsInitialized[MODS_NOTE] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_SUBJECT:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getSubjectStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getSubject(), subjectHolders), "Subject");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_SUBJECT, t.getPane());
+									tabsInitialized[MODS_SUBJECT] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_CLASS:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(
+											TabUtils.getClassificationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getClassification(), classificationHolder),
+											"Classification");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_CLASS, t.getPane());
+									tabsInitialized[MODS_CLASS] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_RELATED:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = null;
+									if (deep > 0) {
+										GetRelatedItem getRelatedItem = new GetRelatedItem();
+										getRelatedItem.setValues(relatedItems);
+										getRelatedItem.setHolders(relatedItemHolders);
+										t = getTab(TabUtils.getSomeStack(true, "Related Item", getRelatedItem), "Related Item");
+									} else {
+										t = MAX_DEEP(deep + ":" + counter);
+									}
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_RELATED, t.getPane());
+									tabsInitialized[MODS_RELATED] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_LOCATION:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getLocationStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getLocation(), locationHolders), "Location");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_LOCATION, t.getPane());
+									tabsInitialized[MODS_LOCATION] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_IDENTIFIER:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getIdentifierStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getIdentifier(), identifierHolder),
+											"Identifier");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_IDENTIFIER, t.getPane());
+									tabsInitialized[MODS_IDENTIFIER] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_ACCESS:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(
+											TabUtils.getAccessConditionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getAccessCondition(), accessConditionHolders),
+											"Access Condition");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_ACCESS, t.getPane());
+									tabsInitialized[MODS_ACCESS] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_PART:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getPartStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getPart(), partHolders), "Part");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_PART, t.getPane());
+									tabsInitialized[MODS_PART] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_EXTENSION:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getExtensionStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getExtension(), extensionHolders),
+											"Extension");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_EXTENSION, t.getPane());
+									tabsInitialized[MODS_EXTENSION] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+						case MODS_RECORD:
+							mw.setLoadingIcon("loadingAnimation.gif");
+							mw.show(true);
+							timer = new Timer() {
+								@Override
+								public void run() {
+									Tab t = getTab(TabUtils.getRecordInfoStack(true, modsTypeClient_ == null ? null : modsTypeClient_.getRecordInfo(), recordInfoHolders),
+											"Record Info");
+									TabSet ts = event.getTab().getTabSet();
+									ts.setTabPane(MODS_RECORD, t.getPane());
+									tabsInitialized[MODS_RECORD] = true;
+									mw.hide();
+								}
+							};
+							timer.schedule(25);
+						break;
+
+					}
+				}
+
+			}
+		});
 		layout.addMember(topTabSet);
 		return layout;
 	}
 
 	@Override
 	public ModsTypeClient getMods() {
+		ModsTypeClient modsTypeClient = new ModsTypeClient();
 
 		// title info
-		ModsTypeClient modsTypeClient = new ModsTypeClient();
-		List<TitleInfoTypeClient> titleInfo = new ArrayList<TitleInfoTypeClient>(titleInfoHolders.size());
-		for (TitleInfoHolder holder : titleInfoHolders) {
-			titleInfo.add(holder.getTitleInfo());
+		if (tabsInitialized[MODS_TITLE]) {
+			List<TitleInfoTypeClient> titleInfo = new ArrayList<TitleInfoTypeClient>(titleInfoHolders.size());
+			for (TitleInfoHolder holder : titleInfoHolders) {
+				titleInfo.add(holder.getTitleInfo());
+			}
+			modsTypeClient.setTitleInfo(titleInfo);
+		} else {
+			modsTypeClient.setTitleInfo(modsTypeClient_ == null ? null : modsTypeClient_.getTitleInfo());
 		}
-		modsTypeClient.setTitleInfo(titleInfo);
 
 		// name
-		List<NameTypeClient> names = new ArrayList<NameTypeClient>(nameHolders.size());
-		for (NameHolder holder : nameHolders) {
-			names.add(holder.getName());
+		if (tabsInitialized[MODS_NAME]) {
+			List<NameTypeClient> names = new ArrayList<NameTypeClient>(nameHolders.size());
+			for (NameHolder holder : nameHolders) {
+				names.add(holder.getName());
+			}
+			modsTypeClient.setName(names);
+		} else {
+			modsTypeClient.setName(modsTypeClient_ == null ? null : modsTypeClient_.getName());
 		}
-		modsTypeClient.setName(names);
 
 		// type of resource
-		List<TypeOfResourceTypeClient> typesOfResource = new ArrayList<TypeOfResourceTypeClient>(typeOfResourceHolders.size());
-		for (TypeOfResourceHolder holder : typeOfResourceHolders) {
-			typesOfResource.add(holder.getType());
+		if (tabsInitialized[MODS_TYPE]) {
+			List<TypeOfResourceTypeClient> typesOfResource = new ArrayList<TypeOfResourceTypeClient>(typeOfResourceHolders.size());
+			for (TypeOfResourceHolder holder : typeOfResourceHolders) {
+				typesOfResource.add(holder.getType());
+			}
+			modsTypeClient.setTypeOfResource(typesOfResource);
+		} else {
+			modsTypeClient.setTypeOfResource(modsTypeClient_ == null ? null : modsTypeClient_.getTypeOfResource());
 		}
-		modsTypeClient.setTypeOfResource(typesOfResource);
 
 		// genre
-		List<GenreTypeClient> genre = new ArrayList<GenreTypeClient>(genreHolders.size());
-		for (GenreHolder holder : genreHolders) {
-			genre.add(holder.getGenre());
+		if (tabsInitialized[MODS_GENRE]) {
+			List<GenreTypeClient> genre = new ArrayList<GenreTypeClient>(genreHolders.size());
+			for (GenreHolder holder : genreHolders) {
+				genre.add(holder.getGenre());
+			}
+			modsTypeClient.setGenre(genre);
+		} else {
+			modsTypeClient.setGenre(modsTypeClient_ == null ? null : modsTypeClient_.getGenre());
 		}
-		modsTypeClient.setGenre(genre);
 
 		// origin info
-		List<OriginInfoTypeClient> origin = new ArrayList<OriginInfoTypeClient>(originInfoHolders.size());
-		for (OriginInfoHolder holder : originInfoHolders) {
-			origin.add(holder.getOriginInfo());
+		if (tabsInitialized[MODS_ORIGIN]) {
+			List<OriginInfoTypeClient> origin = new ArrayList<OriginInfoTypeClient>(originInfoHolders.size());
+			for (OriginInfoHolder holder : originInfoHolders) {
+				origin.add(holder.getOriginInfo());
+			}
+			modsTypeClient.setOriginInfo(origin);
+		} else {
+			modsTypeClient.setOriginInfo(modsTypeClient_ == null ? null : modsTypeClient_.getOriginInfo());
 		}
-		modsTypeClient.setOriginInfo(origin);
 
 		// language
-		List<LanguageTypeClient> language = new ArrayList<LanguageTypeClient>(languageHolders.size());
-		for (LanguageHolder holder : languageHolders) {
-			language.add(holder.getLanguage());
+		if (tabsInitialized[MODS_LANG]) {
+			List<LanguageTypeClient> language = new ArrayList<LanguageTypeClient>(languageHolders.size());
+			for (LanguageHolder holder : languageHolders) {
+				language.add(holder.getLanguage());
+			}
+			modsTypeClient.setLanguage(language);
+		} else {
+			modsTypeClient.setLanguage(modsTypeClient_ == null ? null : modsTypeClient_.getLanguage());
 		}
-		modsTypeClient.setLanguage(language);
 
 		// physical description
-		List<PhysicalDescriptionTypeClient> physicalDescription = new ArrayList<PhysicalDescriptionTypeClient>(physicalDescriptionHolders.size());
-		for (PhysicalDescriptionHolder holder : physicalDescriptionHolders) {
-			physicalDescription.add(holder.getPhysicalDescription());
+		if (tabsInitialized[MODS_PHYS]) {
+			List<PhysicalDescriptionTypeClient> physicalDescription = new ArrayList<PhysicalDescriptionTypeClient>(physicalDescriptionHolders.size());
+			for (PhysicalDescriptionHolder holder : physicalDescriptionHolders) {
+				physicalDescription.add(holder.getPhysicalDescription());
+			}
+			modsTypeClient.setPhysicalDescription(physicalDescription);
+		} else {
+			modsTypeClient.setPhysicalDescription(modsTypeClient_ == null ? null : modsTypeClient_.getPhysicalDescription());
 		}
-		modsTypeClient.setPhysicalDescription(physicalDescription);
 
 		// abstract
-		List<AbstractTypeClient> abstractt = new ArrayList<AbstractTypeClient>(abstractHolders.size());
-		for (AbstractHolder holder : abstractHolders) {
-			abstractt.add(holder.getAbstract());
+		if (tabsInitialized[MODS_ABSTRACT]) {
+			List<AbstractTypeClient> abstractt = new ArrayList<AbstractTypeClient>(abstractHolders.size());
+			for (AbstractHolder holder : abstractHolders) {
+				abstractt.add(holder.getAbstract());
+			}
+			modsTypeClient.setAbstrac(abstractt);
+		} else {
+			modsTypeClient.setAbstrac(modsTypeClient_ == null ? null : modsTypeClient_.getAbstrac());
 		}
-		modsTypeClient.setAbstrac(abstractt);
 
 		// toc
-		List<TableOfContentsTypeClient> toc = new ArrayList<TableOfContentsTypeClient>(tableOfContentsHolders.size());
-		for (TableOfContentsHolder holder : tableOfContentsHolders) {
-			toc.add(holder.getTableOfContents());
+		if (tabsInitialized[MODS_TOC]) {
+			List<TableOfContentsTypeClient> toc = new ArrayList<TableOfContentsTypeClient>(tableOfContentsHolders.size());
+			for (TableOfContentsHolder holder : tableOfContentsHolders) {
+				toc.add(holder.getTableOfContents());
+			}
+			modsTypeClient.setTableOfContents(toc);
+		} else {
+			modsTypeClient.setTableOfContents(modsTypeClient_ == null ? null : modsTypeClient_.getTableOfContents());
 		}
-		modsTypeClient.setTableOfContents(toc);
 
 		// audience
-		modsTypeClient.setTargetAudience(audienceHolder.getAudience());
+		if (tabsInitialized[MODS_TARGET]) {
+			modsTypeClient.setTargetAudience(audienceHolder.getAudience());
+		} else {
+			modsTypeClient.setTargetAudience(modsTypeClient_ == null ? null : modsTypeClient_.getTargetAudience());
+		}
 
 		// note
-		List<NoteTypeClient> note = new ArrayList<NoteTypeClient>(noteHolders.size());
-		for (NoteHolder holder : noteHolders) {
-			note.add(holder.getNote());
+		if (tabsInitialized[MODS_NOTE]) {
+			List<NoteTypeClient> note = new ArrayList<NoteTypeClient>(noteHolders.size());
+			for (NoteHolder holder : noteHolders) {
+				note.add(holder.getNote());
+			}
+			modsTypeClient.setNote(note);
+		} else {
+			modsTypeClient.setNote(modsTypeClient_ == null ? null : modsTypeClient_.getNote());
 		}
-		modsTypeClient.setNote(note);
 
 		// subject
-		List<SubjectTypeClient> subject = new ArrayList<SubjectTypeClient>(subjectHolders.size());
-		for (SubjectHolder holder : subjectHolders) {
-			subject.add(holder.getSubject());
+		if (tabsInitialized[MODS_SUBJECT]) {
+			List<SubjectTypeClient> subject = new ArrayList<SubjectTypeClient>(subjectHolders.size());
+			for (SubjectHolder holder : subjectHolders) {
+				subject.add(holder.getSubject());
+			}
+			modsTypeClient.setSubject(subject);
+		} else {
+			modsTypeClient.setSubject(modsTypeClient_ == null ? null : modsTypeClient_.getSubject());
 		}
-		modsTypeClient.setSubject(subject);
 
 		// classification
-		modsTypeClient.setClassification(classificationHolder.getClassification());
+		if (tabsInitialized[MODS_CLASS]) {
+			modsTypeClient.setClassification(classificationHolder.getClassification());
+		} else {
+			modsTypeClient.setClassification(modsTypeClient_ == null ? null : modsTypeClient_.getClassification());
+		}
 
 		// related item
-		List<RelatedItemTypeClient> items = new ArrayList<RelatedItemTypeClient>(relatedItemHolders.size());
-		for (RelatedItemHolder item : relatedItemHolders) {
-			RelatedItemTypeClient relatedItemTypeClient = new RelatedItemTypeClient();
-			if (item != null) {
-				if (item.getRelatedItemAttributeHolder().getAttributeForm() != null) {
-					relatedItemTypeClient.setDisplayLabel(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
-					relatedItemTypeClient.setId(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.ID));
-					relatedItemTypeClient.setType(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.TYPE));
-					relatedItemTypeClient.setXlink(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.XLINK));
+		if (tabsInitialized[MODS_RELATED]) {
+			List<RelatedItemTypeClient> items = new ArrayList<RelatedItemTypeClient>(relatedItemHolders.size());
+			for (RelatedItemHolder item : relatedItemHolders) {
+				RelatedItemTypeClient relatedItemTypeClient = new RelatedItemTypeClient();
+				if (item != null) {
+					if (item.getRelatedItemAttributeHolder().getAttributeForm() != null) {
+						relatedItemTypeClient.setDisplayLabel(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
+						relatedItemTypeClient.setId(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.ID));
+						relatedItemTypeClient.setType(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.TYPE));
+						relatedItemTypeClient.setXlink(item.getRelatedItemAttributeHolder().getAttributeForm().getValueAsString(ModsConstants.XLINK));
+					}
+					relatedItemTypeClient.setMods(item.getMods());
 				}
-				relatedItemTypeClient.setMods(item.getMods());
+				items.add(relatedItemTypeClient);
 			}
-			items.add(relatedItemTypeClient);
+			modsTypeClient.setRelatedItem(items);
+		} else {
+			modsTypeClient.setRelatedItem(modsTypeClient_ == null ? null : modsTypeClient_.getRelatedItem());
 		}
-		modsTypeClient.setRelatedItem(items);
 
 		// identifier
-		modsTypeClient.setIdentifier(identifierHolder.getIdentifier());
+		if (tabsInitialized[MODS_IDENTIFIER]) {
+			modsTypeClient.setIdentifier(identifierHolder.getIdentifier());
+		} else {
+			modsTypeClient.setIdentifier(modsTypeClient_ == null ? null : modsTypeClient_.getIdentifier());
+		}
 
 		// location
-		List<LocationTypeClient> location = new ArrayList<LocationTypeClient>(locationHolders.size());
-		for (LocationHolder holder : locationHolders) {
-			location.add(holder.getLocation());
+		if (tabsInitialized[MODS_LOCATION]) {
+			List<LocationTypeClient> location = new ArrayList<LocationTypeClient>(locationHolders.size());
+			for (LocationHolder holder : locationHolders) {
+				location.add(holder.getLocation());
+			}
+			modsTypeClient.setLocation(location);
+		} else {
+			modsTypeClient.setLocation(modsTypeClient_ == null ? null : modsTypeClient_.getLocation());
 		}
-		modsTypeClient.setLocation(location);
 
 		// access condition
-		List<AccessConditionTypeClient> acc = new ArrayList<AccessConditionTypeClient>(accessConditionHolders.size());
-		for (AccessConditionHolder holder : accessConditionHolders) {
-			acc.add(holder.getAccessCondition());
+		if (tabsInitialized[MODS_ACCESS]) {
+			List<AccessConditionTypeClient> acc = new ArrayList<AccessConditionTypeClient>(accessConditionHolders.size());
+			for (AccessConditionHolder holder : accessConditionHolders) {
+				acc.add(holder.getAccessCondition());
+			}
+			modsTypeClient.setAccessCondition(acc);
+		} else {
+			modsTypeClient.setAccessCondition(modsTypeClient_ == null ? null : modsTypeClient_.getAccessCondition());
 		}
-		modsTypeClient.setAccessCondition(acc);
 
 		// part
-		List<PartTypeClient> part = new ArrayList<PartTypeClient>(partHolders.size());
-		for (PartHolder holder : partHolders) {
-			part.add(holder.getPart());
+		if (tabsInitialized[MODS_PART]) {
+			List<PartTypeClient> part = new ArrayList<PartTypeClient>(partHolders.size());
+			for (PartHolder holder : partHolders) {
+				part.add(holder.getPart());
+			}
+			modsTypeClient.setPart(part);
+		} else {
+			modsTypeClient.setPart(modsTypeClient_ == null ? null : modsTypeClient_.getPart());
 		}
-		modsTypeClient.setPart(part);
 
 		// extension
-		List<ExtensionTypeClient> extension = new ArrayList<ExtensionTypeClient>(extensionHolders.size());
-		for (ExtensionHolder holder : extensionHolders) {
-			extension.add(holder.getExtension());
+		if (tabsInitialized[MODS_EXTENSION]) {
+			List<ExtensionTypeClient> extension = new ArrayList<ExtensionTypeClient>(extensionHolders.size());
+			for (ExtensionHolder holder : extensionHolders) {
+				extension.add(holder.getExtension());
+			}
+			modsTypeClient.setExtension(extension);
+		} else {
+			modsTypeClient.setExtension(modsTypeClient_ == null ? null : modsTypeClient_.getExtension());
 		}
-		modsTypeClient.setExtension(extension);
 
 		// record info
-		List<RecordInfoTypeClient> record = new ArrayList<RecordInfoTypeClient>(recordInfoHolders.size());
-		for (RecordInfoHolder holder : recordInfoHolders) {
-			record.add(holder.getRecordInfo());
+		if (tabsInitialized[MODS_RECORD]) {
+			List<RecordInfoTypeClient> record = new ArrayList<RecordInfoTypeClient>(recordInfoHolders.size());
+			for (RecordInfoHolder holder : recordInfoHolders) {
+				record.add(holder.getRecordInfo());
+			}
+			modsTypeClient.setRecordInfo(record);
+		} else {
+			modsTypeClient.setRecordInfo(modsTypeClient_ == null ? null : modsTypeClient_.getRecordInfo());
 		}
-		modsTypeClient.setRecordInfo(record);
 
 		return modsTypeClient;
 	}
