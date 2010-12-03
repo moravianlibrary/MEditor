@@ -95,6 +95,7 @@ import cz.fi.muni.xkremser.editor.server.mods.ExtensionType;
 import cz.fi.muni.xkremser.editor.server.mods.ExtentType;
 import cz.fi.muni.xkremser.editor.server.mods.GenreType;
 import cz.fi.muni.xkremser.editor.server.mods.HierarchicalGeographicType;
+import cz.fi.muni.xkremser.editor.server.mods.HoldingSimpleType;
 import cz.fi.muni.xkremser.editor.server.mods.IdentifierType;
 import cz.fi.muni.xkremser.editor.server.mods.LanguageType;
 import cz.fi.muni.xkremser.editor.server.mods.LanguageType.LanguageTerm;
@@ -1269,30 +1270,38 @@ public final class BiblioModsUtils {
 			ModsType modsType = factory.createModsType();
 			modsType.setID(modsTypeClient.getId());
 			modsType.setVersion(modsTypeClient.getVersion());
-			handleModsGroupClient(modsTypeClient, modsType);
+			handleModsGroupClient(modsTypeClient, modsType.getModsGroup());
 			return modsType;
 		} else
 			return null;
 	}
 
-	private static void handleModsGroupClient(ModsTypeClient modsTypeClient, ModsType modsType) {
-		List<Object> modsGroup = modsType.getModsGroup();
-		handleTitleInfo(modsTypeClient.getTitleInfo(), modsGroup);
-		handleName(modsTypeClient.getName(), modsGroup);
-		handleTypeOfResource(modsTypeClient.getTypeOfResource(), modsGroup);
-		handleGenre(modsTypeClient.getGenre(), modsGroup);
-		handleOrigin(modsTypeClient.getOriginInfo(), modsGroup);
-		handleLanguage(modsTypeClient.getLanguage(), modsGroup);
+	private static void handleModsGroupClient(ModsTypeClient modsTypeClient, List<Object> modsGroup) {
+		if (modsTypeClient == null)
+			return;
+		handleTitleInfoClient(modsTypeClient.getTitleInfo(), modsGroup);
+		handleNameClient(modsTypeClient.getName(), modsGroup);
+		handleTypeOfResourceClient(modsTypeClient.getTypeOfResource(), modsGroup);
+		handleGenreClient(modsTypeClient.getGenre(), modsGroup);
+		handleOriginClient(modsTypeClient.getOriginInfo(), modsGroup);
+		handleLanguageClient(modsTypeClient.getLanguage(), modsGroup);
 		handlePhysicalDescription(modsTypeClient.getPhysicalDescription(), modsGroup);
-		handleAbstract(modsTypeClient.getAbstrac(), modsGroup);
-		handleTableOfContents(modsTypeClient.getTableOfContents(), modsGroup);
-		handleAudience(modsTypeClient.getTargetAudience(), modsGroup);
-		handleNote(modsTypeClient.getNote(), modsGroup);
-		handleSubject(modsTypeClient.getSubject(), modsGroup);
-		handleClassification(modsTypeClient.getClassification(), modsGroup);
+		handleAbstractClient(modsTypeClient.getAbstrac(), modsGroup);
+		handleTableOfContentsClient(modsTypeClient.getTableOfContents(), modsGroup);
+		handleAudienceClient(modsTypeClient.getTargetAudience(), modsGroup);
+		handleNoteClient(modsTypeClient.getNote(), modsGroup);
+		handleSubjectClient(modsTypeClient.getSubject(), modsGroup);
+		handleClassificationClient(modsTypeClient.getClassification(), modsGroup);
+		handleRelatedItemClient(modsTypeClient.getRelatedItem(), modsGroup);
+		handleIdentifierClient(modsTypeClient.getIdentifier(), modsGroup);
+		handleLocationClient(modsTypeClient.getLocation(), modsGroup);
+		handleAccessCondition(modsTypeClient.getAccessCondition(), modsGroup);
+		handlePartClient(modsTypeClient.getPart(), modsGroup);
+		handleExtensionClient(modsTypeClient.getExtension(), modsGroup);
+		handleRecordInfoClient(modsTypeClient.getRecordInfo(), modsGroup);
 	}
 
-	private static void handleTitleInfo(final List<TitleInfoTypeClient> titleInfoClientList, final List<Object> modsGroup) {
+	private static void handleTitleInfoClient(final List<TitleInfoTypeClient> titleInfoClientList, final List<Object> modsGroup) {
 		if (titleInfoClientList != null && titleInfoClientList.size() > 0) {
 			for (TitleInfoTypeClient valueClient : titleInfoClientList) {
 				if (valueClient == null)
@@ -1342,7 +1351,7 @@ public final class BiblioModsUtils {
 		}
 	}
 
-	private static void handleName(final List<NameTypeClient> valueList, final List<Object> modsGroup) {
+	private static void handleNameClient(final List<NameTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
 			for (NameTypeClient valueClient : valueList) {
 				if (valueClient == null)
@@ -1410,7 +1419,7 @@ public final class BiblioModsUtils {
 		}
 	}
 
-	private static void handleTypeOfResource(final List<TypeOfResourceTypeClient> valueList, final List<Object> modsGroup) {
+	private static void handleTypeOfResourceClient(final List<TypeOfResourceTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
 			for (TypeOfResourceTypeClient valueClient : valueList) {
 				if (valueClient == null)
@@ -1426,7 +1435,7 @@ public final class BiblioModsUtils {
 		}
 	}
 
-	private static void handleGenre(final List<GenreTypeClient> valueList, final List<Object> modsGroup) {
+	private static void handleGenreClient(final List<GenreTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
 			for (GenreTypeClient valueClient : valueList) {
 				if (valueClient == null)
@@ -1444,7 +1453,7 @@ public final class BiblioModsUtils {
 		}
 	}
 
-	private static void handleDate(final DateTypeClient valueClient, final DateType value) {
+	private static void handleDateClient(final DateTypeClient valueClient, final DateType value) {
 		value.setValue(valueClient.getValue());
 		value.setEncoding(valueClient.getEncoding());
 		value.setKeyDate(valueClient.getKeyDate() == null || valueClient.getKeyDate().value() == null ? null : Yes.fromValue(valueClient.getKeyDate().value()));
@@ -1452,7 +1461,7 @@ public final class BiblioModsUtils {
 		value.setQualifier(valueClient.getQualifier());
 	}
 
-	private static void handleOrigin(final List<OriginInfoTypeClient> valueList, final List<Object> modsGroup) {
+	private static void handleOriginClient(final List<OriginInfoTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
 			for (OriginInfoTypeClient valueClient : valueList) {
 				if (valueClient == null)
@@ -1504,7 +1513,7 @@ public final class BiblioModsUtils {
 					for (DateTypeClient dateTypeClient : valueClient.getDateIssued()) {
 						if (dateTypeClient != null) {
 							DateType dateType = factory.createDateType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateIssued(dateType));
 						}
 					}
@@ -1513,7 +1522,7 @@ public final class BiblioModsUtils {
 					for (DateTypeClient dateTypeClient : valueClient.getDateCreated()) {
 						if (dateTypeClient != null) {
 							DateType dateType = factory.createDateType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateCreated(dateType));
 						}
 					}
@@ -1522,7 +1531,7 @@ public final class BiblioModsUtils {
 					for (DateTypeClient dateTypeClient : valueClient.getDateCaptured()) {
 						if (dateTypeClient != null) {
 							DateType dateType = factory.createDateType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateCaptured(dateType));
 						}
 					}
@@ -1531,7 +1540,7 @@ public final class BiblioModsUtils {
 					for (DateTypeClient dateTypeClient : valueClient.getDateValid()) {
 						if (dateTypeClient != null) {
 							DateType dateType = factory.createDateType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateValid(dateType));
 						}
 					}
@@ -1540,7 +1549,7 @@ public final class BiblioModsUtils {
 					for (DateTypeClient dateTypeClient : valueClient.getDateModified()) {
 						if (dateTypeClient != null) {
 							DateType dateType = factory.createDateType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateModified(dateType));
 						}
 					}
@@ -1549,7 +1558,7 @@ public final class BiblioModsUtils {
 					for (DateTypeClient dateTypeClient : valueClient.getCopyrightDate()) {
 						if (dateTypeClient != null) {
 							DateType dateType = factory.createDateType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeCopyrightDate(dateType));
 						}
 					}
@@ -1558,7 +1567,7 @@ public final class BiblioModsUtils {
 					for (DateOtherTypeClient dateTypeClient : valueClient.getDateOther()) {
 						if (dateTypeClient != null) {
 							DateOtherType dateType = factory.createDateOtherType();
-							handleDate(dateTypeClient, dateType);
+							handleDateClient(dateTypeClient, dateType);
 							dateType.setType(dateTypeClient.getType());
 							value.getPlaceOrPublisherOrDateIssued().add(factory.createOriginInfoTypeDateOther(dateType));
 						}
@@ -1579,28 +1588,620 @@ public final class BiblioModsUtils {
 		}
 	}
 
-	private static void handleLanguage(List<LanguageTypeClient> valueClient, List<Object> modsGroup) {
+	private static void handleLanguageClient(List<LanguageTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (LanguageTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				LanguageType value = factory.createLanguageType();
+				value.setObjectPart(valueClient.getObjectPart());
+				if (valueClient.getLanguageTerm() != null) {
+					for (LanguageTermClient val : valueClient.getLanguageTerm()) {
+						if (val != null) {
+							LanguageTerm langTerm = factory.createLanguageTypeLanguageTerm();
+							langTerm.setAuthority(val.getAuthority());
+							langTerm.setValue(val.getValue());
+							langTerm.setType(val.getType() == null ? null : CodeOrText.fromValue(val.getType().value()));
+							value.getLanguageTerm().add(langTerm);
+						}
+					}
+				}
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handlePhysicalDescription(List<PhysicalDescriptionTypeClient> physicalDescriptionClientList, List<Object> modsGroup) {
+	private static void handlePhysicalDescription(List<PhysicalDescriptionTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (PhysicalDescriptionTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				PhysicalDescriptionType value = factory.createPhysicalDescriptionType();
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				value.setScript(valueClient.getScript());
+
+				if (valueClient.getForm() != null) {
+					for (StringPlusAuthorityPlusTypeClient val : valueClient.getForm()) {
+						if (val != null) {
+							StringPlusAuthorityPlusType form = new StringPlusAuthorityPlusType();
+							form.setAuthority(val.getAuthority());
+							form.setValue(val.getValue());
+							form.setType(val.getType());
+							value.getFormOrReformattingQualityOrInternetMediaType().add(factory.createPhysicalDescriptionTypeForm(form));
+						}
+					}
+				}
+				if (valueClient.getReformattingQuality() != null) {
+					for (String val : valueClient.getReformattingQuality()) {
+						if (val != null) {
+							value.getFormOrReformattingQualityOrInternetMediaType().add(factory.createPhysicalDescriptionTypeReformattingQuality(val));
+						}
+					}
+				}
+				if (valueClient.getInternetMediaType() != null) {
+					for (String val : valueClient.getInternetMediaType()) {
+						if (val != null) {
+							value.getFormOrReformattingQualityOrInternetMediaType().add(factory.createPhysicalDescriptionTypeInternetMediaType(val));
+						}
+					}
+				}
+				if (valueClient.getExtent() != null) {
+					for (String val : valueClient.getExtent()) {
+						if (val != null) {
+							value.getFormOrReformattingQualityOrInternetMediaType().add(factory.createPhysicalDescriptionTypeExtent(val));
+						}
+					}
+				}
+				if (valueClient.getDigitalOrigin() != null) {
+					for (String val : valueClient.getDigitalOrigin()) {
+						if (val != null) {
+							value.getFormOrReformattingQualityOrInternetMediaType().add(factory.createPhysicalDescriptionTypeDigitalOrigin(val));
+						}
+					}
+				}
+				if (valueClient.getNote() != null) {
+					for (NoteTypeClient val : valueClient.getNote()) {
+						if (val != null) {
+							NoteType note = factory.createNoteType();
+							note.setDisplayLabel(val.getDisplayLabel());
+							note.setValue(val.getValue());
+							note.setHref(val.getXlink());
+							note.setXmlLang(val.getXmlLang());
+							note.setLang(val.getLang());
+							note.setScript(val.getScript());
+							note.setTransliteration(val.getTransliteration());
+							note.setAtType(val.getAtType());
+							value.getFormOrReformattingQualityOrInternetMediaType().add(factory.createPhysicalDescriptionTypeNote(note));
+						}
+					}
+				}
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handleAbstract(List<AbstractTypeClient> abstractClientList, List<Object> modsGroup) {
+	private static void handleAbstractClient(List<AbstractTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (AbstractTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				AbstractType value = factory.createAbstractType();
+				value.setValue(valueClient.getValue());
+				value.setAtType(valueClient.getAtType());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setHref(valueClient.getXlink());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handleTableOfContents(List<TableOfContentsTypeClient> tableOfContentsClientList, List<Object> modsGroup) {
+	private static void handleTableOfContentsClient(List<TableOfContentsTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (TableOfContentsTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				TableOfContentsType value = factory.createTableOfContentsType();
+				value.setValue(valueClient.getValue());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setAtType(valueClient.getAtType());
+				value.setHref(valueClient.getXlink());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handleAudience(List<TargetAudienceTypeClient> targetAudienceClientList, List<Object> modsGroup) {
+	private static void handleAudienceClient(List<TargetAudienceTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (TargetAudienceTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				TargetAudienceType value = factory.createTargetAudienceType();
+				value.setValue(valueClient.getValue());
+				value.setAuthority(valueClient.getAuthority());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handleNote(List<NoteTypeClient> noteClientList, List<Object> modsGroup) {
+	private static void handleNoteClient(List<NoteTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (NoteTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				NoteType value = factory.createNoteType();
+				value.setValue(valueClient.getValue());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setID(valueClient.getID());
+				value.setAtType(valueClient.getAtType());
+				value.setHref(valueClient.getXlink());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handleSubject(List<SubjectTypeClient> subjectClientList, List<Object> modsGroup) {
+	private static void handleSubjectClient(List<SubjectTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (SubjectTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				SubjectType value = factory.createSubjectType();
+				value.setID(valueClient.getId());
+				value.setAuthority(valueClient.getAuthority());
+				value.setHref(valueClient.getXlink());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				if (valueClient.getTopic() != null) {
+					for (String strVal : valueClient.getTopic()) {
+						if (strVal != null)
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeTopic(strVal));
+					}
+				}
+				if (valueClient.getGeographic() != null) {
+					for (String strVal : valueClient.getGeographic()) {
+						if (strVal != null)
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeGeographic(strVal));
+					}
+				}
+				if (valueClient.getGeographic() != null) {
+					for (String strVal : valueClient.getGeographic()) {
+						if (strVal != null)
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeGeographic(strVal));
+					}
+				}
+				if (valueClient.getTemporal() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getTemporal()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDateClient(dateTypeClient, dateType);
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeTemporal(dateType));
+						}
+					}
+				}
+				List<Object> titleInfos = new ArrayList<Object>();
+				handleTitleInfoClient(valueClient.getTitleInfo(), titleInfos);
+				for (Object o : titleInfos) {
+					if (o != null) {
+						value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeTitleInfo((TitleInfoType) o));
+					}
+				}
+				List<Object> names = new ArrayList<Object>();
+				handleNameClient(valueClient.getName(), names);
+				for (Object o : names) {
+					if (o != null) {
+						value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeName((NameType) o));
+					}
+				}
+				if (valueClient.getGenre() != null) {
+					for (String strVal : valueClient.getGenre()) {
+						if (strVal != null)
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeGenre(strVal));
+					}
+				}
+				if (valueClient.getOccupation() != null) {
+					for (String strVal : valueClient.getOccupation()) {
+						if (strVal != null)
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeOccupation(strVal));
+					}
+				}
+				if (valueClient.getGeographicCode() != null) {
+					for (GeographicCodeClient val : valueClient.getGeographicCode()) {
+						if (val != null) {
+							GeographicCode code = factory.createSubjectTypeGeographicCode();
+							code.setValue(val.getValue());
+							code.setAuthority(val.getAuthority() == null ? null : PlaceAuthority.fromValue(val.getAuthority().value()));
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeGeographicCode(code));
+						}
+					}
+				}
+
+				if (valueClient.getHierarchicalGeographic() != null) {
+					for (HierarchicalGeographicTypeClient hierarchicalClient : valueClient.getHierarchicalGeographic()) {
+						if (hierarchicalClient != null) {
+							HierarchicalGeographicType hierarchical = factory.createHierarchicalGeographicType();
+							if (hierarchicalClient.getContinent() != null) {
+								for (String strVal : hierarchicalClient.getContinent()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeContinent(strVal));
+								}
+							}
+							if (hierarchicalClient.getCountry() != null) {
+								for (String strVal : hierarchicalClient.getCountry()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeCountry(strVal));
+								}
+							}
+							if (hierarchicalClient.getProvince() != null) {
+								for (String strVal : hierarchicalClient.getProvince()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeProvince(strVal));
+								}
+							}
+							if (hierarchicalClient.getRegion() != null) {
+								for (String strVal : hierarchicalClient.getRegion()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeRegion(strVal));
+								}
+							}
+							if (hierarchicalClient.getState() != null) {
+								for (String strVal : hierarchicalClient.getState()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeState(strVal));
+								}
+							}
+							if (hierarchicalClient.getTerritory() != null) {
+								for (String strVal : hierarchicalClient.getTerritory()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeTerritory(strVal));
+								}
+							}
+							if (hierarchicalClient.getCounty() != null) {
+								for (String strVal : hierarchicalClient.getCounty()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeCounty(strVal));
+								}
+							}
+							if (hierarchicalClient.getCity() != null) {
+								for (String strVal : hierarchicalClient.getCity()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeCity(strVal));
+								}
+							}
+							if (hierarchicalClient.getCitySection() != null) {
+								for (String strVal : hierarchicalClient.getCitySection()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeCitySection(strVal));
+								}
+							}
+							if (hierarchicalClient.getIsland() != null) {
+								for (String strVal : hierarchicalClient.getIsland()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeIsland(strVal));
+								}
+							}
+							if (hierarchicalClient.getArea() != null) {
+								for (String strVal : hierarchicalClient.getArea()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeArea(strVal));
+								}
+							}
+							if (hierarchicalClient.getExtraterrestrialArea() != null) {
+								for (String strVal : hierarchicalClient.getExtraterrestrialArea()) {
+									if (strVal != null)
+										hierarchical.getExtraterrestrialAreaOrContinentOrCountry().add(factory.createHierarchicalGeographicTypeExtraterrestrialArea(strVal));
+								}
+							}
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeHierarchicalGeographic(hierarchical));
+						}
+					}
+				}
+				if (valueClient.getCartographics() != null) {
+					for (CartographicsClient val : valueClient.getCartographics()) {
+						if (val != null) {
+							Cartographics cart = factory.createSubjectTypeCartographics();
+							cart.setProjection(val.getProjection());
+							cart.setScale(val.getScale());
+							if (val.getCoordinates() != null) {
+								for (String strVal : val.getCoordinates()) {
+									if (strVal != null)
+										cart.getCoordinates().add(strVal);
+								}
+							}
+							value.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeCartographics(cart));
+						}
+					}
+				}
+
+				modsGroup.add(value);
+			}
+		}
 	}
 
-	private static void handleClassification(List<ClassificationTypeClient> classificationClientList, List<Object> modsGroup) {
+	private static void handleClassificationClient(List<ClassificationTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (ClassificationTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				ClassificationType value = factory.createClassificationType();
+				value.setAuthority(valueClient.getAuthority());
+				value.setValue(valueClient.getValue());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setEdition(valueClient.getEdition());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				modsGroup.add(value);
+			}
+		}
 	}
 
+	private static void handleRelatedItemClient(List<RelatedItemTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (RelatedItemTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				RelatedItemType value = factory.createRelatedItemType();
+				value.setAtType(valueClient.getType());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setHref(valueClient.getXlink());
+				value.setID(valueClient.getId());
+				handleModsGroupClient(valueClient.getMods(), value.getModsGroup());
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleIdentifierClient(List<IdentifierTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (IdentifierTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				IdentifierType value = factory.createIdentifierType();
+				value.setType(valueClient.getType());
+				value.setValue(valueClient.getValue());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				value.setInvalid(valueClient.getInvalid() == null ? null : Yes.fromValue(valueClient.getInvalid().value()));
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleLocationClient(List<LocationTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (LocationTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				LocationType value = factory.createLocationType();
+				if (valueClient.getShelfLocator() != null) {
+					for (String strVal : valueClient.getShelfLocator()) {
+						if (strVal != null)
+							value.getShelfLocator().add(strVal);
+					}
+				}
+				if (valueClient.getHoldingExternal() != null && valueClient.getHoldingExternal().getContent() != null) {
+					ExtensionTypeClient val = valueClient.getHoldingExternal();
+					value.getHoldingExternal().getContent().add(val.getContent());
+				}
+				if (valueClient.getPhysicalLocation() != null) {
+					for (PhysicalLocationTypeClient val : valueClient.getPhysicalLocation()) {
+						if (val != null) {
+							PhysicalLocationType loc = factory.createPhysicalLocationType();
+							loc.setValue(val.getValue());
+							loc.setDisplayLabel(val.getDisplayLabel());
+							loc.setAtType(val.getType());
+							loc.setHref(val.getXlink());
+							loc.setAuthority(val.getAuthority());
+							loc.setScript(val.getScript());
+							loc.setLang(val.getLang());
+							loc.setXmlLang(val.getXmlLang());
+							loc.setTransliteration(val.getTransliteration());
+							value.getPhysicalLocation().add(loc);
+						}
+					}
+				}
+
+				if (valueClient.getUrl() != null) {
+					for (UrlTypeClient val : valueClient.getUrl()) {
+						if (val != null) {
+							UrlType url = factory.createUrlType();
+							url.setAccess(val.getAccess());
+							url.setValue(val.getValue());
+							url.setDisplayLabel(val.getDisplayLabel());
+							url.setNote(val.getNote());
+							url.setUsage(val.getUsage());
+							url.setDateLastAccessed(val.getDateLastAccessed());
+							value.getUrl().add(url);
+						}
+					}
+				}
+
+				// TODO: do not copy the empty structure
+				if (valueClient.getHoldingSimple() != null && valueClient.getHoldingSimple().getCopyInformation() != null
+						&& valueClient.getHoldingSimple().getCopyInformation().size() > 0) {
+					HoldingSimpleTypeClient val = valueClient.getHoldingSimple();
+					HoldingSimpleType hold = factory.createHoldingSimpleType();
+					if (val.getCopyInformation() != null) {
+						for (CopyInformationTypeClient copyClient : val.getCopyInformation()) {
+							if (copyClient != null) {
+								CopyInformationType copy = factory.createCopyInformationType();
+								copy.getSubLocation().addAll(copyClient.getSubLocation());
+								copy.getShelfLocator().addAll(copyClient.getShelfLocator());
+								copy.getElectronicLocator().addAll(copyClient.getElectronicLocator());
+								if (copyClient.getForm() != null) {
+									StringPlusAuthority str = factory.createStringPlusAuthority();
+									str.setAuthority(copyClient.getForm().getAuthority());
+									str.setValue(copyClient.getForm().getValue());
+									copy.setForm(str);
+								}
+								if (copyClient.getNote() != null) {
+									for (StringPlusDisplayLabelPlusTypeClient strVal : copyClient.getNote()) {
+										if (strVal != null) {
+											StringPlusDisplayLabelPlusType blibBlabBlob = factory.createStringPlusDisplayLabelPlusType();
+											blibBlabBlob.setValue(strVal.getValue());
+											blibBlabBlob.setDisplayLabel(strVal.getDisplayLabel());
+											blibBlabBlob.setAtType(strVal.getAtType());
+											copy.getNote().add(blibBlabBlob);
+										}
+									}
+								}
+								if (copyClient.getEnumerationAndChronology() != null) {
+									for (EnumerationAndChronologyTypeClient val1 : copyClient.getEnumerationAndChronology()) {
+										if (val1 != null) {
+											EnumerationAndChronologyType blibBlabBlob = factory.createEnumerationAndChronologyType();
+											blibBlabBlob.setValue(val1.getValue());
+											blibBlabBlob.setUnitType(val1.getUnitType());
+											copy.getEnumerationAndChronology().add(blibBlabBlob);
+										}
+									}
+								}
+								hold.getCopyInformation().add(copy);
+							}
+						}
+					}
+					value.setHoldingSimple(hold);
+				}
+
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleAccessCondition(List<AccessConditionTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (AccessConditionTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				AccessConditionType value = factory.createAccessConditionType();
+				value.getContent().add(valueClient.getContent());
+				value.setAtType(valueClient.getType());
+				value.setDisplayLabel(valueClient.getDisplayLabel());
+				value.setHref(valueClient.getXlink());
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handlePartClient(List<PartTypeClient> valueList, List<Object> modsGroup) {
+	}
+
+	private static void handleExtensionClient(List<ExtensionTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (ExtensionTypeClient valueClient : valueList) {
+				if (valueClient == null || valueClient.getContent() == null)
+					continue;
+				ExtensionType value = factory.createExtensionType();
+				value.getContent().add(valueClient.getNameSpace() == null ? "" : ("namespace: " + valueClient.getNameSpace() + '\n') + valueClient.getContent());
+				modsGroup.add(value);
+			}
+		}
+	}
+
+	private static void handleRecordInfoClient(List<RecordInfoTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (RecordInfoTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				RecordInfoType value = factory.createRecordInfoType();
+				value.setScript(valueClient.getScript());
+				value.setLang(valueClient.getLang());
+				value.setXmlLang(valueClient.getXmlLang());
+				value.setTransliteration(valueClient.getTransliteration());
+				if (valueClient.getRecordOrigin() != null) {
+					for (String val : valueClient.getRecordOrigin()) {
+						if (val != null) {
+							value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeRecordOrigin(val));
+						}
+					}
+				}
+				if (valueClient.getRecordContentSource() != null) {
+					for (StringPlusAuthorityPlusLanguageClient val : valueClient.getRecordContentSource()) {
+						if (val != null) {
+							StringPlusAuthorityPlusLanguage zblunk = factory.createStringPlusAuthorityPlusLanguage();
+							zblunk.setValue(val.getValue());
+							zblunk.setAuthority(val.getAuthority());
+							zblunk.setLang(val.getLang());
+							zblunk.setScript(val.getScript());
+							zblunk.setXmlLang(val.getXmlLang());
+							zblunk.setTransliteration(val.getTransliteration());
+							value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeRecordContentSource(zblunk));
+						}
+					}
+				}
+				if (valueClient.getRecordCreationDate() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getRecordCreationDate()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDateClient(dateTypeClient, dateType);
+							value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeRecordCreationDate(dateType));
+						}
+					}
+				}
+				if (valueClient.getRecordChangeDate() != null) {
+					for (DateTypeClient dateTypeClient : valueClient.getRecordChangeDate()) {
+						if (dateTypeClient != null) {
+							DateType dateType = factory.createDateType();
+							handleDateClient(dateTypeClient, dateType);
+							value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeRecordChangeDate(dateType));
+						}
+					}
+				}
+				if (valueClient.getRecordIdentifier() != null) {
+					for (RecordIdentifierClient val : valueClient.getRecordIdentifier()) {
+						if (val != null) {
+							RecordIdentifier zblunk = factory.createRecordInfoTypeRecordIdentifier();
+							zblunk.setValue(val.getValue());
+							zblunk.setSource(val.getSource());
+							value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeRecordIdentifier(zblunk));
+						}
+					}
+				}
+				if (valueClient.getDescriptionStandard() != null) {
+					for (StringPlusAuthorityClient val : valueClient.getDescriptionStandard()) {
+						if (val != null) {
+							StringPlusAuthority zblunk = factory.createStringPlusAuthority();
+							zblunk.setValue(val.getValue());
+							zblunk.setAuthority(val.getAuthority());
+							value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeDescriptionStandard(zblunk));
+						}
+					}
+				}
+				List<Object> languages = new ArrayList<Object>();
+				handleLanguageClient(valueClient.getLanguageOfCataloging(), languages);
+				for (Object o : languages) {
+					if (o != null) {
+						value.getRecordContentSourceOrRecordCreationDateOrRecordChangeDate().add(factory.createRecordInfoTypeLanguageOfCataloging((LanguageType) o));
+					}
+				}
+				modsGroup.add(value);
+			}
+		}
+	}
 }
