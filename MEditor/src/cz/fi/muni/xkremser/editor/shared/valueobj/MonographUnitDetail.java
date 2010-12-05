@@ -46,30 +46,7 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 		return KrameriusModel.MONOGRAPHUNIT;
 	}
 
-	/** The pages. */
-	private ArrayList<PageDetail> pages;
-
 	private ArrayList<InternalPartDetail> intParts;
-
-	/**
-	 * Gets the pages.
-	 * 
-	 * @return the pages
-	 */
-	@Override
-	public ArrayList<PageDetail> getPages() {
-		return pages;
-	}
-
-	/**
-	 * Sets the pages.
-	 * 
-	 * @param pages
-	 *          the new pages
-	 */
-	public void setPages(ArrayList<PageDetail> pages) {
-		this.pages = pages;
-	}
 
 	public ArrayList<InternalPartDetail> getIntParts() {
 		return intParts;
@@ -77,6 +54,7 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 
 	public void setIntParts(ArrayList<InternalPartDetail> intParts) {
 		this.intParts = intParts;
+		getContainers().add(intParts);
 	}
 
 	@Override
@@ -90,15 +68,6 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 	}
 
 	@Override
-	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
-		return new ArrayList<ArrayList<? extends AbstractDigitalObjectDetail>>() {
-			{
-				add(intParts);
-			}
-		};
-	}
-
-	@Override
 	public List<KrameriusModel> getChildContainerModels() {
 		return new ArrayList<KrameriusModel>() {
 			{
@@ -106,8 +75,5 @@ public class MonographUnitDetail extends AbstractDigitalObjectDetail {
 			}
 		};
 	}
-
-	// handle
-	// policy
 
 }

@@ -61,16 +61,6 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 	}
 
 	@Override
-	public List<PageDetail> getPages() {
-		return null;
-	}
-
-	@Override
-	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
-		return null;
-	}
-
-	@Override
 	public List<KrameriusModel> getChildContainerModels() {
 		return null;
 	}

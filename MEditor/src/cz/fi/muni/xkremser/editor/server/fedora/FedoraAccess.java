@@ -333,4 +333,6 @@ public interface FedoraAccess {
 
 	public String getFOXML(String uuid);
 
+	public String getOcr(String uuid);
+
 }

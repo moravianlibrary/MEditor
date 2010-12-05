@@ -22,7 +22,13 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	private Streams streams;
 	private String foxml;
+	private String ocr;
+	private List<PageDetail> pages;
 	private ArrayList<ArrayList<String>> related;
+	private String uuid;
+	private boolean dcChanged;
+	private boolean modsChanged;
+	private ArrayList<List<? extends AbstractDigitalObjectDetail>> containers;
 
 	public AbstractDigitalObjectDetail() {
 	}
@@ -99,12 +105,31 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	public abstract int hasContainers();
 
-	public abstract List<PageDetail> getPages();
+	public List<PageDetail> getPages() {
+		if (!hasPages())
+			throw new UnsupportedOperationException();
+		return pages;
+	}
+
+	public void setPages(List<PageDetail> pages) {
+		if (!hasPages())
+			throw new UnsupportedOperationException();
+		this.pages = pages;
+	}
 
 	// TODO: consider strategy DP
 	public abstract List<KrameriusModel> getChildContainerModels();
 
-	public abstract List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers();
+	public List<List<? extends AbstractDigitalObjectDetail>> getContainers() {
+		if (containers == null) {
+			containers = new ArrayList<List<? extends AbstractDigitalObjectDetail>>();
+		}
+		return containers;
+	}
+
+	public void setContainers(ArrayList<List<? extends AbstractDigitalObjectDetail>> containers) {
+		this.containers = containers;
+	}
 
 	public String getFoxml() {
 		return foxml;
@@ -114,7 +139,40 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 		this.foxml = foxml;
 	}
 
+	public String getOcr() {
+		return ocr;
+	}
+
+	public void setOcr(String ocr) {
+		this.ocr = ocr;
+	}
+
 	public void setRelated(ArrayList<ArrayList<String>> related) {
 		this.related = related;
 	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public boolean isDcChanged() {
+		return dcChanged;
+	}
+
+	public void setDcChanged(boolean dcChanged) {
+		this.dcChanged = dcChanged;
+	}
+
+	public boolean isModsChanged() {
+		return modsChanged;
+	}
+
+	public void setModsChanged(boolean modsChanged) {
+		this.modsChanged = modsChanged;
+	}
+
 }

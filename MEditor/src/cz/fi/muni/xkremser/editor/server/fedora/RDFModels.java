@@ -9,7 +9,7 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 // TODO: Auto-generated Javadoc
 /**
  * The Class RDFModels.
- *
+ * 
  * @author Administrator
  */
 
@@ -20,8 +20,9 @@ public class RDFModels {
 
 	/**
 	 * Convert rdf to model.
-	 *
-	 * @param rdf the rdf
+	 * 
+	 * @param rdf
+	 *          the rdf
 	 * @return the kramerius model
 	 */
 	public static KrameriusModel convertRDFToModel(String rdf) {
@@ -47,8 +48,9 @@ public class RDFModels {
 
 	/**
 	 * Convert to rdf.
-	 *
-	 * @param km the km
+	 * 
+	 * @param km
+	 *          the km
 	 * @return the string
 	 */
 	public static String convertToRdf(KrameriusModel km) {
@@ -67,8 +69,6 @@ public class RDFModels {
 				return "hasIntCompPart";
 			case PAGE:
 				return "hasPage";
-				// case DONATOR:
-				// return "hasDonator";
 			default:
 				return km.toString();
 		}

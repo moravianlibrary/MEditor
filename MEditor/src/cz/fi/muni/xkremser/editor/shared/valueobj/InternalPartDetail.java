@@ -46,29 +46,6 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 		return KrameriusModel.INTERNALPART;
 	}
 
-	/** The pages. */
-	private ArrayList<PageDetail> pages;
-
-	/**
-	 * Gets the pages.
-	 * 
-	 * @return the pages
-	 */
-	@Override
-	public ArrayList<PageDetail> getPages() {
-		return pages;
-	}
-
-	/**
-	 * Sets the pages.
-	 * 
-	 * @param pages
-	 *          the new pages
-	 */
-	public void setPages(ArrayList<PageDetail> pages) {
-		this.pages = pages;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,11 +61,6 @@ public class InternalPartDetail extends AbstractDigitalObjectDetail {
 	@Override
 	public int hasContainers() {
 		return 0;
-	}
-
-	@Override
-	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
-		return null;
 	}
 
 	@Override

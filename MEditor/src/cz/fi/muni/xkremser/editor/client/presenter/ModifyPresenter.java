@@ -99,6 +99,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		/**
 		 * Adds the digital object.
 		 * 
+		 * @param krameriusModel
+		 * 
 		 * @param tileGridVisible
 		 *          the tile grid visible
 		 * @param data
@@ -107,7 +109,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 *          the dispatcher
 		 */
 		void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList, final Streams dc,
-				final String uuid, final boolean picture, String foxml, final String ocr, final boolean refresh);
+				final String uuid, final boolean picture, String foxml, final String ocr, final boolean refresh, final KrameriusModel krameriusModel);
 	}
 
 	/**
@@ -400,8 +402,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					containerDataList.add(containerData);
 					containerModelList.add(detail.getChildContainerModels().get(i));
 				}
-				getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(), null,
-						forcedRefresh);
+				getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
+						detail.getOcr(), forcedRefresh, detail.getModel());
 				DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 						result.getDetail().getRelated());
 				getView().getPopupPanel().setVisible(false);

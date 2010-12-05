@@ -28,6 +28,7 @@ import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
+import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.util.ValueCallback;
@@ -192,7 +193,11 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 */
 	@Override
 	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
-			final Streams streams, final String uuid, final boolean picture, final String foxml, final String ocr, boolean refresh) {
+			final Streams streams, final String uuid, final boolean picture, final String foxml, final String ocr, boolean refresh, final KrameriusModel model) {
+
+		if (ocr != null) {
+			SC.say(ocr);
+		}
 		final DublinCore dc = streams.getDc();
 		final ModsCollectionClient mods = streams.getMods();
 
@@ -203,25 +208,26 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		makeTuple(uuid, topTabSet);
 
 		Tab imageTab = null;
+		final TileGrid pageGrid = pageData != null ? getTileGrid(true, "page") : null;
 		List<Tab> containerTabs = null;
 		if (pageData != null) {
-			TileGrid grid = getTileGrid(true, "page");
-			grid.setData(pageData);
+			pageGrid.setData(pageData);
 			imageTab = new Tab("Images", "pieces/16/pawn_red.png");
-			imageTab.setPane(grid);
+			imageTab.setPane(pageGrid);
 		}
 
+		final TileGrid[] containerGrids = containerModelList == null ? null : new TileGrid[containerModelList.size()];
 		if (containerDataList != null) {
 			containerTabs = new ArrayList<Tab>(containerModelList.size());
 			for (int i = 0; i < containerModelList.size(); i++) {
 				String label = containerModelList.get(i).getValue();
 				String newLabel = label.substring(0, 1).toUpperCase() + label.substring(1) + "s";
-				TileGrid grid = getTileGrid(false, newLabel);
-				grid.setData(containerDataList.get(i));
+				containerGrids[i] = getTileGrid(false, newLabel);
+				containerGrids[i].setData(containerDataList.get(i));
 				// TODO: localization
 				Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
 				containerTab.setAttribute(ID_MODEL, containerModelList.get(i).getValue());
-				containerTab.setPane(grid);
+				containerTab.setPane(containerGrids[i]);
 				containerTabs.add(containerTab);
 			}
 		}
@@ -420,31 +426,67 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		publishItem.setAttribute(ID_TABSET, topTabSet);
 		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 			@Override
-			public void onClick(MenuItemClickEvent event) {
-				TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-				Tab dcT = dcTab.get(ts);
-				Tab modsT = modsTab.get(ts);
-				if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-					DCTab dcT_ = (DCTab) dcT;
-					SC.say(dcT_.getDc().toString());
-					System.out.println(dcT_.getDc());
-				} else {
-					SC.say(streams.getDc().toString());
-					System.out.println(streams);
-				}
+			public void onClick(final MenuItemClickEvent event) {
+				SC.confirm("Publish digital object", "Are you sure you want to publish the digital object?", new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							AbstractDigitalObjectDetail object = KrameriusModel.getDetail(model);
+							TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+							Tab dcT = dcTab.get(ts);
+							Tab modsT = modsTab.get(ts);
+							DublinCore changedDC = null;
+							if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+								DCTab dcT_ = (DCTab) dcT;
+								changedDC = dcT_.getDc();
+								object.setDcChanged(true);
+							} else {
+								changedDC = dc;
+								object.setDcChanged(false);
+							}
+							object.setDc(changedDC);
+							ModsCollectionClient changedMods = null;
+							if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+								ModsTab modsT_ = (ModsTab) modsT;
+								changedMods = new ModsCollectionClient();
+								changedMods.setMods(Arrays.asList(modsT_.getMods()));
+								object.setModsChanged(true);
+							} else {
+								changedMods = mods;
+								object.setModsChanged(false);
+							}
+							object.setMods(changedMods);
+							if (object.hasPages() && pageGrid != null && pageGrid.getData() != null && pageGrid.getData().length > 0) {
+								List<PageDetail> pages = new ArrayList<PageDetail>(pageGrid.getData().length);
+								for (Record rec : pageGrid.getData()) {
+									PageDetail page = new PageDetail(null);
+									page.setUuid(((PageRecord) rec).getUuid());
+									pages.add(page);
+								}
+								object.setPages(pages);
+							}
+							int cont = object.hasContainers();
+							int i = 0;
+							if (cont != 0) {
+								for (KrameriusModel containerModel : object.getChildContainerModels()) {
+									ArrayList<AbstractDigitalObjectDetail> list = null;
+									if (containerGrids != null && containerGrids[i] != null && containerGrids[i].getData() != null && containerGrids[i].getData().length > 0) {
+										list = new ArrayList<AbstractDigitalObjectDetail>(containerGrids[i].getData().length);
+										for (Record rec : containerGrids[i].getData()) {
+											AbstractDigitalObjectDetail subObject = KrameriusModel.getDetail(containerModel);
+											subObject.setUuid(((ContainerRecord) rec).getUuid());
+											list.add(subObject);
+										}
+									}
+									object.getContainers().add(list);
+									i++;
+								}
+							}
 
-				if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-					ModsTab modsT_ = (ModsTab) modsT;
-					// SC.say(modsT_.getMods().toString());
-					AbstractDigitalObjectDetail page = new PageDetail(null);
-					ModsCollectionClient collection = new ModsCollectionClient();
-					collection.setMods(Arrays.asList(modsT_.getMods()));
-					page.setMods(collection);
-					getUiHandlers().onSaveDigitalObject(page);
-				} else {
-					SC.say(streams.getMods().toString());
-					System.out.println(streams);
-				}
+							getUiHandlers().onSaveDigitalObject(object);
+						}
+					}
+				});
 			}
 		});
 

@@ -99,6 +99,7 @@ public class DigitalObjectHandler implements CanGetObject {
 		AbstractDigitalObjectDetail detail = handler.getDigitalObject(uuid, findRelated);
 		detail.setMods(handleMods(uuid));
 		detail.setFoxml(handleFOXML(uuid));
+		detail.setOcr(handleOCR(uuid));
 		return detail;
 	}
 
@@ -127,6 +128,10 @@ public class DigitalObjectHandler implements CanGetObject {
 			e.printStackTrace();
 		}
 		return dc;
+	}
+
+	protected String handleOCR(String uuid) {
+		return getFedoraAccess().getOcr(uuid);
 	}
 
 	protected String handleFOXML(String uuid) {

@@ -473,4 +473,9 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.getVolumesUuid(uuid);
 	}
 
+	@Override
+	public String getOcr(String uuid) {
+		return rawAccess.getOcr(uuid);
+	}
+
 }

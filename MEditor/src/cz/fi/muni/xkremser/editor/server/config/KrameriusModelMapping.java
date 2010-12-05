@@ -18,7 +18,7 @@ import cz.fi.muni.xkremser.editor.server.modelHandler.PeriodicalHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.PeriodicalItemHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.PeriodicalVolumeHandler;
 
-// TODO: Auto-generated Javadoc
+// TODO: to client side
 /**
  * The Class KrameriusModelMapping.
  */

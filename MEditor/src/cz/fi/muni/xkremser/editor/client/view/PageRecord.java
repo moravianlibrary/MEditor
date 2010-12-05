@@ -134,4 +134,10 @@ public class PageRecord extends TileRecord {
 		return new PageRecord(getName(), getUuid(), getPicture(), getDescription());
 	}
 
+	@Override
+	public String toString() {
+		return "PageRecord [getName()=" + getName() + ", getUuid()=" + getUuid() + ", getPicture()=" + getPicture() + ", getDescription()=" + getDescription()
+				+ "]";
+	}
+
 }

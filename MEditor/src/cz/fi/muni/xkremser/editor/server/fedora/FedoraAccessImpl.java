@@ -49,6 +49,7 @@ import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 
+import cz.fi.muni.xkremser.editor.client.FedoraRelationship;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
@@ -211,6 +212,21 @@ public class FedoraAccessImpl implements FedoraAccess {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new IOException(e);
 		}
+	}
+
+	@Override
+	public String getOcr(String uuid) {
+		String ocrUrl = ocr(uuid);
+		LOGGER.info("Reading OCR +" + ocrUrl);
+		InputStream docStream;
+		try {
+			docStream = RESTHelper.inputStream(ocrUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		} catch (IOException e) {
+			// ocr is not available
+			e.printStackTrace();
+			return null;
+		}
+		return docStream.toString();
 	}
 
 	/**
@@ -761,6 +777,11 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public String dc(String uuid) {
 		String fedoraObject = configuration.getFedoraHost() + "/get/uuid:" + uuid;
 		return fedoraObject + "/DC";
+	}
+
+	public String ocr(String uuid) {
+		String fedoraObject = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/datastreams/TEXT_OCR/content";
+		return fedoraObject;
 	}
 
 	/**

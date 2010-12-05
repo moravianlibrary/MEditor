@@ -18,9 +18,6 @@ public class PeriodicalDetail extends AbstractDigitalObjectDetail {
 
 	private ArrayList<PeriodicalVolumeDetail> perVolumes;
 
-	/** The pages. */
-	private ArrayList<PageDetail> pages;
-
 	@SuppressWarnings("unused")
 	private PeriodicalDetail() {
 		super();
@@ -42,28 +39,9 @@ public class PeriodicalDetail extends AbstractDigitalObjectDetail {
 		return KrameriusModel.PERIODICAL;
 	}
 
-	/**
-	 * Gets the pages.
-	 * 
-	 * @return the pages
-	 */
-	@Override
-	public ArrayList<PageDetail> getPages() {
-		return pages;
-	}
-
-	/**
-	 * Sets the pages.
-	 * 
-	 * @param pages
-	 *          the new pages
-	 */
-	public void setPages(ArrayList<PageDetail> pages) {
-		this.pages = pages;
-	}
-
 	public void setPerVolumes(ArrayList<PeriodicalVolumeDetail> perVolumes) {
 		this.perVolumes = perVolumes;
+		getContainers().add(perVolumes);
 	}
 
 	/*
@@ -81,15 +59,6 @@ public class PeriodicalDetail extends AbstractDigitalObjectDetail {
 	@Override
 	public int hasContainers() {
 		return 1;
-	}
-
-	@Override
-	public List<? extends List<? extends AbstractDigitalObjectDetail>> getContainers() {
-		return new ArrayList<ArrayList<? extends AbstractDigitalObjectDetail>>() {
-			{
-				add(perVolumes);
-			}
-		};
 	}
 
 	@Override

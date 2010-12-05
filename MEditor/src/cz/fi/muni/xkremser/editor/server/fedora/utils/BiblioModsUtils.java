@@ -2110,6 +2110,91 @@ public final class BiblioModsUtils {
 	}
 
 	private static void handlePartClient(List<PartTypeClient> valueList, List<Object> modsGroup) {
+		if (valueList != null && valueList.size() > 0) {
+			for (PartTypeClient valueClient : valueList) {
+				if (valueClient == null)
+					continue;
+				PartType value = factory.createPartType();
+				value.setID(valueClient.getId());
+				value.setType(valueClient.getType());
+				value.setOrder(valueClient.getOrder());
+				if (valueClient.getText() != null && valueClient.getText().size() > 0) {
+					for (String strVal : valueClient.getText()) {
+						if (strVal != null) {
+							UnstructuredText text = factory.createUnstructuredText();
+							text.setValue(strVal);
+							value.getDetailOrExtentOrDate().add(text);
+						}
+
+					}
+				}
+				if (valueClient.getDate() != null) {
+					for (BaseDateTypeClient dateTypeClient : valueClient.getDate()) {
+						if (dateTypeClient != null) {
+							DateOtherType dateType = factory.createDateOtherType();
+							dateType.setValue(dateTypeClient.getValue());
+							dateType.setEncoding(dateTypeClient.getEncoding());
+							dateType.setPoint(dateTypeClient.getPoint());
+							dateType.setQualifier(dateTypeClient.getQualifier());
+							value.getDetailOrExtentOrDate().add(dateType);
+						}
+					}
+				}
+				if (valueClient.getText() != null && valueClient.getText().size() > 0) {
+					for (String strVal : valueClient.getText()) {
+						if (strVal != null) {
+							UnstructuredText text = factory.createUnstructuredText();
+							text.setValue(strVal);
+							value.getDetailOrExtentOrDate().add(text);
+						}
+
+					}
+				}
+				if (valueClient.getExtent() != null) {
+					for (ExtentTypeClient extentClient : valueClient.getExtent()) {
+						if (extentClient != null) {
+							ExtentType e = factory.createExtentType();
+							e.setUnit(extentClient.getUnit());
+							e.setStart(extentClient.getStart());
+							e.setEnd(extentClient.getEnd());
+							e.setTotal(extentClient.getTotal());
+							e.setList(extentClient.getList());
+							value.getDetailOrExtentOrDate().add(e);
+						}
+					}
+				}
+				if (valueClient.getDetail() != null) {
+					for (DetailTypeClient detailClient : valueClient.getDetail()) {
+						if (detailClient != null) {
+							DetailType detail = factory.createDetailType();
+							detail.setLevel(detailClient.getLevel());
+							detail.setType(detailClient.getType());
+							if (detailClient.getNumber() != null) {
+								for (String strVal : detailClient.getNumber()) {
+									if (strVal != null)
+										detail.getNumberOrCaptionOrTitle().add(factory.createDetailTypeNumber(strVal));
+								}
+							}
+							if (detailClient.getCaption() != null) {
+								for (String strVal : detailClient.getCaption()) {
+									if (strVal != null)
+										detail.getNumberOrCaptionOrTitle().add(factory.createDetailTypeCaption(strVal));
+								}
+							}
+							if (detailClient.getTitle() != null) {
+								for (String strVal : detailClient.getTitle()) {
+									if (strVal != null)
+										detail.getNumberOrCaptionOrTitle().add(factory.createDetailTypeTitle(strVal));
+								}
+							}
+							value.getDetailOrExtentOrDate().add(detail);
+						}
+					}
+				}
+
+				modsGroup.add(value);
+			}
+		}
 	}
 
 	private static void handleExtensionClient(List<ExtensionTypeClient> valueList, List<Object> modsGroup) {
