@@ -69,6 +69,9 @@ public class FullImgServiceImpl extends HttpServlet {
 					StringBuffer sb = new StringBuffer();
 					sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_FULL/content");
 					InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
+					if (is == null) {
+						return;
+					}
 					try {
 						IOUtils.copyStreams(is, os);
 					} catch (IOException e) {

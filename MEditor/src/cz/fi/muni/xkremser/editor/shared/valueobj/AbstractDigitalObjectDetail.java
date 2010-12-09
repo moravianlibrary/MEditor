@@ -28,6 +28,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	private String uuid;
 	private boolean dcChanged;
 	private boolean modsChanged;
+	private boolean ocrChanged;
 	private ArrayList<List<? extends AbstractDigitalObjectDetail>> containers;
 
 	public AbstractDigitalObjectDetail() {
@@ -173,6 +174,14 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	public void setModsChanged(boolean modsChanged) {
 		this.modsChanged = modsChanged;
+	}
+
+	public boolean isOcrChanged() {
+		return ocrChanged;
+	}
+
+	public void setOcrChanged(boolean ocrChanged) {
+		this.ocrChanged = ocrChanged;
 	}
 
 }

@@ -116,6 +116,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		String relsExtUrl = relsExtUrl(uuid);
 		LOGGER.fine("Reading rels ext +" + relsExtUrl);
 		InputStream docStream = RESTHelper.inputStream(relsExtUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		if (docStream == null)
+			return null;
 
 		try {
 			return XMLUtils.parseDocument(docStream, true);
@@ -125,6 +127,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		} catch (SAXException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new IOException(e);
+		} finally {
+			docStream.close();
 		}
 	}
 
@@ -180,6 +184,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		String biblioModsUrl = biblioMods(uuid);
 		LOGGER.info("Reading bibliomods +" + biblioModsUrl);
 		InputStream docStream = RESTHelper.inputStream(biblioModsUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		if (docStream == null)
+			return null;
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
@@ -188,6 +194,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		} catch (SAXException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new IOException(e);
+		} finally {
+			docStream.close();
 		}
 	}
 
@@ -203,6 +211,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		String dcUrl = dc(uuid);
 		LOGGER.info("Reading dc +" + dcUrl);
 		InputStream docStream = RESTHelper.inputStream(dcUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		if (docStream == null)
+			return null;
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
@@ -211,6 +221,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		} catch (SAXException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new IOException(e);
+		} finally {
+			docStream.close();
 		}
 	}
 
@@ -218,15 +230,47 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public String getOcr(String uuid) {
 		String ocrUrl = ocr(uuid);
 		LOGGER.info("Reading OCR +" + ocrUrl);
-		InputStream docStream;
+		InputStream docStream = null;
 		try {
 			docStream = RESTHelper.inputStream(ocrUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			if (docStream == null)
+				return null;
 		} catch (IOException e) {
 			// ocr is not available
 			e.printStackTrace();
 			return null;
 		}
-		return docStream.toString();
+		BufferedReader br = new BufferedReader(new InputStreamReader(docStream));
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				sb.append(line).append('\n');
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Reading ocr +" + ocrUrl, e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					LOGGER.log(Level.SEVERE, "Closing stream +" + ocrUrl, e);
+					e.printStackTrace();
+				} finally {
+					br = null;
+				}
+			}
+			try {
+				if (docStream != null)
+					docStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				docStream = null;
+			}
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -1036,6 +1080,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 		InputStream docStream = null;
 		try {
 			docStream = RESTHelper.inputStream(objUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			if (docStream == null)
+				return null;
 		} catch (IOException e1) {
 			try {
 				if (docStream != null)

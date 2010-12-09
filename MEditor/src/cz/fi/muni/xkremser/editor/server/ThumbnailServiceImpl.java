@@ -33,8 +33,12 @@ public class ThumbnailServiceImpl extends HttpServlet {
 	@Inject
 	private EditorConfiguration config;
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -51,6 +55,9 @@ public class ThumbnailServiceImpl extends HttpServlet {
 			StringBuffer sb = new StringBuffer();
 			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_THUMB/content");
 			InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
+			if (is == null) {
+				return;
+			}
 			ServletOutputStream os = resp.getOutputStream();
 
 			try {
@@ -78,7 +85,7 @@ public class ThumbnailServiceImpl extends HttpServlet {
 
 	/**
 	 * Gets the config.
-	 *
+	 * 
 	 * @return the config
 	 */
 	public EditorConfiguration getConfig() {
@@ -87,14 +94,17 @@ public class ThumbnailServiceImpl extends HttpServlet {
 
 	/**
 	 * Sets the config.
-	 *
-	 * @param config the new config
+	 * 
+	 * @param config
+	 *          the new config
 	 */
 	public void setConfig(EditorConfiguration config) {
 		this.config = config;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init()
 	 */
 	@Override
@@ -104,7 +114,9 @@ public class ThumbnailServiceImpl extends HttpServlet {
 		injector.injectMembers(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
 	@Override
@@ -116,7 +128,7 @@ public class ThumbnailServiceImpl extends HttpServlet {
 
 	/**
 	 * Gets the injector.
-	 *
+	 * 
 	 * @return the injector
 	 */
 	protected Injector getInjector() {

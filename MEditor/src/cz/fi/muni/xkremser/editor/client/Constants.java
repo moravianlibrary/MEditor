@@ -93,4 +93,7 @@ public class Constants {
 	public static final String INTERNAL_PART_ICON = "icons/128/internal_part.png";
 
 	public static final String PERIODICAL_ITEM_ICON = "icons/128/periodical_item.png";
+
+	// foxml
+	public static final String RELS_EXT_LAST_ELEMENT = "<kramerius:contract>";
 }

@@ -46,6 +46,7 @@ import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -195,9 +196,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
 			final Streams streams, final String uuid, final boolean picture, final String foxml, final String ocr, boolean refresh, final KrameriusModel model) {
 
-		if (ocr != null) {
-			SC.say(ocr);
-		}
 		final DublinCore dc = streams.getDc();
 		final ModsCollectionClient mods = streams.getMods();
 
@@ -247,8 +245,22 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		descriptionTab.setAttribute(ID_TAB, ID_DESC);
 
 		Tab thumbTab = null;
+		final Tab ocrTab = picture ? new Tab("OCR", "pieces/16/pawn_white.png") : null;
+		final TextAreaItem ocrItem = picture ? new TextAreaItem() : null;
 		Tab fullTab = null;
 		if (picture) {
+			DynamicForm form = new DynamicForm();
+			form.setWidth100();
+			form.setHeight100();
+			ocrItem.setWidth("600");
+			ocrItem.setHeight("*");
+			ocrItem.setShowTitle(false);
+			if (ocr != null) {
+				ocrItem.setValue(ocr);
+			}
+			form.setItems(ocrItem);
+			ocrTab.setPane(form);
+
 			thumbTab = new Tab("Thumbnail", "pieces/16/pawn_white.png");
 			final Image full2 = new Image("images/thumbnail/" + uuid);
 			final Img image = new Img("thumbnail/" + uuid, full2.getWidth(), full2.getHeight());
@@ -289,6 +301,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		tabList.add(moTab);
 		tabList.add(descriptionTab);
 		if (picture) {
+			tabList.add(ocrTab);
 			tabList.add(thumbTab);
 			tabList.add(fullTab);
 		}
@@ -342,6 +355,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 						@Override
 						public void run() {
 							final Img full = new Img("full/" + uuid, full2.getWidth() == 0 ? 400 : full2.getWidth(), full2.getHeight() == 0 ? 600 : full2.getHeight());
+							full.draw();
 							full.addClickHandler(new ClickHandler() {
 								private boolean turn = false;
 
@@ -435,7 +449,16 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 							TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
 							Tab dcT = dcTab.get(ts);
 							Tab modsT = modsTab.get(ts);
+
+							if (ocrTab.getAttributeAsBoolean(TAB_INITIALIZED)) {
+								object.setOcr((String) ocrItem.getValue());
+								object.setOcrChanged(true);
+							} else {
+								object.setOcrChanged(false);
+							}
+
 							DublinCore changedDC = null;
+							object.setUuid(openedObjectsUuids.get(ts));
 							if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
 								DCTab dcT_ = (DCTab) dcT;
 								changedDC = dcT_.getDc();

@@ -8,6 +8,7 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
  *
  * @author incad
  */
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -42,10 +43,10 @@ public class FedoraUtils {
 
 	/** The Constant RELS_EXT_STREAM. */
 	public static final String RELS_EXT_STREAM = "RELS-EXT";
-	
+
 	/** The Constant IMG_THUMB_STREAM. */
 	public static final String IMG_THUMB_STREAM = "IMG_THUMB";
-	
+
 	/** The Constant IMG_FULL_STREAM. */
 	public static final String IMG_FULL_STREAM = "IMG_FULL";
 
@@ -55,9 +56,11 @@ public class FedoraUtils {
 
 	/**
 	 * Gets the rdf pids.
-	 *
-	 * @param pid the pid
-	 * @param relation the relation
+	 * 
+	 * @param pid
+	 *          the pid
+	 * @param relation
+	 *          the relation
 	 * @return the rdf pids
 	 */
 	public static ArrayList<String> getRdfPids(String pid, String relation) {
@@ -92,16 +95,20 @@ public class FedoraUtils {
 
 	/**
 	 * Gets the subject pids.
-	 *
-	 * @param objectPid the object pid
+	 * 
+	 * @param objectPid
+	 *          the object pid
 	 * @return the subject pids
 	 */
 	public static List<RelationshipTuple> getSubjectPids(String objectPid) {
 		List<RelationshipTuple> retval = new ArrayList<RelationshipTuple>();
 		String command = configuration.getFedoraHost() + "/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20%3Cinfo:fedora/" + objectPid + "%3E";
+		InputStream stream = null;
 		try {
-			String result = IOUtils.readAsString(RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword()),
-					Charset.forName("UTF-8"), true);
+			stream = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			if (stream == null)
+				return null;
+			String result = IOUtils.readAsString(stream, Charset.forName("UTF-8"), true);
 			String[] lines = result.split("\n");
 			for (String line : lines) {
 				String[] tokens = line.split(" ");
@@ -120,14 +127,22 @@ public class FedoraUtils {
 			}
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		} finally {
+			if (stream != null)
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 		return retval;
 	}
 
 	/**
 	 * The main method.
-	 *
-	 * @param args the arguments
+	 * 
+	 * @param args
+	 *          the arguments
 	 */
 	public static void main(String[] args) {
 		getSubjectPids("uuid:4a8a8630-af36-11dd-ae9c-000d606f5dc6");
@@ -135,9 +150,11 @@ public class FedoraUtils {
 
 	/**
 	 * Fill first page pid.
-	 *
-	 * @param pids the pids
-	 * @param models the models
+	 * 
+	 * @param pids
+	 *          the pids
+	 * @param models
+	 *          the models
 	 * @return true, if successful
 	 */
 	public static boolean fillFirstPagePid(ArrayList<String> pids, ArrayList<String> models) {
@@ -185,8 +202,9 @@ public class FedoraUtils {
 
 	/**
 	 * Find first page pid.
-	 *
-	 * @param pid the pid
+	 * 
+	 * @param pid
+	 *          the pid
 	 * @return the string
 	 */
 	public static String findFirstPagePid(String pid) {
@@ -221,8 +239,9 @@ public class FedoraUtils {
 
 	/**
 	 * Vraci url na stream s DJVU.
-	 *
-	 * @param uuid objektu
+	 * 
+	 * @param uuid
+	 *          objektu
 	 * @return the dj vu image
 	 */
 	public static String getDjVuImage(String uuid) {
@@ -232,8 +251,9 @@ public class FedoraUtils {
 
 	/**
 	 * Vraci url na stream THUMB.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the thumbnail from fedora
 	 */
 	public static String getThumbnailFromFedora(String uuid) {
@@ -243,8 +263,9 @@ public class FedoraUtils {
 
 	/**
 	 * Gets the fedora datastreams list.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the fedora datastreams list
 	 */
 	public static String getFedoraDatastreamsList(String uuid) {
