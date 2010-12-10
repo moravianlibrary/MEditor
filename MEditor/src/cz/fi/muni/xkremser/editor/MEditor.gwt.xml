@@ -7,6 +7,7 @@
   <inherits name="com.google.gwt.inject.Inject" /> 
   <inherits name="com.google.gwt.resources.Resources" />
   
+  
   <!-- Smart GWT							                      -->
   <inherits name='com.smartgwt.SmartGwt'/>
   <inherits name='com.smartgwt.SmartGwtNoScript'/>
@@ -21,6 +22,9 @@
   <!-- GWT Platform						                          -->
   <inherits name='com.gwtplatform.dispatch.Dispatch' />
   <inherits name='com.gwtplatform.mvp.Mvp' />
+  
+  <!-- other						                          -->
+  <inherits name="com.reveregroup.gwt.imagepreloader.ImagePreloader" />
   
   <define-configuration-property name="gin.ginjector" is-multi-valued="false" />
   <set-configuration-property name="gin.ginjector"
@@ -62,7 +66,7 @@
   <source path='shared'/>
   
   <!-- mostly classes from avax.xml for JAXB annotations          -->
-  <super-source path="jre" />  
+  <!-- <super-source path="jre" />  -->
 
   <!--  Deprecation 												-->
 	<extend-configuration-property name="rpc.blacklist" value="com.google.gwt.user.client.ui.ChangeListenerCollection"/>

@@ -22,6 +22,9 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
+import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
+import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.DragDataAction;
@@ -95,6 +98,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
 		void putDescription(final String uuid, final String description);
+
+		void onRefresh(final String uuid);
 	}
 
 	private static final String ID_DC = "dc";
@@ -118,6 +123,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	public static final int DC_TAB_INDEX = 1;
 	public static final String TAB_INITIALIZED = "initialized";
 
+	private final Map<TabSet, TextAreaItem> ocrContent = new HashMap<TabSet, TextAreaItem>();
+	private final Map<TextAreaItem, String> ocrTextContent = new HashMap<TextAreaItem, String>();
 	private final Map<TabSet, Tab> dcTab = new HashMap<TabSet, Tab>();
 	private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
 
@@ -203,6 +210,20 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
+		int insertPosition = -1;
+		if (refresh) {
+			TabSet toDelete = openedObjectsTabsets.get(uuid);
+			if (toDelete != null) {
+				insertPosition = layout.getMemberNumber(toDelete);
+				dcTab.put(toDelete, null);
+				modsTab.put(toDelete, null);
+				layout.removeMember(toDelete);
+				removeTuple(toDelete);
+				toDelete.destroy();
+			} else {
+				refresh = false;
+			}
+		}
 		makeTuple(uuid, topTabSet);
 
 		Tab imageTab = null;
@@ -245,21 +266,24 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		descriptionTab.setAttribute(ID_TAB, ID_DESC);
 
 		Tab thumbTab = null;
-		final Tab ocrTab = picture ? new Tab("OCR", "pieces/16/pawn_white.png") : null;
-		final TextAreaItem ocrItem = picture ? new TextAreaItem() : null;
+		Tab ocTab = picture ? new Tab("OCR", "pieces/16/pawn_white.png") : null;
+
 		Tab fullTab = null;
 		if (picture) {
 			DynamicForm form = new DynamicForm();
 			form.setWidth100();
 			form.setHeight100();
+			TextAreaItem ocrItem = new TextAreaItem();
 			ocrItem.setWidth("600");
 			ocrItem.setHeight("*");
 			ocrItem.setShowTitle(false);
 			if (ocr != null) {
 				ocrItem.setValue(ocr);
+				ocrTextContent.put(ocrItem, ocr);
 			}
 			form.setItems(ocrItem);
-			ocrTab.setPane(form);
+			ocTab.setPane(form);
+			ocrContent.put(topTabSet, ocrItem);
 
 			thumbTab = new Tab("Thumbnail", "pieces/16/pawn_white.png");
 			final Image full2 = new Image("images/thumbnail/" + uuid);
@@ -301,7 +325,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		tabList.add(moTab);
 		tabList.add(descriptionTab);
 		if (picture) {
-			tabList.add(ocrTab);
+			tabList.add(ocTab);
 			tabList.add(thumbTab);
 			tabList.add(fullTab);
 		}
@@ -350,32 +374,40 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					final ModalWindow mw = new ModalWindow(topTabSet);
 					mw.setLoadingIcon("loadingAnimation.gif");
 					mw.show(true);
-					final Image full2 = new Image("images/full/" + uuid);
-					Timer timer = new Timer() {
+					ImagePreloader.load("images/full/" + uuid + "?" + Constants.URL_PARAM_NOT_SCALE + "=true", new ImageLoadHandler() {
 						@Override
-						public void run() {
-							final Img full = new Img("full/" + uuid, full2.getWidth() == 0 ? 400 : full2.getWidth(), full2.getHeight() == 0 ? 600 : full2.getHeight());
-							full.draw();
-							full.addClickHandler(new ClickHandler() {
-								private boolean turn = false;
+						public void imageLoaded(final ImageLoadEvent event1) {
+							if (!event1.isLoadFailed()) {
+								final int width = event1.getDimensions().getWidth();
+								final int height = event1.getDimensions().getHeight();
+								Timer timer = new Timer() {
+									@Override
+									public void run() {
+										final Img full = new Img("full/" + uuid + "?" + Constants.URL_PARAM_NOT_SCALE + "=true", width, height);
+										full.draw();
+										full.addClickHandler(new ClickHandler() {
+											private boolean turn = true;
 
-								@Override
-								public void onClick(ClickEvent event) {
-									if (turn) {
-										full.animateRect(5, 5, full2.getWidth() / 2, full2.getHeight() / 2);
-									} else {
-										full.animateRect(5, 5, full2.getWidth(), full2.getHeight());
+											@Override
+											public void onClick(final ClickEvent event2) {
+												if (turn) {
+													full.animateRect(5, 5, width / 2, height / 2);
+												} else {
+													full.animateRect(5, 5, width, height);
+												}
+												turn = !turn;
+											}
+										});
+										TabSet ts = event.getTab().getTabSet();
+										ts.setTabPane(event.getTab().getID(), full);
+										mw.hide();
 									}
-									turn = !turn;
-								}
-							});
-
-							TabSet ts = event.getTab().getTabSet();
-							ts.setTabPane(event.getTab().getID(), full);
-							mw.hide();
+								};
+								timer.schedule(20);
+							}
 						}
-					};
-					timer.schedule(100);
+					});
+
 				} else if (ID_DESC.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
 					getUiHandlers().getDescription(uuid, event.getTab().getTabSet(), event.getTab().getID());
 					event.getTab().setAttribute(TAB_INITIALIZED, true);
@@ -437,6 +469,16 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
+		refreshItem.setAttribute(ID_TABSET, topTabSet);
+		refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(final MenuItemClickEvent event) {
+				TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+				String uuid = openedObjectsUuids.get(ts);
+				getUiHandlers().onRefresh(uuid);
+			}
+		});
+
 		publishItem.setAttribute(ID_TABSET, topTabSet);
 		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 			@Override
@@ -449,16 +491,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 							TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
 							Tab dcT = dcTab.get(ts);
 							Tab modsT = modsTab.get(ts);
-
-							if (ocrTab.getAttributeAsBoolean(TAB_INITIALIZED)) {
-								object.setOcr((String) ocrItem.getValue());
-								object.setOcrChanged(true);
+							TextAreaItem ocrTextItem = null;
+							if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
+								String val = (String) ocrTextItem.getValue();
+								if (!ocrTextContent.get(ocrTextItem).equals(val)) {
+									object.setOcr(val);
+									object.setOcrChanged(true);
+								}
 							} else {
 								object.setOcrChanged(false);
 							}
+							object.setUuid(openedObjectsUuids.get(ts));
 
 							DublinCore changedDC = null;
-							object.setUuid(openedObjectsUuids.get(ts));
 							if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
 								DCTab dcT_ = (DCTab) dcT;
 								changedDC = dcT_.getDc();
@@ -567,29 +612,38 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		layout.setMembersMargin(15);
 		if (!refresh) {
 			if (first) {
+
 				if (topTabSet1 != null) {
-					dcTab.put(topTabSet1, null);
-					modsTab.put(topTabSet1, null);
-					layout.removeMember(topTabSet1);
-					removeTuple(topTabSet1);
-					topTabSet1.destroy();
-					topTabSet1 = null;
+					TabSet toDelete = topTabSet1;
+					dcTab.put(toDelete, null);
+					modsTab.put(toDelete, null);
+					layout.removeMember(toDelete);
+					removeTuple(toDelete);
+					toDelete.destroy();
 				}
 				topTabSet1 = topTabSet;
 				layout.addMember(topTabSet1, 0);
 			} else {
 				if (topTabSet2 != null) {
-					dcTab.put(topTabSet2, null);
-					modsTab.put(topTabSet2, null);
-					layout.removeMember(topTabSet2);
-					removeTuple(topTabSet2);
-					topTabSet2.destroy();
-					topTabSet2 = null;
+					TabSet toDelete = topTabSet2;
+					dcTab.put(toDelete, null);
+					modsTab.put(toDelete, null);
+					layout.removeMember(toDelete);
+					removeTuple(toDelete);
+					toDelete.destroy();
 				}
 				topTabSet2 = topTabSet;
 				layout.addMember(topTabSet2, 1);
 			}
 			first = !first;
+		} else if (insertPosition != -1) {
+			if (insertPosition == 0) {
+				topTabSet1 = topTabSet;
+				layout.addMember(topTabSet1, 0);
+			} else if (insertPosition == 1) {
+				topTabSet2 = topTabSet;
+				layout.addMember(topTabSet2, 1);
+			}
 		}
 		layout.redraw();
 		getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);

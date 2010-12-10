@@ -1,6 +1,7 @@
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.smartgwt.client.widgets.Canvas;
@@ -32,8 +33,13 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 		for (Canvas canvas : canvases) {
 			DynamicForm form = (DynamicForm) canvas;
 			Object o = form.getFields()[0].getValue();
+			String value = null;
 			if (o != null) {
-				String value = (String) o;
+				if (o instanceof String) {
+					value = (String) o;
+				} else if (o instanceof Date) {
+					value = ((Date) o).toGMTString();
+				}
 				if (!"".equals(value.trim())) {
 					values.add(value);
 				}

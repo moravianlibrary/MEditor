@@ -88,8 +88,14 @@ public class KrameriusImageSupport {
 			throw new IllegalArgumentException("unsupported mimetype '" + type.getValue() + "'");
 	}
 
-	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os) throws IOException {
-		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+	public static void writeImageToStream(BufferedImage scaledImage, String javaFormat, OutputStream os) throws IOException {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ImageIO.write(scaledImage, javaFormat, bos);
+		IOUtils.copyStreams(new ByteArrayInputStream(bos.toByteArray()), os);
+	}
+
+	public static void writeFullImageToStream(Image scaledImage, String javaFormat, OutputStream os) throws IOException {
+		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_BYTE_BINARY);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
 		gr.dispose();
@@ -99,21 +105,29 @@ public class KrameriusImageSupport {
 		IOUtils.copyStreams(new ByteArrayInputStream(bos.toByteArray()), os);
 	}
 
-	public static BufferedImage getSmallerImage(Image scaledImage) throws IOException {
+	public static BufferedImage getSmallerImage(Image scaledImage, int maxWidth, int maxHeight) throws IOException {
 		int width = scaledImage.getWidth(null);
 		int height = scaledImage.getHeight(null);
-		BufferedImage bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
-		if ((width > 800 && width < 1600) || height > 800 && height < 1600) {
+		if ((width > maxWidth) || height > maxHeight) {
 			width /= 2;
 			height /= 2;
 		}
-		if ((width > 800 && width < 1600) || height > 800 && height < 1600) {
+		if ((width > maxWidth) || height > maxHeight) {
 			width /= 2;
 			height /= 2;
 		}
-		if ((width > 800 && width < 1600) || height > 800 && height < 1600) {
+		if ((width > maxWidth) || height > maxHeight) {
+			width /= 2;
+			height /= 2;
+		}
+		if ((width > maxWidth) || height > maxHeight) {
+			width /= 2;
+			height /= 2;
+		}
+		if ((width > maxWidth) || height > maxHeight) {
 			width /= 2;
 			height /= 2;
 		}
@@ -123,7 +137,7 @@ public class KrameriusImageSupport {
 	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os, float quality) throws IOException {
 		int width = scaledImage.getWidth(null);
 		int height = scaledImage.getHeight(null);
-		BufferedImage bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 		Graphics gr = bufImage.getGraphics();
 		gr.drawImage(scaledImage, 0, 0, null);
 		if (width > 1200 || height > 1200) {

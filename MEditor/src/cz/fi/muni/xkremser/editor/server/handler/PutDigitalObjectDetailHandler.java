@@ -7,6 +7,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
@@ -35,6 +36,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -46,6 +48,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -55,10 +58,16 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 
 	/** The logger. */
 	private final Log logger;
-	private static final String PART_1 = "<kramerius:";
-	private static final String PART_2 = " rdf:resource=\"info:fedora/uuid:";
-	private static final String PART_3 = "\"></kramerius:";
-	private static final String PART_4 = ">\n";
+	private static final String RELS_EXT_PART_1 = "<kramerius:";
+	private static final String RELS_EXT_PART_2 = " rdf:resource=\"info:fedora/uuid:";
+	private static final String RELS_EXT_PART_3 = "\"></kramerius:";
+	private static final String TERMINATOR1 = ">\n";
+	private static final String TERMINATOR2 = ">";
+
+	private static final String DC_HEAD = "<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n";
+	private static final String DC_TAIL = "</oai_dc:dc>";
+	private static final String DC_PART_1 = "<dc:";
+	private static final String DC_PART_2 = "</dc:";
 
 	@Inject
 	@Named("securedFedoraAccess")
@@ -68,6 +77,8 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	private NamespaceContext nsContext;
 
 	private final EditorConfiguration configuration;
+
+	private XPathFactory xpfactory;
 
 	/** The injector. */
 	@Inject
@@ -100,104 +111,31 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		if (action == null || action.getDetail() == null)
 			throw new NullPointerException("getDetail()");
 		AbstractDigitalObjectDetail detail = action.getDetail();
-		StringBuilder sb = new StringBuilder();
-		StringBuilder contentBuilder = new StringBuilder();
-		// page structure
-		if (detail.hasPages()) {
-			if (detail.getPages() == null || detail.getPages().size() == 0) {
-				System.out.println("no pages");
-			} else {
-				String relation = RDFModels.convertToRdf(KrameriusModel.PAGE);
-				for (PageDetail page : detail.getPages()) {
-					sb.append(PART_1).append(relation).append(PART_2).append(page.getUuid()).append(PART_3).append(relation).append(PART_4);
-				}
-			}
-		}
-		// container structure
-		if (detail.hasContainers() != 0) {
-			for (int i = 0; i < detail.hasContainers(); i++) {
-				if (detail.getContainers().size() <= i || detail.getContainers().get(i) == null || detail.getContainers().get(i).size() == 0) {
-					System.out.println("no container " + i);
-				} else {
-					String relation = RDFModels.convertToRdf(detail.getChildContainerModels().get(i));
-					for (AbstractDigitalObjectDetail obj : detail.getContainers().get(i)) {
-						sb.append(PART_1).append(relation).append(PART_2).append(obj.getUuid()).append(PART_3).append(relation).append(PART_4);
-					}
-				}
-			}
-		}
 
 		if ("ee250440-b65d-11dd-83e5-000d606f5dc6".equals(detail.getUuid())) {
-			Document relsExt = null;
-			try {
-				relsExt = fedoraAccess.getRelsExt(detail.getUuid());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				String xPathStr = "/rdf:RDF/rdf:Description/kramerius:hasPage";
-				String paretnStr = "/rdf:RDF/rdf:Description";
-				XPathFactory xpfactory = XPathFactory.newInstance();
-				XPath xpath1 = xpfactory.newXPath();
-				XPath xpath2 = xpfactory.newXPath();
-				xpath1.setNamespaceContext(nsContext);
-				xpath2.setNamespaceContext(nsContext);
-				XPathExpression expr1 = xpath1.compile(paretnStr);
-				XPathExpression expr2 = xpath2.compile(xPathStr);
-				NodeList nodes1 = (NodeList) expr1.evaluate(relsExt, XPathConstants.NODESET);
-				Element parent = null;
-				if (nodes1.getLength() != 0) {
-					parent = (Element) nodes1.item(0);
-				}
-				NodeList nodes2 = (NodeList) expr2.evaluate(relsExt, XPathConstants.NODESET);
-				for (int i = 0, lastIndex = nodes2.getLength() - 1; i <= lastIndex; i++) {
-					parent.removeChild(nodes2.item(i));
-				}
-
-				TransformerFactory transFactory = TransformerFactory.newInstance();
-				Transformer transformer = null;
-				try {
-					transformer = transFactory.newTransformer();
-				} catch (TransformerConfigurationException e) {
-					e.printStackTrace();
-				}
-				StringWriter buffer = new StringWriter();
-				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-				try {
-					transformer.transform(new DOMSource(relsExt), new StreamResult(buffer));
-				} catch (TransformerException e) {
-					e.printStackTrace();
-				}
-
-				String str = buffer.toString();
-				String head = str.substring(0, str.indexOf(Constants.RELS_EXT_LAST_ELEMENT));
-				String tail = str.substring(str.indexOf(Constants.RELS_EXT_LAST_ELEMENT), str.length());
-				contentBuilder.append(head).append(sb).append(tail);
-
-			} catch (XPathExpressionException e) {
-			}
-
-			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/RELS-EXT";
-			String usr = configuration.getFedoraLogin();
-			String pass = configuration.getFedoraPassword();
-			String content = contentBuilder.toString();
-
-			RESTHelper.put(url, content, usr, pass);
+			// modifyRelations(detail);
 
 		}
-		sb.toString();
 
 		// dublin core
 		if (detail.isDcChanged()) {
-
+			if ("ee250440-b65d-11dd-83e5-000d606f5dc6".equals(detail.getUuid())) {
+				modifyDublinCore(detail);
+			}
 		}
 		// mods
 		if (detail.isModsChanged()) {
-
+			if ("851f8d4c-ce7f-11df-886d-001b63bd97ba".equals(detail.getUuid())) {
+				modifyMods(detail);
+			}
 		}
-		ModsCollectionClient modsCollection = detail.getMods();
-		// parse input
-		BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
+
+		// mods
+		if (detail.isOcrChanged()) {
+			if ("eec95a90-b65d-11dd-83e3-000d606f5dc6".equals(detail.getUuid())) {
+				modifyOcr(detail);
+			}
+		}
 
 		return new PutDigitalObjectDetailResult();
 	}
@@ -224,4 +162,180 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	public void undo(PutDigitalObjectDetailAction action, PutDigitalObjectDetailResult result, ExecutionContext context) throws ActionException {
 		// idempotency -> no need for undo
 	}
+
+	private static void removeElements(Element parent, Document doc, XPathExpression expr) {
+		NodeList nodes = null;
+		try {
+			nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			for (int i = 0, lastIndex = nodes.getLength() - 1; i <= lastIndex; i++) {
+				parent.removeChild(nodes.item(i));
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private XPath makeNSAwareXpath() {
+		if (xpfactory == null) {
+			xpfactory = XPathFactory.newInstance();
+		}
+		XPath xpath = xpfactory.newXPath();
+		xpath.setNamespaceContext(nsContext);
+		return xpath;
+	}
+
+	private void modifyRelations(AbstractDigitalObjectDetail detail) {
+		StringBuilder sb = new StringBuilder();
+
+		// page structure
+		if (detail.hasPages()) {
+			if (detail.getPages() == null || detail.getPages().size() == 0) {
+			} else {
+				String relation = RDFModels.convertToRdf(KrameriusModel.PAGE);
+				for (PageDetail page : detail.getPages()) {
+					sb.append(RELS_EXT_PART_1).append(relation).append(RELS_EXT_PART_2).append(page.getUuid()).append(RELS_EXT_PART_3).append(relation)
+							.append(TERMINATOR1);
+				}
+			}
+		}
+		// container structure
+		if (detail.hasContainers() != 0) {
+			for (int i = 0; i < detail.hasContainers(); i++) {
+				if (detail.getContainers().size() <= i || detail.getContainers().get(i) == null || detail.getContainers().get(i).size() == 0) {
+				} else {
+					String relation = RDFModels.convertToRdf(detail.getChildContainerModels().get(i));
+					for (AbstractDigitalObjectDetail obj : detail.getContainers().get(i)) {
+						sb.append(RELS_EXT_PART_1).append(relation).append(RELS_EXT_PART_2).append(obj.getUuid()).append(RELS_EXT_PART_3).append(relation)
+								.append(TERMINATOR1);
+					}
+				}
+			}
+		}
+		Document relsExt = null;
+		StringBuilder contentBuilder = new StringBuilder();
+		try {
+			relsExt = fedoraAccess.getRelsExt(detail.getUuid());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			String hasPageXPath = "/rdf:RDF/rdf:Description/kramerius:hasPage";
+			String hasUnitXPath = "/rdf:RDF/rdf:Description/kramerius:hasUnit";
+			String hasVolumeXPath = "/rdf:RDF/rdf:Description/kramerius:hasVolume";
+			String hasItemXPath = "/rdf:RDF/rdf:Description/kramerius:hasItem";
+			String hasIntCompPartXPath = "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart";
+			String hasIsOnPageXPath = "/rdf:RDF/rdf:Description/kramerius:isOnPage";
+			String paretnStr = "/rdf:RDF/rdf:Description";
+
+			XPathExpression expr1 = makeNSAwareXpath().compile(paretnStr);
+			XPathExpression expr2 = makeNSAwareXpath().compile(hasPageXPath);
+			XPathExpression expr3 = makeNSAwareXpath().compile(hasUnitXPath);
+			XPathExpression expr4 = makeNSAwareXpath().compile(hasVolumeXPath);
+			XPathExpression expr5 = makeNSAwareXpath().compile(hasItemXPath);
+			XPathExpression expr6 = makeNSAwareXpath().compile(hasIntCompPartXPath);
+			XPathExpression expr7 = makeNSAwareXpath().compile(hasIsOnPageXPath);
+			NodeList nodes1 = (NodeList) expr1.evaluate(relsExt, XPathConstants.NODESET);
+			Element parent = null;
+			if (nodes1.getLength() != 0) {
+				parent = (Element) nodes1.item(0);
+			}
+			removeElements(parent, relsExt, expr2);
+			removeElements(parent, relsExt, expr3);
+			removeElements(parent, relsExt, expr4);
+			removeElements(parent, relsExt, expr5);
+			removeElements(parent, relsExt, expr6);
+			removeElements(parent, relsExt, expr7);
+
+			TransformerFactory transFactory = TransformerFactory.newInstance();
+			Transformer transformer = null;
+			try {
+				transformer = transFactory.newTransformer();
+			} catch (TransformerConfigurationException e) {
+				e.printStackTrace();
+			}
+			StringWriter buffer = new StringWriter();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			try {
+				transformer.transform(new DOMSource(relsExt), new StreamResult(buffer));
+			} catch (TransformerException e) {
+				e.printStackTrace();
+			}
+
+			String str = buffer.toString();
+			String head = (str.substring(0, str.indexOf(Constants.RELS_EXT_LAST_ELEMENT))).trim();
+			String tail = str.substring(str.indexOf(Constants.RELS_EXT_LAST_ELEMENT), str.length());
+			contentBuilder.append(head).append(sb).append(tail);
+
+		} catch (XPathExpressionException e) {
+		}
+
+		String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/RELS-EXT?versionable=false";
+		String usr = configuration.getFedoraLogin();
+		String pass = configuration.getFedoraPassword();
+		String content = contentBuilder.toString();
+
+		// RESTHelper.put(url, content, usr, pass);
+	}
+
+	private static void appendDCElement(StringBuilder contentBuilder, List<String> values, String elementName) {
+		if (values != null && values.size() > 0) {
+			for (String value : values) {
+				contentBuilder.append(DC_PART_1).append(elementName).append(TERMINATOR2).append(value).append(DC_PART_2).append(elementName).append(TERMINATOR1);
+			}
+		}
+	}
+
+	private void modifyDublinCore(AbstractDigitalObjectDetail detail) {
+		DublinCore dc = null;
+		if ((dc = detail.getDc()) != null) {
+			StringBuilder contentBuilder = new StringBuilder();
+			contentBuilder.append(DC_HEAD);
+			appendDCElement(contentBuilder, dc.getContributor(), DublinCoreConstants.DC_CONTRIBUTOR);
+			appendDCElement(contentBuilder, dc.getCoverage(), DublinCoreConstants.DC_COVERAGE);
+			appendDCElement(contentBuilder, dc.getCreator(), DublinCoreConstants.DC_CREATOR);
+			appendDCElement(contentBuilder, dc.getDate(), DublinCoreConstants.DC_DATE);
+			appendDCElement(contentBuilder, dc.getDescription(), DublinCoreConstants.DC_DESCRIPTION);
+			appendDCElement(contentBuilder, dc.getFormat(), DublinCoreConstants.DC_FORMAT);
+			appendDCElement(contentBuilder, dc.getIdentifier(), DublinCoreConstants.DC_IDENTIFIER);
+			appendDCElement(contentBuilder, dc.getLanguage(), DublinCoreConstants.DC_LANGUAGE);
+			appendDCElement(contentBuilder, dc.getPublisher(), DublinCoreConstants.DC_PUBLISHER);
+			appendDCElement(contentBuilder, dc.getRelation(), DublinCoreConstants.DC_RELATION);
+			appendDCElement(contentBuilder, dc.getRights(), DublinCoreConstants.DC_RIGHTS);
+			appendDCElement(contentBuilder, dc.getSource(), DublinCoreConstants.DC_SOURCE);
+			appendDCElement(contentBuilder, dc.getSubject(), DublinCoreConstants.DC_SUBJECT);
+			appendDCElement(contentBuilder, dc.getTitle(), DublinCoreConstants.DC_TITLE);
+			appendDCElement(contentBuilder, dc.getType(), DublinCoreConstants.DC_TYPE);
+			contentBuilder.append(DC_TAIL);
+			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/DC?versionable=false";
+			String usr = configuration.getFedoraLogin();
+			String pass = configuration.getFedoraPassword();
+			String content = contentBuilder.toString();
+
+			// RESTHelper.put(url, content, usr, pass);
+		}
+	}
+
+	private void modifyMods(AbstractDigitalObjectDetail detail) {
+		ModsCollectionClient mods = null;
+		if ((mods = detail.getMods()) != null) {
+			ModsCollectionClient modsCollection = detail.getMods();
+			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=false";
+			String usr = configuration.getFedoraLogin();
+			String pass = configuration.getFedoraPassword();
+			String content = BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
+			System.out.println(content);
+
+			RESTHelper.put(url, content, usr, pass);
+		}
+	}
+
+	private void modifyOcr(AbstractDigitalObjectDetail detail) {
+		if (detail.getOcr() != null) {
+			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=false";
+			String usr = configuration.getFedoraLogin();
+			String pass = configuration.getFedoraPassword();
+			RESTHelper.put(url, detail.getOcr(), usr, pass);
+		}
+	}
+
 }

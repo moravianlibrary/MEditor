@@ -229,13 +229,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	@Override
 	protected void onReset() {
 		super.onReset();
-
 		if (uuid != null && (forcedRefresh || (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)))) {
 			Image loader = new Image("images/loadingAnimation3.gif");
 			getView().getPopupPanel().setWidget(loader);
 			getView().getPopupPanel().setVisible(true);
 			getView().getPopupPanel().center();
-			getObject();
+			getObject(forcedRefresh);
+			forcedRefresh = false;
 			if (!uuid.equals(previousUuid1) && !uuid.equals(previousUuid2)) {
 				previousUuid2 = previousUuid1;
 				previousUuid1 = uuid;
@@ -361,8 +361,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		});
 	}
 
-	private void getObject() {
-		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid);
+	private void getObject(boolean refresh) {
+		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, refresh);
 		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
 			@Override
 			public void callback(GetDigitalObjectDetailResult result) {
@@ -403,7 +403,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					containerModelList.add(detail.getChildContainerModels().get(i));
 				}
 				getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
-						detail.getOcr(), forcedRefresh, detail.getModel());
+						detail.getOcr(), result.isRefresh(), detail.getModel());
 				DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
 						result.getDetail().getRelated());
 				getView().getPopupPanel().setVisible(false);
@@ -416,7 +416,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					@Override
 					public void execute(Boolean value) {
 						if (value != null && value) {
-							getObject();
+							getObject(forcedRefresh);
 						} else {
 							// labelAnswer.setContents("No");
 						}
@@ -457,6 +457,11 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 				// TODO: vypnout progressbar
 			}
 		});
+	}
+
+	@Override
+	public void onRefresh(String uuid) {
+		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid).with(Constants.URL_PARAM_REFRESH, "yes"));
 	}
 
 }

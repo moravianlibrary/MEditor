@@ -23,6 +23,7 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
@@ -66,7 +67,8 @@ public class DigitalObjectHandler implements CanGetObject {
 		for (RelationshipTuple triplet : triplets) {
 			ArrayList<String> relatedRecord = new ArrayList<String>(2);
 			String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX + Constants.FEDORA_UUID_PREFIX).length());
-			String predicate = triplet.getPredicate().substring(Constants.FEDORA_INFO_PREFIX.length());
+			String predicate = triplet.getPredicate().substring(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI.length());
+
 			relatedRecord.add(subject);
 			relatedRecord.add(predicate);
 			returnList.add(relatedRecord);

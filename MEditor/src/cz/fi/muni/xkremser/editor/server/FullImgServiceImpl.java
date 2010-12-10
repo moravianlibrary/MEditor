@@ -6,6 +6,7 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
@@ -59,6 +61,7 @@ public class FullImgServiceImpl extends HttpServlet {
 		// resp.setDateHeader("Expires", instance.getTime().getTime());
 
 		String uuid = req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_FULL_PREFIX) + Constants.SERVLET_FULL_PREFIX.length() + 1);
+		boolean notScale = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_NOT_SCALE));
 		ServletOutputStream os = resp.getOutputStream();
 		if (uuid != null && !"".equals(uuid)) {
 
@@ -92,7 +95,12 @@ public class FullImgServiceImpl extends HttpServlet {
 					}
 				} else {
 					Image rawImg = KrameriusImageSupport.readImage(uuid, FedoraUtils.IMG_FULL_STREAM, this.fedoraAccess, 0, loadFromMimeType);
-					Image scaled = KrameriusImageSupport.getSmallerImage(rawImg);
+					BufferedImage scaled = null;
+					if (!notScale) {
+						scaled = KrameriusImageSupport.getSmallerImage(rawImg, 1250, 1000);
+					} else {
+						scaled = KrameriusImageSupport.getSmallerImage(rawImg, 2500, 2000);
+					}
 					KrameriusImageSupport.writeImageToStream(scaled, "JPG", os);
 					resp.setContentType(ImageMimeType.JPEG.getValue());
 					resp.setStatus(HttpURLConnection.HTTP_OK);

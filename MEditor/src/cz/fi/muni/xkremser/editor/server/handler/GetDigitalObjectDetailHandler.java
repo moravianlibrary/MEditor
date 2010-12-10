@@ -70,7 +70,7 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 		// System.out.println(triplet);
 		// }
 		try {
-			return new GetDigitalObjectDetailResult(handler.getDigitalObject(uuid, true));
+			return new GetDigitalObjectDetailResult(handler.getDigitalObject(uuid, true), action.isRefreshIn());
 		} catch (IOException e) {
 			String msg = null;
 			if (ServerUtils.isCausedByException(e, FileNotFoundException.class)) {

@@ -240,22 +240,20 @@ public final class BiblioModsUtils {
 	}
 
 	public static String toXML(ModsCollection collection) {
+		StringWriter sw = null;
 		try {
 			JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.server.mods");
-
+			sw = new StringWriter();
 			Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-			StringWriter sw = new StringWriter();
-
+			// marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new
+			// MyNamespacePrefixMapper());
 			marshaller.marshal(collection, sw);
-			System.out.println(sw.toString());
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return sw == null ? null : sw.toString();
 	}
 
 	public static ModsCollectionClient toModsClient(ModsCollection mods) {

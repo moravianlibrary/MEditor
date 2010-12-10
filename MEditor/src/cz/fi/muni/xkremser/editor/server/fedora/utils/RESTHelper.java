@@ -121,7 +121,7 @@ public class RESTHelper {
 			int resp = ((HttpURLConnection) uc).getResponseCode();
 			if (resp != 200) {
 				LOGGER.log(Level.SEVERE, "Unable to open connection on " + urlString + "  response code: " + resp);
-				// return null;
+				return null;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -148,13 +148,6 @@ public class RESTHelper {
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		try {
-			if (conn != null)
-				System.out.println(conn.getContent().toString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return true;
 	}

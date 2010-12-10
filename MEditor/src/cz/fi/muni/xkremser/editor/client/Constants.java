@@ -20,6 +20,8 @@ public class Constants {
 	/** The Constant SERVLET_FULL_PREFIX. */
 	public static final String SERVLET_FULL_PREFIX = "full";
 
+	public static final String URL_PARAM_NOT_SCALE = "not_scale";
+
 	/** The Constant URL_PARAM_UUID. */
 	public static final String URL_PARAM_UUID = "uuid";
 
@@ -96,4 +98,5 @@ public class Constants {
 
 	// foxml
 	public static final String RELS_EXT_LAST_ELEMENT = "<kramerius:contract>";
+
 }
