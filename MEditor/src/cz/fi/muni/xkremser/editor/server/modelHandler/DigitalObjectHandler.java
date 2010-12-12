@@ -141,7 +141,7 @@ public class DigitalObjectHandler implements CanGetObject {
 		returnString = getFedoraAccess().getFOXML(uuid);
 		String highlighted = null;
 		try {
-			highlighted = XhtmlRendererFactory.getRenderer("xml").highlight("foxml", returnString, "UTF-8", true);
+			highlighted = XhtmlRendererFactory.getRenderer("xml").highlight("foxml", returnString, "Windows-1250", true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return returnString;

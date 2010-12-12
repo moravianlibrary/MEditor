@@ -15,6 +15,8 @@ import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.server.OpenIDCallback;
+import cz.fi.muni.xkremser.editor.server.OpenIDServlet;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
@@ -93,6 +95,7 @@ public class ServerModule extends HandlerModule {
 		}
 
 		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
+		bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);
 
 		// static injection
 		requestStaticInjection(FedoraUtils.class);

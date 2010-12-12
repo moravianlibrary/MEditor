@@ -38,8 +38,33 @@ public class MEditor implements EntryPoint {
 		// });
 		// adminButton.draw();
 		// FileLoader.cacheImgs(skinImgDir, baseImageURLs)
+
 		DelayedBindRegistry.bind(injector);
+
+		// UserAuthenticationAsync auth = (UserAuthenticationAsync)
+		// GWT.create(UserAuthentication.class);
+		// ServiceDefTarget endpoint = (ServiceDefTarget) auth;
+		// endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "auth");
+		//
+		// auth.login("", new AsyncCallback<LoginResult>() {
+		//
+		// @Override
+		// public void onSuccess(LoginResult result) {
+		// redirect(result.getUrl());
+		// }
+		//
+		// @Override
+		// public void onFailure(Throwable caught) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		// });
+
 		injector.getPlaceManager().revealCurrentPlace();
 		RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
 	}
+
+	public static native void redirect(String url)/*-{
+		$wnd.location = url;
+	}-*/;
 }

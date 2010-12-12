@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jhighlight-1.0.jar" sourcepath="/home/kremser/.m2/repository/com/uwyn/jhighlight/1.0/jhighlight-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-image-loader-1.1.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/java-openid-sxip-0.9.4.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
