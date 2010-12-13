@@ -1,5 +1,11 @@
 package cz.fi.muni.xkremser.editor.server.DAO;
 
+import java.util.ArrayList;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
+
 public interface UserDAO {
 
 	public static final int NOT_PRESENT = 0;
@@ -8,8 +14,16 @@ public interface UserDAO {
 
 	int isSupported(String identifier);
 
-	void addUser(String identifier);
-
 	void addUserIdentity(String identifier, String alternativeIdentifier);
+
+	ArrayList<RoleItem> getRoles(String id);
+
+	ArrayList<OpenIDItem> getIdentities(String id);
+
+	void removeUser(long id);
+
+	boolean addUser(UserInfoItem user);
+
+	ArrayList<UserInfoItem> getUsers();
 
 }

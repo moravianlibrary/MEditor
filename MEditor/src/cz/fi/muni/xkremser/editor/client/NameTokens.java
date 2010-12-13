@@ -36,18 +36,18 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
  * @author Philippe Beaudoin
  */
 public class NameTokens {
-	
+
 	/** The Constant HOME. */
 	public static final String HOME = "home";
 
 	/** The Constant MODIFY. */
 	public static final String MODIFY = "modify";
 
-	// public static final String productList = "!productList";
+	public static final String USERS = "users";
 
 	/**
 	 * Gets the home.
-	 *
+	 * 
 	 * @return the home
 	 */
 	public static String getHome() {
@@ -60,7 +60,7 @@ public class NameTokens {
 
 	/**
 	 * Gets the modify.
-	 *
+	 * 
 	 * @return the modify
 	 */
 	public static String getModify() {

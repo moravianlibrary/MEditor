@@ -15,24 +15,25 @@ import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
-import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecentlyTreeGwtRPCDS.
  */
-public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
+public class UsersGwtRPCDS extends AbstractGwtRPCDS {
 
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
@@ -43,25 +44,24 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 * @param dispatcher
 	 *          the dispatcher
 	 */
-	public RecentlyTreeGwtRPCDS(DispatchAsync dispatcher) {
+	public UsersGwtRPCDS(DispatchAsync dispatcher) {
 		this.dispatcher = dispatcher;
 		DataSourceField field;
-		field = new DataSourceTextField(Constants.ATTR_NAME, "name");
+		field = new DataSourceTextField(Constants.ATTR_NAME, "Firs Name");
 		field.setRequired(true);
 		field.setAttribute("width", "40%");
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_UUID, "uuid");
-		field.setPrimaryKey(true);
+		field = new DataSourceTextField(Constants.ATTR_SURNAME, "Last Name");
 		field.setRequired(true);
 		field.setAttribute("width", "*");
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_DESC, "description");
+		field = new DataSourceTextField(Constants.ATTR_SEX, "sex");
 		field.setHidden(true);
-		field.setRequired(true);
 		addField(field);
-		field = new DataSourceField(Constants.ATTR_MODEL, FieldType.ENUM, "model");
-		field.setRequired(true);
+		field = new DataSourceTextField(Constants.ATTR_USER_ID, "user id");
+		field.setPrimaryKey(true);
 		field.setHidden(true);
+		field.setRequired(true);
 		addField(field);
 
 	}
@@ -76,23 +76,16 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 */
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		boolean all = request.getCriteria().getAttributeAsBoolean(Constants.ATTR_ALL);
-
-		dispatcher.execute(new GetRecentlyModifiedAction(all), new DispatchCallback<GetRecentlyModifiedResult>() {
+		dispatcher.execute(new GetUserInfoAction(), new DispatchCallback<GetUserInfoResult>() {
 			@Override
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);
 				response.setStatus(RPCResponse.STATUS_FAILURE);
-				// Window.alert(Messages.SERVER_SCANINPUT_ERROR);
-
-				// TODO: Scanning input
-				// queue: Action failed because attribut input_queue is not set. kdyz
-				// nejsou zadne configuration.properties
 			}
 
 			@Override
-			public void callback(final GetRecentlyModifiedResult result) {
-				ArrayList<RecentlyModifiedItem> items = result.getItems();
+			public void callback(final GetUserInfoResult result) {
+				ArrayList<UserInfoItem> items = result.getItems();
 				ListGridRecord[] list = new ListGridRecord[items.size()];
 				for (int i = 0; i < items.size(); i++) {
 					ListGridRecord record = new ListGridRecord();
@@ -119,10 +112,10 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		// Retrieve record which should be added.
 		JavaScriptObject data = request.getData();
 		ListGridRecord rec = new ListGridRecord(data);
-		final RecentlyModifiedItem testRec = new RecentlyModifiedItem();
+		final UserInfoItem testRec = new UserInfoItem();
 		copyValues(rec, testRec);
 
-		dispatcher.execute(new PutRecentlyModifiedAction(testRec), new DispatchCallback<PutRecentlyModifiedResult>() {
+		dispatcher.execute(new PutUserInfoAction(testRec), new DispatchCallback<PutUserInfoResult>() {
 
 			@Override
 			public void callbackError(Throwable caught) {
@@ -131,7 +124,7 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 			}
 
 			@Override
-			public void callback(PutRecentlyModifiedResult result) {
+			public void callback(PutUserInfoResult result) {
 				if (!result.isFound()) {
 					ListGridRecord[] list = new ListGridRecord[1];
 					ListGridRecord newRec = new ListGridRecord();
@@ -156,10 +149,10 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	@Override
 	protected void executeUpdate(final String requestId, final DSRequest request, final DSResponse response) {
 		ListGridRecord rec = getEditedRecord(request);
-		final RecentlyModifiedItem testRec = new RecentlyModifiedItem();
+		final UserInfoItem testRec = new UserInfoItem();
 		copyValues(rec, testRec);
 
-		dispatcher.execute(new PutRecentlyModifiedAction(testRec), new DispatchCallback<PutRecentlyModifiedResult>() {
+		dispatcher.execute(new PutUserInfoAction(testRec), new DispatchCallback<PutUserInfoResult>() {
 
 			@Override
 			public void callbackError(Throwable caught) {
@@ -168,7 +161,7 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 			}
 
 			@Override
-			public void callback(PutRecentlyModifiedResult result) {
+			public void callback(PutUserInfoResult result) {
 				if (!result.isFound()) {
 					ListGridRecord[] list = new ListGridRecord[1];
 					ListGridRecord updRec = new ListGridRecord();
@@ -192,31 +185,32 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 */
 	@Override
 	protected void executeRemove(final String requestId, final DSRequest request, final DSResponse response) {
-		// Retrieve record which should be removed.
-		// JavaScriptObject data = request.getData();
-		// final ListGridRecord rec = new ListGridRecord(data);
-		// InputQueueItem testRec = new InputQueueItem();
-		// copyValues(rec, testRec);
-		// SimpleGwtRPCDSServiceAsync service =
-		// GWT.create(SimpleGwtRPCDSService.class);
-		// service.remove(testRec, new DispatchCallback<Object>() {
-		// @Override
-		// public void callbackError(Throwable caught) {
-		// response.setStatus(RPCResponse.STATUS_FAILURE);
-		// processResponse(requestId, response);
-		// }
-		//
-		// @Override
-		// public void callback(Object result) {
-		// ListGridRecord[] list = new ListGridRecord[1];
-		// // We do not receive removed record from server.
-		// // Return record from request.
-		// list[0] = rec;
-		// response.setData(list);
-		// processResponse(requestId, response);
-		// }
-		//
-		// });
+		JavaScriptObject data = request.getData();
+		final ListGridRecord rec = new ListGridRecord(data);
+		final UserInfoItem testRec = new UserInfoItem();
+		copyValues(rec, testRec);
+		dispatcher.execute(new RemoveUserInfoAction(testRec.getId()), new DispatchCallback<RemoveUserInfoResult>() {
+
+			@Override
+			public void callbackError(Throwable caught) {
+				response.setStatus(RPCResponse.STATUS_FAILURE);
+				processResponse(requestId, response);
+			}
+
+			@Override
+			public void callback(RemoveUserInfoResult result) {
+				// if (!result.isFound()) {
+				// ListGridRecord[] list = new ListGridRecord[1];
+				// ListGridRecord updRec = new ListGridRecord();
+				// copyValues(testRec, updRec);
+				// list[0] = updRec;
+				// response.setData(list);
+				// processResponse(requestId, response);
+				// }
+				processResponse(requestId, response);
+			}
+		});
+
 	}
 
 	/**
@@ -227,11 +221,11 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 * @param to
 	 *          the to
 	 */
-	private static void copyValues(ListGridRecord from, RecentlyModifiedItem to) {
-		to.setUuid(from.getAttributeAsString(Constants.ATTR_UUID));
+	private static void copyValues(ListGridRecord from, UserInfoItem to) {
+		to.setSurname(from.getAttributeAsString(Constants.ATTR_SURNAME));
 		to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-		to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
-		to.setModel((KrameriusModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
+		to.setSex(ClientUtils.toBoolean(from.getAttributeAsString(Constants.ATTR_SEX)) ? "m" : "f");
+		to.setId(from.getAttributeAsString(Constants.ATTR_USER_ID));
 	}
 
 	/**
@@ -242,11 +236,11 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 * @param to
 	 *          the to
 	 */
-	private static void copyValues(RecentlyModifiedItem from, ListGridRecord to) {
-		to.setAttribute(Constants.ATTR_UUID, from.getUuid());
+	private static void copyValues(UserInfoItem from, ListGridRecord to) {
+		to.setAttribute(Constants.ATTR_SURNAME, from.getSurname());
 		to.setAttribute(Constants.ATTR_NAME, from.getName());
-		to.setAttribute(Constants.ATTR_DESC, from.getDescription());
-		to.setAttribute(Constants.ATTR_MODEL, from.getModel());
+		to.setAttribute(Constants.ATTR_SEX, from.getSex());
+		to.setAttribute(Constants.ATTR_USER_ID, from.getId());
 	}
 
 	/**

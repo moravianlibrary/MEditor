@@ -37,7 +37,6 @@ public class EditorPlaceManager extends PlaceManagerImpl {
 		super(eventBus, tokenFormatter);
 
 		this.defaultPlaceRequest = new PlaceRequest(NameTokens.HOME);
-		// this.defaultPlaceRequest = new PlaceRequest("home");
 	}
 
 	/*

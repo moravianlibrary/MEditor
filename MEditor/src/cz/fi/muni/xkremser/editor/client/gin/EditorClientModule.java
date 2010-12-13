@@ -25,10 +25,12 @@ import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
+import cz.fi.muni.xkremser.editor.client.view.UserView;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -36,7 +38,9 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView;
  */
 public class EditorClientModule extends AbstractPresenterModule {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.inject.client.AbstractGinModule#configure()
 	 */
 	@Override
@@ -54,6 +58,7 @@ public class EditorClientModule extends AbstractPresenterModule {
 		// Presenters
 		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
 		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
+		bindPresenter(UserPresenter.class, UserPresenter.MyView.class, UserView.class, UserPresenter.MyProxy.class);
 		bindPresenter(ModifyPresenter.class, ModifyPresenter.MyView.class, ModifyView.class, ModifyPresenter.MyProxy.class);
 		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuView.class,
 				DigitalObjectMenuPresenter.MyProxy.class);

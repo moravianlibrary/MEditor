@@ -8,6 +8,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -15,17 +16,20 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView;
+import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AppView.
  */
-public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements AppPresenter.MyView {
+public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
 
 	/**
 	 * The Interface MyUiHandlers.
 	 */
 	public interface MyUiHandlers extends UiHandlers {
+		void logout();
 	}
 
 	/** The left container. */
@@ -60,11 +64,26 @@ public class AppView extends ViewWithUiHandlers<AppView.MyUiHandlers> implements
 		topContainer.setWidth100();
 		topContainer.setHeight(45);
 
-		// Image logo = new Image(MEditorResources.INSTANCE.logo());
-		HTMLFlow logo = new HTMLFlow("<a href='/'><img class='noFx' src='images/logo_bw.png' alt='logo'></a>");
+		HTMLFlow logo = new HTMLFlow("<a href='/'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
 		// Img logo = new Img("logo_bw.png", 140, 40);
 		// Img logo = new Img("mzk_logo.gif", 283, 87);
 		topContainer.addMember(logo);
+
+		HLayout logged = new HLayout();
+		HTMLFlow logout = new HTMLFlow("Jiri Kremser");
+		// <a href='/logout'>logout</a>");
+		HTMLFlow anchor = new HTMLFlow("logout");
+		anchor.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			@Override
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				getUiHandlers().logout();
+			}
+		});
+		logged.addMember(logout);
+		logged.addMember(anchor);
+		logged.setAlign(Alignment.RIGHT);
+		topContainer.addMember(logged);
+
 		widget.addMember(topContainer);
 
 		HLayout underTop = new HLayout();

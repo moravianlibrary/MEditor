@@ -40,6 +40,14 @@ public class Constants {
 	/** The Constant TABLE_RECENTLY_MODIFIED_NAME. */
 	public static final String TABLE_RECENTLY_MODIFIED_NAME = "recently_modified_item";
 
+	public static final String TABLE_EDITOR_USER = "editor_user";
+
+	public static final String TABLE_ROLE = "role";
+
+	public static final String TABLE_USER_IN_ROLE = "user_in_role";
+
+	public static final String TABLE_OPEN_ID_IDENTITY = "open_id_identity";
+
 	// input queue tree
 	/** The Constant ATTR_ID. */
 	public static final String ATTR_ID = "path"; // path
@@ -49,6 +57,16 @@ public class Constants {
 
 	/** The Constant ATTR_NAME. */
 	public static final String ATTR_NAME = "atName";
+
+	public static final String ATTR_SURNAME = "surname";
+
+	public static final String ATTR_IDENTITY = "identity";
+
+	public static final String ATTR_SEX = "sex";
+
+	public static final String ATTR_USER_ID = "uid";
+
+	public static final String ATTR_GENERIC_ID = "id";
 
 	/** The Constant ATTR_PICTURE. */
 	public static final String ATTR_PICTURE = "picture";

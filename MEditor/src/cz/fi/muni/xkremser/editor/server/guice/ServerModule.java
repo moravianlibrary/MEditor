@@ -37,18 +37,28 @@ import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetUserInfoHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetUserRolesAndIdentitiesHandler;
+import cz.fi.muni.xkremser.editor.server.handler.LogoutHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
+import cz.fi.muni.xkremser.editor.server.handler.PutUserInfoHandler;
+import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
 // TODO: Auto-generated Javadoc
@@ -75,6 +85,12 @@ public class ServerModule extends HandlerModule {
 		bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
 		bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
 		bindHandler(CheckAvailabilityAction.class, CheckAvailabilityHandler.class);
+		bindHandler(GetUserInfoAction.class, GetUserInfoHandler.class);
+		bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
+		bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
+		bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
+
+		bindHandler(LogoutAction.class, LogoutHandler.class);
 
 		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();

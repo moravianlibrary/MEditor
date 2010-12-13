@@ -18,6 +18,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -28,21 +29,21 @@ public interface EditorGinjector extends Ginjector {
 
 	/**
 	 * Gets the place manager.
-	 *
+	 * 
 	 * @return the place manager
 	 */
 	PlaceManager getPlaceManager();
 
 	/**
 	 * Gets the proxy failure handler.
-	 *
+	 * 
 	 * @return the proxy failure handler
 	 */
 	ProxyFailureHandler getProxyFailureHandler();
 
 	/**
 	 * Gets the event bus.
-	 *
+	 * 
 	 * @return the event bus
 	 */
 	EventBus getEventBus();
@@ -55,21 +56,23 @@ public interface EditorGinjector extends Ginjector {
 	 */
 	/**
 	 * Gets the app presenter.
-	 *
+	 * 
 	 * @return the app presenter
 	 */
 	Provider<AppPresenter> getAppPresenter();
 
 	/**
 	 * Gets the home presenter.
-	 *
+	 * 
 	 * @return the home presenter
 	 */
 	AsyncProvider<HomePresenter> getHomePresenter();
 
+	AsyncProvider<UserPresenter> getUserPresenter();
+
 	/**
 	 * Gets the modify presenter.
-	 *
+	 * 
 	 * @return the modify presenter
 	 */
 	AsyncProvider<ModifyPresenter> getModifyPresenter();
@@ -78,7 +81,7 @@ public interface EditorGinjector extends Ginjector {
 	// getDigitalObjectMenuPresenterPresenter();
 	/**
 	 * Gets the digital object menu presenter presenter.
-	 *
+	 * 
 	 * @return the digital object menu presenter presenter
 	 */
 	Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
