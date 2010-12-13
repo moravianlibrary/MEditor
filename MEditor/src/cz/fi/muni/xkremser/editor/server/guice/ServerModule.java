@@ -15,12 +15,13 @@ import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
-import cz.fi.muni.xkremser.editor.server.OpenIDCallback;
-import cz.fi.muni.xkremser.editor.server.OpenIDServlet;
+import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAOImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
@@ -81,6 +82,7 @@ public class ServerModule extends HandlerModule {
 		// DAO
 		bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
 		bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
+		bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
 		// bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
 		// Fedora
@@ -95,10 +97,11 @@ public class ServerModule extends HandlerModule {
 		}
 
 		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
-		bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);
+		// bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);
 
 		// static injection
 		requestStaticInjection(FedoraUtils.class);
+		requestStaticInjection(AuthenticationServlet.class);
 
 	}
 }

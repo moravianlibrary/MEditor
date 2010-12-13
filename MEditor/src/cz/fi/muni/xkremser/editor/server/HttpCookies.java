@@ -6,7 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class HttpCookies {
 	public static final int dayInSeconds = 86400;
-	public static final String SESSION_ID_KEY = "dRo#5hJ1_F$";
+	public static final String SESSION_ID_KEY = "dR#5hJ_F$";
+	public static final String ADMIN = "dR#6hJ_F$";
+	public static final String ADMIN_YES = "dE#5hJ_F$";
+	public static final String PARAMS = "cE#5hJ_F$";
+	public static final String TARGET_URL = "cR#5hJ_F$";
 
 	public static Cookie findCookie(HttpServletRequest request, String name) {
 		final Cookie[] cookies = request.getCookies();
