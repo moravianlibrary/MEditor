@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.DataSource;
@@ -15,14 +14,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
-import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -54,6 +46,9 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	private final IButton removeUser;
 	private final IButton removeRole;
 	private final IButton removeIdentity;
+	private final IButton addUser;
+	private final IButton addRole;
+	private final IButton addIdentity;
 
 	/**
 	 * Instantiates a new home view.
@@ -116,8 +111,9 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		rolesLayout.addMember(userRolesGrid);
 		HLayout buttonLayout2 = new HLayout();
 		buttonLayout2.setPadding(5);
-		IButton addRole = new IButton("Add role");
+		addRole = new IButton("Add role");
 		addRole.setExtraSpace(10);
+		addRole.setDisabled(true);
 		removeRole = new IButton("Remove selected");
 		removeRole.setAutoFit(true);
 		removeRole.setDisabled(true);
@@ -159,8 +155,9 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		HLayout buttonLayout = new HLayout();
 		buttonLayout.setPadding(5);
 		buttonLayout.setAlign(Alignment.CENTER);
-		IButton addIdentity = new IButton("Add identity");
+		addIdentity = new IButton("Add identity");
 		addIdentity.setExtraSpace(10);
+		addIdentity.setDisabled(true);
 		removeIdentity = new IButton("Remove selected");
 		removeIdentity.setAutoFit(true);
 		removeIdentity.setDisabled(true);
@@ -176,68 +173,8 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		HLayout buttonLayout3 = new HLayout();
 		buttonLayout3.setPadding(5);
 		buttonLayout3.setAlign(Alignment.CENTER);
-		IButton addUser = new IButton("Add user");
+		addUser = new IButton("Add user");
 		addUser.setExtraSpace(10);
-		addUser.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				final Window winModal = new Window();
-				winModal.setHeight(200);
-				winModal.setWidth(550);
-				// winModal.setPadding(15);
-				winModal.setCanDragResize(true);
-				winModal.setShowEdges(true);
-				winModal.setTitle("New user");
-				winModal.setShowMinimizeButton(false);
-				winModal.setIsModal(true);
-				winModal.setShowModalMask(true);
-				winModal.addCloseClickHandler(new CloseClickHandler() {
-					@Override
-					public void onCloseClick(CloseClientEvent event) {
-						winModal.destroy();
-					}
-				});
-				final DynamicForm form = new DynamicForm();
-				form.setMargin(15);
-				form.setWidth(500);
-				form.setHeight(150);
-				form.setDataSource(getUserGrid().getDataSource());
-				TextItem name = new TextItem(Constants.ATTR_NAME, "First Name");
-				name.setWidth(320);
-				TextItem surname = new TextItem(Constants.ATTR_SURNAME, "Last Name");
-				surname.setWidth(320);
-				CheckboxItem sex = new CheckboxItem(Constants.ATTR_SEX, "Male");
-				ButtonItem add = new ButtonItem();
-				add.setTitle("Add user");
-				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						form.saveData();
-						Timer timer = new Timer() {
-							@Override
-							public void run() {
-								winModal.destroy();
-							}
-						};
-						timer.schedule(100);
-					}
-				});
-				ButtonItem cancel = new ButtonItem();
-				cancel.setTitle("Cancel");
-				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						winModal.destroy();
-					}
-				});
-				form.setFields(name, surname, sex, add, cancel);
-				winModal.addItem(form);
-
-				winModal.centerInPage();
-				winModal.show();
-			}
-		});
 		removeUser = new IButton("Remove selected");
 		removeUser.setAutoFit(true);
 		removeUser.setDisabled(true);
@@ -324,6 +261,21 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	@Override
 	public IButton getRemoveIdentity() {
 		return removeIdentity;
+	}
+
+	@Override
+	public IButton getAddUser() {
+		return addUser;
+	}
+
+	@Override
+	public IButton getAddRole() {
+		return addRole;
+	}
+
+	@Override
+	public IButton getAddIdentity() {
+		return addIdentity;
 	}
 
 }

@@ -33,6 +33,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetAllRolesHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
@@ -43,10 +44,15 @@ import cz.fi.muni.xkremser.editor.server.handler.LogoutHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDigitalObjectDetailHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
+import cz.fi.muni.xkremser.editor.server.handler.PutUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserInfoHandler;
+import cz.fi.muni.xkremser.editor.server.handler.PutUserRoleHandler;
+import cz.fi.muni.xkremser.editor.server.handler.RemoveUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
+import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
@@ -57,8 +63,12 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
 // TODO: Auto-generated Javadoc
@@ -89,6 +99,11 @@ public class ServerModule extends HandlerModule {
 		bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
 		bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
 		bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
+		bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
+		bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);
+		bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
+		bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
+		bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
 
 		bindHandler(LogoutAction.class, LogoutHandler.class);
 

@@ -14,14 +14,14 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityResult;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class GetRecentlyModifiedHandler.
+ * The Class PutRecentlyModifiedHandler.
  */
-public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRolesAndIdentitiesAction, GetUserRolesAndIdentitiesResult> {
+public class RemoveUserIdentityHandler implements ActionHandler<RemoveUserIdentityAction, RemoveUserIdentityResult> {
 
 	/** The logger. */
 	private final Log logger;
@@ -30,23 +30,21 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	private final EditorConfiguration configuration;
 
 	/** The recently modified dao. */
-	private final UserDAO userDAO;
+	@Inject
+	private UserDAO userDAO;
 
 	/**
-	 * Instantiates a new gets the recently modified handler.
+	 * Instantiates a new put recently modified handler.
 	 * 
 	 * @param logger
 	 *          the logger
 	 * @param configuration
 	 *          the configuration
-	 * @param recentlyModifiedDAO
-	 *          the recently modified dao
 	 */
 	@Inject
-	public GetUserRolesAndIdentitiesHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
+	public RemoveUserIdentityHandler(final Log logger, final EditorConfiguration configuration) {
 		this.logger = logger;
 		this.configuration = configuration;
-		this.userDAO = userDAO;
 	}
 
 	/*
@@ -58,11 +56,12 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
-	public GetUserRolesAndIdentitiesResult execute(final GetUserRolesAndIdentitiesAction action, final ExecutionContext context) throws ActionException {
+	public RemoveUserIdentityResult execute(final RemoveUserIdentityAction action, final ExecutionContext context) throws ActionException {
 		if (action.getId() == null)
-			return null;
-		logger.debug("Processing action: GetUserRolesAndIdentitiesAction");
-		return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())), userDAO.getIdentities(action.getId()));
+			throw new NullPointerException("getId()");
+		logger.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
+		userDAO.removeUserIdentity(Long.parseLong(action.getId()));
+		return new RemoveUserIdentityResult();
 	}
 
 	/*
@@ -72,8 +71,8 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
-	public Class<GetUserRolesAndIdentitiesAction> getActionType() {
-		return GetUserRolesAndIdentitiesAction.class;
+	public Class<RemoveUserIdentityAction> getActionType() {
+		return RemoveUserIdentityAction.class;
 	}
 
 	/*
@@ -84,8 +83,8 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
-	public void undo(GetUserRolesAndIdentitiesAction action, GetUserRolesAndIdentitiesResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+	public void undo(RemoveUserIdentityAction action, RemoveUserIdentityResult result, ExecutionContext context) throws ActionException {
+		// TODO undo method
 
 	}
 }

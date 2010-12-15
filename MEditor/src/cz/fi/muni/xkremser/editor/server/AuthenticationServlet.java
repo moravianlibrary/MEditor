@@ -1,6 +1,7 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +22,8 @@ import com.google.inject.Inject;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 
 public class AuthenticationServlet extends HttpServlet {
+
+	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(AuthenticationServlet.class.getName());
 
 	@Inject
 	private static UserDAO userDAO;
@@ -53,6 +56,7 @@ public class AuthenticationServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		if (identifier != null && !"".equals(identifier)) {
+			LOGGER.log(Level.INFO, "Logged user with openID " + identifier);
 			int userStatus = userDAO.isSupported(identifier);
 			switch (userStatus) {
 				case UserDAO.USER:

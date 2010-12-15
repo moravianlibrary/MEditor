@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.DOM;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
@@ -143,6 +144,25 @@ public class ClientUtils {
 			outerList.add(innerList);
 		}
 		return outerList;
+	}
+
+	public static ListGridRecord[] subtract(ListGridRecord[] whole, ListGridRecord[] part) {
+		if (whole == null || whole.length == 0)
+			return null;
+		if (part == null || part.length == 0)
+			return whole;
+		List<ListGridRecord> list = new ArrayList<ListGridRecord>();
+		for (ListGridRecord record : whole) {
+			boolean add = true;
+			for (ListGridRecord counterpart : part) {
+				if (record == counterpart) {
+					add = false;
+				}
+			}
+			if (add)
+				list.add(record);
+		}
+		return list.toArray(new ListGridRecord[] {});
 	}
 
 }

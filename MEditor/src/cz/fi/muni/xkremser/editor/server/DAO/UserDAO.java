@@ -12,17 +12,31 @@ public interface UserDAO {
 	public static final int USER = 1;
 	public static final int ADMIN = 2;
 
+	public static final String ADMIN_STRING = "admin";
+
 	int isSupported(String identifier);
 
-	void addUserIdentity(String identifier, String alternativeIdentifier);
+	boolean hasRole(String role, long userId);
 
-	ArrayList<RoleItem> getRoles(String id);
+	String getName(String openID);
+
+	String addUserIdentity(OpenIDItem identity, long userId);
+
+	void removeUserIdentity(long id);
+
+	RoleItem addUserRole(RoleItem role, long userId);
+
+	void removeUserRole(long id);
+
+	ArrayList<RoleItem> getRolesOfUser(long id);
+
+	ArrayList<String> getRoles();
 
 	ArrayList<OpenIDItem> getIdentities(String id);
 
 	void removeUser(long id);
 
-	boolean addUser(UserInfoItem user);
+	String addUser(UserInfoItem user);
 
 	ArrayList<UserInfoItem> getUsers();
 

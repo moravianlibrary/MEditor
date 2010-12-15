@@ -129,6 +129,7 @@ public class UsersGwtRPCDS extends AbstractGwtRPCDS {
 					ListGridRecord[] list = new ListGridRecord[1];
 					ListGridRecord newRec = new ListGridRecord();
 					copyValues(testRec, newRec);
+					newRec.setAttribute(Constants.ATTR_USER_ID, result.getId());
 					list[0] = newRec;
 					response.setData(list);
 				}

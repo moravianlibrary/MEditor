@@ -60,7 +60,8 @@ public class PutUserInfoHandler implements ActionHandler<PutUserInfoAction, PutU
 		if (action.getUser() == null)
 			throw new NullPointerException("getUser()");
 		logger.debug("Processing action: PutUserInfoAction user:" + action.getUser());
-		return new PutUserInfoResult(userDAO.addUser(action.getUser()));
+		String id = userDAO.addUser(action.getUser());
+		return new PutUserInfoResult(id, "exist".equals(id));
 	}
 
 	/*

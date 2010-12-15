@@ -14,14 +14,14 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRolesAndIdentitiesAction, GetUserRolesAndIdentitiesResult> {
+public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetAllRolesResult> {
 
 	/** The logger. */
 	private final Log logger;
@@ -43,7 +43,7 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 *          the recently modified dao
 	 */
 	@Inject
-	public GetUserRolesAndIdentitiesHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
+	public GetAllRolesHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
 		this.logger = logger;
 		this.configuration = configuration;
 		this.userDAO = userDAO;
@@ -58,11 +58,10 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
-	public GetUserRolesAndIdentitiesResult execute(final GetUserRolesAndIdentitiesAction action, final ExecutionContext context) throws ActionException {
-		if (action.getId() == null)
-			return null;
-		logger.debug("Processing action: GetUserRolesAndIdentitiesAction");
-		return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())), userDAO.getIdentities(action.getId()));
+	public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context) throws ActionException {
+		logger.debug("Processing action: GetAllRolesResult");
+		// return null;
+		return new GetAllRolesResult(userDAO.getRoles());
 	}
 
 	/*
@@ -72,8 +71,8 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
-	public Class<GetUserRolesAndIdentitiesAction> getActionType() {
-		return GetUserRolesAndIdentitiesAction.class;
+	public Class<GetAllRolesAction> getActionType() {
+		return GetAllRolesAction.class;
 	}
 
 	/*
@@ -84,7 +83,7 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
-	public void undo(GetUserRolesAndIdentitiesAction action, GetUserRolesAndIdentitiesResult result, ExecutionContext context) throws ActionException {
+	public void undo(GetAllRolesAction action, GetAllRolesResult result, ExecutionContext context) throws ActionException {
 		// TODO Auto-generated method stub
 
 	}

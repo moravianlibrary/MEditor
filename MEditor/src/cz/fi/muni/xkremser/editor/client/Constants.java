@@ -42,6 +42,12 @@ public class Constants {
 
 	public static final String TABLE_EDITOR_USER = "editor_user";
 
+	public static final String SEQUENCE_EDITOR_USER = "seq_user";
+
+	public static final String SEQUENCE_OPEN_ID_IDENTITY = "seq_open_id_identity";
+
+	public static final String SEQUENCE_ROLE = "seq_user_in_role";
+
 	public static final String TABLE_ROLE = "role";
 
 	public static final String TABLE_USER_IN_ROLE = "user_in_role";
