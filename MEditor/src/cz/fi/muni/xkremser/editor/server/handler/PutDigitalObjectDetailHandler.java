@@ -7,6 +7,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.xml.namespace.NamespaceContext;
@@ -112,32 +113,40 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			throw new NullPointerException("getDetail()");
 		AbstractDigitalObjectDetail detail = action.getDetail();
 
-		if ("ee250440-b65d-11dd-83e5-000d606f5dc6".equals(detail.getUuid())) {
-			// modifyRelations(detail);
+		boolean write = true;
 
-		}
-
-		// dublin core
-		if (detail.isDcChanged()) {
-			if ("ee250440-b65d-11dd-83e5-000d606f5dc6".equals(detail.getUuid())) {
+		if (write) {
+			modifyRelations(detail);
+			if (detail.isDcChanged())
 				modifyDublinCore(detail);
-			}
-		}
-		// mods
-		if (detail.isModsChanged()) {
-			if ("851f8d4c-ce7f-11df-886d-001b63bd97ba".equals(detail.getUuid())) {
+			if (detail.isModsChanged())
 				modifyMods(detail);
-			}
-		}
-
-		// mods
-		if (detail.isOcrChanged()) {
-			if ("eec95a90-b65d-11dd-83e3-000d606f5dc6".equals(detail.getUuid())) {
+			if (detail.isOcrChanged())
 				modifyOcr(detail);
-			}
+			reindex(detail.getUuid());
+		}
+		// reindex(detail.getUuid());
+		return new PutDigitalObjectDetailResult();
+	}
+
+	private void reindex(String uuid) {
+		String host = configuration.getKrameriusHost();
+		String login = configuration.getKrameriusLogin();
+		String password = configuration.getKrameriusPassword();
+		if (host == null || login == null || password == null) {
+			return;
 		}
 
-		return new PutDigitalObjectDetailResult();
+		String url = host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + uuid + "," + uuid;
+		try {
+			RESTHelper.openConnection(url, login, password);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -186,9 +195,10 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 
 	private void modifyRelations(AbstractDigitalObjectDetail detail) {
 		StringBuilder sb = new StringBuilder();
-
+		boolean hasAnything = false;
 		// page structure
 		if (detail.hasPages()) {
+			hasAnything = true;
 			if (detail.getPages() == null || detail.getPages().size() == 0) {
 			} else {
 				String relation = RDFModels.convertToRdf(KrameriusModel.PAGE);
@@ -200,6 +210,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 		// container structure
 		if (detail.hasContainers() != 0) {
+			hasAnything = true;
 			for (int i = 0; i < detail.hasContainers(); i++) {
 				if (detail.getContainers().size() <= i || detail.getContainers().get(i) == null || detail.getContainers().get(i).size() == 0) {
 				} else {
@@ -211,6 +222,8 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 				}
 			}
 		}
+		if (!hasAnything)
+			return;
 		Document relsExt = null;
 		StringBuilder contentBuilder = new StringBuilder();
 		try {
@@ -274,7 +287,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		String pass = configuration.getFedoraPassword();
 		String content = contentBuilder.toString();
 
-		// RESTHelper.put(url, content, usr, pass);
+		RESTHelper.put(url, content, usr, pass);
 	}
 
 	private static void appendDCElement(StringBuilder contentBuilder, List<String> values, String elementName) {
@@ -311,19 +324,17 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			String pass = configuration.getFedoraPassword();
 			String content = contentBuilder.toString();
 
-			// RESTHelper.put(url, content, usr, pass);
+			RESTHelper.put(url, content, usr, pass);
 		}
 	}
 
 	private void modifyMods(AbstractDigitalObjectDetail detail) {
-		ModsCollectionClient mods = null;
-		if ((mods = detail.getMods()) != null) {
+		if (detail.getMods() != null) {
 			ModsCollectionClient modsCollection = detail.getMods();
 			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=false";
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			String content = BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
-			System.out.println(content);
 
 			RESTHelper.put(url, content, usr, pass);
 		}

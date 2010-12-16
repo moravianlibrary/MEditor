@@ -13,6 +13,6 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class Logout extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class Logout extends UnsecuredActionImpl<LogoutResult> {
 
 }

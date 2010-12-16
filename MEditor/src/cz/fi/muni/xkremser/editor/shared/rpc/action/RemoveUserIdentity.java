@@ -14,7 +14,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class RemoveUserIdentity extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class RemoveUserIdentity extends UnsecuredActionImpl<RemoveUserIdentityResult> {
 
 	@In(1)
 	private String id;

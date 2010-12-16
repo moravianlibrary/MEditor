@@ -37,6 +37,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetAllRolesHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetLoggedUserHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetUserRolesAndIdentitiesHandler;
@@ -56,6 +57,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
@@ -104,6 +106,7 @@ public class ServerModule extends HandlerModule {
 		bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
 		bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
 		bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
+		bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
 
 		bindHandler(LogoutAction.class, LogoutHandler.class);
 

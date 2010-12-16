@@ -99,6 +99,10 @@ public abstract class EditorConfiguration {
 
 		public static final String KRAMERIUS_HOST = EditorClientConfiguration.Constants.KRAMERIUS_HOST;
 
+		public static final String KRAMERIUS_LOGIN = "krameriusLogin";
+
+		public static final String KRAMERIUS_PASSWORD = "krameriusPassword";
+
 		// fedora
 		/** The Constant FEDORA_HOST. */
 		public static final String FEDORA_HOST = EditorClientConfiguration.Constants.FEDORA_HOST;
@@ -145,6 +149,14 @@ public abstract class EditorConfiguration {
 
 		/** The Constant DB_NAME_DEFAULT. */
 		public static final String DB_NAME_DEFAULT = "meditor";
+
+		public static final String JANRAIN_API_KEY = "openIdApiKey";
+
+		public static final String JANRAIN_API_KEY_DEFAULT = "775a3d3ec29deeeaf39e506ff514f39fcb5e434d";
+
+		public static final String JANRAIN_API_URL = "openIdApiUrl";
+
+		public static final String JANRAIN_API_URL_DEFAULT = "https://rpxnow.com";
 
 	}
 
@@ -239,6 +251,14 @@ public abstract class EditorConfiguration {
 		return getConfiguration().getString(Constants.KRAMERIUS_HOST, null);
 	}
 
+	public String getKrameriusLogin() {
+		return getConfiguration().getString(Constants.KRAMERIUS_LOGIN, null);
+	}
+
+	public String getKrameriusPassword() {
+		return getConfiguration().getString(Constants.KRAMERIUS_PASSWORD, null);
+	}
+
 	/**
 	 * Gets the fedora host.
 	 * 
@@ -318,6 +338,14 @@ public abstract class EditorConfiguration {
 	 */
 	public String getDBName() {
 		return getConfiguration().getString(Constants.DB_NAME, Constants.DB_NAME_DEFAULT);
+	}
+
+	public String getOpenIDApiKey() {
+		return getConfiguration().getString(Constants.JANRAIN_API_KEY, Constants.JANRAIN_API_KEY_DEFAULT);
+	}
+
+	public String getOpenIDApiURL() {
+		return getConfiguration().getString(Constants.JANRAIN_API_URL, Constants.JANRAIN_API_URL_DEFAULT);
 	}
 
 	/**

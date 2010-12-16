@@ -30,7 +30,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
  */
 public class UserView extends ViewImpl implements UserPresenter.MyView {
 
-	private final VLayout layout;
+	private final HLayout layout;
 
 	private IButton checkButton;
 
@@ -54,13 +54,13 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	 * Instantiates a new home view.
 	 */
 	public UserView() {
-		layout = new VLayout();
+		layout = new HLayout();
 		layout.setHeight100();
 		layout.setWidth(610);
 		layout.setPadding(10);
 		this.userGrid = new ListGrid();
-		userGrid.setWidth(585);
-		userGrid.setHeight(500);
+		userGrid.setWidth(400);
+		userGrid.setHeight(600);
 		userGrid.setShowSortArrow(SortArrow.CORNER);
 		userGrid.setShowAllRecords(true);
 		userGrid.setAutoFetchData(true);
@@ -71,19 +71,22 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		userGrid.setCanEdit(true);
 		userGrid.setMargin(5);
 
-		HLayout detailLayout = new HLayout();
+		VLayout detailLayout = new VLayout();
+		detailLayout.setPadding(0);
+		detailLayout.setMargin(0);
 
 		VLayout rolesLayout = new VLayout();
+		rolesLayout.setHeight(310);
 		rolesLayout.setPadding(0);
 		rolesLayout.setMargin(0);
 		this.userRolesGrid = new ListGrid();
 		userRolesGrid.setWidth(290);
-		userRolesGrid.setHeight(200);
+		userRolesGrid.setHeight(255);
 		userRolesGrid.setShowSortArrow(SortArrow.CORNER);
 		userRolesGrid.setShowAllRecords(true);
 		// userRolesGrid.setAutoFetchData(true);
 		userRolesGrid.setCanHover(true);
-		userRolesGrid.setCanSort(false);
+		userRolesGrid.setCanSort(true);
 		userRolesGrid.setHoverOpacity(75);
 		userRolesGrid.setHoverStyle("interactImageHover");
 		// userRolesGrid.setCanEdit(true);
@@ -126,17 +129,18 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		VLayout identitiesLayout = new VLayout();
 		identitiesLayout.setPadding(0);
 		identitiesLayout.setMargin(0);
+		identitiesLayout.setHeight(310);
 		this.userIdentitiesGrid = new ListGrid();
 		userIdentitiesGrid.setWidth(290);
-		userIdentitiesGrid.setHeight(200);
+		userIdentitiesGrid.setHeight(255);
 		userIdentitiesGrid.setShowSortArrow(SortArrow.CORNER);
 		userIdentitiesGrid.setShowAllRecords(true);
-		// userIdentitiesGrid.setAutoFetchData(true);
 		userIdentitiesGrid.setCanHover(true);
 		userIdentitiesGrid.setCanSort(false);
 		userIdentitiesGrid.setHoverOpacity(75);
 		userIdentitiesGrid.setHoverStyle("interactImageHover");
 		userIdentitiesGrid.setMargin(5);
+		userIdentitiesGrid.setCanSelectText(true);
 		// userIdentitiesGrid.setCanEdit(true);
 		DataSource source2 = new DataSource();
 		field = new DataSourceTextField(Constants.ATTR_IDENTITY, "Identity");
@@ -166,10 +170,11 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		identitiesLayout.addMember(buttonLayout);
 		detailLayout.addMember(identitiesLayout);
 
+		VLayout userLayout = new VLayout();
 		HTMLFlow users = new HTMLFlow("<b>Users</b>");
 		users.setHeight(15);
-		layout.addMember(users);
-		layout.addMember(userGrid);
+		userLayout.addMember(users);
+		userLayout.addMember(userGrid);
 		HLayout buttonLayout3 = new HLayout();
 		buttonLayout3.setPadding(5);
 		buttonLayout3.setAlign(Alignment.CENTER);
@@ -180,7 +185,8 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		removeUser.setDisabled(true);
 		buttonLayout3.addMember(addUser);
 		buttonLayout3.addMember(removeUser);
-		layout.addMember(buttonLayout3);
+		userLayout.addMember(buttonLayout3);
+		layout.addMember(userLayout);
 		layout.addMember(detailLayout);
 	}
 

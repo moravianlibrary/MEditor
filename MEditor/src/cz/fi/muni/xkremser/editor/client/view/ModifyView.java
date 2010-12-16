@@ -34,9 +34,8 @@ import com.smartgwt.client.types.TabBarControls;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.Dialog;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
@@ -97,7 +96,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
-		void putDescription(final String uuid, final String description);
+		void putDescription(final String uuid, final String description, boolean common);
 
 		void onRefresh(final String uuid);
 	}
@@ -210,6 +209,9 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		topTabSet.setTabBarPosition(Side.TOP);
 		topTabSet.setWidth100();
 		topTabSet.setHeight100();
+		topTabSet.setAnimateTabScrolling(true);
+		topTabSet.setAnimateTabScrolling(true);
+		topTabSet.setShowPaneContainerEdges(false);
 		int insertPosition = -1;
 		if (refresh) {
 			TabSet toDelete = openedObjectsTabsets.get(uuid);
@@ -247,6 +249,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
 				containerTab.setAttribute(ID_MODEL, containerModelList.get(i).getValue());
 				containerTab.setPane(containerGrids[i]);
+				containerTab.setWidth(100);
 				containerTabs.add(containerTab);
 			}
 		}
@@ -264,6 +267,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		final Tab descriptionTab = new Tab("Description", "pieces/16/pawn_blue.png");
 		descriptionTab.setAttribute(TAB_INITIALIZED, false);
 		descriptionTab.setAttribute(ID_TAB, ID_DESC);
+		descriptionTab.setWidth(100);
 
 		Tab thumbTab = null;
 		Tab ocTab = picture ? new Tab("OCR", "pieces/16/pawn_white.png") : null;
@@ -422,52 +426,55 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		MenuItem newItem = new MenuItem("New", "icons/16/document_plain_new.png", "Ctrl+N");
 		// MenuItem descItem = new MenuItem("Desciption", "icons/16/message.png");
-		MenuItem loadItem = new MenuItem("Load metadata", "icons/16/document_plain_new.png");
+		// MenuItem loadItem = new MenuItem("Load metadata",
+		// "icons/16/document_plain_new.png");
 		MenuItem lockItem = new MenuItem("Lock digital object", "icons/16/lock_lock_all.png");
 		MenuItem lockTabItem = new MenuItem("Lock opened tab", "icons/16/lock_lock.png");
-		MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png", "Ctrl+O");
+		// MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png",
+		// "Ctrl+O");
 		MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png", "Ctrl+S");
 		MenuItem downloadItem = new MenuItem("Download", "icons/16/download.png");
 		MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
 		MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
 		MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
 
-		openItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-
-				Dialog dialog = new Dialog();
-				// dialog.
-
-				SC.askforValue("Open digital object", "uuid", new ValueCallback() {
-
-					@Override
-					public void execute(String value) {
-						System.out.println(value);
-					}
-				});
-				// final Window winModal = new Window();
-				// // winModal.setResizeFrom("B", "R", "BR");
-				// winModal.setHeight(200);
-				// winModal.setWidth(600);
-				// winModal.setCanDragResize(true);
-				// winModal.setShowEdges(true);
-				// winModal.setTitle("Description");
-				// winModal.setShowMinimizeButton(false);
-				// winModal.setIsModal(true);
-				// winModal.setShowModalMask(true);
-				// winModal.centerInPage();
-				// winModal.addCloseClickHandler(new CloseClickHandler() {
-				// @Override
-				// public void onCloseClick(CloseClientEvent event) {
-				// winModal.destroy();
-				// // TODO: save
-				// }
-				// });
-				//
-				// winModal.show();
-			}
-		});
+		// openItem.addClickHandler(new
+		// com.smartgwt.client.widgets.menu.events.ClickHandler() {
+		// @Override
+		// public void onClick(MenuItemClickEvent event) {
+		//
+		// Dialog dialog = new Dialog();
+		// // dialog.
+		//
+		// SC.askforValue("Open digital object", "uuid", new ValueCallback() {
+		//
+		// @Override
+		// public void execute(String value) {
+		// System.out.println(value);
+		// }
+		// });
+		// // final Window winModal = new Window();
+		// // // winModal.setResizeFrom("B", "R", "BR");
+		// // winModal.setHeight(200);
+		// // winModal.setWidth(600);
+		// // winModal.setCanDragResize(true);
+		// // winModal.setShowEdges(true);
+		// // winModal.setTitle("Description");
+		// // winModal.setShowMinimizeButton(false);
+		// // winModal.setIsModal(true);
+		// // winModal.setShowModalMask(true);
+		// // winModal.centerInPage();
+		// // winModal.addCloseClickHandler(new CloseClickHandler() {
+		// // @Override
+		// // public void onCloseClick(CloseClientEvent event) {
+		// // winModal.destroy();
+		// // // TODO: save
+		// // }
+		// // });
+		// //
+		// // winModal.show();
+		// }
+		// });
 
 		refreshItem.setAttribute(ID_TABSET, topTabSet);
 		refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -558,7 +565,10 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
-		menu.setItems(newItem/* , descItem */, loadItem, lockItem, lockTabItem, openItem, saveItem, refreshItem, downloadItem, removeItem, publishItem);
+		menu.setItems(newItem/* , descItem , loadItem */, lockItem, lockTabItem/*
+																																						 * ,
+																																						 * openItem
+																																						 */, saveItem, refreshItem, downloadItem, removeItem, publishItem);
 		IMenuButton menuButton = new IMenuButton("Menu", menu);
 		menuButton.setWidth(60);
 		menuButton.setHeight(16);
@@ -842,15 +852,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	}
 
 	@Override
-	public Canvas getEditor(String text, final String uuid) {
+	public Canvas getEditor(String text, final String uuid, final boolean common) {
 		final VLayout layout = new VLayout();
 		layout.setWidth100();
 		layout.setHeight100();
+		String title = common ? "<h3>This description is visible to all users, and during publishing is not writen with digital object.</h3>"
+				: "<h3>This description is visible only to you, and during publishing is not writen with digital object.</h3>";
+		HTMLFlow titleHTML = new HTMLFlow(title);
 		final RichTextEditor richTextEditor = new RichTextEditor();
 		richTextEditor.setHeight100();
 		richTextEditor.setWidth100();
 		richTextEditor.setOverflow(Overflow.HIDDEN);
 		richTextEditor.setValue(text);
+		layout.addMember(titleHTML);
 		layout.addMember(richTextEditor);
 		DynamicForm form = new DynamicForm();
 		form.setExtraSpace(10);
@@ -867,7 +881,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		button.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 			@Override
 			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				getUiHandlers().putDescription(uuid, richTextEditor.getValue());
+				getUiHandlers().putDescription(uuid, richTextEditor.getValue(), common);
 			}
 		});
 		form.setItems(button);

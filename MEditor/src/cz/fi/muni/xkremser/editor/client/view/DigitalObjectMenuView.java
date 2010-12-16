@@ -13,6 +13,9 @@ import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Criteria;
+import com.smartgwt.client.data.DSCallback;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
@@ -169,8 +172,12 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 				Criteria criteria = new Criteria();
 				boolean all = "all".equals(event.getValue());
 				criteria.addCriteria(Constants.ATTR_ALL, all);
-				// sideNavTree.fetchData(criteria);
-				sideNavGrid.filterData(criteria);
+				sideNavGrid.getDataSource().fetchData(criteria, new DSCallback() {
+					@Override
+					public void execute(DSResponse response, Object rawData, DSRequest request) {
+						sideNavGrid.setData(response.getData());
+					}
+				});
 			}
 		});
 

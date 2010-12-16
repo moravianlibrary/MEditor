@@ -9,13 +9,14 @@ import java.util.HashMap;
 
 import com.gwtplatform.annotation.GenDispatch;
 import com.gwtplatform.annotation.Out;
+import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
-public class GetClientConfig {
+public class GetClientConfig extends UnsecuredActionImpl<GetClientConfigResult> {
 
 	/** The config. */
 	@Out(1)

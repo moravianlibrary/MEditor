@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -44,6 +45,10 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 	/** The widget. */
 	public VLayout widget;
 
+	private final HTMLFlow username;
+
+	private final HTMLFlow editUsers;
+
 	// private HasWidgets mainContainer;
 
 	/**
@@ -70,16 +75,24 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		topContainer.addMember(logo);
 
 		HLayout logged = new HLayout();
-		HTMLFlow logout = new HTMLFlow("Jiri Kremser");
-		// <a href='/logout'>logout</a>");
+		username = new HTMLFlow();
+		username.setWidth(150);
+		username.setStyleName("username");
+		username.setHeight(15);
 		HTMLFlow anchor = new HTMLFlow("logout");
+		anchor.setCursor(Cursor.HAND);
+		anchor.setWidth(60);
+		anchor.setHeight(15);
+		anchor.setStyleName("pseudolink");
 		anchor.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			@Override
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				getUiHandlers().logout();
 			}
 		});
-		logged.addMember(logout);
+		editUsers = new HTMLFlow();
+		logged.addMember(editUsers);
+		logged.addMember(username);
 		logged.addMember(anchor);
 		logged.setAlign(Alignment.RIGHT);
 		topContainer.addMember(logged);
@@ -151,6 +164,16 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		if (content != null) {
 			leftContainer.addMember(content);
 		}
+	}
+
+	@Override
+	public HTMLFlow getUsername() {
+		return username;
+	}
+
+	@Override
+	public HTMLFlow getEditUsers() {
+		return editUsers;
 	}
 
 	// private void setTopContent(Widget content) {

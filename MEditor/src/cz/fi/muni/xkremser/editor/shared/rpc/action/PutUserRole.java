@@ -17,7 +17,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class PutUserRole extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class PutUserRole extends UnsecuredActionImpl<PutUserRoleResult> {
 
 	@In(1)
 	private RoleItem role;

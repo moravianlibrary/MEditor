@@ -16,28 +16,23 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
-import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModifiedAction, GetRecentlyModifiedResult> {
+public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, GetLoggedUserResult> {
 
 	/** The logger. */
 	private final Log logger;
 
-	/** The configuration. */
-	private final EditorConfiguration configuration;
-
 	/** The recently modified dao. */
-	private final RecentlyModifiedItemDAO recentlyModifiedDAO;
+	private final UserDAO userDAO;
 
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+	private final Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new gets the recently modified handler.
@@ -50,10 +45,10 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	 *          the recently modified dao
 	 */
 	@Inject
-	public GetRecentlyModifiedHandler(final Log logger, final EditorConfiguration configuration, final RecentlyModifiedItemDAO recentlyModifiedDAO) {
+	public GetLoggedUserHandler(final Log logger, final UserDAO userDAO, Provider<HttpSession> httpSessionProvider) {
 		this.logger = logger;
-		this.configuration = configuration;
-		this.recentlyModifiedDAO = recentlyModifiedDAO;
+		this.userDAO = userDAO;
+		this.httpSessionProvider = httpSessionProvider;
 	}
 
 	/*
@@ -65,14 +60,12 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
-	public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action, final ExecutionContext context) throws ActionException {
-		logger.debug("Processing action: GetRecentlyModified");
-		String openID = null;
-		if (!action.isForAllUsers()) {
-			HttpSession session = httpSessionProvider.get();
-			openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		}
-		return new GetRecentlyModifiedResult(recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID));
+	public GetLoggedUserResult execute(final GetLoggedUserAction action, final ExecutionContext context) throws ActionException {
+		logger.debug("Processing action: GetLoggedUserAction");
+		HttpSession session = httpSessionProvider.get();
+		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+		boolean editUsers = HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN)) || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
+		return new GetLoggedUserResult(userDAO.getName(openID), editUsers);
 	}
 
 	/*
@@ -82,8 +75,8 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
-	public Class<GetRecentlyModifiedAction> getActionType() {
-		return GetRecentlyModifiedAction.class;
+	public Class<GetLoggedUserAction> getActionType() {
+		return GetLoggedUserAction.class;
 	}
 
 	/*
@@ -94,7 +87,7 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
-	public void undo(GetRecentlyModifiedAction action, GetRecentlyModifiedResult result, ExecutionContext context) throws ActionException {
+	public void undo(GetLoggedUserAction action, GetLoggedUserResult result, ExecutionContext context) throws ActionException {
 		// TODO Auto-generated method stub
 
 	}

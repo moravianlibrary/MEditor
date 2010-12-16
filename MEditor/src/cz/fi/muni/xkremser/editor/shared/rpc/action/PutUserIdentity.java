@@ -17,7 +17,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class PutUserIdentity extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class PutUserIdentity extends UnsecuredActionImpl<PutUserIdentityResult> {
 
 	@In(1)
 	private OpenIDItem identity;

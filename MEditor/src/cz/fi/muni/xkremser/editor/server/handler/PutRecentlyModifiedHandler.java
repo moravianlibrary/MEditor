@@ -5,13 +5,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
@@ -22,10 +26,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
  * The Class PutRecentlyModifiedHandler.
  */
 public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModifiedAction, PutRecentlyModifiedResult> {
-	
+
 	/** The logger. */
 	private final Log logger;
-	
+
 	/** The configuration. */
 	private final EditorConfiguration configuration;
 
@@ -33,11 +37,16 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 	@Inject
 	private RecentlyModifiedItemDAO recentlyModifiedDAO;
 
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
+
 	/**
 	 * Instantiates a new put recently modified handler.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param configuration
+	 *          the configuration
 	 */
 	@Inject
 	public PutRecentlyModifiedHandler(final Log logger, final EditorConfiguration configuration) {
@@ -45,8 +54,13 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 		this.configuration = configuration;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+	 * .gwtplatform.dispatch.shared.Action,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public PutRecentlyModifiedResult execute(final PutRecentlyModifiedAction action, final ExecutionContext context) throws ActionException {
@@ -54,20 +68,29 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 			throw new NullPointerException("getItem()");
 		if (action.getItem().getUuid() == null || "".equals(action.getItem().getUuid()))
 			throw new NullPointerException("getItem().getUuid()");
+		HttpSession session = httpSessionProvider.get();
+		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		logger.debug("Processing action: PutRecentlyModified item:" + action.getItem());
-		return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem()));
+		return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
 	public Class<PutRecentlyModifiedAction> getActionType() {
 		return PutRecentlyModifiedAction.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public void undo(PutRecentlyModifiedAction action, PutRecentlyModifiedResult result, ExecutionContext context) throws ActionException {

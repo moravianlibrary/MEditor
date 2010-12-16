@@ -25,6 +25,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Side;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -35,6 +36,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
@@ -94,7 +96,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		public PopupPanel getPopupPanel();
 
-		public Canvas getEditor(String text, String uuid);
+		public Canvas getEditor(String text, String uuid, boolean common);
 
 		/**
 		 * Adds the digital object.
@@ -404,8 +406,9 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 				}
 				getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
 						detail.getOcr(), result.isRefresh(), detail.getModel());
-				DigitalObjectOpenedEvent.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, detail.getDc().getTitle().get(0), "", detail.getModel()),
-						result.getDetail().getRelated());
+				String title = detail.getDc().getTitle() == null ? "no title" : detail.getDc().getTitle().get(0);
+				DigitalObjectOpenedEvent
+						.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, title, "", detail.getModel()), result.getDetail().getRelated());
 				getView().getPopupPanel().setVisible(false);
 				getView().getPopupPanel().hide();
 			}
@@ -435,14 +438,23 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		dispatcher.execute(new GetDescriptionAction(uuid), new DispatchCallback<GetDescriptionResult>() {
 			@Override
 			public void callback(GetDescriptionResult result) {
-				tabSet.setTabPane(tabId, getView().getEditor(result.getDescription(), uuid));
+				final TabSet descriptionTabSet = new TabSet();
+				descriptionTabSet.setTabBarPosition(Side.RIGHT);
+				descriptionTabSet.setWidth100();
+				descriptionTabSet.setHeight100();
+				Tab commonDesc = new Tab("", "other/more_people.png");
+				commonDesc.setPane(getView().getEditor(result.getDescription(), uuid, true));
+				Tab userDesc = new Tab("", "other/loner.png");
+				userDesc.setPane(getView().getEditor(result.getUserDescription(), uuid, false));
+				descriptionTabSet.setTabs(commonDesc, userDesc);
+				tabSet.setTabPane(tabId, descriptionTabSet);
 			}
 		});
 	}
 
 	@Override
-	public void putDescription(String uuid, String description) {
-		dispatcher.execute(new PutDescriptionAction(uuid, description), new DispatchCallback<PutDescriptionResult>() {
+	public void putDescription(String uuid, String description, boolean common) {
+		dispatcher.execute(new PutDescriptionAction(uuid, description, common), new DispatchCallback<PutDescriptionResult>() {
 			@Override
 			public void callback(PutDescriptionResult result) {
 			}

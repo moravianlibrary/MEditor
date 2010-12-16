@@ -17,6 +17,9 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
 	public static final String SELECT_ROLES_STATEMENT = "SELECT name FROM " + Constants.TABLE_ROLE + " ORDER BY name";
 
+	public static final String SELECT_ROLE_BY_IDENTITY_STATEMENT = "SELECT id FROM " + Constants.TABLE_USER_IN_ROLE + " WHERE user_id IN (SELECT user_id FROM "
+			+ Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)) AND role_id IN (SELECT id FROM " + Constants.TABLE_ROLE + " WHERE name = (?))";
+
 	public static final String SELECT_ROLES_OF_USER_STATEMENT = "SELECT id, name, description FROM " + Constants.TABLE_ROLE + " WHERE id IN ( SELECT id FROM "
 			+ Constants.TABLE_USER_IN_ROLE + " WHERE user_id = (?) )";
 
@@ -416,5 +419,29 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			closeConnection();
 		}
 		return name;
+	}
+
+	@Override
+	public boolean openIDhasRole(String role, String identifier) {
+		PreparedStatement selectSt = null;
+		boolean ret = false;
+		try {
+			selectSt = getConnection().prepareStatement(SELECT_ROLE_BY_IDENTITY_STATEMENT);
+			selectSt.setString(1, identifier);
+			selectSt.setString(2, role);
+		} catch (SQLException e) {
+			logger.error("Could not get select roles statement", e);
+		}
+		try {
+			ResultSet rs = selectSt.executeQuery();
+			while (rs.next()) {
+				ret = true;
+			}
+		} catch (SQLException e) {
+			logger.error(e);
+		} finally {
+			closeConnection();
+		}
+		return ret;
 	}
 }

@@ -20,7 +20,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class GetUserRolesAndIdentities extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class GetUserRolesAndIdentities extends UnsecuredActionImpl<GetUserRolesAndIdentitiesResult> {
 
 	@In(1)
 	private String id;

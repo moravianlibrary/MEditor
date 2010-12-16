@@ -19,7 +19,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class GetRecentlyModified extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class GetRecentlyModified extends UnsecuredActionImpl<GetRecentlyModifiedResult> {
 
 	/** The for all users. */
 	@In(1)

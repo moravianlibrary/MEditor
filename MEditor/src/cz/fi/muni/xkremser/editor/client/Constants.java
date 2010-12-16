@@ -40,6 +40,8 @@ public class Constants {
 	/** The Constant TABLE_RECENTLY_MODIFIED_NAME. */
 	public static final String TABLE_RECENTLY_MODIFIED_NAME = "recently_modified_item";
 
+	public static final String TABLE_DESCRIPTION = "description";
+
 	public static final String TABLE_EDITOR_USER = "editor_user";
 
 	public static final String SEQUENCE_EDITOR_USER = "seq_user";

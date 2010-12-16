@@ -5,13 +5,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
@@ -32,6 +36,9 @@ public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction
 	/** The recently modified dao. */
 	@Inject
 	private RecentlyModifiedItemDAO recentlyModifiedDAO;
+
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new put recently modified handler.
@@ -60,7 +67,11 @@ public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction
 		if (action.getUuid() == null || "".equals(action.getUuid()))
 			throw new NullPointerException("getUuid()");
 		logger.debug("Processing action: GetDescription: " + action.getUuid());
-		return new GetDescriptionResult(recentlyModifiedDAO.getDescription(action.getUuid()));
+		HttpSession session = httpSessionProvider.get();
+		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+		String commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
+		String userDescription = recentlyModifiedDAO.getUserDescription(openID, action.getUuid());
+		return new GetDescriptionResult(commonDescription, userDescription);
 	}
 
 	/*

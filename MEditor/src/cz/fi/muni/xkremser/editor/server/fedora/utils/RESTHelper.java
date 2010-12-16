@@ -103,11 +103,7 @@ public class RESTHelper {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					// try {
 					out.flush();
-					// } catch (IOException e) {
-					// e.printStackTrace();
-					// }
 				break;
 				case POST:
 				break;
@@ -144,9 +140,8 @@ public class RESTHelper {
 
 		try {
 			if (conn != null)
-				System.out.println(convertStreamToString(conn.getInputStream()));
+				LOGGER.log(Level.FINE, convertStreamToString(conn.getInputStream()));
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		return true;

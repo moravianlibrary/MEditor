@@ -17,7 +17,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class PutUserInfo extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class PutUserInfo extends UnsecuredActionImpl<PutUserInfoResult> {
 
 	@In(1)
 	private UserInfoItem user;

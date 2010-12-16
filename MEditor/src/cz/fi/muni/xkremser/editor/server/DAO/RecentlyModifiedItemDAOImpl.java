@@ -26,19 +26,32 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements RecentlyModifiedItemDAO {
 
 	/** The Constant SELECT_LAST_N_STATEMENT. */
-	public static final String SELECT_LAST_N_STATEMENT = "SELECT uuid, name, description, model FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
-			+ " ORDER BY modified DESC LIMIT (?)";
+	public static final String SELECT_LAST_N_STATEMENT = "SELECT * FROM ( SELECT DISTINCT ON (uuid) uuid, name, description, model, modified FROM "
+			+ Constants.TABLE_RECENTLY_MODIFIED_NAME + " LIMIT (?)) foo ORDER by modified";
+
+	public static final String SELECT_LAST_N_STATEMENT_FOR_USER = "SELECT uuid, name, description, model FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+			+ " WHERE user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";
 
 	/** The Constant INSERT_ITEM_STATEMENT. */
 	public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_RECENTLY_MODIFIED_NAME
-			+ " (uuid, name, description, model, modified) VALUES ((?),(?),(?),(?),(CURRENT_TIMESTAMP))";
-
-	public static final String UPDATE_DESCRIPTION_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " SET description = (?) WHERE uuid = (?)";
+			+ " (uuid, name, description, model, user_id, modified) VALUES ((?),(?),(?),(?),(SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
+			+ " WHERE identity = (?)),(CURRENT_TIMESTAMP))";
 
 	/** The Constant FIND_ITEM_STATEMENT. */
-	public static final String FIND_ITEM_STATEMENT = "SELECT id FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " WHERE uuid = (?)";
+	public static final String FIND_ITEM_STATEMENT = "SELECT id FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+			+ " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
-	public static final String SELECT_DESCRIPTION_STATEMENT = "SELECT description FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " WHERE uuid = (?)";
+	public static final String INSERT_COMMON_DESCRIPTION_STATEMENT = "INSERT INTO " + Constants.TABLE_DESCRIPTION + " (description, uuid) VALUES ((?),(?))";
+
+	public static final String UPDATE_COMMON_DESCRIPTION_STATEMENT = "UPDATE " + Constants.TABLE_DESCRIPTION + " SET description = (?) WHERE uuid = (?)";
+
+	public static final String SELECT_COMMON_DESCRIPTION_STATEMENT = "SELECT description FROM " + Constants.TABLE_DESCRIPTION + " WHERE uuid = (?)";
+
+	public static final String UPDATE_USER_DESCRIPTION_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+			+ " SET description = (?) WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
+
+	public static final String SELECT_USER_DESCRIPTION_STATEMENT = "SELECT description FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+			+ " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
 	/** The Constant UPDATE_ITEM_STATEMENT. */
 	public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " SET modified = CURRENT_TIMESTAMP WHERE id = (?)";
@@ -59,7 +72,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	 * .muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
 	 */
 	@Override
-	public boolean put(RecentlyModifiedItem toPut) {
+	public boolean put(RecentlyModifiedItem toPut, String openID) {
 		if (toPut == null)
 			throw new NullPointerException("toPut");
 		if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
@@ -75,9 +88,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 
 			PreparedStatement findSt = getConnection().prepareStatement(FIND_ITEM_STATEMENT);
 			findSt.setString(1, toPut.getUuid());
-			// PreparedStatement selectCount =
-			// getConnection().prepareStatement(SELECT_NUMBER_ITEMS_STATEMENT);
-
+			findSt.setString(2, openID);
 			ResultSet rs = findSt.executeQuery();
 			found = rs.next();
 
@@ -94,6 +105,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 				insSt.setString(2, toPut.getName() == null ? "" : toPut.getName());
 				insSt.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
 				insSt.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model
+				insSt.setString(5, openID);
 				modified = insSt.executeUpdate();
 			}
 			if (modified == 1) {
@@ -123,20 +135,27 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	 * boolean)
 	 */
 	@Override
-	public ArrayList<RecentlyModifiedItem> getItems(int nLatest, boolean isForAll) {
+	public ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) {
 		PreparedStatement selectSt = null;
 		ArrayList<RecentlyModifiedItem> retList = new ArrayList<RecentlyModifiedItem>();
 		try {
-			selectSt = getConnection().prepareStatement(SELECT_LAST_N_STATEMENT);
+			if (openID != null) {
+				selectSt = getConnection().prepareStatement(SELECT_LAST_N_STATEMENT_FOR_USER);
+				selectSt.setString(1, openID);
+				selectSt.setInt(2, nLatest);
+			} else {
+				selectSt = getConnection().prepareStatement(SELECT_LAST_N_STATEMENT);
+				selectSt.setInt(1, nLatest);
+			}
 		} catch (SQLException e) {
 			logger.error("Could not get select items statement", e);
 		}
 		try {
-			selectSt.setInt(1, nLatest);
 			ResultSet rs = selectSt.executeQuery();
 			while (rs.next()) {
 				int modelId = rs.getInt("model");
-				retList.add(new RecentlyModifiedItem(rs.getString("uuid"), rs.getString("name"), rs.getString("description"), KrameriusModel.values()[modelId]));
+				retList.add(new RecentlyModifiedItem(rs.getString("uuid"), rs.getString("name"), openID != null ? rs.getString("description") : "", KrameriusModel
+						.values()[modelId]));
 			}
 		} catch (SQLException e) {
 			logger.error(e);
@@ -160,13 +179,17 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		}
 		boolean found = true;
 		try {
+
+			PreparedStatement findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
+			findSt.setString(1, uuid);
+			ResultSet rs = findSt.executeQuery();
+			found = rs.next();
 			// TX start
 			int modified = 0;
-			PreparedStatement updSt = getConnection().prepareStatement(UPDATE_DESCRIPTION_ITEM_STATEMENT);
+			PreparedStatement updSt = getConnection().prepareStatement(found ? UPDATE_COMMON_DESCRIPTION_STATEMENT : INSERT_COMMON_DESCRIPTION_STATEMENT);
 			updSt.setString(1, description);
 			updSt.setString(2, uuid);
 			modified = updSt.executeUpdate();
-
 			if (modified == 1) {
 				getConnection().commit();
 				logger.debug("DB has been updated. -> commit");
@@ -196,8 +219,75 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			logger.warn("Unable to set autocommit off", e);
 		}
 		try {
-			PreparedStatement findSt = getConnection().prepareStatement(SELECT_DESCRIPTION_STATEMENT);
+			PreparedStatement findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
 			findSt.setString(1, uuid);
+			ResultSet rs = findSt.executeQuery();
+
+			while (rs.next()) {
+				description = rs.getString("description");
+			}
+		} catch (SQLException e) {
+			logger.error(e);
+		} finally {
+			closeConnection();
+		}
+		return description;
+	}
+
+	@Override
+	public boolean putUserDescription(String openID, String uuid, String description) {
+		if (uuid == null)
+			throw new NullPointerException("uuid");
+		if (description == null)
+			throw new NullPointerException("description");
+
+		try {
+			getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			logger.warn("Unable to set autocommit off", e);
+		}
+		boolean found = true;
+		try {
+			// TX start
+			int modified = 0;
+			PreparedStatement updSt = getConnection().prepareStatement(UPDATE_USER_DESCRIPTION_STATEMENT);
+			updSt.setString(1, description);
+			updSt.setString(2, uuid);
+			updSt.setString(3, openID);
+			modified = updSt.executeUpdate();
+
+			if (modified == 1) {
+				getConnection().commit();
+				logger.debug("DB has been updated. -> commit");
+			} else {
+				getConnection().rollback();
+				logger.debug("DB has not been updated. -> rollback");
+				found = false;
+			}
+			// TX end
+		} catch (SQLException e) {
+			logger.error(e);
+			found = false;
+		} finally {
+			closeConnection();
+		}
+		return found;
+	}
+
+	@Override
+	public String getUserDescription(String openID, String uuid) {
+		if (uuid == null)
+			throw new NullPointerException("uuid");
+		String description = null;
+		try {
+			getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			logger.warn("Unable to set autocommit off", e);
+		}
+		try {
+			PreparedStatement findSt = getConnection().prepareStatement(SELECT_USER_DESCRIPTION_STATEMENT);
+			findSt.setString(1, uuid);
+			findSt.setString(2, openID);
 			ResultSet rs = findSt.executeQuery();
 
 			while (rs.next()) {

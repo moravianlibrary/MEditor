@@ -17,7 +17,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
  * The Class GetDigitalObjectDetail.
  */
 @GenDispatch(isSecure = false)
-public class GetDigitalObjectDetail extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class GetDigitalObjectDetail extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
 
 	/** The uuid. */
 	@In(1)

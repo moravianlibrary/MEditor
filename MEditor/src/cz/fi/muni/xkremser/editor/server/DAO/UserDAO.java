@@ -13,10 +13,13 @@ public interface UserDAO {
 	public static final int ADMIN = 2;
 
 	public static final String ADMIN_STRING = "admin";
+	public static final String EDIT_USERS_STRING = "edit_users";
 
 	int isSupported(String identifier);
 
 	boolean hasRole(String role, long userId);
+
+	boolean openIDhasRole(String role, String identifier);
 
 	String getName(String openID);
 

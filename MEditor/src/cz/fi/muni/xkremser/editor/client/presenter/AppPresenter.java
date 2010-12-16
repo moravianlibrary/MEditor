@@ -14,13 +14,20 @@ import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ContentSlot;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
+import com.smartgwt.client.types.Cursor;
+import com.smartgwt.client.widgets.HTMLFlow;
 
 import cz.fi.muni.xkremser.editor.client.MEditor;
+import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
 
@@ -56,15 +63,15 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	 * The Interface MyView.
 	 */
 	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
+		HTMLFlow getUsername();
 
+		HTMLFlow getEditUsers();
 	}
 
 	/** The left presenter. */
 	DigitalObjectMenuPresenter leftPresenter;
 	private final DispatchAsync dispatcher;
-
-	// private final HomePresenter homePresenter;
-	// private final DigitalObjectMenuPresenter treePresenter;
+	private final PlaceManager placeManager;
 
 	/**
 	 * Instantiates a new app presenter.
@@ -84,11 +91,37 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	// final DigitalObjectMenuPresenter digitalObjectMenuPresenter, final
 	// EditorClientConfiguration config) {
 	public AppPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher) {
+			final DispatchAsync dispatcher, final PlaceManager placeManager) {
 		super(eventBus, view, proxy);
 		this.dispatcher = dispatcher;
 		this.leftPresenter = leftPresenter;
+		this.placeManager = placeManager;
 		getView().setUiHandlers(this);
+		bind();
+	}
+
+	@Override
+	protected void onBind() {
+		super.onBind();
+		dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
+			@Override
+			public void callback(GetLoggedUserResult result) {
+				getView().getUsername().setContents("<b>" + result.getName() + "</b>");
+				if (result.isEditUsers()) {
+					getView().getEditUsers().setContents("User Management");
+					getView().getEditUsers().setCursor(Cursor.HAND);
+					getView().getEditUsers().setWidth(120);
+					getView().getEditUsers().setHeight(15);
+					getView().getEditUsers().setStyleName("pseudolink");
+					getView().getEditUsers().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+						@Override
+						public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+							placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
+						}
+					});
+				}
+			}
+		});
 	}
 
 	/*

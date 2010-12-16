@@ -20,6 +20,7 @@ import org.w3c.dom.NodeList;
 import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 public class AuthenticationServlet extends HttpServlet {
 
@@ -27,6 +28,9 @@ public class AuthenticationServlet extends HttpServlet {
 
 	@Inject
 	private static UserDAO userDAO;
+
+	@Inject
+	private static EditorConfiguration configuration;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,7 +40,9 @@ public class AuthenticationServlet extends HttpServlet {
 		session.setAttribute(HttpCookies.TARGET_URL, null);
 		String token = req.getParameter("token");
 
-		RPX rpx = new RPX("775a3d3ec29deeeaf39e506ff514f39fcb5e434d", "https://rpxnow.com");
+		String appID = configuration.getOpenIDApiKey();
+		String openIdurl = configuration.getOpenIDApiURL();
+		RPX rpx = new RPX(appID, openIdurl);
 		Element e = rpx.authInfo(token);
 		String idXPath = "//identifier";
 		XPathFactory xpfactory = XPathFactory.newInstance();

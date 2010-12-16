@@ -16,7 +16,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class GetAllRoles extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class GetAllRoles extends UnsecuredActionImpl<GetAllRolesResult> {
 
 	/** The items. */
 	@Out(1)

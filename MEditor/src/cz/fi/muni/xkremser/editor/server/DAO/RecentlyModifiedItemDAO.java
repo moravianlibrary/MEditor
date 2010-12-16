@@ -22,11 +22,15 @@ public interface RecentlyModifiedItemDAO {
 	 *          the to put
 	 * @return true, if successful
 	 */
-	boolean put(RecentlyModifiedItem toPut);
+	boolean put(RecentlyModifiedItem toPut, String openID);
 
 	boolean putDescription(String uuid, String description);
 
 	String getDescription(String uuid);
+
+	boolean putUserDescription(String openID, String uuid, String description);
+
+	String getUserDescription(String openID, String uuid);
 
 	/**
 	 * Gets the items.
@@ -37,5 +41,5 @@ public interface RecentlyModifiedItemDAO {
 	 *          the is for all
 	 * @return the items
 	 */
-	ArrayList<RecentlyModifiedItem> getItems(int nLatest, boolean isForAll);
+	ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID);
 }
