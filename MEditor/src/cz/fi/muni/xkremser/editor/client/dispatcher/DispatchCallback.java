@@ -11,8 +11,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 // TODO: Auto-generated Javadoc
 /**
  * The Class DispatchCallback.
- *
- * @param <T> the generic type
+ * 
+ * @param <T>
+ *          the generic type
  */
 public abstract class DispatchCallback<T> implements AsyncCallback<T> {
 
@@ -23,16 +24,23 @@ public abstract class DispatchCallback<T> implements AsyncCallback<T> {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
 	 */
 	@Override
 	public void onFailure(Throwable caught) {
+		// log
 		callbackError(caught);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
 	 */
 	@Override
 	public void onSuccess(T result) {
@@ -41,15 +49,17 @@ public abstract class DispatchCallback<T> implements AsyncCallback<T> {
 
 	/**
 	 * Must be overriden by clients to handle callbacks.
-	 *
-	 * @param result the result
+	 * 
+	 * @param result
+	 *          the result
 	 */
 	public abstract void callback(T result);
 
 	/**
 	 * Should be overriden by clients who want to handle error cases themselves.
-	 *
-	 * @param t the t
+	 * 
+	 * @param t
+	 *          the t
 	 */
 	public void callbackError(Throwable t) {
 		t.printStackTrace();

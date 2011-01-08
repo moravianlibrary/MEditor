@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -30,7 +31,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -40,6 +41,8 @@ import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
+import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
@@ -77,13 +80,17 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	@Inject
 	private NamespaceContext nsContext;
 
+	private final UserDAO userDAO;
+
 	private final EditorConfiguration configuration;
 
 	private XPathFactory xpfactory;
 
-	/** The injector. */
-	@Inject
-	Injector injector;
+	private final Provider<HttpSession> httpSessionProvider;
+
+	// /** The injector. */
+	// @Inject
+	// Injector injector;
 
 	/**
 	 * Instantiates a new gets the digital object detail handler.
@@ -94,9 +101,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 *          the handler
 	 */
 	@Inject
-	public PutDigitalObjectDetailHandler(final Log logger, final EditorConfiguration configuration) {
+	public PutDigitalObjectDetailHandler(final Log logger, final UserDAO userDAO, final EditorConfiguration configuration,
+			Provider<HttpSession> httpSessionProvider) {
 		this.logger = logger;
 		this.configuration = configuration;
+		this.userDAO = userDAO;
+		this.httpSessionProvider = httpSessionProvider;
 	}
 
 	/*
@@ -111,11 +121,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	public PutDigitalObjectDetailResult execute(final PutDigitalObjectDetailAction action, final ExecutionContext context) throws ActionException {
 		if (action == null || action.getDetail() == null)
 			throw new NullPointerException("getDetail()");
-		AbstractDigitalObjectDetail detail = action.getDetail();
-
-		boolean write = true;
+		HttpSession session = httpSessionProvider.get();
+		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+		boolean write = userDAO.openIDhasRole(UserDAO.CAN_PUBLISH_STRING, openID) || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
 
 		if (write) {
+			AbstractDigitalObjectDetail detail = action.getDetail();
 			modifyRelations(detail);
 			if (detail.isDcChanged())
 				modifyDublinCore(detail);
@@ -126,7 +137,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			reindex(detail.getUuid());
 		}
 		// reindex(detail.getUuid());
-		return new PutDigitalObjectDetailResult();
+		return new PutDigitalObjectDetailResult(write);
 	}
 
 	private void reindex(String uuid) {

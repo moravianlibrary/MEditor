@@ -30,15 +30,15 @@ public class AuthenticationFilter implements Filter {
 		final boolean sessionIdBool = sessionId != null;
 		final boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;
 
-		if (sessionIdBool && paramSizeGreaterThanOne && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
+		if (!URLS.LOCALHOST && sessionIdBool && paramSizeGreaterThanOne && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
 			final String sufixSUrl = URLS.convertToAJAXURL(parameters);
-			URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + path + sufixSUrl);
+			URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT + path + sufixSUrl);
 			return;
 		}
 
 		if (sessionIdBool || URLS.LOGIN_PAGE.equals(path) || URLS.AUTH_SERVLET.equals(path) || URLS.INFO_PAGE.equals(path)) {
-			if ("http".equals(request.getScheme()) && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
-				URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + path);
+			if (!URLS.LOCALHOST && "http".equals(request.getScheme()) && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
+				URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT + path);
 				return;
 			}
 			chain.doFilter(req, res);
@@ -46,9 +46,9 @@ public class AuthenticationFilter implements Filter {
 			final HttpServletResponse response = (HttpServletResponse) res;
 			if (paramSizeGreaterThanOne) {
 				final String sufixSUrl = URLS.convertToAJAXURL(parameters);
-				session.setAttribute(HttpCookies.TARGET_URL, path + sufixSUrl);
+				session.setAttribute(HttpCookies.TARGET_URL, (URLS.LOCALHOST ? "http://" : "https://") + request.getServerName() + URLS.ROOT + path + sufixSUrl);
 			}
-			URLS.redirect(response, URLS.LOGIN_PAGE);
+			URLS.redirect(response, (URLS.LOCALHOST ? "http://" : "https://") + request.getServerName() + URLS.ROOT + URLS.LOGIN_PAGE);
 		}
 	}
 

@@ -14,6 +14,7 @@ public interface UserDAO {
 
 	public static final String ADMIN_STRING = "admin";
 	public static final String EDIT_USERS_STRING = "edit_users";
+	public static final String CAN_PUBLISH_STRING = "can_publish";
 
 	int isSupported(String identifier);
 

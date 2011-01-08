@@ -212,13 +212,6 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		return layout;
 	}
 
-	// @UiHandler("saveButton")
-	// void onSaveButtonClicked(ClickEvent event) {
-	// if (getUiHandlers() != null) {
-	// getUiHandlers().onRefresh();
-	// }
-	// }
-
 	/*
 	 * (non-Javadoc)
 	 * 

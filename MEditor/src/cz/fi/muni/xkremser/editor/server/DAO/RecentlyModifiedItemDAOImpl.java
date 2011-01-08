@@ -27,7 +27,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 
 	/** The Constant SELECT_LAST_N_STATEMENT. */
 	public static final String SELECT_LAST_N_STATEMENT = "SELECT * FROM ( SELECT DISTINCT ON (uuid) uuid, name, description, model, modified FROM "
-			+ Constants.TABLE_RECENTLY_MODIFIED_NAME + " LIMIT (?)) foo ORDER by modified";
+			+ Constants.TABLE_RECENTLY_MODIFIED_NAME + " LIMIT (?)) foo ORDER by modified DESC";
 
 	public static final String SELECT_LAST_N_STATEMENT_FOR_USER = "SELECT uuid, name, description, model FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " WHERE user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";

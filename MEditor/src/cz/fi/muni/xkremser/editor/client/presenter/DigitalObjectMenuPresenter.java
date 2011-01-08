@@ -50,12 +50,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
  */
 public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy> implements MyUiHandlers {
 	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while attempting to contact the server.";
-
-	/**
 	 * The Interface MyView.
 	 */
 	public interface MyView extends View/* , HasUiHandlers<MyUiHandlers> */{

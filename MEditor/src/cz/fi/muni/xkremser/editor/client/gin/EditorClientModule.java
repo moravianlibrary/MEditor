@@ -62,9 +62,6 @@ public class EditorClientModule extends AbstractPresenterModule {
 		bindPresenter(ModifyPresenter.class, ModifyPresenter.MyView.class, ModifyView.class, ModifyPresenter.MyProxy.class);
 		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuView.class,
 				DigitalObjectMenuPresenter.MyProxy.class);
-		// bindPresenterWidget(DigitalObjectMenuPresenter.class,
-		// DigitalObjectMenuPresenter.MyView.class,
-		// DigitalObjectMenuView.class);
 
 		bind(CachingDispatchAsync.class);
 		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);

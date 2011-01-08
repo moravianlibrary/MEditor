@@ -54,10 +54,6 @@ public class NameTokens {
 		return HOME;
 	}
 
-	// public static String getProductListPage() {
-	// return productList;
-	// }
-
 	/**
 	 * Gets the modify.
 	 * 

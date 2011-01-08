@@ -72,13 +72,6 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
 public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy> implements MyUiHandlers {
 
 	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
-
-	/**
 	 * The Interface MyView.
 	 */
 	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
@@ -466,7 +459,16 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject), new DispatchCallback<PutDigitalObjectDetailResult>() {
 			@Override
 			public void callback(PutDigitalObjectDetailResult result) {
-				// TODO: vypnout progressbar
+				if (!result.isSaved()) {
+					SC.say("This account can not publish.");
+				} else {
+					// SC.say("Done.");
+				}
+			}
+
+			@Override
+			public void callbackError(Throwable t) {
+				super.callbackError(t);
 			}
 		});
 	}

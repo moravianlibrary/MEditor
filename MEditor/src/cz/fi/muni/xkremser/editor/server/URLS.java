@@ -5,8 +5,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 public class URLS {
-
-	public static final String ROOT = "/";
+	public static final boolean LOCALHOST = false;
+	public static final String ROOT = "";
+	// public static final String ROOT = "/skin1";
 	public static final String MAIN_PAGE = "/MEditor.html";
 	public static final String LOGIN_PAGE = "/login.html";
 	public static final String INFO_PAGE = "/info.html";

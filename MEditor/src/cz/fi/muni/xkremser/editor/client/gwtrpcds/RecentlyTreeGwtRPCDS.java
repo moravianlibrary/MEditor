@@ -17,10 +17,12 @@ import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.util.JSOHelper;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
@@ -83,11 +85,7 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);
 				response.setStatus(RPCResponse.STATUS_FAILURE);
-				// Window.alert(Messages.SERVER_SCANINPUT_ERROR);
-
-				// TODO: Scanning input
-				// queue: Action failed because attribut input_queue is not set. kdyz
-				// nejsou zadne configuration.properties
+				SC.say(Messages.SERVER_RECENTLYMODIFIED_ERROR);
 			}
 
 			@Override

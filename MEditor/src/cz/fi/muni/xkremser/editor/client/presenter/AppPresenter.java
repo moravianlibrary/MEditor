@@ -103,6 +103,12 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	@Override
 	protected void onBind() {
 		super.onBind();
+
+	}
+
+	@Override
+	protected void onReset() {
+		super.onReset();
 		dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
 			@Override
 			public void callback(GetLoggedUserResult result) {

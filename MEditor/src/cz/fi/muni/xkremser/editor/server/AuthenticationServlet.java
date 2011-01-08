@@ -61,6 +61,8 @@ public class AuthenticationServlet extends HttpServlet {
 		} catch (XPathExpressionException e1) {
 			e1.printStackTrace();
 		}
+		String root = (URLS.LOCALHOST ? "http://" : "https://") + req.getServerName()
+				+ (URLS.LOCALHOST ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT;
 		if (identifier != null && !"".equals(identifier)) {
 			LOGGER.log(Level.INFO, "Logged user with openID " + identifier);
 			int userStatus = userDAO.isSupported(identifier);
@@ -69,7 +71,7 @@ public class AuthenticationServlet extends HttpServlet {
 					// HttpCookies.setCookie(req, resp, HttpCookies.SESSION_ID_KEY,
 					// identifier);
 					session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
-					URLS.redirect(resp, url == null ? URLS.ROOT : url);
+					URLS.redirect(resp, url == null ? root : url);
 				break;
 				case UserDAO.ADMIN:
 					// HttpCookies.setCookie(req, resp, HttpCookies.SESSION_ID_KEY,
@@ -78,15 +80,15 @@ public class AuthenticationServlet extends HttpServlet {
 					// HttpCookies.ADMIN_YES);
 					session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
 					session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
-					URLS.redirect(resp, url == null ? URLS.ROOT : url);
+					URLS.redirect(resp, url == null ? root : url);
 				break;
 				case UserDAO.NOT_PRESENT:
 				default:
-					URLS.redirect(resp, URLS.INFO_PAGE);
+					URLS.redirect(resp, root + URLS.INFO_PAGE);
 				break;
 			}
 		} else {
-			URLS.redirect(resp, URLS.LOGIN_PAGE);
+			URLS.redirect(resp, root + URLS.LOGIN_PAGE);
 		}
 
 		// System.out.println("ID:" + identifier);
@@ -95,5 +97,4 @@ public class AuthenticationServlet extends HttpServlet {
 		// has to be added to system first by admin
 
 	}
-
 }

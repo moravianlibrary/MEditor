@@ -176,11 +176,4 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		return editUsers;
 	}
 
-	// private void setTopContent(Widget content) {
-	// topContainer.clear();
-	// if (content != null) {
-	// topContainer.addMember(content);
-	// }
-	// }
-
 }
