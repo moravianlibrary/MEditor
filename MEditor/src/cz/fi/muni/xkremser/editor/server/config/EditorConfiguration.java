@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.config;
 
@@ -97,10 +118,13 @@ public abstract class EditorConfiguration {
 		/** The Constant ACCESS_ADMIN_PATTERNS_DEFAULT. */
 		public static final String ACCESS_ADMIN_PATTERNS_DEFAULT = "127.*" + ACCESS_PATTERN_SEPARATOR + "localhost";
 
+		/** The Constant KRAMERIUS_HOST. */
 		public static final String KRAMERIUS_HOST = EditorClientConfiguration.Constants.KRAMERIUS_HOST;
 
+		/** The Constant KRAMERIUS_LOGIN. */
 		public static final String KRAMERIUS_LOGIN = "krameriusLogin";
 
+		/** The Constant KRAMERIUS_PASSWORD. */
 		public static final String KRAMERIUS_PASSWORD = "krameriusPassword";
 
 		// fedora
@@ -150,12 +174,16 @@ public abstract class EditorConfiguration {
 		/** The Constant DB_NAME_DEFAULT. */
 		public static final String DB_NAME_DEFAULT = "meditor";
 
+		/** The Constant JANRAIN_API_KEY. */
 		public static final String JANRAIN_API_KEY = "openIdApiKey";
 
+		/** The Constant JANRAIN_API_KEY_DEFAULT. */
 		public static final String JANRAIN_API_KEY_DEFAULT = "775a3d3ec29deeeaf39e506ff514f39fcb5e434d";
 
+		/** The Constant JANRAIN_API_URL. */
 		public static final String JANRAIN_API_URL = "openIdApiUrl";
 
+		/** The Constant JANRAIN_API_URL_DEFAULT. */
 		public static final String JANRAIN_API_URL_DEFAULT = "https://rpxnow.com";
 
 	}
@@ -247,14 +275,29 @@ public abstract class EditorConfiguration {
 		return getConfiguration().getInteger(Constants.Z3950_BAR_LENGTH, Constants.UNDEF);
 	}
 
+	/**
+	 * Gets the kramerius host.
+	 *
+	 * @return the kramerius host
+	 */
 	public String getKrameriusHost() {
 		return getConfiguration().getString(Constants.KRAMERIUS_HOST, null);
 	}
 
+	/**
+	 * Gets the kramerius login.
+	 *
+	 * @return the kramerius login
+	 */
 	public String getKrameriusLogin() {
 		return getConfiguration().getString(Constants.KRAMERIUS_LOGIN, null);
 	}
 
+	/**
+	 * Gets the kramerius password.
+	 *
+	 * @return the kramerius password
+	 */
 	public String getKrameriusPassword() {
 		return getConfiguration().getString(Constants.KRAMERIUS_PASSWORD, null);
 	}
@@ -340,10 +383,20 @@ public abstract class EditorConfiguration {
 		return getConfiguration().getString(Constants.DB_NAME, Constants.DB_NAME_DEFAULT);
 	}
 
+	/**
+	 * Gets the open id api key.
+	 *
+	 * @return the open id api key
+	 */
 	public String getOpenIDApiKey() {
 		return getConfiguration().getString(Constants.JANRAIN_API_KEY, Constants.JANRAIN_API_KEY_DEFAULT);
 	}
 
+	/**
+	 * Gets the open id api url.
+	 *
+	 * @return the open id api url
+	 */
 	public String getOpenIDApiURL() {
 		return getConfiguration().getString(Constants.JANRAIN_API_URL, Constants.JANRAIN_API_URL_DEFAULT);
 	}

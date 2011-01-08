@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
@@ -86,50 +107,148 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  */
 public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
 
+	/**
+	 * The Interface MyUiHandlers.
+	 */
 	public interface MyUiHandlers extends UiHandlers {
 
+		/**
+		 * On add digital object.
+		 * 
+		 * @param tileGrid
+		 *          the tile grid
+		 * @param menu
+		 *          the menu
+		 */
 		void onAddDigitalObject(final TileGrid tileGrid, final Menu menu);
 
+		/**
+		 * On add digital object.
+		 * 
+		 * @param uuid
+		 *          the uuid
+		 * @param closeButton
+		 *          the close button
+		 * @param menu
+		 *          the menu
+		 */
 		void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu);
 
+		/**
+		 * On save digital object.
+		 * 
+		 * @param digitalObject
+		 *          the digital object
+		 */
 		void onSaveDigitalObject(final AbstractDigitalObjectDetail digitalObject);
 
+		/**
+		 * Gets the description.
+		 * 
+		 * @param uuid
+		 *          the uuid
+		 * @param tabSet
+		 *          the tab set
+		 * @param tabId
+		 *          the tab id
+		 * @return the description
+		 */
 		void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
+		/**
+		 * Put description.
+		 * 
+		 * @param uuid
+		 *          the uuid
+		 * @param description
+		 *          the description
+		 * @param common
+		 *          the common
+		 */
 		void putDescription(final String uuid, final String description, boolean common);
 
+		/**
+		 * On refresh.
+		 * 
+		 * @param uuid
+		 *          the uuid
+		 */
 		void onRefresh(final String uuid);
 	}
 
+	/** The Constant ID_DC. */
 	private static final String ID_DC = "dc";
+
+	/** The Constant ID_MODS. */
 	private static final String ID_MODS = "mods";
+
+	/** The Constant ID_FULL. */
 	private static final String ID_FULL = "full";
+
+	/** The Constant ID_DESC. */
 	private static final String ID_DESC = "desc";
+
+	/** The Constant ID_TAB. */
 	private static final String ID_TAB = "tab";
+
+	/** The Constant ID_TABSET. */
 	public static final String ID_TABSET = "tabset";
+
+	/** The Constant ID_MODEL. */
 	public static final String ID_MODEL = "model";
 
+	/** The Constant ID_NAME. */
 	public static final String ID_NAME = "name";
+
+	/** The Constant ID_EDIT. */
 	public static final String ID_EDIT = "edit";
+
+	/** The Constant ID_SEPARATOR. */
 	public static final String ID_SEPARATOR = "separator";
+
+	/** The Constant ID_SEL_ALL. */
 	public static final String ID_SEL_ALL = "all";
+
+	/** The Constant ID_SEL_NONE. */
 	public static final String ID_SEL_NONE = "none";
+
+	/** The Constant ID_SEL_INV. */
 	public static final String ID_SEL_INV = "invert";
+
+	/** The Constant ID_COPY. */
 	public static final String ID_COPY = "copy";
+
+	/** The Constant ID_PASTE. */
 	public static final String ID_PASTE = "paste";
+
+	/** The Constant ID_DELETE. */
 	public static final String ID_DELETE = "delete";
 
+	/** The Constant DC_TAB_INDEX. */
 	public static final int DC_TAB_INDEX = 1;
+
+	/** The Constant TAB_INITIALIZED. */
 	public static final String TAB_INITIALIZED = "initialized";
 
+	/** The ocr content. */
 	private final Map<TabSet, TextAreaItem> ocrContent = new HashMap<TabSet, TextAreaItem>();
+
+	/** The ocr text content. */
 	private final Map<TextAreaItem, String> ocrTextContent = new HashMap<TextAreaItem, String>();
+
+	/** The dc tab. */
 	private final Map<TabSet, Tab> dcTab = new HashMap<TabSet, Tab>();
+
+	/** The mods tab. */
 	private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
 
+	/** The opened objects tabsets. */
 	private final Map<String, TabSet> openedObjectsTabsets = new HashMap<String, TabSet>();
+
+	/** The opened objects uuids. */
 	private final Map<TabSet, String> openedObjectsUuids = new HashMap<TabSet, String>();
 
+	/** The clipboard. */
 	private Record[] clipboard;
 
 	/** The layout. */
@@ -171,11 +290,24 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#
+	 * fromClipboard()
+	 */
 	@Override
 	public Record[] fromClipboard() {
 		return this.clipboard;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#toClipboard
+	 * (com.smartgwt.client.data.Record[])
+	 */
 	@Override
 	public void toClipboard(Record[] data) {
 		this.clipboard = data;
@@ -661,6 +793,12 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 	/**
 	 * Sets the tile grid.
+	 * 
+	 * @param pages
+	 *          the pages
+	 * @param model
+	 *          the model
+	 * @return the tile grid
 	 */
 	private TileGrid getTileGrid(final boolean pages, final String model) {
 
@@ -851,6 +989,13 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		return layout;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getEditor
+	 * (java.lang.String, java.lang.String, boolean)
+	 */
 	@Override
 	public Canvas getEditor(String text, final String uuid, final boolean common) {
 		final VLayout layout = new VLayout();
@@ -889,6 +1034,12 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		return layout;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#
+	 * getPopupPanel()
+	 */
 	@Override
 	public PopupPanel getPopupPanel() {
 		if (imagePopup == null) {
@@ -899,11 +1050,25 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		return imagePopup;
 	}
 
+	/**
+	 * Make tuple.
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 * @param tabSet
+	 *          the tab set
+	 */
 	private void makeTuple(String uuid, TabSet tabSet) {
 		openedObjectsTabsets.put(uuid, tabSet);
 		openedObjectsUuids.put(tabSet, uuid);
 	}
 
+	/**
+	 * Removes the tuple.
+	 * 
+	 * @param tabSet
+	 *          the tab set
+	 */
 	private void removeTuple(TabSet tabSet) {
 		String u = openedObjectsUuids.get(tabSet);
 		openedObjectsTabsets.remove(u);

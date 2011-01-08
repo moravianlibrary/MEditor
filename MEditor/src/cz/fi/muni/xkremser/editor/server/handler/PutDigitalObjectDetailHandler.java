@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
@@ -62,30 +83,53 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 
 	/** The logger. */
 	private final Log logger;
+
+	/** The Constant RELS_EXT_PART_1. */
 	private static final String RELS_EXT_PART_1 = "<kramerius:";
+
+	/** The Constant RELS_EXT_PART_2. */
 	private static final String RELS_EXT_PART_2 = " rdf:resource=\"info:fedora/uuid:";
+
+	/** The Constant RELS_EXT_PART_3. */
 	private static final String RELS_EXT_PART_3 = "\"></kramerius:";
+
+	/** The Constant TERMINATOR1. */
 	private static final String TERMINATOR1 = ">\n";
+
+	/** The Constant TERMINATOR2. */
 	private static final String TERMINATOR2 = ">";
 
+	/** The Constant DC_HEAD. */
 	private static final String DC_HEAD = "<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n";
+
+	/** The Constant DC_TAIL. */
 	private static final String DC_TAIL = "</oai_dc:dc>";
+
+	/** The Constant DC_PART_1. */
 	private static final String DC_PART_1 = "<dc:";
+
+	/** The Constant DC_PART_2. */
 	private static final String DC_PART_2 = "</dc:";
 
+	/** The fedora access. */
 	@Inject
 	@Named("securedFedoraAccess")
 	private FedoraAccess fedoraAccess;
 
+	/** The ns context. */
 	@Inject
 	private NamespaceContext nsContext;
 
+	/** The user dao. */
 	private final UserDAO userDAO;
 
+	/** The configuration. */
 	private final EditorConfiguration configuration;
 
+	/** The xpfactory. */
 	private XPathFactory xpfactory;
 
+	/** The http session provider. */
 	private final Provider<HttpSession> httpSessionProvider;
 
 	// /** The injector. */
@@ -97,8 +141,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * 
 	 * @param logger
 	 *          the logger
-	 * @param handler
-	 *          the handler
+	 * @param userDAO
+	 *          the user dao
+	 * @param configuration
+	 *          the configuration
+	 * @param httpSessionProvider
+	 *          the http session provider
 	 */
 	@Inject
 	public PutDigitalObjectDetailHandler(final Log logger, final UserDAO userDAO, final EditorConfiguration configuration,
@@ -140,6 +188,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		return new PutDigitalObjectDetailResult(write);
 	}
 
+	/**
+	 * Reindex.
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 */
 	private void reindex(String uuid) {
 		String host = configuration.getKrameriusHost();
 		String login = configuration.getKrameriusLogin();
@@ -183,6 +237,16 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		// idempotency -> no need for undo
 	}
 
+	/**
+	 * Removes the elements.
+	 * 
+	 * @param parent
+	 *          the parent
+	 * @param doc
+	 *          the doc
+	 * @param expr
+	 *          the expr
+	 */
 	private static void removeElements(Element parent, Document doc, XPathExpression expr) {
 		NodeList nodes = null;
 		try {
@@ -195,6 +259,11 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 	}
 
+	/**
+	 * Make ns aware xpath.
+	 * 
+	 * @return the x path
+	 */
 	private XPath makeNSAwareXpath() {
 		if (xpfactory == null) {
 			xpfactory = XPathFactory.newInstance();
@@ -204,6 +273,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		return xpath;
 	}
 
+	/**
+	 * Modify relations.
+	 * 
+	 * @param detail
+	 *          the detail
+	 */
 	private void modifyRelations(AbstractDigitalObjectDetail detail) {
 		StringBuilder sb = new StringBuilder();
 		boolean hasAnything = false;
@@ -301,6 +376,16 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		RESTHelper.put(url, content, usr, pass);
 	}
 
+	/**
+	 * Append dc element.
+	 * 
+	 * @param contentBuilder
+	 *          the content builder
+	 * @param values
+	 *          the values
+	 * @param elementName
+	 *          the element name
+	 */
 	private static void appendDCElement(StringBuilder contentBuilder, List<String> values, String elementName) {
 		if (values != null && values.size() > 0) {
 			for (String value : values) {
@@ -309,6 +394,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 	}
 
+	/**
+	 * Modify dublin core.
+	 * 
+	 * @param detail
+	 *          the detail
+	 */
 	private void modifyDublinCore(AbstractDigitalObjectDetail detail) {
 		DublinCore dc = null;
 		if ((dc = detail.getDc()) != null) {
@@ -339,6 +430,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 	}
 
+	/**
+	 * Modify mods.
+	 * 
+	 * @param detail
+	 *          the detail
+	 */
 	private void modifyMods(AbstractDigitalObjectDetail detail) {
 		if (detail.getMods() != null) {
 			ModsCollectionClient modsCollection = detail.getMods();
@@ -351,6 +448,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 	}
 
+	/**
+	 * Modify ocr.
+	 * 
+	 * @param detail
+	 *          the detail
+	 */
 	private void modifyOcr(AbstractDigitalObjectDetail detail) {
 		if (detail.getOcr() != null) {
 			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=false";

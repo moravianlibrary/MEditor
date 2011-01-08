@@ -1,4 +1,29 @@
-// Title:       Z3950Client
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 // @version:    $Id: Z3950Client.java,v 1.39 2003/05/09 12:54:43 rob_tice Exp $
 // Copyright:   Copyright (C) 1999,2000 Knowledge Integration Ltd.
 // @author:     Ian Ibbotson (ibbo@k-int.com)
@@ -53,31 +78,31 @@ public class Z3950Client {
 
 	/** The logger. */
 	private final Log logger;
-	
+
 	/** The configuration. */
 	private final EditorConfiguration configuration;
-	
+
 	/** The Constant MZK_PROFILE_INDEX. */
 	public static final int MZK_PROFILE_INDEX = 0;
-	
+
 	/** The Constant MZK_PROFILE_ID. */
 	public static final String MZK_PROFILE_ID = "mzk";
 
 	/** The Constant MUNI_PROFILE_INDEX. */
 	public static final int MUNI_PROFILE_INDEX = 1;
-	
+
 	/** The Constant MUNI_PROFILE_ID. */
 	public static final String MUNI_PROFILE_ID = "muni";
 
 	/** The Constant NKP_SKC_PROFILE_INDEX. */
 	public static final int NKP_SKC_PROFILE_INDEX = 2;
-	
+
 	/** The Constant NKP_SKC_PROFILE_ID. */
 	public static final String NKP_SKC_PROFILE_ID = "nkp_skc";
 
 	/** The Constant NKP_NKC_PROFILE_INDEX. */
 	public static final int NKP_NKC_PROFILE_INDEX = 3;
-	
+
 	/** The Constant NKP_NKC_PROFILE_ID. */
 	public static final String NKP_NKC_PROFILE_ID = "nkp_nkc";
 
@@ -85,13 +110,13 @@ public class Z3950Client {
 	 * The Enum SEARCH_FIELD.
 	 */
 	public static enum SEARCH_FIELD {
-		
+
 		/** The SYSNO. */
-		SYSNO, 
- /** The BAR. */
- BAR, 
- /** The TITLE. */
- TITLE
+		SYSNO,
+		/** The BAR. */
+		BAR,
+		/** The TITLE. */
+		TITLE
 	}
 
 	/** The Constant RECORD_SYNTAX. */
@@ -99,9 +124,11 @@ public class Z3950Client {
 
 	/**
 	 * Instantiates a new z3950 client.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param configuration
+	 *          the configuration
 	 */
 	@Inject
 	public Z3950Client(final Log logger, final EditorConfiguration configuration) {
@@ -111,9 +138,11 @@ public class Z3950Client {
 
 	/**
 	 * Search.
-	 *
-	 * @param field the field
-	 * @param what the what
+	 * 
+	 * @param field
+	 *          the field
+	 * @param what
+	 *          the what
 	 * @return the dublin core xml
 	 */
 	public DublinCoreXML search(Z3950Client.SEARCH_FIELD field, String what) {
@@ -261,8 +290,9 @@ public class Z3950Client {
 
 	/**
 	 * The main method.
-	 *
-	 * @param args the arguments
+	 * 
+	 * @param args
+	 *          the arguments
 	 */
 	public static void main(String args[]) {
 

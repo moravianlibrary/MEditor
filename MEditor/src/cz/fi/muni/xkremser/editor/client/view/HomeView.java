@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
@@ -26,24 +47,44 @@ import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
  * The Class HomeView.
  */
 public class HomeView extends ViewImpl implements HomePresenter.MyView {
+
+	/** The Constant LOADING. */
 	private static final int LOADING = -1;
+
+	/** The Constant NOT_AVAIL. */
 	private static final int NOT_AVAIL = 0;
+
+	/** The Constant AVAIL. */
 	private static final int AVAIL = 1;
+
+	/** The fedora url. */
 	private volatile String fedoraUrl = "#";
+
+	/** The kramerius url. */
 	private volatile String krameriusUrl = "#";
+
+	/** The fedora status. */
 	private volatile int fedoraStatus = LOADING;
+
+	/** The kramerius status. */
 	private volatile int krameriusStatus = LOADING;
 
+	/** The layout. */
 	private final VStack layout;
 
+	/** The check button. */
 	private final IButton checkButton;
 
+	/** The status. */
 	private final HTMLFlow status;
 
+	/** The form. */
 	private final DynamicForm form;
 
+	/** The open. */
 	private final IButton open;
 
+	/** The uuid field. */
 	private final TextItem uuidField;
 
 	/**
@@ -117,11 +158,24 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		return layout;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
+	 * getCheckAvailability()
+	 */
 	@Override
 	public HasClickHandlers getCheckAvailability() {
 		return checkButton;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#refreshFedora
+	 * (boolean, java.lang.String)
+	 */
 	@Override
 	public void refreshFedora(boolean fedoraRunning, String url) {
 		this.fedoraStatus = fedoraRunning ? AVAIL : NOT_AVAIL;
@@ -130,6 +184,12 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		status.setContents(getStatusString());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
+	 * refreshKramerius(boolean, java.lang.String)
+	 */
 	@Override
 	public void refreshKramerius(boolean krameriusRunning, String url) {
 		this.krameriusStatus = krameriusRunning ? AVAIL : NOT_AVAIL;
@@ -138,6 +198,13 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		status.setContents(getStatusString());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#setURLs
+	 * (java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void setURLs(String fedoraUrl, String krameriusUrl) {
 		if (fedoraUrl != null)
@@ -146,6 +213,11 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 			this.krameriusUrl = krameriusUrl;
 	}
 
+	/**
+	 * Gets the status string.
+	 * 
+	 * @return the status string
+	 */
 	private String getStatusString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<ul><li>Fedora (<a href='").append(fedoraUrl == null ? "" : fedoraUrl).append("'>link</a>) <span class='");
@@ -176,6 +248,13 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		return sb.toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#setLoading
+	 * ()
+	 */
 	@Override
 	public void setLoading() {
 		this.krameriusStatus = LOADING;
@@ -183,21 +262,46 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		status.setContents(getStatusString());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getOpen()
+	 */
 	@Override
 	public IButton getOpen() {
 		return open;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getForm()
+	 */
 	@Override
 	public DynamicForm getForm() {
 		return form;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid()
+	 */
 	@Override
 	public String getUuid() {
 		return (String) uuidField.getValue();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuidItem
+	 * ()
+	 */
 	@Override
 	public HasChangedHandlers getUuidItem() {
 		return uuidField;

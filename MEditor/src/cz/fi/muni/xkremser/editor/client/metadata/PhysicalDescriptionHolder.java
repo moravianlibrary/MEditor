@@ -1,3 +1,29 @@
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
@@ -8,14 +34,33 @@ import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PhysicalDescriptionHolder.
+ */
 public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
+	
+	/** The internet types. */
 	private final ListOfSimpleValuesHolder internetTypes;
+	
+	/** The extents. */
 	private final ListOfSimpleValuesHolder extents;
+	
+	/** The forms. */
 	private final ListOfListOfSimpleValuesHolder forms;
+	
+	/** The notes. */
 	private final ListOfListOfSimpleValuesHolder notes;
+	
+	/** The reformatting quality. */
 	private final ListOfSimpleValuesHolder reformattingQuality;
+	
+	/** The digital origin. */
 	private final ListOfSimpleValuesHolder digitalOrigin;
 
+	/**
+	 * Instantiates a new physical description holder.
+	 */
 	public PhysicalDescriptionHolder() {
 		this.internetTypes = new ListOfSimpleValuesHolder();
 		this.extents = new ListOfSimpleValuesHolder();
@@ -26,6 +71,11 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 		this.digitalOrigin = new ListOfSimpleValuesHolder();
 	}
 
+	/**
+	 * Gets the physical description.
+	 *
+	 * @return the physical description
+	 */
 	public PhysicalDescriptionTypeClient getPhysicalDescription() {
 		PhysicalDescriptionTypeClient physicalDescriptionTypeClient = new PhysicalDescriptionTypeClient();
 
@@ -87,58 +137,115 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 		return physicalDescriptionTypeClient;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	 */
 	@Override
 	public List<String> getAttributes() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/**
+	 * Gets the publishers.
+	 *
+	 * @return the publishers
+	 */
 	public ListOfSimpleValuesHolder getPublishers() {
 		return internetTypes;
 	}
 
+	/**
+	 * Gets the editions.
+	 *
+	 * @return the editions
+	 */
 	public ListOfSimpleValuesHolder getEditions() {
 		return extents;
 	}
 
+	/**
+	 * Gets the frequencies.
+	 *
+	 * @return the frequencies
+	 */
 	public ListOfListOfSimpleValuesHolder getFrequencies() {
 		return forms;
 	}
 
+	/**
+	 * Gets the internet types.
+	 *
+	 * @return the internet types
+	 */
 	public ListOfSimpleValuesHolder getInternetTypes() {
 		return internetTypes;
 	}
 
+	/**
+	 * Gets the extents.
+	 *
+	 * @return the extents
+	 */
 	public ListOfSimpleValuesHolder getExtents() {
 		return extents;
 	}
 
+	/**
+	 * Gets the forms.
+	 *
+	 * @return the forms
+	 */
 	public ListOfListOfSimpleValuesHolder getForms() {
 		return forms;
 	}
 
+	/**
+	 * Gets the notes.
+	 *
+	 * @return the notes
+	 */
 	public ListOfListOfSimpleValuesHolder getNotes() {
 		return notes;
 	}
 
+	/**
+	 * Gets the reformatting quality.
+	 *
+	 * @return the reformatting quality
+	 */
 	public ListOfSimpleValuesHolder getReformattingQuality() {
 		return reformattingQuality;
 	}
 
+	/**
+	 * Gets the digital origin.
+	 *
+	 * @return the digital origin
+	 */
 	public ListOfSimpleValuesHolder getDigitalOrigin() {
 		return digitalOrigin;
 	}

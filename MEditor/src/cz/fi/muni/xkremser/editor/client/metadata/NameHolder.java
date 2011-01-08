@@ -1,3 +1,29 @@
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
@@ -10,14 +36,30 @@ import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NameHolder.
+ */
 public class NameHolder extends MetadataHolder {
+	
+	/** The display forms. */
 	private final ListOfSimpleValuesHolder displayForms;
+	
+	/** The affiliations. */
 	private final ListOfSimpleValuesHolder affiliations;
+	
+	/** The descriptions. */
 	private final ListOfSimpleValuesHolder descriptions;
 
+	/** The name parts. */
 	private final ListOfListOfSimpleValuesHolder nameParts;
+	
+	/** The roles. */
 	private final ListOfListOfSimpleValuesHolder roles;
 
+	/**
+	 * Instantiates a new name holder.
+	 */
 	public NameHolder() {
 		this.displayForms = new ListOfSimpleValuesHolder();
 		this.affiliations = new ListOfSimpleValuesHolder();
@@ -26,6 +68,11 @@ public class NameHolder extends MetadataHolder {
 		this.roles = new ListOfListOfSimpleValuesHolder(ModsConstants.ROLE, ModsConstants.TYPE, ModsConstants.AUTHORITY);
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public NameTypeClient getName() {
 		NameTypeClient nameTypeClient = new NameTypeClient();
 		if (getAttributeForm() != null) {
@@ -67,42 +114,79 @@ public class NameHolder extends MetadataHolder {
 		return nameTypeClient;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
+	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
+	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	 */
 	@Override
 	public List<String> getAttributes() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
+	/**
+	 * Gets the display forms.
+	 *
+	 * @return the display forms
+	 */
 	public ListOfSimpleValuesHolder getDisplayForms() {
 		return displayForms;
 	}
 
+	/**
+	 * Gets the affiliations.
+	 *
+	 * @return the affiliations
+	 */
 	public ListOfSimpleValuesHolder getAffiliations() {
 		return affiliations;
 	}
 
+	/**
+	 * Gets the name parts.
+	 *
+	 * @return the name parts
+	 */
 	public ListOfListOfSimpleValuesHolder getNameParts() {
 		return nameParts;
 	}
 
+	/**
+	 * Gets the roles.
+	 *
+	 * @return the roles
+	 */
 	public ListOfListOfSimpleValuesHolder getRoles() {
 		return roles;
 	}
 
+	/**
+	 * Gets the descriptions.
+	 *
+	 * @return the descriptions
+	 */
 	public ListOfSimpleValuesHolder getDescriptions() {
 		return descriptions;
 	}

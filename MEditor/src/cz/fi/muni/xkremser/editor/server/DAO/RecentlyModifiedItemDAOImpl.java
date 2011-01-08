@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.DAO;
 
@@ -29,6 +50,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	public static final String SELECT_LAST_N_STATEMENT = "SELECT * FROM ( SELECT DISTINCT ON (uuid) uuid, name, description, model, modified FROM "
 			+ Constants.TABLE_RECENTLY_MODIFIED_NAME + " LIMIT (?)) foo ORDER by modified DESC";
 
+	/** The Constant SELECT_LAST_N_STATEMENT_FOR_USER. */
 	public static final String SELECT_LAST_N_STATEMENT_FOR_USER = "SELECT uuid, name, description, model FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " WHERE user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";
 
@@ -41,15 +63,20 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	public static final String FIND_ITEM_STATEMENT = "SELECT id FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
+	/** The Constant INSERT_COMMON_DESCRIPTION_STATEMENT. */
 	public static final String INSERT_COMMON_DESCRIPTION_STATEMENT = "INSERT INTO " + Constants.TABLE_DESCRIPTION + " (description, uuid) VALUES ((?),(?))";
 
+	/** The Constant UPDATE_COMMON_DESCRIPTION_STATEMENT. */
 	public static final String UPDATE_COMMON_DESCRIPTION_STATEMENT = "UPDATE " + Constants.TABLE_DESCRIPTION + " SET description = (?) WHERE uuid = (?)";
 
+	/** The Constant SELECT_COMMON_DESCRIPTION_STATEMENT. */
 	public static final String SELECT_COMMON_DESCRIPTION_STATEMENT = "SELECT description FROM " + Constants.TABLE_DESCRIPTION + " WHERE uuid = (?)";
 
+	/** The Constant UPDATE_USER_DESCRIPTION_STATEMENT. */
 	public static final String UPDATE_USER_DESCRIPTION_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " SET description = (?) WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
+	/** The Constant SELECT_USER_DESCRIPTION_STATEMENT. */
 	public static final String SELECT_USER_DESCRIPTION_STATEMENT = "SELECT description FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
 			+ " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
@@ -165,6 +192,9 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return retList;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#putDescription(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean putDescription(String uuid, String description) {
 		if (uuid == null)
@@ -208,6 +238,9 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return found;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#getDescription(java.lang.String)
+	 */
 	@Override
 	public String getDescription(String uuid) {
 		if (uuid == null)
@@ -234,6 +267,9 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return description;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#putUserDescription(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean putUserDescription(String openID, String uuid, String description) {
 		if (uuid == null)
@@ -274,6 +310,9 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return found;
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#getUserDescription(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String getUserDescription(String openID, String uuid) {
 		if (uuid == null)

@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
@@ -49,6 +70,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
  * The Class DigitalObjectMenuView.
  */
 public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuView.MyUiHandlers> implements DigitalObjectMenuPresenter.MyView {
+
+	/** The Constant SECTION_RELATED_ID. */
 	private static final String SECTION_RELATED_ID = "related";
 
 	/**
@@ -71,6 +94,8 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		 * 
 		 * @param item
 		 *          the item
+		 * @param related
+		 *          the related
 		 */
 		void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related);
 
@@ -107,6 +132,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	/** The section recently modified. */
 	private final SectionStackSection sectionRecentlyModified;
 
+	/** The section related. */
 	private final SectionStackSection sectionRelated;
 	/** The section related. */
 	private final ListGrid relatedGrid;
@@ -322,6 +348,13 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		return sideNavGrid;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
+	 * MyView#setRelatedDocuments(java.util.List)
+	 */
 	@Override
 	public void setRelatedDocuments(List<? extends List<String>> data) {
 		if (data != null && data.size() != 0) {
@@ -338,6 +371,13 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 			sectionStack.getSection(SECTION_RELATED_ID).setExpanded(false);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
+	 * MyView#getRelatedGrid()
+	 */
 	@Override
 	public ListGrid getRelatedGrid() {
 		return relatedGrid;

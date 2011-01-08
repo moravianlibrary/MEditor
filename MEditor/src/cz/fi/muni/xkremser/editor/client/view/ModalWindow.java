@@ -1,3 +1,29 @@
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.Timer;
@@ -13,38 +39,28 @@ import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+// TODO: Auto-generated Javadoc
 /**
  * Class that supports masking an entire {@link Canvas} and adds the possibility
- * to display a message during masking and a loading image
+ * to display a message during masking and a loading image.
  * 
  * @author Mihai Ile (mihai007)
- * 
  */
 public class ModalWindow {
 
-	/**
-	 * The canvas to be masked
-	 */
+	/** The canvas to be masked. */
 	private final Canvas canvas;
 
-	/**
-	 * Parent for modal layer
-	 */
+	/** Parent for modal layer. */
 	private HLayout parent;
 
-	/**
-	 * The modal layer
-	 */
+	/** The modal layer. */
 	private VLayout modal;
 
-	/**
-	 * The reference to the transparent layer inside the modal HStack
-	 */
+	/** The reference to the transparent layer inside the modal HStack. */
 	private Canvas transparent;
 
-	/**
-	 * The exact time when show was called on this modal
-	 */
+	/** The exact time when show was called on this modal. */
 	private long showStartedTime;
 
 	/**
@@ -52,28 +68,21 @@ public class ModalWindow {
 	 */
 	private String loadingIcon = null;
 
-	/**
-	 * The color, by default white
-	 */
+	/** The color, by default white. */
 	private String messageBoxBgColor = "#fff";
 
-	/**
-	 * Holds the default opacity for the background masking color
-	 */
+	/** Holds the default opacity for the background masking color. */
 	private int opacity = 30;
 
-	/**
-	 * Holds the default color for the masking
-	 */
+	/** Holds the default color for the masking. */
 	private String maskingColor = "#555";
 
 	/**
-	 * Creates a new {@link ModalWindow} given the canvas to be masked (an
-	 * {@link Canvas#addChild(Canvas)} will be called to add the masking layer
-	 * above the given canvas)
+	 * Creates a new {@link ModalWindow} given the canvas to be masked (an.
 	 * 
 	 * @param canvas
-	 *          the canvas to be masked
+	 *          the canvas to be masked {@link Canvas#addChild(Canvas)} will be
+	 *          called to add the masking layer above the given canvas)
 	 */
 	public ModalWindow(Canvas canvas) {
 		this.canvas = canvas;
@@ -81,16 +90,15 @@ public class ModalWindow {
 	}
 
 	/**
-	 * Creates a new {@link ModalWindow} given the canvas to be masked (an
-	 * {@link Canvas#addChild(Canvas)} will be called to add the masking layer
-	 * above the given canvas)
+	 * Creates a new {@link ModalWindow} given the canvas to be masked (an.
 	 * 
 	 * @param canvas
 	 *          the canvas to be masked
 	 * @param opacity
 	 *          the opacity used for modal
 	 * @param maskingColor
-	 *          the color used for modal
+	 *          the color used for modal {@link Canvas#addChild(Canvas)} will be
+	 *          called to add the masking layer above the given canvas)
 	 */
 	public ModalWindow(Canvas canvas, int opacity, String maskingColor) {
 		this.canvas = canvas;
@@ -100,7 +108,7 @@ public class ModalWindow {
 	}
 
 	/**
-	 * Mask the {@link Canvas} with a transparent color
+	 * Mask the {@link Canvas} with a transparent color.
 	 * 
 	 * @param showLoading
 	 *          whether to show a box with a loading indicator above the
@@ -118,7 +126,7 @@ public class ModalWindow {
 
 	/**
 	 * Mask the {@link Canvas} with a transparent color and display a message
-	 * above it
+	 * above it.
 	 * 
 	 * @param message
 	 *          the message to display above the background
@@ -137,7 +145,7 @@ public class ModalWindow {
 	}
 
 	/**
-	 * Hide the masking layer from the {@link Canvas}
+	 * Hide the masking layer from the {@link Canvas}.
 	 */
 	public void hide() {
 		long showEndTime = System.currentTimeMillis();
@@ -155,10 +163,16 @@ public class ModalWindow {
 		}
 	}
 
+	/**
+	 * _hide.
+	 */
 	private void _hide() {
 		parent.hide();
 	}
 
+	/**
+	 * Insert modal into canvas.
+	 */
 	private void insertModalIntoCanvas() {
 		if (!canvas.contains(parent)) {
 			canvas.addChild(parent);
@@ -172,6 +186,9 @@ public class ModalWindow {
 		}
 	}
 
+	/**
+	 * Clear label.
+	 */
 	private void clearLabel() {
 		Canvas[] children = modal.getChildren();
 		for (Canvas canvas : children) {
@@ -183,6 +200,9 @@ public class ModalWindow {
 		}
 	}
 
+	/**
+	 * Creates the modal panel.
+	 */
 	private void createModalPanel() {
 		parent = new HLayout();
 		parent.setDefaultLayoutAlign(VerticalAlignment.CENTER);
@@ -212,6 +232,15 @@ public class ModalWindow {
 		insertModalIntoCanvas();
 	}
 
+	/**
+	 * Creates the label.
+	 * 
+	 * @param message
+	 *          the message
+	 * @param showLoading
+	 *          the show loading
+	 * @return the label
+	 */
 	private Label createLabel(String message, boolean showLoading) {
 		final Label label = new Label();
 		label.setWrap(false);
@@ -250,7 +279,7 @@ public class ModalWindow {
 	}
 
 	/**
-	 * Destroy the {@link ModalWindow} freeing up resources
+	 * Destroy the {@link ModalWindow} freeing up resources.
 	 */
 	public void destroy() {
 		parent.destroy();

@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
@@ -83,25 +104,64 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 */
 		public HasValue<String> getName();
 
+		/**
+		 * From clipboard.
+		 * 
+		 * @return the record[]
+		 */
 		public Record[] fromClipboard();
 
+		/**
+		 * To clipboard.
+		 * 
+		 * @param data
+		 *          the data
+		 */
 		public void toClipboard(final Record[] data);
 
+		/**
+		 * Gets the popup panel.
+		 * 
+		 * @return the popup panel
+		 */
 		public PopupPanel getPopupPanel();
 
+		/**
+		 * Gets the editor.
+		 * 
+		 * @param text
+		 *          the text
+		 * @param uuid
+		 *          the uuid
+		 * @param common
+		 *          the common
+		 * @return the editor
+		 */
 		public Canvas getEditor(String text, String uuid, boolean common);
 
 		/**
 		 * Adds the digital object.
 		 * 
+		 * @param pageData
+		 *          the page data
+		 * @param containerDataList
+		 *          the container data list
+		 * @param containerModelList
+		 *          the container model list
+		 * @param dc
+		 *          the dc
+		 * @param uuid
+		 *          the uuid
+		 * @param picture
+		 *          the picture
+		 * @param foxml
+		 *          the foxml
+		 * @param ocr
+		 *          the ocr
+		 * @param refresh
+		 *          the refresh
 		 * @param krameriusModel
-		 * 
-		 * @param tileGridVisible
-		 *          the tile grid visible
-		 * @param data
-		 *          the data
-		 * @param dispatcher
-		 *          the dispatcher
+		 *          the kramerius model
 		 */
 		void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList, final Streams dc,
 				final String uuid, final boolean picture, String foxml, final String ocr, final boolean refresh, final KrameriusModel krameriusModel);
@@ -116,6 +176,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	}
 
+	/** The done. */
 	private int done = 0;
 
 	/** The dispatcher. */
@@ -130,11 +191,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	/** The previous uuid. */
 	private String previousUuid1;
 
+	/** The previous uuid2. */
 	private String previousUuid2;
 
 	/** The forced refresh. */
 	private boolean forcedRefresh;
 
+	/** The place manager. */
 	private final PlaceManager placeManager;
 
 	/**
@@ -150,6 +213,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 *          the left presenter
 	 * @param dispatcher
 	 *          the dispatcher
+	 * @param placeManager
+	 *          the place manager
 	 */
 	@Inject
 	public ModifyPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
@@ -240,6 +305,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#
+	 * onAddDigitalObject(com.smartgwt.client.widgets.tile.TileGrid,
+	 * com.smartgwt.client.widgets.menu.Menu)
+	 */
 	@Override
 	public void onAddDigitalObject(final TileGrid tileGrid, final Menu menu) {
 		MenuItem[] items = menu.getItems();
@@ -341,11 +413,23 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+	 */
 	@Override
 	protected void revealInParent() {
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#
+	 * onAddDigitalObject(java.lang.String, com.smartgwt.client.widgets.ImgButton,
+	 * com.smartgwt.client.widgets.menu.Menu)
+	 */
 	@Override
 	public void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu) {
 		closeButton.addClickHandler(new ClickHandler() {
@@ -356,6 +440,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		});
 	}
 
+	/**
+	 * Gets the object.
+	 * 
+	 * @param refresh
+	 *          the refresh
+	 * @return the object
+	 */
 	private void getObject(boolean refresh) {
 		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, refresh);
 		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
@@ -426,6 +517,14 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		dispatcher.execute(action, callback);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#getDescription
+	 * (java.lang.String, com.smartgwt.client.widgets.tab.TabSet,
+	 * java.lang.String)
+	 */
 	@Override
 	public void getDescription(final String uuid, final TabSet tabSet, final String tabId) {
 		dispatcher.execute(new GetDescriptionAction(uuid), new DispatchCallback<GetDescriptionResult>() {
@@ -445,6 +544,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#putDescription
+	 * (java.lang.String, java.lang.String, boolean)
+	 */
 	@Override
 	public void putDescription(String uuid, String description, boolean common) {
 		dispatcher.execute(new PutDescriptionAction(uuid, description, common), new DispatchCallback<PutDescriptionResult>() {
@@ -454,6 +560,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#
+	 * onSaveDigitalObject
+	 * (cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail)
+	 */
 	@Override
 	public void onSaveDigitalObject(AbstractDigitalObjectDetail digitalObject) {
 		dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject), new DispatchCallback<PutDigitalObjectDetailResult>() {
@@ -473,6 +586,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#onRefresh
+	 * (java.lang.String)
+	 */
 	@Override
 	public void onRefresh(String uuid) {
 		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid).with(Constants.URL_PARAM_REFRESH, "yes"));

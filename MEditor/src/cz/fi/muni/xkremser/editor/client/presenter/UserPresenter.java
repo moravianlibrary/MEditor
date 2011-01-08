@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
@@ -80,38 +101,121 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 		/**
 		 * Gets the name.
 		 * 
+		 * @param fedoraRunning
+		 *          the fedora running
+		 * @param url
+		 *          the url
 		 * @return the name
 		 */
 		public void refreshFedora(boolean fedoraRunning, String url);
 
+		/**
+		 * Refresh kramerius.
+		 * 
+		 * @param krameriusRunning
+		 *          the kramerius running
+		 * @param url
+		 *          the url
+		 */
 		public void refreshKramerius(boolean krameriusRunning, String url);
 
+		/**
+		 * Sets the ur ls.
+		 * 
+		 * @param fedoraUrl
+		 *          the fedora url
+		 * @param krameriusUrl
+		 *          the kramerius url
+		 */
 		public void setURLs(String fedoraUrl, String krameriusUrl);
 
+		/**
+		 * Sets the loading.
+		 */
 		public void setLoading();
 
+		/**
+		 * Gets the user grid.
+		 * 
+		 * @return the user grid
+		 */
 		public ListGrid getUserGrid();
 
+		/**
+		 * Gets the user role grid.
+		 * 
+		 * @return the user role grid
+		 */
 		public ListGrid getUserRoleGrid();
 
+		/**
+		 * Gets the user identity grid.
+		 * 
+		 * @return the user identity grid
+		 */
 		public ListGrid getUserIdentityGrid();
 
+		/**
+		 * Gets the removes the user.
+		 * 
+		 * @return the removes the user
+		 */
 		public IButton getRemoveUser();
 
+		/**
+		 * Gets the adds the user.
+		 * 
+		 * @return the adds the user
+		 */
 		public IButton getAddUser();
 
+		/**
+		 * Gets the removes the role.
+		 * 
+		 * @return the removes the role
+		 */
 		public IButton getRemoveRole();
 
+		/**
+		 * Gets the adds the role.
+		 * 
+		 * @return the adds the role
+		 */
 		public IButton getAddRole();
 
+		/**
+		 * Gets the removes the identity.
+		 * 
+		 * @return the removes the identity
+		 */
 		public IButton getRemoveIdentity();
 
+		/**
+		 * Gets the adds the identity.
+		 * 
+		 * @return the adds the identity
+		 */
 		public IButton getAddIdentity();
 
+		/**
+		 * Gets the uuid item.
+		 * 
+		 * @return the uuid item
+		 */
 		public HasChangedHandlers getUuidItem();
 
+		/**
+		 * Gets the open.
+		 * 
+		 * @return the open
+		 */
 		public IButton getOpen();
 
+		/**
+		 * Gets the form.
+		 * 
+		 * @return the form
+		 */
 		public DynamicForm getForm();
 	}
 
@@ -130,8 +234,10 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 	/** The left presenter. */
 	private final DigitalObjectMenuPresenter leftPresenter;
 
+	/** The place manager. */
 	private final PlaceManager placeManager;
 
+	/** The roles. */
 	private List<String> roles;
 
 	/**
@@ -145,6 +251,10 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 	 *          the proxy
 	 * @param leftPresenter
 	 *          the left presenter
+	 * @param dispatcher
+	 *          the dispatcher
+	 * @param placeManager
+	 *          the place manager
 	 */
 	@Inject
 	public UserPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
@@ -552,6 +662,9 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
 	}
 
+	/**
+	 * Check availability.
+	 */
 	private void checkAvailability() {
 		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID), new DispatchCallback<CheckAvailabilityResult>() {
 			@Override
@@ -588,12 +701,28 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 		});
 	}
 
+	/**
+	 * Copy values.
+	 * 
+	 * @param from
+	 *          the from
+	 * @param to
+	 *          the to
+	 */
 	private static void copyValues(RoleItem from, ListGridRecord to) {
 		to.setAttribute(Constants.ATTR_NAME, from.getName());
 		to.setAttribute(Constants.ATTR_DESC, from.getDescription());
 		to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
 	}
 
+	/**
+	 * Copy values.
+	 * 
+	 * @param from
+	 *          the from
+	 * @param to
+	 *          the to
+	 */
 	private static void copyValues(OpenIDItem from, ListGridRecord to) {
 		to.setAttribute(Constants.ATTR_IDENTITY, from.getIdentity());
 		to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());

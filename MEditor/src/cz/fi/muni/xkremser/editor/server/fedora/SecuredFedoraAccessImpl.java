@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.fedora;
 
@@ -448,31 +469,49 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.getPagesUuid(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getIntCompPartsUuid(java.lang.String)
+	 */
 	@Override
 	public List<String> getIntCompPartsUuid(String uuid) throws IOException {
 		return rawAccess.getIntCompPartsUuid(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getMonographUnitsUuid(java.lang.String)
+	 */
 	@Override
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException {
 		return rawAccess.getMonographUnitsUuid(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getFOXML(java.lang.String)
+	 */
 	@Override
 	public String getFOXML(String uuid) {
 		return rawAccess.getFOXML(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid(java.lang.String)
+	 */
 	@Override
 	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException {
 		return rawAccess.getPeriodicalItemsUuid(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getVolumesUuid(java.lang.String)
+	 */
 	@Override
 	public List<String> getVolumesUuid(String uuid) throws IOException {
 		return rawAccess.getVolumesUuid(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getOcr(java.lang.String)
+	 */
 	@Override
 	public String getOcr(String uuid) {
 		return rawAccess.getOcr(uuid);

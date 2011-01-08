@@ -1,3 +1,29 @@
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
@@ -26,11 +52,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RPX.
+ */
 public class RPX {
 
+	/** The api key. */
 	private final String apiKey;
+
+	/** The base url. */
 	private final String baseUrl;
 
+	/**
+	 * Instantiates a new rPX.
+	 * 
+	 * @param apiKey
+	 *          the api key
+	 * @param baseUrl
+	 *          the base url
+	 */
 	public RPX(String apiKey, String baseUrl) {
 		while (baseUrl.endsWith("/"))
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -38,20 +79,42 @@ public class RPX {
 		this.baseUrl = baseUrl;
 	}
 
+	/**
+	 * Gets the api key.
+	 * 
+	 * @return the api key
+	 */
 	public String getApiKey() {
 		return apiKey;
 	}
 
+	/**
+	 * Gets the base url.
+	 * 
+	 * @return the base url
+	 */
 	public String getBaseUrl() {
 		return baseUrl;
 	}
 
+	/**
+	 * Auth info.
+	 * 
+	 * @param token
+	 *          the token
+	 * @return the element
+	 */
 	public Element authInfo(String token) {
 		Map query = new HashMap();
 		query.put("token", token);
 		return apiCall("auth_info", query);
 	}
 
+	/**
+	 * All mappings.
+	 * 
+	 * @return the hash map
+	 */
 	public HashMap allMappings() {
 		Element rsp = apiCall("all_mappings", null);
 		Element mappings_node = (Element) rsp.getFirstChild();
@@ -72,6 +135,15 @@ public class RPX {
 		return result;
 	}
 
+	/**
+	 * Gets the node list.
+	 * 
+	 * @param xpath_expr
+	 *          the xpath_expr
+	 * @param root
+	 *          the root
+	 * @return the node list
+	 */
 	private NodeList getNodeList(String xpath_expr, Element root) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
@@ -82,6 +154,13 @@ public class RPX {
 		}
 	}
 
+	/**
+	 * Mappings.
+	 * 
+	 * @param primaryKey
+	 *          the primary key
+	 * @return the list
+	 */
 	public List mappings(Object primaryKey) {
 		Map query = new HashMap();
 		query.put("primaryKey", primaryKey);
@@ -96,6 +175,14 @@ public class RPX {
 		return result;
 	}
 
+	/**
+	 * Map.
+	 * 
+	 * @param identifier
+	 *          the identifier
+	 * @param primaryKey
+	 *          the primary key
+	 */
 	public void map(String identifier, Object primaryKey) {
 		Map query = new HashMap();
 		query.put("identifier", identifier);
@@ -103,6 +190,14 @@ public class RPX {
 		apiCall("map", query);
 	}
 
+	/**
+	 * Unmap.
+	 * 
+	 * @param identifier
+	 *          the identifier
+	 * @param primaryKey
+	 *          the primary key
+	 */
 	public void unmap(String identifier, Object primaryKey) {
 		Map query = new HashMap();
 		query.put("identifier", identifier);
@@ -110,6 +205,15 @@ public class RPX {
 		apiCall("unmap", query);
 	}
 
+	/**
+	 * Api call.
+	 * 
+	 * @param methodName
+	 *          the method name
+	 * @param partialQuery
+	 *          the partial query
+	 * @return the element
+	 */
 	private Element apiCall(String methodName, Map partialQuery) {
 		Map query = null;
 		if (partialQuery == null) {

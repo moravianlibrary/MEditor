@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
@@ -63,14 +84,29 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	 * The Interface MyView.
 	 */
 	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
+
+		/**
+		 * Gets the username.
+		 * 
+		 * @return the username
+		 */
 		HTMLFlow getUsername();
 
+		/**
+		 * Gets the edits the users.
+		 * 
+		 * @return the edits the users
+		 */
 		HTMLFlow getEditUsers();
 	}
 
 	/** The left presenter. */
 	DigitalObjectMenuPresenter leftPresenter;
+
+	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
+
+	/** The place manager. */
 	private final PlaceManager placeManager;
 
 	/**
@@ -84,6 +120,10 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	 *          the proxy
 	 * @param leftPresenter
 	 *          the left presenter
+	 * @param dispatcher
+	 *          the dispatcher
+	 * @param placeManager
+	 *          the place manager
 	 */
 	@Inject
 	// public AppPresenter(final DispatchAsync dispatcher, final HomePresenter
@@ -100,12 +140,22 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 		bind();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+	 */
 	@Override
 	protected void onBind() {
 		super.onBind();
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
+	 */
 	@Override
 	protected void onReset() {
 		super.onReset();
@@ -140,6 +190,11 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 		RevealRootContentEvent.fire(this, this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers#logout()
+	 */
 	@Override
 	public void logout() {
 		dispatcher.execute(new LogoutAction(), new DispatchCallback<LogoutResult>() {

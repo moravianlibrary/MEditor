@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
@@ -34,10 +55,13 @@ public class IOUtils {
 
 	/**
 	 * Kopirovani ze vstupniho proudo do vystupniho.
-	 *
-	 * @param is Vstupni proud
-	 * @param os Vystupni proud
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param is
+	 *          Vstupni proud
+	 * @param os
+	 *          Vystupni proud
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void copyStreams(InputStream is, OutputStream os) throws IOException {
 		byte[] buffer = new byte[8192];
@@ -49,11 +73,15 @@ public class IOUtils {
 
 	/**
 	 * Kopiruje a pocita digest.
-	 *
-	 * @param is Vstupni stream
-	 * @param os Vystupni stream
-	 * @param digest Digest
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param is
+	 *          Vstupni stream
+	 * @param os
+	 *          Vystupni stream
+	 * @param digest
+	 *          Digest
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void copyStreams(InputStream is, OutputStream os, MessageDigest digest) throws IOException {
 		byte[] buffer = new byte[8192];
@@ -66,12 +94,16 @@ public class IOUtils {
 
 	/**
 	 * Read as string.
-	 *
-	 * @param is the is
-	 * @param charset the charset
-	 * @param closeInput the close input
+	 * 
+	 * @param is
+	 *          the is
+	 * @param charset
+	 *          the charset
+	 * @param closeInput
+	 *          the close input
 	 * @return the string
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static String readAsString(InputStream is, Charset charset, boolean closeInput) throws IOException {
 		try {
@@ -87,10 +119,13 @@ public class IOUtils {
 
 	/**
 	 * Save to file.
-	 *
-	 * @param data the data
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param data
+	 *          the data
+	 * @param file
+	 *          the file
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void saveToFile(String data, File file) throws IOException {
 		FileOutputStream fos = null;
@@ -105,10 +140,12 @@ public class IOUtils {
 
 	/**
 	 * Bos.
-	 *
-	 * @param inFile the in file
+	 * 
+	 * @param inFile
+	 *          the in file
 	 * @return the byte[]
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static byte[] bos(File inFile) throws IOException {
 		InputStream is = null;
@@ -126,8 +163,9 @@ public class IOUtils {
 
 	/**
 	 * Check directory.
-	 *
-	 * @param name the name
+	 * 
+	 * @param name
+	 *          the name
 	 * @return the file
 	 */
 	public static File checkDirectory(String name) { // TODO: zaintegrovatz
@@ -143,8 +181,9 @@ public class IOUtils {
 
 	/**
 	 * Clean directory.
-	 *
-	 * @param directory the directory
+	 * 
+	 * @param directory
+	 *          the directory
 	 */
 	public static void cleanDirectory(File directory) {
 		File[] files = directory.listFiles();
@@ -156,13 +195,19 @@ public class IOUtils {
 
 	/**
 	 * Copy bundled resources.
-	 *
-	 * @param caller the caller
-	 * @param texts the texts
-	 * @param prefix the prefix
-	 * @param folder the folder
-	 * @throws FileNotFoundException the file not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param caller
+	 *          the caller
+	 * @param texts
+	 *          the texts
+	 * @param prefix
+	 *          the prefix
+	 * @param folder
+	 *          the folder
+	 * @throws FileNotFoundException
+	 *           the file not found exception
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void copyBundledResources(Class caller, String[] texts, String prefix, File folder) throws FileNotFoundException, IOException {
 		for (String def : texts) {

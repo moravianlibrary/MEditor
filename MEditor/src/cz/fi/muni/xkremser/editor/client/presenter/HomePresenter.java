@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
@@ -49,24 +70,72 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		/**
 		 * Gets the name.
 		 * 
+		 * @param fedoraRunning
+		 *          the fedora running
+		 * @param url
+		 *          the url
 		 * @return the name
 		 */
 		public void refreshFedora(boolean fedoraRunning, String url);
 
+		/**
+		 * Refresh kramerius.
+		 * 
+		 * @param krameriusRunning
+		 *          the kramerius running
+		 * @param url
+		 *          the url
+		 */
 		public void refreshKramerius(boolean krameriusRunning, String url);
 
+		/**
+		 * Sets the ur ls.
+		 * 
+		 * @param fedoraUrl
+		 *          the fedora url
+		 * @param krameriusUrl
+		 *          the kramerius url
+		 */
 		public void setURLs(String fedoraUrl, String krameriusUrl);
 
+		/**
+		 * Sets the loading.
+		 */
 		public void setLoading();
 
+		/**
+		 * Gets the uuid.
+		 * 
+		 * @return the uuid
+		 */
 		public String getUuid();
 
+		/**
+		 * Gets the check availability.
+		 * 
+		 * @return the check availability
+		 */
 		public HasClickHandlers getCheckAvailability();
 
+		/**
+		 * Gets the uuid item.
+		 * 
+		 * @return the uuid item
+		 */
 		public HasChangedHandlers getUuidItem();
 
+		/**
+		 * Gets the open.
+		 * 
+		 * @return the open
+		 */
 		public IButton getOpen();
 
+		/**
+		 * Gets the form.
+		 * 
+		 * @return the form
+		 */
 		public DynamicForm getForm();
 	}
 
@@ -85,6 +154,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	/** The left presenter. */
 	private final DigitalObjectMenuPresenter leftPresenter;
 
+	/** The place manager. */
 	private final PlaceManager placeManager;
 
 	/**
@@ -98,6 +168,10 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	 *          the proxy
 	 * @param leftPresenter
 	 *          the left presenter
+	 * @param dispatcher
+	 *          the dispatcher
+	 * @param placeManager
+	 *          the place manager
 	 */
 	@Inject
 	public HomePresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
@@ -173,6 +247,9 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
 	}
 
+	/**
+	 * Check availability.
+	 */
 	private void checkAvailability() {
 		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID), new DispatchCallback<CheckAvailabilityResult>() {
 			@Override

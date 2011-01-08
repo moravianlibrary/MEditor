@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
@@ -31,11 +52,20 @@ import cz.fi.muni.xkremser.editor.client.ConnectionException;
  * @author pavels
  */
 public class RESTHelper {
+	
+	/** The Constant GET. */
 	public static final int GET = 0;
+	
+	/** The Constant PUT. */
 	public static final int PUT = 1;
+	
+	/** The Constant POST. */
 	public static final int POST = 2;
+	
+	/** The Constant DELETE. */
 	public static final int DELETE = 3;
 
+	/** The Constant LOGGER. */
 	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RESTHelper.class.getName());
 
 	/**
@@ -58,24 +88,31 @@ public class RESTHelper {
 		return uc.getInputStream();
 	}
 
+	/**
+	 * Open connection.
+	 *
+	 * @param urlString the url string
+	 * @param user the user
+	 * @param pass the pass
+	 * @return the uRL connection
+	 * @throws MalformedURLException the malformed url exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static URLConnection openConnection(String urlString, String user, String pass) throws MalformedURLException, IOException {
 		return openConnection(urlString, user, pass, GET, null);
 	}
 
 	/**
 	 * Open connection.
-	 * 
-	 * @param urlString
-	 *          the url string
-	 * @param user
-	 *          the user
-	 * @param pass
-	 *          the pass
+	 *
+	 * @param urlString the url string
+	 * @param user the user
+	 * @param pass the pass
+	 * @param method the method
+	 * @param content the content
 	 * @return the uRL connection
-	 * @throws MalformedURLException
-	 *           the malformed url exception
-	 * @throws IOException
-	 *           Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException the malformed url exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static URLConnection openConnection(String urlString, String user, String pass, final int method, String content) throws MalformedURLException,
 			IOException {
@@ -126,6 +163,15 @@ public class RESTHelper {
 		return uc;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param urlString the url string
+	 * @param content the content
+	 * @param user the user
+	 * @param pass the pass
+	 * @return true, if successful
+	 */
 	public static boolean put(String urlString, String content, String user, String pass) {
 		URLConnection conn = null;
 		try {
@@ -147,6 +193,14 @@ public class RESTHelper {
 		return true;
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param urlString the url string
+	 * @param user the user
+	 * @param pass the pass
+	 * @return true, if successful
+	 */
 	public static boolean delete(String urlString, String user, String pass) {
 		HttpURLConnection uc = null;
 		try {
@@ -171,6 +225,13 @@ public class RESTHelper {
 		return true;
 	}
 
+	/**
+	 * Convert stream to string.
+	 *
+	 * @param is the is
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String convertStreamToString(InputStream is) throws IOException {
 		if (is != null) {
 			Writer writer = new StringWriter();

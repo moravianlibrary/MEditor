@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
@@ -36,8 +57,9 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	/**
 	 * Instantiates a new input tree gwt rpcds.
-	 *
-	 * @param dispatcher the dispatcher
+	 * 
+	 * @param dispatcher
+	 *          the dispatcher
 	 */
 	@Inject
 	public InputTreeGwtRPCDS(DispatchAsync dispatcher) {
@@ -61,8 +83,13 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
+	 * (java.lang.String, com.smartgwt.client.data.DSRequest,
+	 * com.smartgwt.client.data.DSResponse)
 	 */
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
@@ -95,8 +122,13 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
+	 * java.lang.String, com.smartgwt.client.data.DSRequest,
+	 * com.smartgwt.client.data.DSResponse)
 	 */
 	@Override
 	protected void executeAdd(final String requestId, final DSRequest request, final DSResponse response) {
@@ -126,8 +158,13 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 		// });
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
+	 * (java.lang.String, com.smartgwt.client.data.DSRequest,
+	 * com.smartgwt.client.data.DSResponse)
 	 */
 	@Override
 	protected void executeUpdate(final String requestId, final DSRequest request, final DSResponse response) {
@@ -158,8 +195,13 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 		// });
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove(java.lang.String, com.smartgwt.client.data.DSRequest, com.smartgwt.client.data.DSResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
+	 * (java.lang.String, com.smartgwt.client.data.DSRequest,
+	 * com.smartgwt.client.data.DSResponse)
 	 */
 	@Override
 	protected void executeRemove(final String requestId, final DSRequest request, final DSResponse response) {
@@ -192,9 +234,11 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	/**
 	 * Copy values.
-	 *
-	 * @param from the from
-	 * @param to the to
+	 * 
+	 * @param from
+	 *          the from
+	 * @param to
+	 *          the to
 	 */
 	private static void copyValues(ListGridRecord from, InputQueueItem to) {
 		to.setPath(from.getAttributeAsString(Constants.ATTR_ID));
@@ -204,9 +248,11 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	/**
 	 * Copy values.
-	 *
-	 * @param from the from
-	 * @param to the to
+	 * 
+	 * @param from
+	 *          the from
+	 * @param to
+	 *          the to
 	 */
 	private static void copyValues(InputQueueItem from, ListGridRecord to) {
 		to.setAttribute(Constants.ATTR_ID, from.getPath());
@@ -216,8 +262,9 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 
 	/**
 	 * Gets the edited record.
-	 *
-	 * @param request the request
+	 * 
+	 * @param request
+	 *          the request
 	 * @return the edited record
 	 */
 	private ListGridRecord getEditedRecord(DSRequest request) {

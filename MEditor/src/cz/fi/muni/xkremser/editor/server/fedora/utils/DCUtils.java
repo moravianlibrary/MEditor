@@ -1,7 +1,28 @@
-/**
+/*
  * Metadata Editor
  * @author Jiri Kremser
- *  
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
  */
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
@@ -38,6 +59,13 @@ public class DCUtils {
 		return title;
 	}
 
+	/**
+	 * Elements from dc.
+	 *
+	 * @param dc the dc
+	 * @param elementName the element name
+	 * @return the list
+	 */
 	private static List<String> elementsFromDC(org.w3c.dom.Document dc, String elementName) {
 		List<String> elements = new ArrayList<String>();
 		Element documentElement = dc.getDocumentElement();
@@ -53,74 +81,183 @@ public class DCUtils {
 		return elements;
 	}
 
+	/** The Constant DC_CONTRIBUTOR. */
 	public static final String DC_CONTRIBUTOR = "contributor";
+	
+	/** The Constant DC_COVERAGE. */
 	public static final String DC_COVERAGE = "coverage";
+	
+	/** The Constant DC_CREATOR. */
 	public static final String DC_CREATOR = "creator";
+	
+	/** The Constant DC_DATE. */
 	public static final String DC_DATE = "date";
+	
+	/** The Constant DC_DESCRIPTION. */
 	public static final String DC_DESCRIPTION = "description";
+	
+	/** The Constant DC_FORMAT. */
 	public static final String DC_FORMAT = "format";
+	
+	/** The Constant DC_IDENTIFIER. */
 	public static final String DC_IDENTIFIER = "identifier";
 
+	/**
+	 * Contributors from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> contributorsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_CONTRIBUTOR);
 	}
 
+	/**
+	 * Coverages from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> coveragesFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_COVERAGE);
 	}
 
+	/**
+	 * Creators from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> creatorsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_CREATOR);
 	}
 
+	/**
+	 * Dates from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> datesFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_DATE);
 	}
 
+	/**
+	 * Descriptions from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> descriptionsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_DESCRIPTION);
 	}
 
+	/**
+	 * Formats from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> formatsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_FORMAT);
 	}
 
+	/**
+	 * Identifiers from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> identifiersFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_IDENTIFIER);
 	}
 
+	/**
+	 * Languages from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> languagesFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_LANGUAGE);
 	}
 
+	/**
+	 * Publishers from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> publishersFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_PUBLISHER);
 	}
 
+	/**
+	 * Relations from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> relationsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_RELATION);
 	}
 
+	/**
+	 * Rights from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> rightsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_RIGHTS);
 	}
 
+	/**
+	 * Sources from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> sourcesFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_SOURCE);
 	}
 
+	/**
+	 * Subjects from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> subjectsFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_SUBJECT);
 	}
 
+	/**
+	 * Titles from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> titlesFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_TITLE);
 	}
 
+	/**
+	 * Types from dc.
+	 *
+	 * @param dc the dc
+	 * @return the list
+	 */
 	public static List<String> typesFromDC(org.w3c.dom.Document dc) {
 		return elementsFromDC(dc, DublinCoreConstants.DC_TYPE);
 	}
 
+	/**
+	 * Gets the dC.
+	 *
+	 * @param doc the doc
+	 * @return the dC
+	 */
 	public static DublinCore getDC(org.w3c.dom.Document doc) {
 		DublinCore dc = new DublinCore();
 		List<String> contributor = new ArrayList<String>();

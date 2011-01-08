@@ -1,3 +1,29 @@
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 import java.awt.Graphics;
@@ -31,6 +57,10 @@ import com.lizardtech.djvubean.DjVuImage;
 
 import cz.fi.muni.xkremser.editor.server.fedora.utils.IOUtils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class KrameriusImageSupport.
+ */
 public class KrameriusImageSupport {
 
 	static {
@@ -42,12 +72,33 @@ public class KrameriusImageSupport {
 		});
 	}
 
+	/**
+	 * Read image.
+	 *
+	 * @param uuid the uuid
+	 * @param stream the stream
+	 * @param fedoraAccess the fedora access
+	 * @param page the page
+	 * @param mime the mime
+	 * @return the image
+	 * @throws XPathExpressionException the x path expression exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static Image readImage(String uuid, String stream, FedoraAccess fedoraAccess, int page, ImageMimeType mime) throws XPathExpressionException,
 			IOException {
 		URL url = new URL("fedora", "", 0, uuid + "/" + stream, new Handler(fedoraAccess));
 		return readImage(url, mime, page);
 	}
 
+	/**
+	 * Read image.
+	 *
+	 * @param url the url
+	 * @param type the type
+	 * @param page the page
+	 * @return the image
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static Image readImage(URL url, ImageMimeType type, int page) throws IOException {
 		if (type.javaNativeSupport()) {
 			return ImageIO.read(url.openStream());
@@ -88,12 +139,28 @@ public class KrameriusImageSupport {
 			throw new IllegalArgumentException("unsupported mimetype '" + type.getValue() + "'");
 	}
 
+	/**
+	 * Write image to stream.
+	 *
+	 * @param scaledImage the scaled image
+	 * @param javaFormat the java format
+	 * @param os the os
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void writeImageToStream(BufferedImage scaledImage, String javaFormat, OutputStream os) throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ImageIO.write(scaledImage, javaFormat, bos);
 		IOUtils.copyStreams(new ByteArrayInputStream(bos.toByteArray()), os);
 	}
 
+	/**
+	 * Write full image to stream.
+	 *
+	 * @param scaledImage the scaled image
+	 * @param javaFormat the java format
+	 * @param os the os
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void writeFullImageToStream(Image scaledImage, String javaFormat, OutputStream os) throws IOException {
 		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_BYTE_BINARY);
 		Graphics gr = bufImage.getGraphics();
@@ -105,6 +172,15 @@ public class KrameriusImageSupport {
 		IOUtils.copyStreams(new ByteArrayInputStream(bos.toByteArray()), os);
 	}
 
+	/**
+	 * Gets the smaller image.
+	 *
+	 * @param scaledImage the scaled image
+	 * @param maxWidth the max width
+	 * @param maxHeight the max height
+	 * @return the smaller image
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static BufferedImage getSmallerImage(Image scaledImage, int maxWidth, int maxHeight) throws IOException {
 		int width = scaledImage.getWidth(null);
 		int height = scaledImage.getHeight(null);
@@ -134,6 +210,15 @@ public class KrameriusImageSupport {
 		return getScaledInstanceJava2D(bufImage, width, height, "", false);
 	}
 
+	/**
+	 * Write image to stream.
+	 *
+	 * @param scaledImage the scaled image
+	 * @param javaFormat the java format
+	 * @param os the os
+	 * @param quality the quality
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os, float quality) throws IOException {
 		int width = scaledImage.getWidth(null);
 		int height = scaledImage.getHeight(null);
@@ -208,28 +293,23 @@ public class KrameriusImageSupport {
 	// }
 
 	/**
-	 * Convenience method that returns a scaled instance of the provided
-	 * {@code BufferedImage}.
-	 * 
-	 * @param img
-	 *          the original image to be scaled
-	 * @param targetWidth
-	 *          the desired width of the scaled instance, in pixels
-	 * @param targetHeight
-	 *          the desired height of the scaled instance, in pixels
-	 * @param hint
-	 *          one of the rendering hints that corresponds to
-	 *          {@code RenderingHints.KEY_INTERPOLATION} (e.g.
-	 *          {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
-	 *          {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
-	 *          {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
-	 * @param higherQuality
-	 *          if true, this method will use a multi-step scaling technique that
-	 *          provides higher quality than the usual one-step technique (only
-	 *          useful in downscaling cases, where {@code targetWidth} or
-	 *          {@code targetHeight} is smaller than the original dimensions, and
-	 *          generally only when the {@code BILINEAR} hint is specified)
+	 * Convenience method that returns a scaled instance of the provided.
+	 *
+	 * @param img the original image to be scaled
+	 * @param targetWidth the desired width of the scaled instance, in pixels
+	 * @param targetHeight the desired height of the scaled instance, in pixels
+	 * @param hint one of the rendering hints that corresponds to
+	 * @param higherQuality if true, this method will use a multi-step scaling technique that
+	 * provides higher quality than the usual one-step technique (only
+	 * useful in downscaling cases, where {@code targetWidth} or
 	 * @return a scaled version of the original {@code BufferedImage}
+	 * {@code BufferedImage}.
+	 * {@code RenderingHints.KEY_INTERPOLATION} (e.g.
+	 * {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
+	 * {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
+	 * {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
+	 * {@code targetHeight} is smaller than the original dimensions, and
+	 * generally only when the {@code BILINEAR} hint is specified)
 	 */
 	private static BufferedImage getScaledInstanceJava2D(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
 
@@ -276,6 +356,12 @@ public class KrameriusImageSupport {
 		return ret;
 	}
 
+	/**
+	 * To buffered image.
+	 *
+	 * @param img the img
+	 * @return the buffered image
+	 */
 	private static BufferedImage toBufferedImage(Image img) {
 		BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics g = bufferedImage.createGraphics();
@@ -284,8 +370,27 @@ public class KrameriusImageSupport {
 		return bufferedImage;
 	}
 
+	/**
+	 * The Enum ScalingMethod.
+	 */
 	public static enum ScalingMethod {
-		REPLICATE, AREA_AVERAGING, BILINEAR, BICUBIC, NEAREST_NEIGHBOR, BILINEAR_STEPPED, BICUBIC_STEPPED, NEAREST_NEIGHBOR_STEPPED
+		
+		/** The REPLICATE. */
+		REPLICATE, 
+ /** The ARE a_ averaging. */
+ AREA_AVERAGING, 
+ /** The BILINEAR. */
+ BILINEAR, 
+ /** The BICUBIC. */
+ BICUBIC, 
+ /** The NEARES t_ neighbor. */
+ NEAREST_NEIGHBOR, 
+ /** The BILINEA r_ stepped. */
+ BILINEAR_STEPPED, 
+ /** The BICUBI c_ stepped. */
+ BICUBIC_STEPPED, 
+ /** The NEARES t_ neighbo r_ stepped. */
+ NEAREST_NEIGHBOR_STEPPED
 	}
 
 }

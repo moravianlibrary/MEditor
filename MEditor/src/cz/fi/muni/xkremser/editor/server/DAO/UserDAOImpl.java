@@ -1,3 +1,29 @@
+/*
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.sql.PreparedStatement;
@@ -10,59 +36,87 @@ import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UserDAOImpl.
+ */
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
 	/** The Constant SELECT_LAST_N_STATEMENT. */
 	public static final String SELECT_USERS_STATEMENT = "SELECT id, name, surname, sex FROM " + Constants.TABLE_EDITOR_USER + " ORDER BY surname";
 
+	/** The Constant SELECT_ROLES_STATEMENT. */
 	public static final String SELECT_ROLES_STATEMENT = "SELECT name FROM " + Constants.TABLE_ROLE + " ORDER BY name";
 
+	/** The Constant SELECT_ROLE_BY_IDENTITY_STATEMENT. */
 	public static final String SELECT_ROLE_BY_IDENTITY_STATEMENT = "SELECT id FROM " + Constants.TABLE_USER_IN_ROLE + " WHERE user_id IN (SELECT user_id FROM "
 			+ Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)) AND role_id IN (SELECT id FROM " + Constants.TABLE_ROLE + " WHERE name = (?))";
 
+	/** The Constant SELECT_ROLES_OF_USER_STATEMENT2. */
 	public static final String SELECT_ROLES_OF_USER_STATEMENT2 = "SELECT id, name, description FROM " + Constants.TABLE_ROLE
 			+ " WHERE id IN ( SELECT role_id FROM " + Constants.TABLE_USER_IN_ROLE + " WHERE user_id = (?) )";
 
+	/** The Constant SELECT_ROLES_OF_USER_STATEMENT. */
 	public static final String SELECT_ROLES_OF_USER_STATEMENT = "SELECT (SELECT id FROM " + Constants.TABLE_USER_IN_ROLE
 			+ " WHERE user_id = (?) AND role_id = role.id) AS id, name, description FROM role WHERE id IN ( SELECT role_id FROM user_in_role WHERE user_id = (?))";
 
+	/** The Constant SELECT_IDENTITIES_STATEMENT. */
 	public static final String SELECT_IDENTITIES_STATEMENT = "SELECT id, identity FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE user_id = (?)";
 
+	/** The Constant DELETE_ALL_USER_ROLES. */
 	public static final String DELETE_ALL_USER_ROLES = "DELETE FROM " + Constants.TABLE_USER_IN_ROLE + " WHERE user_id = (?)";
 
+	/** The Constant DELETE_ALL_USER_IDENTITIES. */
 	public static final String DELETE_ALL_USER_IDENTITIES = "DELETE FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE user_id = (?)";
 
+	/** The Constant DELETE_USER. */
 	public static final String DELETE_USER = "DELETE FROM " + Constants.TABLE_EDITOR_USER + " WHERE id = (?)";
 
+	/** The Constant DELETE_IDENTITY. */
 	public static final String DELETE_IDENTITY = "DELETE FROM " + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE id = (?)";
 
+	/** The Constant DELETE_USER_IN_ROLE. */
 	public static final String DELETE_USER_IN_ROLE = "DELETE FROM " + Constants.TABLE_USER_IN_ROLE + " WHERE id = (?)";
 
+	/** The Constant SELECT_ROLE_DESCRIPTION. */
 	public static final String SELECT_ROLE_DESCRIPTION = "SELECT description FROM " + Constants.TABLE_ROLE + " WHERE name = (?)";
 
+	/** The Constant SELECT_NAME_BY_OPENID. */
 	public static final String SELECT_NAME_BY_OPENID = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER + " WHERE id IN (SELECT user_id FROM "
 			+ Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
+	/** The Constant SELECT_USER_ID_BY_OPENID. */
 	public static final String SELECT_USER_ID_BY_OPENID = "SELECT id FROM " + Constants.TABLE_EDITOR_USER + " WHERE id IN (SELECT user_id FROM "
 			+ Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
 	/** The Constant INSERT_ITEM_STATEMENT. */
 	public static final String INSERT_USER_STATEMENT = "INSERT INTO " + Constants.TABLE_EDITOR_USER + " (name, surname, sex) VALUES ((?),(?),(?))";
 
+	/** The Constant INSERT_IDENTITY_STATEMENT. */
 	public static final String INSERT_IDENTITY_STATEMENT = "INSERT INTO " + Constants.TABLE_OPEN_ID_IDENTITY + " (user_id, identity) VALUES ((?),(?))";
 
+	/** The Constant INSERT_USER_IN_ROLE_STATEMENT. */
 	public static final String INSERT_USER_IN_ROLE_STATEMENT = "INSERT INTO " + Constants.TABLE_USER_IN_ROLE
 			+ " (user_id, role_id, date) VALUES ((?),(SELECT id FROM " + Constants.TABLE_ROLE + " WHERE name = (?)),(CURRENT_TIMESTAMP))";
 
+	/** The Constant USER_CURR_VALUE. */
 	public static final String USER_CURR_VALUE = "SELECT currval('" + Constants.SEQUENCE_EDITOR_USER + "')";
 
+	/** The Constant USER_IDENTITY_VALUE. */
 	public static final String USER_IDENTITY_VALUE = "SELECT currval('" + Constants.SEQUENCE_OPEN_ID_IDENTITY + "')";
 
+	/** The Constant USER_ROLE_VALUE. */
 	public static final String USER_ROLE_VALUE = "SELECT currval('" + Constants.SEQUENCE_ROLE + "')";
 
 	/** The Constant UPDATE_ITEM_STATEMENT. */
 	public static final String UPDATE_USER_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_USER + " SET name = (?), surname = (?) WHERE id = (?)";
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#isSupported(java.lang.String)
+	 */
 	@Override
 	public int isSupported(String identifier) {
 
@@ -95,6 +149,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getUsers()
+	 */
 	@Override
 	public ArrayList<UserInfoItem> getUsers() {
 		PreparedStatement selectSt = null;
@@ -117,6 +176,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return retList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#removeUser(long)
+	 */
 	@Override
 	public void removeUser(long id) {
 		PreparedStatement deleteSt = null;
@@ -137,6 +201,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#addUser(cz.fi.muni.xkremser
+	 * .editor.shared.rpc.UserInfoItem)
+	 */
 	@Override
 	public String addUser(UserInfoItem user) {
 		if (user == null)
@@ -191,6 +262,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return retID;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getRolesOfUser(long)
+	 */
 	@Override
 	public ArrayList<RoleItem> getRolesOfUser(long userId) {
 		PreparedStatement selectSt = null;
@@ -215,6 +291,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return retList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getIdentities(java.lang.String
+	 * )
+	 */
 	@Override
 	public ArrayList<OpenIDItem> getIdentities(String id) {
 		PreparedStatement selectSt = null;
@@ -238,6 +321,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return retList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#addUserIdentity(cz.fi.muni
+	 * .xkremser.editor.shared.rpc.OpenIDItem, long)
+	 */
 	@Override
 	public String addUserIdentity(OpenIDItem identity, long userId) {
 		if (identity == null)
@@ -282,6 +372,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return retID;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#removeUserIdentity(long)
+	 */
 	@Override
 	public void removeUserIdentity(long id) {
 		PreparedStatement deleteSt = null;
@@ -296,6 +391,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#addUserRole(cz.fi.muni.xkremser
+	 * .editor.shared.rpc.RoleItem, long)
+	 */
 	@Override
 	public RoleItem addUserRole(RoleItem role, long userId) {
 
@@ -353,6 +455,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return defaultRole;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#removeUserRole(long)
+	 */
 	@Override
 	public void removeUserRole(long id) {
 		PreparedStatement deleteSt = null;
@@ -367,6 +474,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#hasRole(java.lang.String,
+	 * long)
+	 */
 	@Override
 	public boolean hasRole(String role, long userId) {
 		ArrayList<RoleItem> roles = getRolesOfUser(userId);
@@ -380,6 +494,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getRoles()
+	 */
 	@Override
 	public ArrayList<String> getRoles() {
 		PreparedStatement selectSt = null;
@@ -402,6 +521,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return retList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getName(java.lang.String)
+	 */
 	@Override
 	public String getName(String openID) {
 		PreparedStatement selectSt = null;
@@ -425,6 +550,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		return name;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#openIDhasRole(java.lang.String
+	 * , java.lang.String)
+	 */
 	@Override
 	public boolean openIDhasRole(String role, String identifier) {
 		PreparedStatement selectSt = null;
