@@ -84,8 +84,9 @@ public class DigitalObjectHandler implements CanGetObject {
 
 	/**
 	 * Gets the related.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the related
 	 */
 	protected ArrayList<ArrayList<String>> getRelated(final String uuid) {
@@ -94,7 +95,12 @@ public class DigitalObjectHandler implements CanGetObject {
 		for (RelationshipTuple triplet : triplets) {
 			ArrayList<String> relatedRecord = new ArrayList<String>(2);
 			String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX + Constants.FEDORA_UUID_PREFIX).length());
-			String predicate = triplet.getPredicate().substring(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI.length());
+			String predicate = null;
+			if (triplet.getPredicate().startsWith(Constants.FEDORA_INFO_PREFIX)) {
+				predicate = triplet.getPredicate().substring(Constants.FEDORA_INFO_PREFIX.length());
+			} else {
+				predicate = triplet.getPredicate().substring(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI.length());
+			}
 
 			relatedRecord.add(subject);
 			relatedRecord.add(predicate);
@@ -143,9 +149,11 @@ public class DigitalObjectHandler implements CanGetObject {
 
 	/**
 	 * Handle dc.
-	 *
-	 * @param uuid the uuid
-	 * @param onlyTitleAndUuid the only title and uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 * @param onlyTitleAndUuid
+	 *          the only title and uuid
 	 * @return the dublin core
 	 */
 	protected DublinCore handleDc(String uuid, boolean onlyTitleAndUuid) {
@@ -168,8 +176,9 @@ public class DigitalObjectHandler implements CanGetObject {
 
 	/**
 	 * Handle ocr.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the string
 	 */
 	protected String handleOCR(String uuid) {
@@ -178,8 +187,9 @@ public class DigitalObjectHandler implements CanGetObject {
 
 	/**
 	 * Handle foxml.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the string
 	 */
 	protected String handleFOXML(String uuid) {
@@ -197,8 +207,9 @@ public class DigitalObjectHandler implements CanGetObject {
 
 	/**
 	 * Handle mods.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the mods collection client
 	 */
 	protected ModsCollectionClient handleMods(String uuid) {
