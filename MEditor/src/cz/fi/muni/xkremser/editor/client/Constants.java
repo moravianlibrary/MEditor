@@ -167,6 +167,6 @@ public class Constants {
 
 	// foxml
 	/** The Constant RELS_EXT_LAST_ELEMENT. */
-	public static final String RELS_EXT_LAST_ELEMENT = "<kramerius:contract>";
+	public static final String RELS_EXT_LAST_ELEMENT = "</rdf:Description>";;
 
 }

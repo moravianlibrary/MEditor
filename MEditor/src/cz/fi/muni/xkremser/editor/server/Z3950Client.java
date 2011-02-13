@@ -68,7 +68,6 @@ import com.k_int.z3950.IRClient.Z3950Origin;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
-import cz.fi.muni.xkremser.editor.shared.DublinCoreXML;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -145,7 +144,7 @@ public class Z3950Client {
 	 *          the what
 	 * @return the dublin core xml
 	 */
-	public DublinCoreXML search(Z3950Client.SEARCH_FIELD field, String what) {
+	public Object search(Z3950Client.SEARCH_FIELD field, String what) {
 
 		// OIDRegister reg = OIDRegister.getRegister();
 

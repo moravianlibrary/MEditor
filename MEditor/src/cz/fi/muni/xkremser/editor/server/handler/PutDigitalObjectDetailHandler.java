@@ -66,6 +66,7 @@ import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
@@ -85,13 +86,17 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	private final Log logger;
 
 	/** The Constant RELS_EXT_PART_1. */
-	private static final String RELS_EXT_PART_1 = "<kramerius:";
+	private static final String RELS_EXT_PART_11 = "<kramerius:";
+	private static final String RELS_EXT_PART_12 = "<";
 
 	/** The Constant RELS_EXT_PART_2. */
-	private static final String RELS_EXT_PART_2 = " rdf:resource=\"info:fedora/uuid:";
+	private static final String RELS_EXT_PART_21 = " rdf:resource=\"info:fedora/uuid:";
+
+	private static final String RELS_EXT_PART_22 = " xmlns=\"http://www.nsdl.org/ontologies/relationships#\" rdf:resource=\"info:fedora/uuid:";
 
 	/** The Constant RELS_EXT_PART_3. */
-	private static final String RELS_EXT_PART_3 = "\"></kramerius:";
+	private static final String RELS_EXT_PART_31 = "\"></kramerius:";
+	private static final String RELS_EXT_PART_32 = "\"></";
 
 	/** The Constant TERMINATOR1. */
 	private static final String TERMINATOR1 = ">\n";
@@ -281,33 +286,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 */
 	private void modifyRelations(AbstractDigitalObjectDetail detail) {
 		StringBuilder sb = new StringBuilder();
-		boolean hasAnything = false;
-		// page structure
-		if (detail.hasPages()) {
-			hasAnything = true;
-			if (detail.getPages() == null || detail.getPages().size() == 0) {
-			} else {
-				String relation = RDFModels.convertToRdf(KrameriusModel.PAGE);
-				for (PageDetail page : detail.getPages()) {
-					sb.append(RELS_EXT_PART_1).append(relation).append(RELS_EXT_PART_2).append(page.getUuid()).append(RELS_EXT_PART_3).append(relation)
-							.append(TERMINATOR1);
-				}
-			}
-		}
-		// container structure
-		if (detail.hasContainers() != 0) {
-			hasAnything = true;
-			for (int i = 0; i < detail.hasContainers(); i++) {
-				if (detail.getContainers().size() <= i || detail.getContainers().get(i) == null || detail.getContainers().get(i).size() == 0) {
-				} else {
-					String relation = RDFModels.convertToRdf(detail.getChildContainerModels().get(i));
-					for (AbstractDigitalObjectDetail obj : detail.getContainers().get(i)) {
-						sb.append(RELS_EXT_PART_1).append(relation).append(RELS_EXT_PART_2).append(obj.getUuid()).append(RELS_EXT_PART_3).append(relation)
-								.append(TERMINATOR1);
-					}
-				}
-			}
-		}
+		boolean hasAnything = (detail.hasPages() && detail.getPages() != null) || detail.hasContainers() != 0;
 		if (!hasAnything)
 			return;
 		Document relsExt = null;
@@ -361,8 +340,37 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			}
 
 			String str = buffer.toString();
-			String head = (str.substring(0, str.indexOf(Constants.RELS_EXT_LAST_ELEMENT))).trim();
-			String tail = str.substring(str.indexOf(Constants.RELS_EXT_LAST_ELEMENT), str.length());
+			int lastIndex = str.indexOf(Constants.RELS_EXT_LAST_ELEMENT);
+			if (lastIndex == -1) {
+				// error
+			}
+			boolean lameNS = str.contains(FedoraNamespaces.KRAMERIUS_URI);
+			String head = str.substring(0, lastIndex).trim();
+			String tail = str.substring(lastIndex, str.length());
+
+			// page structure
+			if (detail.hasPages() && detail.getPages() != null) {
+				String relation = RDFModels.convertToRdf(KrameriusModel.PAGE);
+				for (PageDetail page : detail.getPages()) {
+					sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation).append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21).append(page.getUuid())
+							.append(lameNS ? RELS_EXT_PART_32 : RELS_EXT_PART_31).append(relation).append(TERMINATOR1);
+				}
+
+			}
+			// container structure
+			if (detail.hasContainers() != 0) {
+				for (int i = 0; i < detail.hasContainers(); i++) {
+					if (detail.getContainers().size() <= i || detail.getContainers().get(i) == null) {
+					} else {
+						String relation = RDFModels.convertToRdf(detail.getChildContainerModels().get(i));
+						for (AbstractDigitalObjectDetail obj : detail.getContainers().get(i)) {
+							sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation).append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21)
+									.append(obj.getUuid()).append(lameNS ? RELS_EXT_PART_32 : RELS_EXT_PART_31).append(relation).append(TERMINATOR1);
+						}
+					}
+				}
+			}
+
 			contentBuilder.append(head).append(sb).append(tail);
 
 		} catch (XPathExpressionException e) {

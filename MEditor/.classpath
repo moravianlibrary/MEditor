@@ -35,5 +35,6 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/serializer.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
