@@ -264,3 +264,27 @@ html>body .gwt-DecoratedPopupPanel {
   height: 8px;
   overflow: hidden;
 }
+
+.checkButton {
+	margin-bottom: 15px;
+}
+
+
+.langSelectionCZ {
+	background: url(./images/flags.gif) 0 0 no-repeat;
+	margin-right: 10px;
+}
+.langSelectionCZ:hover {
+	background: url(./images/flags.gif) 0 -18px no-repeat;
+	margin-right: 10px;
+}
+ 
+.langSelectionEN {
+	background: url(./images/flags.gif) 0 -18px no-repeat;
+	margin-right: 10px;
+}
+.langSelectionEN:hover {
+	background: url(./images/flags.gif) 0 0 no-repeat;
+	margin-right: 10px;
+}
+
