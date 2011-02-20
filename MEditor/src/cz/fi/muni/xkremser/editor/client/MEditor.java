@@ -100,11 +100,9 @@ public class MEditor implements EntryPoint {
 		var params = $wnd.location.search;
 		if (pos == -1) {
 			$wnd.location.search = params + '&locale=' + locale;
-			$wnd.alert('@1@' + params);
 		} else {
 			$wnd.location.search = params.substring(0, pos) + '&locale='
 					+ locale + params.substring(pos + 13, params.length);
-			$wnd.alert('@2@' + params);
 		}
 	}-*/;
 }
