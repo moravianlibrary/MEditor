@@ -101,8 +101,8 @@ public class AuthenticationServlet extends HttpServlet {
 		} catch (XPathExpressionException e1) {
 			e1.printStackTrace();
 		}
-		String root = (URLS.LOCALHOST ? "http://" : "https://") + req.getServerName()
-				+ (URLS.LOCALHOST ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT;
+		String root = (URLS.LOCALHOST() ? "http://" : "https://") + req.getServerName()
+				+ (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT;
 		if (identifier != null && !"".equals(identifier)) {
 			LOGGER.log(Level.INFO, "Logged user with openID " + identifier);
 			int userStatus = userDAO.isSupported(identifier);

@@ -27,6 +27,7 @@
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -40,6 +41,7 @@ import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 
 // TODO: Auto-generated Javadoc
@@ -87,27 +89,34 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 	/** The uuid field. */
 	private final TextItem uuidField;
 
+	private final LangConstants lang;
+
+	// @Inject
+	// public void setLang(LangConstants lang) {
+	// this.lang = lang;
+	// }
+
 	/**
 	 * Instantiates a new home view.
 	 */
-	public HomeView() {
+	@Inject
+	public HomeView(LangConstants lang) {
+		this.lang = lang;
 		layout = new VStack();
 		layout.setHeight100();
 		layout.setPadding(15);
 		HTMLFlow html1 = new HTMLFlow();
-		html1
-				.setContents("<h1>Metadata Editor</h1>"
-						+ "Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>."
-						+ "<br/><br/><h2>Availability of cooperating systems</h2>");
+		html1.setContents(lang.introduction());
 
 		status = new HTMLFlow(getStatusString());
 
-		checkButton = new IButton("Check availability");
+		checkButton = new IButton(lang.checkAvailability());
 		checkButton.setAutoFit(true);
 		checkButton.setExtraSpace(60);
+		checkButton.setStylePrimaryName("checkButton");
 
 		HTMLFlow html2 = new HTMLFlow();
-		html2.setContents("<h2>Open digital object</h2>");
+		html2.setContents("<h2>" + lang.openDigitalObject() + "</h2>");
 
 		DataSource dataSource = new DataSource();
 		dataSource.setID("regularExpression");
@@ -117,7 +126,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 
 		uuidField = new TextItem();
 		uuidField.setTitle("uuid");
-		uuidField.setHint("<nobr>Without \"uuid:\" prefix</nobr>");
+		uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
 		uuidField.setValidators(regExpValidator);
 
 		form = new DynamicForm();
@@ -125,7 +134,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		form.setFields(uuidField);
 
 		open = new IButton();
-		open.setTitle("Open");
+		open.setTitle(lang.open());
 		open.setDisabled(true);
 
 		HLayout hLayout = new HLayout();
@@ -137,7 +146,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		// html3.setAlign(Alignment.RIGHT);
 		html3.setHeight("*");
 		html3.setLayoutAlign(VerticalAlignment.BOTTOM);
-		html3.setContents("Created by Jiri Kremser.");
+		html3.setContents(lang.credits());
 		html3.setHeight(20);
 
 		layout.addMember(html1);
@@ -223,25 +232,25 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		sb.append("<ul><li>Fedora (<a href='").append(fedoraUrl == null ? "" : fedoraUrl).append("'>link</a>) <span class='");
 		switch (fedoraStatus) {
 			case (LOADING):
-				sb.append("loading'>loading...");
+				sb.append("loading'>" + lang.loading() + "...");
 			break;
 			case (AVAIL):
-				sb.append("greenFont'>is running");
+				sb.append("greenFont'>" + lang.isRunning());
 			break;
 			case (NOT_AVAIL):
-				sb.append("redFont'>is not running");
+				sb.append("redFont'>" + lang.isNotRunning());
 			break;
 		}
 		sb.append("</span></li><li>Kramerius 4 (<a href='").append(krameriusUrl == null ? "" : krameriusUrl).append("'>link</a>) <span class='");
 		switch (krameriusStatus) {
 			case (LOADING):
-				sb.append("loading'>loading...");
+				sb.append("loading'>" + lang.loading() + "...");
 			break;
 			case (AVAIL):
-				sb.append("greenFont'>is running");
+				sb.append("greenFont'>" + lang.isRunning());
 			break;
 			case (NOT_AVAIL):
-				sb.append("redFont'>is not running");
+				sb.append("redFont'>" + lang.isNotRunning());
 			break;
 		}
 		sb.append("</span></li></ul>");

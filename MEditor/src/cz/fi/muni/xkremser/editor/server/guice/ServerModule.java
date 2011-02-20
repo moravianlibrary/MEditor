@@ -37,6 +37,7 @@ import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
+import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
@@ -157,6 +158,7 @@ public class ServerModule extends HandlerModule {
 		// static injection
 		requestStaticInjection(FedoraUtils.class);
 		requestStaticInjection(AuthenticationServlet.class);
+		requestStaticInjection(URLS.class);
 
 	}
 }

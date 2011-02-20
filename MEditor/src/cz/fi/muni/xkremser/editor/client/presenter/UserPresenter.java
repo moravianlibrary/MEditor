@@ -51,7 +51,6 @@ import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.HiddenItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -65,6 +64,7 @@ import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -92,6 +92,12 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleResult;
  * The Class HomePresenter.
  */
 public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter.MyProxy> {
+	private LangConstants lang;
+
+	@Inject
+	public void setLang(LangConstants lang) {
+		this.lang = lang;
+	}
 
 	/**
 	 * The Interface MyView.
@@ -383,7 +389,7 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				// winModal.setPadding(15);
 				winModal.setCanDragResize(true);
 				winModal.setShowEdges(true);
-				winModal.setTitle("New user");
+				winModal.setTitle(lang.newUser());
 				winModal.setShowMinimizeButton(false);
 				winModal.setIsModal(true);
 				winModal.setShowModalMask(true);
@@ -399,13 +405,13 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				form.setHeight(150);
 				form.setDataSource(source);
 				HiddenItem id = new HiddenItem(Constants.ATTR_USER_ID);
-				TextItem name = new TextItem(Constants.ATTR_NAME, "First Name");
+				TextItem name = new TextItem(Constants.ATTR_NAME, lang.firstName());
 				name.setWidth(320);
-				TextItem surname = new TextItem(Constants.ATTR_SURNAME, "Last Name");
+				TextItem surname = new TextItem(Constants.ATTR_SURNAME, lang.lastName());
 				surname.setWidth(320);
-				CheckboxItem sex = new CheckboxItem(Constants.ATTR_SEX, "Male");
+				// CheckboxItem sex = new CheckboxItem(Constants.ATTR_SEX, "Male");
 				ButtonItem add = new ButtonItem();
-				add.setTitle("Add User");
+				add.setTitle(lang.addUser());
 				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 					@Override
 					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -419,14 +425,14 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				});
 				ButtonItem cancel = new ButtonItem();
 				cancel.setColSpan(0);
-				cancel.setTitle("Cancel");
+				cancel.setTitle(lang.cancel());
 				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 					@Override
 					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 						winModal.destroy();
 					}
 				});
-				form.setFields(name, surname, sex, add, cancel, id);
+				form.setFields(name, surname/* , sex */, add, cancel, id);
 				winModal.addItem(form);
 
 				winModal.centerInPage();
@@ -473,7 +479,7 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				winModal.setWidth(550);
 				winModal.setCanDragResize(true);
 				winModal.setShowEdges(true);
-				winModal.setTitle("New Identity");
+				winModal.setTitle(lang.newIdentity());
 				winModal.setShowMinimizeButton(false);
 				winModal.setIsModal(true);
 				winModal.setShowModalMask(true);
@@ -488,11 +494,11 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				form.setMargin(15);
 				form.setWidth(500);
 				form.setHeight(150);
-				final TextItem identity = new TextItem(Constants.ATTR_IDENTITY, "OpenID identity");
+				final TextItem identity = new TextItem(Constants.ATTR_IDENTITY, lang.openId());
 				identity.setWidth(320);
 				ButtonItem add = new ButtonItem();
 				add.setEndRow(false);
-				add.setTitle("Add Identity");
+				add.setTitle(lang.addIdentity());
 				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 					@Override
 					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -522,7 +528,7 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				ButtonItem cancel = new ButtonItem();
 				cancel.setEndRow(false);
 				// cancel.setColSpan(1);
-				cancel.setTitle("Cancel");
+				cancel.setTitle(lang.cancel());
 				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 					@Override
 					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -575,7 +581,7 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				winModal.setWidth(550);
 				winModal.setCanDragResize(true);
 				winModal.setShowEdges(true);
-				winModal.setTitle("New Identity");
+				winModal.setTitle(lang.newRole());
 				winModal.setShowMinimizeButton(false);
 				winModal.setIsModal(true);
 				winModal.setShowModalMask(true);
@@ -590,12 +596,12 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				form.setMargin(15);
 				form.setWidth(500);
 				form.setHeight(150);
-				final SelectItem role = new SelectItem(Constants.ATTR_NAME, "Role");
+				final SelectItem role = new SelectItem(Constants.ATTR_NAME, lang.role());
 				role.setWidth(320);
 				role.setValueMap(roles.toArray(new String[] {}));
 				ButtonItem add = new ButtonItem();
 				add.setEndRow(false);
-				add.setTitle("Add Role");
+				add.setTitle(lang.addRole());
 				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 					@Override
 					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -625,7 +631,7 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				});
 				ButtonItem cancel = new ButtonItem();
 				cancel.setEndRow(false);
-				cancel.setTitle("Cancel");
+				cancel.setTitle(lang.cancel());
 				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 					@Override
 					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {

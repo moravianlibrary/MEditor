@@ -186,6 +186,8 @@ public abstract class EditorConfiguration {
 		/** The Constant JANRAIN_API_URL_DEFAULT. */
 		public static final String JANRAIN_API_URL_DEFAULT = "https://rpxnow.com";
 
+		public static final String LOCALHOST = "localhost";
+
 	}
 
 	/**
@@ -277,7 +279,7 @@ public abstract class EditorConfiguration {
 
 	/**
 	 * Gets the kramerius host.
-	 *
+	 * 
 	 * @return the kramerius host
 	 */
 	public String getKrameriusHost() {
@@ -286,7 +288,7 @@ public abstract class EditorConfiguration {
 
 	/**
 	 * Gets the kramerius login.
-	 *
+	 * 
 	 * @return the kramerius login
 	 */
 	public String getKrameriusLogin() {
@@ -295,7 +297,7 @@ public abstract class EditorConfiguration {
 
 	/**
 	 * Gets the kramerius password.
-	 *
+	 * 
 	 * @return the kramerius password
 	 */
 	public String getKrameriusPassword() {
@@ -385,7 +387,7 @@ public abstract class EditorConfiguration {
 
 	/**
 	 * Gets the open id api key.
-	 *
+	 * 
 	 * @return the open id api key
 	 */
 	public String getOpenIDApiKey() {
@@ -394,7 +396,7 @@ public abstract class EditorConfiguration {
 
 	/**
 	 * Gets the open id api url.
-	 *
+	 * 
 	 * @return the open id api url
 	 */
 	public String getOpenIDApiURL() {
@@ -442,4 +444,7 @@ public abstract class EditorConfiguration {
 		return getConfiguration().getInt(Constants.GUI_RECENTLY_MODIFIED_NUMBER, Constants.GUI_RECENTLY_MODIFIED_NUMBER_DEFAULT);
 	}
 
+	public boolean isLocalhost() {
+		return getConfiguration().getBoolean(Constants.LOCALHOST, false);
+	}
 }

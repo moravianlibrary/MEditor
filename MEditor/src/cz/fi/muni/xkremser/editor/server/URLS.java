@@ -30,14 +30,23 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
+
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class URLS.
  */
 public class URLS {
 
+	@Inject
+	private static EditorConfiguration config;
+
 	/** The Constant LOCALHOST. */
-	public static final boolean LOCALHOST = false;
+	public static boolean LOCALHOST() {
+		return config.isLocalhost();
+	};
 
 	/** The Constant ROOT. */
 	public static final String ROOT = "";

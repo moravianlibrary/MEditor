@@ -30,6 +30,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -59,6 +60,7 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
@@ -73,6 +75,8 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 
 	/** The Constant SECTION_RELATED_ID. */
 	private static final String SECTION_RELATED_ID = "related";
+
+	private final LangConstants lang;
 
 	/**
 	 * The Interface MyUiHandlers.
@@ -146,7 +150,9 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	/**
 	 * Instantiates a new digital object menu view.
 	 */
-	public DigitalObjectMenuView() {
+	@Inject
+	public DigitalObjectMenuView(LangConstants lang) {
+		this.lang = lang;
 		layout = new VLayout();
 
 		layout.setHeight100();
@@ -162,11 +168,11 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		relatedGrid.setCanHover(true);
 		relatedGrid.setCanSort(false);
 		ListGridField field1 = new ListGridField("uuid", "uuid");
-		ListGridField field2 = new ListGridField("relation", "Relation");
+		ListGridField field2 = new ListGridField("relation", lang.relation());
 		relatedGrid.setFields(field1, field2);
 		sectionRelated = new SectionStackSection();
 		sectionRelated.setID(SECTION_RELATED_ID);
-		sectionRelated.setTitle("Referenced by");
+		sectionRelated.setTitle(lang.referencedBy());
 		sectionRelated.setResizeable(true);
 		sectionRelated.setItems(relatedGrid);
 		sectionRelated.setExpanded(false);
@@ -181,14 +187,14 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		final SelectItem selectItem = new SelectItem();
 		selectItem.setWidth(60);
 		selectItem.setShowTitle(false);
-		selectItem.setValueMap("me", "all");
-		selectItem.setDefaultValue("me");
+		selectItem.setValueMap(lang.me(), lang.all());
+		selectItem.setDefaultValue(lang.me());
 		selectItem.setHoverOpacity(75);
 		selectItem.setHoverStyle("interactImageHover");
 		selectItem.addItemHoverHandler(new ItemHoverHandler() {
 			@Override
 			public void onItemHover(ItemHoverEvent event) {
-				selectItem.setPrompt("Show only objects modified by " + selectItem.getValue());
+				selectItem.setPrompt(DigitalObjectMenuView.this.lang.showModifiedHint() + selectItem.getValue());
 
 			}
 		});
@@ -211,7 +217,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		form.setTitle("by:");
 
 		sectionRecentlyModified = new SectionStackSection();
-		sectionRecentlyModified.setTitle("Recently modified");
+		sectionRecentlyModified.setTitle(lang.recentlyModified());
 		sectionRecentlyModified.setResizeable(true);
 		sectionRecentlyModified.setItems(sideNavGrid);
 		sectionRecentlyModified.setControls(form);

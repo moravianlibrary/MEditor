@@ -27,6 +27,7 @@
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.DataSourceField;
@@ -43,6 +44,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 
 // TODO: Auto-generated Javadoc
@@ -51,11 +53,10 @@ import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
  */
 public class UserView extends ViewImpl implements UserPresenter.MyView {
 
+	private final LangConstants lang;
+
 	/** The layout. */
 	private final HLayout layout;
-
-	/** The check button. */
-	private IButton checkButton;
 
 	/** The form. */
 	private DynamicForm form;
@@ -68,35 +69,37 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 
 	/** The user grid. */
 	private final ListGrid userGrid;
-	
+
 	/** The user roles grid. */
 	private final ListGrid userRolesGrid;
-	
+
 	/** The user identities grid. */
 	private final ListGrid userIdentitiesGrid;
-	
+
 	/** The remove user. */
 	private final IButton removeUser;
-	
+
 	/** The remove role. */
 	private final IButton removeRole;
-	
+
 	/** The remove identity. */
 	private final IButton removeIdentity;
-	
+
 	/** The add user. */
 	private final IButton addUser;
-	
+
 	/** The add role. */
 	private final IButton addRole;
-	
+
 	/** The add identity. */
 	private final IButton addIdentity;
 
 	/**
 	 * Instantiates a new home view.
 	 */
-	public UserView() {
+	@Inject
+	public UserView(LangConstants lang) {
+		this.lang = lang;
 		layout = new HLayout();
 		layout.setHeight100();
 		layout.setWidth(610);
@@ -137,11 +140,11 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 
 		DataSource source = new DataSource();
 		DataSourceField field;
-		field = new DataSourceTextField(Constants.ATTR_NAME, "Name");
+		field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
 		field.setRequired(true);
 		field.setAttribute("width", "40%");
 		source.addField(field);
-		field = new DataSourceTextField(Constants.ATTR_DESC, "Description");
+		field = new DataSourceTextField(Constants.ATTR_DESC, lang.description());
 		field.setRequired(true);
 		field.setAttribute("width", "*");
 		source.addField(field);
@@ -151,16 +154,16 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		field.setRequired(true);
 		source.addField(field);
 		userRolesGrid.setDataSource(source);
-		HTMLFlow roles = new HTMLFlow("<b>Roles</b>");
+		HTMLFlow roles = new HTMLFlow("<b>" + lang.roles() + "</b>");
 		roles.setHeight(15);
 		rolesLayout.addMember(roles);
 		rolesLayout.addMember(userRolesGrid);
 		HLayout buttonLayout2 = new HLayout();
 		buttonLayout2.setPadding(5);
-		addRole = new IButton("Add role");
+		addRole = new IButton(lang.addRole());
 		addRole.setExtraSpace(10);
 		addRole.setDisabled(true);
-		removeRole = new IButton("Remove selected");
+		removeRole = new IButton(lang.removeSelected());
 		removeRole.setAutoFit(true);
 		removeRole.setDisabled(true);
 		buttonLayout2.addMember(addRole);
@@ -186,7 +189,7 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		userIdentitiesGrid.setCanSelectText(true);
 		// userIdentitiesGrid.setCanEdit(true);
 		DataSource source2 = new DataSource();
-		field = new DataSourceTextField(Constants.ATTR_IDENTITY, "Identity");
+		field = new DataSourceTextField(Constants.ATTR_IDENTITY, lang.identity());
 		field.setRequired(true);
 		source2.addField(field);
 		field = new DataSourceTextField(Constants.ATTR_GENERIC_ID, "id");
@@ -195,17 +198,17 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		field.setRequired(true);
 		source2.addField(field);
 		userIdentitiesGrid.setDataSource(source2);
-		HTMLFlow openIds = new HTMLFlow("<b>OpenID identities</b>");
+		HTMLFlow openIds = new HTMLFlow("<b>" + lang.openIds() + "</b>");
 		openIds.setHeight(15);
 		identitiesLayout.addMember(openIds);
 		identitiesLayout.addMember(userIdentitiesGrid);
 		HLayout buttonLayout = new HLayout();
 		buttonLayout.setPadding(5);
 		buttonLayout.setAlign(Alignment.CENTER);
-		addIdentity = new IButton("Add identity");
+		addIdentity = new IButton(lang.addIdentity());
 		addIdentity.setExtraSpace(10);
 		addIdentity.setDisabled(true);
-		removeIdentity = new IButton("Remove selected");
+		removeIdentity = new IButton(lang.removeSelected());
 		removeIdentity.setAutoFit(true);
 		removeIdentity.setDisabled(true);
 		buttonLayout.addMember(addIdentity);
@@ -214,16 +217,16 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		detailLayout.addMember(identitiesLayout);
 
 		VLayout userLayout = new VLayout();
-		HTMLFlow users = new HTMLFlow("<b>Users</b>");
+		HTMLFlow users = new HTMLFlow("<b>" + lang.users() + "</b>");
 		users.setHeight(15);
 		userLayout.addMember(users);
 		userLayout.addMember(userGrid);
 		HLayout buttonLayout3 = new HLayout();
 		buttonLayout3.setPadding(5);
 		buttonLayout3.setAlign(Alignment.CENTER);
-		addUser = new IButton("Add user");
+		addUser = new IButton(lang.addUser());
 		addUser.setExtraSpace(10);
-		removeUser = new IButton("Remove selected");
+		removeUser = new IButton(lang.removeSelected());
 		removeUser.setAutoFit(true);
 		removeUser.setDisabled(true);
 		buttonLayout3.addMember(addUser);
@@ -243,32 +246,46 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		return layout;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getOpen()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getOpen()
 	 */
 	@Override
 	public IButton getOpen() {
 		return open;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getForm()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getForm()
 	 */
 	@Override
 	public DynamicForm getForm() {
 		return form;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getUuidItem()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getUuidItem
+	 * ()
 	 */
 	@Override
 	public HasChangedHandlers getUuidItem() {
 		return uuidField;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#refreshFedora(boolean, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#refreshFedora
+	 * (boolean, java.lang.String)
 	 */
 	@Override
 	public void refreshFedora(boolean fedoraRunning, String url) {
@@ -276,8 +293,11 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#refreshKramerius(boolean, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#
+	 * refreshKramerius(boolean, java.lang.String)
 	 */
 	@Override
 	public void refreshKramerius(boolean krameriusRunning, String url) {
@@ -285,8 +305,12 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#setURLs(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#setURLs
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void setURLs(String fedoraUrl, String krameriusUrl) {
@@ -294,8 +318,12 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#setLoading()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#setLoading
+	 * ()
 	 */
 	@Override
 	public void setLoading() {
@@ -303,72 +331,105 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getUserGrid()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getUserGrid
+	 * ()
 	 */
 	@Override
 	public ListGrid getUserGrid() {
 		return userGrid;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getUserRoleGrid()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#
+	 * getUserRoleGrid()
 	 */
 	@Override
 	public ListGrid getUserRoleGrid() {
 		return userRolesGrid;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getUserIdentityGrid()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#
+	 * getUserIdentityGrid()
 	 */
 	@Override
 	public ListGrid getUserIdentityGrid() {
 		return userIdentitiesGrid;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getRemoveUser()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getRemoveUser
+	 * ()
 	 */
 	@Override
 	public IButton getRemoveUser() {
 		return removeUser;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getRemoveRole()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getRemoveRole
+	 * ()
 	 */
 	@Override
 	public IButton getRemoveRole() {
 		return removeRole;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getRemoveIdentity()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#
+	 * getRemoveIdentity()
 	 */
 	@Override
 	public IButton getRemoveIdentity() {
 		return removeIdentity;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getAddUser()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getAddUser
+	 * ()
 	 */
 	@Override
 	public IButton getAddUser() {
 		return addUser;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getAddRole()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getAddRole
+	 * ()
 	 */
 	@Override
 	public IButton getAddRole() {
 		return addRole;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getAddIdentity()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.presenter.UserPresenter.MyView#getAddIdentity
+	 * ()
 	 */
 	@Override
 	public IButton getAddIdentity() {

@@ -64,6 +64,7 @@ import com.smartgwt.client.widgets.tile.TileGrid;
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
@@ -91,6 +92,13 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
  * The Class ModifyPresenter.
  */
 public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy> implements MyUiHandlers {
+
+	private LangConstants lang;
+
+	@Inject
+	public void setLang(LangConstants lang) {
+		this.lang = lang;
+	}
 
 	/**
 	 * The Interface MyView.
@@ -499,7 +507,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 			@Override
 			public void callbackError(Throwable t) {
-				SC.ask(t.getMessage() + " Do you want to try it again?", new BooleanCallback() {
+				SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
 					@Override
 					public void execute(Boolean value) {
 						if (value != null && value) {
@@ -573,7 +581,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 			@Override
 			public void callback(PutDigitalObjectDetailResult result) {
 				if (!result.isSaved()) {
-					SC.say("This account can not publish.");
+					SC.say(lang.mesCanNotPublish());
 				} else {
 					// SC.say("Done.");
 				}

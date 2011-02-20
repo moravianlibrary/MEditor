@@ -43,6 +43,7 @@ import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.HTMLFlow;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -57,6 +58,13 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
  * The Class AppPresenter.
  */
 public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.MyProxy> implements MyUiHandlers {
+
+	private LangConstants lang;
+
+	@Inject
+	public void setLang(LangConstants lang) {
+		this.lang = lang;
+	}
 
 	/**
 	 * Use this in leaf presenters, inside their {@link #revealInParent} method.
@@ -164,7 +172,7 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 			public void callback(GetLoggedUserResult result) {
 				getView().getUsername().setContents("<b>" + result.getName() + "</b>");
 				if (result.isEditUsers()) {
-					getView().getEditUsers().setContents("User Management");
+					getView().getEditUsers().setContents(lang.userMgmt());
 					getView().getEditUsers().setCursor(Cursor.HAND);
 					getView().getEditUsers().setWidth(120);
 					getView().getEditUsers().setHeight(15);

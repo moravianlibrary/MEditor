@@ -183,8 +183,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ authority.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	private static final Attribute ATTR_AUTHORITY(String value) {
@@ -198,8 +199,9 @@ public final class TabUtils {
 
 	/**
 	 * The Constant ATTR_LANG.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_LANG(String value) {
@@ -209,8 +211,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ xm l_ lang.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_XML_LANG(String value) {
@@ -220,8 +223,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ transliteration.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_TRANSLITERATION(String value) {
@@ -231,8 +235,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ script.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_SCRIPT(String value) {
@@ -242,8 +247,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ id.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_ID(String value) {
@@ -253,8 +259,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ xlink.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_XLINK(String value) {
@@ -264,8 +271,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ encoding.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_ENCODING(String value) {
@@ -274,8 +282,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ point.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_POINT(String value) {
@@ -284,8 +293,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ ke y_ date.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_KEY_DATE(String value) {
@@ -299,8 +309,9 @@ public final class TabUtils {
 
 	/**
 	 * ATT r_ qualifier.
-	 *
-	 * @param value the value
+	 * 
+	 * @param value
+	 *          the value
 	 * @return the attribute
 	 */
 	public static final Attribute ATTR_QUALIFIER(String value) {
@@ -315,9 +326,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the display label.
-	 *
-	 * @param tooltip the tooltip
-	 * @param value the value
+	 * 
+	 * @param tooltip
+	 *          the tooltip
+	 * @param value
+	 *          the value
 	 * @return the display label
 	 */
 	public static Attribute getDisplayLabel(final String tooltip, final String value) {
@@ -328,13 +341,13 @@ public final class TabUtils {
 	 * The Interface GetLayoutOperation.
 	 */
 	public static abstract class GetLayoutOperation {
-		
+
 		/** The holders. */
 		private List<? extends Object> holders;
-		
+
 		/** The values. */
 		private List<? extends Object> values;
-		
+
 		/** The counter. */
 		protected int counter = 0;
 
@@ -354,7 +367,7 @@ public final class TabUtils {
 
 		/**
 		 * Gets the counter.
-		 *
+		 * 
 		 * @return the counter
 		 */
 		public int getCounter() {
@@ -363,7 +376,7 @@ public final class TabUtils {
 
 		/**
 		 * Gets the element number.
-		 *
+		 * 
 		 * @return the element number
 		 */
 		public int getElementNumber() {
@@ -372,7 +385,7 @@ public final class TabUtils {
 
 		/**
 		 * Gets the holders.
-		 *
+		 * 
 		 * @return the holders
 		 */
 		public List<? extends Object> getHolders() {
@@ -381,8 +394,9 @@ public final class TabUtils {
 
 		/**
 		 * Sets the holders.
-		 *
-		 * @param holders the new holders
+		 * 
+		 * @param holders
+		 *          the new holders
 		 */
 		public void setHolders(List<? extends Object> holders) {
 			this.holders = holders;
@@ -390,7 +404,7 @@ public final class TabUtils {
 
 		/**
 		 * Gets the values.
-		 *
+		 * 
 		 * @return the values
 		 */
 		public List<? extends Object> getValues() {
@@ -399,8 +413,9 @@ public final class TabUtils {
 
 		/**
 		 * Sets the values.
-		 *
-		 * @param values the new values
+		 * 
+		 * @param values
+		 *          the new values
 		 */
 		public void setValues(List<? extends Object> values) {
 			this.values = values;
@@ -599,10 +614,13 @@ public final class TabUtils {
 
 		/**
 		 * Instantiates a new gets the general layout.
-		 *
-		 * @param head the head
-		 * @param attributes the attributes
-		 * @param type the type
+		 * 
+		 * @param head
+		 *          the head
+		 * @param attributes
+		 *          the attributes
+		 * @param type
+		 *          the type
 		 */
 		public GetGeneralLayout(Attribute head, Attribute[] attributes, int type) {
 			super();
@@ -944,12 +962,17 @@ public final class TabUtils {
 
 		/**
 		 * Instantiates a new gets the date layout.
-		 *
-		 * @param name the name
-		 * @param title the title
-		 * @param tooltip the tooltip
-		 * @param values the values
-		 * @param holders the holders
+		 * 
+		 * @param name
+		 *          the name
+		 * @param title
+		 *          the title
+		 * @param tooltip
+		 *          the tooltip
+		 * @param values
+		 *          the values
+		 * @param holders
+		 *          the holders
 		 */
 		public GetDateLayout(String name, String title, String tooltip, List<? extends BaseDateTypeClient> values, List<DateHolder> holders) {
 			this(name, title, tooltip, null, true, values, holders);
@@ -957,14 +980,21 @@ public final class TabUtils {
 
 		/**
 		 * Instantiates a new gets the date layout.
-		 *
-		 * @param name the name
-		 * @param title the title
-		 * @param tooltip the tooltip
-		 * @param attribute the attribute
-		 * @param keyDate the key date
-		 * @param values the values
-		 * @param holders the holders
+		 * 
+		 * @param name
+		 *          the name
+		 * @param title
+		 *          the title
+		 * @param tooltip
+		 *          the tooltip
+		 * @param attribute
+		 *          the attribute
+		 * @param keyDate
+		 *          the key date
+		 * @param values
+		 *          the values
+		 * @param holders
+		 *          the holders
 		 */
 		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, List<? extends BaseDateTypeClient> values,
 				List<DateHolder> holders) {
@@ -981,15 +1011,23 @@ public final class TabUtils {
 
 		/**
 		 * Instantiates a new gets the date layout.
-		 *
-		 * @param name the name
-		 * @param title the title
-		 * @param tooltip the tooltip
-		 * @param attribute the attribute
-		 * @param keyDate the key date
-		 * @param values the values
-		 * @param holders the holders
-		 * @param isOtherDate the is other date
+		 * 
+		 * @param name
+		 *          the name
+		 * @param title
+		 *          the title
+		 * @param tooltip
+		 *          the tooltip
+		 * @param attribute
+		 *          the attribute
+		 * @param keyDate
+		 *          the key date
+		 * @param values
+		 *          the values
+		 * @param holders
+		 *          the holders
+		 * @param isOtherDate
+		 *          the is other date
 		 */
 		public GetDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, List<? extends DateTypeClient> values,
 				List<DateHolder> holders, boolean isOtherDate) {
@@ -1026,10 +1064,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section.
-	 *
-	 * @param attribute the attribute
-	 * @param expanded the expanded
-	 * @param holder the holder
+	 * 
+	 * @param attribute
+	 *          the attribute
+	 * @param expanded
+	 *          the expanded
+	 * @param holder
+	 *          the holder
 	 * @return the stack section
 	 */
 	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded, MetadataHolder holder) {
@@ -1038,15 +1079,19 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section.
-	 *
-	 * @param attribute the attribute
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param attribute
+	 *          the attribute
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the stack section
 	 */
 	public static SectionStackSection getStackSection(Attribute attribute, final boolean expanded, final List<String> values, MetadataHolder holder) {
-		return getStackSectionWithAttributes(attribute.getLabel(), attribute, expanded, null, new ArrayList<List<String>>() {
+		return getStackSectionWithAttributes(attribute.getName(), attribute, expanded, null, new ArrayList<List<String>>() {
 			{
 				add(values);
 			}
@@ -1055,11 +1100,15 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section.
-	 *
-	 * @param label1 the label1
-	 * @param label2 the label2
-	 * @param tooltip the tooltip
-	 * @param expanded the expanded
+	 * 
+	 * @param label1
+	 *          the label1
+	 * @param label2
+	 *          the label2
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
 	 * @return the stack section
 	 */
 	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded) {
@@ -1068,13 +1117,19 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section.
-	 *
-	 * @param label1 the label1
-	 * @param label2 the label2
-	 * @param tooltip the tooltip
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param label1
+	 *          the label1
+	 * @param label2
+	 *          the label2
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the stack section
 	 */
 	public static SectionStackSection getStackSection(final String label1, final String label2, final String tooltip, final boolean expanded,
@@ -1088,10 +1143,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the simple section.
-	 *
-	 * @param attribute the attribute
-	 * @param expanded the expanded
-	 * @param holder the holder
+	 * 
+	 * @param attribute
+	 *          the attribute
+	 * @param expanded
+	 *          the expanded
+	 * @param holder
+	 *          the holder
 	 * @return the simple section
 	 */
 	public static SectionStackSection getSimpleSection(final Attribute attribute, final boolean expanded, MetadataHolder holder) {
@@ -1117,13 +1175,19 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section with attributes.
-	 *
-	 * @param label1 the label1
-	 * @param label2 the label2
-	 * @param tooltip the tooltip
-	 * @param expanded the expanded
-	 * @param attributes the attributes
-	 * @param holder the holder
+	 * 
+	 * @param label1
+	 *          the label1
+	 * @param label2
+	 *          the label2
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @param holder
+	 *          the holder
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
@@ -1133,15 +1197,23 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section with attributes.
-	 *
-	 * @param label1 the label1
-	 * @param label2 the label2
-	 * @param tooltip the tooltip
-	 * @param expanded the expanded
-	 * @param attributes the attributes
-	 * @param values the values
-	 * @param holder the holder
-	 * @param flat the flat
+	 * 
+	 * @param label1
+	 *          the label1
+	 * @param label2
+	 *          the label2
+	 * @param tooltip
+	 *          the tooltip
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
+	 * @param flat
+	 *          the flat
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String label1, final String label2, final String tooltip, final boolean expanded,
@@ -1152,11 +1224,15 @@ public final class TabUtils {
 
 	/**
 	 * Gets the simple section with attributes.
-	 *
-	 * @param mainAttr the main attr
-	 * @param expanded the expanded
-	 * @param attributes the attributes
-	 * @param holder the holder
+	 * 
+	 * @param mainAttr
+	 *          the main attr
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @param holder
+	 *          the holder
 	 * @return the simple section with attributes
 	 */
 	public static SectionStackSection getSimpleSectionWithAttributes(final Attribute mainAttr, final boolean expanded, Attribute[] attributes,
@@ -1199,12 +1275,17 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section with attributes.
-	 *
-	 * @param stackLabel the stack label
-	 * @param mainAttr the main attr
-	 * @param expanded the expanded
-	 * @param attributes the attributes
-	 * @param holder the holder
+	 * 
+	 * @param stackLabel
+	 *          the stack label
+	 * @param mainAttr
+	 *          the main attr
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @param holder
+	 *          the holder
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded,
@@ -1214,14 +1295,21 @@ public final class TabUtils {
 
 	/**
 	 * Gets the stack section with attributes.
-	 *
-	 * @param stackLabel the stack label
-	 * @param mainAttr the main attr
-	 * @param expanded the expanded
-	 * @param attributes the attributes
-	 * @param values the values
-	 * @param holder the holder
-	 * @param flat the flat
+	 * 
+	 * @param stackLabel
+	 *          the stack label
+	 * @param mainAttr
+	 *          the main attr
+	 * @param expanded
+	 *          the expanded
+	 * @param attributes
+	 *          the attributes
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
+	 * @param flat
+	 *          the flat
 	 * @return the stack section with attributes
 	 */
 	public static SectionStackSection getStackSectionWithAttributes(final String stackLabel, final Attribute mainAttr, final boolean expanded,
@@ -1548,10 +1636,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the title info stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the title info stack
 	 */
 	public static SectionStackSection getTitleInfoStack(boolean expanded, List<TitleInfoTypeClient> values, List<TitleInfoHolder> holders) {
@@ -1563,10 +1654,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the name stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the name stack
 	 */
 	public static SectionStackSection getNameStack(boolean expanded, List<NameTypeClient> values, List<NameHolder> holders) {
@@ -1578,10 +1672,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the type of resource stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the type of resource stack
 	 */
 	public static SectionStackSection getTypeOfResourceStack(boolean expanded, List<TypeOfResourceTypeClient> values, List<TypeOfResourceHolder> holders) {
@@ -1593,10 +1690,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the genre stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the genre stack
 	 */
 	public static SectionStackSection getGenreStack(boolean expanded, List<GenreTypeClient> values, List<GenreHolder> holders) {
@@ -1608,10 +1708,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the origin info stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the origin info stack
 	 */
 	public static SectionStackSection getOriginInfoStack(boolean expanded, List<OriginInfoTypeClient> values, List<OriginInfoHolder> holders) {
@@ -1623,10 +1726,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the language stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the language stack
 	 */
 	public static SectionStackSection getLanguageStack(boolean expanded, List<LanguageTypeClient> values, List<LanguageHolder> holders) {
@@ -1638,10 +1744,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the physical description stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the physical description stack
 	 */
 	public static SectionStackSection getPhysicalDescriptionStack(boolean expanded, List<PhysicalDescriptionTypeClient> values,
@@ -1654,10 +1763,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the abstract stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the abstract stack
 	 */
 	public static SectionStackSection getAbstractStack(boolean expanded, List<AbstractTypeClient> values, List<AbstractHolder> holders) {
@@ -1673,10 +1785,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the table of contents stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the table of contents stack
 	 */
 	public static SectionStackSection getTableOfContentsStack(boolean expanded, List<TableOfContentsTypeClient> values, List<TableOfContentsHolder> holders) {
@@ -1692,10 +1807,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the target audience stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the target audience stack
 	 */
 	public static SectionStackSection getTargetAudienceStack(boolean expanded, List<TargetAudienceTypeClient> values, AudienceHolder holder) {
@@ -1722,10 +1840,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the note stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the note stack
 	 */
 	public static SectionStackSection getNoteStack(boolean expanded, List<NoteTypeClient> values, List<NoteHolder> holders) {
@@ -1771,10 +1892,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the subject stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the subject stack
 	 */
 	public static SectionStackSection getSubjectStack(boolean expanded, List<SubjectTypeClient> values, List<SubjectHolder> holders) {
@@ -1786,10 +1910,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the classification stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the classification stack
 	 */
 	public static SectionStackSection getClassificationStack(boolean expanded, List<ClassificationTypeClient> values, ClassificationHolder holder) {
@@ -1825,10 +1952,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the identifier stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the identifier stack
 	 */
 	public static SectionStackSection getIdentifierStack(boolean expanded, List<IdentifierTypeClient> values, IdentifierHolder holder) {
@@ -1865,10 +1995,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the location stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the location stack
 	 */
 	public static SectionStackSection getLocationStack(boolean expanded, List<LocationTypeClient> values, List<LocationHolder> holders) {
@@ -1880,10 +2013,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the access condition stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the access condition stack
 	 */
 	public static SectionStackSection getAccessConditionStack(boolean expanded, List<AccessConditionTypeClient> values, List<AccessConditionHolder> holders) {
@@ -1906,10 +2042,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the extension stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the extension stack
 	 */
 	public static SectionStackSection getExtensionStack(boolean expanded, List<ExtensionTypeClient> values, List<ExtensionHolder> holders) {
@@ -1927,10 +2066,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the record info stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the record info stack
 	 */
 	public static SectionStackSection getRecordInfoStack(boolean expanded, List<RecordInfoTypeClient> values, List<RecordInfoHolder> holders) {
@@ -1942,10 +2084,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the part stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the part stack
 	 */
 	public static SectionStackSection getPartStack(boolean expanded, List<PartTypeClient> values, List<PartHolder> holders) {
@@ -1957,10 +2102,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the place stack.
-	 *
-	 * @param expanded the expanded
-	 * @param values the values
-	 * @param holders the holders
+	 * 
+	 * @param expanded
+	 *          the expanded
+	 * @param values
+	 *          the values
+	 * @param holders
+	 *          the holders
 	 * @return the place stack
 	 */
 	private static SectionStackSection getPlaceStack(boolean expanded, List<PlaceTypeClient> values, List<PlaceHolder> holders) {
@@ -1972,9 +2120,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the title info layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the title info layout
 	 */
 	public static VLayout getTitleInfoLayout(final TitleInfoTypeClient values, final TitleInfoHolder holder) {
@@ -2026,9 +2176,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the name layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the name layout
 	 */
 	public static VLayout getNameLayout(final NameTypeClient values, final NameHolder holder) {
@@ -2121,9 +2273,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the type of resource layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the type of resource layout
 	 */
 	public static VLayout getTypeOfResourceLayout(final TypeOfResourceTypeClient values, final TypeOfResourceHolder holder) {
@@ -2166,9 +2320,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the genre layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the genre layout
 	 */
 	public static VLayout getGenreLayout(final GenreTypeClient values, final GenreHolder holder) {
@@ -2196,14 +2352,21 @@ public final class TabUtils {
 
 	/**
 	 * Gets the date layout.
-	 *
-	 * @param name the name
-	 * @param title the title
-	 * @param tooltip the tooltip
-	 * @param attribute the attribute
-	 * @param keyDate the key date
-	 * @param value the value
-	 * @param holder the holder
+	 * 
+	 * @param name
+	 *          the name
+	 * @param title
+	 *          the title
+	 * @param tooltip
+	 *          the tooltip
+	 * @param attribute
+	 *          the attribute
+	 * @param keyDate
+	 *          the key date
+	 * @param value
+	 *          the value
+	 * @param holder
+	 *          the holder
 	 * @return the date layout
 	 */
 	public static VLayout getDateLayout(String name, String title, String tooltip, Attribute attribute, boolean keyDate, BaseDateTypeClient value,
@@ -2279,9 +2442,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the place layout.
-	 *
-	 * @param value the value
-	 * @param holder the holder
+	 * 
+	 * @param value
+	 *          the value
+	 * @param holder
+	 *          the holder
 	 * @return the place layout
 	 */
 	private static VLayout getPlaceLayout(PlaceTypeClient value, PlaceHolder holder) {
@@ -2318,9 +2483,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the origin info layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the origin info layout
 	 */
 	public static VLayout getOriginInfoLayout(OriginInfoTypeClient values, OriginInfoHolder holder) {
@@ -2415,9 +2582,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the physicial description layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the physicial description layout
 	 */
 	private static VLayout getPhysicialDescriptionLayout(PhysicalDescriptionTypeClient values, PhysicalDescriptionHolder holder) {
@@ -2520,10 +2689,13 @@ public final class TabUtils {
 
 	/**
 	 * Gets the general layout.
-	 *
-	 * @param head the head
-	 * @param attribs the attribs
-	 * @param holder the holder
+	 * 
+	 * @param head
+	 *          the head
+	 * @param attribs
+	 *          the attribs
+	 * @param holder
+	 *          the holder
 	 * @return the general layout
 	 */
 	private static VLayout getGeneralLayout(final Attribute head, final Attribute[] attribs, final ListOfSimpleValuesHolder holder) {
@@ -2580,9 +2752,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the language layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the language layout
 	 */
 	private static VLayout getLanguageLayout(LanguageTypeClient values, LanguageHolder holder) {
@@ -2631,9 +2805,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the copy information layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the copy information layout
 	 */
 	private static VLayout getCopyInformationLayout(CopyInformationTypeClient values, CopyInformationHolder holder) {
@@ -2646,18 +2822,18 @@ public final class TabUtils {
 		sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(TextItem.class, "form", "Form",
 				"Designation of a particular physical presentation of a resource.", values == null || values.getForm() == null ? "" : values.getForm().getValue()),
 				false, new Attribute[] { ATTR_AUTHORITY(values == null || values.getForm() == null ? "" : values.getForm().getAuthority()) }, holder.getForm()));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "sublocation", "Sublocation",
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Sublocations", "Sublocation",
 				"Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string."), false,
 				values == null ? null : values.getSubLocation(), holder.getSubLocations()));
 		sectionStack
 				.addSection(getStackSection(
 						new Attribute(
 								TextItem.class,
-								"shelf_locator",
+								"Shelf Locators",
 								"Shelf Locator",
 								"Equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
 						false, values == null ? null : values.getShelfLocator(), holder.getShelfLocators()));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "electronic_locator", "Electronic Locator",
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Electronic Locators", "Electronic Locator",
 				"This is a copy-specific form of the MODS <location><url>, without its attributes."), false, values == null ? null : values.getElectronicLocator(),
 				holder.getElectronicLocators()));
 		GetGeneralLayout getGeneralLayout = new GetGeneralLayout(new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note",
@@ -2719,9 +2895,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the subject layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the subject layout
 	 */
 	private static VLayout getSubjectLayout(SubjectTypeClient values, SubjectHolder holder) {
@@ -2742,10 +2920,10 @@ public final class TabUtils {
 		layout.addMember(form);
 		holder.setAttributeForm(form);
 
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "topic", "Topic",
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Topics", "Topic",
 				"Equivalent to MARC 21 fields 650 and 6XX subfields $x and $v (with authority attribute defined) and MARC 21 field 653 with no authority attribute."),
 				false, values == null ? null : values.getTopic(), holder.getTopics()));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "geographic", "Geographic", "Equivalent to MARC 21 field 651 and 6XX subfield $z."),
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Geographics", "Geographic", "Equivalent to MARC 21 field 651 and 6XX subfield $z."),
 				false, values == null ? null : values.getGeographic(), holder.getGeographics()));
 		sectionStack.addSection(getSomeStack(false, "Temporal", new GetDateLayout("temporal", "Temporal", "Equivalent to MARC 21 fields 045 and 6XX subfield $y.",
 				values == null ? null : values.getTemporal(), holder.getTemporals())));
@@ -2757,7 +2935,7 @@ public final class TabUtils {
 		getNameLayout.setHolders(holder.getNames());
 		getNameLayout.setValues(values == null ? null : values.getName());
 		sectionStack.addSection(getSomeStack(false, "Name", getNameLayout));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "genre", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false,
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Genres", "Genre", "Equivalent to subfield $v in MARC 21 6XX fields."), false,
 				values == null ? null : values.getGenre(), holder.getGenres()));
 
 		Attribute[] attributes = new Attribute[] {
@@ -2820,7 +2998,7 @@ public final class TabUtils {
 						put("iso3166", "iso3166");
 					}
 				}) }, vals, holder.getGeoCodes(), false));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "occupation", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false,
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Occupations", "Occupation", "Roughtly equivalent to MARC 21 field 656."), false,
 				values == null ? null : values.getOccupation(), holder.getOccupations()));
 
 		layout.addMember(sectionStack);
@@ -2829,9 +3007,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the location layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the location layout
 	 */
 	private static VLayout getLocationLayout(LocationTypeClient values, LocationHolder holder) {
@@ -2873,7 +3053,7 @@ public final class TabUtils {
 				.addSection(getStackSection(
 						new Attribute(
 								TextItem.class,
-								"shelfLocator",
+								"Shelf Locators",
 								"Shelf Locator",
 								"This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number)."),
 						false, values == null ? null : values.getShelfLocator(), holder.getShelfLocators()));
@@ -2924,7 +3104,7 @@ public final class TabUtils {
 				.addSection(getStackSection(
 						new Attribute(
 								TextAreaItem.class,
-								"holding_external",
+								"Holding Externals",
 								"Holding External",
 								"Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema."),
 						false,
@@ -2936,9 +3116,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the part layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the part layout
 	 */
 	private static VLayout getPartLayout(PartTypeClient values, PartHolder holder) {
@@ -2979,7 +3161,7 @@ public final class TabUtils {
 		sectionStack.addSection(getSomeStack(false, "Date", getDateLayout));
 		sectionStack
 				.addSection(getStackSection(
-						new Attribute(TextAreaItem.class, "text", "Text",
+						new Attribute(TextAreaItem.class, "Texts", "Text",
 								"Contains unparsed information in textual form about the part. When used in relatedItem type='host', it is equivalent to MARC 21 field 773 subfield $g."),
 						false, values == null ? null : values.getText(), holder.getTexts()));
 
@@ -2989,9 +3171,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the detail layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the detail layout
 	 */
 	private static VLayout getDetailLayout(DetailTypeClient values, DetailHolder holder) {
@@ -3019,12 +3203,12 @@ public final class TabUtils {
 		layout.addMember(form);
 		holder.setAttributeForm(form);
 
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "number", "Number", "Contains the actual number within the part."), false,
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Numbers", "Number", "Contains the actual number within the part."), false,
 				values == null ? null : values.getNumber(), holder.getNumbers()));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "caption", "Caption",
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Captions", "Caption",
 				"Contains the caption describing the enumeration within a part. This may be the same as type, but conveys what is on the item being described. "),
 				false, values == null ? null : values.getCaption(), holder.getCaptions()));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "title", "Title",
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Titles", "Title",
 				"Contains the title of the part. Only include if this is different than the title in <titleInfo><title>."), false,
 				values == null ? null : values.getTitle(), holder.getTitles()));
 		layout.addMember(sectionStack);
@@ -3033,9 +3217,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the extent layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the extent layout
 	 */
 	private static VLayout getExtentLayout(ExtentTypeClient values, ExtentHolder holder) {
@@ -3066,9 +3252,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the record info layout.
-	 *
-	 * @param values the values
-	 * @param holder the holder
+	 * 
+	 * @param values
+	 *          the values
+	 * @param holder
+	 *          the holder
 	 * @return the record info layout
 	 */
 	private static VLayout getRecordInfoLayout(RecordInfoTypeClient values, RecordInfoHolder holder) {
@@ -3128,7 +3316,7 @@ public final class TabUtils {
 		sectionStack.addSection(getStackSectionWithAttributes("Record Identifiers", new Attribute(TextItem.class, ModsConstants.RECORD_IDENTIFIER,
 				"Record Identifier", "Roughly equivalent to MARC 21 field 001."), false, new Attribute[] { new Attribute(TextItem.class, ModsConstants.SOURCE,
 				"Source", "Roughly equivalent to MARC 21 field 003.") }, vals, holder.getRecordIdentifier(), false));
-		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "record_origin", "Record Origin",
+		sectionStack.addSection(getStackSection(new Attribute(TextItem.class, "Record Origins", "Record Origin",
 				"Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."), false,
 				values == null ? null : values.getRecordOrigin(), holder.getRecordOrigin()));
 
@@ -3157,9 +3345,11 @@ public final class TabUtils {
 
 	/**
 	 * Gets the values.
-	 *
-	 * @param values the values
-	 * @param valueKey the value key
+	 * 
+	 * @param values
+	 *          the values
+	 * @param valueKey
+	 *          the value key
 	 * @return the values
 	 */
 	private static List<Map<String, String>> getValues(List<? extends UnstructuredTextClient> values, String valueKey) {

@@ -26,6 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
+import com.google.inject.Inject;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.form.fields.DateItem;
@@ -33,6 +34,7 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -42,60 +44,65 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class DCTab.
  */
 public class DCTab extends Tab {
-	
+
+	@Inject
+	private static LangConstants lang;
+
 	/** The dc. */
 	private DublinCore dc;
-	
+
 	/** The contributor. */
 	private MetadataHolder contributor;
-	
+
 	/** The coverage. */
 	private MetadataHolder coverage;
-	
+
 	/** The creator. */
 	private MetadataHolder creator;
-	
+
 	/** The date. */
 	private MetadataHolder date;
-	
+
 	/** The description. */
 	private MetadataHolder description;
-	
+
 	/** The format. */
 	private MetadataHolder format;
-	
+
 	/** The identifier. */
 	private MetadataHolder identifier;
-	
+
 	/** The language. */
 	private MetadataHolder language;
-	
+
 	/** The publisher. */
 	private MetadataHolder publisher;
-	
+
 	/** The relation. */
 	private MetadataHolder relation;
-	
+
 	/** The rights. */
 	private MetadataHolder rights;
-	
+
 	/** The source. */
 	private MetadataHolder source;
-	
+
 	/** The subject. */
 	private MetadataHolder subject;
-	
+
 	/** The title. */
 	private MetadataHolder title;
-	
+
 	/** The type. */
 	private MetadataHolder type;
 
 	/**
 	 * Instantiates a new dC tab.
-	 *
-	 * @param title the title
-	 * @param icon the icon
+	 * 
+	 * @param title
+	 *          the title
+	 * @param icon
+	 *          the icon
 	 */
 	public DCTab(String title, String icon) {
 		super(title, icon);
@@ -103,8 +110,9 @@ public class DCTab extends Tab {
 
 	/**
 	 * Instantiates a new dC tab.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 */
 	public DCTab(DublinCore dc) {
 		super("DC", "pieces/16/pawn_green.png");
@@ -132,39 +140,34 @@ public class DCTab extends Tab {
 		title = new ListOfSimpleValuesHolder();
 		type = new ListOfSimpleValuesHolder();
 
-		sectionStack.addSection(TabUtils.getStackSection("Titles", "Title", "A name given to the resource.", true, dc.getTitle(), title));
-		sectionStack.addSection(TabUtils.getStackSection("Identifiers", "Identifier", "An unambiguous reference to the resource within a given context.", true,
-				dc.getIdentifier(), identifier));
-		sectionStack.addSection(TabUtils.getStackSection("Creators", "Creator", "An entity primarily responsible for making the resource.", true, dc.getCreator(),
-				creator));
-		sectionStack.addSection(TabUtils.getStackSection("Publishers", "Publisher", "An entity responsible for making the resource available.", true,
-				dc.getPublisher(), publisher));
-		sectionStack.addSection(TabUtils.getStackSection("Contributors", "Contributor", "An entity responsible for making contributions to the resource.", true,
-				dc.getContributor(), contributor));
-		sectionStack.addSection(TabUtils.getStackSection(new Attribute(DateItem.class, "date", "Date",
-				"A point or period of time associated with an event in the lifecycle of the resource."), true, dc.getDate(), date));
-		sectionStack.addSection(TabUtils.getStackSection("Languages", "Language", "A language of the resource.", true, dc.getLanguage(), language));
-		sectionStack.addSection(TabUtils.getStackSection(new Attribute(TextAreaItem.class, "description", "Description", "An account of the resource."), false,
-				dc.getDescription(), description));
-		sectionStack.addSection(TabUtils.getStackSection("Formats", "Format", "The file format, physical medium, or dimensions of the resource.", false,
-				dc.getFormat(), format));
-		sectionStack.addSection(TabUtils.getStackSection("Subjects", "Subject", "The topic of the resource.", false, dc.getSubject(), subject));
-		sectionStack.addSection(TabUtils.getStackSection("Types", "Type", "The nature or genre of the resource.", false, dc.getType(), type));
-		sectionStack.addSection(TabUtils.getStackSection(new Attribute(TextAreaItem.class, "rights", "Rights",
-				"Information about rights held in and over the resource."), false, dc.getRights(), rights));
-		sectionStack.addSection(TabUtils.getStackSection("Coverages", "Coverage",
-				"The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant.",
-				false, dc.getCoverage(), coverage));
-		sectionStack.addSection(TabUtils.getStackSection("Relations", "Relation", "A related resource.", false, dc.getRelation(), relation));
-		sectionStack.addSection(TabUtils.getStackSection(new Attribute(TextAreaItem.class, "source", "Source",
-				"A related resource from which the described resource is derived."), false, dc.getSource(), source));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcTitles(), lang.dcTitle(), lang.dcTitleHoover(), true, dc.getTitle(), title));
+		sectionStack
+				.addSection(TabUtils.getStackSection(lang.dcIdentifiers(), lang.dcIdentifier(), lang.dcIdentifierHoover(), true, dc.getIdentifier(), identifier));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcCreators(), lang.dcCreator(), lang.dcCreatorHoover(), true, dc.getCreator(), creator));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcPublishers(), lang.dcPublisher(), lang.dcPublisherHoover(), true, dc.getPublisher(), publisher));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcContributors(), lang.dcContributor(), lang.dcContributorHoover(), true, dc.getContributor(),
+				contributor));
+		sectionStack.addSection(TabUtils.getStackSection(new Attribute(DateItem.class, lang.dcDates(), lang.dcDate(), lang.dcDateHoover()), true, dc.getDate(),
+				date));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcLanguages(), lang.dcLanguage(), lang.dcLanguageHoover(), true, dc.getLanguage(), language));
+		sectionStack.addSection(TabUtils.getStackSection(
+				new Attribute(TextAreaItem.class, lang.dcDescriptions(), lang.dcDescription(), lang.dcDescriptionHoover()), false, dc.getDescription(), description));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcFormats(), lang.dcFormat(), lang.dcFormatHoover(), false, dc.getFormat(), format));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcSubjects(), lang.dcSubject(), lang.dcSubjectHoover(), false, dc.getSubject(), subject));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcTypes(), lang.dcType(), lang.dcTypeHoover(), false, dc.getType(), type));
+		sectionStack.addSection(TabUtils.getStackSection(new Attribute(TextAreaItem.class, lang.dcRights(), lang.dcRight(), lang.dcRightHoover()), false,
+				dc.getRights(), rights));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcCoverages(), lang.dcCoverage(), lang.dcCoverageHoover(), false, dc.getCoverage(), coverage));
+		sectionStack.addSection(TabUtils.getStackSection(lang.dcRelations(), lang.dcRelation(), lang.dcRelationHoover(), false, dc.getRelation(), relation));
+		sectionStack.addSection(TabUtils.getStackSection(new Attribute(TextAreaItem.class, lang.dcSources(), lang.dcSource(), lang.dcSourceHoover()), false,
+				dc.getSource(), source));
 
 		setPane(sectionStack);
 	}
 
 	/**
 	 * Gets the dc.
-	 *
+	 * 
 	 * @return the dc
 	 */
 	public DublinCore getDc() {
@@ -191,8 +194,9 @@ public class DCTab extends Tab {
 
 	/**
 	 * Sets the dc.
-	 *
-	 * @param dc the new dc
+	 * 
+	 * @param dc
+	 *          the new dc
 	 */
 	public void setDc(DublinCore dc) {
 		this.dc = dc;

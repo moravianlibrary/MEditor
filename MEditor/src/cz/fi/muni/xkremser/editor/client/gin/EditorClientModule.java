@@ -38,6 +38,7 @@ import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 import com.gwtplatform.mvp.client.proxy.TokenFormatter;
 
 import cz.fi.muni.xkremser.editor.client.EditorPlaceManager;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
@@ -52,6 +53,7 @@ import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.UserView;
+import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -75,6 +77,7 @@ public class EditorClientModule extends AbstractPresenterModule {
 
 		// Constants
 		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
+		bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
 		// Presenters
 		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
@@ -86,6 +89,8 @@ public class EditorClientModule extends AbstractPresenterModule {
 
 		bind(CachingDispatchAsync.class);
 		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
+
+		requestStaticInjection(DCTab.class);
 
 	}
 }

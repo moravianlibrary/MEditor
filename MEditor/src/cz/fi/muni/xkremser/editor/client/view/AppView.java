@@ -26,7 +26,9 @@
  */
 package cz.fi.muni.xkremser.editor.client.view;
 
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
@@ -37,6 +39,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
@@ -73,17 +77,22 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 	/** The username. */
 	private final HTMLFlow username;
 
+	private final HTMLFlow langSelection;
+
 	/** The edit users. */
 	private final HTMLFlow editUsers;
+
+	private final LangConstants lang;
 
 	// private HasWidgets mainContainer;
 
 	/**
 	 * Instantiates a new app view.
 	 */
-	public AppView() {
+	@Inject
+	public AppView(LangConstants lang) {
+		this.lang = lang;
 		widget = new VLayout();
-
 		leftContainer = new VLayout();
 		leftContainer.setWidth(275);
 		leftContainer.setShowResizeBar(true);
@@ -106,7 +115,19 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		username.setWidth(150);
 		username.setStyleName("username");
 		username.setHeight(15);
-		HTMLFlow anchor = new HTMLFlow("logout");
+		langSelection = new HTMLFlow();
+		langSelection.setWidth(63);
+		langSelection.setHeight(16);
+		final boolean en = LocaleInfo.getCurrentLocale().getLocaleName() != null && LocaleInfo.getCurrentLocale().getLocaleName().startsWith("en");
+		langSelection.setStyleName(en ? "langSelectionEN" : "langSelectionCZ");
+		langSelection.setCursor(Cursor.HAND);
+		langSelection.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			@Override
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				MEditor.langRefresh(en ? "cs_CZ" : "en_US");
+			}
+		});
+		HTMLFlow anchor = new HTMLFlow(lang.logout());
 		anchor.setCursor(Cursor.HAND);
 		anchor.setWidth(60);
 		anchor.setHeight(15);
@@ -120,6 +141,7 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		editUsers = new HTMLFlow();
 		logged.addMember(editUsers);
 		logged.addMember(username);
+		logged.addMember(langSelection);
 		logged.addMember(anchor);
 		logged.setAlign(Alignment.RIGHT);
 		topContainer.addMember(logged);

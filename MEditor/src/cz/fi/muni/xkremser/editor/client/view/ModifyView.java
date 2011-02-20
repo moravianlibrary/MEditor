@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
@@ -91,6 +92,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
@@ -106,6 +108,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class ModifyView.
  */
 public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
+	private final LangConstants lang;
 
 	/**
 	 * The Interface MyUiHandlers.
@@ -268,7 +271,9 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	/**
 	 * Instantiates a new modify view.
 	 */
-	public ModifyView() {
+	@Inject
+	public ModifyView(LangConstants lang) {
+		this.lang = lang;
 		layout = new VLayout();
 		// layout.addMember(new Label("working"));
 		layout.setOverflow(Overflow.AUTO);
@@ -365,19 +370,26 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		List<Tab> containerTabs = null;
 		if (pageData != null) {
 			pageGrid.setData(pageData);
-			imageTab = new Tab("Images", "pieces/16/pawn_red.png");
+			imageTab = new Tab(lang.page(), "pieces/16/pawn_red.png");
 			imageTab.setPane(pageGrid);
 		}
 
 		final TileGrid[] containerGrids = containerModelList == null ? null : new TileGrid[containerModelList.size()];
 		if (containerDataList != null) {
 			containerTabs = new ArrayList<Tab>(containerModelList.size());
+			Map<String, String> labels = new HashMap<String, String>();
+			labels.put(KrameriusModel.INTERNALPART.getValue(), lang.internalpart());
+			labels.put(KrameriusModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
+			labels.put(KrameriusModel.PERIODICALITEM.getValue(), lang.periodicalitem());
+			labels.put(KrameriusModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
 			for (int i = 0; i < containerModelList.size(); i++) {
 				String label = containerModelList.get(i).getValue();
-				String newLabel = label.substring(0, 1).toUpperCase() + label.substring(1) + "s";
+				String newLabel = labels.get(label);
+				if (newLabel == null || newLabel.equals("")) {
+					newLabel = label.substring(0, 1).toUpperCase() + label.substring(1) + "s";
+				}
 				containerGrids[i] = getTileGrid(false, newLabel);
 				containerGrids[i].setData(containerDataList.get(i));
-				// TODO: localization
 				Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
 				containerTab.setAttribute(ID_MODEL, containerModelList.get(i).getValue());
 				containerTab.setPane(containerGrids[i]);
@@ -396,7 +408,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		moTab.setAttribute(ID_TAB, ID_MODS);
 		modsTab.put(topTabSet, moTab);
 
-		final Tab descriptionTab = new Tab("Description", "pieces/16/pawn_blue.png");
+		final Tab descriptionTab = new Tab(lang.description(), "pieces/16/pawn_blue.png");
 		descriptionTab.setAttribute(TAB_INITIALIZED, false);
 		descriptionTab.setAttribute(ID_TAB, ID_DESC);
 		descriptionTab.setWidth(100);
@@ -421,7 +433,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			ocTab.setPane(form);
 			ocrContent.put(topTabSet, ocrItem);
 
-			thumbTab = new Tab("Thumbnail", "pieces/16/pawn_white.png");
+			thumbTab = new Tab(lang.thumbnail(), "pieces/16/pawn_white.png");
 			final Image full2 = new Image("images/thumbnail/" + uuid);
 			final Img image = new Img("thumbnail/" + uuid, full2.getWidth(), full2.getHeight());
 			image.setAnimateTime(500);
@@ -439,7 +451,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				}
 			});
 			thumbTab.setPane(image);
-			fullTab = new Tab("Full image", "pieces/16/pawn_yellow.png");
+			fullTab = new Tab(lang.fullImg(), "pieces/16/pawn_yellow.png");
 			fullTab.setAttribute(ID_TAB, ID_FULL);
 		}
 
@@ -556,19 +568,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		menu.setShowShadow(true);
 		menu.setShadowDepth(10);
 
-		MenuItem newItem = new MenuItem("New", "icons/16/document_plain_new.png", "Ctrl+N");
+		MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
 		// MenuItem descItem = new MenuItem("Desciption", "icons/16/message.png");
 		// MenuItem loadItem = new MenuItem("Load metadata",
 		// "icons/16/document_plain_new.png");
-		MenuItem lockItem = new MenuItem("Lock digital object", "icons/16/lock_lock_all.png");
-		MenuItem lockTabItem = new MenuItem("Lock opened tab", "icons/16/lock_lock.png");
+		MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png");
+		MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
 		// MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png",
 		// "Ctrl+O");
-		MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png", "Ctrl+S");
-		MenuItem downloadItem = new MenuItem("Download", "icons/16/download.png");
-		MenuItem removeItem = new MenuItem("Remove", "icons/16/close.png");
-		MenuItem refreshItem = new MenuItem("Refresh", "icons/16/refresh.png");
-		MenuItem publishItem = new MenuItem("Publish", "icons/16/add.png");
+		MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
+		MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
+		MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
+		MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png");
+		MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png");
 
 		// openItem.addClickHandler(new
 		// com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -718,7 +730,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		closeButton.addHoverHandler(new HoverHandler() {
 			@Override
 			public void onHover(HoverEvent event) {
-				closeButton.setPrompt("Close this digital object.");
+				closeButton.setPrompt(lang.closeHoover());
 			}
 		});
 
@@ -818,7 +830,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		Menu menu = new Menu();
 		menu.setShowShadow(true);
 		menu.setShadowDepth(10);
-		MenuItem editItem = new MenuItem("Edit", "icons/16/edit.png");
+		MenuItem editItem = new MenuItem(lang.menuEdit(), "icons/16/edit.png");
 		editItem.setAttribute(ID_NAME, ID_EDIT);
 		editItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
@@ -827,19 +839,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
-		MenuItem selectAllItem = new MenuItem("Select all", "icons/16/document_plain_new.png");
+		MenuItem selectAllItem = new MenuItem(lang.menuSelectAll(), "icons/16/document_plain_new.png");
 		selectAllItem.setAttribute(ID_NAME, ID_SEL_ALL);
 
-		MenuItem deselectAllItem = new MenuItem("Deselect all", "icons/16/document_plain_new_Disabled.png");
+		MenuItem deselectAllItem = new MenuItem(lang.menuDeselectAll(), "icons/16/document_plain_new_Disabled.png");
 		deselectAllItem.setAttribute(ID_NAME, ID_SEL_NONE);
 
-		MenuItem invertSelectionItem = new MenuItem("Invert selection", "icons/16/invert.png");
+		MenuItem invertSelectionItem = new MenuItem(lang.menuInvertSelection(), "icons/16/invert.png");
 		invertSelectionItem.setAttribute(ID_NAME, ID_SEL_INV);
 
 		MenuItemSeparator separator = new MenuItemSeparator();
 		separator.setAttribute(ID_NAME, ID_SEPARATOR);
 
-		MenuItem copyItem = new MenuItem("Copy selected", "icons/16/copy.png");
+		MenuItem copyItem = new MenuItem(lang.menuCopySelected(), "icons/16/copy.png");
 		copyItem.setAttribute(ID_NAME, ID_COPY);
 		copyItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
@@ -848,7 +860,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
-		MenuItem pasteItem = new MenuItem("Paste", "icons/16/paste.png");
+		MenuItem pasteItem = new MenuItem(lang.menuPaste(), "icons/16/paste.png");
 		pasteItem.setAttribute(ID_NAME, ID_PASTE);
 		pasteItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
@@ -857,7 +869,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			}
 		});
 
-		MenuItem removeSelectedItem = new MenuItem("Remove selected", "icons/16/close.png");
+		MenuItem removeSelectedItem = new MenuItem(lang.menuRemoveSelected(), "icons/16/close.png");
 		removeSelectedItem.setAttribute(ID_NAME, ID_DELETE);
 		removeSelectedItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
@@ -1001,8 +1013,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		final VLayout layout = new VLayout();
 		layout.setWidth100();
 		layout.setHeight100();
-		String title = common ? "<h3>This description is visible to all users, and during publishing is not writen with digital object.</h3>"
-				: "<h3>This description is visible only to you, and during publishing is not writen with digital object.</h3>";
+		String title = common ? "<h3>" + lang.descriptionAll() + "</h3>" : "<h3>" + lang.descriptionSingle() + "</h3>";
 		HTMLFlow titleHTML = new HTMLFlow(title);
 		final RichTextEditor richTextEditor = new RichTextEditor();
 		richTextEditor.setHeight100();
@@ -1013,14 +1024,14 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		layout.addMember(richTextEditor);
 		DynamicForm form = new DynamicForm();
 		form.setExtraSpace(10);
-		final ButtonItem button = new ButtonItem("Save");
+		final ButtonItem button = new ButtonItem(lang.save());
 		button.setWidth(150);
 		button.setHoverOpacity(75);
 		button.setHoverStyle("interactImageHover");
 		button.addItemHoverHandler(new ItemHoverHandler() {
 			@Override
 			public void onItemHover(ItemHoverEvent event) {
-				button.setPrompt("Save the description into database.");
+				button.setPrompt(lang.saveHoover());
 			}
 		});
 		button.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
