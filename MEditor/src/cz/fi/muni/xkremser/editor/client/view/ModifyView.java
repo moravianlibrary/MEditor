@@ -981,7 +981,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		nameField.setDetailFormatter(new DetailFormatter() {
 			@Override
 			public String format(Object value, Record record, DetailViewerField field) {
-				return "Title: " + value;
+				return lang.title() + ": " + value;
 			}
 		});
 		DetailViewerField descField = new DetailViewerField(Constants.ATTR_DESC);
