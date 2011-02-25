@@ -77,7 +77,8 @@ public class AuthenticationFilter implements Filter {
 			return;
 		}
 
-		if (sessionIdBool || URLS.LOGIN_PAGE.equals(path) || URLS.AUTH_SERVLET.equals(path) || URLS.INFO_PAGE.equals(path)) {
+		// URLs allowed when user is not logged in
+		if (sessionIdBool || URLS.nonRestricted.contains(path) || path.startsWith(URLS.REQUEST_PREFIX)) {
 			if (!URLS.LOCALHOST() && "http".equals(request.getScheme()) && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
 				URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT + path);
 				return;

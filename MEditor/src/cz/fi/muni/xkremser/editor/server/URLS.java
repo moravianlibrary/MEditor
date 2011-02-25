@@ -26,7 +26,9 @@
  */
 package cz.fi.muni.xkremser.editor.server;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,6 +53,7 @@ public class URLS {
 	/** The Constant ROOT. */
 	public static final String ROOT = "";
 	// public static final String ROOT = "/skin1";
+
 	/** The Constant MAIN_PAGE. */
 	public static final String MAIN_PAGE = "/MEditor.html";
 
@@ -60,8 +63,27 @@ public class URLS {
 	/** The Constant INFO_PAGE. */
 	public static final String INFO_PAGE = "/info.html";
 
+	public static final String ICON = "/favicon.ico";
+
+	public static final String FLAGS = "/flags.gif";
+
+	public static final String CSS = "/MEditor.css";
+
+	public static final String REQUEST_PREFIX = "/request";
+
 	/** The Constant AUTH_SERVLET. */
 	public static final String AUTH_SERVLET = "/auth";
+
+	public static Set<String> nonRestricted = new HashSet<String>() {
+		{
+			add(LOGIN_PAGE);
+			add(INFO_PAGE);
+			add(AUTH_SERVLET);
+			add(CSS);
+			add(ICON);
+			add(FLAGS);
+		}
+	};
 
 	/**
 	 * Redirect.

@@ -85,18 +85,28 @@ public class AuthenticationServlet extends HttpServlet {
 		RPX rpx = new RPX(appID, openIdurl);
 		Element e = rpx.authInfo(token);
 		String idXPath = "//identifier";
+		String nameXPath = "//displayName";
 		XPathFactory xpfactory = XPathFactory.newInstance();
 		XPath xpath = xpfactory.newXPath();
 		String identifier = null;
+		String name = null;
 		try {
-			XPathExpression expr = xpath.compile(idXPath);
-			NodeList nodes = (NodeList) expr.evaluate(e.getOwnerDocument(), XPathConstants.NODESET);
-			Element idElement = null;
-			if (nodes.getLength() != 0) {
-				idElement = (Element) nodes.item(0);
+			XPathExpression expr1 = xpath.compile(idXPath);
+			XPathExpression expr2 = xpath.compile(nameXPath);
+			NodeList nodes1 = (NodeList) expr1.evaluate(e.getOwnerDocument(), XPathConstants.NODESET);
+			NodeList nodes2 = (NodeList) expr2.evaluate(e.getOwnerDocument(), XPathConstants.NODESET);
+			Element el = null;
+			if (nodes1.getLength() != 0) {
+				el = (Element) nodes1.item(0);
 			}
-			if (idElement != null) {
-				identifier = idElement.getTextContent();
+			if (el != null) {
+				identifier = el.getTextContent();
+			}
+			if (nodes2.getLength() != 0) {
+				el = (Element) nodes2.item(0);
+			}
+			if (el != null) {
+				name = el.getTextContent();
 			}
 		} catch (XPathExpressionException e1) {
 			e1.printStackTrace();
@@ -120,10 +130,12 @@ public class AuthenticationServlet extends HttpServlet {
 					// HttpCookies.ADMIN_YES);
 					session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
 					session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
-					URLS.redirect(resp, url == null ? root : url);
+					// URLS.redirect(resp, url == null ? root : url);
 				break;
 				case UserDAO.NOT_PRESENT:
 				default:
+					session.setAttribute(HttpCookies.UNKNOWN_ID_KEY, identifier);
+					session.setAttribute(HttpCookies.UNKNOWN_NAME_KEY, name);
 					URLS.redirect(resp, root + URLS.INFO_PAGE);
 				break;
 			}

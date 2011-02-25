@@ -31,10 +31,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.impl.Log4JLogger;
 
 import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -62,6 +64,9 @@ public class AbstractDAO {
 		} catch (ClassNotFoundException ex) {
 			logger.error("Could not find the driver", ex);
 		}
+		if (conf == null) { // called from GWT module without injection support
+			conf = new EditorConfigurationImpl(new Log4JLogger("MeditorLogger"));
+		}
 		String host = conf.getDBHost();
 		String port = conf.getDBPort();
 		String login = conf.getDBLogin();
@@ -81,7 +86,7 @@ public class AbstractDAO {
 
 	/**
 	 * Gets the connection.
-	 *
+	 * 
 	 * @return the connection
 	 */
 	protected Connection getConnection() {
