@@ -103,6 +103,8 @@ public class Constants {
 	/** The Constant ATTR_IDENTITY. */
 	public static final String ATTR_IDENTITY = "identity";
 
+	public static final String ATTR_DATE = "date";
+
 	/** The Constant ATTR_SEX. */
 	public static final String ATTR_SEX = "sex";
 

@@ -79,6 +79,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String credits();
 
   /**
+   * Translated "date".
+   * 
+   * @return translated "date"
+   */
+  @DefaultStringValue("date")
+  @Key("date")
+  String date();
+
+  /**
    * Translated "Contributor".
    * 
    * @return translated "Contributor"
@@ -905,6 +914,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Remove selected")
   @Key("removeSelected")
   String removeSelected();
+
+  /**
+   * Translated "Requests for adding".
+   * 
+   * @return translated "Requests for adding"
+   */
+  @DefaultStringValue("Requests for adding")
+  @Key("requests")
+  String requests();
 
   /**
    * Translated "Role".

@@ -29,9 +29,10 @@ package cz.fi.muni.xkremser.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import cz.fi.muni.xkremser.editor.request4Adding.client.OpenIDRequest;
+import cz.fi.muni.xkremser.editor.common.RequestItem;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -92,9 +93,9 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 	}
 
 	@Override
-	public ArrayList<OpenIDRequest> getAllOpenIDRequests() {
+	public ArrayList<RequestItem> getAllOpenIDRequests() {
 		PreparedStatement selectSt = null;
-		ArrayList<OpenIDRequest> retList = new ArrayList<OpenIDRequest>();
+		ArrayList<RequestItem> retList = new ArrayList<RequestItem>();
 		try {
 			selectSt = getConnection().prepareStatement(SELECT_IDENTITIES_STATEMENT);
 		} catch (SQLException e) {
@@ -103,7 +104,9 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 		try {
 			ResultSet rs = selectSt.executeQuery();
 			while (rs.next()) {
-				retList.add(new OpenIDRequest(rs.getLong("id"), rs.getString("name"), rs.getString("identity"), rs.getDate("modified")));
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+				System.out.println(formatter.format(rs.getTimestamp("modified")));
+				retList.add(new RequestItem(rs.getLong("id"), rs.getString("name"), rs.getString("identity"), formatter.format(rs.getTimestamp("modified"))));
 			}
 		} catch (SQLException e) {
 			logger.error(e);

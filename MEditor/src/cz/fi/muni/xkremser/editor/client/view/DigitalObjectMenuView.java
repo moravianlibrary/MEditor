@@ -167,8 +167,10 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		relatedGrid.setAutoFetchData(false);
 		relatedGrid.setCanHover(true);
 		relatedGrid.setCanSort(false);
-		ListGridField field1 = new ListGridField("uuid", "uuid");
-		ListGridField field2 = new ListGridField("relation", lang.relation());
+		ListGridField field1 = new ListGridField("relation", lang.relation());
+		field1.setWidth("40%");
+		ListGridField field2 = new ListGridField("uuid", "UUID");
+		field2.setWidth("*");
 		relatedGrid.setFields(field1, field2);
 		sectionRelated = new SectionStackSection();
 		sectionRelated.setID(SECTION_RELATED_ID);
@@ -265,7 +267,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	 */
 	@Override
 	public void setDS(DispatchAsync dispatcher) {
-		this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher));
+		this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang));
 	}
 
 	/*

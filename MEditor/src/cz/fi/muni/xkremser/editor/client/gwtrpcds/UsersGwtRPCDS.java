@@ -41,6 +41,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
@@ -59,20 +60,23 @@ public class UsersGwtRPCDS extends AbstractGwtRPCDS {
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
 
+	private final LangConstants lang;
+
 	/**
 	 * Instantiates a new recently tree gwt rpcds.
 	 * 
 	 * @param dispatcher
 	 *          the dispatcher
 	 */
-	public UsersGwtRPCDS(DispatchAsync dispatcher) {
+	public UsersGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
 		this.dispatcher = dispatcher;
+		this.lang = lang;
 		DataSourceField field;
-		field = new DataSourceTextField(Constants.ATTR_NAME, "Firs Name");
+		field = new DataSourceTextField(Constants.ATTR_NAME, lang.firstName());
 		field.setRequired(true);
 		field.setAttribute("width", "40%");
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_SURNAME, "Last Name");
+		field = new DataSourceTextField(Constants.ATTR_SURNAME, lang.lastName());
 		field.setRequired(true);
 		field.setAttribute("width", "*");
 		addField(field);

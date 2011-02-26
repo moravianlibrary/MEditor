@@ -32,7 +32,6 @@ import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
@@ -56,7 +55,7 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	private final LangConstants lang;
 
 	/** The layout. */
-	private final HLayout layout;
+	private final VLayout layout;
 
 	/** The form. */
 	private DynamicForm form;
@@ -76,8 +75,12 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	/** The user identities grid. */
 	private final ListGrid userIdentitiesGrid;
 
+	private final ListGrid requestsGrid;
+
 	/** The remove user. */
 	private final IButton removeUser;
+
+	private final IButton removeRequest;
 
 	/** The remove role. */
 	private final IButton removeRole;
@@ -100,13 +103,16 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	@Inject
 	public UserView(LangConstants lang) {
 		this.lang = lang;
-		layout = new HLayout();
-		layout.setHeight100();
-		layout.setWidth(610);
-		layout.setPadding(10);
+		this.layout = new VLayout();
+		this.layout.setPadding(10);
+		this.layout.setHeight100();
+		HLayout hLayout = new HLayout();
+		hLayout.setWidth(610);
+		hLayout.setExtraSpace(10);
+		// hLayout.setPadding(10);
 		this.userGrid = new ListGrid();
 		userGrid.setWidth(400);
-		userGrid.setHeight(600);
+		userGrid.setHeight(480);
 		userGrid.setShowSortArrow(SortArrow.CORNER);
 		userGrid.setShowAllRecords(true);
 		userGrid.setAutoFetchData(true);
@@ -122,12 +128,12 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		detailLayout.setMargin(0);
 
 		VLayout rolesLayout = new VLayout();
-		rolesLayout.setHeight(310);
+		rolesLayout.setHeight(300);
 		rolesLayout.setPadding(0);
 		rolesLayout.setMargin(0);
 		this.userRolesGrid = new ListGrid();
 		userRolesGrid.setWidth(290);
-		userRolesGrid.setHeight(255);
+		userRolesGrid.setHeight(245);
 		userRolesGrid.setShowSortArrow(SortArrow.CORNER);
 		userRolesGrid.setShowAllRecords(true);
 		// userRolesGrid.setAutoFetchData(true);
@@ -168,17 +174,17 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		removeRole.setDisabled(true);
 		buttonLayout2.addMember(addRole);
 		buttonLayout2.addMember(removeRole);
-		buttonLayout2.setAlign(Alignment.CENTER);
+		// buttonLayout2.setAlign(Alignment.CENTER);
 		rolesLayout.addMember(buttonLayout2);
 		detailLayout.addMember(rolesLayout);
 
 		VLayout identitiesLayout = new VLayout();
 		identitiesLayout.setPadding(0);
 		identitiesLayout.setMargin(0);
-		identitiesLayout.setHeight(310);
+		identitiesLayout.setHeight(200);
 		this.userIdentitiesGrid = new ListGrid();
 		userIdentitiesGrid.setWidth(290);
-		userIdentitiesGrid.setHeight(255);
+		userIdentitiesGrid.setHeight(145);
 		userIdentitiesGrid.setShowSortArrow(SortArrow.CORNER);
 		userIdentitiesGrid.setShowAllRecords(true);
 		userIdentitiesGrid.setCanHover(true);
@@ -204,7 +210,7 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		identitiesLayout.addMember(userIdentitiesGrid);
 		HLayout buttonLayout = new HLayout();
 		buttonLayout.setPadding(5);
-		buttonLayout.setAlign(Alignment.CENTER);
+		// buttonLayout.setAlign(Alignment.CENTER);
 		addIdentity = new IButton(lang.addIdentity());
 		addIdentity.setExtraSpace(10);
 		addIdentity.setDisabled(true);
@@ -223,7 +229,7 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		userLayout.addMember(userGrid);
 		HLayout buttonLayout3 = new HLayout();
 		buttonLayout3.setPadding(5);
-		buttonLayout3.setAlign(Alignment.CENTER);
+		// buttonLayout3.setAlign(Alignment.CENTER);
 		addUser = new IButton(lang.addUser());
 		addUser.setExtraSpace(10);
 		removeUser = new IButton(lang.removeSelected());
@@ -232,8 +238,38 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		buttonLayout3.addMember(addUser);
 		buttonLayout3.addMember(removeUser);
 		userLayout.addMember(buttonLayout3);
-		layout.addMember(userLayout);
-		layout.addMember(detailLayout);
+		hLayout.addMember(userLayout);
+		hLayout.addMember(detailLayout);
+
+		VLayout requestsLayout = new VLayout();
+		// requestsLayout.setMargin(10);
+		HTMLFlow requests = new HTMLFlow("<b>" + lang.requests() + "</b>");
+		requests.setHeight(15);
+		requestsLayout.addMember(requests);
+		requestsGrid = new ListGrid();
+		requestsGrid.setWidth(690);
+		requestsGrid.setHeight(180);
+		requestsGrid.setShowSortArrow(SortArrow.CORNER);
+		requestsGrid.setShowAllRecords(true);
+		requestsGrid.setAutoFetchData(true);
+		requestsGrid.setCanHover(true);
+		requestsGrid.setCanSort(false);
+		requestsGrid.setHoverOpacity(75);
+		requestsGrid.setHoverStyle("interactImageHover");
+		requestsGrid.setCanEdit(true);
+		requestsGrid.setMargin(5);
+		requestsLayout.addMember(requestsGrid);
+		HLayout buttonLayout4 = new HLayout();
+		buttonLayout4.setPadding(5);
+		// buttonLayout4.setAlign(Alignment.CENTER);
+		removeRequest = new IButton(lang.removeSelected());
+		removeRequest.setAutoFit(true);
+		removeRequest.setDisabled(true);
+		buttonLayout4.addMember(removeRequest);
+		requestsLayout.addMember(buttonLayout4);
+
+		layout.addMember(hLayout);
+		layout.addMember(requestsLayout);
 	}
 
 	/**
@@ -377,6 +413,10 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		return removeUser;
 	}
 
+	public IButton getRemoveRequest() {
+		return removeRequest;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -434,6 +474,11 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 	@Override
 	public IButton getAddIdentity() {
 		return addIdentity;
+	}
+
+	@Override
+	public ListGrid getRequestsGrid() {
+		return requestsGrid;
 	}
 
 }

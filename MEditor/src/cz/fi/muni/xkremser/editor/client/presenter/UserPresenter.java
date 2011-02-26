@@ -68,6 +68,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.UsersGwtRPCDS;
 import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
@@ -92,12 +93,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleResult;
  * The Class HomePresenter.
  */
 public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter.MyProxy> {
-	private LangConstants lang;
-
-	@Inject
-	public void setLang(LangConstants lang) {
-		this.lang = lang;
-	}
+	private final LangConstants lang;
 
 	/**
 	 * The Interface MyView.
@@ -147,6 +143,8 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 		 */
 		public ListGrid getUserGrid();
 
+		public ListGrid getRequestsGrid();
+
 		/**
 		 * Gets the user role grid.
 		 * 
@@ -195,6 +193,8 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 		 * @return the removes the identity
 		 */
 		public IButton getRemoveIdentity();
+
+		public IButton getRemoveRequest();
 
 		/**
 		 * Gets the adds the identity.
@@ -264,11 +264,12 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 	 */
 	@Inject
 	public UserPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher, final PlaceManager placeManager) {
+			final DispatchAsync dispatcher, final PlaceManager placeManager, LangConstants lang) {
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
 		this.dispatcher = dispatcher;
 		this.placeManager = placeManager;
+		this.lang = lang;
 		dispatcher.execute(new GetAllRolesAction(), new DispatchCallback<GetAllRolesResult>() {
 			@Override
 			public void callback(GetAllRolesResult result) {
@@ -286,8 +287,10 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 	@Override
 	protected void onBind() {
 		super.onBind();
-		final UsersGwtRPCDS source = new UsersGwtRPCDS(dispatcher);
-		getView().getUserGrid().setDataSource(source);
+		final UsersGwtRPCDS usrSource = new UsersGwtRPCDS(dispatcher, lang);
+		final RequestsGwtRPCDS reqSource = new RequestsGwtRPCDS(dispatcher, lang);
+		getView().getUserGrid().setDataSource(usrSource);
+		getView().getRequestsGrid().setDataSource(reqSource);
 
 		// fetch roles and identities
 		getView().getUserGrid().addRecordClickHandler(new RecordClickHandler() {
@@ -368,6 +371,25 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				}
 			}
 		});
+		getView().getRequestsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+			@Override
+			public void onSelectionChanged(SelectionEvent event) {
+				ListGridRecord[] selection = event.getSelection();
+				if (selection != null && selection.length > 0) {
+					getView().getRemoveRequest().setDisabled(false);
+				} else {
+					getView().getRemoveRequest().setDisabled(true);
+				}
+			}
+		});
+
+		// remove request
+		getView().getRemoveRequest().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				getView().getRequestsGrid().removeSelectedData();
+			}
+		});
 
 		// remove user
 		getView().getRemoveUser().addClickHandler(new ClickHandler() {
@@ -403,7 +425,7 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				form.setMargin(15);
 				form.setWidth(500);
 				form.setHeight(150);
-				form.setDataSource(source);
+				form.setDataSource(usrSource);
 				HiddenItem id = new HiddenItem(Constants.ATTR_USER_ID);
 				TextItem name = new TextItem(Constants.ATTR_NAME, lang.firstName());
 				name.setWidth(320);

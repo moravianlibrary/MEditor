@@ -36,27 +36,23 @@ import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
-import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.util.JSOHelper;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
+import cz.fi.muni.xkremser.editor.common.RequestItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecentlyTreeGwtRPCDS.
  */
-public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
+public class RequestsGwtRPCDS extends AbstractGwtRPCDS {
 
 	/** The dispatcher. */
 	private final DispatchAsync dispatcher;
@@ -69,26 +65,26 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 * @param dispatcher
 	 *          the dispatcher
 	 */
-	public RecentlyTreeGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
+	public RequestsGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
 		this.dispatcher = dispatcher;
 		this.lang = lang;
 		DataSourceField field;
 		field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
 		field.setRequired(true);
-		field.setAttribute("width", "40%");
+		field.setAttribute("width", "25%");
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_UUID, "UUID");
-		field.setPrimaryKey(true);
+		field = new DataSourceTextField(Constants.ATTR_IDENTITY, lang.identity());
 		field.setRequired(true);
 		field.setAttribute("width", "*");
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_DESC, "description");
-		field.setHidden(true);
+		field = new DataSourceTextField(Constants.ATTR_DATE, lang.date());
 		field.setRequired(true);
+		field.setAttribute("width", "20%");
 		addField(field);
-		field = new DataSourceField(Constants.ATTR_MODEL, FieldType.ENUM, "model");
-		field.setRequired(true);
+		field = new DataSourceTextField(Constants.ATTR_GENERIC_ID, "request id");
+		field.setPrimaryKey(true);
 		field.setHidden(true);
+		field.setRequired(true);
 		addField(field);
 
 	}
@@ -103,19 +99,16 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 */
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		boolean all = request.getCriteria().getAttributeAsBoolean(Constants.ATTR_ALL);
-
-		dispatcher.execute(new GetRecentlyModifiedAction(all), new DispatchCallback<GetRecentlyModifiedResult>() {
+		dispatcher.execute(new GetAllRequestItemsAction(), new DispatchCallback<GetAllRequestItemsResult>() {
 			@Override
 			public void callbackError(final Throwable cause) {
 				Log.error("Handle Failure:", cause);
 				response.setStatus(RPCResponse.STATUS_FAILURE);
-				SC.say(Messages.SERVER_RECENTLYMODIFIED_ERROR);
 			}
 
 			@Override
-			public void callback(final GetRecentlyModifiedResult result) {
-				ArrayList<RecentlyModifiedItem> items = result.getItems();
+			public void callback(final GetAllRequestItemsResult result) {
+				ArrayList<RequestItem> items = result.getItems();
 				ListGridRecord[] list = new ListGridRecord[items.size()];
 				for (int i = 0; i < items.size(); i++) {
 					ListGridRecord record = new ListGridRecord();
@@ -139,32 +132,6 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 */
 	@Override
 	protected void executeAdd(final String requestId, final DSRequest request, final DSResponse response) {
-		// Retrieve record which should be added.
-		JavaScriptObject data = request.getData();
-		ListGridRecord rec = new ListGridRecord(data);
-		final RecentlyModifiedItem testRec = new RecentlyModifiedItem();
-		copyValues(rec, testRec);
-
-		dispatcher.execute(new PutRecentlyModifiedAction(testRec), new DispatchCallback<PutRecentlyModifiedResult>() {
-
-			@Override
-			public void callbackError(Throwable caught) {
-				response.setStatus(RPCResponse.STATUS_FAILURE);
-				processResponse(requestId, response);
-			}
-
-			@Override
-			public void callback(PutRecentlyModifiedResult result) {
-				if (!result.isFound()) {
-					ListGridRecord[] list = new ListGridRecord[1];
-					ListGridRecord newRec = new ListGridRecord();
-					copyValues(testRec, newRec);
-					list[0] = newRec;
-					response.setData(list);
-				}
-				processResponse(requestId, response);
-			}
-		});
 
 	}
 
@@ -178,31 +145,7 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 */
 	@Override
 	protected void executeUpdate(final String requestId, final DSRequest request, final DSResponse response) {
-		ListGridRecord rec = getEditedRecord(request);
-		final RecentlyModifiedItem testRec = new RecentlyModifiedItem();
-		copyValues(rec, testRec);
 
-		dispatcher.execute(new PutRecentlyModifiedAction(testRec), new DispatchCallback<PutRecentlyModifiedResult>() {
-
-			@Override
-			public void callbackError(Throwable caught) {
-				response.setStatus(RPCResponse.STATUS_FAILURE);
-				processResponse(requestId, response);
-			}
-
-			@Override
-			public void callback(PutRecentlyModifiedResult result) {
-				if (!result.isFound()) {
-					ListGridRecord[] list = new ListGridRecord[1];
-					ListGridRecord updRec = new ListGridRecord();
-					copyValues(testRec, updRec);
-					list[0] = updRec;
-					response.setData(list);
-					processResponse(requestId, response);
-				}
-				processResponse(requestId, response);
-			}
-		});
 	}
 
 	/*
@@ -215,31 +158,32 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 */
 	@Override
 	protected void executeRemove(final String requestId, final DSRequest request, final DSResponse response) {
-		// Retrieve record which should be removed.
-		// JavaScriptObject data = request.getData();
-		// final ListGridRecord rec = new ListGridRecord(data);
-		// InputQueueItem testRec = new InputQueueItem();
-		// copyValues(rec, testRec);
-		// SimpleGwtRPCDSServiceAsync service =
-		// GWT.create(SimpleGwtRPCDSService.class);
-		// service.remove(testRec, new DispatchCallback<Object>() {
-		// @Override
-		// public void callbackError(Throwable caught) {
-		// response.setStatus(RPCResponse.STATUS_FAILURE);
-		// processResponse(requestId, response);
-		// }
-		//
-		// @Override
-		// public void callback(Object result) {
-		// ListGridRecord[] list = new ListGridRecord[1];
-		// // We do not receive removed record from server.
-		// // Return record from request.
-		// list[0] = rec;
-		// response.setData(list);
-		// processResponse(requestId, response);
-		// }
-		//
-		// });
+		JavaScriptObject data = request.getData();
+		final ListGridRecord rec = new ListGridRecord(data);
+		final RequestItem testRec = new RequestItem();
+		copyValues(rec, testRec);
+		dispatcher.execute(new RemoveRequestItemAction(testRec.getId()), new DispatchCallback<RemoveRequestItemResult>() {
+
+			@Override
+			public void callbackError(Throwable caught) {
+				response.setStatus(RPCResponse.STATUS_FAILURE);
+				processResponse(requestId, response);
+			}
+
+			@Override
+			public void callback(RemoveRequestItemResult result) {
+				// if (!result.isFound()) {
+				// ListGridRecord[] list = new ListGridRecord[1];
+				// ListGridRecord updRec = new ListGridRecord();
+				// copyValues(testRec, updRec);
+				// list[0] = updRec;
+				// response.setData(list);
+				// processResponse(requestId, response);
+				// }
+				processResponse(requestId, response);
+			}
+		});
+
 	}
 
 	/**
@@ -250,11 +194,11 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 * @param to
 	 *          the to
 	 */
-	private static void copyValues(ListGridRecord from, RecentlyModifiedItem to) {
-		to.setUuid(from.getAttributeAsString(Constants.ATTR_UUID));
+	private static void copyValues(ListGridRecord from, RequestItem to) {
 		to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-		to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
-		to.setModel((KrameriusModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
+		to.setOpenID(from.getAttributeAsString(Constants.ATTR_IDENTITY));
+		to.setTimestamp(null);
+		to.setId(Long.parseLong(from.getAttributeAsString(Constants.ATTR_GENERIC_ID)));
 	}
 
 	/**
@@ -265,11 +209,11 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 * @param to
 	 *          the to
 	 */
-	private static void copyValues(RecentlyModifiedItem from, ListGridRecord to) {
-		to.setAttribute(Constants.ATTR_UUID, from.getUuid());
+	private static void copyValues(RequestItem from, ListGridRecord to) {
+		to.setAttribute(Constants.ATTR_IDENTITY, from.getOpenID());
 		to.setAttribute(Constants.ATTR_NAME, from.getName());
-		to.setAttribute(Constants.ATTR_DESC, from.getDescription());
-		to.setAttribute(Constants.ATTR_MODEL, from.getModel());
+		to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
+		to.setAttribute(Constants.ATTR_DATE, from.getTimestamp());
 	}
 
 	/**

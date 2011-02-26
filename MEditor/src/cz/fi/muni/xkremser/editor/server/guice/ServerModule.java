@@ -42,6 +42,8 @@ import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAOImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.RequestDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -55,6 +57,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetAllRequestItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRolesHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
@@ -70,11 +73,13 @@ import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserRoleHandler;
+import cz.fi.muni.xkremser.editor.server.handler.RemoveRequestItemHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
@@ -90,6 +95,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
@@ -129,6 +135,8 @@ public class ServerModule extends HandlerModule {
 		bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
 		bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
 		bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
+		bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
+		bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
 
 		bindHandler(LogoutAction.class, LogoutHandler.class);
 
@@ -139,6 +147,7 @@ public class ServerModule extends HandlerModule {
 		bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
 		bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
 		bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
+		bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
 		// bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
 		// Fedora

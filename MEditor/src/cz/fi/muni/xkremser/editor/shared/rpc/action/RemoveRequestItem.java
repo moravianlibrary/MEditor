@@ -24,22 +24,21 @@
  *
  * 
  */
-package cz.fi.muni.xkremser.editor.server.DAO;
+package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import java.util.ArrayList;
-
-import cz.fi.muni.xkremser.editor.common.RequestItem;
+import com.gwtplatform.annotation.GenDispatch;
+import com.gwtplatform.annotation.In;
+import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface UserDAO.
+ * The Class GetRecentlyModified.
  */
-public interface RequestDAO {
+@GenDispatch(isSecure = false)
+public class RemoveRequestItem extends UnsecuredActionImpl<RemoveUserRoleResult> {
 
-	boolean addOpenIDRequest(String name, String openID);
-
-	void removeOpenIDRequest(long id);
-
-	ArrayList<RequestItem> getAllOpenIDRequests();
+	/** The id. */
+	@In(1)
+	private Long id;
 
 }
