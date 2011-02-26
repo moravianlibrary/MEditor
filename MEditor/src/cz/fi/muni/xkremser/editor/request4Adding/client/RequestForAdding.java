@@ -50,7 +50,7 @@ public class RequestForAdding implements EntryPoint {
 		this.msgVisible = msgVisible;
 	}
 
-	private void showGUI(String name, RequestConstants lang, final RequestForAddingServiceAsync service) {
+	private void showGUI(String name, final RequestConstants lang, final RequestForAddingServiceAsync service) {
 		VLayout layout = new VLayout();
 		layout.setPadding(20);
 		layout.setWidth("98%");
@@ -102,6 +102,11 @@ public class RequestForAdding implements EntryPoint {
 
 					@Override
 					public void onSuccess(String result) {
+						if (result == null) {
+							result = lang.exist();
+						} else {
+							result = lang.added1() + "\n" + lang.added2() + result;
+						}
 						anim.setContents(result);
 						anim.animateShow(AnimationEffect.FADE, null, 750);
 						setMsgVisible(true);

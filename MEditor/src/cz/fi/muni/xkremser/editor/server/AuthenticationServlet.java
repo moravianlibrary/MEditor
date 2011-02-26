@@ -130,7 +130,7 @@ public class AuthenticationServlet extends HttpServlet {
 					// HttpCookies.ADMIN_YES);
 					session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
 					session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
-					// URLS.redirect(resp, url == null ? root : url);
+					URLS.redirect(resp, url == null ? root : url);
 				break;
 				case UserDAO.NOT_PRESENT:
 				default:
