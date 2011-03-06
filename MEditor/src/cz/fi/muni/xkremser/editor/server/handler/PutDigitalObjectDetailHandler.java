@@ -206,8 +206,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		if (host == null || login == null || password == null) {
 			return;
 		}
-
-		String url = host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + uuid + "," + uuid;
+		String url = host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + uuid + "," + uuid + "&userName=" + login + "&pswd=" + password;
 		try {
 			RESTHelper.openConnection(url, login, password);
 		} catch (MalformedURLException e) {
