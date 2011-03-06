@@ -74,7 +74,7 @@ public class ThumbnailServiceImpl extends HttpServlet {
 		if (uuid != null && !"".equals(uuid)) {
 			resp.setContentType("image/jpeg");
 			StringBuffer sb = new StringBuffer();
-			sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_THUMB/content");
+			sb.append(config.getFedoraHost()).append("/objects/").append(uuid).append("/datastreams/IMG_THUMB/content");
 			InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
 			if (is == null) {
 				return;

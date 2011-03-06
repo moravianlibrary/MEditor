@@ -267,7 +267,7 @@ public class FedoraUtils {
 	 * @return the dj vu image
 	 */
 	public static String getDjVuImage(String uuid) {
-		String imagePath = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/" + IMG_FULL_STREAM;
+		String imagePath = configuration.getFedoraHost() + "/get/" + uuid + "/" + IMG_FULL_STREAM;
 		return imagePath;
 	}
 
@@ -279,7 +279,7 @@ public class FedoraUtils {
 	 * @return the thumbnail from fedora
 	 */
 	public static String getThumbnailFromFedora(String uuid) {
-		String imagePath = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/" + IMG_THUMB_STREAM;
+		String imagePath = configuration.getFedoraHost() + "/get/" + uuid + "/" + IMG_THUMB_STREAM;
 		return imagePath;
 	}
 
@@ -291,7 +291,7 @@ public class FedoraUtils {
 	 * @return the fedora datastreams list
 	 */
 	public static String getFedoraDatastreamsList(String uuid) {
-		String datastreamsListPath = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/datastreams?format=xml";
+		String datastreamsListPath = configuration.getFedoraHost() + "/objects/" + uuid + "/datastreams?format=xml";
 		return datastreamsListPath;
 	}
 }

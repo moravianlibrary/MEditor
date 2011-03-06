@@ -90,11 +90,11 @@ public class DigitalObjectHandler implements CanGetObject {
 	 * @return the related
 	 */
 	protected ArrayList<ArrayList<String>> getRelated(final String uuid) {
-		List<RelationshipTuple> triplets = FedoraUtils.getSubjectPids(Constants.FEDORA_UUID_PREFIX + uuid);
+		List<RelationshipTuple> triplets = FedoraUtils.getSubjectPids(uuid);
 		ArrayList<ArrayList<String>> returnList = new ArrayList<ArrayList<String>>(triplets.size());
 		for (RelationshipTuple triplet : triplets) {
 			ArrayList<String> relatedRecord = new ArrayList<String>(2);
-			String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX + Constants.FEDORA_UUID_PREFIX).length());
+			String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX).length());
 			String predicate = null;
 			if (triplet.getPredicate().startsWith(Constants.FEDORA_INFO_PREFIX)) {
 				predicate = triplet.getPredicate().substring(Constants.FEDORA_INFO_PREFIX.length());

@@ -90,9 +90,9 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	private static final String RELS_EXT_PART_12 = "<";
 
 	/** The Constant RELS_EXT_PART_2. */
-	private static final String RELS_EXT_PART_21 = " rdf:resource=\"info:fedora/uuid:";
+	private static final String RELS_EXT_PART_21 = " rdf:resource=\"info:fedora/";
 
-	private static final String RELS_EXT_PART_22 = " xmlns=\"http://www.nsdl.org/ontologies/relationships#\" rdf:resource=\"info:fedora/uuid:";
+	private static final String RELS_EXT_PART_22 = " xmlns=\"http://www.nsdl.org/ontologies/relationships#\" rdf:resource=\"info:fedora/";
 
 	/** The Constant RELS_EXT_PART_3. */
 	private static final String RELS_EXT_PART_31 = "\"></kramerius:";
@@ -375,7 +375,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		} catch (XPathExpressionException e) {
 		}
 
-		String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/RELS-EXT?versionable=false";
+		String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/RELS-EXT?versionable=false";
 		String usr = configuration.getFedoraLogin();
 		String pass = configuration.getFedoraPassword();
 		String content = contentBuilder.toString();
@@ -428,7 +428,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			appendDCElement(contentBuilder, dc.getTitle(), DublinCoreConstants.DC_TITLE);
 			appendDCElement(contentBuilder, dc.getType(), DublinCoreConstants.DC_TYPE);
 			contentBuilder.append(DC_TAIL);
-			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/DC?versionable=false";
+			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/DC?versionable=false";
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			String content = contentBuilder.toString();
@@ -446,7 +446,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	private void modifyMods(AbstractDigitalObjectDetail detail) {
 		if (detail.getMods() != null) {
 			ModsCollectionClient modsCollection = detail.getMods();
-			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=false";
+			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=false";
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			String content = BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
@@ -463,7 +463,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 */
 	private void modifyOcr(AbstractDigitalObjectDetail detail) {
 		if (detail.getOcr() != null) {
-			String url = configuration.getFedoraHost() + "/objects/" + Constants.FEDORA_UUID_PREFIX + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=false";
+			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=false";
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			RESTHelper.put(url, detail.getOcr(), usr, pass);

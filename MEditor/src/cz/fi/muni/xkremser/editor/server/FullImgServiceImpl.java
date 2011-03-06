@@ -89,11 +89,11 @@ public class FullImgServiceImpl extends HttpServlet {
 		if (uuid != null && !"".equals(uuid)) {
 
 			try {
-				String mimetype = fedoraAccess.getMimeTypeForStream("uuid:" + uuid, FedoraUtils.IMG_FULL_STREAM);
+				String mimetype = fedoraAccess.getMimeTypeForStream(uuid, FedoraUtils.IMG_FULL_STREAM);
 				ImageMimeType loadFromMimeType = ImageMimeType.loadFromMimeType(mimetype);
 				if (loadFromMimeType == ImageMimeType.JPEG || loadFromMimeType == ImageMimeType.PNG) {
 					StringBuffer sb = new StringBuffer();
-					sb.append(config.getFedoraHost()).append("/objects/").append(Constants.FEDORA_UUID_PREFIX).append(uuid).append("/datastreams/IMG_FULL/content");
+					sb.append(config.getFedoraHost()).append("/objects/").append(uuid).append("/datastreams/IMG_FULL/content");
 					InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
 					if (is == null) {
 						return;

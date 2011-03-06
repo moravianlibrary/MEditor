@@ -122,10 +122,10 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		dataSource.setID("regularExpression");
 
 		RegExpValidator regExpValidator = new RegExpValidator();
-		regExpValidator.setExpression("^([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
+		regExpValidator.setExpression("^uuid:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
 
 		uuidField = new TextItem();
-		uuidField.setTitle("uuid");
+		uuidField.setTitle("PID");
 		uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
 		uuidField.setValidators(regExpValidator);
 

@@ -45,7 +45,7 @@ public class Constants {
 	public static final String URL_PARAM_NOT_SCALE = "not_scale";
 
 	/** The Constant URL_PARAM_UUID. */
-	public static final String URL_PARAM_UUID = "uuid";
+	public static final String URL_PARAM_UUID = "pids";
 
 	/** The Constant URL_PARAM_REFRESH. */
 	public static final String URL_PARAM_REFRESH = "refresh";

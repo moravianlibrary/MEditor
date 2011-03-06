@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
 
+import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -109,6 +111,9 @@ public class URLS {
 	public static String convertToAJAXURL(Map parameters) {
 		StringBuilder sufix = new StringBuilder();
 		sufix.append('#');
+		if (parameters.containsKey(Constants.URL_PARAM_UUID)) {
+			sufix.append(NameTokens.MODIFY + ";");
+		}
 		for (Object keyObj : parameters.keySet()) {
 			sufix.append(keyObj);
 			String[] values = (String[]) parameters.get(keyObj);
@@ -119,5 +124,4 @@ public class URLS {
 		}
 		return sufix.toString();
 	}
-
 }

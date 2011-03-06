@@ -247,8 +247,12 @@ public class FedoraAccessImpl implements FedoraAccess {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getOcr(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getOcr(java.lang.
+	 * String)
 	 */
 	@Override
 	public String getOcr(String uuid) {
@@ -328,7 +332,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 					String attVal = topElem.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI, "resource");
 					PIDParser pidParser = new PIDParser(attVal);
 					pidParser.disseminationURI();
-					String objectId = pidParser.getObjectId();
+					String objectId = pidParser.getNamespaceId() + ":" + pidParser.getObjectId();
 					// LOGGER.info("processing uuid =" +objectId);
 					Document relsExt = getRelsExt(objectId);
 					breakProcess = processRelsExtInternal(relsExt.getDocumentElement(), handler, level + 1);
@@ -453,7 +457,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 				Node node = nodes.item(i);
 				PIDParser pidParser = new PIDParser(node.getNodeValue());
 				pidParser.disseminationURI();
-				elms.add(pidParser.getObjectId());
+				elms.add(pidParser.getNamespaceId() + ":" + pidParser.getObjectId());
 			}
 			return elms;
 		} catch (XPathExpressionException e) {
@@ -528,32 +532,48 @@ public class FedoraAccessImpl implements FedoraAccess {
 		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:isOnPage/@rdf:resource");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getIntCompPartsUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getIntCompPartsUuid
+	 * (java.lang.String)
 	 */
 	@Override
 	public List<String> getIntCompPartsUuid(String uuid) throws IOException {
 		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart/@rdf:resource");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getMonographUnitsUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getMonographUnitsUuid
+	 * (java.lang.String)
 	 */
 	@Override
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException {
 		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasUnit/@rdf:resource");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid
+	 * (java.lang.String)
 	 */
 	@Override
 	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException {
 		return getUuids(uuid, "/rdf:RDF/rdf:Description/kramerius:hasItem/@rdf:resource");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getVolumesUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getVolumesUuid(java
+	 * .lang.String)
 	 */
 	@Override
 	public List<String> getVolumesUuid(String uuid) throws IOException {
@@ -817,7 +837,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 * @return the string
 	 */
 	public String dsProfile(String ds, String uuid) {
-		String fedoraObject = configuration.getFedoraHost() + "/objects/uuid:" + uuid;
+		String fedoraObject = configuration.getFedoraHost() + "/objects/" + uuid;
 		return fedoraObject + "/datastreams/" + ds + "?format=text/xml";
 	}
 
@@ -843,7 +863,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 * @return the string
 	 */
 	public String biblioMods(String uuid) {
-		String fedoraObject = configuration.getFedoraHost() + "/get/uuid:" + uuid;
+		String fedoraObject = configuration.getFedoraHost() + "/get/" + uuid;
 		return fedoraObject + "/BIBLIO_MODS";
 	}
 
@@ -855,18 +875,19 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 * @return the string
 	 */
 	public String dc(String uuid) {
-		String fedoraObject = configuration.getFedoraHost() + "/get/uuid:" + uuid;
+		String fedoraObject = configuration.getFedoraHost() + "/get/" + uuid;
 		return fedoraObject + "/DC";
 	}
 
 	/**
 	 * Ocr.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the string
 	 */
 	public String ocr(String uuid) {
-		String fedoraObject = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/datastreams/TEXT_OCR/content";
+		String fedoraObject = configuration.getFedoraHost() + "/objects/" + uuid + "/datastreams/TEXT_OCR/content";
 		return fedoraObject;
 	}
 
@@ -884,12 +905,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 
 	/**
 	 * Obj foxml.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the string
 	 */
 	public String objFoxml(String uuid) {
-		String fedoraObject = configuration.getFedoraHost() + "/objects/uuid:" + uuid + "/objectXML";
+		String fedoraObject = configuration.getFedoraHost() + "/objects/" + uuid + "/objectXML";
 		return fedoraObject;
 	}
 
@@ -901,7 +923,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 * @return the string
 	 */
 	public String relsExtUrl(String uuid) {
-		String url = configuration.getFedoraHost() + "/get/uuid:" + uuid + "/RELS-EXT";
+		String url = configuration.getFedoraHost() + "/get/" + uuid + "/RELS-EXT";
 		return url;
 	}
 
@@ -1121,8 +1143,12 @@ public class FedoraAccessImpl implements FedoraAccess {
 		return bytes != null;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getFOXML(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getFOXML(java.lang
+	 * .String)
 	 */
 	@Override
 	public String getFOXML(String uuid) {

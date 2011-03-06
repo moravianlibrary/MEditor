@@ -169,7 +169,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		relatedGrid.setCanSort(false);
 		ListGridField field1 = new ListGridField("relation", lang.relation());
 		field1.setWidth("40%");
-		ListGridField field2 = new ListGridField("uuid", "UUID");
+		ListGridField field2 = new ListGridField("uuid", "PID");
 		field2.setWidth("*");
 		relatedGrid.setFields(field1, field2);
 		sectionRelated = new SectionStackSection();
