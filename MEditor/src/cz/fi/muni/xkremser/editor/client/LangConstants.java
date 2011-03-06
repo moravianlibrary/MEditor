@@ -79,11 +79,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String credits();
 
   /**
-   * Translated "date".
+   * Translated "Date".
    * 
-   * @return translated "date"
+   * @return translated "Date"
    */
-  @DefaultStringValue("date")
+  @DefaultStringValue("Date")
   @Key("date")
   String date();
 
@@ -1015,11 +1015,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String users();
 
   /**
-   * Translated "Without \"uuid:\" prefix".
+   * Translated "With \"uuid:\" prefix".
    * 
-   * @return translated "Without \"uuid:\" prefix"
+   * @return translated "With \"uuid:\" prefix"
    */
-  @DefaultStringValue("Without \"uuid:\" prefix")
+  @DefaultStringValue("With \"uuid:\" prefix")
   @Key("withoutPrefix")
   String withoutPrefix();
 }
