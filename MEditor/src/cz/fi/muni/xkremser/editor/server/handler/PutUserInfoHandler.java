@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoResult;
 
@@ -81,7 +82,12 @@ public class PutUserInfoHandler implements ActionHandler<PutUserInfoAction, PutU
 		if (action.getUser() == null)
 			throw new NullPointerException("getUser()");
 		logger.debug("Processing action: PutUserInfoAction user:" + action.getUser());
-		String id = userDAO.addUser(action.getUser());
+		String id;
+		try {
+			id = userDAO.addUser(action.getUser());
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 		return new PutUserInfoResult(id, "exist".equals(id));
 	}
 

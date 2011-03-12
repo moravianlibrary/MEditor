@@ -47,6 +47,7 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -115,8 +116,17 @@ public class AuthenticationServlet extends HttpServlet {
 				+ (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT;
 		if (identifier != null && !"".equals(identifier)) {
 			LOGGER.log(Level.INFO, "Logged user with openID " + identifier);
-			int userStatus = userDAO.isSupported(identifier);
+			int userStatus = UserDAO.UNKNOWN;
+			try {
+				userStatus = userDAO.isSupported(identifier);
+			} catch (DatabaseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			switch (userStatus) {
+				case UserDAO.UNKNOWN:
+					// TODO handle DB error (inform user)
+				break;
 				case UserDAO.USER:
 					// HttpCookies.setCookie(req, resp, HttpCookies.SESSION_ID_KEY,
 					// identifier);

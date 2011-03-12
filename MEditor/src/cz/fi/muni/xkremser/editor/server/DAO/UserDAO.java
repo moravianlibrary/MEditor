@@ -28,6 +28,7 @@ package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.util.ArrayList;
 
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
@@ -37,6 +38,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
  * The Interface UserDAO.
  */
 public interface UserDAO {
+
+	public static final int UNKNOWN = -1;
 
 	/** The Constant NOT_PRESENT. */
 	public static final int NOT_PRESENT = 0;
@@ -63,7 +66,7 @@ public interface UserDAO {
 	 *          the identifier
 	 * @return the int
 	 */
-	int isSupported(String identifier);
+	int isSupported(String identifier) throws DatabaseException;
 
 	/**
 	 * Checks for role.
@@ -74,7 +77,7 @@ public interface UserDAO {
 	 *          the user id
 	 * @return true, if successful
 	 */
-	boolean hasRole(String role, long userId);
+	boolean hasRole(String role, long userId) throws DatabaseException;
 
 	/**
 	 * Open i dhas role.
@@ -85,7 +88,7 @@ public interface UserDAO {
 	 *          the identifier
 	 * @return true, if successful
 	 */
-	boolean openIDhasRole(String role, String identifier);
+	boolean openIDhasRole(String role, String identifier) throws DatabaseException;
 
 	/**
 	 * Gets the name.
@@ -94,7 +97,7 @@ public interface UserDAO {
 	 *          the open id
 	 * @return the name
 	 */
-	String getName(String openID);
+	String getName(String openID) throws DatabaseException;
 
 	/**
 	 * Adds the user identity.
@@ -105,7 +108,7 @@ public interface UserDAO {
 	 *          the user id
 	 * @return the string
 	 */
-	String addUserIdentity(OpenIDItem identity, long userId);
+	String addUserIdentity(OpenIDItem identity, long userId) throws DatabaseException;
 
 	/**
 	 * Removes the user identity.
@@ -113,7 +116,7 @@ public interface UserDAO {
 	 * @param id
 	 *          the id
 	 */
-	void removeUserIdentity(long id);
+	void removeUserIdentity(long id) throws DatabaseException;
 
 	/**
 	 * Adds the user role.
@@ -124,7 +127,7 @@ public interface UserDAO {
 	 *          the user id
 	 * @return the role item
 	 */
-	RoleItem addUserRole(RoleItem role, long userId);
+	RoleItem addUserRole(RoleItem role, long userId) throws DatabaseException;
 
 	/**
 	 * Removes the user role.
@@ -132,7 +135,7 @@ public interface UserDAO {
 	 * @param id
 	 *          the id
 	 */
-	void removeUserRole(long id);
+	void removeUserRole(long id) throws DatabaseException;
 
 	/**
 	 * Gets the roles of user.
@@ -141,14 +144,14 @@ public interface UserDAO {
 	 *          the id
 	 * @return the roles of user
 	 */
-	ArrayList<RoleItem> getRolesOfUser(long id);
+	ArrayList<RoleItem> getRolesOfUser(long id) throws DatabaseException;
 
 	/**
 	 * Gets the roles.
 	 * 
 	 * @return the roles
 	 */
-	ArrayList<String> getRoles();
+	ArrayList<String> getRoles() throws DatabaseException;
 
 	/**
 	 * Gets the identities.
@@ -157,7 +160,7 @@ public interface UserDAO {
 	 *          the id
 	 * @return the identities
 	 */
-	ArrayList<OpenIDItem> getIdentities(String id);
+	ArrayList<OpenIDItem> getIdentities(String id) throws DatabaseException;
 
 	/**
 	 * Removes the user.
@@ -165,7 +168,7 @@ public interface UserDAO {
 	 * @param id
 	 *          the id
 	 */
-	void removeUser(long id);
+	void removeUser(long id) throws DatabaseException;
 
 	/**
 	 * Adds the user.
@@ -174,13 +177,13 @@ public interface UserDAO {
 	 *          the user
 	 * @return the string
 	 */
-	String addUser(UserInfoItem user);
+	String addUser(UserInfoItem user) throws DatabaseException;
 
 	/**
 	 * Gets the users.
 	 * 
 	 * @return the users
 	 */
-	ArrayList<UserInfoItem> getUsers();
+	ArrayList<UserInfoItem> getUsers() throws DatabaseException;
 
 }

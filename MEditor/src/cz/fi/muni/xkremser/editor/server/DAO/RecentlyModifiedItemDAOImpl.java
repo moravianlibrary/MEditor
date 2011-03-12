@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 // TODO: Auto-generated Javadoc
@@ -99,7 +100,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	 * .muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
 	 */
 	@Override
-	public boolean put(RecentlyModifiedItem toPut, String openID) {
+	public boolean put(RecentlyModifiedItem toPut, String openID) throws DatabaseException {
 		if (toPut == null)
 			throw new NullPointerException("toPut");
 		if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
@@ -162,7 +163,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	 * boolean)
 	 */
 	@Override
-	public ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) {
+	public ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) throws DatabaseException {
 		PreparedStatement selectSt = null;
 		ArrayList<RecentlyModifiedItem> retList = new ArrayList<RecentlyModifiedItem>();
 		try {
@@ -192,11 +193,15 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return retList;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#putDescription(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#putDescription
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean putDescription(String uuid, String description) {
+	public boolean putDescription(String uuid, String description) throws DatabaseException {
 		if (uuid == null)
 			throw new NullPointerException("uuid");
 		if (description == null)
@@ -238,11 +243,15 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return found;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#getDescription(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#getDescription
+	 * (java.lang.String)
 	 */
 	@Override
-	public String getDescription(String uuid) {
+	public String getDescription(String uuid) throws DatabaseException {
 		if (uuid == null)
 			throw new NullPointerException("uuid");
 		String description = null;
@@ -267,11 +276,14 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return description;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#putUserDescription(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#
+	 * putUserDescription(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean putUserDescription(String openID, String uuid, String description) {
+	public boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException {
 		if (uuid == null)
 			throw new NullPointerException("uuid");
 		if (description == null)
@@ -310,11 +322,14 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		return found;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#getUserDescription(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO#
+	 * getUserDescription(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String getUserDescription(String openID, String uuid) {
+	public String getUserDescription(String openID, String uuid) throws DatabaseException {
 		if (uuid == null)
 			throw new NullPointerException("uuid");
 		String description = null;

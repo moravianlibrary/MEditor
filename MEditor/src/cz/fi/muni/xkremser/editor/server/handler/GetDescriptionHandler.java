@@ -39,6 +39,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 
@@ -91,8 +92,14 @@ public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction
 		logger.debug("Processing action: GetDescription: " + action.getUuid());
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		String commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
-		String userDescription = recentlyModifiedDAO.getUserDescription(openID, action.getUuid());
+		String commonDescription;
+		String userDescription;
+		try {
+			commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
+			userDescription = recentlyModifiedDAO.getUserDescription(openID, action.getUuid());
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 		return new GetDescriptionResult(commonDescription, userDescription);
 	}
 

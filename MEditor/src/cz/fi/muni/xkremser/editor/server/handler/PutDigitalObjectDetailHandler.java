@@ -65,6 +65,7 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
@@ -176,7 +177,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			throw new NullPointerException("getDetail()");
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		boolean write = userDAO.openIDhasRole(UserDAO.CAN_PUBLISH_STRING, openID) || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
+		boolean write = false;
+		try {
+			write = userDAO.openIDhasRole(UserDAO.CAN_PUBLISH_STRING, openID) || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 
 		if (write) {
 			AbstractDigitalObjectDetail detail = action.getDetail();

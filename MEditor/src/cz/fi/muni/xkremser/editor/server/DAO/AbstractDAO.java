@@ -37,6 +37,7 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,8 +58,10 @@ public class AbstractDAO {
 
 	/**
 	 * Inits the connection.
+	 * 
+	 * @throws DatabaseException
 	 */
-	private void initConnection() {
+	private void initConnection() throws DatabaseException {
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException ex) {
@@ -81,6 +84,7 @@ public class AbstractDAO {
 
 		} catch (SQLException ex) {
 			logger.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "'", ex);
+			throw new DatabaseException("Unable to connect to database.");
 		}
 	}
 
@@ -88,8 +92,9 @@ public class AbstractDAO {
 	 * Gets the connection.
 	 * 
 	 * @return the connection
+	 * @throws DatabaseException
 	 */
-	protected Connection getConnection() {
+	protected Connection getConnection() throws DatabaseException {
 		if (conn == null) {
 			initConnection();
 		}

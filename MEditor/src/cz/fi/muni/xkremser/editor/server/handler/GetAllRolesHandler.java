@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesResult;
 
@@ -55,10 +56,13 @@ public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetA
 
 	/**
 	 * Instantiates a new gets the recently modified handler.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
-	 * @param userDAO the user dao
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param configuration
+	 *          the configuration
+	 * @param userDAO
+	 *          the user dao
 	 */
 	@Inject
 	public GetAllRolesHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
@@ -78,8 +82,11 @@ public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetA
 	@Override
 	public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context) throws ActionException {
 		logger.debug("Processing action: GetAllRolesResult");
-		// return null;
-		return new GetAllRolesResult(userDAO.getRoles());
+		try {
+			return new GetAllRolesResult(userDAO.getRoles());
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 	}
 
 	/*

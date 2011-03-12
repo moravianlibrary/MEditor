@@ -44,6 +44,7 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
@@ -54,10 +55,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
  * The Class ScanInputQueueHandler.
  */
 public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction, ScanInputQueueResult> {
-	
+
 	/** The logger. */
 	private final Log logger;
-	
+
 	/** The configuration. */
 	private final EditorConfiguration configuration;
 
@@ -76,9 +77,11 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 	/**
 	 * Instantiates a new scan input queue handler.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param configuration
+	 *          the configuration
 	 */
 	@Inject
 	public ScanInputQueueHandler(final Log logger, final EditorConfiguration configuration) {
@@ -86,8 +89,13 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		this.configuration = configuration;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+	 * .gwtplatform.dispatch.shared.Action,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public ScanInputQueueResult execute(final ScanInputQueueAction action, final ExecutionContext context) throws ActionException {
@@ -105,28 +113,39 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 			}
 			ArrayList<InputQueueItem> list; // due to gwt performance issues, more
 																			// concrete interface is used
-			if (id == null || "".equals(id)) { // top level
-				if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
-					result = new ScanInputQueueResult(updateDb(base));
+			try {
+				if (id == null || "".equals(id)) { // top level
+
+					if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
+						result = new ScanInputQueueResult(updateDb(base));
+					} else {
+						result = new ScanInputQueueResult(list);
+					}
 				} else {
-					result = new ScanInputQueueResult(list);
+					result = new ScanInputQueueResult(inputQueueDAO.getItems(id));
 				}
-			} else {
-				result = new ScanInputQueueResult(inputQueueDAO.getItems(id));
+			} catch (DatabaseException e) {
+				throw new ActionException(e);
 			}
 		}
 
 		if (refresh) {
-			result = new ScanInputQueueResult(updateDb(base));
+			try {
+				result = new ScanInputQueueResult(updateDb(base));
+			} catch (DatabaseException e) {
+				throw new ActionException(e);
+			}
 		}
 		return result;
 	}
 
 	/**
 	 * Check document types.
-	 *
-	 * @param types the types
-	 * @throws ActionException the action exception
+	 * 
+	 * @param types
+	 *          the types
+	 * @throws ActionException
+	 *           the action exception
 	 */
 	private void checkDocumentTypes(String[] types) throws ActionException {
 		for (String uuid : types) {
@@ -139,18 +158,21 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 	/**
 	 * Update db.
-	 *
-	 * @param base the base
+	 * 
+	 * @param base
+	 *          the base
 	 * @return the array list
+	 * @throws DatabaseException
 	 */
-	private ArrayList<InputQueueItem> updateDb(String base) {
+	private ArrayList<InputQueueItem> updateDb(String base) throws DatabaseException {
 		String[] types = configuration.getDocumentTypes();
 		if (types == null || types.length == 0)
 			types = EditorConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
 		try {
 			checkDocumentTypes(types);
 		} catch (ActionException e) {
-			logger.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
+			logger
+					.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
 		}
 		ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();
 		ArrayList<InputQueueItem> listTopLvl = new ArrayList<InputQueueItem>(types.length);
@@ -172,9 +194,11 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 	/**
 	 * Scan directory structure.
-	 *
-	 * @param pathPrefix the path prefix
-	 * @param relativePath the relative path
+	 * 
+	 * @param pathPrefix
+	 *          the path prefix
+	 * @param relativePath
+	 *          the relative path
 	 * @return the list
 	 */
 	private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
@@ -183,11 +207,15 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 	/**
 	 * Scan directory structure.
-	 *
-	 * @param pathPrefix the path prefix
-	 * @param relativePath the relative path
-	 * @param list the list
-	 * @param level the level
+	 * 
+	 * @param pathPrefix
+	 *          the path prefix
+	 * @param relativePath
+	 *          the relative path
+	 * @param list
+	 *          the list
+	 * @param level
+	 *          the level
 	 * @return the list
 	 */
 	private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath, List<InputQueueItem> list, int level) {
@@ -210,16 +238,23 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		return list;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
 	public Class<ScanInputQueueAction> getActionType() {
 		return ScanInputQueueAction.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public void undo(ScanInputQueueAction action, ScanInputQueueResult result, ExecutionContext context) throws ActionException {

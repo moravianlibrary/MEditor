@@ -34,9 +34,9 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.Token.TokenType;
 // TODO: Auto-generated Javadoc
 /**
  * Simple parser for PID.
- *
- * @see EBNF
- * http://www.fedora-commons.org/confluence/display/FCR30/Fedora+Identifiers
+ * 
+ * @see EBNF 
+ *      http://www.fedora-commons.org/confluence/display/FCR30/Fedora+Identifiers
  * @author pavels
  */
 public class PIDParser {
@@ -46,7 +46,7 @@ public class PIDParser {
 
 	/**
 	 * Gets the object id.
-	 *
+	 * 
 	 * @return the object id
 	 */
 	public String getObjectId() {
@@ -55,7 +55,7 @@ public class PIDParser {
 
 	/**
 	 * Gets the namespace id.
-	 *
+	 * 
 	 * @return the namespace id
 	 */
 	public String getNamespaceId() {
@@ -67,15 +67,17 @@ public class PIDParser {
 
 	/** The object id. */
 	private String objectId;
-	
+
 	/** The namespace id. */
 	private String namespaceId;
 
 	/**
 	 * Instantiates a new pID parser.
-	 *
-	 * @param sform the sform
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param sform
+	 *          the sform
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public PIDParser(String sform) throws LexerException {
 		super();
@@ -84,8 +86,9 @@ public class PIDParser {
 
 	/**
 	 * Object pid.
-	 *
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public void objectPid() throws LexerException {
 		this.consume();
@@ -99,8 +102,9 @@ public class PIDParser {
 
 	/**
 	 * Dissemination uri.
-	 *
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public void disseminationURI() throws LexerException {
 		this.lexer.matchString("info:fedora/");
@@ -109,8 +113,9 @@ public class PIDParser {
 
 	/**
 	 * Match double dot.
-	 *
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public void matchDoubleDot() throws LexerException {
 		if (this.token.getType() == TokenType.DOUBLEDOT) {
@@ -126,14 +131,16 @@ public class PIDParser {
 			} else
 				throw new LexerException("Expecting %");
 		} else
-			throw new LexerException("%3A");
+			throw new LexerException("Expecting ':' (probably bad format of uuid string).");
 	}
 
 	/**
 	 * Match token.
-	 *
-	 * @param doubledot the doubledot
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param doubledot
+	 *          the doubledot
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	private void matchToken(TokenType doubledot) throws LexerException {
 		if (this.token.getType() == doubledot) {
@@ -144,9 +151,10 @@ public class PIDParser {
 
 	/**
 	 * Namespace id.
-	 *
+	 * 
 	 * @return the string
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	private String namespaceId() throws LexerException {
 		List<TokenType> types = Arrays.asList(new TokenType[] { TokenType.ALPHA, TokenType.DIGIT, TokenType.MINUS, TokenType.DOT });
@@ -163,8 +171,9 @@ public class PIDParser {
 
 	/**
 	 * Consume.
-	 *
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public void consume() throws LexerException {
 		this.token = this.lexer.readToken();
@@ -172,9 +181,10 @@ public class PIDParser {
 
 	/**
 	 * Object id.
-	 *
+	 * 
 	 * @return the string
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	private String objectId() throws LexerException {
 		List<TokenType> types = Arrays.asList(new TokenType[] { TokenType.ALPHA, TokenType.DIGIT, TokenType.MINUS, TokenType.DOT, TokenType.TILDA,

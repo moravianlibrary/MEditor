@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsResult;
 
@@ -81,7 +82,11 @@ public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestIte
 	@Override
 	public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action, final ExecutionContext context) throws ActionException {
 		logger.debug("Processing action: GetAllRequestItemsAction");
-		return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
+		try {
+			return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 	}
 
 	/*

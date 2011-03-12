@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesResult;
 
@@ -83,7 +84,13 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 		if (action.getId() == null)
 			return null;
 		logger.debug("Processing action: GetUserRolesAndIdentitiesAction");
-		return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())), userDAO.getIdentities(action.getId()));
+		try {
+			return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())), userDAO.getIdentities(action.getId()));
+		} catch (NumberFormatException e) {
+			throw new ActionException(e);
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 	}
 
 	/*

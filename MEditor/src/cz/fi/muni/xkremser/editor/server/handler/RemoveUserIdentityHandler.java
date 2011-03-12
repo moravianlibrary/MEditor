@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityResult;
 
@@ -81,7 +82,13 @@ public class RemoveUserIdentityHandler implements ActionHandler<RemoveUserIdenti
 		if (action.getId() == null)
 			throw new NullPointerException("getId()");
 		logger.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
-		userDAO.removeUserIdentity(Long.parseLong(action.getId()));
+		try {
+			userDAO.removeUserIdentity(Long.parseLong(action.getId()));
+		} catch (NumberFormatException e) {
+			throw new ActionException(e);
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 		return new RemoveUserIdentityResult();
 	}
 

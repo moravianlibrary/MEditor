@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.common.RequestItem;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -51,7 +52,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 	public static final String DELETE_IDENTITY = "DELETE FROM request_for_adding WHERE id = (?)";
 
 	@Override
-	public void removeOpenIDRequest(long id) {
+	public void removeOpenIDRequest(long id) throws DatabaseException {
 		PreparedStatement deleteSt = null;
 		try {
 			deleteSt = getConnection().prepareStatement(DELETE_IDENTITY);
@@ -65,7 +66,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 	}
 
 	@Override
-	public boolean addOpenIDRequest(String name, String openID) {
+	public boolean addOpenIDRequest(String name, String openID) throws DatabaseException {
 		if (name == null)
 			throw new NullPointerException("name");
 		if (openID == null || "".equals(openID))
@@ -93,7 +94,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 	}
 
 	@Override
-	public ArrayList<RequestItem> getAllOpenIDRequests() {
+	public ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException {
 		PreparedStatement selectSt = null;
 		ArrayList<RequestItem> retList = new ArrayList<RequestItem>();
 		try {

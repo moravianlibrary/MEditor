@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemResult;
 
@@ -81,7 +82,11 @@ public class RemoveRequestItemHandler implements ActionHandler<RemoveRequestItem
 		if (action.getId() == null)
 			throw new NullPointerException("getId()");
 		logger.debug("Processing action: RemoveRequestItemAction request id:" + action.getId());
-		requestDAO.removeOpenIDRequest(action.getId());
+		try {
+			requestDAO.removeOpenIDRequest(action.getId());
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 		return new RemoveRequestItemResult();
 	}
 

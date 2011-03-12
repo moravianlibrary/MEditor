@@ -8,6 +8,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import cz.fi.muni.xkremser.editor.request4Adding.client.RequestForAddingService;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAOImpl;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 public class RequestForAddingServiceImpl extends RemoteServiceServlet implements RequestForAddingService {
 
@@ -18,7 +19,12 @@ public class RequestForAddingServiceImpl extends RemoteServiceServlet implements
 		String name = (String) session.getAttribute(HttpCookies.UNKNOWN_NAME_KEY);
 		String openID = (String) session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
 		RequestDAO reqDAO = new RequestDAOImpl();
-		boolean success = reqDAO.addOpenIDRequest(name, openID);
+		boolean success = false;
+		try {
+			success = reqDAO.addOpenIDRequest(name, openID);
+		} catch (DatabaseException e) {
+			return "Database problem: " + e.getMessage();
+		}
 		return success ? name + " (" + openID + ")" : null;
 	}
 

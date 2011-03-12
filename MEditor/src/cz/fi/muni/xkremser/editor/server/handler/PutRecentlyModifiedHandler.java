@@ -39,6 +39,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
 
@@ -93,7 +94,11 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		logger.debug("Processing action: PutRecentlyModified item:" + action.getItem());
-		return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
+		try {
+			return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 	}
 
 	/*

@@ -38,6 +38,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 
@@ -86,8 +87,13 @@ public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, 
 		logger.debug("Processing action: GetLoggedUserAction");
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		boolean editUsers = HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN)) || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
-		return new GetLoggedUserResult(userDAO.getName(openID), editUsers);
+		boolean editUsers;
+		try {
+			editUsers = HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN)) || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
+			return new GetLoggedUserResult(userDAO.getName(openID), editUsers);
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 	}
 
 	/*

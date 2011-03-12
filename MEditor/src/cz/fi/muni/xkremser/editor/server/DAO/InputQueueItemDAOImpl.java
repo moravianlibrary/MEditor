@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 
 // TODO: Auto-generated Javadoc
@@ -49,17 +50,17 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 
 	/** The Constant DELETE_ALL_ITEMS_STATEMENT. */
 	public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
-	
+
 	/** The Constant SELECT_NUMBER_ITEMS_STATEMENT. */
 	public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(id) FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
-	
+
 	/** The Constant INSERT_ITEM_STATEMENT. */
 	public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_NAME + " (path, issn, name) VALUES ((?),(?),(?))";
-	
+
 	/** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT. */
 	public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, issn, name FROM " + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('"
 			+ File.separator + "' IN trim(leading ((?)) FROM path)) = 0";
-	
+
 	/** The Constant FIND_ITEMS_BY_PATH_STATEMENT. */
 	public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT + " AND path LIKE ((?))";
 
@@ -71,11 +72,15 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 	@Inject
 	public Log logger = null;
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO#updateItems(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO#updateItems(java
+	 * .util.List)
 	 */
 	@Override
-	public void updateItems(List<InputQueueItem> toUpdate) {
+	public void updateItems(List<InputQueueItem> toUpdate) throws DatabaseException {
 		if (toUpdate == null)
 			throw new NullPointerException("toUpdate");
 
@@ -116,11 +121,13 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 
 	/**
 	 * Gets the item insert statement.
-	 *
-	 * @param item the item
+	 * 
+	 * @param item
+	 *          the item
 	 * @return the item insert statement
+	 * @throws DatabaseException
 	 */
-	private PreparedStatement getItemInsertStatement(InputQueueItem item) {
+	private PreparedStatement getItemInsertStatement(InputQueueItem item) throws DatabaseException {
 		PreparedStatement itemStmt = null;
 		try {
 			itemStmt = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
@@ -133,11 +140,15 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 		return itemStmt;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO#getItems(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO#getItems(java.lang
+	 * .String)
 	 */
 	@Override
-	public ArrayList<InputQueueItem> getItems(String prefix) {
+	public ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException {
 		boolean top = (prefix == null || "".equals(prefix));
 		PreparedStatement findSt = null;
 		ArrayList<InputQueueItem> retList = new ArrayList<InputQueueItem>();

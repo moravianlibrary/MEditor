@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.server.DAO;
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.common.RequestItem;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -36,10 +37,10 @@ import cz.fi.muni.xkremser.editor.common.RequestItem;
  */
 public interface RequestDAO {
 
-	boolean addOpenIDRequest(String name, String openID);
+	boolean addOpenIDRequest(String name, String openID) throws DatabaseException;
 
-	void removeOpenIDRequest(long id);
+	void removeOpenIDRequest(long id) throws DatabaseException;
 
-	ArrayList<RequestItem> getAllOpenIDRequests();
+	ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException;
 
 }

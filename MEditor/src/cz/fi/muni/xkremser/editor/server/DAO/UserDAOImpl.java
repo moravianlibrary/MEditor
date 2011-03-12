@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
@@ -118,7 +119,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#isSupported(java.lang.String)
 	 */
 	@Override
-	public int isSupported(String identifier) {
+	public int isSupported(String identifier) throws DatabaseException {
 
 		PreparedStatement selectSt = null;
 		long userId = -1;
@@ -155,7 +156,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getUsers()
 	 */
 	@Override
-	public ArrayList<UserInfoItem> getUsers() {
+	public ArrayList<UserInfoItem> getUsers() throws DatabaseException {
 		PreparedStatement selectSt = null;
 		ArrayList<UserInfoItem> retList = new ArrayList<UserInfoItem>();
 		try {
@@ -182,7 +183,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#removeUser(long)
 	 */
 	@Override
-	public void removeUser(long id) {
+	public void removeUser(long id) throws DatabaseException {
 		PreparedStatement deleteSt = null;
 		try {
 			deleteSt = getConnection().prepareStatement(DELETE_ALL_USER_IDENTITIES);
@@ -209,7 +210,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * .editor.shared.rpc.UserInfoItem)
 	 */
 	@Override
-	public String addUser(UserInfoItem user) {
+	public String addUser(UserInfoItem user) throws DatabaseException {
 		if (user == null)
 			throw new NullPointerException("user");
 		if (user.getSurname() == null || "".equals(user.getSurname()))
@@ -268,7 +269,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getRolesOfUser(long)
 	 */
 	@Override
-	public ArrayList<RoleItem> getRolesOfUser(long userId) {
+	public ArrayList<RoleItem> getRolesOfUser(long userId) throws DatabaseException {
 		PreparedStatement selectSt = null;
 		ArrayList<RoleItem> retList = new ArrayList<RoleItem>();
 		try {
@@ -299,7 +300,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * )
 	 */
 	@Override
-	public ArrayList<OpenIDItem> getIdentities(String id) {
+	public ArrayList<OpenIDItem> getIdentities(String id) throws DatabaseException {
 		PreparedStatement selectSt = null;
 		ArrayList<OpenIDItem> retList = new ArrayList<OpenIDItem>();
 		try {
@@ -329,7 +330,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * .xkremser.editor.shared.rpc.OpenIDItem, long)
 	 */
 	@Override
-	public String addUserIdentity(OpenIDItem identity, long userId) {
+	public String addUserIdentity(OpenIDItem identity, long userId) throws DatabaseException {
 		if (identity == null)
 			throw new NullPointerException("identity");
 		if (identity.getIdentity() == null || "".equals(identity.getIdentity()))
@@ -378,7 +379,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#removeUserIdentity(long)
 	 */
 	@Override
-	public void removeUserIdentity(long id) {
+	public void removeUserIdentity(long id) throws DatabaseException {
 		PreparedStatement deleteSt = null;
 		try {
 			deleteSt = getConnection().prepareStatement(DELETE_IDENTITY);
@@ -399,7 +400,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * .editor.shared.rpc.RoleItem, long)
 	 */
 	@Override
-	public RoleItem addUserRole(RoleItem role, long userId) {
+	public RoleItem addUserRole(RoleItem role, long userId) throws DatabaseException {
 
 		if (role == null)
 			throw new NullPointerException("role");
@@ -461,7 +462,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#removeUserRole(long)
 	 */
 	@Override
-	public void removeUserRole(long id) {
+	public void removeUserRole(long id) throws DatabaseException {
 		PreparedStatement deleteSt = null;
 		try {
 			deleteSt = getConnection().prepareStatement(DELETE_USER_IN_ROLE);
@@ -482,7 +483,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * long)
 	 */
 	@Override
-	public boolean hasRole(String role, long userId) {
+	public boolean hasRole(String role, long userId) throws DatabaseException {
 		ArrayList<RoleItem> roles = getRolesOfUser(userId);
 		if (role == null)
 			return false;
@@ -500,7 +501,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * @see cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getRoles()
 	 */
 	@Override
-	public ArrayList<String> getRoles() {
+	public ArrayList<String> getRoles() throws DatabaseException {
 		PreparedStatement selectSt = null;
 		ArrayList<String> retList = new ArrayList<String>();
 		try {
@@ -528,7 +529,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getName(java.lang.String)
 	 */
 	@Override
-	public String getName(String openID) {
+	public String getName(String openID) throws DatabaseException {
 		PreparedStatement selectSt = null;
 		String name = "unknown";
 		try {
@@ -558,7 +559,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	 * , java.lang.String)
 	 */
 	@Override
-	public boolean openIDhasRole(String role, String identifier) {
+	public boolean openIDhasRole(String role, String identifier) throws DatabaseException {
 		PreparedStatement selectSt = null;
 		boolean ret = false;
 		try {

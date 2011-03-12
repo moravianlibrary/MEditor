@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoResult;
 
@@ -55,10 +56,13 @@ public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetU
 
 	/**
 	 * Instantiates a new gets the recently modified handler.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
-	 * @param userDAO the user dao
+	 * 
+	 * @param logger
+	 *          the logger
+	 * @param configuration
+	 *          the configuration
+	 * @param userDAO
+	 *          the user dao
 	 */
 	@Inject
 	public GetUserInfoHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
@@ -78,8 +82,11 @@ public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetU
 	@Override
 	public GetUserInfoResult execute(final GetUserInfoAction action, final ExecutionContext context) throws ActionException {
 		logger.debug("Processing action: GetUserInfoAction");
-		// return null;
-		return new GetUserInfoResult(userDAO.getUsers());
+		try {
+			return new GetUserInfoResult(userDAO.getUsers());
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 	}
 
 	/*

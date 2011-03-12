@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleResult;
@@ -84,7 +85,14 @@ public class PutUserRoleHandler implements ActionHandler<PutUserRoleAction, PutU
 		if (action.getUserId() == null || "".equals(action.getUserId()))
 			throw new NullPointerException("getUserId()");
 		logger.debug("Processing action: PutUserRoleAction role:" + action.getRole());
-		RoleItem role = userDAO.addUserRole(action.getRole(), Long.parseLong(action.getUserId()));
+		RoleItem role;
+		try {
+			role = userDAO.addUserRole(action.getRole(), Long.parseLong(action.getUserId()));
+		} catch (NumberFormatException e) {
+			throw new ActionException(e);
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
+		}
 		return new PutUserRoleResult(role.getId(), "exist".equals(role.getId()), role.getDescription());
 	}
 

@@ -39,6 +39,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 
@@ -93,10 +94,14 @@ public class PutDescriptionHandler implements ActionHandler<PutDescriptionAction
 		logger.debug("Processing action: PutDescription: " + action.getUuid());
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		if (action.isCommon()) {
-			recentlyModifiedDAO.putDescription(action.getUuid(), action.getDescription());
-		} else {
-			recentlyModifiedDAO.putUserDescription(openID, action.getUuid(), action.getDescription());
+		try {
+			if (action.isCommon()) {
+				recentlyModifiedDAO.putDescription(action.getUuid(), action.getDescription());
+			} else {
+				recentlyModifiedDAO.putUserDescription(openID, action.getUuid(), action.getDescription());
+			}
+		} catch (DatabaseException e) {
+			throw new ActionException(e);
 		}
 		return new PutDescriptionResult();
 
