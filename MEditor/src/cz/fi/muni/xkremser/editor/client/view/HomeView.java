@@ -117,6 +117,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 
 		HTMLFlow html2 = new HTMLFlow();
 		html2.setContents("<h2>" + lang.openDigitalObject() + "</h2>");
+		html2.setExtraSpace(30);
 
 		DataSource dataSource = new DataSource();
 		dataSource.setID("regularExpression");
