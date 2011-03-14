@@ -27,6 +27,7 @@
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.annotation.GenDispatch;
+import com.gwtplatform.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 // TODO: Auto-generated Javadoc
@@ -35,5 +36,8 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  */
 @GenDispatch(isSecure = false)
 public class Logout extends UnsecuredActionImpl<LogoutResult> {
+
+	@Out(1)
+	String url;
 
 }
