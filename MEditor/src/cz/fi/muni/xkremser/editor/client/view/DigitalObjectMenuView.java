@@ -204,7 +204,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 			@Override
 			public void onChanged(ChangedEvent event) {
 				Criteria criteria = new Criteria();
-				boolean all = "all".equals(event.getValue());
+				boolean all = DigitalObjectMenuView.this.lang.all().equals(event.getValue());
 				criteria.addCriteria(Constants.ATTR_ALL, all);
 				sideNavGrid.getDataSource().fetchData(criteria, new DSCallback() {
 					@Override

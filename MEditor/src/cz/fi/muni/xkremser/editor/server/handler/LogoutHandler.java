@@ -81,7 +81,7 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 		ACCESS_LOGGER.info("User " + session.getAttribute(HttpCookies.NAME_KEY) + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY)
 				+ " is trying to log out.");
 		session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
-		return new LogoutResult(URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE);
+		return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
 	}
 
 	/*
