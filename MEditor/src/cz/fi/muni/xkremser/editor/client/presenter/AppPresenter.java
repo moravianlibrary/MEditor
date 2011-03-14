@@ -213,7 +213,7 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 			@Override
 			public void callback(LogoutResult result) {
 				unknown = true;
-				MEditor.redirect("/login.html");
+				MEditor.redirect(result.getUrl());
 			}
 		});
 	}
