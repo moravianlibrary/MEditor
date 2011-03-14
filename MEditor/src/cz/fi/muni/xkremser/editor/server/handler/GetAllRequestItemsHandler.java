@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -46,7 +46,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsResult;
 public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestItemsAction, GetAllRequestItemsResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetAllRequestItemsHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -65,8 +65,7 @@ public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestIte
 	 *          the user dao
 	 */
 	@Inject
-	public GetAllRequestItemsHandler(final Log logger, final EditorConfiguration configuration, final RequestDAO requestDAO) {
-		this.logger = logger;
+	public GetAllRequestItemsHandler(final EditorConfiguration configuration, final RequestDAO requestDAO) {
 		this.configuration = configuration;
 		this.requestDAO = requestDAO;
 	}
@@ -81,7 +80,7 @@ public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestIte
 	 */
 	@Override
 	public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action, final ExecutionContext context) throws ActionException {
-		logger.debug("Processing action: GetAllRequestItemsAction");
+		LOGGER.debug("Processing action: GetAllRequestItemsAction");
 		try {
 			return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
 		} catch (DatabaseException e) {

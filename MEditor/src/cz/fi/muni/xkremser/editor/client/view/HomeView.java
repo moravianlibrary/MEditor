@@ -107,6 +107,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		layout.setPadding(15);
 		HTMLFlow html1 = new HTMLFlow();
 		html1.setContents(lang.introduction());
+		html1.setExtraSpace(15);
 
 		status = new HTMLFlow(getStatusString());
 
@@ -123,7 +124,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		dataSource.setID("regularExpression");
 
 		RegExpValidator regExpValidator = new RegExpValidator();
-		regExpValidator.setExpression("^uuid:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
+		regExpValidator.setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
 
 		uuidField = new TextItem();
 		uuidField.setTitle("PID");

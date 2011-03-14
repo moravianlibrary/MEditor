@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -46,10 +46,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityResult;
 public class RemoveUserIdentityHandler implements ActionHandler<RemoveUserIdentityAction, RemoveUserIdentityResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(RemoveUserIdentityHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	@Inject
@@ -58,15 +55,10 @@ public class RemoveUserIdentityHandler implements ActionHandler<RemoveUserIdenti
 	/**
 	 * Instantiates a new put recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
 	 */
 	@Inject
-	public RemoveUserIdentityHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public RemoveUserIdentityHandler(final EditorConfiguration configuration) {
+
 	}
 
 	/*
@@ -81,7 +73,7 @@ public class RemoveUserIdentityHandler implements ActionHandler<RemoveUserIdenti
 	public RemoveUserIdentityResult execute(final RemoveUserIdentityAction action, final ExecutionContext context) throws ActionException {
 		if (action.getId() == null)
 			throw new NullPointerException("getId()");
-		logger.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
+		LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
 		try {
 			userDAO.removeUserIdentity(Long.parseLong(action.getId()));
 		} catch (NumberFormatException e) {

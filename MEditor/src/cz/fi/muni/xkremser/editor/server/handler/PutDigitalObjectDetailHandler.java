@@ -46,7 +46,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -84,7 +84,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalObjectDetailAction, PutDigitalObjectDetailResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage().toString());
 
 	/** The Constant RELS_EXT_PART_1. */
 	private static final String RELS_EXT_PART_11 = "<kramerius:";
@@ -145,8 +145,6 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	/**
 	 * Instantiates a new gets the digital object detail handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param userDAO
 	 *          the user dao
 	 * @param configuration
@@ -155,9 +153,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 *          the http session provider
 	 */
 	@Inject
-	public PutDigitalObjectDetailHandler(final Log logger, final UserDAO userDAO, final EditorConfiguration configuration,
-			Provider<HttpSession> httpSessionProvider) {
-		this.logger = logger;
+	public PutDigitalObjectDetailHandler(final UserDAO userDAO, final EditorConfiguration configuration, Provider<HttpSession> httpSessionProvider) {
 		this.configuration = configuration;
 		this.userDAO = userDAO;
 		this.httpSessionProvider = httpSessionProvider;

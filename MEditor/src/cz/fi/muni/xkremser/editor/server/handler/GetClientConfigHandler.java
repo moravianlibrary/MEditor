@@ -29,7 +29,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -47,7 +47,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 public class GetClientConfigHandler implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetClientConfigHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -55,14 +55,11 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfigActi
 	/**
 	 * Instantiates a new gets the client config handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param configuration
 	 *          the configuration
 	 */
 	@Inject
-	public GetClientConfigHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
+	public GetClientConfigHandler(final EditorConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
@@ -76,6 +73,7 @@ public class GetClientConfigHandler implements ActionHandler<GetClientConfigActi
 	 */
 	@Override
 	public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context) throws ActionException {
+		LOGGER.debug("Processing action: GetClientConfigAction");
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		Iterator<String> it = configuration.getClientConfiguration().getKeys();
 		while (it.hasNext()) {

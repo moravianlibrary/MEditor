@@ -32,6 +32,8 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.common.RequestItem;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
@@ -51,6 +53,8 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 	/** The Constant DELETE_IDENTITY. */
 	public static final String DELETE_IDENTITY = "DELETE FROM request_for_adding WHERE id = (?)";
 
+	private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
+
 	@Override
 	public void removeOpenIDRequest(long id) throws DatabaseException {
 		PreparedStatement deleteSt = null;
@@ -59,7 +63,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 			deleteSt.setLong(1, id);
 			deleteSt.executeUpdate();
 		} catch (SQLException e) {
-			logger.error("Could not delete request for adding with id " + id, e);
+			LOGGER.error("Could not delete request for adding with id " + id, e);
 		} finally {
 			closeConnection();
 		}
@@ -86,7 +90,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 			}
 
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}
@@ -100,7 +104,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 		try {
 			selectSt = getConnection().prepareStatement(SELECT_IDENTITIES_STATEMENT);
 		} catch (SQLException e) {
-			logger.error("Could not get select roles statement", e);
+			LOGGER.error("Could not get select roles statement", e);
 		}
 		try {
 			ResultSet rs = selectSt.executeQuery();
@@ -110,7 +114,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 				retList.add(new RequestItem(rs.getLong("id"), rs.getString("name"), rs.getString("identity"), formatter.format(rs.getTimestamp("modified"))));
 			}
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}

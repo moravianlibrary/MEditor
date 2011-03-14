@@ -36,7 +36,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.util.logging.Level;
+
+import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -45,7 +46,7 @@ import java.util.logging.Level;
 public class IOUtils {
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(IOUtils.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(IOUtils.class);
 
 	/**
 	 * Instantiates a new iO utils.
@@ -172,7 +173,7 @@ public class IOUtils {
 		File directory = new File(name);
 		if (!directory.exists() || !directory.isDirectory()) {
 			if (!directory.mkdir()) {
-				LOGGER.severe("Folder doesn't exist and can't be created: " + directory.getAbsolutePath());
+				LOGGER.error("Folder doesn't exist and can't be created: " + directory.getAbsolutePath());
 				throw new RuntimeException("Folder doesn't exist and can't be created: " + directory.getAbsolutePath());
 			}
 		}
@@ -228,14 +229,14 @@ public class IOUtils {
 					try {
 						os.close();
 					} catch (Exception e) {
-						LOGGER.log(Level.SEVERE, e.getMessage(), e);
+						LOGGER.error(e.getMessage(), e);
 					}
 				}
 				if (is != null) {
 					try {
 						is.close();
 					} catch (Exception e) {
-						LOGGER.log(Level.SEVERE, e.getMessage(), e);
+						LOGGER.error(e.getMessage(), e);
 					}
 				}
 			}

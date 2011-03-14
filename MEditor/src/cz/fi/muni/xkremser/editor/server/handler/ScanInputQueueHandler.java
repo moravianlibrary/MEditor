@@ -31,7 +31,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -57,7 +57,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction, ScanInputQueueResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(ScanInputQueueHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -78,14 +78,11 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	/**
 	 * Instantiates a new scan input queue handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param configuration
 	 *          the configuration
 	 */
 	@Inject
-	public ScanInputQueueHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
+	public ScanInputQueueHandler(final EditorConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
@@ -103,12 +100,12 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		final String id = action.getId() == null ? "" : action.getId();
 		final boolean refresh = action.isRefresh();
 		final String base = configuration.getScanInputQueuePath();
-		logger.debug("Processing input queue: " + base + id);
+		LOGGER.debug("Processing input queue: " + base + id);
 		ScanInputQueueResult result = null;
 
 		if (!refresh) {
 			if (base == null || "".equals(base)) {
-				logger.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
+				LOGGER.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
 			}
 			ArrayList<InputQueueItem> list; // due to gwt performance issues, more
@@ -150,7 +147,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	private void checkDocumentTypes(String[] types) throws ActionException {
 		for (String uuid : types) {
 			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + KrameriusModel.toString(KrameriusModel.parseString(uuid)))) {
-				logger.error("Model " + uuid + " is not present in repository.");
+				LOGGER.error("Model " + uuid + " is not present in repository.");
 				throw new ActionException(Constants.FEDORA_MODEL_PREFIX + uuid);
 			}
 		}
@@ -171,7 +168,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		try {
 			checkDocumentTypes(types);
 		} catch (ActionException e) {
-			logger
+			LOGGER
 					.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
 		}
 		ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();

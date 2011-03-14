@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -34,7 +34,6 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleAction;
@@ -47,10 +46,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleResult;
 public class PutUserRoleHandler implements ActionHandler<PutUserRoleAction, PutUserRoleResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(PutUserRoleHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	@Inject
@@ -59,15 +55,9 @@ public class PutUserRoleHandler implements ActionHandler<PutUserRoleAction, PutU
 	/**
 	 * Instantiates a new put recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
 	 */
 	@Inject
-	public PutUserRoleHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public PutUserRoleHandler() {
 	}
 
 	/*
@@ -84,7 +74,7 @@ public class PutUserRoleHandler implements ActionHandler<PutUserRoleAction, PutU
 			throw new NullPointerException("getRole()");
 		if (action.getUserId() == null || "".equals(action.getUserId()))
 			throw new NullPointerException("getUserId()");
-		logger.debug("Processing action: PutUserRoleAction role:" + action.getRole());
+		LOGGER.debug("Processing action: PutUserRoleAction role:" + action.getRole());
 		RoleItem role;
 		try {
 			role = userDAO.addUserRole(action.getRole(), Long.parseLong(action.getUserId()));

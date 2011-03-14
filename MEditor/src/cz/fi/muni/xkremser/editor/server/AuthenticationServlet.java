@@ -27,7 +27,6 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,6 +39,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -47,6 +47,7 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 // TODO: Auto-generated Javadoc
@@ -56,7 +57,7 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 public class AuthenticationServlet extends HttpServlet {
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(AuthenticationServlet.class.getName());
+	private static final Logger ACCESS_LOGGER = Logger.getLogger(Constants.ACCESS_LOG_ID);
 
 	/** The user dao. */
 	@Inject
@@ -113,9 +114,10 @@ public class AuthenticationServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		String root = (URLS.LOCALHOST() ? "http://" : "https://") + req.getServerName()
-				+ (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT;
+				+ (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT()
+				+ (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
 		if (identifier != null && !"".equals(identifier)) {
-			LOGGER.log(Level.INFO, "Logged user with openID " + identifier);
+			ACCESS_LOGGER.info("User " + name + " with openID " + identifier + " is trying to log in.");
 			int userStatus = UserDAO.UNKNOWN;
 			try {
 				userStatus = userDAO.isSupported(identifier);
@@ -131,6 +133,7 @@ public class AuthenticationServlet extends HttpServlet {
 					// HttpCookies.setCookie(req, resp, HttpCookies.SESSION_ID_KEY,
 					// identifier);
 					session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
+					session.setAttribute(HttpCookies.NAME_KEY, name);
 					URLS.redirect(resp, url == null ? root : url);
 				break;
 				case UserDAO.ADMIN:
@@ -139,18 +142,19 @@ public class AuthenticationServlet extends HttpServlet {
 					// HttpCookies.setCookie(req, resp, HttpCookies.ADMIN,
 					// HttpCookies.ADMIN_YES);
 					session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
+					session.setAttribute(HttpCookies.NAME_KEY, name);
 					session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
 					URLS.redirect(resp, url == null ? root : url);
 				break;
 				case UserDAO.NOT_PRESENT:
 				default:
 					session.setAttribute(HttpCookies.UNKNOWN_ID_KEY, identifier);
-					session.setAttribute(HttpCookies.UNKNOWN_NAME_KEY, name);
+					session.setAttribute(HttpCookies.NAME_KEY, name);
 					URLS.redirect(resp, root + URLS.INFO_PAGE);
 				break;
 			}
 		} else {
-			URLS.redirect(resp, root + URLS.LOGIN_PAGE);
+			URLS.redirect(resp, root + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
 		}
 
 		// System.out.println("ID:" + identifier);

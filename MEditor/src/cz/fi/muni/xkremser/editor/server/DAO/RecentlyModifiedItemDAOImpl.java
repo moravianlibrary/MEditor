@@ -31,13 +31,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-
-import com.google.inject.Inject;
+import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -84,13 +81,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 	/** The Constant UPDATE_ITEM_STATEMENT. */
 	public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME + " SET modified = CURRENT_TIMESTAMP WHERE id = (?)";
 
-	/** The conf. */
-	@Inject
-	private EditorConfiguration conf;
-
-	/** The logger. */
-	@Inject
-	public Log logger = null;
+	private static final Logger LOGGER = Logger.getLogger(RecentlyModifiedItemDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -109,7 +100,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
-			logger.warn("Unable to set autocommit off", e);
+			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		boolean found = true;
 		try {
@@ -138,16 +129,16 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			}
 			if (modified == 1) {
 				getConnection().commit();
-				logger.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. -> commit");
 			} else {
 				getConnection().rollback();
-				logger.debug("DB has not been updated. -> rollback");
+				LOGGER.debug("DB has not been updated. -> rollback");
 				found = false;
 			}
 			// TX end
 
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 			found = false;
 		} finally {
 			closeConnection();
@@ -176,7 +167,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 				selectSt.setInt(1, nLatest);
 			}
 		} catch (SQLException e) {
-			logger.error("Could not get select items statement", e);
+			LOGGER.error("Could not get select items statement", e);
 		}
 		try {
 			ResultSet rs = selectSt.executeQuery();
@@ -186,7 +177,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 						.values()[modelId]));
 			}
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}
@@ -210,7 +201,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
-			logger.warn("Unable to set autocommit off", e);
+			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		boolean found = true;
 		try {
@@ -227,15 +218,15 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			modified = updSt.executeUpdate();
 			if (modified == 1) {
 				getConnection().commit();
-				logger.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. -> commit");
 			} else {
 				getConnection().rollback();
-				logger.debug("DB has not been updated. -> rollback");
+				LOGGER.debug("DB has not been updated. -> rollback");
 				found = false;
 			}
 			// TX end
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 			found = false;
 		} finally {
 			closeConnection();
@@ -258,7 +249,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
-			logger.warn("Unable to set autocommit off", e);
+			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		try {
 			PreparedStatement findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
@@ -269,7 +260,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 				description = rs.getString("description");
 			}
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}
@@ -292,7 +283,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
-			logger.warn("Unable to set autocommit off", e);
+			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		boolean found = true;
 		try {
@@ -306,15 +297,15 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 
 			if (modified == 1) {
 				getConnection().commit();
-				logger.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. -> commit");
 			} else {
 				getConnection().rollback();
-				logger.debug("DB has not been updated. -> rollback");
+				LOGGER.debug("DB has not been updated. -> rollback");
 				found = false;
 			}
 			// TX end
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 			found = false;
 		} finally {
 			closeConnection();
@@ -336,7 +327,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
-			logger.warn("Unable to set autocommit off", e);
+			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		try {
 			PreparedStatement findSt = getConnection().prepareStatement(SELECT_USER_DESCRIPTION_STATEMENT);
@@ -348,7 +339,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 				description = rs.getString("description");
 			}
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}

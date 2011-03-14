@@ -41,10 +41,10 @@ public class HttpCookies {
 
 	/** The Constant SESSION_ID_KEY. */
 	public static final String SESSION_ID_KEY = "dR#5hJ_F$";
-	
+
 	public static final String UNKNOWN_ID_KEY = "dR#5hJ_F9";
-	
-	public static final String UNKNOWN_NAME_KEY = "dR#@hJ_F9";
+
+	public static final String NAME_KEY = "dR#@hJ_F9";
 
 	/** The Constant ADMIN. */
 	public static final String ADMIN = "dR#6hJ_F$";

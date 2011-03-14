@@ -60,6 +60,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
 public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.MyProxy> implements MyUiHandlers {
 
 	private LangConstants lang;
+	private volatile boolean unknown = true;
 
 	@Inject
 	public void setLang(LangConstants lang) {
@@ -167,25 +168,28 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 	@Override
 	protected void onReset() {
 		super.onReset();
-		dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
-			@Override
-			public void callback(GetLoggedUserResult result) {
-				getView().getUsername().setContents("<b>" + result.getName() + "</b>");
-				if (result.isEditUsers()) {
-					getView().getEditUsers().setContents(lang.userMgmt());
-					getView().getEditUsers().setCursor(Cursor.HAND);
-					getView().getEditUsers().setWidth(120);
-					getView().getEditUsers().setHeight(15);
-					getView().getEditUsers().setStyleName("pseudolink");
-					getView().getEditUsers().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-						@Override
-						public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-							placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
-						}
-					});
+		if (unknown) {
+			unknown = false;
+			dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
+				@Override
+				public void callback(GetLoggedUserResult result) {
+					getView().getUsername().setContents("<b>" + result.getName() + "</b>");
+					if (result.isEditUsers()) {
+						getView().getEditUsers().setContents(lang.userMgmt());
+						getView().getEditUsers().setCursor(Cursor.HAND);
+						getView().getEditUsers().setWidth(120);
+						getView().getEditUsers().setHeight(15);
+						getView().getEditUsers().setStyleName("pseudolink");
+						getView().getEditUsers().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+							@Override
+							public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+								placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
+							}
+						});
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	/*
@@ -208,6 +212,7 @@ public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.My
 		dispatcher.execute(new LogoutAction(), new DispatchCallback<LogoutResult>() {
 			@Override
 			public void callback(LogoutResult result) {
+				unknown = true;
 				MEditor.redirect("/login.html");
 			}
 		});

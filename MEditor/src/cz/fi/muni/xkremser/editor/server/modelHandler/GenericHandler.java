@@ -26,8 +26,6 @@
  */
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -43,14 +41,12 @@ public class GenericHandler extends DigitalObjectHandler implements CanGetObject
 	/**
 	 * Instantiates a new generic handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param fedoraAccess
 	 *          the fedora access
 	 */
 	@Inject
-	public GenericHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
-		super(logger, fedoraAccess);
+	public GenericHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+		super(fedoraAccess);
 	}
 
 	/*

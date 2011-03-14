@@ -30,8 +30,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 
@@ -53,8 +52,7 @@ public class AbstractDAO {
 	private EditorConfiguration conf;
 
 	/** The logger. */
-	@Inject
-	public Log logger = null;
+	private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
 	/**
 	 * Inits the connection.
@@ -65,10 +63,10 @@ public class AbstractDAO {
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException ex) {
-			logger.error("Could not find the driver", ex);
+			LOGGER.error("Could not find the driver", ex);
 		}
 		if (conf == null) { // called from GWT module without injection support
-			conf = new EditorConfigurationImpl(new Log4JLogger("MeditorLogger"));
+			conf = new EditorConfigurationImpl();
 		}
 		String host = conf.getDBHost();
 		String port = conf.getDBPort();
@@ -76,14 +74,14 @@ public class AbstractDAO {
 		String password = conf.getDBPassword();
 		String name = conf.getDBName();
 		if (password == null || password.length() < 3) {
-			logger.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "' reason: no password set.");
+			LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "' reason: no password set.");
 			return;
 		}
 		try {
 			conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, login, password);
 
 		} catch (SQLException ex) {
-			logger.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "'", ex);
+			LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "'", ex);
 			throw new DatabaseException("Unable to connect to database.");
 		}
 	}
@@ -110,7 +108,7 @@ public class AbstractDAO {
 				conn.close();
 			}
 		} catch (SQLException ex) {
-			logger.error("Connection was not closed", ex);
+			LOGGER.error("Connection was not closed", ex);
 		}
 		conn = null;
 	}

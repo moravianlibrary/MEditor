@@ -26,14 +26,13 @@
  */
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
-import java.util.logging.Level;
-
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
@@ -46,12 +45,13 @@ import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaceContext;
 public class PeriodicalItemUtils {
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(PeriodicalItemUtils.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(PeriodicalItemUtils.class);
 
 	/**
 	 * Gets the date.
-	 *
-	 * @param doc the doc
+	 * 
+	 * @param doc
+	 *          the doc
 	 * @return the date
 	 */
 	public static String getDate(Document doc) {
@@ -63,18 +63,19 @@ public class PeriodicalItemUtils {
 			Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
 			return (String) pageNumber;
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		} catch (DOMException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
 	/**
 	 * Gets the item number.
-	 *
-	 * @param doc the doc
+	 * 
+	 * @param doc
+	 *          the doc
 	 * @return the item number
 	 */
 	public static String getItemNumber(Document doc) {
@@ -86,10 +87,10 @@ public class PeriodicalItemUtils {
 			Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
 			return (String) pageNumber;
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		} catch (DOMException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 	}

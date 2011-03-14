@@ -16,7 +16,7 @@ public class RequestForAddingServiceImpl extends RemoteServiceServlet implements
 	public String ask() {
 		HttpServletRequest request = this.getThreadLocalRequest();
 		HttpSession session = request.getSession();
-		String name = (String) session.getAttribute(HttpCookies.UNKNOWN_NAME_KEY);
+		String name = (String) session.getAttribute(HttpCookies.NAME_KEY);
 		String openID = (String) session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
 		RequestDAO reqDAO = new RequestDAOImpl();
 		boolean success = false;
@@ -32,7 +32,7 @@ public class RequestForAddingServiceImpl extends RemoteServiceServlet implements
 	public String getName() {
 		HttpServletRequest request = this.getThreadLocalRequest();
 		HttpSession session = request.getSession();
-		return (String) session.getAttribute(HttpCookies.UNKNOWN_NAME_KEY);
+		return (String) session.getAttribute(HttpCookies.NAME_KEY);
 	}
 
 }

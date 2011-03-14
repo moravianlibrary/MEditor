@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -48,29 +46,32 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class PeriodicalHandler.
  */
 public class PeriodicalVolumeHandler extends DigitalObjectHandler {
-	
+
 	/** The page handler. */
 	private transient final PageHandler pageHandler;
-	
+
 	/** The per item handler. */
 	private transient final PeriodicalItemHandler perItemHandler;
-	
+
 	/** The int part handler. */
 	private transient final InternalPartHandler intPartHandler;
 
 	/**
 	 * Instantiates a new periodical handler.
-	 *
-	 * @param logger the logger
-	 * @param fedoraAccess the fedora access
-	 * @param pageHandler the page handler
-	 * @param intPartHandler the int part handler
-	 * @param perItemHandler the per item handler
+	 * 
+	 * @param fedoraAccess
+	 *          the fedora access
+	 * @param pageHandler
+	 *          the page handler
+	 * @param intPartHandler
+	 *          the int part handler
+	 * @param perItemHandler
+	 *          the per item handler
 	 */
 	@Inject
-	public PeriodicalVolumeHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler,
-			InternalPartHandler intPartHandler, PeriodicalItemHandler perItemHandler) {
-		super(logger, fedoraAccess);
+	public PeriodicalVolumeHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler, InternalPartHandler intPartHandler,
+			PeriodicalItemHandler perItemHandler) {
+		super(fedoraAccess);
 		this.pageHandler = pageHandler;
 		this.intPartHandler = intPartHandler;
 		this.perItemHandler = perItemHandler;

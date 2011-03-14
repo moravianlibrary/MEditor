@@ -188,6 +188,8 @@ public abstract class EditorConfiguration {
 
 		public static final String LOCALHOST = "localhost";
 
+		public static final String ACCESS_LOG_ID = "cz.fi.muni.xkremser.editor.AccessLog";
+
 	}
 
 	/**

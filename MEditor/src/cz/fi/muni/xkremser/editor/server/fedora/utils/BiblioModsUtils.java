@@ -29,7 +29,6 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -42,6 +41,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -164,8 +164,8 @@ import cz.fi.muni.xkremser.editor.server.mods.Yes;
 public final class BiblioModsUtils {
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(BiblioModsUtils.class.getName());
-	
+	private static final Logger LOGGER = Logger.getLogger(BiblioModsUtils.class);
+
 	/** The Constant factory. */
 	private static final ObjectFactory factory = new ObjectFactory();
 
@@ -185,10 +185,10 @@ public final class BiblioModsUtils {
 			Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
 			return (String) pageNumber;
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		} catch (DOMException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -240,18 +240,19 @@ public final class BiblioModsUtils {
 			} else
 				return null;
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		} catch (DOMException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
 	/**
 	 * Gets the mods.
-	 *
-	 * @param doc the doc
+	 * 
+	 * @param doc
+	 *          the doc
 	 * @return the mods
 	 */
 	public static ModsCollection getMods(org.w3c.dom.Document doc) {
@@ -270,8 +271,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To xml.
-	 *
-	 * @param collection the collection
+	 * 
+	 * @param collection
+	 *          the collection
 	 * @return the string
 	 */
 	public static String toXML(ModsCollection collection) {
@@ -293,8 +295,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param mods the mods
+	 * 
+	 * @param mods
+	 *          the mods
 	 * @return the mods collection client
 	 */
 	public static ModsCollectionClient toModsClient(ModsCollection mods) {
@@ -314,8 +317,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods server.
-	 *
-	 * @param modsClient the mods client
+	 * 
+	 * @param modsClient
+	 *          the mods client
 	 * @return the mods collection
 	 */
 	public static ModsCollection toModsServer(ModsCollectionClient modsClient) {
@@ -325,8 +329,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param titleInfoType the title info type
+	 * 
+	 * @param titleInfoType
+	 *          the title info type
 	 * @return the title info type client
 	 */
 	private static TitleInfoTypeClient toModsClient(TitleInfoType titleInfoType) {
@@ -376,8 +381,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param nameType the name type
+	 * 
+	 * @param nameType
+	 *          the name type
 	 * @return the name type client
 	 */
 	private static NameTypeClient toModsClient(NameType nameType) {
@@ -451,8 +457,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param typeOfResource the type of resource
+	 * 
+	 * @param typeOfResource
+	 *          the type of resource
 	 * @return the type of resource type client
 	 */
 	private static TypeOfResourceTypeClient toModsClient(TypeOfResourceType typeOfResource) {
@@ -469,9 +476,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param stringPlusDisplayLabel the string plus display label
-	 * @param clazz the clazz
+	 * 
+	 * @param stringPlusDisplayLabel
+	 *          the string plus display label
+	 * @param clazz
+	 *          the clazz
 	 * @return the string plus display label client
 	 */
 	private static StringPlusDisplayLabelClient toModsClient(StringPlusDisplayLabel stringPlusDisplayLabel, Class<? extends StringPlusDisplayLabelClient> clazz) {
@@ -496,9 +505,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Decorate.
-	 *
-	 * @param stringPlusDisplayLabelClient the string plus display label client
-	 * @param stringPlusDisplayLabel the string plus display label
+	 * 
+	 * @param stringPlusDisplayLabelClient
+	 *          the string plus display label client
+	 * @param stringPlusDisplayLabel
+	 *          the string plus display label
 	 */
 	private static void decorate(StringPlusDisplayLabelPlusTypeClient stringPlusDisplayLabelClient, StringPlusDisplayLabelPlusType stringPlusDisplayLabel) {
 		if (stringPlusDisplayLabelClient == null || stringPlusDisplayLabel == null)
@@ -508,9 +519,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param stringPlusAuthority the string plus authority
-	 * @param clazz the clazz
+	 * 
+	 * @param stringPlusAuthority
+	 *          the string plus authority
+	 * @param clazz
+	 *          the clazz
 	 * @return the string plus authority client
 	 */
 	private static StringPlusAuthorityClient toModsClient(StringPlusAuthority stringPlusAuthority, Class<? extends StringPlusAuthorityClient> clazz) {
@@ -537,9 +550,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Decorate.
-	 *
-	 * @param stringPlusAuthorityPlusLanguageClient the string plus authority plus language client
-	 * @param stringPlusAuthorityPlusLanguage the string plus authority plus language
+	 * 
+	 * @param stringPlusAuthorityPlusLanguageClient
+	 *          the string plus authority plus language client
+	 * @param stringPlusAuthorityPlusLanguage
+	 *          the string plus authority plus language
 	 */
 	private static void decorate(StringPlusAuthorityPlusLanguageClient stringPlusAuthorityPlusLanguageClient,
 			StringPlusAuthorityPlusLanguage stringPlusAuthorityPlusLanguage) {
@@ -553,9 +568,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Decorate.
-	 *
-	 * @param stringPlusAuthorityPlusTypePlusLanguageClient the string plus authority plus type plus language client
-	 * @param stringPlusAuthorityPlusTypePlusLanguage the string plus authority plus type plus language
+	 * 
+	 * @param stringPlusAuthorityPlusTypePlusLanguageClient
+	 *          the string plus authority plus type plus language client
+	 * @param stringPlusAuthorityPlusTypePlusLanguage
+	 *          the string plus authority plus type plus language
 	 */
 	private static void decorate(StringPlusAuthorityPlusTypePlusLanguageClient stringPlusAuthorityPlusTypePlusLanguageClient,
 			StringPlusAuthorityPlusTypePlusLanguage stringPlusAuthorityPlusTypePlusLanguage) {
@@ -566,9 +583,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param unstructuredText the unstructured text
-	 * @param clazz the clazz
+	 * 
+	 * @param unstructuredText
+	 *          the unstructured text
+	 * @param clazz
+	 *          the clazz
 	 * @return the unstructured text client
 	 */
 	private static UnstructuredTextClient toModsClient(UnstructuredText unstructuredText, Class<? extends UnstructuredTextClient> clazz) {
@@ -593,8 +612,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param dateType the date type
+	 * 
+	 * @param dateType
+	 *          the date type
 	 * @return the date type client
 	 */
 	private static DateTypeClient toModsClient(DateType dateType) {
@@ -612,8 +632,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param dateOtherType the date other type
+	 * 
+	 * @param dateOtherType
+	 *          the date other type
 	 * @return the date other type client
 	 */
 	private static DateOtherTypeClient toModsClient(DateOtherType dateOtherType) {
@@ -632,8 +653,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param originInfoType the origin info type
+	 * 
+	 * @param originInfoType
+	 *          the origin info type
 	 * @return the origin info type client
 	 */
 	private static OriginInfoTypeClient toModsClient(OriginInfoType originInfoType) {
@@ -729,8 +751,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param languageType the language type
+	 * 
+	 * @param languageType
+	 *          the language type
 	 * @return the language type client
 	 */
 	private static LanguageTypeClient toModsClient(LanguageType languageType) {
@@ -754,8 +777,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param physicalDescriptionType the physical description type
+	 * 
+	 * @param physicalDescriptionType
+	 *          the physical description type
 	 * @return the physical description type client
 	 */
 	private static PhysicalDescriptionTypeClient toModsClient(PhysicalDescriptionType physicalDescriptionType) {
@@ -808,8 +832,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param subjectType the subject type
+	 * 
+	 * @param subjectType
+	 *          the subject type
 	 * @return the subject type client
 	 */
 	private static SubjectTypeClient toModsClient(SubjectType subjectType) {
@@ -962,8 +987,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param classificationType the classification type
+	 * 
+	 * @param classificationType
+	 *          the classification type
 	 * @return the classification type client
 	 */
 	private static ClassificationTypeClient toModsClient(ClassificationType classificationType) {
@@ -980,8 +1006,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param modsType the mods type
+	 * 
+	 * @param modsType
+	 *          the mods type
 	 * @return the mods type client
 	 */
 	private static ModsTypeClient toModsClient(ModsType modsType) {
@@ -998,9 +1025,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle mods group.
-	 *
-	 * @param modsGroup the mods group
-	 * @param modsTypeClient the mods type client
+	 * 
+	 * @param modsGroup
+	 *          the mods group
+	 * @param modsTypeClient
+	 *          the mods type client
 	 */
 	private static void handleModsGroup(List<Object> modsGroup, ModsTypeClient modsTypeClient) {
 		for (Object modsElement : modsGroup) {
@@ -1153,8 +1182,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param accessConditionType the access condition type
+	 * 
+	 * @param accessConditionType
+	 *          the access condition type
 	 * @return the access condition type client
 	 */
 	private static AccessConditionTypeClient toModsClient(AccessConditionType accessConditionType) {
@@ -1181,8 +1211,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param locationType the location type
+	 * 
+	 * @param locationType
+	 *          the location type
 	 * @return the location type client
 	 */
 	private static LocationTypeClient toModsClient(LocationType locationType) {
@@ -1244,8 +1275,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param identifierType the identifier type
+	 * 
+	 * @param identifierType
+	 *          the identifier type
 	 * @return the identifier type client
 	 */
 	private static IdentifierTypeClient toModsClient(IdentifierType identifierType) {
@@ -1266,8 +1298,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param relatedItemType the related item type
+	 * 
+	 * @param relatedItemType
+	 *          the related item type
 	 * @return the related item type client
 	 */
 	private static RelatedItemTypeClient toModsClient(RelatedItemType relatedItemType) {
@@ -1289,8 +1322,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param recordInfoType the record info type
+	 * 
+	 * @param recordInfoType
+	 *          the record info type
 	 * @return the record info type client
 	 */
 	private static RecordInfoTypeClient toModsClient(RecordInfoType recordInfoType) {
@@ -1352,8 +1386,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param extensionType the extension type
+	 * 
+	 * @param extensionType
+	 *          the extension type
 	 * @return the extension type client
 	 */
 	private static ExtensionTypeClient toModsClient(ExtensionType extensionType) {
@@ -1372,8 +1407,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods client.
-	 *
-	 * @param partType the part type
+	 * 
+	 * @param partType
+	 *          the part type
 	 * @return the part type client
 	 */
 	private static PartTypeClient toModsClient(PartType partType) {
@@ -1451,8 +1487,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods.
-	 *
-	 * @param modsClient the mods client
+	 * 
+	 * @param modsClient
+	 *          the mods client
 	 * @return the mods collection
 	 */
 	public static ModsCollection toMods(ModsCollectionClient modsClient) {
@@ -1471,8 +1508,9 @@ public final class BiblioModsUtils {
 
 	/**
 	 * To mods.
-	 *
-	 * @param modsTypeClient the mods type client
+	 * 
+	 * @param modsTypeClient
+	 *          the mods type client
 	 * @return the mods type
 	 */
 	private static ModsType toMods(ModsTypeClient modsTypeClient) {
@@ -1488,9 +1526,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle mods group client.
-	 *
-	 * @param modsTypeClient the mods type client
-	 * @param modsGroup the mods group
+	 * 
+	 * @param modsTypeClient
+	 *          the mods type client
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleModsGroupClient(ModsTypeClient modsTypeClient, List<Object> modsGroup) {
 		if (modsTypeClient == null)
@@ -1519,9 +1559,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle title info client.
-	 *
-	 * @param titleInfoClientList the title info client list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param titleInfoClientList
+	 *          the title info client list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleTitleInfoClient(final List<TitleInfoTypeClient> titleInfoClientList, final List<Object> modsGroup) {
 		if (titleInfoClientList != null && titleInfoClientList.size() > 0) {
@@ -1575,9 +1617,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle name client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleNameClient(final List<NameTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1649,9 +1693,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle type of resource client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleTypeOfResourceClient(final List<TypeOfResourceTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1671,9 +1717,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle genre client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleGenreClient(final List<GenreTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1695,9 +1743,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle date client.
-	 *
-	 * @param valueClient the value client
-	 * @param value the value
+	 * 
+	 * @param valueClient
+	 *          the value client
+	 * @param value
+	 *          the value
 	 */
 	private static void handleDateClient(final DateTypeClient valueClient, final DateType value) {
 		value.setValue(valueClient.getValue());
@@ -1709,9 +1759,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle origin client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleOriginClient(final List<OriginInfoTypeClient> valueList, final List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1842,9 +1894,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle language client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleLanguageClient(List<LanguageTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1871,9 +1925,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle physical description.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handlePhysicalDescription(List<PhysicalDescriptionTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1948,9 +2004,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle abstract client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleAbstractClient(List<AbstractTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1973,9 +2031,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle table of contents client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleTableOfContentsClient(List<TableOfContentsTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -1998,9 +2058,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle audience client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleAudienceClient(List<TargetAudienceTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2021,9 +2083,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle note client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleNoteClient(List<NoteTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2047,9 +2111,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle subject client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleSubjectClient(List<SubjectTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2232,9 +2298,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle classification client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleClassificationClient(List<ClassificationTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2257,9 +2325,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle related item client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleRelatedItemClient(List<RelatedItemTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2279,9 +2349,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle identifier client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleIdentifierClient(List<IdentifierTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2304,9 +2376,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle location client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleLocationClient(List<LocationTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2410,9 +2484,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle access condition.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleAccessCondition(List<AccessConditionTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2435,9 +2511,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle part client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handlePartClient(List<PartTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2529,9 +2607,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle extension client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleExtensionClient(List<ExtensionTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {
@@ -2547,9 +2627,11 @@ public final class BiblioModsUtils {
 
 	/**
 	 * Handle record info client.
-	 *
-	 * @param valueList the value list
-	 * @param modsGroup the mods group
+	 * 
+	 * @param valueList
+	 *          the value list
+	 * @param modsGroup
+	 *          the mods group
 	 */
 	private static void handleRecordInfoClient(List<RecordInfoTypeClient> valueList, List<Object> modsGroup) {
 		if (valueList != null && valueList.size() > 0) {

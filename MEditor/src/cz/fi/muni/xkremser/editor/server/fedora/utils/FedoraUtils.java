@@ -36,13 +36,13 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.fedora.api.RelationshipTuple;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -61,7 +61,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 public class FedoraUtils {
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(FedoraUtils.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(FedoraUtils.class);
 
 	/** The Constant RELS_EXT_STREAM. */
 	public static final String RELS_EXT_STREAM = "RELS-EXT";
@@ -104,7 +104,7 @@ public class FedoraUtils {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			// ??
 			// e.printStackTrace();
 			// pids.add(e.toString());
@@ -148,7 +148,7 @@ public class FedoraUtils {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			if (stream != null)
 				try {
@@ -217,7 +217,7 @@ public class FedoraUtils {
 			}
 
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -254,7 +254,7 @@ public class FedoraUtils {
 				return FedoraUtils.findFirstPagePid(relpid);
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 		}
 		return null;
 	}

@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -46,7 +46,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoResult;
 public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetUserInfoResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetUserInfoHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -65,8 +65,7 @@ public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetU
 	 *          the user dao
 	 */
 	@Inject
-	public GetUserInfoHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
-		this.logger = logger;
+	public GetUserInfoHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
 		this.configuration = configuration;
 		this.userDAO = userDAO;
 	}
@@ -81,7 +80,7 @@ public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetU
 	 */
 	@Override
 	public GetUserInfoResult execute(final GetUserInfoAction action, final ExecutionContext context) throws ActionException {
-		logger.debug("Processing action: GetUserInfoAction");
+		LOGGER.debug("Processing action: GetUserInfoAction");
 		try {
 			return new GetUserInfoResult(userDAO.getUsers());
 		} catch (DatabaseException e) {

@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -37,7 +37,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
 
@@ -48,25 +48,20 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
 public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(LogoutHandler.class.getPackage().toString());
+	private static final Logger ACCESS_LOGGER = Logger.getLogger(Constants.ACCESS_LOG_ID);
 
 	/** The http session provider. */
 	private final Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new put recently modified handler.
-	 *
-	 * @param logger the logger
-	 * @param configuration the configuration
-	 * @param httpSessionProvider the http session provider
+	 * 
+	 * @param httpSessionProvider
+	 *          the http session provider
 	 */
 	@Inject
-	public LogoutHandler(final Log logger, final EditorConfiguration configuration, Provider<HttpSession> httpSessionProvider) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public LogoutHandler(Provider<HttpSession> httpSessionProvider) {
 		this.httpSessionProvider = httpSessionProvider;
 	}
 
@@ -81,7 +76,9 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 	@Override
 	public LogoutResult execute(final LogoutAction action, final ExecutionContext context) throws ActionException {
 		HttpSession session = httpSessionProvider.get();
-		logger.debug("Processing action: LogoutAction user:" + session.getAttribute(HttpCookies.SESSION_ID_KEY));
+		LOGGER.debug("Processing action: LogoutAction");
+		ACCESS_LOGGER.info("User " + session.getAttribute(HttpCookies.NAME_KEY) + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY)
+				+ " is trying to log out.");
 		session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
 		return new LogoutResult();
 	}

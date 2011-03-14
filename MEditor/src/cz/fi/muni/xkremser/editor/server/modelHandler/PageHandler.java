@@ -26,8 +26,6 @@
  */
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -45,14 +43,12 @@ public class PageHandler extends DigitalObjectHandler {
 	/**
 	 * Instantiates a new page handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param fedoraAccess
 	 *          the fedora access
 	 */
 	@Inject
-	public PageHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
-		super(logger, fedoraAccess);
+	public PageHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+		super(fedoraAccess);
 	}
 
 	/*

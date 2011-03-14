@@ -33,12 +33,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
-import com.google.inject.Inject;
+import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.Constants;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 
@@ -64,13 +61,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 	/** The Constant FIND_ITEMS_BY_PATH_STATEMENT. */
 	public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT + " AND path LIKE ((?))";
 
-	/** The conf. */
-	@Inject
-	private EditorConfiguration conf;
-
-	/** The logger. */
-	@Inject
-	public Log logger = null;
+	private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -87,7 +78,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
-			logger.warn("Unable to set autocommit off", e);
+			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		try {
 
@@ -105,14 +96,14 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 			}
 			if (totalBefore == deleted && updated == toUpdate.size()) {
 				getConnection().commit();
-				logger.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. -> commit");
 			} else {
 				getConnection().rollback();
-				logger.debug("DB has not been updated. -> rollback");
+				LOGGER.debug("DB has not been updated. -> rollback");
 			}
 			// TX end
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}
@@ -135,7 +126,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 			itemStmt.setString(2, item.getIssn());
 			itemStmt.setString(3, item.getName());
 		} catch (SQLException ex) {
-			logger.error("Could not get insert item statement", ex);
+			LOGGER.error("Could not get insert item statement", ex);
 		}
 		return itemStmt;
 	}
@@ -155,7 +146,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 		try {
 			findSt = getConnection().prepareStatement(top ? FIND_ITEMS_ON_TOP_LVL_STATEMENT : FIND_ITEMS_BY_PATH_STATEMENT);
 		} catch (SQLException e) {
-			logger.error("Could not get find items statement", e);
+			LOGGER.error("Could not get find items statement", e);
 		}
 		try {
 			findSt.setString(1, prefix + '/');
@@ -168,7 +159,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 				retList.add(new InputQueueItem(rs.getString("path"), rs.getString("issn"), rs.getString("name")));
 			}
 		} catch (SQLException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} finally {
 			closeConnection();
 		}

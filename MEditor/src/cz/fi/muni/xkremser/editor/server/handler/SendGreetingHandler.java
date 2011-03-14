@@ -29,7 +29,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -46,36 +46,41 @@ import cz.fi.muni.xkremser.editor.shared.rpc.result.SendGreetingResult;
  * The Class SendGreetingHandler.
  */
 public class SendGreetingHandler implements ActionHandler<SendGreeting, SendGreetingResult> {
-	
+
 	/** The logger. */
-	private final Log logger;
-	
+	private static final Logger LOGGER = Logger.getLogger(SendGreetingHandler.class.getPackage().toString());
+
 	/** The servlet context. */
 	private final Provider<ServletContext> servletContext;
-	
+
 	/** The servlet request. */
 	private final Provider<HttpServletRequest> servletRequest;
-	
+
 	/** The conf. */
 	@Inject
 	private EditorConfiguration conf;
 
 	/**
 	 * Instantiates a new send greeting handler.
-	 *
-	 * @param logger the logger
-	 * @param servletContext the servlet context
-	 * @param servletRequest the servlet request
+	 * 
+	 * @param servletContext
+	 *          the servlet context
+	 * @param servletRequest
+	 *          the servlet request
 	 */
 	@Inject
-	public SendGreetingHandler(final Log logger, final Provider<ServletContext> servletContext, final Provider<HttpServletRequest> servletRequest) {
-		this.logger = logger;
+	public SendGreetingHandler(final Provider<ServletContext> servletContext, final Provider<HttpServletRequest> servletRequest) {
 		this.servletContext = servletContext;
 		this.servletRequest = servletRequest;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+	 * .gwtplatform.dispatch.shared.Action,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public SendGreetingResult execute(final SendGreeting action, final ExecutionContext context) throws ActionException {
@@ -91,27 +96,34 @@ public class SendGreetingHandler implements ActionHandler<SendGreeting, SendGree
 			// final String message = "Hello " + action.getName();
 			System.out.println("valim");
 			System.out.println(conf.getConfiguration().getProperty("key"));
-			logger.error("slapu");
-			logger.error(conf.getConfiguration().getProperty("key"));
+			LOGGER.error("slapu");
+			LOGGER.error(conf.getConfiguration().getProperty("key"));
 
 			return new SendGreetingResult(name, message);
 		} catch (Exception cause) {
-			logger.error("Unable to send message", cause);
+			LOGGER.error("Unable to send message", cause);
 
 			throw new ActionException(cause);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
 	 */
 	@Override
 	public Class<SendGreeting> getActionType() {
 		return SendGreeting.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result, com.gwtplatform.dispatch.server.ExecutionContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
+	 * com.gwtplatform.dispatch.server.ExecutionContext)
 	 */
 	@Override
 	public void undo(SendGreeting action, SendGreetingResult result, ExecutionContext context) throws ActionException {

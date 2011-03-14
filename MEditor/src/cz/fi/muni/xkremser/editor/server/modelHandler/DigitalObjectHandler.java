@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 import org.fedora.api.RelationshipTuple;
 import org.w3c.dom.Document;
 
@@ -60,9 +60,7 @@ public class DigitalObjectHandler implements CanGetObject {
 
 	/** The fedora access. */
 	private final FedoraAccess fedoraAccess;
-
-	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(DigitalObjectHandler.class);
 
 	/** The injector. */
 	@Inject
@@ -71,14 +69,11 @@ public class DigitalObjectHandler implements CanGetObject {
 	/**
 	 * Instantiates a new digital object handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param fedoraAccess
 	 *          the fedora access
 	 */
 	@Inject
-	public DigitalObjectHandler(final Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
-		this.logger = logger;
+	public DigitalObjectHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
 		this.fedoraAccess = fedoraAccess;
 	}
 
@@ -122,7 +117,7 @@ public class DigitalObjectHandler implements CanGetObject {
 		try {
 			model = fedoraAccess.getKrameriusModel(uuid);
 		} catch (IOException e) {
-			logger.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);
+			LOGGER.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);
 			throw e;
 		}
 		CanGetObject handler = null;

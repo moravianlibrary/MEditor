@@ -31,7 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -51,7 +51,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityResult;
 public class CheckAvailabilityHandler implements ActionHandler<CheckAvailabilityAction, CheckAvailabilityResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(CheckAvailabilityHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -59,14 +59,11 @@ public class CheckAvailabilityHandler implements ActionHandler<CheckAvailability
 	/**
 	 * Instantiates a new put recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param configuration
 	 *          the configuration
 	 */
 	@Inject
-	public CheckAvailabilityHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
+	public CheckAvailabilityHandler(final EditorConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
@@ -80,14 +77,14 @@ public class CheckAvailabilityHandler implements ActionHandler<CheckAvailability
 	 */
 	@Override
 	public CheckAvailabilityResult execute(final CheckAvailabilityAction action, final ExecutionContext context) throws ActionException {
-		if (logger.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			String serverName = null;
 			if (action.getServerId() == CheckAvailability.FEDORA_ID) {
 				serverName = "fedora";
 			} else if (action.getServerId() == CheckAvailability.KRAMERIUS_ID) {
 				serverName = "kramerius";
 			}
-			logger.debug("Processing action: CheckAvailability: " + serverName);
+			LOGGER.debug("Processing action: CheckAvailability: " + serverName);
 		}
 		boolean status = true;
 		String url = null;
@@ -108,7 +105,7 @@ public class CheckAvailabilityHandler implements ActionHandler<CheckAvailability
 				HttpURLConnection httpConnection = (HttpURLConnection) con;
 				if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
 					status = false;
-					logger.info("Server " + url + " answered with HTTP code " + httpConnection.getResponseCode());
+					LOGGER.info("Server " + url + " answered with HTTP code " + httpConnection.getResponseCode());
 				}
 			} else {
 				status = false;

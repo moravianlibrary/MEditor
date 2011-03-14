@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -47,24 +45,26 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class MonographUnitHandler.
  */
 public class MonographUnitHandler extends DigitalObjectHandler {
-	
+
 	/** The page handler. */
 	private transient final PageHandler pageHandler;
-	
+
 	/** The int part handler. */
 	private transient final InternalPartHandler intPartHandler;
 
 	/**
 	 * Instantiates a new monograph unit handler.
-	 *
-	 * @param logger the logger
-	 * @param fedoraAccess the fedora access
-	 * @param pageHandler the page handler
-	 * @param intPartHandler the int part handler
+	 * 
+	 * @param fedoraAccess
+	 *          the fedora access
+	 * @param pageHandler
+	 *          the page handler
+	 * @param intPartHandler
+	 *          the int part handler
 	 */
 	@Inject
-	public MonographUnitHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler, InternalPartHandler intPartHandler) {
-		super(logger, fedoraAccess);
+	public MonographUnitHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler, InternalPartHandler intPartHandler) {
+		super(fedoraAccess);
 		this.pageHandler = pageHandler;
 		this.intPartHandler = intPartHandler;
 	}

@@ -49,11 +49,18 @@ public class URLS {
 
 	/** The Constant LOCALHOST. */
 	public static boolean LOCALHOST() {
-		return config.isLocalhost();
+		if (config != null) {
+			return config.isLocalhost();
+		} else {
+			return false;
+		}
 	};
 
 	/** The Constant ROOT. */
-	public static final String ROOT = "";
+	public static final String ROOT() {
+		return LOCALHOST() ? "" : "/editor";
+	}
+
 	// public static final String ROOT = "/skin1";
 
 	/** The Constant MAIN_PAGE. */
@@ -61,6 +68,7 @@ public class URLS {
 
 	/** The Constant LOGIN_PAGE. */
 	public static final String LOGIN_PAGE = "/login.html";
+	public static final String LOGIN_LOCAL_PAGE = "/loginLocal.html";
 
 	/** The Constant INFO_PAGE. */
 	public static final String INFO_PAGE = "/info.html";
@@ -79,6 +87,7 @@ public class URLS {
 	public static Set<String> nonRestricted = new HashSet<String>() {
 		{
 			add(LOGIN_PAGE);
+			add(LOGIN_LOCAL_PAGE);
 			add(INFO_PAGE);
 			add(AUTH_SERVLET);
 			add(CSS);

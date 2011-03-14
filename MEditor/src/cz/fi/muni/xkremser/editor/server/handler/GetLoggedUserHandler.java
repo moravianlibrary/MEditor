@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -49,7 +49,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, GetLoggedUserResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetLoggedUserHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	private final UserDAO userDAO;
@@ -60,16 +60,13 @@ public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, 
 	/**
 	 * Instantiates a new gets the recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param userDAO
 	 *          the user dao
 	 * @param httpSessionProvider
 	 *          the http session provider
 	 */
 	@Inject
-	public GetLoggedUserHandler(final Log logger, final UserDAO userDAO, Provider<HttpSession> httpSessionProvider) {
-		this.logger = logger;
+	public GetLoggedUserHandler(final UserDAO userDAO, Provider<HttpSession> httpSessionProvider) {
 		this.userDAO = userDAO;
 		this.httpSessionProvider = httpSessionProvider;
 	}
@@ -84,7 +81,7 @@ public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, 
 	 */
 	@Override
 	public GetLoggedUserResult execute(final GetLoggedUserAction action, final ExecutionContext context) throws ActionException {
-		logger.debug("Processing action: GetLoggedUserAction");
+		LOGGER.debug("Processing action: GetLoggedUserAction");
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		boolean editUsers;

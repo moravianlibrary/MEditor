@@ -71,16 +71,16 @@ public class AuthenticationFilter implements Filter {
 		final boolean sessionIdBool = sessionId != null;
 		final boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;
 
-		if (!URLS.LOCALHOST() && sessionIdBool && paramSizeGreaterThanOne && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
+		if (!URLS.LOCALHOST() && sessionIdBool && paramSizeGreaterThanOne && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {
 			final String sufixUrl = URLS.convertToAJAXURL(parameters);
-			URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT + path + sufixUrl);
+			URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT() + path + sufixUrl);
 			return;
 		}
 
 		// URLs allowed when user is not logged in
 		if (sessionIdBool || URLS.nonRestricted.contains(path) || path.startsWith(URLS.REQUEST_PREFIX)) {
-			if (!URLS.LOCALHOST() && "http".equals(request.getScheme()) && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT.equals(path))) {
-				URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT + path);
+			if (!URLS.LOCALHOST() && "http".equals(request.getScheme()) && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {
+				URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT() + path);
 				return;
 			}
 			chain.doFilter(req, res);
@@ -88,10 +88,13 @@ public class AuthenticationFilter implements Filter {
 			final HttpServletResponse response = (HttpServletResponse) res;
 			if (paramSizeGreaterThanOne) { // store parameters to session
 				final String sufixSUrl = URLS.convertToAJAXURL(parameters);
-				session.setAttribute(HttpCookies.TARGET_URL, (URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName() + URLS.ROOT + path + sufixSUrl);
+				session.setAttribute(HttpCookies.TARGET_URL,
+						(URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName() + URLS.ROOT() + path
+								+ (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "") + sufixSUrl);
 			}
 			// redirect to login page
-			URLS.redirect(response, (URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName() + URLS.ROOT + URLS.LOGIN_PAGE);
+			URLS.redirect(response, (URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName() + URLS.ROOT()
+					+ (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
 		}
 	}
 

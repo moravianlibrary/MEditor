@@ -39,7 +39,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Level;
+
+import org.apache.log4j.Logger;
 
 import com.google.gwt.user.server.Base64Utils;
 
@@ -52,21 +53,21 @@ import cz.fi.muni.xkremser.editor.client.ConnectionException;
  * @author pavels
  */
 public class RESTHelper {
-	
+
 	/** The Constant GET. */
 	public static final int GET = 0;
-	
+
 	/** The Constant PUT. */
 	public static final int PUT = 1;
-	
+
 	/** The Constant POST. */
 	public static final int POST = 2;
-	
+
 	/** The Constant DELETE. */
 	public static final int DELETE = 3;
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RESTHelper.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RESTHelper.class);
 
 	/**
 	 * Input stream.
@@ -90,13 +91,18 @@ public class RESTHelper {
 
 	/**
 	 * Open connection.
-	 *
-	 * @param urlString the url string
-	 * @param user the user
-	 * @param pass the pass
+	 * 
+	 * @param urlString
+	 *          the url string
+	 * @param user
+	 *          the user
+	 * @param pass
+	 *          the pass
 	 * @return the uRL connection
-	 * @throws MalformedURLException the malformed url exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException
+	 *           the malformed url exception
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static URLConnection openConnection(String urlString, String user, String pass) throws MalformedURLException, IOException {
 		return openConnection(urlString, user, pass, GET, null);
@@ -104,15 +110,22 @@ public class RESTHelper {
 
 	/**
 	 * Open connection.
-	 *
-	 * @param urlString the url string
-	 * @param user the user
-	 * @param pass the pass
-	 * @param method the method
-	 * @param content the content
+	 * 
+	 * @param urlString
+	 *          the url string
+	 * @param user
+	 *          the user
+	 * @param pass
+	 *          the pass
+	 * @param method
+	 *          the method
+	 * @param content
+	 *          the content
 	 * @return the uRL connection
-	 * @throws MalformedURLException the malformed url exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException
+	 *           the malformed url exception
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static URLConnection openConnection(String urlString, String user, String pass, final int method, String content) throws MalformedURLException,
 			IOException {
@@ -153,7 +166,7 @@ public class RESTHelper {
 
 			int resp = ((HttpURLConnection) uc).getResponseCode();
 			if (resp != 200) {
-				LOGGER.log(Level.SEVERE, "Unable to open connection on " + urlString + "  response code: " + resp);
+				LOGGER.error("Unable to open connection on " + urlString + "  response code: " + resp);
 				return null;
 			}
 		} catch (IOException e) {
@@ -165,11 +178,15 @@ public class RESTHelper {
 
 	/**
 	 * Put.
-	 *
-	 * @param urlString the url string
-	 * @param content the content
-	 * @param user the user
-	 * @param pass the pass
+	 * 
+	 * @param urlString
+	 *          the url string
+	 * @param content
+	 *          the content
+	 * @param user
+	 *          the user
+	 * @param pass
+	 *          the pass
 	 * @return true, if successful
 	 */
 	public static boolean put(String urlString, String content, String user, String pass) {
@@ -186,7 +203,7 @@ public class RESTHelper {
 
 		try {
 			if (conn != null)
-				LOGGER.log(Level.FINE, convertStreamToString(conn.getInputStream()));
+				LOGGER.debug(convertStreamToString(conn.getInputStream()));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -195,10 +212,13 @@ public class RESTHelper {
 
 	/**
 	 * Delete.
-	 *
-	 * @param urlString the url string
-	 * @param user the user
-	 * @param pass the pass
+	 * 
+	 * @param urlString
+	 *          the url string
+	 * @param user
+	 *          the user
+	 * @param pass
+	 *          the pass
 	 * @return true, if successful
 	 */
 	public static boolean delete(String urlString, String user, String pass) {
@@ -227,10 +247,12 @@ public class RESTHelper {
 
 	/**
 	 * Convert stream to string.
-	 *
-	 * @param is the is
+	 * 
+	 * @param is
+	 *          the is
 	 * @return the string
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static String convertStreamToString(InputStream is) throws IOException {
 		if (is != null) {

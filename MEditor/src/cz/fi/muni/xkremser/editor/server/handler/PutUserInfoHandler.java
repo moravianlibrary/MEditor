@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -34,7 +34,6 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoResult;
@@ -46,10 +45,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoResult;
 public class PutUserInfoHandler implements ActionHandler<PutUserInfoAction, PutUserInfoResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(PutUserInfoHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	@Inject
@@ -58,15 +54,9 @@ public class PutUserInfoHandler implements ActionHandler<PutUserInfoAction, PutU
 	/**
 	 * Instantiates a new put recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
 	 */
 	@Inject
-	public PutUserInfoHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public PutUserInfoHandler() {
 	}
 
 	/*
@@ -81,7 +71,7 @@ public class PutUserInfoHandler implements ActionHandler<PutUserInfoAction, PutU
 	public PutUserInfoResult execute(final PutUserInfoAction action, final ExecutionContext context) throws ActionException {
 		if (action.getUser() == null)
 			throw new NullPointerException("getUser()");
-		logger.debug("Processing action: PutUserInfoAction user:" + action.getUser());
+		LOGGER.debug("Processing action: PutUserInfoAction user:" + action.getUser());
 		String id;
 		try {
 			id = userDAO.addUser(action.getUser());

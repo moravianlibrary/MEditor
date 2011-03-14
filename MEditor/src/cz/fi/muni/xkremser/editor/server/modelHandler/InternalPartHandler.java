@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -53,16 +51,14 @@ public class InternalPartHandler extends DigitalObjectHandler {
 	/**
 	 * Instantiates a new internal part handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param fedoraAccess
 	 *          the fedora access
 	 * @param pageHandler
 	 *          the page handler
 	 */
 	@Inject
-	public InternalPartHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler) {
-		super(logger, fedoraAccess);
+	public InternalPartHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler) {
+		super(fedoraAccess);
 		this.pageHandler = pageHandler;
 	}
 

@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -55,6 +54,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.fedora.api.FedoraAPIA;
 import org.fedora.api.FedoraAPIAService;
 import org.fedora.api.FedoraAPIM;
@@ -89,7 +89,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 public class FedoraAccessImpl implements FedoraAccess {
 
 	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(FedoraAccessImpl.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(FedoraAccessImpl.class);
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -135,7 +135,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public Document getRelsExt(String uuid) throws IOException {
 		String relsExtUrl = relsExtUrl(uuid);
-		LOGGER.fine("Reading rels ext +" + relsExtUrl);
+		LOGGER.debug("Reading rels ext +" + relsExtUrl);
 		InputStream docStream = RESTHelper.inputStream(relsExtUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		if (docStream == null)
 			return null;
@@ -143,10 +143,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} finally {
 			docStream.close();
@@ -173,10 +173,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 			} else
 				throw new IllegalArgumentException("cannot find model of ");
 		} catch (DOMException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IllegalArgumentException(e);
 		} catch (LexerException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -210,10 +210,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} finally {
 			docStream.close();
@@ -237,10 +237,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} finally {
 			docStream.close();
@@ -277,13 +277,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			LOGGER.log(Level.SEVERE, "Reading ocr +" + ocrUrl, e);
+			LOGGER.error("Reading ocr +" + ocrUrl, e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LOGGER.log(Level.SEVERE, "Closing stream +" + ocrUrl, e);
+					LOGGER.error("Closing stream +" + ocrUrl, e);
 					e.printStackTrace();
 				} finally {
 					br = null;
@@ -338,7 +338,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 					breakProcess = processRelsExtInternal(relsExt.getDocumentElement(), handler, level + 1);
 				}
 			} else {
-				LOGGER.severe("Unsupported type of relation '" + nodeName + "'");
+				LOGGER.error("Unsupported type of relation '" + nodeName + "'");
 			}
 
 			if (breakProcess) {
@@ -381,13 +381,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			processRelsExtInternal(relsExtDocument.getDocumentElement(), handler, 1);
 		} catch (DOMException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (LexerException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		}
 	}
@@ -427,7 +427,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 			}
 			return elms;
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		}
 	}
@@ -461,10 +461,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 			}
 			return elms;
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (LexerException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -610,10 +610,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			return XMLUtils.parseDocument(stream, true);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		}
 	}
@@ -666,13 +666,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 			Document parseDocument = XMLUtils.parseDocument(stream, true);
 			return datastreamInListOfDatastreams(parseDocument, FedoraUtils.IMG_FULL_STREAM);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} finally {
 			con.disconnect();
@@ -764,10 +764,10 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			return XMLUtils.parseDocument(stream, true);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		}
 	}
@@ -994,7 +994,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 			APIAservice = new FedoraAPIAService(new URL(configuration.getFedoraLogin() + "/wsdl?api=API-A"), new QName("http://www.fedora.info/definitions/1/0/api/",
 					"Fedora-API-A-Service"));
 		} catch (MalformedURLException e) {
-			LOGGER.severe("InvalidURL API-A:" + e);
+			LOGGER.error("InvalidURL API-A:" + e);
 			throw new RuntimeException(e);
 		}
 		APIAport = APIAservice.getPort(FedoraAPIA.class);
@@ -1021,7 +1021,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 			APIMservice = new FedoraAPIMService(new URL(configuration.getFedoraHost() + "/wsdl?api=API-M"), new QName("http://www.fedora.info/definitions/1/0/api/",
 					"Fedora-API-M-Service"));
 		} catch (MalformedURLException e) {
-			LOGGER.severe("InvalidURL API-M:" + e);
+			LOGGER.error("InvalidURL API-M:" + e);
 			throw new RuntimeException(e);
 		}
 		APIMport = APIMservice.getPort(FedoraAPIM.class);
@@ -1050,7 +1050,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 				try {
 					processSubtree(rel.getObject(), processor);
 				} catch (Exception ex) {
-					LOGGER.warning("Error processing subtree, skipping:" + ex);
+					LOGGER.warn("Error processing subtree, skipping:" + ex);
 				}
 			}
 		}
@@ -1111,13 +1111,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 			Document parseDocument = XMLUtils.parseDocument(stream, true);
 			return mimetypeFromProfile(parseDocument);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		} catch (XPathExpressionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new IOException(e);
 		}
 	}
@@ -1137,7 +1137,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 		try {
 			bytes = getAPIM().getObjectXML(uuid);
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, uuid + " in not in the repository, please insert this model first!" + e.getMessage(), e);
+			LOGGER.error(uuid + " in not in the repository, please insert this model first!" + e.getMessage(), e);
 			return false;
 		}
 		return bytes != null;
@@ -1168,7 +1168,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 			} finally {
 				docStream = null;
 			}
-			LOGGER.log(Level.SEVERE, "Reading foxml +" + objUrl, e1);
+			LOGGER.error("Reading foxml +" + objUrl, e1);
 			e1.printStackTrace();
 			return null;
 		}
@@ -1181,13 +1181,13 @@ public class FedoraAccessImpl implements FedoraAccess {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			LOGGER.log(Level.SEVERE, "Reading foxml +" + objUrl);
+			LOGGER.error("Reading foxml +" + objUrl);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LOGGER.log(Level.SEVERE, "Closing stream +" + objUrl);
+					LOGGER.error("Closing stream +" + objUrl);
 					e.printStackTrace();
 				} finally {
 					br = null;

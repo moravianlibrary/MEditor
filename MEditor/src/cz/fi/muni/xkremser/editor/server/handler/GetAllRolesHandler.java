@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -46,10 +46,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesResult;
 public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetAllRolesResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(GetAllRolesHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	private final UserDAO userDAO;
@@ -65,9 +62,7 @@ public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetA
 	 *          the user dao
 	 */
 	@Inject
-	public GetAllRolesHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public GetAllRolesHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
 
@@ -81,7 +76,7 @@ public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetA
 	 */
 	@Override
 	public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context) throws ActionException {
-		logger.debug("Processing action: GetAllRolesResult");
+		LOGGER.debug("Processing action: GetAllRolesResult");
 		try {
 			return new GetAllRolesResult(userDAO.getRoles());
 		} catch (DatabaseException e) {

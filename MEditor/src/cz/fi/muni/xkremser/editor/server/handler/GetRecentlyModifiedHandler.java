@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -50,7 +50,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
 public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModifiedAction, GetRecentlyModifiedResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetRecentlyModifiedHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -65,16 +65,13 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	/**
 	 * Instantiates a new gets the recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param configuration
 	 *          the configuration
 	 * @param recentlyModifiedDAO
 	 *          the recently modified dao
 	 */
 	@Inject
-	public GetRecentlyModifiedHandler(final Log logger, final EditorConfiguration configuration, final RecentlyModifiedItemDAO recentlyModifiedDAO) {
-		this.logger = logger;
+	public GetRecentlyModifiedHandler(final EditorConfiguration configuration, final RecentlyModifiedItemDAO recentlyModifiedDAO) {
 		this.configuration = configuration;
 		this.recentlyModifiedDAO = recentlyModifiedDAO;
 	}
@@ -89,7 +86,7 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 	 */
 	@Override
 	public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action, final ExecutionContext context) throws ActionException {
-		logger.debug("Processing action: GetRecentlyModified");
+		LOGGER.debug("Processing action: GetRecentlyModified");
 		String openID = null;
 		if (!action.isForAllUsers()) {
 			HttpSession session = httpSessionProvider.get();

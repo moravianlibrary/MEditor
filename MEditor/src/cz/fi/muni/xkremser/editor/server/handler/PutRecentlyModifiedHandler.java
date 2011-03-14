@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -38,7 +38,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
@@ -50,10 +49,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
 public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModifiedAction, PutRecentlyModifiedResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(PutRecentlyModifiedHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	@Inject
@@ -66,15 +62,10 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 	/**
 	 * Instantiates a new put recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
 	 */
 	@Inject
-	public PutRecentlyModifiedHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public PutRecentlyModifiedHandler() {
+
 	}
 
 	/*
@@ -93,7 +84,7 @@ public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModi
 			throw new NullPointerException("getItem().getUuid()");
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		logger.debug("Processing action: PutRecentlyModified item:" + action.getItem());
+		LOGGER.debug("Processing action: PutRecentlyModified item:" + action.getItem());
 		try {
 			return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
 		} catch (DatabaseException e) {

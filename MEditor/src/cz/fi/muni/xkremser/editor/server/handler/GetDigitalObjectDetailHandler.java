@@ -31,10 +31,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -43,7 +42,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
@@ -56,7 +54,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalObjectDetailAction, GetDigitalObjectDetailResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage().toString());
 
 	/** The handler. */
 	private final DigitalObjectHandler handler;
@@ -65,25 +63,14 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 	@Inject
 	private Provider<HttpSession> httpSessionProvider;
 
-	/** The recently modified item dao. */
-	@Inject
-	private RecentlyModifiedItemDAO recentlyModifiedItemDAO;
-
-	/** The injector. */
-	@Inject
-	Injector injector;
-
 	/**
 	 * Instantiates a new gets the digital object detail handler.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param handler
 	 *          the handler
 	 */
 	@Inject
-	public GetDigitalObjectDetailHandler(final Log logger, final DigitalObjectHandler handler) {
-		this.logger = logger;
+	public GetDigitalObjectDetailHandler(final DigitalObjectHandler handler) {
 		this.handler = handler;
 	}
 
@@ -99,11 +86,7 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 	public GetDigitalObjectDetailResult execute(final GetDigitalObjectDetailAction action, final ExecutionContext context) throws ActionException {
 		// parse input
 		String uuid = action.getUuid();
-		// List<RelationshipTuple> triplets = FedoraUtils.getSubjectPids("uuid:" +
-		// uuid);
-		// for (RelationshipTuple triplet : triplets) {
-		// System.out.println(triplet);
-		// }
+		LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
 
 		try {
 			AbstractDigitalObjectDetail obj = handler.getDigitalObject(uuid, true);

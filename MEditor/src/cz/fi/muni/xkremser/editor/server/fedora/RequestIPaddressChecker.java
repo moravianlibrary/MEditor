@@ -26,9 +26,9 @@
  */
 package cz.fi.muni.xkremser.editor.server.fedora;
 
-import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -41,33 +41,33 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
  */
 public class RequestIPaddressChecker implements IPaddressChecker {
 
-	/** The logger. */
-	private final Logger logger;
-	
+	private static final Logger LOGGER = Logger.getLogger(RequestIPaddressChecker.class);
+
 	/** The configuration. */
 	@Inject
-	// TODO: do setru s tim
 	private EditorConfiguration configuration;
-	
+
 	/** The provider. */
 	private final Provider<HttpServletRequest> provider;
 
 	/**
 	 * Instantiates a new request i paddress checker.
-	 *
-	 * @param provider the provider
-	 * @param logger the logger
+	 * 
+	 * @param provider
+	 *          the provider
 	 */
 	@Inject
-	public RequestIPaddressChecker(Provider<HttpServletRequest> provider, Logger logger) {
+	public RequestIPaddressChecker(Provider<HttpServletRequest> provider) {
 		super();
 		this.provider = provider;
-		this.logger = logger;
-		this.logger.info("provider is '" + provider + "'");
+		LOGGER.debug("provider is '" + provider + "'");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#privateVisitor()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#privateVisitor()
 	 */
 	@Override
 	public boolean privateVisitor() {
@@ -77,8 +77,9 @@ public class RequestIPaddressChecker implements IPaddressChecker {
 
 	/**
 	 * Check patterns.
-	 *
-	 * @param patterns the patterns
+	 * 
+	 * @param patterns
+	 *          the patterns
 	 * @return true, if successful
 	 */
 	private boolean checkPatterns(String[] patterns) {
@@ -90,12 +91,16 @@ public class RequestIPaddressChecker implements IPaddressChecker {
 					return true;
 			}
 		}
-		logger.info("Remote address is == " + remoteAddr);
+		LOGGER.info("Remote address is == " + remoteAddr);
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#localHostVisitor()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#localHostVisitor
+	 * ()
 	 */
 	@Override
 	public boolean localHostVisitor() {

@@ -55,7 +55,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.k_int.IR.IREvent;
@@ -76,7 +76,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
 public class Z3950Client {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(Z3950Client.class);
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -124,15 +124,12 @@ public class Z3950Client {
 	/**
 	 * Instantiates a new z3950 client.
 	 * 
-	 * @param logger
-	 *          the logger
 	 * @param configuration
 	 *          the configuration
 	 */
 	@Inject
-	public Z3950Client(final Log logger, final EditorConfiguration configuration) {
+	public Z3950Client(final EditorConfiguration configuration) {
 		this.configuration = configuration;
-		this.logger = logger;
 	}
 
 	/**
@@ -164,13 +161,13 @@ public class Z3950Client {
 			} else if (NKP_NKC_PROFILE_ID.equals(profile)) {
 				profileIndex = NKP_NKC_PROFILE_INDEX;
 			} else {
-				logger.warn("Invalid value (" + profile + ") for key " + EditorConfiguration.Constants.Z3950_PROFILE + " in editor configuration.");
+				LOGGER.warn("Invalid value (" + profile + ") for key " + EditorConfiguration.Constants.Z3950_PROFILE + " in editor configuration.");
 			}
 		}
 		// host
 		if ((host = configuration.getZ3950Host()) == null) {
 			if (profileIndex == -1) {
-				logger.error("Neither " + EditorConfiguration.Constants.Z3950_HOST + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
+				LOGGER.error("Neither " + EditorConfiguration.Constants.Z3950_HOST + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
 						+ " is set in editor configuration!");
 				return null;
 			} else {
@@ -180,7 +177,7 @@ public class Z3950Client {
 		// port
 		if ((port = configuration.getZ3950Port()) == null) {
 			if (profileIndex == -1) {
-				logger.error("Neither " + EditorConfiguration.Constants.Z3950_PORT + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
+				LOGGER.error("Neither " + EditorConfiguration.Constants.Z3950_PORT + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
 						+ " is set in editor configuration!");
 				return null;
 			} else {
@@ -190,7 +187,7 @@ public class Z3950Client {
 		// base
 		if ((base = configuration.getZ3950Base()) == null) {
 			if (profileIndex == -1) {
-				logger.error("Neither " + EditorConfiguration.Constants.Z3950_BASE + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
+				LOGGER.error("Neither " + EditorConfiguration.Constants.Z3950_BASE + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
 						+ " is set in editor configuration!");
 				return null;
 			} else {
@@ -200,7 +197,7 @@ public class Z3950Client {
 		// barcode length
 		if ((barLength = configuration.getZ3950BarLength().intValue()) == Constants.UNDEF.intValue()) {
 			if (profileIndex == -1) {
-				logger.error("Neither " + EditorConfiguration.Constants.Z3950_BAR_LENGTH + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
+				LOGGER.error("Neither " + EditorConfiguration.Constants.Z3950_BAR_LENGTH + " nor " + EditorConfiguration.Constants.Z3950_PROFILE
 						+ " is set in editor configuration!");
 				return null;
 			} else {
@@ -232,7 +229,7 @@ public class Z3950Client {
 
 		// Observer[] all_observers = new Observer[] { fragment_count_observer };
 
-		logger.info("Z39.50: Connecting to " + configuration.getZ3950Host() + " on port " + configuration.getZ3950Port());
+		LOGGER.info("Z39.50: Connecting to " + configuration.getZ3950Host() + " on port " + configuration.getZ3950Port());
 		Searchable s = new Z3950Origin();
 		s.init(props);
 
@@ -260,20 +257,20 @@ public class Z3950Client {
 			}
 		}
 		e.setQueryModel(new com.k_int.IR.QueryModels.PrefixString(query + "\"" + what + "\""));
-		logger.debug("QUERY: " + e.getQueryModel().toString());
+		LOGGER.debug("QUERY: " + e.getQueryModel().toString());
 
 		try {
 			SearchTask st = s.createTask(e, null, null/* all_observers */);
 			int status = st.evaluate(150000);
 
-			logger.info("Private task status: " + st.lookupPrivateStatusCode(st.getPrivateTaskStatusCode()));
+			LOGGER.info("Private task status: " + st.lookupPrivateStatusCode(st.getPrivateTaskStatusCode()));
 			Enumeration rs_enum = st.getTaskResultSet().elements();
 
 			while (rs_enum.hasMoreElements()) {
 				InformationFragment f = (InformationFragment) rs_enum.nextElement();
 				System.out.println("Length of Next search element: " + f.toString()); // to
 																																							// something
-				logger.info(f.toString());
+				LOGGER.info(f.toString());
 			}
 
 			st.destroyTask();

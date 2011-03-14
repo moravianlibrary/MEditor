@@ -28,10 +28,7 @@ package cz.fi.muni.xkremser.editor.server.guice;
 
 import javax.xml.namespace.NamespaceContext;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Scopes;
-import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
@@ -140,7 +137,7 @@ public class ServerModule extends HandlerModule {
 
 		bindHandler(LogoutAction.class, LogoutHandler.class);
 
-		bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
+		// bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
 		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
 		// DAO

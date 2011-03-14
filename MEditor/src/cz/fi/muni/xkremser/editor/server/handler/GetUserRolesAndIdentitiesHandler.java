@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -46,7 +46,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesRes
 public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRolesAndIdentitiesAction, GetUserRolesAndIdentitiesResult> {
 
 	/** The logger. */
-	private final Log logger;
+	private static final Logger LOGGER = Logger.getLogger(GetUserRolesAndIdentitiesHandler.class.getPackage().toString());
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
@@ -65,8 +65,7 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	 *          the user dao
 	 */
 	@Inject
-	public GetUserRolesAndIdentitiesHandler(final Log logger, final EditorConfiguration configuration, final UserDAO userDAO) {
-		this.logger = logger;
+	public GetUserRolesAndIdentitiesHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
 		this.configuration = configuration;
 		this.userDAO = userDAO;
 	}
@@ -83,7 +82,7 @@ public class GetUserRolesAndIdentitiesHandler implements ActionHandler<GetUserRo
 	public GetUserRolesAndIdentitiesResult execute(final GetUserRolesAndIdentitiesAction action, final ExecutionContext context) throws ActionException {
 		if (action.getId() == null)
 			return null;
-		logger.debug("Processing action: GetUserRolesAndIdentitiesAction");
+		LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction");
 		try {
 			return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())), userDAO.getIdentities(action.getId()));
 		} catch (NumberFormatException e) {

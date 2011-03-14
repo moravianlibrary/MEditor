@@ -49,39 +49,9 @@ public class MEditor implements EntryPoint {
 	 */
 	@Override
 	public void onModuleLoad() {
-
-		// IButton adminButton = new IButton("Admin Console");
-		// adminButton.addClickHandler(new ClickHandler() {
-		// @Override
-		// public void onClick(ClickEvent event) {
-		// com.smartgwtee.tools.client.SCEE.openDataSourceConsole();
-		// }
-		// });
-		// adminButton.draw();
-		// FileLoader.cacheImgs(skinImgDir, baseImageURLs)
-
 		DelayedBindRegistry.bind(injector);
-
-		// UserAuthenticationAsync auth = (UserAuthenticationAsync)
-		// GWT.create(UserAuthentication.class);
-		// ServiceDefTarget endpoint = (ServiceDefTarget) auth;
-		// endpoint.setServiceEntryPoint(GWT.getModuleBaseURL() + "auth");
-		//
-		// auth.login("", new AsyncCallback<LoginResult>() {
-		//
-		// @Override
-		// public void onSuccess(LoginResult result) {
-		// redirect(result.getUrl());
-		// }
-		//
-		// @Override
-		// public void onFailure(Throwable caught) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
-
 		injector.getPlaceManager().revealCurrentPlace();
+		// remove progressbar
 		RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
 	}
 

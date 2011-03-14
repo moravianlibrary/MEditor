@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -34,7 +34,6 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleResult;
@@ -46,10 +45,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleResult;
 public class RemoveUserRoleHandler implements ActionHandler<RemoveUserRoleAction, RemoveUserRoleResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(RemoveUserRoleHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	@Inject
@@ -58,15 +54,10 @@ public class RemoveUserRoleHandler implements ActionHandler<RemoveUserRoleAction
 	/**
 	 * Instantiates a new put recently modified handler.
 	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
 	 */
 	@Inject
-	public RemoveUserRoleHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public RemoveUserRoleHandler() {
+
 	}
 
 	/*
@@ -81,7 +72,7 @@ public class RemoveUserRoleHandler implements ActionHandler<RemoveUserRoleAction
 	public RemoveUserRoleResult execute(final RemoveUserRoleAction action, final ExecutionContext context) throws ActionException {
 		if (action.getId() == null)
 			throw new NullPointerException("getId()");
-		logger.debug("Processing action: RemoveUserRoleAction user id:" + action.getId());
+		LOGGER.debug("Processing action: RemoveUserRoleAction user id:" + action.getId());
 		try {
 			userDAO.removeUserRole(Long.parseLong(action.getId()));
 		} catch (NumberFormatException e) {

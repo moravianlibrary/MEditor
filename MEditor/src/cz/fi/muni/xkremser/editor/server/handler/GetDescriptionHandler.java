@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -38,7 +38,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
@@ -50,10 +49,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction, GetDescriptionResult> {
 
 	/** The logger. */
-	private final Log logger;
-
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+	private static final Logger LOGGER = Logger.getLogger(GetDescriptionHandler.class.getPackage().toString());
 
 	/** The recently modified dao. */
 	@Inject
@@ -65,16 +61,9 @@ public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction
 
 	/**
 	 * Instantiates a new put recently modified handler.
-	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
 	 */
 	@Inject
-	public GetDescriptionHandler(final Log logger, final EditorConfiguration configuration) {
-		this.logger = logger;
-		this.configuration = configuration;
+	public GetDescriptionHandler() {
 	}
 
 	/*
@@ -89,7 +78,7 @@ public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction
 	public GetDescriptionResult execute(final GetDescriptionAction action, final ExecutionContext context) throws ActionException {
 		if (action.getUuid() == null || "".equals(action.getUuid()))
 			throw new NullPointerException("getUuid()");
-		logger.debug("Processing action: GetDescription: " + action.getUuid());
+		LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
 		HttpSession session = httpSessionProvider.get();
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		String commonDescription;

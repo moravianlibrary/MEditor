@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -50,21 +48,23 @@ public class PeriodicalItemHandler extends DigitalObjectHandler {
 
 	/** The page handler. */
 	private transient final PageHandler pageHandler;
-	
+
 	/** The int part handler. */
 	private transient final InternalPartHandler intPartHandler;
 
 	/**
 	 * Instantiates a new periodical item handler.
-	 *
-	 * @param logger the logger
-	 * @param fedoraAccess the fedora access
-	 * @param pageHandler the page handler
-	 * @param intPartHandler the int part handler
+	 * 
+	 * @param fedoraAccess
+	 *          the fedora access
+	 * @param pageHandler
+	 *          the page handler
+	 * @param intPartHandler
+	 *          the int part handler
 	 */
 	@Inject
-	public PeriodicalItemHandler(Log logger, @Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler, InternalPartHandler intPartHandler) {
-		super(logger, fedoraAccess);
+	public PeriodicalItemHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess, PageHandler pageHandler, InternalPartHandler intPartHandler) {
+		super(fedoraAccess);
 		this.pageHandler = pageHandler;
 		this.intPartHandler = intPartHandler;
 
