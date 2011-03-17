@@ -58,7 +58,7 @@ public class URLS {
 
 	/** The Constant ROOT. */
 	public static final String ROOT() {
-		return LOCALHOST() ? "" : "/editor";
+		return LOCALHOST() ? "" : "/meditor";
 	}
 
 	// public static final String ROOT = "/skin1";
