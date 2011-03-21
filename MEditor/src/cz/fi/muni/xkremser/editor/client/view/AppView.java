@@ -44,6 +44,7 @@ import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.server.URLS;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -105,7 +106,7 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		topContainer.setWidth100();
 		topContainer.setHeight(45);
 
-		HTMLFlow logo = new HTMLFlow("<a href='/'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
+		HTMLFlow logo = new HTMLFlow("<a href='" + URLS.ROOT() + "'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
 		// Img logo = new Img("logo_bw.png", 140, 40);
 		// Img logo = new Img("mzk_logo.gif", 283, 87);
 		topContainer.addMember(logo);
