@@ -28,10 +28,10 @@ package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.mods.DateOtherTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.YesClient;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 
 // TODO: Auto-generated Javadoc
 /**

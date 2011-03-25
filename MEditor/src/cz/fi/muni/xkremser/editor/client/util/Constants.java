@@ -24,7 +24,7 @@
  *
  * 
  */
-package cz.fi.muni.xkremser.editor.client;
+package cz.fi.muni.xkremser.editor.client.util;
 
 // TODO: Auto-generated Javadoc
 /**

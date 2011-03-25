@@ -39,10 +39,10 @@ import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
-import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoResult;

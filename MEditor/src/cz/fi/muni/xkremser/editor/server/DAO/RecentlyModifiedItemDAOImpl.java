@@ -33,8 +33,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 

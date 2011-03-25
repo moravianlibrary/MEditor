@@ -32,8 +32,8 @@ import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.InputTreeGwtRPCDS;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 
 // TODO: Auto-generated Javadoc

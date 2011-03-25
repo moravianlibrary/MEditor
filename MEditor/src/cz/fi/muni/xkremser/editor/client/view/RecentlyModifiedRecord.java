@@ -28,8 +28,8 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 /**

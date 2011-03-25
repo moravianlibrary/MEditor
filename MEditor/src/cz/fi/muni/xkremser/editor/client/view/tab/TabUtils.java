@@ -54,7 +54,6 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.metadata.AbstractHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AccessConditionHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.AudienceHolder;
@@ -121,6 +120,7 @@ import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.UnstructuredTextClient;
 import cz.fi.muni.xkremser.editor.client.mods.UrlTypeClient;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 
 // TODO: Auto-generated Javadoc
 /**

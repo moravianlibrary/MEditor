@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.widgets.tile.TileRecord;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 /**

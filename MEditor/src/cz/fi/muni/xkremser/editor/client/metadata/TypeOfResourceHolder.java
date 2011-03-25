@@ -30,9 +30,9 @@ import java.util.List;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.YesClient;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 
 // TODO: Auto-generated Javadoc
 /**

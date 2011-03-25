@@ -28,6 +28,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.MonographDetail;

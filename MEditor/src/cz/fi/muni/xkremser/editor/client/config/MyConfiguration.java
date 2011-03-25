@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.client.config;
 
 import java.util.Map;
 
-import cz.fi.muni.xkremser.editor.client.ClientUtils;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 
 // TODO: Auto-generated Javadoc
 /**

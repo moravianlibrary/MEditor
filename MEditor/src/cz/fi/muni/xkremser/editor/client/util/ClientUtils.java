@@ -24,7 +24,7 @@
  *
  * 
  */
-package cz.fi.muni.xkremser.editor.client;
+package cz.fi.muni.xkremser.editor.client.util;
 
 import java.util.ArrayList;
 import java.util.List;

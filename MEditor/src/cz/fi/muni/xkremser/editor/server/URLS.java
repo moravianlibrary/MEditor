@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.client.Constants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
