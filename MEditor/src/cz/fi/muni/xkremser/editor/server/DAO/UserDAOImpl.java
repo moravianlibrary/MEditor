@@ -139,7 +139,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				userId = rs.getLong("id");
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -174,7 +174,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				retList.add(new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs.getBoolean("sex") ? "m" : "f", rs.getString("id")));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -200,7 +200,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			deleteSt.setLong(1, id);
 			deleteSt.executeUpdate();
 		} catch (SQLException e) {
-			LOGGER.error("Could not delete user with id " + id, e);
+			LOGGER.error("Could not delete user with id " + id + ". Query: " + deleteSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -226,23 +226,24 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		String retID = "exist";
+		PreparedStatement insSt = null, updSt = null, seqSt = null;
 		try {
 			// TX start
 			int modified = 0;
 			if (user.getId() != null) { // is allready in DB
 				long id = Long.parseLong(user.getId());
-				PreparedStatement updSt = getConnection().prepareStatement(UPDATE_USER_STATEMENT);
+				updSt = getConnection().prepareStatement(UPDATE_USER_STATEMENT);
 				updSt.setString(1, user.getName());
 				updSt.setString(2, user.getSurname());
 				updSt.setLong(3, id);
 				modified = updSt.executeUpdate();
 			} else {
-				PreparedStatement insSt = getConnection().prepareStatement(INSERT_USER_STATEMENT);
+				insSt = getConnection().prepareStatement(INSERT_USER_STATEMENT);
 				insSt.setString(1, user.getName());
 				insSt.setString(2, user.getSurname());
 				insSt.setBoolean(3, "m".equalsIgnoreCase(user.getSex()));
 				modified = insSt.executeUpdate();
-				PreparedStatement seqSt = getConnection().prepareStatement(USER_CURR_VALUE);
+				seqSt = getConnection().prepareStatement(USER_CURR_VALUE);
 				ResultSet rs = seqSt.executeQuery();
 				while (rs.next()) {
 					retID = rs.getString(1);
@@ -250,10 +251,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			}
 			if (modified == 1) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Queries: \"" + seqSt + "\" and \"" + (user.getId() != null ? updSt : insSt) + "\"");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.debug("DB has not been updated. -> rollback! Queries: \"" + seqSt + "\" and \"" + (user.getId() != null ? updSt : insSt) + "\"");
 				retID = "error";
 			}
 			// TX end
@@ -289,7 +290,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				retList.add(new RoleItem(rs.getString("name"), rs.getString("description"), rs.getString("id")));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -319,7 +320,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				retList.add(new OpenIDItem(rs.getString("identity"), rs.getString("id")));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -346,24 +347,25 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		String retID = "exist";
+		PreparedStatement insSt = null, seqSt = null;
 		try {
 			// TX start
 			int modified = 0;
-			PreparedStatement insSt = getConnection().prepareStatement(INSERT_IDENTITY_STATEMENT);
+			insSt = getConnection().prepareStatement(INSERT_IDENTITY_STATEMENT);
 			insSt.setLong(1, userId);
 			insSt.setString(2, identity.getIdentity());
 			modified = insSt.executeUpdate();
-			PreparedStatement seqSt = getConnection().prepareStatement(USER_IDENTITY_VALUE);
+			seqSt = getConnection().prepareStatement(USER_IDENTITY_VALUE);
 			ResultSet rs = seqSt.executeQuery();
 			while (rs.next()) {
 				retID = rs.getString(1);
 			}
 			if (modified == 1) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Queries: \"" + seqSt + "\" and \"" + insSt + "\"");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.debug("DB has not been updated -> rollback! Queries: \"" + seqSt + "\" and \"" + insSt + "\"");
 				retID = "error";
 			}
 			// TX end
@@ -390,7 +392,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			deleteSt.setLong(1, id);
 			deleteSt.executeUpdate();
 		} catch (SQLException e) {
-			LOGGER.error("Could not delete openID identity with id " + id, e);
+			LOGGER.error("Could not delete openID identity with id " + id + ". Query: " + deleteSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -421,6 +423,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 		}
 		String retID = "exist";
 		String roleDesc = "";
+		PreparedStatement seqSt = null, roleDescSt = null;
 		try {
 			// TX start
 			int modified = 0;
@@ -428,12 +431,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			insSt.setLong(1, userId);
 			insSt.setString(2, role.getName());
 			modified = insSt.executeUpdate();
-			PreparedStatement seqSt = getConnection().prepareStatement(USER_ROLE_VALUE);
+			seqSt = getConnection().prepareStatement(USER_ROLE_VALUE);
 			ResultSet rs = seqSt.executeQuery();
 			while (rs.next()) {
 				retID = rs.getString(1);
 			}
-			PreparedStatement roleDescSt = getConnection().prepareStatement(SELECT_ROLE_DESCRIPTION);
+			roleDescSt = getConnection().prepareStatement(SELECT_ROLE_DESCRIPTION);
 			roleDescSt.setString(1, role.getName());
 			ResultSet rs2 = roleDescSt.executeQuery();
 			while (rs2.next()) {
@@ -441,10 +444,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			}
 			if (modified == 1) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Queries: \"" + seqSt + "\" and \"" + roleDescSt + "\"");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.error("DB has not been updated -> rollback! Queries: \"" + seqSt + "\" and \"" + roleDescSt + "\"");
 				retID = "error";
 			}
 			// TX end
@@ -473,7 +476,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 			deleteSt.setLong(1, id);
 			deleteSt.executeUpdate();
 		} catch (SQLException e) {
-			LOGGER.error("Could not delete user_in_role item with id " + id, e);
+			LOGGER.error("Could not delete user_in_role item with id " + id + ". Query: " + deleteSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -519,7 +522,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				retList.add(rs.getString("name"));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -548,7 +551,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				name = rs.getString("name") + " " + rs.getString("surname");
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -579,7 +582,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 				ret = true;
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}

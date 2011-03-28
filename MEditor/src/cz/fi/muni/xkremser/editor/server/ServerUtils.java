@@ -26,6 +26,13 @@
  */
 package cz.fi.muni.xkremser.editor.server;
 
+import javax.servlet.http.HttpSession;
+
+import com.google.inject.Provider;
+import com.gwtplatform.dispatch.shared.ActionException;
+
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ServerUtils.
@@ -51,6 +58,16 @@ public class ServerUtils {
 			aux = aux.getCause();
 		}
 		return false;
+	}
+
+	public static void checkExpiredSession(Provider<HttpSession> httpSessionProvider) throws ActionException {
+		checkExpiredSession(httpSessionProvider.get());
+	}
+
+	public static void checkExpiredSession(HttpSession session) throws ActionException {
+		if (session.getAttribute(HttpCookies.SESSION_ID_KEY) == null) {
+			throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+		}
 	}
 
 }

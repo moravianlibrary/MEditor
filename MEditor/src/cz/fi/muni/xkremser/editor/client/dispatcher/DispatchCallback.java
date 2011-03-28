@@ -26,8 +26,12 @@
  */
 package cz.fi.muni.xkremser.editor.client.dispatcher;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
+
+import cz.fi.muni.xkremser.editor.client.MEditor;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -82,8 +86,24 @@ public abstract class DispatchCallback<T> implements AsyncCallback<T> {
 	 * @param t
 	 *          the t
 	 */
-	public void callbackError(Throwable t) {
-		t.printStackTrace();
-		Window.alert("RPC failed: " + t.toString());
+	public void callbackError(final Throwable t) {
+		String msg = null;
+		final boolean redirect = (t.getMessage() != null && t.getMessage().length() > 0 && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG);
+		if (redirect) {
+			msg = "Session has expired. Do you want to be redirected to login page?";
+		}
+		SC.confirm((redirect ? "" : "RPC failed:" + t.getMessage()) + (msg == null ? "" : msg), new BooleanCallback() {
+			@Override
+			public void execute(Boolean value) {
+				if (value != null && value) {
+					if (redirect) {
+						MEditor.redirect(t.getMessage().substring(1));
+					}
+				} else {
+
+				}
+			}
+		});
+
 	}
 }

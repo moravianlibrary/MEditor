@@ -203,7 +203,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public Document getBiblioMods(String uuid) throws IOException {
 		String biblioModsUrl = biblioMods(uuid);
-		LOGGER.info("Reading bibliomods +" + biblioModsUrl);
+		LOGGER.debug("Reading bibliomods +" + biblioModsUrl);
 		InputStream docStream = RESTHelper.inputStream(biblioModsUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		if (docStream == null)
 			return null;
@@ -230,7 +230,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public Document getDC(String uuid) throws IOException {
 		String dcUrl = dc(uuid);
-		LOGGER.info("Reading dc +" + dcUrl);
+		LOGGER.debug("Reading dc +" + dcUrl);
 		InputStream docStream = RESTHelper.inputStream(dcUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
 		if (docStream == null)
 			return null;
@@ -257,7 +257,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public String getOcr(String uuid) {
 		String ocrUrl = ocr(uuid);
-		LOGGER.info("Reading OCR +" + ocrUrl);
+		LOGGER.debug("Reading OCR +" + ocrUrl);
 		InputStream docStream = null;
 		try {
 			docStream = RESTHelper.inputStream(ocrUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
@@ -333,7 +333,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 					PIDParser pidParser = new PIDParser(attVal);
 					pidParser.disseminationURI();
 					String objectId = pidParser.getNamespaceId() + ":" + pidParser.getObjectId();
-					// LOGGER.info("processing uuid =" +objectId);
+					// LOGGER.debug("processing uuid =" +objectId);
 					Document relsExt = getRelsExt(objectId);
 					breakProcess = processRelsExtInternal(relsExt.getDocumentElement(), handler, level + 1);
 				}
@@ -342,7 +342,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 			}
 
 			if (breakProcess) {
-				LOGGER.info("Process has been borken");
+				LOGGER.info("Process has been broken");
 				return breakProcess;
 			}
 			NodeList childNodes = topElem.getChildNodes();
@@ -401,7 +401,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 */
 	@Override
 	public void processRelsExt(String uuid, RelsExtHandler handler) throws IOException {
-		LOGGER.info("processing uuid =" + uuid);
+		LOGGER.debug("processing uuid =" + uuid);
 		processRelsExt(getRelsExt(uuid), handler);
 	}
 
@@ -1132,7 +1132,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public boolean isDigitalObjectPresent(String uuid) {
 		String objUrl = obj(uuid);
-		LOGGER.info("Reading dc +" + objUrl);
+		LOGGER.debug("Reading dc +" + objUrl);
 		byte[] bytes = null;
 		try {
 			bytes = getAPIM().getObjectXML(uuid);
@@ -1153,7 +1153,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public String getFOXML(String uuid) {
 		String objUrl = objFoxml(uuid);
-		LOGGER.info("Reading foxml +" + objUrl);
+		LOGGER.debug("Reading foxml +" + objUrl);
 		InputStream docStream = null;
 		try {
 			docStream = RESTHelper.inputStream(objUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());

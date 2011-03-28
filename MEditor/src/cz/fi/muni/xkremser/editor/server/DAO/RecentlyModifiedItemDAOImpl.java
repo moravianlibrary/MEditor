@@ -106,6 +106,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 
 			PreparedStatement findSt = getConnection().prepareStatement(FIND_ITEM_STATEMENT);
+			PreparedStatement statement = null;
 			findSt.setString(1, toPut.getUuid());
 			findSt.setString(2, openID);
 			ResultSet rs = findSt.executeQuery();
@@ -115,24 +116,24 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			int modified = 0;
 			if (found) { // is allready in DB
 				int id = rs.getInt(1);
-				PreparedStatement updSt = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
-				updSt.setInt(1, id);
-				modified = updSt.executeUpdate();
+				statement = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
+				statement.setInt(1, id);
+				modified = statement.executeUpdate();
 			} else {
-				PreparedStatement insSt = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
-				insSt.setString(1, toPut.getUuid());
-				insSt.setString(2, toPut.getName() == null ? "" : toPut.getName());
-				insSt.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
-				insSt.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model
-				insSt.setString(5, openID);
-				modified = insSt.executeUpdate();
+				statement = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
+				statement.setString(1, toPut.getUuid());
+				statement.setString(2, toPut.getName() == null ? "" : toPut.getName());
+				statement.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
+				statement.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model
+				statement.setString(5, openID);
+				modified = statement.executeUpdate();
 			}
 			if (modified == 1) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Queries: \"" + findSt + "\" and \"" + statement + "\"");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.error("DB has not been updated -> rollback! Queries: \"" + findSt + "\" and \"" + statement + "\"");
 				found = false;
 			}
 			// TX end
@@ -177,7 +178,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 						.values()[modelId]));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -207,21 +208,22 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		try {
 
 			PreparedStatement findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
+			PreparedStatement updSt = null;
 			findSt.setString(1, uuid);
 			ResultSet rs = findSt.executeQuery();
 			found = rs.next();
 			// TX start
 			int modified = 0;
-			PreparedStatement updSt = getConnection().prepareStatement(found ? UPDATE_COMMON_DESCRIPTION_STATEMENT : INSERT_COMMON_DESCRIPTION_STATEMENT);
+			updSt = getConnection().prepareStatement(found ? UPDATE_COMMON_DESCRIPTION_STATEMENT : INSERT_COMMON_DESCRIPTION_STATEMENT);
 			updSt.setString(1, description);
 			updSt.setString(2, uuid);
 			modified = updSt.executeUpdate();
 			if (modified == 1) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Queries: \"" + findSt + "\" and \"" + updSt + "\"");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.error("DB has not been updated -> rollback! Queries: \"" + findSt + "\" and \"" + updSt + "\"");
 				found = false;
 			}
 			// TX end
@@ -246,13 +248,14 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		if (uuid == null)
 			throw new NullPointerException("uuid");
 		String description = null;
+		PreparedStatement findSt = null;
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
 			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		try {
-			PreparedStatement findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
+			findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
 			findSt.setString(1, uuid);
 			ResultSet rs = findSt.executeQuery();
 
@@ -260,7 +263,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 				description = rs.getString("description");
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + findSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -297,10 +300,10 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 
 			if (modified == 1) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Query: \"" + updSt + "\"");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.error("DB has not been updated -> rollback!  Query: \"" + updSt + "\"");
 				found = false;
 			}
 			// TX end
@@ -324,13 +327,14 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 		if (uuid == null)
 			throw new NullPointerException("uuid");
 		String description = null;
+		PreparedStatement findSt = null;
 		try {
 			getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
 			LOGGER.warn("Unable to set autocommit off", e);
 		}
 		try {
-			PreparedStatement findSt = getConnection().prepareStatement(SELECT_USER_DESCRIPTION_STATEMENT);
+			findSt = getConnection().prepareStatement(SELECT_USER_DESCRIPTION_STATEMENT);
 			findSt.setString(1, uuid);
 			findSt.setString(2, openID);
 			ResultSet rs = findSt.executeQuery();
@@ -339,7 +343,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 				description = rs.getString("description");
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + findSt, e);
 		} finally {
 			closeConnection();
 		}

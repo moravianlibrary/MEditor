@@ -26,13 +26,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserIdentityAction;
@@ -50,6 +54,10 @@ public class PutUserIdentityHandler implements ActionHandler<PutUserIdentityActi
 	/** The recently modified dao. */
 	@Inject
 	private UserDAO userDAO;
+
+	/** The http session provider. */
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new put recently modified handler.
@@ -79,6 +87,8 @@ public class PutUserIdentityHandler implements ActionHandler<PutUserIdentityActi
 		if (action.getUserId() == null || "".equals(action.getUserId()))
 			throw new NullPointerException("getUserId()");
 		LOGGER.debug("Processing action: PutUserIdentityAction identity:" + action.getIdentity());
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
 		String id;
 		try {
 			id = userDAO.addUserIdentity(action.getIdentity(), Long.parseLong(action.getUserId()));

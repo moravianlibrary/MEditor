@@ -26,13 +26,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -53,6 +57,9 @@ public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestIte
 
 	/** The recently modified dao. */
 	private final RequestDAO requestDAO;
+
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new gets the recently modified handler.
@@ -81,6 +88,7 @@ public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestIte
 	@Override
 	public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action, final ExecutionContext context) throws ActionException {
 		LOGGER.debug("Processing action: GetAllRequestItemsAction");
+		ServerUtils.checkExpiredSession(httpSessionProvider);
 		try {
 			return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
 		} catch (DatabaseException e) {

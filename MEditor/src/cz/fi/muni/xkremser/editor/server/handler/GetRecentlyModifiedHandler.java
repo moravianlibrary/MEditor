@@ -37,6 +37,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -90,6 +91,8 @@ public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModi
 		String openID = null;
 		if (!action.isForAllUsers()) {
 			HttpSession session = httpSessionProvider.get();
+			ServerUtils.checkExpiredSession(session);
+
 			openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		}
 		try {

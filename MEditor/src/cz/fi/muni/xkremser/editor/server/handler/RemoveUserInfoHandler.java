@@ -26,13 +26,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
@@ -64,6 +68,10 @@ public class RemoveUserInfoHandler implements ActionHandler<RemoveUserInfoAction
 
 	}
 
+	/** The http session provider. */
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -77,6 +85,8 @@ public class RemoveUserInfoHandler implements ActionHandler<RemoveUserInfoAction
 		if (action.getId() == null)
 			throw new NullPointerException("getId()");
 		LOGGER.debug("Processing action: RemoveUserInfoAction user id:" + action.getId());
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
 		try {
 			userDAO.removeUser(Long.parseLong(action.getId()));
 		} catch (NumberFormatException e) {

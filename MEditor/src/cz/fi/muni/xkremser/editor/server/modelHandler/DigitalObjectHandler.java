@@ -213,18 +213,8 @@ public class DigitalObjectHandler implements CanGetObject {
 		Document modsDocument = null;
 		try {
 			modsDocument = getFedoraAccess().getBiblioMods(uuid);
-			// File file = new
-			// File("/home/kremser/workspace/MEditor/test/cz/fi/muni/xkremser/editor/client/Website_mods.xml");
-			// DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			// dbf.setNamespaceAware(true);
-			// DocumentBuilder db = dbf.newDocumentBuilder();
-			// Document mockModsDocument = db.parse(file);
-			// long start = System.currentTimeMillis();
-			// mods = BiblioModsUtils.getMods(mockModsDocument);
 			mods = BiblioModsUtils.getMods(modsDocument);
 			modsClient = BiblioModsUtils.toModsClient(mods);
-			// System.out.println("duration: " + (System.currentTimeMillis() - start)
-			// + " ms.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) { // TODO: remove

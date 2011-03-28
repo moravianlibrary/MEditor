@@ -96,10 +96,10 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 			}
 			if (totalBefore == deleted && updated == toUpdate.size()) {
 				getConnection().commit();
-				LOGGER.debug("DB has been updated. -> commit");
+				LOGGER.debug("DB has been updated. Queries: \"" + selectCount + "\" and \"" + deleteSt + "\".");
 			} else {
 				getConnection().rollback();
-				LOGGER.debug("DB has not been updated. -> rollback");
+				LOGGER.error("DB has not been updated -> rollback! Queries: \"" + selectCount + "\" and \"" + deleteSt + "\".");
 			}
 			// TX end
 		} catch (SQLException e) {
@@ -126,7 +126,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 			itemStmt.setString(2, item.getIssn());
 			itemStmt.setString(3, item.getName());
 		} catch (SQLException ex) {
-			LOGGER.error("Could not get insert item statement", ex);
+			LOGGER.error("Could not get insert item statement " + itemStmt, ex);
 		}
 		return itemStmt;
 	}
@@ -146,7 +146,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 		try {
 			findSt = getConnection().prepareStatement(top ? FIND_ITEMS_ON_TOP_LVL_STATEMENT : FIND_ITEMS_BY_PATH_STATEMENT);
 		} catch (SQLException e) {
-			LOGGER.error("Could not get find items statement", e);
+			LOGGER.error("Could not get find items statement " + findSt, e);
 		}
 		try {
 			findSt.setString(1, prefix + '/');
@@ -159,7 +159,7 @@ public class InputQueueItemDAOImpl extends AbstractDAO implements InputQueueItem
 				retList.add(new InputQueueItem(rs.getString("path"), rs.getString("issn"), rs.getString("name")));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + findSt, e);
 		} finally {
 			closeConnection();
 		}

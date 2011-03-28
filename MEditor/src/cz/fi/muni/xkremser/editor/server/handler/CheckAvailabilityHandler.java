@@ -31,13 +31,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailability;
@@ -55,6 +59,10 @@ public class CheckAvailabilityHandler implements ActionHandler<CheckAvailability
 
 	/** The configuration. */
 	private final EditorConfiguration configuration;
+
+	/** The http session provider. */
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new put recently modified handler.
@@ -86,6 +94,8 @@ public class CheckAvailabilityHandler implements ActionHandler<CheckAvailability
 			}
 			LOGGER.debug("Processing action: CheckAvailability: " + serverName);
 		}
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
 		boolean status = true;
 		String url = null;
 		String usr = "";

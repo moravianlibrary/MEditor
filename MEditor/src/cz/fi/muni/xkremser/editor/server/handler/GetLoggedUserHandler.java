@@ -37,6 +37,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
@@ -83,6 +84,8 @@ public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, 
 	public GetLoggedUserResult execute(final GetLoggedUserAction action, final ExecutionContext context) throws ActionException {
 		LOGGER.debug("Processing action: GetLoggedUserAction");
 		HttpSession session = httpSessionProvider.get();
+		ServerUtils.checkExpiredSession(session);
+
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		boolean editUsers;
 		try {

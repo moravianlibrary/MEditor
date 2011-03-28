@@ -63,6 +63,7 @@ import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -172,6 +173,8 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		if (action == null || action.getDetail() == null)
 			throw new NullPointerException("getDetail()");
 		HttpSession session = httpSessionProvider.get();
+		ServerUtils.checkExpiredSession(session);
+
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		boolean write = false;
 		try {

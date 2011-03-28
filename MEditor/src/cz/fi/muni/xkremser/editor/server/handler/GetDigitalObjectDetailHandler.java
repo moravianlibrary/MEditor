@@ -40,7 +40,6 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
-import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
@@ -89,13 +88,8 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 		LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
 
 		try {
+			ServerUtils.checkExpiredSession(httpSessionProvider);
 			AbstractDigitalObjectDetail obj = handler.getDigitalObject(uuid, true);
-			// String title = obj.getDc().getTitle() == null ? "no title" :
-			// obj.getDc().getTitle().get(0);
-			HttpSession session = httpSessionProvider.get();
-			String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-			// recentlyModifiedItemDAO.put(new RecentlyModifiedItem(uuid, title, "",
-			// obj.getModel()), openID);
 			return new GetDigitalObjectDetailResult(obj, action.isRefreshIn());
 		} catch (IOException e) {
 			String msg = null;

@@ -63,7 +63,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 			deleteSt.setLong(1, id);
 			deleteSt.executeUpdate();
 		} catch (SQLException e) {
-			LOGGER.error("Could not delete request for adding with id " + id, e);
+			LOGGER.error("Could not delete request for adding with id " + id + " Query: " + deleteSt, e);
 		} finally {
 			closeConnection();
 		}
@@ -77,20 +77,29 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 			throw new NullPointerException("openID");
 
 		boolean found = false;
+
 		try {
-			PreparedStatement findSt = getConnection().prepareStatement(SELECT_IDENTITY_STATEMENT);
+			getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			LOGGER.warn("Unable to set autocommit off", e);
+		}
+		PreparedStatement findSt = null, insSt = null;
+		try {
+			// TX start
+			findSt = getConnection().prepareStatement(SELECT_IDENTITY_STATEMENT);
 			findSt.setString(1, openID);
 			ResultSet rs = findSt.executeQuery();
 			found = rs.next();
 			if (!found) {
-				PreparedStatement insSt = getConnection().prepareStatement(INSERT_IDENTITY_STATEMENT);
+				insSt = getConnection().prepareStatement(INSERT_IDENTITY_STATEMENT);
 				insSt.setString(1, name);
 				insSt.setString(2, openID);
 				insSt.executeUpdate();
 			}
-
+			getConnection().commit();
+			// TX end
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Queries: \"" + findSt + "\" and \"" + insSt + "\"", e);
 		} finally {
 			closeConnection();
 		}
@@ -110,11 +119,10 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 			ResultSet rs = selectSt.executeQuery();
 			while (rs.next()) {
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-				System.out.println(formatter.format(rs.getTimestamp("modified")));
 				retList.add(new RequestItem(rs.getLong("id"), rs.getString("name"), rs.getString("identity"), formatter.format(rs.getTimestamp("modified"))));
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error("Query: " + selectSt, e);
 		} finally {
 			closeConnection();
 		}

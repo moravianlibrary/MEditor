@@ -37,6 +37,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
@@ -80,6 +81,7 @@ public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction
 			throw new NullPointerException("getUuid()");
 		LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
 		HttpSession session = httpSessionProvider.get();
+		ServerUtils.checkExpiredSession(session);
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		String commonDescription;
 		String userDescription;

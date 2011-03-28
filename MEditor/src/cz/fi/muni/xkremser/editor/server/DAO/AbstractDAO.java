@@ -54,6 +54,8 @@ public class AbstractDAO {
 	/** The logger. */
 	private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
+	private static final String DRIVER = "org.postgresql.Driver";
+
 	/**
 	 * Inits the connection.
 	 * 
@@ -61,9 +63,9 @@ public class AbstractDAO {
 	 */
 	private void initConnection() throws DatabaseException {
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DRIVER);
 		} catch (ClassNotFoundException ex) {
-			LOGGER.error("Could not find the driver", ex);
+			LOGGER.error("Could not find the driver " + DRIVER, ex);
 		}
 		if (conf == null) { // called from GWT module without injection support
 			conf = new EditorConfigurationImpl();
@@ -79,7 +81,6 @@ public class AbstractDAO {
 		}
 		try {
 			conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, login, password);
-
 		} catch (SQLException ex) {
 			LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "'", ex);
 			throw new DatabaseException("Unable to connect to database.");

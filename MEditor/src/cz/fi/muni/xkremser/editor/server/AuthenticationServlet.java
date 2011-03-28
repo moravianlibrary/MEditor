@@ -27,6 +27,8 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -66,6 +68,8 @@ public class AuthenticationServlet extends HttpServlet {
 	/** The configuration. */
 	@Inject
 	private static EditorConfiguration configuration;
+
+	private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	/*
 	 * (non-Javadoc)
@@ -117,7 +121,7 @@ public class AuthenticationServlet extends HttpServlet {
 				+ (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT()
 				+ (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
 		if (identifier != null && !"".equals(identifier)) {
-			ACCESS_LOGGER.info("User " + name + " with openID " + identifier + " is trying to log in.");
+			ACCESS_LOGGER.info("LOG IN: User " + name + " with openID " + identifier + " and IP " + req.getRemoteAddr() + " at " + FORMATTER.format(new Date()));
 			int userStatus = UserDAO.UNKNOWN;
 			try {
 				userStatus = userDAO.isSupported(identifier);

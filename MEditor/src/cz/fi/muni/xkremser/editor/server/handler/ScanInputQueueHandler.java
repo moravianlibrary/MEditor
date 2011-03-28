@@ -31,9 +31,12 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -41,6 +44,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -75,6 +79,10 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	@Inject
 	private InputQueueItemDAO inputQueueDAO;
 
+	/** The http session provider. */
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
+
 	/**
 	 * Instantiates a new scan input queue handler.
 	 * 
@@ -101,6 +109,8 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 		final boolean refresh = action.isRefresh();
 		final String base = configuration.getScanInputQueuePath();
 		LOGGER.debug("Processing input queue: " + base + id);
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
 		ScanInputQueueResult result = null;
 
 		if (!refresh) {

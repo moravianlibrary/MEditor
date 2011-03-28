@@ -26,7 +26,11 @@
 		<listener-class>cz.fi.muni.xkremser.editor.server.guice.MyGuiceServletConfig</listener-class>
 	</listener>
 
-	<!-- authentication serlet -->
+	<listener>
+		<listener-class>cz.fi.muni.xkremser.editor.server.SessionListener</listener-class>
+	</listener>
+
+	<!-- authentication servlet -->
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
 		<servlet-class>cz.fi.muni.xkremser.editor.server.AuthenticationServlet</servlet-class>
@@ -37,7 +41,7 @@
 		<url-pattern>/auth/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- request 4 adding serlet -->
+	<!-- request 4 adding servlet -->
 	<servlet>
 		<servlet-name>request4adding</servlet-name>
 		<servlet-class>cz.fi.muni.xkremser.editor.server.RequestForAddingServiceImpl</servlet-class>
@@ -47,7 +51,7 @@
 		<servlet-name>request4adding</servlet-name>
 		<url-pattern>/request/ask</url-pattern>
 	</servlet-mapping>
-	
+
 
 
 	<!-- Remote logging agent for gwt-log -->
@@ -81,7 +85,7 @@
 	</servlet-mapping>
 
 	<session-config>
-		<session-timeout>30</session-timeout>
+		<session-timeout>45</session-timeout>
 	</session-config>
 
 	<welcome-file-list>

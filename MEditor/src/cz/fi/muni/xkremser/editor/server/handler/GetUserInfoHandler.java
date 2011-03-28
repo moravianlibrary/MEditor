@@ -26,13 +26,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -53,6 +57,10 @@ public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetU
 
 	/** The recently modified dao. */
 	private final UserDAO userDAO;
+
+	/** The http session provider. */
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new gets the recently modified handler.
@@ -81,6 +89,8 @@ public class GetUserInfoHandler implements ActionHandler<GetUserInfoAction, GetU
 	@Override
 	public GetUserInfoResult execute(final GetUserInfoAction action, final ExecutionContext context) throws ActionException {
 		LOGGER.debug("Processing action: GetUserInfoAction");
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
 		try {
 			return new GetUserInfoResult(userDAO.getUsers());
 		} catch (DatabaseException e) {

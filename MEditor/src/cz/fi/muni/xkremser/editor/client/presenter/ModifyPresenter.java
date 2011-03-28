@@ -63,6 +63,7 @@ import com.smartgwt.client.widgets.tile.TileGrid;
 
 import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
@@ -506,17 +507,26 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 			}
 
 			@Override
-			public void callbackError(Throwable t) {
-				SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
-					@Override
-					public void execute(Boolean value) {
-						if (value != null && value) {
-							getObject(forcedRefresh);
-						} else {
-							// labelAnswer.setContents("No");
+			public void callbackError(final Throwable t) {
+				if (t.getMessage() != null && t.getMessage().length() > 0 && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+					SC.confirm("Session has expired. Do you want to be redirected to login page?", new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value != null && value) {
+								MEditor.redirect(t.getMessage().substring(1));
+							}
 						}
-					}
-				});
+					});
+				} else {
+					SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value != null && value) {
+								getObject(forcedRefresh);
+							}
+						}
+					});
+				}
 				getView().getPopupPanel().setVisible(false);
 				getView().getPopupPanel().hide();
 			}

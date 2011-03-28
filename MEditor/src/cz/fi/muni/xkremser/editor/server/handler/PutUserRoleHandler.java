@@ -26,13 +26,17 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
@@ -51,6 +55,10 @@ public class PutUserRoleHandler implements ActionHandler<PutUserRoleAction, PutU
 	/** The recently modified dao. */
 	@Inject
 	private UserDAO userDAO;
+
+	/** The http session provider. */
+	@Inject
+	private Provider<HttpSession> httpSessionProvider;
 
 	/**
 	 * Instantiates a new put recently modified handler.
@@ -75,6 +83,8 @@ public class PutUserRoleHandler implements ActionHandler<PutUserRoleAction, PutU
 		if (action.getUserId() == null || "".equals(action.getUserId()))
 			throw new NullPointerException("getUserId()");
 		LOGGER.debug("Processing action: PutUserRoleAction role:" + action.getRole());
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
 		RoleItem role;
 		try {
 			role = userDAO.addUserRole(action.getRole(), Long.parseLong(action.getUserId()));

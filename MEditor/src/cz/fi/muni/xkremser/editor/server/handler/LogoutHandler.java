@@ -26,6 +26,10 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -37,6 +41,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
@@ -51,9 +56,12 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 	/** The logger. */
 	private static final Logger LOGGER = Logger.getLogger(LogoutHandler.class.getPackage().toString());
 	private static final Logger ACCESS_LOGGER = Logger.getLogger(Constants.ACCESS_LOG_ID);
+	private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
 	/** The http session provider. */
 	private final Provider<HttpSession> httpSessionProvider;
+
+	private final Provider<HttpServletRequest> reqProvider;
 
 	/**
 	 * Instantiates a new put recently modified handler.
@@ -62,8 +70,9 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 	 *          the http session provider
 	 */
 	@Inject
-	public LogoutHandler(Provider<HttpSession> httpSessionProvider) {
+	public LogoutHandler(Provider<HttpSession> httpSessionProvider, Provider<HttpServletRequest> reqProvider) {
 		this.httpSessionProvider = httpSessionProvider;
+		this.reqProvider = reqProvider;
 	}
 
 	/*
@@ -78,9 +87,12 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 	public LogoutResult execute(final LogoutAction action, final ExecutionContext context) throws ActionException {
 		HttpSession session = httpSessionProvider.get();
 		LOGGER.debug("Processing action: LogoutAction");
-		ACCESS_LOGGER.info("User " + session.getAttribute(HttpCookies.NAME_KEY) + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY)
-				+ " is trying to log out.");
+		ServerUtils.checkExpiredSession(httpSessionProvider);
+
+		ACCESS_LOGGER.info("LOG OUT: User " + session.getAttribute(HttpCookies.NAME_KEY) + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY)
+				+ " and IP " + reqProvider.get().getRemoteAddr() + " at " + FORMATTER.format(new Date()));
 		session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
+		session.invalidate();
 		return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
 	}
 

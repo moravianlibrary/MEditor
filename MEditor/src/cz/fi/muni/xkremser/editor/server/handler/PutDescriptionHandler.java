@@ -37,6 +37,7 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
@@ -83,6 +84,8 @@ public class PutDescriptionHandler implements ActionHandler<PutDescriptionAction
 			throw new NullPointerException("getDescription()");
 		LOGGER.debug("Processing action: PutDescription: " + action.getUuid());
 		HttpSession session = httpSessionProvider.get();
+		ServerUtils.checkExpiredSession(session);
+
 		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 		try {
 			if (action.isCommon()) {
