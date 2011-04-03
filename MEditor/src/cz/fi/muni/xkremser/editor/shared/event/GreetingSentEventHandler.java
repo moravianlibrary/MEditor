@@ -36,8 +36,9 @@ public interface GreetingSentEventHandler extends EventHandler {
 
 	/**
 	 * On greeting sent.
-	 *
-	 * @param event the event
+	 * 
+	 * @param event
+	 *          the event
 	 */
 	void onGreetingSent(GreetingSentEvent event);
 

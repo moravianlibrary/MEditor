@@ -53,10 +53,13 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Instantiates a new role item.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param id the id
+	 * 
+	 * @param name
+	 *          the name
+	 * @param description
+	 *          the description
+	 * @param id
+	 *          the id
 	 */
 	public RoleItem(String name, String description, String id) {
 		super();
@@ -67,7 +70,7 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -76,8 +79,9 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -85,7 +89,7 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Gets the description.
-	 *
+	 * 
 	 * @return the description
 	 */
 	public String getDescription() {
@@ -94,8 +98,9 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Sets the description.
-	 *
-	 * @param description the new description
+	 * 
+	 * @param description
+	 *          the new description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -103,7 +108,7 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -112,14 +117,17 @@ public class RoleItem implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -130,7 +138,9 @@ public class RoleItem implements IsSerializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

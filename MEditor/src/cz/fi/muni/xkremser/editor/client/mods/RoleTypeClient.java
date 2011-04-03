@@ -67,9 +67,8 @@ public class RoleTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 *
-	 * @return the role term
-	 * {@link RoleType.RoleTerm }
+	 * 
+	 * @return the role term {@link RoleType.RoleTerm }
 	 */
 	public List<RoleTypeClient.RoleTermClient> getRoleTerm() {
 		return this.roleTerm;
@@ -77,8 +76,9 @@ public class RoleTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the role term.
-	 *
-	 * @param roleTerm the new role term
+	 * 
+	 * @param roleTerm
+	 *          the new role term
 	 */
 	public void setRoleTerm(List<RoleTypeClient.RoleTermClient> roleTerm) {
 		this.roleTerm = roleTerm;

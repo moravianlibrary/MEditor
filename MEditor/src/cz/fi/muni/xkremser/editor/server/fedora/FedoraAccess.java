@@ -346,52 +346,62 @@ public interface FedoraAccess {
 
 	/**
 	 * Gets the int comp parts uuid.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the int comp parts uuid
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public List<String> getIntCompPartsUuid(String uuid) throws IOException;
 
 	/**
 	 * Gets the monograph units uuid.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the monograph units uuid
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException;
 
 	/**
 	 * Gets the periodical items uuid.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the periodical items uuid
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException;
 
 	/**
 	 * Gets the volumes uuid.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the volumes uuid
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public List<String> getVolumesUuid(String uuid) throws IOException;
 
 	/**
 	 * Gets the fOXML.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the fOXML
 	 */
 	public String getFOXML(String uuid);
 
 	/**
 	 * Gets the ocr.
-	 *
-	 * @param uuid the uuid
+	 * 
+	 * @param uuid
+	 *          the uuid
 	 * @return the ocr
 	 */
 	public String getOcr(String uuid);

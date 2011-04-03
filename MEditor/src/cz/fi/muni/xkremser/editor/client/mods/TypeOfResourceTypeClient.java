@@ -44,10 +44,10 @@ public class TypeOfResourceTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The collection. */
 	protected YesClient collection;
-	
+
 	/** The manuscript. */
 	protected YesClient manuscript;
 

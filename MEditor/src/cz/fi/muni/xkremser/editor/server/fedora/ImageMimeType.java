@@ -34,35 +34,38 @@ public enum ImageMimeType {
 
 	/** The JPEG. */
 	JPEG("image/jpeg", "jpg", true, false), /** The PNG. */
- PNG("image/png", "png", true, false), /** The JPE g2000. */
- JPEG2000("image/jp2", "jp2", true, false),
+	PNG("image/png", "png", true, false), /** The JPE g2000. */
+	JPEG2000("image/jp2", "jp2", true, false),
 
 	/** The XDJVU. */
 	XDJVU("image/x.djvu", "djvu", false, true), /** The VNDDJVU. */
- VNDDJVU("image/vnd.djvu", "djvu", false, true), /** The DJVU. */
- DJVU("image/djvu", "djvu", false, true), /** The PDF. */
- PDF("application/pdf",
-			"pdf", false, true);
+	VNDDJVU("image/vnd.djvu", "djvu", false, true), /** The DJVU. */
+	DJVU("image/djvu", "djvu", false, true), /** The PDF. */
+	PDF("application/pdf", "pdf", false, true);
 
 	/** The value. */
 	private String value;
-	
+
 	/** The supportedby java. */
 	private boolean supportedbyJava;
-	
+
 	/** The multipage format. */
 	private boolean multipageFormat;
-	
+
 	/** The default file extension. */
 	private String defaultFileExtension;
 
 	/**
 	 * Instantiates a new image mime type.
-	 *
-	 * @param value the value
-	 * @param defaultExtension the default extension
-	 * @param javasupport the javasupport
-	 * @param multipageformat the multipageformat
+	 * 
+	 * @param value
+	 *          the value
+	 * @param defaultExtension
+	 *          the default extension
+	 * @param javasupport
+	 *          the javasupport
+	 * @param multipageformat
+	 *          the multipageformat
 	 */
 	private ImageMimeType(String value, String defaultExtension, boolean javasupport, boolean multipageformat) {
 		this.value = value;
@@ -73,7 +76,7 @@ public enum ImageMimeType {
 
 	/**
 	 * Gets the value.
-	 *
+	 * 
 	 * @return the value
 	 */
 	public String getValue() {
@@ -82,7 +85,7 @@ public enum ImageMimeType {
 
 	/**
 	 * Java native support.
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean javaNativeSupport() {
@@ -91,7 +94,7 @@ public enum ImageMimeType {
 
 	/**
 	 * Checks if is multipage format.
-	 *
+	 * 
 	 * @return true, if is multipage format
 	 */
 	public boolean isMultipageFormat() {
@@ -100,7 +103,7 @@ public enum ImageMimeType {
 
 	/**
 	 * Gets the default file extension.
-	 *
+	 * 
 	 * @return the default file extension
 	 */
 	public String getDefaultFileExtension() {
@@ -109,8 +112,9 @@ public enum ImageMimeType {
 
 	/**
 	 * Load from mime type.
-	 *
-	 * @param mime the mime
+	 * 
+	 * @param mime
+	 *          the mime
 	 * @return the image mime type
 	 */
 	public static ImageMimeType loadFromMimeType(String mime) {

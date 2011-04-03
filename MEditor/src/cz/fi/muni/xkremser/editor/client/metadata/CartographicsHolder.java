@@ -35,13 +35,13 @@ import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.CartographicsCli
  * The Class CartographicsHolder.
  */
 public class CartographicsHolder extends MetadataHolder {
-	
+
 	/** The coordinates. */
 	private final ListOfSimpleValuesHolder coordinates;
-	
+
 	/** The scales. */
 	private final ListOfSimpleValuesHolder scales;
-	
+
 	/** The projections. */
 	private final ListOfSimpleValuesHolder projections;
 
@@ -56,7 +56,7 @@ public class CartographicsHolder extends MetadataHolder {
 
 	/**
 	 * Gets the cartographics.
-	 *
+	 * 
 	 * @return the cartographics
 	 */
 	public CartographicsClient getCartographics() {
@@ -67,15 +67,20 @@ public class CartographicsHolder extends MetadataHolder {
 		return cartographicsClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -83,7 +88,9 @@ public class CartographicsHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -91,8 +98,11 @@ public class CartographicsHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -101,7 +111,7 @@ public class CartographicsHolder extends MetadataHolder {
 
 	/**
 	 * Gets the coordinates.
-	 *
+	 * 
 	 * @return the coordinates
 	 */
 	public ListOfSimpleValuesHolder getCoordinates() {
@@ -110,7 +120,7 @@ public class CartographicsHolder extends MetadataHolder {
 
 	/**
 	 * Gets the scales.
-	 *
+	 * 
 	 * @return the scales
 	 */
 	public ListOfSimpleValuesHolder getScales() {
@@ -119,7 +129,7 @@ public class CartographicsHolder extends MetadataHolder {
 
 	/**
 	 * Gets the projections.
-	 *
+	 * 
 	 * @return the projections
 	 */
 	public ListOfSimpleValuesHolder getProjections() {

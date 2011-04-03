@@ -43,31 +43,31 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/** The streams. */
 	private Streams streams;
-	
+
 	/** The foxml. */
 	private String foxml;
-	
+
 	/** The ocr. */
 	private String ocr;
-	
+
 	/** The pages. */
 	private List<PageDetail> pages;
-	
+
 	/** The related. */
 	private ArrayList<ArrayList<String>> related;
-	
+
 	/** The uuid. */
 	private String uuid;
-	
+
 	/** The dc changed. */
 	private boolean dcChanged;
-	
+
 	/** The mods changed. */
 	private boolean modsChanged;
-	
+
 	/** The ocr changed. */
 	private boolean ocrChanged;
-	
+
 	/** The containers. */
 	private ArrayList<List<? extends AbstractDigitalObjectDetail>> containers;
 
@@ -79,8 +79,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Instantiates a new abstract digital object detail.
-	 *
-	 * @param related the related
+	 * 
+	 * @param related
+	 *          the related
 	 */
 	public AbstractDigitalObjectDetail(ArrayList<ArrayList<String>> related) {
 		this.related = related;
@@ -95,7 +96,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the related.
-	 *
+	 * 
 	 * @return the related
 	 */
 	public ArrayList<ArrayList<String>> getRelated() {
@@ -104,7 +105,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the streams.
-	 *
+	 * 
 	 * @return the streams
 	 */
 	public Streams getStreams() {
@@ -113,8 +114,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the streams.
-	 *
-	 * @param streams the new streams
+	 * 
+	 * @param streams
+	 *          the new streams
 	 */
 	public void setStreams(Streams streams) {
 		this.streams = streams;
@@ -122,8 +124,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the dc.
-	 *
-	 * @param dc the new dc
+	 * 
+	 * @param dc
+	 *          the new dc
 	 */
 	public void setDc(DublinCore dc) {
 		if (getStreams() == null) {
@@ -134,7 +137,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the dc.
-	 *
+	 * 
 	 * @return the dc
 	 */
 	public DublinCore getDc() {
@@ -146,8 +149,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the mods.
-	 *
-	 * @param mods the new mods
+	 * 
+	 * @param mods
+	 *          the new mods
 	 */
 	public void setMods(ModsCollectionClient mods) {
 		if (getStreams() == null) {
@@ -158,7 +162,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the mods.
-	 *
+	 * 
 	 * @return the mods
 	 */
 	public ModsCollectionClient getMods() {
@@ -180,14 +184,14 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Checks for pages.
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public abstract boolean hasPages();
 
 	/**
 	 * Checks if is image.
-	 *
+	 * 
 	 * @return true, if is image
 	 */
 	public boolean isImage() {
@@ -196,14 +200,14 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Checks for containers.
-	 *
+	 * 
 	 * @return the int
 	 */
 	public abstract int hasContainers();
 
 	/**
 	 * Gets the pages.
-	 *
+	 * 
 	 * @return the pages
 	 */
 	public List<PageDetail> getPages() {
@@ -214,8 +218,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the pages.
-	 *
-	 * @param pages the new pages
+	 * 
+	 * @param pages
+	 *          the new pages
 	 */
 	public void setPages(List<PageDetail> pages) {
 		if (!hasPages())
@@ -226,14 +231,14 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	// TODO: consider strategy DP
 	/**
 	 * Gets the child container models.
-	 *
+	 * 
 	 * @return the child container models
 	 */
 	public abstract List<KrameriusModel> getChildContainerModels();
 
 	/**
 	 * Gets the containers.
-	 *
+	 * 
 	 * @return the containers
 	 */
 	public List<List<? extends AbstractDigitalObjectDetail>> getContainers() {
@@ -245,8 +250,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the containers.
-	 *
-	 * @param containers the new containers
+	 * 
+	 * @param containers
+	 *          the new containers
 	 */
 	public void setContainers(ArrayList<List<? extends AbstractDigitalObjectDetail>> containers) {
 		this.containers = containers;
@@ -254,7 +260,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the foxml.
-	 *
+	 * 
 	 * @return the foxml
 	 */
 	public String getFoxml() {
@@ -263,8 +269,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the foxml.
-	 *
-	 * @param foxml the new foxml
+	 * 
+	 * @param foxml
+	 *          the new foxml
 	 */
 	public void setFoxml(String foxml) {
 		this.foxml = foxml;
@@ -272,7 +279,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the ocr.
-	 *
+	 * 
 	 * @return the ocr
 	 */
 	public String getOcr() {
@@ -281,8 +288,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the ocr.
-	 *
-	 * @param ocr the new ocr
+	 * 
+	 * @param ocr
+	 *          the new ocr
 	 */
 	public void setOcr(String ocr) {
 		this.ocr = ocr;
@@ -290,8 +298,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the related.
-	 *
-	 * @param related the new related
+	 * 
+	 * @param related
+	 *          the new related
 	 */
 	public void setRelated(ArrayList<ArrayList<String>> related) {
 		this.related = related;
@@ -299,7 +308,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Gets the uuid.
-	 *
+	 * 
 	 * @return the uuid
 	 */
 	public String getUuid() {
@@ -308,8 +317,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the uuid.
-	 *
-	 * @param uuid the new uuid
+	 * 
+	 * @param uuid
+	 *          the new uuid
 	 */
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
@@ -317,7 +327,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Checks if is dc changed.
-	 *
+	 * 
 	 * @return true, if is dc changed
 	 */
 	public boolean isDcChanged() {
@@ -326,8 +336,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the dc changed.
-	 *
-	 * @param dcChanged the new dc changed
+	 * 
+	 * @param dcChanged
+	 *          the new dc changed
 	 */
 	public void setDcChanged(boolean dcChanged) {
 		this.dcChanged = dcChanged;
@@ -335,7 +346,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Checks if is mods changed.
-	 *
+	 * 
 	 * @return true, if is mods changed
 	 */
 	public boolean isModsChanged() {
@@ -344,8 +355,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the mods changed.
-	 *
-	 * @param modsChanged the new mods changed
+	 * 
+	 * @param modsChanged
+	 *          the new mods changed
 	 */
 	public void setModsChanged(boolean modsChanged) {
 		this.modsChanged = modsChanged;
@@ -353,7 +365,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Checks if is ocr changed.
-	 *
+	 * 
 	 * @return true, if is ocr changed
 	 */
 	public boolean isOcrChanged() {
@@ -362,8 +374,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 
 	/**
 	 * Sets the ocr changed.
-	 *
-	 * @param ocrChanged the new ocr changed
+	 * 
+	 * @param ocrChanged
+	 *          the new ocr changed
 	 */
 	public void setOcrChanged(boolean ocrChanged) {
 		this.ocrChanged = ocrChanged;

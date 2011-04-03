@@ -36,16 +36,16 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class Streams.
  */
 public class Streams implements IsSerializable {
-	
+
 	/** The dc. */
 	private DublinCore dc;
-	
+
 	/** The mods. */
 	private ModsCollectionClient mods;
 
 	/**
 	 * Gets the dc.
-	 *
+	 * 
 	 * @return the dc
 	 */
 	public DublinCore getDc() {
@@ -54,8 +54,9 @@ public class Streams implements IsSerializable {
 
 	/**
 	 * Sets the dc.
-	 *
-	 * @param dc the new dc
+	 * 
+	 * @param dc
+	 *          the new dc
 	 */
 	public void setDc(DublinCore dc) {
 		this.dc = dc;
@@ -63,7 +64,7 @@ public class Streams implements IsSerializable {
 
 	/**
 	 * Gets the mods.
-	 *
+	 * 
 	 * @return the mods
 	 */
 	public ModsCollectionClient getMods() {
@@ -72,8 +73,9 @@ public class Streams implements IsSerializable {
 
 	/**
 	 * Sets the mods.
-	 *
-	 * @param mods the new mods
+	 * 
+	 * @param mods
+	 *          the new mods
 	 */
 	public void setMods(ModsCollectionClient mods) {
 		this.mods = mods;

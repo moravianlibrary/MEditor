@@ -42,13 +42,13 @@ public class BaseDateTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The encoding. */
 	protected String encoding;
-	
+
 	/** The qualifier. */
 	protected String qualifier;
-	
+
 	/** The point. */
 	protected String point;
 

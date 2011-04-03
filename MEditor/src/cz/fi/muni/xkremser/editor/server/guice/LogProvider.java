@@ -39,7 +39,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class LogProvider implements Provider<Log> {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.inject.Provider#get()
 	 */
 	public Log get() {

@@ -46,8 +46,9 @@ public class AudienceHolder extends ListOfListOfSimpleValuesHolder {
 
 	/**
 	 * Instantiates a new audience holder.
-	 *
-	 * @param keys the keys
+	 * 
+	 * @param keys
+	 *          the keys
 	 */
 	public AudienceHolder(String... keys) {
 		super(keys);
@@ -55,7 +56,7 @@ public class AudienceHolder extends ListOfListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the audience.
-	 *
+	 * 
 	 * @return the audience
 	 */
 	public List<TargetAudienceTypeClient> getAudience() {
@@ -79,32 +80,48 @@ public class AudienceHolder extends ListOfListOfSimpleValuesHolder {
 		return list;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getValue()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getValues()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {

@@ -38,13 +38,13 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/** The uuid. */
 	private String uuid;
-	
+
 	/** The name. */
 	private String name;
-	
+
 	/** The description. */
 	private String description;
-	
+
 	/** The model. */
 	private KrameriusModel model;
 
@@ -58,11 +58,15 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Instantiates a new recently modified item.
-	 *
-	 * @param uuid the uuid
-	 * @param name the name
-	 * @param description the description
-	 * @param model the model
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 * @param name
+	 *          the name
+	 * @param description
+	 *          the description
+	 * @param model
+	 *          the model
 	 */
 	public RecentlyModifiedItem(String uuid, String name, String description, KrameriusModel model) {
 		super();
@@ -74,7 +78,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Gets the uuid.
-	 *
+	 * 
 	 * @return the uuid
 	 */
 	public String getUuid() {
@@ -83,8 +87,9 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Sets the uuid.
-	 *
-	 * @param uuid the new uuid
+	 * 
+	 * @param uuid
+	 *          the new uuid
 	 */
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
@@ -92,7 +97,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -101,8 +106,9 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -110,7 +116,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Gets the description.
-	 *
+	 * 
 	 * @return the description
 	 */
 	public String getDescription() {
@@ -119,8 +125,9 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Sets the description.
-	 *
-	 * @param description the new description
+	 * 
+	 * @param description
+	 *          the new description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -128,7 +135,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Gets the model.
-	 *
+	 * 
 	 * @return the model
 	 */
 	public KrameriusModel getModel() {
@@ -137,14 +144,17 @@ public class RecentlyModifiedItem implements IsSerializable {
 
 	/**
 	 * Sets the model.
-	 *
-	 * @param model the new model
+	 * 
+	 * @param model
+	 *          the new model
 	 */
 	public void setModel(KrameriusModel model) {
 		this.model = model;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -152,7 +162,9 @@ public class RecentlyModifiedItem implements IsSerializable {
 		return "RecentlyModifiedRecord [uuid=" + uuid + ", name=" + name + ", description=" + description + ", model=" + model + "]";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -163,7 +175,9 @@ public class RecentlyModifiedItem implements IsSerializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

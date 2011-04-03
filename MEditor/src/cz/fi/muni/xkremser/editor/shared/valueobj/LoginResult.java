@@ -33,16 +33,16 @@ import java.io.Serializable;
  * The Class LoginResult.
  */
 public class LoginResult implements Serializable {
-	
+
 	/** The success. */
 	private boolean success;
-	
+
 	/** The url. */
 	private String url;
 
 	/**
 	 * Checks if is success.
-	 *
+	 * 
 	 * @return true, if is success
 	 */
 	public boolean isSuccess() {
@@ -51,8 +51,9 @@ public class LoginResult implements Serializable {
 
 	/**
 	 * Sets the success.
-	 *
-	 * @param success the new success
+	 * 
+	 * @param success
+	 *          the new success
 	 */
 	public void setSuccess(boolean success) {
 		this.success = success;
@@ -60,7 +61,7 @@ public class LoginResult implements Serializable {
 
 	/**
 	 * Gets the url.
-	 *
+	 * 
 	 * @return the url
 	 */
 	public String getUrl() {
@@ -69,8 +70,9 @@ public class LoginResult implements Serializable {
 
 	/**
 	 * Sets the url.
-	 *
-	 * @param url the new url
+	 * 
+	 * @param url
+	 *          the new url
 	 */
 	public void setUrl(String url) {
 		this.url = url;

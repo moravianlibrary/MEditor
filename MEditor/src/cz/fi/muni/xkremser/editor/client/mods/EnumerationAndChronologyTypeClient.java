@@ -42,7 +42,7 @@ public class EnumerationAndChronologyTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The unit type. */
 	protected String unitType;
 

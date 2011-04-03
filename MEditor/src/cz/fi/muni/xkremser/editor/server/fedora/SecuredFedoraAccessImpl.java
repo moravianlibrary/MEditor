@@ -469,48 +469,72 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 		return rawAccess.getPagesUuid(uuid);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getIntCompPartsUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getIntCompPartsUuid
+	 * (java.lang.String)
 	 */
 	@Override
 	public List<String> getIntCompPartsUuid(String uuid) throws IOException {
 		return rawAccess.getIntCompPartsUuid(uuid);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getMonographUnitsUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getMonographUnitsUuid
+	 * (java.lang.String)
 	 */
 	@Override
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException {
 		return rawAccess.getMonographUnitsUuid(uuid);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getFOXML(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getFOXML(java.lang
+	 * .String)
 	 */
 	@Override
 	public String getFOXML(String uuid) {
 		return rawAccess.getFOXML(uuid);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid
+	 * (java.lang.String)
 	 */
 	@Override
 	public List<String> getPeriodicalItemsUuid(String uuid) throws IOException {
 		return rawAccess.getPeriodicalItemsUuid(uuid);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getVolumesUuid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getVolumesUuid(java
+	 * .lang.String)
 	 */
 	@Override
 	public List<String> getVolumesUuid(String uuid) throws IOException {
 		return rawAccess.getVolumesUuid(uuid);
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getOcr(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getOcr(java.lang.
+	 * String)
 	 */
 	@Override
 	public String getOcr(String uuid) {

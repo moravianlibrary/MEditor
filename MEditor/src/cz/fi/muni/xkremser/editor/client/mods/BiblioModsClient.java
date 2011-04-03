@@ -33,16 +33,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class BiblioModsClient.
  */
 public class BiblioModsClient implements IsSerializable {
-	
+
 	/** The mods collection. */
 	private ModsCollectionClient modsCollection;
-	
+
 	/** The mods. */
 	private ModsTypeClient mods;
 
 	/**
 	 * Gets the mods collection.
-	 *
+	 * 
 	 * @return the mods collection
 	 */
 	public ModsCollectionClient getModsCollection() {
@@ -51,8 +51,9 @@ public class BiblioModsClient implements IsSerializable {
 
 	/**
 	 * Sets the mods collection.
-	 *
-	 * @param modsCollection the new mods collection
+	 * 
+	 * @param modsCollection
+	 *          the new mods collection
 	 */
 	public void setModsCollection(ModsCollectionClient modsCollection) {
 		this.modsCollection = modsCollection;
@@ -60,7 +61,7 @@ public class BiblioModsClient implements IsSerializable {
 
 	/**
 	 * Gets the mods.
-	 *
+	 * 
 	 * @return the mods
 	 */
 	public ModsTypeClient getMods() {
@@ -69,8 +70,9 @@ public class BiblioModsClient implements IsSerializable {
 
 	/**
 	 * Sets the mods.
-	 *
-	 * @param mods the new mods
+	 * 
+	 * @param mods
+	 *          the new mods
 	 */
 	public void setMods(ModsTypeClient mods) {
 		this.mods = mods;

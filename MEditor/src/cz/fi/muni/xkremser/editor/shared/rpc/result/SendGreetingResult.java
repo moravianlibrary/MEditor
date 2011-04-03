@@ -39,15 +39,17 @@ public class SendGreetingResult implements Result {
 
 	/** The name. */
 	private String name;
-	
+
 	/** The message. */
 	private String message;
 
 	/**
 	 * Instantiates a new send greeting result.
-	 *
-	 * @param name the name
-	 * @param message the message
+	 * 
+	 * @param name
+	 *          the name
+	 * @param message
+	 *          the message
 	 */
 	public SendGreetingResult(final String name, final String message) {
 		this.name = name;
@@ -63,7 +65,7 @@ public class SendGreetingResult implements Result {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -72,7 +74,7 @@ public class SendGreetingResult implements Result {
 
 	/**
 	 * Gets the message.
-	 *
+	 * 
 	 * @return the message
 	 */
 	public String getMessage() {

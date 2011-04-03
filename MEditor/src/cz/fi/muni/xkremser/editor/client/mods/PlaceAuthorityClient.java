@@ -42,16 +42,17 @@ public enum PlaceAuthorityClient implements IsSerializable {
 
 	/** The MARCGAC. */
 	MARCGAC("marcgac"), /** The MARCCOUNTRY. */
- MARCCOUNTRY("marccountry"), /** The IS o_3166. */
- ISO_3166("iso3166");
-	
+	MARCCOUNTRY("marccountry"), /** The IS o_3166. */
+	ISO_3166("iso3166");
+
 	/** The value. */
 	private final String value;
 
 	/**
 	 * Instantiates a new place authority client.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 */
 	PlaceAuthorityClient(String v) {
 		value = v;
@@ -59,7 +60,7 @@ public enum PlaceAuthorityClient implements IsSerializable {
 
 	/**
 	 * Value.
-	 *
+	 * 
 	 * @return the string
 	 */
 	public String value() {
@@ -68,8 +69,9 @@ public enum PlaceAuthorityClient implements IsSerializable {
 
 	/**
 	 * From value.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 * @return the place authority client
 	 */
 	public static PlaceAuthorityClient fromValue(String v) {

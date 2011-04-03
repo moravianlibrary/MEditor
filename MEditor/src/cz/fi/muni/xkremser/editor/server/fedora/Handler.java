@@ -45,8 +45,9 @@ public class Handler extends URLStreamHandler {
 
 	/**
 	 * Instantiates a new handler.
-	 *
-	 * @param fedoraAccess the fedora access
+	 * 
+	 * @param fedoraAccess
+	 *          the fedora access
 	 */
 	@Inject
 	public Handler(FedoraAccess fedoraAccess) {
@@ -54,7 +55,9 @@ public class Handler extends URLStreamHandler {
 		this.fedoraAccess = fedoraAccess;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.net.URLStreamHandler#openConnection(java.net.URL)
 	 */
 	@Override
@@ -62,7 +65,9 @@ public class Handler extends URLStreamHandler {
 		return new FedoraURLConnection(u, fedoraAccess);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.net.URLStreamHandler#openConnection(java.net.URL, java.net.Proxy)
 	 */
 	@Override

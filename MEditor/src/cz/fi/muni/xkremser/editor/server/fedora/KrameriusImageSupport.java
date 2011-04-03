@@ -74,15 +74,22 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Read image.
-	 *
-	 * @param uuid the uuid
-	 * @param stream the stream
-	 * @param fedoraAccess the fedora access
-	 * @param page the page
-	 * @param mime the mime
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 * @param stream
+	 *          the stream
+	 * @param fedoraAccess
+	 *          the fedora access
+	 * @param page
+	 *          the page
+	 * @param mime
+	 *          the mime
 	 * @return the image
-	 * @throws XPathExpressionException the x path expression exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws XPathExpressionException
+	 *           the x path expression exception
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static Image readImage(String uuid, String stream, FedoraAccess fedoraAccess, int page, ImageMimeType mime) throws XPathExpressionException,
 			IOException {
@@ -92,12 +99,16 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Read image.
-	 *
-	 * @param url the url
-	 * @param type the type
-	 * @param page the page
+	 * 
+	 * @param url
+	 *          the url
+	 * @param type
+	 *          the type
+	 * @param page
+	 *          the page
 	 * @return the image
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static Image readImage(URL url, ImageMimeType type, int page) throws IOException {
 		if (type.javaNativeSupport()) {
@@ -141,11 +152,15 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Write image to stream.
-	 *
-	 * @param scaledImage the scaled image
-	 * @param javaFormat the java format
-	 * @param os the os
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param scaledImage
+	 *          the scaled image
+	 * @param javaFormat
+	 *          the java format
+	 * @param os
+	 *          the os
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void writeImageToStream(BufferedImage scaledImage, String javaFormat, OutputStream os) throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -155,11 +170,15 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Write full image to stream.
-	 *
-	 * @param scaledImage the scaled image
-	 * @param javaFormat the java format
-	 * @param os the os
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param scaledImage
+	 *          the scaled image
+	 * @param javaFormat
+	 *          the java format
+	 * @param os
+	 *          the os
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void writeFullImageToStream(Image scaledImage, String javaFormat, OutputStream os) throws IOException {
 		BufferedImage bufImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_BYTE_BINARY);
@@ -174,12 +193,16 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Gets the smaller image.
-	 *
-	 * @param scaledImage the scaled image
-	 * @param maxWidth the max width
-	 * @param maxHeight the max height
+	 * 
+	 * @param scaledImage
+	 *          the scaled image
+	 * @param maxWidth
+	 *          the max width
+	 * @param maxHeight
+	 *          the max height
 	 * @return the smaller image
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static BufferedImage getSmallerImage(Image scaledImage, int maxWidth, int maxHeight) throws IOException {
 		int width = scaledImage.getWidth(null);
@@ -212,12 +235,17 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Write image to stream.
-	 *
-	 * @param scaledImage the scaled image
-	 * @param javaFormat the java format
-	 * @param os the os
-	 * @param quality the quality
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param scaledImage
+	 *          the scaled image
+	 * @param javaFormat
+	 *          the java format
+	 * @param os
+	 *          the os
+	 * @param quality
+	 *          the quality
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static void writeImageToStream(Image scaledImage, String javaFormat, OutputStream os, float quality) throws IOException {
 		int width = scaledImage.getWidth(null);
@@ -294,22 +322,26 @@ public class KrameriusImageSupport {
 
 	/**
 	 * Convenience method that returns a scaled instance of the provided.
-	 *
-	 * @param img the original image to be scaled
-	 * @param targetWidth the desired width of the scaled instance, in pixels
-	 * @param targetHeight the desired height of the scaled instance, in pixels
-	 * @param hint one of the rendering hints that corresponds to
-	 * @param higherQuality if true, this method will use a multi-step scaling technique that
-	 * provides higher quality than the usual one-step technique (only
-	 * useful in downscaling cases, where {@code targetWidth} or
+	 * 
+	 * @param img
+	 *          the original image to be scaled
+	 * @param targetWidth
+	 *          the desired width of the scaled instance, in pixels
+	 * @param targetHeight
+	 *          the desired height of the scaled instance, in pixels
+	 * @param hint
+	 *          one of the rendering hints that corresponds to
+	 * @param higherQuality
+	 *          if true, this method will use a multi-step scaling technique that
+	 *          provides higher quality than the usual one-step technique (only
+	 *          useful in downscaling cases, where {@code targetWidth} or
 	 * @return a scaled version of the original {@code BufferedImage}
-	 * {@code BufferedImage}.
-	 * {@code RenderingHints.KEY_INTERPOLATION} (e.g.
-	 * {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
-	 * {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
-	 * {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
-	 * {@code targetHeight} is smaller than the original dimensions, and
-	 * generally only when the {@code BILINEAR} hint is specified)
+	 *         {@code BufferedImage}. {@code RenderingHints.KEY_INTERPOLATION}
+	 *         (e.g. {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
+	 *         {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
+	 *         {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
+	 *         {@code targetHeight} is smaller than the original dimensions, and
+	 *         generally only when the {@code BILINEAR} hint is specified)
 	 */
 	private static BufferedImage getScaledInstanceJava2D(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
 
@@ -358,8 +390,9 @@ public class KrameriusImageSupport {
 
 	/**
 	 * To buffered image.
-	 *
-	 * @param img the img
+	 * 
+	 * @param img
+	 *          the img
 	 * @return the buffered image
 	 */
 	private static BufferedImage toBufferedImage(Image img) {
@@ -374,23 +407,23 @@ public class KrameriusImageSupport {
 	 * The Enum ScalingMethod.
 	 */
 	public static enum ScalingMethod {
-		
+
 		/** The REPLICATE. */
-		REPLICATE, 
- /** The ARE a_ averaging. */
- AREA_AVERAGING, 
- /** The BILINEAR. */
- BILINEAR, 
- /** The BICUBIC. */
- BICUBIC, 
- /** The NEARES t_ neighbor. */
- NEAREST_NEIGHBOR, 
- /** The BILINEA r_ stepped. */
- BILINEAR_STEPPED, 
- /** The BICUBI c_ stepped. */
- BICUBIC_STEPPED, 
- /** The NEARES t_ neighbo r_ stepped. */
- NEAREST_NEIGHBOR_STEPPED
+		REPLICATE,
+		/** The ARE a_ averaging. */
+		AREA_AVERAGING,
+		/** The BILINEAR. */
+		BILINEAR,
+		/** The BICUBIC. */
+		BICUBIC,
+		/** The NEARES t_ neighbor. */
+		NEAREST_NEIGHBOR,
+		/** The BILINEA r_ stepped. */
+		BILINEAR_STEPPED,
+		/** The BICUBI c_ stepped. */
+		BICUBIC_STEPPED,
+		/** The NEARES t_ neighbo r_ stepped. */
+		NEAREST_NEIGHBOR_STEPPED
 	}
 
 }

@@ -45,7 +45,7 @@ public class TitleInfoTypeClient extends BaseTitleInfoTypeClient implements IsSe
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public String getType() {
@@ -54,8 +54,9 @@ public class TitleInfoTypeClient extends BaseTitleInfoTypeClient implements IsSe
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param value the new type
+	 * 
+	 * @param value
+	 *          the new type
 	 */
 	public void setType(String value) {
 		this.type = value;

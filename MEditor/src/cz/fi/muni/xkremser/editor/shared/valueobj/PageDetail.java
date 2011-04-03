@@ -39,8 +39,9 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Instantiates a new page detail.
-	 *
-	 * @param related the related
+	 * 
+	 * @param related
+	 *          the related
 	 */
 	public PageDetail(ArrayList<ArrayList<String>> related) {
 		super(related);
@@ -79,32 +80,48 @@ public class PageDetail extends AbstractDigitalObjectDetail {
 	// type (= model:page)
 	// rights
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#hasPages()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasPages()
 	 */
 	@Override
 	public boolean hasPages() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#hasContainers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasContainers()
 	 */
 	@Override
 	public int hasContainers() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getChildContainerModels()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getChildContainerModels()
 	 */
 	@Override
 	public List<KrameriusModel> getChildContainerModels() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#isImage()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * isImage()
 	 */
 	@Override
 	public boolean isImage() {

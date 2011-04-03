@@ -46,22 +46,22 @@ public class LocationTypeClient implements IsSerializable {
 
 	/** The physical location. */
 	protected List<PhysicalLocationTypeClient> physicalLocation;
-	
+
 	/** The shelf locator. */
 	protected List<String> shelfLocator;
-	
+
 	/** The url. */
 	protected List<UrlTypeClient> url;
-	
+
 	/** The holding simple. */
 	protected HoldingSimpleTypeClient holdingSimple;
-	
+
 	/** The holding external. */
 	protected ExtensionTypeClient holdingExternal;
 
 	/**
 	 * Gets the physical location.
-	 *
+	 * 
 	 * @return the physical location
 	 */
 	public List<PhysicalLocationTypeClient> getPhysicalLocation() {
@@ -70,7 +70,7 @@ public class LocationTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the shelf locator.
-	 *
+	 * 
 	 * @return the shelf locator
 	 */
 	public List<String> getShelfLocator() {
@@ -79,7 +79,7 @@ public class LocationTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the url.
-	 *
+	 * 
 	 * @return the url
 	 */
 	public List<UrlTypeClient> getUrl() {
@@ -88,8 +88,9 @@ public class LocationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the physical location.
-	 *
-	 * @param physicalLocation the new physical location
+	 * 
+	 * @param physicalLocation
+	 *          the new physical location
 	 */
 	public void setPhysicalLocation(List<PhysicalLocationTypeClient> physicalLocation) {
 		this.physicalLocation = physicalLocation;
@@ -97,8 +98,9 @@ public class LocationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the shelf locator.
-	 *
-	 * @param shelfLocator the new shelf locator
+	 * 
+	 * @param shelfLocator
+	 *          the new shelf locator
 	 */
 	public void setShelfLocator(List<String> shelfLocator) {
 		this.shelfLocator = shelfLocator;
@@ -106,8 +108,9 @@ public class LocationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the url.
-	 *
-	 * @param url the new url
+	 * 
+	 * @param url
+	 *          the new url
 	 */
 	public void setUrl(List<UrlTypeClient> url) {
 		this.url = url;

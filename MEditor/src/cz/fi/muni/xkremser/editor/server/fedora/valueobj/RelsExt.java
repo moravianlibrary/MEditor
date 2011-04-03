@@ -32,7 +32,7 @@ import java.util.List;
 // TODO: Auto-generated Javadoc
 /**
  * Value objekt pro naplneni dat RELS-EXT.
- *
+ * 
  * @author xholcik
  */
 public class RelsExt {
@@ -93,9 +93,11 @@ public class RelsExt {
 
 	/**
 	 * Instantiates a new rels ext.
-	 *
-	 * @param pid the pid
-	 * @param model the model
+	 * 
+	 * @param pid
+	 *          the pid
+	 * @param model
+	 *          the model
 	 */
 	public RelsExt(String pid, String model) {
 		super();
@@ -106,10 +108,13 @@ public class RelsExt {
 
 	/**
 	 * Adds the relation.
-	 *
-	 * @param key the key
-	 * @param id the id
-	 * @param literal the literal
+	 * 
+	 * @param key
+	 *          the key
+	 * @param id
+	 *          the id
+	 * @param literal
+	 *          the literal
 	 */
 	public void addRelation(String key, String id, boolean literal) {
 		if (id == null || "".equals(id))
@@ -119,7 +124,7 @@ public class RelsExt {
 
 	/**
 	 * Gets the relations.
-	 *
+	 * 
 	 * @return the relations
 	 */
 	public List<Relation> getRelations() {
@@ -128,7 +133,7 @@ public class RelsExt {
 
 	/**
 	 * Gets the pid.
-	 *
+	 * 
 	 * @return the pid
 	 */
 	public String getPid() {
@@ -151,10 +156,13 @@ public class RelsExt {
 
 		/**
 		 * Instantiates a new relation.
-		 *
-		 * @param key the key
-		 * @param id the id
-		 * @param literal the literal
+		 * 
+		 * @param key
+		 *          the key
+		 * @param id
+		 *          the id
+		 * @param literal
+		 *          the literal
 		 */
 		public Relation(String key, String id, boolean literal) {
 			super();
@@ -165,7 +173,7 @@ public class RelsExt {
 
 		/**
 		 * Gets the key.
-		 *
+		 * 
 		 * @return the key
 		 */
 		public String getKey() {
@@ -174,7 +182,7 @@ public class RelsExt {
 
 		/**
 		 * Gets the id.
-		 *
+		 * 
 		 * @return the id
 		 */
 		public String getId() {
@@ -183,7 +191,7 @@ public class RelsExt {
 
 		/**
 		 * Checks if is literal.
-		 *
+		 * 
 		 * @return true, if is literal
 		 */
 		public boolean isLiteral() {

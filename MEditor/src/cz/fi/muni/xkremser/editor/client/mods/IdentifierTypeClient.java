@@ -44,25 +44,25 @@ public class IdentifierTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The type. */
 	protected String type;
-	
+
 	/** The display label. */
 	protected String displayLabel;
-	
+
 	/** The invalid. */
 	protected YesClient invalid;
-	
+
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
@@ -152,7 +152,7 @@ public class IdentifierTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -161,8 +161,9 @@ public class IdentifierTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;

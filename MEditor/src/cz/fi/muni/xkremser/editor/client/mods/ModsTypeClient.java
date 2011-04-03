@@ -41,76 +41,76 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class ModsTypeClient.
  */
 public class ModsTypeClient implements IsSerializable {
-	
+
 	/** The title info. */
 	protected List<TitleInfoTypeClient> titleInfo;
-	
+
 	/** The name. */
 	protected List<NameTypeClient> name;
-	
+
 	/** The type of resource. */
 	protected List<TypeOfResourceTypeClient> typeOfResource;
-	
+
 	/** The genre. */
 	protected List<GenreTypeClient> genre;
-	
+
 	/** The origin info. */
 	protected List<OriginInfoTypeClient> originInfo;
-	
+
 	/** The language. */
 	protected List<LanguageTypeClient> language;
-	
+
 	/** The physical description. */
 	protected List<PhysicalDescriptionTypeClient> physicalDescription;
-	
+
 	/** The abstrac. */
 	protected List<AbstractTypeClient> abstrac;
-	
+
 	/** The table of contents. */
 	protected List<TableOfContentsTypeClient> tableOfContents;
-	
+
 	/** The target audience. */
 	protected List<TargetAudienceTypeClient> targetAudience;
-	
+
 	/** The note. */
 	protected List<NoteTypeClient> note;
-	
+
 	/** The subject. */
 	protected List<SubjectTypeClient> subject;
-	
+
 	/** The classification. */
 	protected List<ClassificationTypeClient> classification;
-	
+
 	/** The related item. */
 	protected List<RelatedItemTypeClient> relatedItem;
-	
+
 	/** The identifier. */
 	protected List<IdentifierTypeClient> identifier;
-	
+
 	/** The location. */
 	protected List<LocationTypeClient> location;
-	
+
 	/** The access condition. */
 	protected List<AccessConditionTypeClient> accessCondition;
-	
+
 	/** The part. */
 	protected List<PartTypeClient> part;
-	
+
 	/** The extension. */
 	protected List<ExtensionTypeClient> extension;
-	
+
 	/** The record info. */
 	protected List<RecordInfoTypeClient> recordInfo;
-	
+
 	/** The id. */
 	protected String id;
-	
+
 	/** The version. */
 	protected String version;
 
 	/**
 	 * Gets the title info.
-	 *
+	 * 
 	 * @return the title info
 	 */
 	public List<TitleInfoTypeClient> getTitleInfo() {
@@ -119,8 +119,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the title info.
-	 *
-	 * @param titleInfo the new title info
+	 * 
+	 * @param titleInfo
+	 *          the new title info
 	 */
 	public void setTitleInfo(List<TitleInfoTypeClient> titleInfo) {
 		this.titleInfo = titleInfo;
@@ -128,7 +129,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public List<NameTypeClient> getName() {
@@ -137,8 +138,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(List<NameTypeClient> name) {
 		this.name = name;
@@ -146,7 +148,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the type of resource.
-	 *
+	 * 
 	 * @return the type of resource
 	 */
 	public List<TypeOfResourceTypeClient> getTypeOfResource() {
@@ -155,8 +157,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the type of resource.
-	 *
-	 * @param typeOfResource the new type of resource
+	 * 
+	 * @param typeOfResource
+	 *          the new type of resource
 	 */
 	public void setTypeOfResource(List<TypeOfResourceTypeClient> typeOfResource) {
 		this.typeOfResource = typeOfResource;
@@ -164,7 +167,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the genre.
-	 *
+	 * 
 	 * @return the genre
 	 */
 	public List<GenreTypeClient> getGenre() {
@@ -173,8 +176,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the genre.
-	 *
-	 * @param genre the new genre
+	 * 
+	 * @param genre
+	 *          the new genre
 	 */
 	public void setGenre(List<GenreTypeClient> genre) {
 		this.genre = genre;
@@ -182,7 +186,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the origin info.
-	 *
+	 * 
 	 * @return the origin info
 	 */
 	public List<OriginInfoTypeClient> getOriginInfo() {
@@ -191,8 +195,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the origin info.
-	 *
-	 * @param originInfo the new origin info
+	 * 
+	 * @param originInfo
+	 *          the new origin info
 	 */
 	public void setOriginInfo(List<OriginInfoTypeClient> originInfo) {
 		this.originInfo = originInfo;
@@ -200,7 +205,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the language.
-	 *
+	 * 
 	 * @return the language
 	 */
 	public List<LanguageTypeClient> getLanguage() {
@@ -209,8 +214,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the language.
-	 *
-	 * @param language the new language
+	 * 
+	 * @param language
+	 *          the new language
 	 */
 	public void setLanguage(List<LanguageTypeClient> language) {
 		this.language = language;
@@ -218,7 +224,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the physical description.
-	 *
+	 * 
 	 * @return the physical description
 	 */
 	public List<PhysicalDescriptionTypeClient> getPhysicalDescription() {
@@ -227,8 +233,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the physical description.
-	 *
-	 * @param physicalDescription the new physical description
+	 * 
+	 * @param physicalDescription
+	 *          the new physical description
 	 */
 	public void setPhysicalDescription(List<PhysicalDescriptionTypeClient> physicalDescription) {
 		this.physicalDescription = physicalDescription;
@@ -236,7 +243,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the abstrac.
-	 *
+	 * 
 	 * @return the abstrac
 	 */
 	public List<AbstractTypeClient> getAbstrac() {
@@ -245,8 +252,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the abstrac.
-	 *
-	 * @param abstrac the new abstrac
+	 * 
+	 * @param abstrac
+	 *          the new abstrac
 	 */
 	public void setAbstrac(List<AbstractTypeClient> abstrac) {
 		this.abstrac = abstrac;
@@ -254,7 +262,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the table of contents.
-	 *
+	 * 
 	 * @return the table of contents
 	 */
 	public List<TableOfContentsTypeClient> getTableOfContents() {
@@ -263,8 +271,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the table of contents.
-	 *
-	 * @param tableOfContents the new table of contents
+	 * 
+	 * @param tableOfContents
+	 *          the new table of contents
 	 */
 	public void setTableOfContents(List<TableOfContentsTypeClient> tableOfContents) {
 		this.tableOfContents = tableOfContents;
@@ -272,7 +281,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the target audience.
-	 *
+	 * 
 	 * @return the target audience
 	 */
 	public List<TargetAudienceTypeClient> getTargetAudience() {
@@ -281,8 +290,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the target audience.
-	 *
-	 * @param targetAudience the new target audience
+	 * 
+	 * @param targetAudience
+	 *          the new target audience
 	 */
 	public void setTargetAudience(List<TargetAudienceTypeClient> targetAudience) {
 		this.targetAudience = targetAudience;
@@ -290,7 +300,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the note.
-	 *
+	 * 
 	 * @return the note
 	 */
 	public List<NoteTypeClient> getNote() {
@@ -299,8 +309,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the note.
-	 *
-	 * @param note the new note
+	 * 
+	 * @param note
+	 *          the new note
 	 */
 	public void setNote(List<NoteTypeClient> note) {
 		this.note = note;
@@ -308,7 +319,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the subject.
-	 *
+	 * 
 	 * @return the subject
 	 */
 	public List<SubjectTypeClient> getSubject() {
@@ -317,8 +328,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the subject.
-	 *
-	 * @param subject the new subject
+	 * 
+	 * @param subject
+	 *          the new subject
 	 */
 	public void setSubject(List<SubjectTypeClient> subject) {
 		this.subject = subject;
@@ -326,7 +338,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the classification.
-	 *
+	 * 
 	 * @return the classification
 	 */
 	public List<ClassificationTypeClient> getClassification() {
@@ -335,8 +347,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the classification.
-	 *
-	 * @param classification the new classification
+	 * 
+	 * @param classification
+	 *          the new classification
 	 */
 	public void setClassification(List<ClassificationTypeClient> classification) {
 		this.classification = classification;
@@ -344,7 +357,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the related item.
-	 *
+	 * 
 	 * @return the related item
 	 */
 	public List<RelatedItemTypeClient> getRelatedItem() {
@@ -353,8 +366,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the related item.
-	 *
-	 * @param relatedItem the new related item
+	 * 
+	 * @param relatedItem
+	 *          the new related item
 	 */
 	public void setRelatedItem(List<RelatedItemTypeClient> relatedItem) {
 		this.relatedItem = relatedItem;
@@ -362,7 +376,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the identifier.
-	 *
+	 * 
 	 * @return the identifier
 	 */
 	public List<IdentifierTypeClient> getIdentifier() {
@@ -371,8 +385,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the identifier.
-	 *
-	 * @param identifier the new identifier
+	 * 
+	 * @param identifier
+	 *          the new identifier
 	 */
 	public void setIdentifier(List<IdentifierTypeClient> identifier) {
 		this.identifier = identifier;
@@ -380,7 +395,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the location.
-	 *
+	 * 
 	 * @return the location
 	 */
 	public List<LocationTypeClient> getLocation() {
@@ -389,8 +404,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the location.
-	 *
-	 * @param location the new location
+	 * 
+	 * @param location
+	 *          the new location
 	 */
 	public void setLocation(List<LocationTypeClient> location) {
 		this.location = location;
@@ -398,7 +414,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the access condition.
-	 *
+	 * 
 	 * @return the access condition
 	 */
 	public List<AccessConditionTypeClient> getAccessCondition() {
@@ -407,8 +423,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the access condition.
-	 *
-	 * @param accessCondition the new access condition
+	 * 
+	 * @param accessCondition
+	 *          the new access condition
 	 */
 	public void setAccessCondition(List<AccessConditionTypeClient> accessCondition) {
 		this.accessCondition = accessCondition;
@@ -416,7 +433,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the part.
-	 *
+	 * 
 	 * @return the part
 	 */
 	public List<PartTypeClient> getPart() {
@@ -425,8 +442,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the part.
-	 *
-	 * @param part the new part
+	 * 
+	 * @param part
+	 *          the new part
 	 */
 	public void setPart(List<PartTypeClient> part) {
 		this.part = part;
@@ -434,7 +452,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the extension.
-	 *
+	 * 
 	 * @return the extension
 	 */
 	public List<ExtensionTypeClient> getExtension() {
@@ -443,8 +461,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the extension.
-	 *
-	 * @param extension the new extension
+	 * 
+	 * @param extension
+	 *          the new extension
 	 */
 	public void setExtension(List<ExtensionTypeClient> extension) {
 		this.extension = extension;
@@ -452,7 +471,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the record info.
-	 *
+	 * 
 	 * @return the record info
 	 */
 	public List<RecordInfoTypeClient> getRecordInfo() {
@@ -461,8 +480,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the record info.
-	 *
-	 * @param recordInfo the new record info
+	 * 
+	 * @param recordInfo
+	 *          the new record info
 	 */
 	public void setRecordInfo(List<RecordInfoTypeClient> recordInfo) {
 		this.recordInfo = recordInfo;
@@ -470,7 +490,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -479,8 +499,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -488,7 +509,7 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the version.
-	 *
+	 * 
 	 * @return the version
 	 */
 	public String getVersion() {
@@ -497,8 +518,9 @@ public class ModsTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the version.
-	 *
-	 * @param version the new version
+	 * 
+	 * @param version
+	 *          the new version
 	 */
 	public void setVersion(String version) {
 		this.version = version;

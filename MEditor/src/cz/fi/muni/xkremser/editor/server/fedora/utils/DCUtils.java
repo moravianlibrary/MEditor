@@ -61,9 +61,11 @@ public class DCUtils {
 
 	/**
 	 * Elements from dc.
-	 *
-	 * @param dc the dc
-	 * @param elementName the element name
+	 * 
+	 * @param dc
+	 *          the dc
+	 * @param elementName
+	 *          the element name
 	 * @return the list
 	 */
 	private static List<String> elementsFromDC(org.w3c.dom.Document dc, String elementName) {
@@ -83,29 +85,30 @@ public class DCUtils {
 
 	/** The Constant DC_CONTRIBUTOR. */
 	public static final String DC_CONTRIBUTOR = "contributor";
-	
+
 	/** The Constant DC_COVERAGE. */
 	public static final String DC_COVERAGE = "coverage";
-	
+
 	/** The Constant DC_CREATOR. */
 	public static final String DC_CREATOR = "creator";
-	
+
 	/** The Constant DC_DATE. */
 	public static final String DC_DATE = "date";
-	
+
 	/** The Constant DC_DESCRIPTION. */
 	public static final String DC_DESCRIPTION = "description";
-	
+
 	/** The Constant DC_FORMAT. */
 	public static final String DC_FORMAT = "format";
-	
+
 	/** The Constant DC_IDENTIFIER. */
 	public static final String DC_IDENTIFIER = "identifier";
 
 	/**
 	 * Contributors from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> contributorsFromDC(org.w3c.dom.Document dc) {
@@ -114,8 +117,9 @@ public class DCUtils {
 
 	/**
 	 * Coverages from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> coveragesFromDC(org.w3c.dom.Document dc) {
@@ -124,8 +128,9 @@ public class DCUtils {
 
 	/**
 	 * Creators from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> creatorsFromDC(org.w3c.dom.Document dc) {
@@ -134,8 +139,9 @@ public class DCUtils {
 
 	/**
 	 * Dates from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> datesFromDC(org.w3c.dom.Document dc) {
@@ -144,8 +150,9 @@ public class DCUtils {
 
 	/**
 	 * Descriptions from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> descriptionsFromDC(org.w3c.dom.Document dc) {
@@ -154,8 +161,9 @@ public class DCUtils {
 
 	/**
 	 * Formats from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> formatsFromDC(org.w3c.dom.Document dc) {
@@ -164,8 +172,9 @@ public class DCUtils {
 
 	/**
 	 * Identifiers from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> identifiersFromDC(org.w3c.dom.Document dc) {
@@ -174,8 +183,9 @@ public class DCUtils {
 
 	/**
 	 * Languages from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> languagesFromDC(org.w3c.dom.Document dc) {
@@ -184,8 +194,9 @@ public class DCUtils {
 
 	/**
 	 * Publishers from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> publishersFromDC(org.w3c.dom.Document dc) {
@@ -194,8 +205,9 @@ public class DCUtils {
 
 	/**
 	 * Relations from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> relationsFromDC(org.w3c.dom.Document dc) {
@@ -204,8 +216,9 @@ public class DCUtils {
 
 	/**
 	 * Rights from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> rightsFromDC(org.w3c.dom.Document dc) {
@@ -214,8 +227,9 @@ public class DCUtils {
 
 	/**
 	 * Sources from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> sourcesFromDC(org.w3c.dom.Document dc) {
@@ -224,8 +238,9 @@ public class DCUtils {
 
 	/**
 	 * Subjects from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> subjectsFromDC(org.w3c.dom.Document dc) {
@@ -234,8 +249,9 @@ public class DCUtils {
 
 	/**
 	 * Titles from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> titlesFromDC(org.w3c.dom.Document dc) {
@@ -244,8 +260,9 @@ public class DCUtils {
 
 	/**
 	 * Types from dc.
-	 *
-	 * @param dc the dc
+	 * 
+	 * @param dc
+	 *          the dc
 	 * @return the list
 	 */
 	public static List<String> typesFromDC(org.w3c.dom.Document dc) {
@@ -254,8 +271,9 @@ public class DCUtils {
 
 	/**
 	 * Gets the dC.
-	 *
-	 * @param doc the doc
+	 * 
+	 * @param doc
+	 *          the doc
 	 * @return the dC
 	 */
 	public static DublinCore getDC(org.w3c.dom.Document doc) {

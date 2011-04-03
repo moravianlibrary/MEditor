@@ -31,11 +31,11 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.Token.TokenType;
 // TODO: Auto-generated Javadoc
 /**
  * The Class Lexer.
- *
+ * 
  * @author pavels
  * 
  * 
- * Window - Preferences - Java - Code Style - Code Templates
+ *         Window - Preferences - Java - Code Style - Code Templates
  */
 public class Lexer {
 
@@ -48,9 +48,11 @@ public class Lexer {
 
 	/**
 	 * Instantiates a new lexer.
-	 *
-	 * @param inputString the input string
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param inputString
+	 *          the input string
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public Lexer(String inputString) throws LexerException {
 		this.buffer = new CharBuffer(inputString, LOOK_AHEAD_DEPTH);
@@ -58,10 +60,13 @@ public class Lexer {
 
 	/**
 	 * Instantiates a new lexer.
-	 *
-	 * @param inputString the input string
-	 * @param lookAhead the look ahead
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param inputString
+	 *          the input string
+	 * @param lookAhead
+	 *          the look ahead
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public Lexer(String inputString, int lookAhead) throws LexerException {
 		this.buffer = new CharBuffer(inputString, lookAhead);
@@ -69,10 +74,12 @@ public class Lexer {
 
 	/**
 	 * Returns char from given position.
-	 *
-	 * @param charPosition the char position
+	 * 
+	 * @param charPosition
+	 *          the char position
 	 * @return char
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	protected char charLookAhead(int charPosition) throws LexerException {
 		char ch = (char) this.buffer.la(charPosition);
@@ -81,10 +88,12 @@ public class Lexer {
 
 	/**
 	 * Returns real stream position of char.
-	 *
-	 * @param charPosition the char position
+	 * 
+	 * @param charPosition
+	 *          the char position
 	 * @return int
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	protected int charPosition(int charPosition) throws LexerException {
 		return this.buffer.position(charPosition);
@@ -92,8 +101,9 @@ public class Lexer {
 
 	/**
 	 * Consume char and read new char into buffer.
-	 *
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	protected void consumeChar() throws LexerException {
 		this.buffer.consume();
@@ -101,9 +111,11 @@ public class Lexer {
 
 	/**
 	 * Match char.
-	 *
-	 * @param expectingChar the expecting char
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param expectingChar
+	 *          the expecting char
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	protected void matchChar(char expectingChar) throws LexerException {
 		if (charLookAhead(1) == expectingChar) {
@@ -114,9 +126,10 @@ public class Lexer {
 
 	/**
 	 * Match alpha.
-	 *
+	 * 
 	 * @return the token
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	protected Token matchALPHA() throws LexerException {
 		int ch = this.buffer.la(1);
@@ -129,8 +142,9 @@ public class Lexer {
 
 	/**
 	 * Hex digit postfix.
-	 *
-	 * @param ch the ch
+	 * 
+	 * @param ch
+	 *          the ch
 	 * @return true, if successful
 	 */
 	public boolean hexDigitPostfix(char ch) {
@@ -155,9 +169,10 @@ public class Lexer {
 
 	/**
 	 * Match hex digit.
-	 *
+	 * 
 	 * @return the token
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public Token matchHexDigit() throws LexerException {
 		StringBuffer buffer = new StringBuffer();
@@ -176,9 +191,10 @@ public class Lexer {
 
 	/**
 	 * Match digit.
-	 *
+	 * 
 	 * @return the token
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public Token matchDigit() throws LexerException {
 		StringBuffer buffer = new StringBuffer();
@@ -192,9 +208,11 @@ public class Lexer {
 
 	/**
 	 * Match string.
-	 *
-	 * @param str the str
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param str
+	 *          the str
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public void matchString(String str) throws LexerException {
 		char[] chrs = str.toCharArray();
@@ -205,9 +223,10 @@ public class Lexer {
 
 	/**
 	 * Read token.
-	 *
+	 * 
 	 * @return the token
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public Token readToken() throws LexerException {
 		char ch = charLookAhead(1);

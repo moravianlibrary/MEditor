@@ -40,40 +40,40 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
  * The Class OriginInfoHolder.
  */
 public class OriginInfoHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The publishers. */
 	private final ListOfSimpleValuesHolder publishers;
-	
+
 	/** The editions. */
 	private final ListOfSimpleValuesHolder editions;
-	
+
 	/** The frequencies. */
 	private final ListOfListOfSimpleValuesHolder frequencies;
-	
+
 	/** The issuances. */
 	private final ListOfSimpleValuesHolder issuances;
-	
+
 	/** The dates issued. */
 	private final List<DateHolder> datesIssued;
-	
+
 	/** The dates created. */
 	private final List<DateHolder> datesCreated;
-	
+
 	/** The dates captured. */
 	private final List<DateHolder> datesCaptured;
-	
+
 	/** The dates valid. */
 	private final List<DateHolder> datesValid;
-	
+
 	/** The dates modified. */
 	private final List<DateHolder> datesModified;
-	
+
 	/** The dates copyright. */
 	private final List<DateHolder> datesCopyright;
-	
+
 	/** The dates other. */
 	private final List<DateHolder> datesOther;
-	
+
 	/** The places. */
 	private final List<PlaceHolder> places;
 
@@ -97,7 +97,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the origin info.
-	 *
+	 * 
 	 * @return the origin info
 	 */
 	public OriginInfoTypeClient getOriginInfo() {
@@ -146,32 +146,46 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 		return originInfoTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -180,7 +194,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the publishers.
-	 *
+	 * 
 	 * @return the publishers
 	 */
 	public ListOfSimpleValuesHolder getPublishers() {
@@ -189,7 +203,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the editions.
-	 *
+	 * 
 	 * @return the editions
 	 */
 	public ListOfSimpleValuesHolder getEditions() {
@@ -198,7 +212,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the frequencies.
-	 *
+	 * 
 	 * @return the frequencies
 	 */
 	public ListOfListOfSimpleValuesHolder getFrequencies() {
@@ -207,7 +221,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the issuances.
-	 *
+	 * 
 	 * @return the issuances
 	 */
 	public ListOfSimpleValuesHolder getIssuances() {
@@ -216,7 +230,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates issued.
-	 *
+	 * 
 	 * @return the dates issued
 	 */
 	public List<DateHolder> getDatesIssued() {
@@ -225,7 +239,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates created.
-	 *
+	 * 
 	 * @return the dates created
 	 */
 	public List<DateHolder> getDatesCreated() {
@@ -234,7 +248,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates captured.
-	 *
+	 * 
 	 * @return the dates captured
 	 */
 	public List<DateHolder> getDatesCaptured() {
@@ -243,7 +257,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates valid.
-	 *
+	 * 
 	 * @return the dates valid
 	 */
 	public List<DateHolder> getDatesValid() {
@@ -252,7 +266,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates modified.
-	 *
+	 * 
 	 * @return the dates modified
 	 */
 	public List<DateHolder> getDatesModified() {
@@ -261,7 +275,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates copyright.
-	 *
+	 * 
 	 * @return the dates copyright
 	 */
 	public List<DateHolder> getDatesCopyright() {
@@ -270,7 +284,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates other.
-	 *
+	 * 
 	 * @return the dates other
 	 */
 	public List<DateHolder> getDatesOther() {
@@ -279,7 +293,7 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the places.
-	 *
+	 * 
 	 * @return the places
 	 */
 	public List<PlaceHolder> getPlaces() {
@@ -288,8 +302,9 @@ public class OriginInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates from holders.
-	 *
-	 * @param holders the holders
+	 * 
+	 * @param holders
+	 *          the holders
 	 * @return the dates from holders
 	 */
 	private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {

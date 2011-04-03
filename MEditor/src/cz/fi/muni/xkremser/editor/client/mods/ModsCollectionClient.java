@@ -47,7 +47,7 @@ public class ModsCollectionClient implements IsSerializable {
 
 	/**
 	 * Gets the mods.
-	 *
+	 * 
 	 * @return the mods
 	 */
 	public List<ModsTypeClient> getMods() {
@@ -56,8 +56,9 @@ public class ModsCollectionClient implements IsSerializable {
 
 	/**
 	 * Sets the mods.
-	 *
-	 * @param mods the new mods
+	 * 
+	 * @param mods
+	 *          the new mods
 	 */
 	public void setMods(List<ModsTypeClient> mods) {
 		this.mods = mods;

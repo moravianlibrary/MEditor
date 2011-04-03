@@ -66,9 +66,8 @@ public class PlaceTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 *
-	 * @return the place term
-	 * {@link PlaceTermType }
+	 * 
+	 * @return the place term {@link PlaceTermType }
 	 */
 	public List<PlaceTermTypeClient> getPlaceTerm() {
 		return this.placeTerm;
@@ -76,8 +75,9 @@ public class PlaceTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the place term.
-	 *
-	 * @param placeTerm the new place term
+	 * 
+	 * @param placeTerm
+	 *          the new place term
 	 */
 	public void setPlaceTerm(List<PlaceTermTypeClient> placeTerm) {
 		this.placeTerm = placeTerm;

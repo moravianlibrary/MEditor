@@ -96,71 +96,72 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 	// TODO: dat do konstanty, nebo resource bundlu
 	/** The Constant MAX_DEEP. */
 	private static final String TAB_TYPE = "type";
-	
+
 	/** The Constant MODS_TITLE. */
 	private static final int MODS_TITLE = 0;
-	
+
 	/** The Constant MODS_NAME. */
 	private static final int MODS_NAME = 1;
-	
+
 	/** The Constant MODS_TYPE. */
 	private static final int MODS_TYPE = 2;
-	
+
 	/** The Constant MODS_GENRE. */
 	private static final int MODS_GENRE = 3;
-	
+
 	/** The Constant MODS_ORIGIN. */
 	private static final int MODS_ORIGIN = 4;
-	
+
 	/** The Constant MODS_LANG. */
 	private static final int MODS_LANG = 5;
-	
+
 	/** The Constant MODS_PHYS. */
 	private static final int MODS_PHYS = 6;
-	
+
 	/** The Constant MODS_ABSTRACT. */
 	private static final int MODS_ABSTRACT = 7;
-	
+
 	/** The Constant MODS_TOC. */
 	private static final int MODS_TOC = 8;
-	
+
 	/** The Constant MODS_TARGET. */
 	private static final int MODS_TARGET = 9;
-	
+
 	/** The Constant MODS_NOTE. */
 	private static final int MODS_NOTE = 10;
-	
+
 	/** The Constant MODS_SUBJECT. */
 	private static final int MODS_SUBJECT = 11;
-	
+
 	/** The Constant MODS_CLASS. */
 	private static final int MODS_CLASS = 12;
-	
+
 	/** The Constant MODS_RELATED. */
 	private static final int MODS_RELATED = 13;
-	
+
 	/** The Constant MODS_IDENTIFIER. */
 	private static final int MODS_IDENTIFIER = 14;
-	
+
 	/** The Constant MODS_LOCATION. */
 	private static final int MODS_LOCATION = 15;
-	
+
 	/** The Constant MODS_ACCESS. */
 	private static final int MODS_ACCESS = 16;
-	
+
 	/** The Constant MODS_PART. */
 	private static final int MODS_PART = 17;
-	
+
 	/** The Constant MODS_EXTENSION. */
 	private static final int MODS_EXTENSION = 18;
-	
+
 	/** The Constant MODS_RECORD. */
 	private static final int MODS_RECORD = 19;
 
 	/**
 	 * MA x_ deep.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *          the id
 	 * @return the tab
 	 */
 	public static final Tab MAX_DEEP(final String id) {
@@ -174,70 +175,70 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 
 	/** The deep. */
 	private final int deep;
-	
+
 	/** The title info holders. */
 	private final List<TitleInfoHolder> titleInfoHolders;
-	
+
 	/** The name holders. */
 	private final List<NameHolder> nameHolders;
-	
+
 	/** The type of resource holders. */
 	private final List<TypeOfResourceHolder> typeOfResourceHolders;
-	
+
 	/** The genre holders. */
 	private final List<GenreHolder> genreHolders;
-	
+
 	/** The origin info holders. */
 	private final List<OriginInfoHolder> originInfoHolders;
-	
+
 	/** The language holders. */
 	private final List<LanguageHolder> languageHolders;
-	
+
 	/** The physical description holders. */
 	private final List<PhysicalDescriptionHolder> physicalDescriptionHolders;
-	
+
 	/** The abstract holders. */
 	private final List<AbstractHolder> abstractHolders;
-	
+
 	/** The table of contents holders. */
 	private final List<TableOfContentsHolder> tableOfContentsHolders;
-	
+
 	/** The audience holder. */
 	private final AudienceHolder audienceHolder;
-	
+
 	/** The note holders. */
 	private final List<NoteHolder> noteHolders;
-	
+
 	/** The subject holders. */
 	private final List<SubjectHolder> subjectHolders;
-	
+
 	/** The classification holder. */
 	private final ClassificationHolder classificationHolder;
-	
+
 	/** The related item holders. */
 	private final List<RelatedItemHolder> relatedItemHolders;
-	
+
 	/** The related item attribute holder. */
 	private final ListOfListOfSimpleValuesHolder relatedItemAttributeHolder;
-	
+
 	/** The identifier holder. */
 	private final IdentifierHolder identifierHolder;
-	
+
 	/** The location holders. */
 	private final List<LocationHolder> locationHolders;
-	
+
 	/** The access condition holders. */
 	private final List<AccessConditionHolder> accessConditionHolders;
-	
+
 	/** The part holders. */
 	private final List<PartHolder> partHolders;
-	
+
 	/** The extension holders. */
 	private final List<ExtensionHolder> extensionHolders;
-	
+
 	/** The record info holders. */
 	private final List<RecordInfoHolder> recordInfoHolders;
-	
+
 	/** The tabs initialized. */
 	private final boolean[] tabsInitialized = new boolean[20];
 
@@ -278,9 +279,11 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 
 	/**
 	 * Instantiates a new mods tab.
-	 *
-	 * @param deep the deep
-	 * @param topLvl the top lvl
+	 * 
+	 * @param deep
+	 *          the deep
+	 * @param topLvl
+	 *          the top lvl
 	 */
 	public ModsTab(int deep, boolean topLvl) {
 		super(topLvl ? "MODS" : "Related Item", topLvl ? "pieces/16/pawn_blue.png" : "pieces/16/piece_blue.png");
@@ -332,11 +335,15 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 
 	/**
 	 * Gets the mods tab set.
-	 *
-	 * @param modsTypeClient the mods type client
-	 * @param attributePresent the attribute present
-	 * @param relatedItem the related item
-	 * @param counter the counter
+	 * 
+	 * @param modsTypeClient
+	 *          the mods type client
+	 * @param attributePresent
+	 *          the attribute present
+	 * @param relatedItem
+	 *          the related item
+	 * @param counter
+	 *          the counter
 	 * @return the mods tab set
 	 */
 	public VLayout getModsLayout(ModsTypeClient modsTypeClient, boolean attributePresent, RelatedItemTypeClient relatedItem, final int counter) {
@@ -746,7 +753,9 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 		return layout;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.RelatedItemHolder#getMods()
 	 */
 	@Override
@@ -974,8 +983,11 @@ public class ModsTab extends Tab implements RelatedItemHolder {
 		return modsTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.RelatedItemHolder#getRelatedItemAttributeHolder()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.RelatedItemHolder#
+	 * getRelatedItemAttributeHolder()
 	 */
 	@Override
 	public ListOfListOfSimpleValuesHolder getRelatedItemAttributeHolder() {

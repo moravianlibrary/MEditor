@@ -39,19 +39,19 @@ import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
  * The Class PartHolder.
  */
 public class PartHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The texts. */
 	private final ListOfSimpleValuesHolder texts;
-	
+
 	/** The dates. */
 	private final List<DateHolder> dates;
-	
+
 	/** The places. */
 	private final List<PlaceHolder> places;
-	
+
 	/** The extents. */
 	private final List<ExtentHolder> extents;
-	
+
 	/** The details. */
 	private final List<DetailHolder> details;
 
@@ -68,7 +68,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the part.
-	 *
+	 * 
 	 * @return the part
 	 */
 	public PartTypeClient getPart() {
@@ -97,32 +97,46 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 		return partTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -131,7 +145,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the publishers.
-	 *
+	 * 
 	 * @return the publishers
 	 */
 	public ListOfSimpleValuesHolder getPublishers() {
@@ -140,7 +154,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the texts.
-	 *
+	 * 
 	 * @return the texts
 	 */
 	public ListOfSimpleValuesHolder getTexts() {
@@ -149,7 +163,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates.
-	 *
+	 * 
 	 * @return the dates
 	 */
 	public List<DateHolder> getDates() {
@@ -158,7 +172,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the places.
-	 *
+	 * 
 	 * @return the places
 	 */
 	public List<PlaceHolder> getPlaces() {
@@ -167,7 +181,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the extents.
-	 *
+	 * 
 	 * @return the extents
 	 */
 	public List<ExtentHolder> getExtents() {
@@ -176,7 +190,7 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the details.
-	 *
+	 * 
 	 * @return the details
 	 */
 	public List<DetailHolder> getDetails() {
@@ -185,8 +199,9 @@ public class PartHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates from holders.
-	 *
-	 * @param holders the holders
+	 * 
+	 * @param holders
+	 *          the holders
 	 * @return the dates from holders
 	 */
 	private static List<BaseDateTypeClient> getDatesFromHolders(List<DateHolder> holders) {

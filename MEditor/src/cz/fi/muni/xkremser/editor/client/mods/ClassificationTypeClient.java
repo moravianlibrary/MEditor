@@ -42,16 +42,16 @@ public class ClassificationTypeClient extends StringPlusAuthorityPlusEditionClie
 
 	/** The display label. */
 	protected String displayLabel;
-	
+
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
@@ -78,7 +78,7 @@ public class ClassificationTypeClient extends StringPlusAuthorityPlusEditionClie
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -87,8 +87,9 @@ public class ClassificationTypeClient extends StringPlusAuthorityPlusEditionClie
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;

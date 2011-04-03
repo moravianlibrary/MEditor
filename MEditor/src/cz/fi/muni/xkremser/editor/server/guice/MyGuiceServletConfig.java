@@ -36,7 +36,9 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class MyGuiceServletConfig extends GuiceServletContextListener {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.inject.servlet.GuiceServletContextListener#getInjector()
 	 */
 	@Override

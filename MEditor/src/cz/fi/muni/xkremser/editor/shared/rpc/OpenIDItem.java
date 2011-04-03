@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class RecentlyModifiedItem.
  */
 public class OpenIDItem implements IsSerializable {
-	
+
 	/** The identity. */
 	private String identity;
 
@@ -50,9 +50,11 @@ public class OpenIDItem implements IsSerializable {
 
 	/**
 	 * Instantiates a new open id item.
-	 *
-	 * @param identity the identity
-	 * @param id the id
+	 * 
+	 * @param identity
+	 *          the identity
+	 * @param id
+	 *          the id
 	 */
 	public OpenIDItem(String identity, String id) {
 		super();
@@ -62,7 +64,7 @@ public class OpenIDItem implements IsSerializable {
 
 	/**
 	 * Gets the identity.
-	 *
+	 * 
 	 * @return the identity
 	 */
 	public String getIdentity() {
@@ -71,8 +73,9 @@ public class OpenIDItem implements IsSerializable {
 
 	/**
 	 * Sets the identity.
-	 *
-	 * @param identity the new identity
+	 * 
+	 * @param identity
+	 *          the new identity
 	 */
 	public void setIdentity(String identity) {
 		this.identity = identity;
@@ -80,7 +83,7 @@ public class OpenIDItem implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -89,14 +92,17 @@ public class OpenIDItem implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -107,7 +113,9 @@ public class OpenIDItem implements IsSerializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

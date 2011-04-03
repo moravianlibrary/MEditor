@@ -36,10 +36,10 @@ public class InputQueueItem implements IsSerializable {
 
 	/** The path. */
 	private String path;
-	
+
 	/** The name. */
 	private String name;
-	
+
 	/** The issn. */
 	private String issn;
 
@@ -53,10 +53,13 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Instantiates a new input queue item.
-	 *
-	 * @param path the path
-	 * @param issn the issn
-	 * @param name the name
+	 * 
+	 * @param path
+	 *          the path
+	 * @param issn
+	 *          the issn
+	 * @param name
+	 *          the name
 	 */
 	public InputQueueItem(String path, String issn, String name) {
 		super();
@@ -67,7 +70,7 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -76,8 +79,9 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -85,7 +89,7 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Gets the path.
-	 *
+	 * 
 	 * @return the path
 	 */
 	public String getPath() {
@@ -94,8 +98,9 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Sets the path.
-	 *
-	 * @param path the new path
+	 * 
+	 * @param path
+	 *          the new path
 	 */
 	public void setPath(String path) {
 		this.path = path;
@@ -103,7 +108,7 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Gets the issn.
-	 *
+	 * 
 	 * @return the issn
 	 */
 	public String getIssn() {
@@ -112,14 +117,17 @@ public class InputQueueItem implements IsSerializable {
 
 	/**
 	 * Sets the issn.
-	 *
-	 * @param issn the new issn
+	 * 
+	 * @param issn
+	 *          the new issn
 	 */
 	public void setIssn(String issn) {
 		this.issn = issn;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -35,19 +35,19 @@ import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
  * The Class TitleInfoHolder.
  */
 public class TitleInfoHolder extends MetadataHolder {
-	
+
 	/** The titles. */
 	private ListOfSimpleValuesHolder titles;
-	
+
 	/** The sub titles. */
 	private ListOfSimpleValuesHolder subTitles;
-	
+
 	/** The part numbers. */
 	private ListOfSimpleValuesHolder partNumbers;
-	
+
 	/** The part names. */
 	private ListOfSimpleValuesHolder partNames;
-	
+
 	/** The non sorts. */
 	private ListOfSimpleValuesHolder nonSorts;
 
@@ -64,7 +64,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Gets the title info.
-	 *
+	 * 
 	 * @return the title info
 	 */
 	public TitleInfoTypeClient getTitleInfo() {
@@ -88,15 +88,20 @@ public class TitleInfoHolder extends MetadataHolder {
 		return titleInfoTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -104,7 +109,9 @@ public class TitleInfoHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -112,8 +119,11 @@ public class TitleInfoHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -122,7 +132,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Gets the titles.
-	 *
+	 * 
 	 * @return the titles
 	 */
 	public ListOfSimpleValuesHolder getTitles() {
@@ -131,8 +141,9 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Sets the titles.
-	 *
-	 * @param titles the new titles
+	 * 
+	 * @param titles
+	 *          the new titles
 	 */
 	public void setTitles(ListOfSimpleValuesHolder titles) {
 		this.titles = titles;
@@ -140,7 +151,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Gets the sub titles.
-	 *
+	 * 
 	 * @return the sub titles
 	 */
 	public ListOfSimpleValuesHolder getSubTitles() {
@@ -149,8 +160,9 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Sets the sub titles.
-	 *
-	 * @param subTitles the new sub titles
+	 * 
+	 * @param subTitles
+	 *          the new sub titles
 	 */
 	public void setSubTitles(ListOfSimpleValuesHolder subTitles) {
 		this.subTitles = subTitles;
@@ -158,7 +170,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Gets the part numbers.
-	 *
+	 * 
 	 * @return the part numbers
 	 */
 	public ListOfSimpleValuesHolder getPartNumbers() {
@@ -167,8 +179,9 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Sets the part numbers.
-	 *
-	 * @param partNumbers the new part numbers
+	 * 
+	 * @param partNumbers
+	 *          the new part numbers
 	 */
 	public void setPartNumbers(ListOfSimpleValuesHolder partNumbers) {
 		this.partNumbers = partNumbers;
@@ -176,7 +189,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Gets the part names.
-	 *
+	 * 
 	 * @return the part names
 	 */
 	public ListOfSimpleValuesHolder getPartNames() {
@@ -185,8 +198,9 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Sets the part names.
-	 *
-	 * @param partNames the new part names
+	 * 
+	 * @param partNames
+	 *          the new part names
 	 */
 	public void setPartNames(ListOfSimpleValuesHolder partNames) {
 		this.partNames = partNames;
@@ -194,7 +208,7 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Gets the non sorts.
-	 *
+	 * 
 	 * @return the non sorts
 	 */
 	public ListOfSimpleValuesHolder getNonSorts() {
@@ -203,8 +217,9 @@ public class TitleInfoHolder extends MetadataHolder {
 
 	/**
 	 * Sets the non sorts.
-	 *
-	 * @param nonSorts the new non sorts
+	 * 
+	 * @param nonSorts
+	 *          the new non sorts
 	 */
 	public void setNonSorts(ListOfSimpleValuesHolder nonSorts) {
 		this.nonSorts = nonSorts;

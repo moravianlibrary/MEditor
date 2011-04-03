@@ -42,19 +42,19 @@ public class UrlTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The date last accessed. */
 	protected String dateLastAccessed;
-	
+
 	/** The display label. */
 	protected String displayLabel;
-	
+
 	/** The note. */
 	protected String note;
-	
+
 	/** The access. */
 	protected String access;
-	
+
 	/** The usage. */
 	protected String usage;
 

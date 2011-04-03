@@ -37,13 +37,13 @@ import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
  * The Class GenreHolder.
  */
 public class GenreHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The attribute form2. */
 	private DynamicForm attributeForm2;
 
 	/**
 	 * Gets the genre.
-	 *
+	 * 
 	 * @return the genre
 	 */
 	public GenreTypeClient getGenre() {
@@ -60,47 +60,67 @@ public class GenreHolder extends ListOfSimpleValuesHolder {
 		return genreTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributeForm2()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributeForm2()
 	 */
 	public DynamicForm getAttributeForm2() {
 		return attributeForm2;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#setAttributeForm2(com.smartgwt.client.widgets.form.DynamicForm)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * setAttributeForm2(com.smartgwt.client.widgets.form.DynamicForm)
 	 */
 	public void setAttributeForm2(DynamicForm attributeForm2) {
 		this.attributeForm2 = attributeForm2;

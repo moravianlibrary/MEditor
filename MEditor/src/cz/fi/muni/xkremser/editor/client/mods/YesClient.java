@@ -42,14 +42,15 @@ public enum YesClient implements IsSerializable {
 
 	/** The YES. */
 	YES("yes");
-	
+
 	/** The value. */
 	private final String value;
 
 	/**
 	 * Instantiates a new yes client.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 */
 	YesClient(String v) {
 		value = v;
@@ -57,7 +58,7 @@ public enum YesClient implements IsSerializable {
 
 	/**
 	 * Value.
-	 *
+	 * 
 	 * @return the string
 	 */
 	public String value() {
@@ -66,8 +67,9 @@ public enum YesClient implements IsSerializable {
 
 	/**
 	 * From value.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 * @return the yes client
 	 */
 	public static YesClient fromValue(String v) {

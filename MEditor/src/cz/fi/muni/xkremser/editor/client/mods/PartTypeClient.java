@@ -45,28 +45,28 @@ public class PartTypeClient implements IsSerializable {
 	// TODO: Object to Serializable
 	/** The detail. */
 	protected List<DetailTypeClient> detail;
-	
+
 	/** The extent. */
 	protected List<ExtentTypeClient> extent;
-	
+
 	/** The date. */
 	protected List<BaseDateTypeClient> date;
-	
+
 	/** The text. */
 	protected List<String> text;
-	
+
 	/** The id. */
 	protected String id;
-	
+
 	/** The type. */
 	protected String type;
-	
+
 	/** The order. */
 	protected String order;
 
 	/**
 	 * Gets the detail.
-	 *
+	 * 
 	 * @return the detail
 	 */
 	public List<DetailTypeClient> getDetail() {
@@ -75,8 +75,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the detail.
-	 *
-	 * @param detail the new detail
+	 * 
+	 * @param detail
+	 *          the new detail
 	 */
 	public void setDetail(List<DetailTypeClient> detail) {
 		this.detail = detail;
@@ -84,7 +85,7 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the extent.
-	 *
+	 * 
 	 * @return the extent
 	 */
 	public List<ExtentTypeClient> getExtent() {
@@ -93,8 +94,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the extent.
-	 *
-	 * @param extent the new extent
+	 * 
+	 * @param extent
+	 *          the new extent
 	 */
 	public void setExtent(List<ExtentTypeClient> extent) {
 		this.extent = extent;
@@ -102,7 +104,7 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the date.
-	 *
+	 * 
 	 * @return the date
 	 */
 	public List<BaseDateTypeClient> getDate() {
@@ -111,8 +113,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the date.
-	 *
-	 * @param date the new date
+	 * 
+	 * @param date
+	 *          the new date
 	 */
 	public void setDate(List<BaseDateTypeClient> date) {
 		this.date = date;
@@ -120,7 +123,7 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the text.
-	 *
+	 * 
 	 * @return the text
 	 */
 	public List<String> getText() {
@@ -129,8 +132,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the text.
-	 *
-	 * @param text the new text
+	 * 
+	 * @param text
+	 *          the new text
 	 */
 	public void setText(List<String> text) {
 		this.text = text;
@@ -138,7 +142,7 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -147,8 +151,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -156,7 +161,7 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public String getType() {
@@ -165,8 +170,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param type the new type
+	 * 
+	 * @param type
+	 *          the new type
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -174,7 +180,7 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the order.
-	 *
+	 * 
 	 * @return the order
 	 */
 	public String getOrder() {
@@ -183,8 +189,9 @@ public class PartTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the order.
-	 *
-	 * @param order the new order
+	 * 
+	 * @param order
+	 *          the new order
 	 */
 	public void setOrder(String order) {
 		this.order = order;

@@ -35,16 +35,16 @@ import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
  * The Class ExtentHolder.
  */
 public class ExtentHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The start. */
 	private final ListOfSimpleValuesHolder start;
-	
+
 	/** The end. */
 	private final ListOfSimpleValuesHolder end;
-	
+
 	/** The total. */
 	private final ListOfSimpleValuesHolder total;
-	
+
 	/** The list. */
 	private final ListOfSimpleValuesHolder list;
 
@@ -60,7 +60,7 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the extent.
-	 *
+	 * 
 	 * @return the extent
 	 */
 	public ExtentTypeClient getExtent() {
@@ -76,32 +76,46 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 		return extentTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -110,9 +124,11 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Safe get.
-	 *
-	 * @param holder the holder
-	 * @param key the key
+	 * 
+	 * @param holder
+	 *          the holder
+	 * @param key
+	 *          the key
 	 * @return the string
 	 */
 	private String safeGet(ListOfSimpleValuesHolder holder, String key) {
@@ -125,7 +141,7 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the start.
-	 *
+	 * 
 	 * @return the start
 	 */
 	public ListOfSimpleValuesHolder getStart() {
@@ -134,7 +150,7 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the end.
-	 *
+	 * 
 	 * @return the end
 	 */
 	public ListOfSimpleValuesHolder getEnd() {
@@ -143,7 +159,7 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the total.
-	 *
+	 * 
 	 * @return the total
 	 */
 	public ListOfSimpleValuesHolder getTotal() {
@@ -152,7 +168,7 @@ public class ExtentHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the list.
-	 *
+	 * 
 	 * @return the list
 	 */
 	public ListOfSimpleValuesHolder getList() {

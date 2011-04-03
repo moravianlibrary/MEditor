@@ -42,7 +42,7 @@ public class StringPlusDisplayLabelClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The display label. */
 	protected String displayLabel;
 

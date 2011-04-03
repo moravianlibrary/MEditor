@@ -33,7 +33,7 @@ import javax.xml.bind.Marshaller;
 // TODO: Auto-generated Javadoc
 /**
  * Konfigurace konvertoru.
- *
+ * 
  * @author xholcik TODO: smazat celou tridu?
  */
 public class ConvertorConfig {
@@ -58,7 +58,7 @@ public class ConvertorConfig {
 
 	/**
 	 * Gets the import folder.
-	 *
+	 * 
 	 * @return the import folder
 	 */
 	public String getImportFolder() {
@@ -67,8 +67,9 @@ public class ConvertorConfig {
 
 	/**
 	 * Sets the import folder.
-	 *
-	 * @param importFolder the new import folder
+	 * 
+	 * @param importFolder
+	 *          the new import folder
 	 */
 	public void setImportFolder(String importFolder) {
 		this.importFolder = importFolder;
@@ -76,7 +77,7 @@ public class ConvertorConfig {
 
 	/**
 	 * Gets the export folder.
-	 *
+	 * 
 	 * @return the export folder
 	 */
 	public String getExportFolder() {
@@ -85,8 +86,9 @@ public class ConvertorConfig {
 
 	/**
 	 * Sets the export folder.
-	 *
-	 * @param exportFolder the new export folder
+	 * 
+	 * @param exportFolder
+	 *          the new export folder
 	 */
 	public void setExportFolder(String exportFolder) {
 		this.exportFolder = exportFolder;
@@ -94,7 +96,7 @@ public class ConvertorConfig {
 
 	/**
 	 * Gets the marshaller.
-	 *
+	 * 
 	 * @return the marshaller
 	 */
 	public Marshaller getMarshaller() {
@@ -103,8 +105,9 @@ public class ConvertorConfig {
 
 	/**
 	 * Sets the marshaller.
-	 *
-	 * @param marshaller the new marshaller
+	 * 
+	 * @param marshaller
+	 *          the new marshaller
 	 */
 	public void setMarshaller(Marshaller marshaller) {
 		this.marshaller = marshaller;
@@ -112,7 +115,7 @@ public class ConvertorConfig {
 
 	/**
 	 * Gets the contract length.
-	 *
+	 * 
 	 * @return the contract length
 	 */
 	public int getContractLength() {
@@ -121,8 +124,9 @@ public class ConvertorConfig {
 
 	/**
 	 * Sets the contract length.
-	 *
-	 * @param contractLength the new contract length
+	 * 
+	 * @param contractLength
+	 *          the new contract length
 	 */
 	public void setContractLength(int contractLength) {
 		this.contractLength = contractLength;
@@ -130,7 +134,7 @@ public class ConvertorConfig {
 
 	/**
 	 * Checks if is default visibility.
-	 *
+	 * 
 	 * @return true, if is default visibility
 	 */
 	public boolean isDefaultVisibility() {
@@ -139,8 +143,9 @@ public class ConvertorConfig {
 
 	/**
 	 * Sets the default visibility.
-	 *
-	 * @param defaultVisibility the new default visibility
+	 * 
+	 * @param defaultVisibility
+	 *          the new default visibility
 	 */
 	public void setDefaultVisibility(boolean defaultVisibility) {
 		this.defaultVisibility = defaultVisibility;
@@ -148,7 +153,7 @@ public class ConvertorConfig {
 
 	/**
 	 * Gets the db connection.
-	 *
+	 * 
 	 * @return the db connection
 	 */
 	public Connection getDbConnection() {
@@ -157,8 +162,9 @@ public class ConvertorConfig {
 
 	/**
 	 * Sets the db connection.
-	 *
-	 * @param dbConnection the new db connection
+	 * 
+	 * @param dbConnection
+	 *          the new db connection
 	 */
 	public void setDbConnection(Connection dbConnection) {
 		this.dbConnection = dbConnection;

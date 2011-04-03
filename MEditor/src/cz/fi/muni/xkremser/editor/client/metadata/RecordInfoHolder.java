@@ -41,25 +41,25 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusLanguageCli
  * The Class RecordInfoHolder.
  */
 public class RecordInfoHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The record origin. */
 	private final ListOfSimpleValuesHolder recordOrigin;
-	
+
 	/** The record content source. */
 	private final ListOfListOfSimpleValuesHolder recordContentSource;
-	
+
 	/** The description standard. */
 	private final ListOfListOfSimpleValuesHolder descriptionStandard;
-	
+
 	/** The creation date. */
 	private final List<DateHolder> creationDate;
-	
+
 	/** The change date. */
 	private final List<DateHolder> changeDate;
-	
+
 	/** The language. */
 	private final List<LanguageHolder> language;
-	
+
 	/** The record identifier. */
 	private final ListOfListOfSimpleValuesHolder recordIdentifier;
 
@@ -79,7 +79,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the record info.
-	 *
+	 * 
 	 * @return the record info
 	 */
 	public RecordInfoTypeClient getRecordInfo() {
@@ -148,32 +148,46 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 		return recordInfoTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -182,7 +196,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the record origin.
-	 *
+	 * 
 	 * @return the record origin
 	 */
 	public ListOfSimpleValuesHolder getRecordOrigin() {
@@ -191,7 +205,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the record content source.
-	 *
+	 * 
 	 * @return the record content source
 	 */
 	public ListOfListOfSimpleValuesHolder getRecordContentSource() {
@@ -200,7 +214,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the description standard.
-	 *
+	 * 
 	 * @return the description standard
 	 */
 	public ListOfListOfSimpleValuesHolder getDescriptionStandard() {
@@ -209,7 +223,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the creation date.
-	 *
+	 * 
 	 * @return the creation date
 	 */
 	public List<DateHolder> getCreationDate() {
@@ -218,7 +232,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the change date.
-	 *
+	 * 
 	 * @return the change date
 	 */
 	public List<DateHolder> getChangeDate() {
@@ -227,7 +241,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the language.
-	 *
+	 * 
 	 * @return the language
 	 */
 	public List<LanguageHolder> getLanguage() {
@@ -236,7 +250,7 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the record identifier.
-	 *
+	 * 
 	 * @return the record identifier
 	 */
 	public ListOfListOfSimpleValuesHolder getRecordIdentifier() {
@@ -245,8 +259,9 @@ public class RecordInfoHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates from holders.
-	 *
-	 * @param holders the holders
+	 * 
+	 * @param holders
+	 *          the holders
 	 * @return the dates from holders
 	 */
 	private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {

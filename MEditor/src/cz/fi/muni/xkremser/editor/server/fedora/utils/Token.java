@@ -34,15 +34,17 @@ public class Token {
 
 	/** The type. */
 	private final TokenType type;
-	
+
 	/** The value. */
 	private final String value;
 
 	/**
 	 * Instantiates a new token.
-	 *
-	 * @param type the type
-	 * @param value the value
+	 * 
+	 * @param type
+	 *          the type
+	 * @param value
+	 *          the value
 	 */
 	public Token(TokenType type, String value) {
 		super();
@@ -52,7 +54,7 @@ public class Token {
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public TokenType getType() {
@@ -61,7 +63,7 @@ public class Token {
 
 	/**
 	 * Gets the value.
-	 *
+	 * 
 	 * @return the value
 	 */
 	public String getValue() {
@@ -72,26 +74,26 @@ public class Token {
 	 * The Enum TokenType.
 	 */
 	public enum TokenType {
-		
+
 		/** The ALPHA. */
-		ALPHA, 
- /** The DIGIT. */
- DIGIT, 
- /** The HEXDIGIT. */
- HEXDIGIT, 
- /** The PERCENT. */
- PERCENT, 
- /** The DOT. */
- DOT, 
- /** The DOUBLEDOT. */
- DOUBLEDOT, 
- /** The MINUS. */
- MINUS, 
- /** The TILDA. */
- TILDA, 
- /** The EOI. */
- EOI, 
- /** The UNDERSCOPE. */
- UNDERSCOPE,
+		ALPHA,
+		/** The DIGIT. */
+		DIGIT,
+		/** The HEXDIGIT. */
+		HEXDIGIT,
+		/** The PERCENT. */
+		PERCENT,
+		/** The DOT. */
+		DOT,
+		/** The DOUBLEDOT. */
+		DOUBLEDOT,
+		/** The MINUS. */
+		MINUS,
+		/** The TILDA. */
+		TILDA,
+		/** The EOI. */
+		EOI,
+		/** The UNDERSCOPE. */
+		UNDERSCOPE,
 	}
 }

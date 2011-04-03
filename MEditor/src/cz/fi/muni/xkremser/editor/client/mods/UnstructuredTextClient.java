@@ -42,22 +42,22 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
-	
+
 	/** The xlink. */
 	protected String xlink;
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -66,8 +66,9 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;
@@ -75,7 +76,7 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Gets the lang.
-	 *
+	 * 
 	 * @return the lang
 	 */
 	public String getLang() {
@@ -84,8 +85,9 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Sets the lang.
-	 *
-	 * @param lang the new lang
+	 * 
+	 * @param lang
+	 *          the new lang
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
@@ -93,7 +95,7 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Gets the script.
-	 *
+	 * 
 	 * @return the script
 	 */
 	public String getScript() {
@@ -102,8 +104,9 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Sets the script.
-	 *
-	 * @param script the new script
+	 * 
+	 * @param script
+	 *          the new script
 	 */
 	public void setScript(String script) {
 		this.script = script;
@@ -111,7 +114,7 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Gets the transliteration.
-	 *
+	 * 
 	 * @return the transliteration
 	 */
 	public String getTransliteration() {
@@ -120,8 +123,9 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Sets the transliteration.
-	 *
-	 * @param transliteration the new transliteration
+	 * 
+	 * @param transliteration
+	 *          the new transliteration
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;
@@ -129,7 +133,7 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Gets the xlink.
-	 *
+	 * 
 	 * @return the xlink
 	 */
 	public String getXlink() {
@@ -138,8 +142,9 @@ public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient
 
 	/**
 	 * Sets the xlink.
-	 *
-	 * @param xlink the new xlink
+	 * 
+	 * @param xlink
+	 *          the new xlink
 	 */
 	public void setXlink(String xlink) {
 		this.xlink = xlink;

@@ -40,10 +40,10 @@ import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient.LanguageTermCli
  * The Class LanguageHolder.
  */
 public class LanguageHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The attribute form. */
 	private DynamicForm attributeForm;
-	
+
 	/** The lang terms. */
 	private final ListOfListOfSimpleValuesHolder langTerms;
 
@@ -56,7 +56,7 @@ public class LanguageHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the language.
-	 *
+	 * 
 	 * @return the language
 	 */
 	public LanguageTypeClient getLanguage() {
@@ -80,48 +80,70 @@ public class LanguageHolder extends ListOfSimpleValuesHolder {
 		return languageTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributeForm()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributeForm
+	 * ()
 	 */
 	@Override
 	public DynamicForm getAttributeForm() {
 		return attributeForm;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#setAttributeForm(com.smartgwt.client.widgets.form.DynamicForm)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#setAttributeForm
+	 * (com.smartgwt.client.widgets.form.DynamicForm)
 	 */
 	@Override
 	public void setAttributeForm(DynamicForm attributeForm) {
@@ -130,7 +152,7 @@ public class LanguageHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the lang terms.
-	 *
+	 * 
 	 * @return the lang terms
 	 */
 	public ListOfListOfSimpleValuesHolder getLangTerms() {

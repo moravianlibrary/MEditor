@@ -44,37 +44,37 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/** The form. */
 	protected List<StringPlusAuthorityPlusTypeClient> form;
-	
+
 	/** The reformatting quality. */
 	protected List<String> reformattingQuality;
-	
+
 	/** The internet media type. */
 	protected List<String> internetMediaType;
-	
+
 	/** The extent. */
 	protected List<String> extent;
-	
+
 	/** The digital origin. */
 	protected List<String> digitalOrigin;
-	
+
 	/** The note. */
 	protected List<NoteTypeClient> note;
 
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
 	/**
 	 * Gets the form.
-	 *
+	 * 
 	 * @return the form
 	 */
 	public List<StringPlusAuthorityPlusTypeClient> getForm() {
@@ -83,8 +83,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the form.
-	 *
-	 * @param form the new form
+	 * 
+	 * @param form
+	 *          the new form
 	 */
 	public void setForm(List<StringPlusAuthorityPlusTypeClient> form) {
 		this.form = form;
@@ -92,7 +93,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the reformatting quality.
-	 *
+	 * 
 	 * @return the reformatting quality
 	 */
 	public List<String> getReformattingQuality() {
@@ -101,8 +102,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the reformatting quality.
-	 *
-	 * @param reformattingQuality the new reformatting quality
+	 * 
+	 * @param reformattingQuality
+	 *          the new reformatting quality
 	 */
 	public void setReformattingQuality(List<String> reformattingQuality) {
 		this.reformattingQuality = reformattingQuality;
@@ -110,7 +112,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the internet media type.
-	 *
+	 * 
 	 * @return the internet media type
 	 */
 	public List<String> getInternetMediaType() {
@@ -119,8 +121,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the internet media type.
-	 *
-	 * @param internetMediaType the new internet media type
+	 * 
+	 * @param internetMediaType
+	 *          the new internet media type
 	 */
 	public void setInternetMediaType(List<String> internetMediaType) {
 		this.internetMediaType = internetMediaType;
@@ -128,7 +131,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the extent.
-	 *
+	 * 
 	 * @return the extent
 	 */
 	public List<String> getExtent() {
@@ -137,8 +140,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the extent.
-	 *
-	 * @param extent the new extent
+	 * 
+	 * @param extent
+	 *          the new extent
 	 */
 	public void setExtent(List<String> extent) {
 		this.extent = extent;
@@ -146,7 +150,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the digital origin.
-	 *
+	 * 
 	 * @return the digital origin
 	 */
 	public List<String> getDigitalOrigin() {
@@ -155,8 +159,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the digital origin.
-	 *
-	 * @param digitalOrigin the new digital origin
+	 * 
+	 * @param digitalOrigin
+	 *          the new digital origin
 	 */
 	public void setDigitalOrigin(List<String> digitalOrigin) {
 		this.digitalOrigin = digitalOrigin;
@@ -164,7 +169,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the note.
-	 *
+	 * 
 	 * @return the note
 	 */
 	public List<NoteTypeClient> getNote() {
@@ -173,8 +178,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the note.
-	 *
-	 * @param note the new note
+	 * 
+	 * @param note
+	 *          the new note
 	 */
 	public void setNote(List<NoteTypeClient> note) {
 		this.note = note;
@@ -182,7 +188,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -191,8 +197,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;
@@ -200,7 +207,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the lang.
-	 *
+	 * 
 	 * @return the lang
 	 */
 	public String getLang() {
@@ -209,8 +216,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the lang.
-	 *
-	 * @param lang the new lang
+	 * 
+	 * @param lang
+	 *          the new lang
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
@@ -218,7 +226,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the script.
-	 *
+	 * 
 	 * @return the script
 	 */
 	public String getScript() {
@@ -227,8 +235,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the script.
-	 *
-	 * @param script the new script
+	 * 
+	 * @param script
+	 *          the new script
 	 */
 	public void setScript(String script) {
 		this.script = script;
@@ -236,7 +245,7 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the transliteration.
-	 *
+	 * 
 	 * @return the transliteration
 	 */
 	public String getTransliteration() {
@@ -245,8 +254,9 @@ public class PhysicalDescriptionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the transliteration.
-	 *
-	 * @param transliteration the new transliteration
+	 * 
+	 * @param transliteration
+	 *          the new transliteration
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;

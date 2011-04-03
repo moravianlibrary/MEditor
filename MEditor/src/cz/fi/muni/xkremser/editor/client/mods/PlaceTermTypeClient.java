@@ -45,10 +45,10 @@ public class PlaceTermTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The authority. */
 	protected PlaceAuthorityClient authority;
-	
+
 	/** The type. */
 	protected CodeOrTextClient type;
 

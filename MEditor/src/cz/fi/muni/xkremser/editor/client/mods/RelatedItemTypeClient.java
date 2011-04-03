@@ -39,25 +39,25 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class RelatedItemTypeClient.
  */
 public class RelatedItemTypeClient implements IsSerializable {
-	
+
 	/** The mods. */
 	protected ModsTypeClient mods;
-	
+
 	/** The display label. */
 	protected String displayLabel;
-	
+
 	/** The id. */
 	protected String id;
-	
+
 	/** The type. */
 	protected String type;
-	
+
 	/** The xlink. */
 	protected String xlink;
 
 	/**
 	 * Gets the mods.
-	 *
+	 * 
 	 * @return the mods
 	 */
 	public ModsTypeClient getMods() {
@@ -66,8 +66,9 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the mods.
-	 *
-	 * @param mods the new mods
+	 * 
+	 * @param mods
+	 *          the new mods
 	 */
 	public void setMods(ModsTypeClient mods) {
 		this.mods = mods;
@@ -75,7 +76,7 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the display label.
-	 *
+	 * 
 	 * @return the display label
 	 */
 	public String getDisplayLabel() {
@@ -84,8 +85,9 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the display label.
-	 *
-	 * @param displayLabel the new display label
+	 * 
+	 * @param displayLabel
+	 *          the new display label
 	 */
 	public void setDisplayLabel(String displayLabel) {
 		this.displayLabel = displayLabel;
@@ -93,7 +95,7 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -102,8 +104,9 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -111,7 +114,7 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public String getType() {
@@ -120,8 +123,9 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param type the new type
+	 * 
+	 * @param type
+	 *          the new type
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -129,7 +133,7 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xlink.
-	 *
+	 * 
 	 * @return the xlink
 	 */
 	public String getXlink() {
@@ -138,8 +142,9 @@ public class RelatedItemTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xlink.
-	 *
-	 * @param xlink the new xlink
+	 * 
+	 * @param xlink
+	 *          the new xlink
 	 */
 	public void setXlink(String xlink) {
 		this.xlink = xlink;

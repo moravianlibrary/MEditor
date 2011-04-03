@@ -29,7 +29,7 @@ package cz.fi.muni.xkremser.editor.server.fedora.valueobj;
 // TODO: Auto-generated Javadoc
 /**
  * Standardni vyjimka.
- *
+ * 
  * @author xholcik
  */
 public class ServiceException extends Exception {
@@ -46,9 +46,11 @@ public class ServiceException extends Exception {
 
 	/**
 	 * Instantiates a new service exception.
-	 *
-	 * @param message the message
-	 * @param cause the cause
+	 * 
+	 * @param message
+	 *          the message
+	 * @param cause
+	 *          the cause
 	 */
 	public ServiceException(String message, Throwable cause) {
 		super(message, cause);
@@ -56,8 +58,9 @@ public class ServiceException extends Exception {
 
 	/**
 	 * Instantiates a new service exception.
-	 *
-	 * @param message the message
+	 * 
+	 * @param message
+	 *          the message
 	 */
 	public ServiceException(String message) {
 		super(message);
@@ -65,8 +68,9 @@ public class ServiceException extends Exception {
 
 	/**
 	 * Instantiates a new service exception.
-	 *
-	 * @param cause the cause
+	 * 
+	 * @param cause
+	 *          the cause
 	 */
 	public ServiceException(Throwable cause) {
 		super(cause);

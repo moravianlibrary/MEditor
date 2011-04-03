@@ -39,13 +39,13 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/** The uuid. */
 	private String uuid;
-	
+
 	/** The name. */
 	private String name;
-	
+
 	/** The description. */
 	private String description;
-	
+
 	/** The model. */
 	private KrameriusModel model;
 
@@ -59,11 +59,15 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Instantiates a new recently modified record.
-	 *
-	 * @param uuid the uuid
-	 * @param name the name
-	 * @param description the description
-	 * @param model the model
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 * @param name
+	 *          the name
+	 * @param description
+	 *          the description
+	 * @param model
+	 *          the model
 	 */
 	public RecentlyModifiedRecord(String uuid, String name, String description, KrameriusModel model) {
 		super();
@@ -75,7 +79,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Gets the uuid.
-	 *
+	 * 
 	 * @return the uuid
 	 */
 	public String getUuid() {
@@ -84,8 +88,9 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Sets the uuid.
-	 *
-	 * @param uuid the new uuid
+	 * 
+	 * @param uuid
+	 *          the new uuid
 	 */
 	public void setUuid(String uuid) {
 		setAttribute(Constants.ATTR_UUID, uuid);
@@ -93,7 +98,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -102,8 +107,9 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(String name) {
 		setAttribute(Constants.ATTR_NAME, name);
@@ -111,7 +117,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Gets the description.
-	 *
+	 * 
 	 * @return the description
 	 */
 	public String getDescription() {
@@ -120,8 +126,9 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Sets the description.
-	 *
-	 * @param description the new description
+	 * 
+	 * @param description
+	 *          the new description
 	 */
 	public void setDescription(String description) {
 		setAttribute(Constants.ATTR_DESC, description);
@@ -129,7 +136,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Gets the model.
-	 *
+	 * 
 	 * @return the model
 	 */
 	public KrameriusModel getModel() {
@@ -138,14 +145,17 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 
 	/**
 	 * Sets the model.
-	 *
-	 * @param model the new model
+	 * 
+	 * @param model
+	 *          the new model
 	 */
 	public void setModel(KrameriusModel model) {
 		setAttribute(Constants.ATTR_MODEL, model);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -153,7 +163,9 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 		return "RecentlyModifiedRecord [uuid=" + uuid + ", name=" + name + ", description=" + description + ", model=" + model + "]";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -164,7 +176,9 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

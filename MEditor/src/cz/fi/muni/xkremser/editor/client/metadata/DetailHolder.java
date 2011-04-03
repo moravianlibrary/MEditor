@@ -35,13 +35,13 @@ import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
  * The Class DetailHolder.
  */
 public class DetailHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The numbers. */
 	private final ListOfSimpleValuesHolder numbers;
-	
+
 	/** The captions. */
 	private final ListOfSimpleValuesHolder captions;
-	
+
 	/** The titles. */
 	private final ListOfSimpleValuesHolder titles;
 
@@ -56,7 +56,7 @@ public class DetailHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the detail.
-	 *
+	 * 
 	 * @return the detail
 	 */
 	public DetailTypeClient getDetail() {
@@ -72,32 +72,46 @@ public class DetailHolder extends ListOfSimpleValuesHolder {
 		return detailTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -106,7 +120,7 @@ public class DetailHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the numbers.
-	 *
+	 * 
 	 * @return the numbers
 	 */
 	public ListOfSimpleValuesHolder getNumbers() {
@@ -115,7 +129,7 @@ public class DetailHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the captions.
-	 *
+	 * 
 	 * @return the captions
 	 */
 	public ListOfSimpleValuesHolder getCaptions() {
@@ -124,7 +138,7 @@ public class DetailHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the titles.
-	 *
+	 * 
 	 * @return the titles
 	 */
 	public ListOfSimpleValuesHolder getTitles() {

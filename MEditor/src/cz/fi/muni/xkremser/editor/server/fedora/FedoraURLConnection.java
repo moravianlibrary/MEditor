@@ -40,7 +40,7 @@ public class FedoraURLConnection extends URLConnection {
 
 	/** The Constant IMG_FULL. */
 	public static final String IMG_FULL = "IMG_FULL";
-	
+
 	/** The Constant IMG_THUMB. */
 	public static final String IMG_THUMB = "IMG_THUMB";
 
@@ -49,16 +49,20 @@ public class FedoraURLConnection extends URLConnection {
 
 	/**
 	 * Instantiates a new fedora url connection.
-	 *
-	 * @param url the url
-	 * @param fedoraAccess the fedora access
+	 * 
+	 * @param url
+	 *          the url
+	 * @param fedoraAccess
+	 *          the fedora access
 	 */
 	FedoraURLConnection(URL url, FedoraAccess fedoraAccess) {
 		super(url);
 		this.fedoraAccess = fedoraAccess;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.net.URLConnection#getInputStream()
 	 */
 	@Override
@@ -81,7 +85,9 @@ public class FedoraURLConnection extends URLConnection {
 			throw new IOException("uknown stream !");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.net.URLConnection#connect()
 	 */
 	@Override

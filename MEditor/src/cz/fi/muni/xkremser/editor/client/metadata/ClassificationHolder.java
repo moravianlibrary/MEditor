@@ -47,8 +47,9 @@ public class ClassificationHolder extends ListOfListOfSimpleValuesHolder {
 
 	/**
 	 * Instantiates a new classification holder.
-	 *
-	 * @param keys the keys
+	 * 
+	 * @param keys
+	 *          the keys
 	 */
 	public ClassificationHolder(String... keys) {
 		super(keys);
@@ -56,7 +57,7 @@ public class ClassificationHolder extends ListOfListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the classification.
-	 *
+	 * 
 	 * @return the classification
 	 */
 	public List<ClassificationTypeClient> getClassification() {
@@ -82,32 +83,48 @@ public class ClassificationHolder extends ListOfListOfSimpleValuesHolder {
 		return list;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getValue()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getValues()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {

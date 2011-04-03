@@ -46,58 +46,58 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/** The topic. */
 	protected List<String> topic;
-	
+
 	/** The geographic. */
 	protected List<String> geographic;
-	
+
 	/** The temporal. */
 	protected List<DateTypeClient> temporal;
-	
+
 	/** The title info. */
 	protected List<TitleInfoTypeClient> titleInfo;
-	
+
 	/** The name. */
 	protected List<NameTypeClient> name;
-	
+
 	/** The geographic code. */
 	protected List<GeographicCodeClient> geographicCode;
-	
+
 	/** The hierarchical geographic. */
 	protected List<HierarchicalGeographicTypeClient> hierarchicalGeographic;
-	
+
 	/** The cartographics. */
 	protected List<CartographicsClient> cartographics;
-	
+
 	/** The occupation. */
 	protected List<String> occupation;
-	
+
 	/** The genre. */
 	protected List<String> genre;
 
 	/** The id. */
 	protected String id;
-	
+
 	/** The authority. */
 	protected String authority;
-	
+
 	/** The xlink. */
 	protected String xlink;
-	
+
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
 	/**
 	 * Gets the topic.
-	 *
+	 * 
 	 * @return the topic
 	 */
 	public List<String> getTopic() {
@@ -106,8 +106,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the topic.
-	 *
-	 * @param topic the new topic
+	 * 
+	 * @param topic
+	 *          the new topic
 	 */
 	public void setTopic(List<String> topic) {
 		this.topic = topic;
@@ -115,7 +116,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the geographic.
-	 *
+	 * 
 	 * @return the geographic
 	 */
 	public List<String> getGeographic() {
@@ -124,8 +125,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the geographic.
-	 *
-	 * @param geographic the new geographic
+	 * 
+	 * @param geographic
+	 *          the new geographic
 	 */
 	public void setGeographic(List<String> geographic) {
 		this.geographic = geographic;
@@ -133,7 +135,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the temporal.
-	 *
+	 * 
 	 * @return the temporal
 	 */
 	public List<DateTypeClient> getTemporal() {
@@ -142,8 +144,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the temporal.
-	 *
-	 * @param temporal the new temporal
+	 * 
+	 * @param temporal
+	 *          the new temporal
 	 */
 	public void setTemporal(List<DateTypeClient> temporal) {
 		this.temporal = temporal;
@@ -151,7 +154,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the title info.
-	 *
+	 * 
 	 * @return the title info
 	 */
 	public List<TitleInfoTypeClient> getTitleInfo() {
@@ -160,8 +163,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the title info.
-	 *
-	 * @param titleInfo the new title info
+	 * 
+	 * @param titleInfo
+	 *          the new title info
 	 */
 	public void setTitleInfo(List<TitleInfoTypeClient> titleInfo) {
 		this.titleInfo = titleInfo;
@@ -169,7 +173,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public List<NameTypeClient> getName() {
@@ -178,8 +182,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(List<NameTypeClient> name) {
 		this.name = name;
@@ -187,7 +192,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the geographic code.
-	 *
+	 * 
 	 * @return the geographic code
 	 */
 	public List<GeographicCodeClient> getGeographicCode() {
@@ -196,8 +201,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the geographic code.
-	 *
-	 * @param geographicCode the new geographic code
+	 * 
+	 * @param geographicCode
+	 *          the new geographic code
 	 */
 	public void setGeographicCode(List<GeographicCodeClient> geographicCode) {
 		this.geographicCode = geographicCode;
@@ -205,7 +211,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the hierarchical geographic.
-	 *
+	 * 
 	 * @return the hierarchical geographic
 	 */
 	public List<HierarchicalGeographicTypeClient> getHierarchicalGeographic() {
@@ -214,8 +220,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the hierarchical geographic.
-	 *
-	 * @param hierarchicalGeographic the new hierarchical geographic
+	 * 
+	 * @param hierarchicalGeographic
+	 *          the new hierarchical geographic
 	 */
 	public void setHierarchicalGeographic(List<HierarchicalGeographicTypeClient> hierarchicalGeographic) {
 		this.hierarchicalGeographic = hierarchicalGeographic;
@@ -223,7 +230,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the cartographics.
-	 *
+	 * 
 	 * @return the cartographics
 	 */
 	public List<CartographicsClient> getCartographics() {
@@ -232,8 +239,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the cartographics.
-	 *
-	 * @param cartographics the new cartographics
+	 * 
+	 * @param cartographics
+	 *          the new cartographics
 	 */
 	public void setCartographics(List<CartographicsClient> cartographics) {
 		this.cartographics = cartographics;
@@ -241,7 +249,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the occupation.
-	 *
+	 * 
 	 * @return the occupation
 	 */
 	public List<String> getOccupation() {
@@ -250,8 +258,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the occupation.
-	 *
-	 * @param occupation the new occupation
+	 * 
+	 * @param occupation
+	 *          the new occupation
 	 */
 	public void setOccupation(List<String> occupation) {
 		this.occupation = occupation;
@@ -259,7 +268,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the genre.
-	 *
+	 * 
 	 * @return the genre
 	 */
 	public List<String> getGenre() {
@@ -268,8 +277,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the genre.
-	 *
-	 * @param genre the new genre
+	 * 
+	 * @param genre
+	 *          the new genre
 	 */
 	public void setGenre(List<String> genre) {
 		this.genre = genre;
@@ -277,7 +287,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -286,8 +296,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -295,7 +306,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the authority.
-	 *
+	 * 
 	 * @return the authority
 	 */
 	public String getAuthority() {
@@ -304,8 +315,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the authority.
-	 *
-	 * @param authority the new authority
+	 * 
+	 * @param authority
+	 *          the new authority
 	 */
 	public void setAuthority(String authority) {
 		this.authority = authority;
@@ -313,7 +325,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xlink.
-	 *
+	 * 
 	 * @return the xlink
 	 */
 	public String getXlink() {
@@ -322,8 +334,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xlink.
-	 *
-	 * @param xlink the new xlink
+	 * 
+	 * @param xlink
+	 *          the new xlink
 	 */
 	public void setXlink(String xlink) {
 		this.xlink = xlink;
@@ -331,7 +344,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -340,8 +353,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;
@@ -349,7 +363,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the lang.
-	 *
+	 * 
 	 * @return the lang
 	 */
 	public String getLang() {
@@ -358,8 +372,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the lang.
-	 *
-	 * @param lang the new lang
+	 * 
+	 * @param lang
+	 *          the new lang
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
@@ -367,7 +382,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the script.
-	 *
+	 * 
 	 * @return the script
 	 */
 	public String getScript() {
@@ -376,8 +391,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the script.
-	 *
-	 * @param script the new script
+	 * 
+	 * @param script
+	 *          the new script
 	 */
 	public void setScript(String script) {
 		this.script = script;
@@ -385,7 +401,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the transliteration.
-	 *
+	 * 
 	 * @return the transliteration
 	 */
 	public String getTransliteration() {
@@ -394,8 +410,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the transliteration.
-	 *
-	 * @param transliteration the new transliteration
+	 * 
+	 * @param transliteration
+	 *          the new transliteration
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;
@@ -408,10 +425,10 @@ public class SubjectTypeClient implements IsSerializable {
 
 		/** The scale. */
 		protected String scale;
-		
+
 		/** The projection. */
 		protected String projection;
-		
+
 		/** The coordinates. */
 		protected List<String> coordinates;
 
@@ -459,7 +476,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 		/**
 		 * Gets the coordinates.
-		 *
+		 * 
 		 * @return the coordinates
 		 */
 		public List<String> getCoordinates() {
@@ -468,8 +485,9 @@ public class SubjectTypeClient implements IsSerializable {
 
 		/**
 		 * Sets the coordinates.
-		 *
-		 * @param coordinates the new coordinates
+		 * 
+		 * @param coordinates
+		 *          the new coordinates
 		 */
 		public void setCoordinates(List<String> coordinates) {
 			this.coordinates = coordinates;
@@ -503,7 +521,7 @@ public class SubjectTypeClient implements IsSerializable {
 
 		/** The value. */
 		protected String value;
-		
+
 		/** The authority. */
 		protected PlaceAuthorityClient authority;
 

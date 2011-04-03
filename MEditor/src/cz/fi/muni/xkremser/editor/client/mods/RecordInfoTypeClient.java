@@ -44,40 +44,40 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/** The record content source. */
 	protected List<StringPlusAuthorityPlusLanguageClient> recordContentSource;
-	
+
 	/** The record creation date. */
 	protected List<DateTypeClient> recordCreationDate;
-	
+
 	/** The record change date. */
 	protected List<DateTypeClient> recordChangeDate;
-	
+
 	/** The record identifier. */
 	protected List<RecordIdentifierClient> recordIdentifier;
-	
+
 	/** The language of cataloging. */
 	protected List<LanguageTypeClient> languageOfCataloging;
-	
+
 	/** The record origin. */
 	protected List<String> recordOrigin;
-	
+
 	/** The description standard. */
 	protected List<StringPlusAuthorityClient> descriptionStandard;
-	
+
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
 	/**
 	 * Gets the record content source.
-	 *
+	 * 
 	 * @return the record content source
 	 */
 	public List<StringPlusAuthorityPlusLanguageClient> getRecordContentSource() {
@@ -86,8 +86,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the record content source.
-	 *
-	 * @param recordContentSource the new record content source
+	 * 
+	 * @param recordContentSource
+	 *          the new record content source
 	 */
 	public void setRecordContentSource(List<StringPlusAuthorityPlusLanguageClient> recordContentSource) {
 		this.recordContentSource = recordContentSource;
@@ -95,7 +96,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the record creation date.
-	 *
+	 * 
 	 * @return the record creation date
 	 */
 	public List<DateTypeClient> getRecordCreationDate() {
@@ -104,8 +105,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the record creation date.
-	 *
-	 * @param recordCreationDate the new record creation date
+	 * 
+	 * @param recordCreationDate
+	 *          the new record creation date
 	 */
 	public void setRecordCreationDate(List<DateTypeClient> recordCreationDate) {
 		this.recordCreationDate = recordCreationDate;
@@ -113,7 +115,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the record change date.
-	 *
+	 * 
 	 * @return the record change date
 	 */
 	public List<DateTypeClient> getRecordChangeDate() {
@@ -122,8 +124,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the record change date.
-	 *
-	 * @param recordChangeDate the new record change date
+	 * 
+	 * @param recordChangeDate
+	 *          the new record change date
 	 */
 	public void setRecordChangeDate(List<DateTypeClient> recordChangeDate) {
 		this.recordChangeDate = recordChangeDate;
@@ -131,7 +134,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the record identifier.
-	 *
+	 * 
 	 * @return the record identifier
 	 */
 	public List<RecordIdentifierClient> getRecordIdentifier() {
@@ -140,8 +143,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the record identifier.
-	 *
-	 * @param recordIdentifier the new record identifier
+	 * 
+	 * @param recordIdentifier
+	 *          the new record identifier
 	 */
 	public void setRecordIdentifier(List<RecordIdentifierClient> recordIdentifier) {
 		this.recordIdentifier = recordIdentifier;
@@ -149,7 +153,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the language of cataloging.
-	 *
+	 * 
 	 * @return the language of cataloging
 	 */
 	public List<LanguageTypeClient> getLanguageOfCataloging() {
@@ -158,8 +162,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the language of cataloging.
-	 *
-	 * @param languageOfCataloging the new language of cataloging
+	 * 
+	 * @param languageOfCataloging
+	 *          the new language of cataloging
 	 */
 	public void setLanguageOfCataloging(List<LanguageTypeClient> languageOfCataloging) {
 		this.languageOfCataloging = languageOfCataloging;
@@ -167,7 +172,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the record origin.
-	 *
+	 * 
 	 * @return the record origin
 	 */
 	public List<String> getRecordOrigin() {
@@ -176,8 +181,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the record origin.
-	 *
-	 * @param recordOrigin the new record origin
+	 * 
+	 * @param recordOrigin
+	 *          the new record origin
 	 */
 	public void setRecordOrigin(List<String> recordOrigin) {
 		this.recordOrigin = recordOrigin;
@@ -185,7 +191,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the description standard.
-	 *
+	 * 
 	 * @return the description standard
 	 */
 	public List<StringPlusAuthorityClient> getDescriptionStandard() {
@@ -194,8 +200,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the description standard.
-	 *
-	 * @param descriptionStandard the new description standard
+	 * 
+	 * @param descriptionStandard
+	 *          the new description standard
 	 */
 	public void setDescriptionStandard(List<StringPlusAuthorityClient> descriptionStandard) {
 		this.descriptionStandard = descriptionStandard;
@@ -203,7 +210,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -212,8 +219,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;
@@ -221,7 +229,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the lang.
-	 *
+	 * 
 	 * @return the lang
 	 */
 	public String getLang() {
@@ -230,8 +238,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the lang.
-	 *
-	 * @param lang the new lang
+	 * 
+	 * @param lang
+	 *          the new lang
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
@@ -239,7 +248,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the script.
-	 *
+	 * 
 	 * @return the script
 	 */
 	public String getScript() {
@@ -248,8 +257,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the script.
-	 *
-	 * @param script the new script
+	 * 
+	 * @param script
+	 *          the new script
 	 */
 	public void setScript(String script) {
 		this.script = script;
@@ -257,7 +267,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the transliteration.
-	 *
+	 * 
 	 * @return the transliteration
 	 */
 	public String getTransliteration() {
@@ -266,8 +276,9 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the transliteration.
-	 *
-	 * @param transliteration the new transliteration
+	 * 
+	 * @param transliteration
+	 *          the new transliteration
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;
@@ -280,7 +291,7 @@ public class RecordInfoTypeClient implements IsSerializable {
 
 		/** The value. */
 		protected String value;
-		
+
 		/** The source. */
 		protected String source;
 

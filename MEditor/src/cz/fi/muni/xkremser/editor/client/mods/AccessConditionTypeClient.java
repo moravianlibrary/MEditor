@@ -42,28 +42,28 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/** The display label. */
 	protected String displayLabel;
-	
+
 	/** The type. */
 	protected String type;
-	
+
 	/** The xlink. */
 	protected String xlink;
-	
+
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
 	/**
 	 * Gets the display label.
-	 *
+	 * 
 	 * @return the display label
 	 */
 	public String getDisplayLabel() {
@@ -72,8 +72,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the display label.
-	 *
-	 * @param displayLabel the new display label
+	 * 
+	 * @param displayLabel
+	 *          the new display label
 	 */
 	public void setDisplayLabel(String displayLabel) {
 		this.displayLabel = displayLabel;
@@ -81,7 +82,7 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public String getType() {
@@ -90,8 +91,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param type the new type
+	 * 
+	 * @param type
+	 *          the new type
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -99,7 +101,7 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Gets the xlink.
-	 *
+	 * 
 	 * @return the xlink
 	 */
 	public String getXlink() {
@@ -108,8 +110,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the xlink.
-	 *
-	 * @param xlink the new xlink
+	 * 
+	 * @param xlink
+	 *          the new xlink
 	 */
 	public void setXlink(String xlink) {
 		this.xlink = xlink;
@@ -117,7 +120,7 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -126,8 +129,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;
@@ -135,7 +139,7 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Gets the lang.
-	 *
+	 * 
 	 * @return the lang
 	 */
 	public String getLang() {
@@ -144,8 +148,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the lang.
-	 *
-	 * @param lang the new lang
+	 * 
+	 * @param lang
+	 *          the new lang
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
@@ -153,7 +158,7 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Gets the script.
-	 *
+	 * 
 	 * @return the script
 	 */
 	public String getScript() {
@@ -162,8 +167,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the script.
-	 *
-	 * @param script the new script
+	 * 
+	 * @param script
+	 *          the new script
 	 */
 	public void setScript(String script) {
 		this.script = script;
@@ -171,7 +177,7 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Gets the transliteration.
-	 *
+	 * 
 	 * @return the transliteration
 	 */
 	public String getTransliteration() {
@@ -180,8 +186,9 @@ public class AccessConditionTypeClient extends ExtensionTypeClient implements Is
 
 	/**
 	 * Sets the transliteration.
-	 *
-	 * @param transliteration the new transliteration
+	 * 
+	 * @param transliteration
+	 *          the new transliteration
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;

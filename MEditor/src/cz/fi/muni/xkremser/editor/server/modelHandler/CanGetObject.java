@@ -38,11 +38,14 @@ public interface CanGetObject {
 
 	/**
 	 * Gets the digital object.
-	 *
-	 * @param uuid the uuid
-	 * @param findRelated the find related
+	 * 
+	 * @param uuid
+	 *          the uuid
+	 * @param findRelated
+	 *          the find related
 	 * @return the digital object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	AbstractDigitalObjectDetail getDigitalObject(String uuid, final boolean findRelated) throws IOException;
 }

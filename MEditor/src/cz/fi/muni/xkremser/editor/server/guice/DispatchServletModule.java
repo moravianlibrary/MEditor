@@ -36,7 +36,9 @@ import com.gwtplatform.dispatch.shared.ActionImpl;
  */
 public class DispatchServletModule extends ServletModule {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.inject.servlet.ServletModule#configureServlets()
 	 */
 	@Override

@@ -118,8 +118,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Adds the title.
-	 *
-	 * @param title the title
+	 * 
+	 * @param title
+	 *          the title
 	 */
 	public void addTitle(String title) {
 		if (title == null || "".equals(title))
@@ -132,7 +133,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the title.
-	 *
+	 * 
 	 * @return the title
 	 */
 	public List<String> getTitle() {
@@ -141,8 +142,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the title.
-	 *
-	 * @param title the new title
+	 * 
+	 * @param title
+	 *          the new title
 	 */
 	public void setTitle(List<String> title) {
 		this.title = title;
@@ -150,7 +152,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the identifier.
-	 *
+	 * 
 	 * @return the identifier
 	 */
 	public List<String> getIdentifier() {
@@ -159,8 +161,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the identifier.
-	 *
-	 * @param identifier the new identifier
+	 * 
+	 * @param identifier
+	 *          the new identifier
 	 */
 	public void setIdentifier(List<String> identifier) {
 		this.identifier = identifier;
@@ -168,7 +171,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the creator.
-	 *
+	 * 
 	 * @return the creator
 	 */
 	public List<String> getCreator() {
@@ -177,8 +180,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the creator.
-	 *
-	 * @param creator the new creator
+	 * 
+	 * @param creator
+	 *          the new creator
 	 */
 	public void setCreator(List<String> creator) {
 		this.creator = creator;
@@ -186,7 +190,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the publisher.
-	 *
+	 * 
 	 * @return the publisher
 	 */
 	public List<String> getPublisher() {
@@ -195,8 +199,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the publisher.
-	 *
-	 * @param publisher the new publisher
+	 * 
+	 * @param publisher
+	 *          the new publisher
 	 */
 	public void setPublisher(List<String> publisher) {
 		this.publisher = publisher;
@@ -204,7 +209,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the contributor.
-	 *
+	 * 
 	 * @return the contributor
 	 */
 	public List<String> getContributor() {
@@ -213,8 +218,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the contributor.
-	 *
-	 * @param contributor the new contributor
+	 * 
+	 * @param contributor
+	 *          the new contributor
 	 */
 	public void setContributor(List<String> contributor) {
 		this.contributor = contributor;
@@ -222,7 +228,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the date.
-	 *
+	 * 
 	 * @return the date
 	 */
 	public List<String> getDate() {
@@ -231,8 +237,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the date.
-	 *
-	 * @param date the new date
+	 * 
+	 * @param date
+	 *          the new date
 	 */
 	public void setDate(List<String> date) {
 		this.date = date;
@@ -240,7 +247,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the language.
-	 *
+	 * 
 	 * @return the language
 	 */
 	public List<String> getLanguage() {
@@ -249,8 +256,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the language.
-	 *
-	 * @param language the new language
+	 * 
+	 * @param language
+	 *          the new language
 	 */
 	public void setLanguage(List<String> language) {
 		this.language = language;
@@ -258,7 +266,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the description.
-	 *
+	 * 
 	 * @return the description
 	 */
 	public List<String> getDescription() {
@@ -267,8 +275,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the description.
-	 *
-	 * @param description the new description
+	 * 
+	 * @param description
+	 *          the new description
 	 */
 	public void setDescription(List<String> description) {
 		this.description = description;
@@ -276,7 +285,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the format.
-	 *
+	 * 
 	 * @return the format
 	 */
 	public List<String> getFormat() {
@@ -285,8 +294,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the format.
-	 *
-	 * @param format the new format
+	 * 
+	 * @param format
+	 *          the new format
 	 */
 	public void setFormat(List<String> format) {
 		this.format = format;
@@ -294,7 +304,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the subject.
-	 *
+	 * 
 	 * @return the subject
 	 */
 	public List<String> getSubject() {
@@ -303,8 +313,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the subject.
-	 *
-	 * @param subject the new subject
+	 * 
+	 * @param subject
+	 *          the new subject
 	 */
 	public void setSubject(List<String> subject) {
 		this.subject = subject;
@@ -312,7 +323,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public List<String> getType() {
@@ -321,8 +332,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param type the new type
+	 * 
+	 * @param type
+	 *          the new type
 	 */
 	public void setType(List<String> type) {
 		this.type = type;
@@ -330,7 +342,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the rights.
-	 *
+	 * 
 	 * @return the rights
 	 */
 	public List<String> getRights() {
@@ -339,8 +351,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the rights.
-	 *
-	 * @param rights the new rights
+	 * 
+	 * @param rights
+	 *          the new rights
 	 */
 	public void setRights(List<String> rights) {
 		this.rights = rights;
@@ -348,7 +361,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the coverage.
-	 *
+	 * 
 	 * @return the coverage
 	 */
 	public List<String> getCoverage() {
@@ -357,8 +370,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the coverage.
-	 *
-	 * @param coverage the new coverage
+	 * 
+	 * @param coverage
+	 *          the new coverage
 	 */
 	public void setCoverage(List<String> coverage) {
 		this.coverage = coverage;
@@ -366,7 +380,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the relation.
-	 *
+	 * 
 	 * @return the relation
 	 */
 	public List<String> getRelation() {
@@ -375,8 +389,9 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the relation.
-	 *
-	 * @param relation the new relation
+	 * 
+	 * @param relation
+	 *          the new relation
 	 */
 	public void setRelation(List<String> relation) {
 		this.relation = relation;
@@ -384,7 +399,7 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Gets the source.
-	 *
+	 * 
 	 * @return the source
 	 */
 	public List<String> getSource() {
@@ -393,14 +408,17 @@ public class DublinCore implements IsSerializable {
 
 	/**
 	 * Sets the source.
-	 *
-	 * @param source the new source
+	 * 
+	 * @param source
+	 *          the new source
 	 */
 	public void setSource(List<String> source) {
 		this.source = source;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

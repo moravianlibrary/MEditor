@@ -53,8 +53,9 @@ public class PeriodicalVolumeDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Instantiates a new periodical volume detail.
-	 *
-	 * @param related the related
+	 * 
+	 * @param related
+	 *          the related
 	 */
 	public PeriodicalVolumeDetail(ArrayList<ArrayList<String>> related) {
 		super(related);
@@ -74,8 +75,9 @@ public class PeriodicalVolumeDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the int parts.
-	 *
-	 * @param intParts the new int parts
+	 * 
+	 * @param intParts
+	 *          the new int parts
 	 */
 	public void setIntParts(ArrayList<InternalPartDetail> intParts) {
 		this.intParts = intParts;
@@ -84,8 +86,9 @@ public class PeriodicalVolumeDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the per items.
-	 *
-	 * @param perItems the new per items
+	 * 
+	 * @param perItems
+	 *          the new per items
 	 */
 	public void setPerItems(ArrayList<PeriodicalItemDetail> perItems) {
 		this.perItems = perItems;
@@ -104,16 +107,24 @@ public class PeriodicalVolumeDetail extends AbstractDigitalObjectDetail {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#hasContainers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasContainers()
 	 */
 	@Override
 	public int hasContainers() {
 		return 2;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getChildContainerModels()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getChildContainerModels()
 	 */
 	@Override
 	public List<KrameriusModel> getChildContainerModels() {

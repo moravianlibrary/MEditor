@@ -44,22 +44,22 @@ public class DetailTypeClient implements IsSerializable {
 
 	/** The number. */
 	protected List<String> number;
-	
+
 	/** The caption. */
 	protected List<String> caption;
-	
+
 	/** The title. */
 	protected List<String> title;
-	
+
 	/** The type. */
 	protected String type;
-	
+
 	/** The level. */
 	protected String level;
 
 	/**
 	 * Gets the number.
-	 *
+	 * 
 	 * @return the number
 	 */
 	public List<String> getNumber() {
@@ -68,8 +68,9 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the number.
-	 *
-	 * @param number the new number
+	 * 
+	 * @param number
+	 *          the new number
 	 */
 	public void setNumber(List<String> number) {
 		this.number = number;
@@ -77,7 +78,7 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the caption.
-	 *
+	 * 
 	 * @return the caption
 	 */
 	public List<String> getCaption() {
@@ -86,8 +87,9 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the caption.
-	 *
-	 * @param caption the new caption
+	 * 
+	 * @param caption
+	 *          the new caption
 	 */
 	public void setCaption(List<String> caption) {
 		this.caption = caption;
@@ -95,7 +97,7 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the title.
-	 *
+	 * 
 	 * @return the title
 	 */
 	public List<String> getTitle() {
@@ -104,8 +106,9 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the title.
-	 *
-	 * @param title the new title
+	 * 
+	 * @param title
+	 *          the new title
 	 */
 	public void setTitle(List<String> title) {
 		this.title = title;
@@ -113,7 +116,7 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public String getType() {
@@ -122,8 +125,9 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param type the new type
+	 * 
+	 * @param type
+	 *          the new type
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -131,7 +135,7 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the level.
-	 *
+	 * 
 	 * @return the level
 	 */
 	public String getLevel() {
@@ -140,8 +144,9 @@ public class DetailTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the level.
-	 *
-	 * @param level the new level
+	 * 
+	 * @param level
+	 *          the new level
 	 */
 	public void setLevel(String level) {
 		this.level = level;

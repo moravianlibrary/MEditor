@@ -29,11 +29,11 @@ package cz.fi.muni.xkremser.editor.server.fedora;
 // TODO: Auto-generated Javadoc
 /**
  * Namespaces in fedora.
- *
+ * 
  * @author pavels
  */
 public interface FedoraNamespaces {
-	
+
 	/** RDF namespace. */
 	public static final String RDF_NAMESPACE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 

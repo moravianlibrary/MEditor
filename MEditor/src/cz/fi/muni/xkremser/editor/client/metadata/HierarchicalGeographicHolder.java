@@ -35,40 +35,40 @@ import cz.fi.muni.xkremser.editor.client.mods.HierarchicalGeographicTypeClient;
  * The Class HierarchicalGeographicHolder.
  */
 public class HierarchicalGeographicHolder extends MetadataHolder {
-	
+
 	/** The continents. */
 	private final ListOfSimpleValuesHolder continents;
-	
+
 	/** The provinces. */
 	private final ListOfSimpleValuesHolder provinces;
-	
+
 	/** The regions. */
 	private final ListOfSimpleValuesHolder regions;
-	
+
 	/** The states. */
 	private final ListOfSimpleValuesHolder states;
-	
+
 	/** The territories. */
 	private final ListOfSimpleValuesHolder territories;
-	
+
 	/** The counties. */
 	private final ListOfSimpleValuesHolder counties;
-	
+
 	/** The countries. */
 	private final ListOfSimpleValuesHolder countries;
-	
+
 	/** The cities. */
 	private final ListOfSimpleValuesHolder cities;
-	
+
 	/** The city sections. */
 	private final ListOfSimpleValuesHolder citySections;
-	
+
 	/** The islands. */
 	private final ListOfSimpleValuesHolder islands;
-	
+
 	/** The areas. */
 	private final ListOfSimpleValuesHolder areas;
-	
+
 	/** The extraterrestrial areas. */
 	private final ListOfSimpleValuesHolder extraterrestrialAreas;
 
@@ -92,7 +92,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the hierarchical geographic.
-	 *
+	 * 
 	 * @return the hierarchical geographic
 	 */
 	public HierarchicalGeographicTypeClient getHierarchicalGeographic() {
@@ -112,15 +112,20 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 		return hierarchicalGeographicTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -128,7 +133,9 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -136,8 +143,11 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -146,7 +156,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the continents.
-	 *
+	 * 
 	 * @return the continents
 	 */
 	public ListOfSimpleValuesHolder getContinents() {
@@ -155,7 +165,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the provinces.
-	 *
+	 * 
 	 * @return the provinces
 	 */
 	public ListOfSimpleValuesHolder getProvinces() {
@@ -164,7 +174,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the regions.
-	 *
+	 * 
 	 * @return the regions
 	 */
 	public ListOfSimpleValuesHolder getRegions() {
@@ -173,7 +183,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the states.
-	 *
+	 * 
 	 * @return the states
 	 */
 	public ListOfSimpleValuesHolder getStates() {
@@ -182,7 +192,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the territories.
-	 *
+	 * 
 	 * @return the territories
 	 */
 	public ListOfSimpleValuesHolder getTerritories() {
@@ -191,7 +201,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the counties.
-	 *
+	 * 
 	 * @return the counties
 	 */
 	public ListOfSimpleValuesHolder getCounties() {
@@ -200,7 +210,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the countries.
-	 *
+	 * 
 	 * @return the countries
 	 */
 	public ListOfSimpleValuesHolder getCountries() {
@@ -209,7 +219,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the cities.
-	 *
+	 * 
 	 * @return the cities
 	 */
 	public ListOfSimpleValuesHolder getCities() {
@@ -218,7 +228,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the city sections.
-	 *
+	 * 
 	 * @return the city sections
 	 */
 	public ListOfSimpleValuesHolder getCitySections() {
@@ -227,7 +237,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the islands.
-	 *
+	 * 
 	 * @return the islands
 	 */
 	public ListOfSimpleValuesHolder getIslands() {
@@ -236,7 +246,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the areas.
-	 *
+	 * 
 	 * @return the areas
 	 */
 	public ListOfSimpleValuesHolder getAreas() {
@@ -245,7 +255,7 @@ public class HierarchicalGeographicHolder extends MetadataHolder {
 
 	/**
 	 * Gets the extraterrestrial areas.
-	 *
+	 * 
 	 * @return the extraterrestrial areas
 	 */
 	public ListOfSimpleValuesHolder getExtraterrestrialAreas() {

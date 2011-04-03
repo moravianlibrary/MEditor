@@ -41,46 +41,46 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class HierarchicalGeographicTypeClient.
  */
 public class HierarchicalGeographicTypeClient implements IsSerializable {
-	
+
 	/** The extraterrestrial area. */
 	protected List<String> extraterrestrialArea;
-	
+
 	/** The continent. */
 	protected List<String> continent;
-	
+
 	/** The country. */
 	protected List<String> country;
-	
+
 	/** The province. */
 	protected List<String> province;
-	
+
 	/** The region. */
 	protected List<String> region;
-	
+
 	/** The state. */
 	protected List<String> state;
-	
+
 	/** The territory. */
 	protected List<String> territory;
-	
+
 	/** The county. */
 	protected List<String> county;
-	
+
 	/** The city. */
 	protected List<String> city;
-	
+
 	/** The city section. */
 	protected List<String> citySection;
-	
+
 	/** The island. */
 	protected List<String> island;
-	
+
 	/** The area. */
 	protected List<String> area;
 
 	/**
 	 * Gets the island.
-	 *
+	 * 
 	 * @return the island
 	 */
 	public List<String> getIsland() {
@@ -89,8 +89,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the island.
-	 *
-	 * @param island the new island
+	 * 
+	 * @param island
+	 *          the new island
 	 */
 	public void setIsland(List<String> island) {
 		this.island = island;
@@ -98,7 +99,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the area.
-	 *
+	 * 
 	 * @return the area
 	 */
 	public List<String> getArea() {
@@ -107,8 +108,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the area.
-	 *
-	 * @param area the new area
+	 * 
+	 * @param area
+	 *          the new area
 	 */
 	public void setArea(List<String> area) {
 		this.area = area;
@@ -116,7 +118,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the extraterrestrial area.
-	 *
+	 * 
 	 * @return the extraterrestrial area
 	 */
 	public List<String> getExtraterrestrialArea() {
@@ -125,8 +127,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the extraterrestrial area.
-	 *
-	 * @param extraterrestrialArea the new extraterrestrial area
+	 * 
+	 * @param extraterrestrialArea
+	 *          the new extraterrestrial area
 	 */
 	public void setExtraterrestrialArea(List<String> extraterrestrialArea) {
 		this.extraterrestrialArea = extraterrestrialArea;
@@ -134,7 +137,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the continent.
-	 *
+	 * 
 	 * @return the continent
 	 */
 	public List<String> getContinent() {
@@ -143,8 +146,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the continent.
-	 *
-	 * @param continent the new continent
+	 * 
+	 * @param continent
+	 *          the new continent
 	 */
 	public void setContinent(List<String> continent) {
 		this.continent = continent;
@@ -152,7 +156,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the country.
-	 *
+	 * 
 	 * @return the country
 	 */
 	public List<String> getCountry() {
@@ -161,8 +165,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the country.
-	 *
-	 * @param country the new country
+	 * 
+	 * @param country
+	 *          the new country
 	 */
 	public void setCountry(List<String> country) {
 		this.country = country;
@@ -170,7 +175,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the province.
-	 *
+	 * 
 	 * @return the province
 	 */
 	public List<String> getProvince() {
@@ -179,8 +184,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the province.
-	 *
-	 * @param province the new province
+	 * 
+	 * @param province
+	 *          the new province
 	 */
 	public void setProvince(List<String> province) {
 		this.province = province;
@@ -188,7 +194,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the region.
-	 *
+	 * 
 	 * @return the region
 	 */
 	public List<String> getRegion() {
@@ -197,8 +203,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the region.
-	 *
-	 * @param region the new region
+	 * 
+	 * @param region
+	 *          the new region
 	 */
 	public void setRegion(List<String> region) {
 		this.region = region;
@@ -206,7 +213,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the state.
-	 *
+	 * 
 	 * @return the state
 	 */
 	public List<String> getState() {
@@ -215,8 +222,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the state.
-	 *
-	 * @param state the new state
+	 * 
+	 * @param state
+	 *          the new state
 	 */
 	public void setState(List<String> state) {
 		this.state = state;
@@ -224,7 +232,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the territory.
-	 *
+	 * 
 	 * @return the territory
 	 */
 	public List<String> getTerritory() {
@@ -233,8 +241,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the territory.
-	 *
-	 * @param territory the new territory
+	 * 
+	 * @param territory
+	 *          the new territory
 	 */
 	public void setTerritory(List<String> territory) {
 		this.territory = territory;
@@ -242,7 +251,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the county.
-	 *
+	 * 
 	 * @return the county
 	 */
 	public List<String> getCounty() {
@@ -251,8 +260,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the county.
-	 *
-	 * @param county the new county
+	 * 
+	 * @param county
+	 *          the new county
 	 */
 	public void setCounty(List<String> county) {
 		this.county = county;
@@ -260,7 +270,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the city.
-	 *
+	 * 
 	 * @return the city
 	 */
 	public List<String> getCity() {
@@ -269,8 +279,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the city.
-	 *
-	 * @param city the new city
+	 * 
+	 * @param city
+	 *          the new city
 	 */
 	public void setCity(List<String> city) {
 		this.city = city;
@@ -278,7 +289,7 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the city section.
-	 *
+	 * 
 	 * @return the city section
 	 */
 	public List<String> getCitySection() {
@@ -287,8 +298,9 @@ public class HierarchicalGeographicTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the city section.
-	 *
-	 * @param citySection the new city section
+	 * 
+	 * @param citySection
+	 *          the new city section
 	 */
 	public void setCitySection(List<String> citySection) {
 		this.citySection = citySection;

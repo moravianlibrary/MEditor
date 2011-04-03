@@ -51,14 +51,15 @@ public enum NameTypeAttributeClient implements IsSerializable {
 
 	/** 111, 711. */
 	CONFERENCE("conference");
-	
+
 	/** The value. */
 	private final String value;
 
 	/**
 	 * Instantiates a new name type attribute client.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 */
 	NameTypeAttributeClient(String v) {
 		value = v;
@@ -66,7 +67,7 @@ public enum NameTypeAttributeClient implements IsSerializable {
 
 	/**
 	 * Value.
-	 *
+	 * 
 	 * @return the string
 	 */
 	public String value() {
@@ -75,8 +76,9 @@ public enum NameTypeAttributeClient implements IsSerializable {
 
 	/**
 	 * From value.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 * @return the name type attribute client
 	 */
 	public static NameTypeAttributeClient fromValue(String v) {

@@ -49,19 +49,19 @@ public class CopyInformationTypeClient implements IsSerializable {
 
 	/** The form. */
 	protected StringPlusAuthorityClient form;
-	
+
 	/** The sub location. */
 	protected List<String> subLocation;
-	
+
 	/** The shelf locator. */
 	protected List<String> shelfLocator;
-	
+
 	/** The electronic locator. */
 	protected List<String> electronicLocator;
-	
+
 	/** The note. */
 	protected List<StringPlusDisplayLabelPlusTypeClient> note;
-	
+
 	/** The enumeration and chronology. */
 	protected List<EnumerationAndChronologyTypeClient> enumerationAndChronology;
 
@@ -105,7 +105,7 @@ public class CopyInformationTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list {@link String }
-	 *
+	 * 
 	 * @return the sub location
 	 */
 	public List<String> getSubLocation() {
@@ -134,7 +134,7 @@ public class CopyInformationTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list {@link String }
-	 *
+	 * 
 	 * @return the shelf locator
 	 */
 	public List<String> getShelfLocator() {
@@ -163,7 +163,7 @@ public class CopyInformationTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list {@link String }
-	 *
+	 * 
 	 * @return the electronic locator
 	 */
 	public List<String> getElectronicLocator() {
@@ -192,9 +192,8 @@ public class CopyInformationTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 *
-	 * @return the note
-	 * {@link StringPlusDisplayLabelPlusType }
+	 * 
+	 * @return the note {@link StringPlusDisplayLabelPlusType }
 	 */
 	public List<StringPlusDisplayLabelPlusTypeClient> getNote() {
 		if (note == null) {
@@ -222,9 +221,8 @@ public class CopyInformationTypeClient implements IsSerializable {
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 *
-	 * @return the enumeration and chronology
-	 * {@link EnumerationAndChronologyType }
+	 * 
+	 * @return the enumeration and chronology {@link EnumerationAndChronologyType }
 	 */
 	public List<EnumerationAndChronologyTypeClient> getEnumerationAndChronology() {
 		if (enumerationAndChronology == null) {
@@ -235,8 +233,9 @@ public class CopyInformationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the sub location.
-	 *
-	 * @param subLocation the new sub location
+	 * 
+	 * @param subLocation
+	 *          the new sub location
 	 */
 	public void setSubLocation(List<String> subLocation) {
 		this.subLocation = subLocation;
@@ -244,8 +243,9 @@ public class CopyInformationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the shelf locator.
-	 *
-	 * @param shelfLocator the new shelf locator
+	 * 
+	 * @param shelfLocator
+	 *          the new shelf locator
 	 */
 	public void setShelfLocator(List<String> shelfLocator) {
 		this.shelfLocator = shelfLocator;
@@ -253,8 +253,9 @@ public class CopyInformationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the electronic locator.
-	 *
-	 * @param electronicLocator the new electronic locator
+	 * 
+	 * @param electronicLocator
+	 *          the new electronic locator
 	 */
 	public void setElectronicLocator(List<String> electronicLocator) {
 		this.electronicLocator = electronicLocator;
@@ -262,8 +263,9 @@ public class CopyInformationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the note.
-	 *
-	 * @param note the new note
+	 * 
+	 * @param note
+	 *          the new note
 	 */
 	public void setNote(List<StringPlusDisplayLabelPlusTypeClient> note) {
 		this.note = note;
@@ -271,8 +273,9 @@ public class CopyInformationTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the enumeration and chronology.
-	 *
-	 * @param enumerationAndChronology the new enumeration and chronology
+	 * 
+	 * @param enumerationAndChronology
+	 *          the new enumeration and chronology
 	 */
 	public void setEnumerationAndChronology(List<EnumerationAndChronologyTypeClient> enumerationAndChronology) {
 		this.enumerationAndChronology = enumerationAndChronology;

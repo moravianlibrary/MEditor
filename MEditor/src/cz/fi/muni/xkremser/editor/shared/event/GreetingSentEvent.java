@@ -33,21 +33,23 @@ import com.google.gwt.event.shared.GwtEvent;
  * The Class GreetingSentEvent.
  */
 public class GreetingSentEvent extends GwtEvent<GreetingSentEventHandler> {
-	
+
 	/** The TYPE. */
 	public static Type<GreetingSentEventHandler> TYPE = new Type<GreetingSentEventHandler>();
 
 	/** The name. */
 	private final String name;
-	
+
 	/** The message. */
 	private final String message;
 
 	/**
 	 * Instantiates a new greeting sent event.
-	 *
-	 * @param name the name
-	 * @param message the message
+	 * 
+	 * @param name
+	 *          the name
+	 * @param message
+	 *          the message
 	 */
 	public GreetingSentEvent(final String name, final String message) {
 		this.name = name;
@@ -56,7 +58,7 @@ public class GreetingSentEvent extends GwtEvent<GreetingSentEventHandler> {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -65,14 +67,16 @@ public class GreetingSentEvent extends GwtEvent<GreetingSentEventHandler> {
 
 	/**
 	 * Gets the message.
-	 *
+	 * 
 	 * @return the message
 	 */
 	public String getMessage() {
 		return message;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.gwt.event.shared.GwtEvent#getAssociatedType()
 	 */
 	@Override
@@ -80,8 +84,12 @@ public class GreetingSentEvent extends GwtEvent<GreetingSentEventHandler> {
 		return TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.google.gwt.event.shared.GwtEvent#dispatch(com.google.gwt.event.shared.EventHandler)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.event.shared.GwtEvent#dispatch(com.google.gwt.event.shared
+	 * .EventHandler)
 	 */
 	@Override
 	protected void dispatch(final GreetingSentEventHandler handler) {

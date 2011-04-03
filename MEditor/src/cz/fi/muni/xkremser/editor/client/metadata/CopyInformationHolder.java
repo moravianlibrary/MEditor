@@ -39,22 +39,22 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelPlusTypeClie
  * The Class CopyInformationHolder.
  */
 public class CopyInformationHolder extends MetadataHolder {
-	
+
 	/** The sub locations. */
 	private final ListOfSimpleValuesHolder subLocations;
-	
+
 	/** The shelf locators. */
 	private final ListOfSimpleValuesHolder shelfLocators;
-	
+
 	/** The electronic locators. */
 	private final ListOfSimpleValuesHolder electronicLocators;
-	
+
 	/** The form. */
 	private final ListOfSimpleValuesHolder form;
-	
+
 	/** The enum chrono. */
 	private final ListOfListOfSimpleValuesHolder enumChrono;
-	
+
 	/** The notes. */
 	private final List<ListOfSimpleValuesHolder> notes;
 
@@ -72,7 +72,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the copy info.
-	 *
+	 * 
 	 * @return the copy info
 	 */
 	public CopyInformationTypeClient getCopyInfo() {
@@ -120,15 +120,20 @@ public class CopyInformationHolder extends MetadataHolder {
 		return copyInformationTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -136,7 +141,9 @@ public class CopyInformationHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -144,8 +151,11 @@ public class CopyInformationHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -154,7 +164,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the sub locations.
-	 *
+	 * 
 	 * @return the sub locations
 	 */
 	public ListOfSimpleValuesHolder getSubLocations() {
@@ -163,7 +173,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the shelf locators.
-	 *
+	 * 
 	 * @return the shelf locators
 	 */
 	public ListOfSimpleValuesHolder getShelfLocators() {
@@ -172,7 +182,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the electronic locators.
-	 *
+	 * 
 	 * @return the electronic locators
 	 */
 	public ListOfSimpleValuesHolder getElectronicLocators() {
@@ -181,7 +191,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the form.
-	 *
+	 * 
 	 * @return the form
 	 */
 	public ListOfSimpleValuesHolder getForm() {
@@ -190,7 +200,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the enum chrono.
-	 *
+	 * 
 	 * @return the enum chrono
 	 */
 	public ListOfListOfSimpleValuesHolder getEnumChrono() {
@@ -199,7 +209,7 @@ public class CopyInformationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the notes.
-	 *
+	 * 
 	 * @return the notes
 	 */
 	public List<ListOfSimpleValuesHolder> getNotes() {

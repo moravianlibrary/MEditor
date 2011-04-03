@@ -42,15 +42,16 @@ public enum CodeOrTextClient implements IsSerializable {
 
 	/** The CODE. */
 	CODE("code"), /** The TEXT. */
- TEXT("text");
-	
+	TEXT("text");
+
 	/** The value. */
 	private final String value;
 
 	/**
 	 * Instantiates a new code or text client.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 */
 	CodeOrTextClient(String v) {
 		value = v;
@@ -58,7 +59,7 @@ public enum CodeOrTextClient implements IsSerializable {
 
 	/**
 	 * Value.
-	 *
+	 * 
 	 * @return the string
 	 */
 	public String value() {
@@ -67,8 +68,9 @@ public enum CodeOrTextClient implements IsSerializable {
 
 	/**
 	 * From value.
-	 *
-	 * @param v the v
+	 * 
+	 * @param v
+	 *          the v
 	 * @return the code or text client
 	 */
 	public static CodeOrTextClient fromValue(String v) {

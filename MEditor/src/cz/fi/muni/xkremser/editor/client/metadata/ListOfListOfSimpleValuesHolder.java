@@ -37,28 +37,34 @@ import com.smartgwt.client.widgets.form.DynamicForm;
  * The Class ListOfListOfSimpleValuesHolder.
  */
 public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
-	
+
 	/** The keys. */
 	private final String[] keys;
 
 	/**
 	 * Instantiates a new list of list of simple values holder.
-	 *
-	 * @param keys the keys
+	 * 
+	 * @param keys
+	 *          the keys
 	 */
 	public ListOfListOfSimpleValuesHolder(String... keys) {
 		this.keys = keys;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -68,7 +74,7 @@ public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
 
 	/**
 	 * Gets the list of list.
-	 *
+	 * 
 	 * @return the list of list
 	 */
 	public List<List<String>> getListOfList() {
@@ -90,7 +96,9 @@ public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
 		return values;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -98,8 +106,11 @@ public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {

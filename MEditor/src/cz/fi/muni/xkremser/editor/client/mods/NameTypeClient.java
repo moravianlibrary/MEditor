@@ -44,46 +44,46 @@ public class NameTypeClient implements IsSerializable {
 
 	/** The name part. */
 	protected List<NamePartTypeClient> namePart;
-	
+
 	/** The display form. */
 	protected List<String> displayForm;
-	
+
 	/** The affiliation. */
 	protected List<String> affiliation;
-	
+
 	/** The role. */
 	protected List<RoleTypeClient> role;
-	
+
 	/** The description. */
 	protected List<String> description;
-	
+
 	/** The type. */
 	protected NameTypeAttributeClient type;
-	
+
 	/** The id. */
 	protected String id;
-	
+
 	/** The authority. */
 	protected String authority;
-	
+
 	/** The xlink. */
 	protected String xlink;
-	
+
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 
 	/**
 	 * Gets the name part.
-	 *
+	 * 
 	 * @return the name part
 	 */
 	public List<NamePartTypeClient> getNamePart() {
@@ -92,8 +92,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the name part.
-	 *
-	 * @param namePart the new name part
+	 * 
+	 * @param namePart
+	 *          the new name part
 	 */
 	public void setNamePart(List<NamePartTypeClient> namePart) {
 		this.namePart = namePart;
@@ -101,7 +102,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the display form.
-	 *
+	 * 
 	 * @return the display form
 	 */
 	public List<String> getDisplayForm() {
@@ -110,8 +111,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the display form.
-	 *
-	 * @param displayForm the new display form
+	 * 
+	 * @param displayForm
+	 *          the new display form
 	 */
 	public void setDisplayForm(List<String> displayForm) {
 		this.displayForm = displayForm;
@@ -119,7 +121,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the affiliation.
-	 *
+	 * 
 	 * @return the affiliation
 	 */
 	public List<String> getAffiliation() {
@@ -128,8 +130,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the affiliation.
-	 *
-	 * @param affiliation the new affiliation
+	 * 
+	 * @param affiliation
+	 *          the new affiliation
 	 */
 	public void setAffiliation(List<String> affiliation) {
 		this.affiliation = affiliation;
@@ -137,7 +140,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the role.
-	 *
+	 * 
 	 * @return the role
 	 */
 	public List<RoleTypeClient> getRole() {
@@ -146,8 +149,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the role.
-	 *
-	 * @param role the new role
+	 * 
+	 * @param role
+	 *          the new role
 	 */
 	public void setRole(List<RoleTypeClient> role) {
 		this.role = role;
@@ -155,7 +159,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the description.
-	 *
+	 * 
 	 * @return the description
 	 */
 	public List<String> getDescription() {
@@ -164,8 +168,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the description.
-	 *
-	 * @param description the new description
+	 * 
+	 * @param description
+	 *          the new description
 	 */
 	public void setDescription(List<String> description) {
 		this.description = description;
@@ -173,7 +178,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the type.
-	 *
+	 * 
 	 * @return the type
 	 */
 	public NameTypeAttributeClient getType() {
@@ -182,8 +187,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the type.
-	 *
-	 * @param type the new type
+	 * 
+	 * @param type
+	 *          the new type
 	 */
 	public void setType(NameTypeAttributeClient type) {
 		this.type = type;
@@ -191,7 +197,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -200,8 +206,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -209,7 +216,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the authority.
-	 *
+	 * 
 	 * @return the authority
 	 */
 	public String getAuthority() {
@@ -218,8 +225,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the authority.
-	 *
-	 * @param authority the new authority
+	 * 
+	 * @param authority
+	 *          the new authority
 	 */
 	public void setAuthority(String authority) {
 		this.authority = authority;
@@ -227,7 +235,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xlink.
-	 *
+	 * 
 	 * @return the xlink
 	 */
 	public String getXlink() {
@@ -236,8 +244,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xlink.
-	 *
-	 * @param xlink the new xlink
+	 * 
+	 * @param xlink
+	 *          the new xlink
 	 */
 	public void setXlink(String xlink) {
 		this.xlink = xlink;
@@ -245,7 +254,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the xml lang.
-	 *
+	 * 
 	 * @return the xml lang
 	 */
 	public String getXmlLang() {
@@ -254,8 +263,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the xml lang.
-	 *
-	 * @param xmlLang the new xml lang
+	 * 
+	 * @param xmlLang
+	 *          the new xml lang
 	 */
 	public void setXmlLang(String xmlLang) {
 		this.xmlLang = xmlLang;
@@ -263,7 +273,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the lang.
-	 *
+	 * 
 	 * @return the lang
 	 */
 	public String getLang() {
@@ -272,8 +282,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the lang.
-	 *
-	 * @param lang the new lang
+	 * 
+	 * @param lang
+	 *          the new lang
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
@@ -281,7 +292,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the script.
-	 *
+	 * 
 	 * @return the script
 	 */
 	public String getScript() {
@@ -290,8 +301,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the script.
-	 *
-	 * @param script the new script
+	 * 
+	 * @param script
+	 *          the new script
 	 */
 	public void setScript(String script) {
 		this.script = script;
@@ -299,7 +311,7 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the transliteration.
-	 *
+	 * 
 	 * @return the transliteration
 	 */
 	public String getTransliteration() {
@@ -308,8 +320,9 @@ public class NameTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the transliteration.
-	 *
-	 * @param transliteration the new transliteration
+	 * 
+	 * @param transliteration
+	 *          the new transliteration
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;

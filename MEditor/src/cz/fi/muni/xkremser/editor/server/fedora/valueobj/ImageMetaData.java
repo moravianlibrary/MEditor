@@ -29,7 +29,7 @@ package cz.fi.muni.xkremser.editor.server.fedora.valueobj;
 // TODO: Auto-generated Javadoc
 /**
  * Administrativni data pro obrazky.
- *
+ * 
  * @author xholcik
  */
 public class ImageMetaData {
@@ -51,7 +51,7 @@ public class ImageMetaData {
 
 	/**
 	 * Gets the scanning device.
-	 *
+	 * 
 	 * @return the scanning device
 	 */
 	public String getScanningDevice() {
@@ -60,8 +60,9 @@ public class ImageMetaData {
 
 	/**
 	 * Sets the scanning device.
-	 *
-	 * @param scanningDevice the new scanning device
+	 * 
+	 * @param scanningDevice
+	 *          the new scanning device
 	 */
 	public void setScanningDevice(String scanningDevice) {
 		this.scanningDevice = scanningDevice;
@@ -69,7 +70,7 @@ public class ImageMetaData {
 
 	/**
 	 * Gets the scanning parameters.
-	 *
+	 * 
 	 * @return the scanning parameters
 	 */
 	public String getScanningParameters() {
@@ -78,8 +79,9 @@ public class ImageMetaData {
 
 	/**
 	 * Sets the scanning parameters.
-	 *
-	 * @param scanningParameters the new scanning parameters
+	 * 
+	 * @param scanningParameters
+	 *          the new scanning parameters
 	 */
 	public void setScanningParameters(String scanningParameters) {
 		this.scanningParameters = scanningParameters;
@@ -87,7 +89,7 @@ public class ImageMetaData {
 
 	/**
 	 * Gets the other imaging information.
-	 *
+	 * 
 	 * @return the other imaging information
 	 */
 	public String getOtherImagingInformation() {
@@ -96,8 +98,9 @@ public class ImageMetaData {
 
 	/**
 	 * Sets the other imaging information.
-	 *
-	 * @param otherImagingInformation the new other imaging information
+	 * 
+	 * @param otherImagingInformation
+	 *          the new other imaging information
 	 */
 	public void setOtherImagingInformation(String otherImagingInformation) {
 		this.otherImagingInformation = otherImagingInformation;
@@ -105,7 +108,7 @@ public class ImageMetaData {
 
 	/**
 	 * Gets the urn.
-	 *
+	 * 
 	 * @return the urn
 	 */
 	public String getUrn() {
@@ -114,8 +117,9 @@ public class ImageMetaData {
 
 	/**
 	 * Sets the urn.
-	 *
-	 * @param urn the new urn
+	 * 
+	 * @param urn
+	 *          the new urn
 	 */
 	public void setUrn(String urn) {
 		this.urn = urn;
@@ -123,7 +127,7 @@ public class ImageMetaData {
 
 	/**
 	 * Gets the sici.
-	 *
+	 * 
 	 * @return the sici
 	 */
 	public String getSici() {
@@ -132,8 +136,9 @@ public class ImageMetaData {
 
 	/**
 	 * Sets the sici.
-	 *
-	 * @param sici the new sici
+	 * 
+	 * @param sici
+	 *          the new sici
 	 */
 	public void setSici(String sici) {
 		this.sici = sici;

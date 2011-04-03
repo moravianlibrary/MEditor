@@ -62,8 +62,9 @@ public class MonographDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Instantiates a new monograph detail.
-	 *
-	 * @param related the related
+	 * 
+	 * @param related
+	 *          the related
 	 */
 	public MonographDetail(ArrayList<ArrayList<String>> related) {
 		super(related);
@@ -83,8 +84,9 @@ public class MonographDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the int parts.
-	 *
-	 * @param intParts the new int parts
+	 * 
+	 * @param intParts
+	 *          the new int parts
 	 */
 	public void setIntParts(ArrayList<InternalPartDetail> intParts) {
 		this.intParts = intParts;
@@ -93,8 +95,9 @@ public class MonographDetail extends AbstractDigitalObjectDetail {
 
 	/**
 	 * Sets the mon units.
-	 *
-	 * @param monUnits the new mon units
+	 * 
+	 * @param monUnits
+	 *          the new mon units
 	 */
 	public void setMonUnits(ArrayList<MonographUnitDetail> monUnits) {
 		this.monUnits = monUnits;
@@ -113,16 +116,24 @@ public class MonographDetail extends AbstractDigitalObjectDetail {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#hasContainers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * hasContainers()
 	 */
 	@Override
 	public int hasContainers() {
 		return 2;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#getChildContainerModels()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail#
+	 * getChildContainerModels()
 	 */
 	@Override
 	public List<KrameriusModel> getChildContainerModels() {

@@ -50,12 +50,16 @@ public class XMLUtils {
 
 	/**
 	 * Parses the document.
-	 *
-	 * @param is the is
+	 * 
+	 * @param is
+	 *          the is
 	 * @return the document
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the sAX exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException
+	 *           the parser configuration exception
+	 * @throws SAXException
+	 *           the sAX exception
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static Document parseDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -64,13 +68,18 @@ public class XMLUtils {
 
 	/**
 	 * Parses the document.
-	 *
-	 * @param is the is
-	 * @param namespaceaware the namespaceaware
+	 * 
+	 * @param is
+	 *          the is
+	 * @param namespaceaware
+	 *          the namespaceaware
 	 * @return the document
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the sAX exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException
+	 *           the parser configuration exception
+	 * @throws SAXException
+	 *           the sAX exception
+	 * @throws IOException
+	 *           Signals that an I/O exception has occurred.
 	 */
 	public static Document parseDocument(InputStream is, boolean namespaceaware) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -81,8 +90,9 @@ public class XMLUtils {
 
 	/**
 	 * Gets the elements.
-	 *
-	 * @param topElm the top elm
+	 * 
+	 * @param topElm
+	 *          the top elm
 	 * @return the elements
 	 */
 	public static List<Element> getElements(Element topElm) {
@@ -99,9 +109,11 @@ public class XMLUtils {
 
 	/**
 	 * Namespaces are same.
-	 *
-	 * @param fNamespace the f namespace
-	 * @param sNamespace the s namespace
+	 * 
+	 * @param fNamespace
+	 *          the f namespace
+	 * @param sNamespace
+	 *          the s namespace
 	 * @return true, if successful
 	 */
 	private static boolean namespacesAreSame(String fNamespace, String sNamespace) {
@@ -115,10 +127,13 @@ public class XMLUtils {
 
 	/**
 	 * Find element.
-	 *
-	 * @param topElm the top elm
-	 * @param localName the local name
-	 * @param namespace the namespace
+	 * 
+	 * @param topElm
+	 *          the top elm
+	 * @param localName
+	 *          the local name
+	 * @param namespace
+	 *          the namespace
 	 * @return the element
 	 */
 	public static Element findElement(Element topElm, String localName, String namespace) {

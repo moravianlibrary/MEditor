@@ -42,19 +42,19 @@ import cz.fi.muni.xkremser.editor.client.mods.UrlTypeClient;
  * The Class LocationHolder.
  */
 public class LocationHolder extends MetadataHolder {
-	
+
 	/** The shelf locators. */
 	private final ListOfSimpleValuesHolder shelfLocators;
-	
+
 	/** The holding externals. */
 	private final ListOfSimpleValuesHolder holdingExternals;
-	
+
 	/** The physical locations. */
 	private final ListOfListOfSimpleValuesHolder physicalLocations;
-	
+
 	/** The urls. */
 	private final ListOfListOfSimpleValuesHolder urls;
-	
+
 	/** The holding simples. */
 	private final List<CopyInformationHolder> holdingSimples;
 
@@ -73,7 +73,7 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the location.
-	 *
+	 * 
 	 * @return the location
 	 */
 	public LocationTypeClient getLocation() {
@@ -145,15 +145,20 @@ public class LocationHolder extends MetadataHolder {
 		return locationTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -161,7 +166,9 @@ public class LocationHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -169,8 +176,11 @@ public class LocationHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -179,8 +189,9 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the dates from holders.
-	 *
-	 * @param holders the holders
+	 * 
+	 * @param holders
+	 *          the holders
 	 * @return the dates from holders
 	 */
 	private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
@@ -193,7 +204,7 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the shelf locators.
-	 *
+	 * 
 	 * @return the shelf locators
 	 */
 	public ListOfSimpleValuesHolder getShelfLocators() {
@@ -202,7 +213,7 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the holding externals.
-	 *
+	 * 
 	 * @return the holding externals
 	 */
 	public ListOfSimpleValuesHolder getHoldingExternals() {
@@ -211,7 +222,7 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the physical locations.
-	 *
+	 * 
 	 * @return the physical locations
 	 */
 	public ListOfListOfSimpleValuesHolder getPhysicalLocations() {
@@ -220,7 +231,7 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the urls.
-	 *
+	 * 
 	 * @return the urls
 	 */
 	public ListOfListOfSimpleValuesHolder getUrls() {
@@ -229,7 +240,7 @@ public class LocationHolder extends MetadataHolder {
 
 	/**
 	 * Gets the holding simples.
-	 *
+	 * 
 	 * @return the holding simples
 	 */
 	public List<CopyInformationHolder> getHoldingSimples() {

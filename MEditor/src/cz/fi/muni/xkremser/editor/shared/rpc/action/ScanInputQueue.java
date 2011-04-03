@@ -41,7 +41,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
  */
 @GenDispatch(isSecure = false)
 public class ScanInputQueue extends UnsecuredActionImpl<ScanInputQueueResult> {
-	
+
 	/** The id. */
 	@In(1)
 	private String id;

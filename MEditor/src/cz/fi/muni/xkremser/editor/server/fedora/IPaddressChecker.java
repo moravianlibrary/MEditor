@@ -35,14 +35,14 @@ public interface IPaddressChecker {
 
 	/**
 	 * Private visitor.
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean privateVisitor();
 
 	/**
 	 * Local host visitor.
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean localHostVisitor();

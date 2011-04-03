@@ -43,34 +43,34 @@ import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
  * The Class SubjectHolder.
  */
 public class SubjectHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The topics. */
 	private final ListOfSimpleValuesHolder topics;
-	
+
 	/** The geographics. */
 	private final ListOfSimpleValuesHolder geographics;
-	
+
 	/** The genres. */
 	private final ListOfSimpleValuesHolder genres;
-	
+
 	/** The occupations. */
 	private final ListOfSimpleValuesHolder occupations;
-	
+
 	/** The geo codes. */
 	private final ListOfListOfSimpleValuesHolder geoCodes;
-	
+
 	/** The temporals. */
 	private final List<DateHolder> temporals;
-	
+
 	/** The title info. */
 	private final List<TitleInfoHolder> titleInfo;
-	
+
 	/** The names. */
 	private final List<NameHolder> names;
-	
+
 	/** The hieararchical geo. */
 	private final List<HierarchicalGeographicHolder> hieararchicalGeo;
-	
+
 	/** The cartographics. */
 	private final List<CartographicsHolder> cartographics;
 
@@ -92,7 +92,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the subject.
-	 *
+	 * 
 	 * @return the subject
 	 */
 	public SubjectTypeClient getSubject() {
@@ -164,32 +164,46 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 		return subjectTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -198,8 +212,9 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the dates from holders.
-	 *
-	 * @param holders the holders
+	 * 
+	 * @param holders
+	 *          the holders
 	 * @return the dates from holders
 	 */
 	private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
@@ -212,7 +227,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the topics.
-	 *
+	 * 
 	 * @return the topics
 	 */
 	public ListOfSimpleValuesHolder getTopics() {
@@ -221,7 +236,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the geographics.
-	 *
+	 * 
 	 * @return the geographics
 	 */
 	public ListOfSimpleValuesHolder getGeographics() {
@@ -230,7 +245,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the genres.
-	 *
+	 * 
 	 * @return the genres
 	 */
 	public ListOfSimpleValuesHolder getGenres() {
@@ -239,7 +254,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the occupations.
-	 *
+	 * 
 	 * @return the occupations
 	 */
 	public ListOfSimpleValuesHolder getOccupations() {
@@ -248,7 +263,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the geo codes.
-	 *
+	 * 
 	 * @return the geo codes
 	 */
 	public ListOfListOfSimpleValuesHolder getGeoCodes() {
@@ -257,7 +272,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the temporals.
-	 *
+	 * 
 	 * @return the temporals
 	 */
 	public List<DateHolder> getTemporals() {
@@ -266,7 +281,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the title info.
-	 *
+	 * 
 	 * @return the title info
 	 */
 	public List<TitleInfoHolder> getTitleInfo() {
@@ -275,7 +290,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the names.
-	 *
+	 * 
 	 * @return the names
 	 */
 	public List<NameHolder> getNames() {
@@ -284,7 +299,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the hieararchical geo.
-	 *
+	 * 
 	 * @return the hieararchical geo
 	 */
 	public List<HierarchicalGeographicHolder> getHieararchicalGeo() {
@@ -293,7 +308,7 @@ public class SubjectHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the cartographics.
-	 *
+	 * 
 	 * @return the cartographics
 	 */
 	public List<CartographicsHolder> getCartographics() {

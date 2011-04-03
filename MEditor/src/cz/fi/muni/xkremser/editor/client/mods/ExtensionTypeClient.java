@@ -42,13 +42,13 @@ public class ExtensionTypeClient implements IsSerializable {
 
 	/** The content. */
 	protected String content;
-	
+
 	/** The name space. */
 	protected String nameSpace;
 
 	/**
 	 * Gets the content.
-	 *
+	 * 
 	 * @return the content
 	 */
 	public String getContent() {
@@ -57,8 +57,9 @@ public class ExtensionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the content.
-	 *
-	 * @param content the new content
+	 * 
+	 * @param content
+	 *          the new content
 	 */
 	public void setContent(String content) {
 		this.content = content;
@@ -66,7 +67,7 @@ public class ExtensionTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the name space.
-	 *
+	 * 
 	 * @return the name space
 	 */
 	public String getNameSpace() {
@@ -75,8 +76,9 @@ public class ExtensionTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the name space.
-	 *
-	 * @param nameSpace the new name space
+	 * 
+	 * @param nameSpace
+	 *          the new name space
 	 */
 	public void setNameSpace(String nameSpace) {
 		this.nameSpace = nameSpace;

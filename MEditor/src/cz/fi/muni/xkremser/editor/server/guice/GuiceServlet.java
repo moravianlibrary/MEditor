@@ -40,7 +40,9 @@ import com.google.inject.Injector;
  */
 public class GuiceServlet extends HttpServlet {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init()
 	 */
 	@Override
@@ -50,7 +52,9 @@ public class GuiceServlet extends HttpServlet {
 		injector.injectMembers(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
 	@Override
@@ -62,7 +66,7 @@ public class GuiceServlet extends HttpServlet {
 
 	/**
 	 * Gets the injector.
-	 *
+	 * 
 	 * @return the injector
 	 */
 	protected Injector getInjector() {

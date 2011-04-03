@@ -36,14 +36,15 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient.
+ * The Class
+ * StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient.
  */
 public class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient extends StringPlusAuthorityPlusTypePlusLanguageClient implements
 		IsSerializable {
 
 	/** The display label. */
 	protected String displayLabel;
-	
+
 	/** The xlink. */
 	protected String xlink;
 
@@ -70,7 +71,7 @@ public class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkCli
 
 	/**
 	 * Gets the xlink.
-	 *
+	 * 
 	 * @return the xlink
 	 */
 	public String getXlink() {
@@ -79,8 +80,9 @@ public class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkCli
 
 	/**
 	 * Sets the xlink.
-	 *
-	 * @param xlink the new xlink
+	 * 
+	 * @param xlink
+	 *          the new xlink
 	 */
 	public void setXlink(String xlink) {
 		this.xlink = xlink;

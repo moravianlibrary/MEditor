@@ -49,8 +49,9 @@ public class IdentifierHolder extends ListOfListOfSimpleValuesHolder {
 
 	/**
 	 * Instantiates a new identifier holder.
-	 *
-	 * @param keys the keys
+	 * 
+	 * @param keys
+	 *          the keys
 	 */
 	public IdentifierHolder(String... keys) {
 		super(keys);
@@ -58,7 +59,7 @@ public class IdentifierHolder extends ListOfListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the identifier.
-	 *
+	 * 
 	 * @return the identifier
 	 */
 	public List<IdentifierTypeClient> getIdentifier() {
@@ -85,32 +86,48 @@ public class IdentifierHolder extends ListOfListOfSimpleValuesHolder {
 		return list;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getValue()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getValues()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+	 * #getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {

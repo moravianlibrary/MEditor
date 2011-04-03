@@ -44,13 +44,13 @@ public class LanguageTypeClient implements IsSerializable {
 
 	/** The language term. */
 	protected List<LanguageTypeClient.LanguageTermClient> languageTerm;
-	
+
 	/** The object part. */
 	protected String objectPart;
 
 	/**
 	 * Gets the language term.
-	 *
+	 * 
 	 * @return the language term
 	 */
 	public List<LanguageTypeClient.LanguageTermClient> getLanguageTerm() {
@@ -59,8 +59,9 @@ public class LanguageTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the language term.
-	 *
-	 * @param languageTerm the new language term
+	 * 
+	 * @param languageTerm
+	 *          the new language term
 	 */
 	public void setLanguageTerm(List<LanguageTypeClient.LanguageTermClient> languageTerm) {
 		this.languageTerm = languageTerm;
@@ -68,7 +69,7 @@ public class LanguageTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the object part.
-	 *
+	 * 
 	 * @return the object part
 	 */
 	public String getObjectPart() {
@@ -77,8 +78,9 @@ public class LanguageTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the object part.
-	 *
-	 * @param value the new object part
+	 * 
+	 * @param value
+	 *          the new object part
 	 */
 	public void setObjectPart(String value) {
 		this.objectPart = value;
@@ -91,16 +93,16 @@ public class LanguageTypeClient implements IsSerializable {
 
 		/** The value. */
 		protected String value;
-		
+
 		/** The authority. */
 		protected String authority;
-		
+
 		/** The type. */
 		protected CodeOrTextClient type;
 
 		/**
 		 * Gets the value.
-		 *
+		 * 
 		 * @return the value
 		 */
 		public String getValue() {
@@ -109,8 +111,9 @@ public class LanguageTypeClient implements IsSerializable {
 
 		/**
 		 * Sets the value.
-		 *
-		 * @param value the new value
+		 * 
+		 * @param value
+		 *          the new value
 		 */
 		public void setValue(String value) {
 			this.value = value;
@@ -118,7 +121,7 @@ public class LanguageTypeClient implements IsSerializable {
 
 		/**
 		 * Gets the authority.
-		 *
+		 * 
 		 * @return the authority
 		 */
 		public String getAuthority() {
@@ -127,8 +130,9 @@ public class LanguageTypeClient implements IsSerializable {
 
 		/**
 		 * Sets the authority.
-		 *
-		 * @param value the new authority
+		 * 
+		 * @param value
+		 *          the new authority
 		 */
 		public void setAuthority(String value) {
 			this.authority = value;
@@ -136,7 +140,7 @@ public class LanguageTypeClient implements IsSerializable {
 
 		/**
 		 * Gets the type.
-		 *
+		 * 
 		 * @return the type
 		 */
 		public CodeOrTextClient getType() {
@@ -145,8 +149,9 @@ public class LanguageTypeClient implements IsSerializable {
 
 		/**
 		 * Sets the type.
-		 *
-		 * @param value the new type
+		 * 
+		 * @param value
+		 *          the new type
 		 */
 		public void setType(CodeOrTextClient value) {
 			this.type = value;

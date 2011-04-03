@@ -47,7 +47,7 @@ public class HoldingSimpleTypeClient implements IsSerializable {
 
 	/**
 	 * Gets the copy information.
-	 *
+	 * 
 	 * @return the copy information
 	 */
 	public List<CopyInformationTypeClient> getCopyInformation() {
@@ -56,8 +56,9 @@ public class HoldingSimpleTypeClient implements IsSerializable {
 
 	/**
 	 * Sets the copy information.
-	 *
-	 * @param copyInformation the new copy information
+	 * 
+	 * @param copyInformation
+	 *          the new copy information
 	 */
 	public void setCopyInformation(List<CopyInformationTypeClient> copyInformation) {
 		this.copyInformation = copyInformation;

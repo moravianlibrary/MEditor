@@ -37,10 +37,10 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  */
 @GenDispatch(isSecure = false)
 public class CheckAvailability extends UnsecuredActionImpl<CheckAvailabilityResult> {
-	
+
 	/** The Constant FEDORA_ID. */
 	public static final int FEDORA_ID = 0;
-	
+
 	/** The Constant KRAMERIUS_ID. */
 	public static final int KRAMERIUS_ID = 1;
 

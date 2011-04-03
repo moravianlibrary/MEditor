@@ -86,12 +86,17 @@ public class Attribute {
 
 	/**
 	 * Instantiates a new attribute.
-	 *
-	 * @param type the type
-	 * @param name the name
-	 * @param label the label
-	 * @param tooltip the tooltip
-	 * @param value the value
+	 * 
+	 * @param type
+	 *          the type
+	 * @param name
+	 *          the name
+	 * @param label
+	 *          the label
+	 * @param tooltip
+	 *          the tooltip
+	 * @param value
+	 *          the value
 	 */
 	public Attribute(Class<? extends FormItem> type, String name, String label, String tooltip, String value) {
 		super();
@@ -127,12 +132,17 @@ public class Attribute {
 
 	/**
 	 * Instantiates a new attribute.
-	 *
-	 * @param type the type
-	 * @param name the name
-	 * @param label the label
-	 * @param tooltips the tooltips
-	 * @param value the value
+	 * 
+	 * @param type
+	 *          the type
+	 * @param name
+	 *          the name
+	 * @param label
+	 *          the label
+	 * @param tooltips
+	 *          the tooltips
+	 * @param value
+	 *          the value
 	 */
 	public Attribute(Class<? extends FormItem> type, String name, String label, Map<String, String> tooltips, String value) {
 		super();
@@ -262,7 +272,7 @@ public class Attribute {
 
 	/**
 	 * Gets the value.
-	 *
+	 * 
 	 * @return the value
 	 */
 	public String getValue() {
@@ -271,8 +281,9 @@ public class Attribute {
 
 	/**
 	 * Sets the value.
-	 *
-	 * @param value the new value
+	 * 
+	 * @param value
+	 *          the new value
 	 */
 	public void setValue(String value) {
 		this.value = value;

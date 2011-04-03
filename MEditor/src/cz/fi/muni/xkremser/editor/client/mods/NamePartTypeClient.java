@@ -42,7 +42,7 @@ public class NamePartTypeClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The type. */
 	protected String type;
 

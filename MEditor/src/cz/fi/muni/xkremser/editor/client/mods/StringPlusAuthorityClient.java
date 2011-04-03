@@ -42,7 +42,7 @@ public class StringPlusAuthorityClient implements IsSerializable {
 
 	/** The value. */
 	protected String value;
-	
+
 	/** The authority. */
 	protected String authority;
 

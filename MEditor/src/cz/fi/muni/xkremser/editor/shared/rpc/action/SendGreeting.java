@@ -51,8 +51,9 @@ public class SendGreeting extends UnsecuredActionImpl<SendGreetingResult> {
 
 	/**
 	 * Instantiates a new send greeting.
-	 *
-	 * @param name the name
+	 * 
+	 * @param name
+	 *          the name
 	 */
 	public SendGreeting(final String name) {
 		this.name = name;
@@ -60,7 +61,7 @@ public class SendGreeting extends UnsecuredActionImpl<SendGreetingResult> {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {

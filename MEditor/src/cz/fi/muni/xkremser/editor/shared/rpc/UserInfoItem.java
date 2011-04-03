@@ -56,11 +56,15 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Instantiates a new user info item.
-	 *
-	 * @param name the name
-	 * @param surname the surname
-	 * @param sex the sex
-	 * @param id the id
+	 * 
+	 * @param name
+	 *          the name
+	 * @param surname
+	 *          the surname
+	 * @param sex
+	 *          the sex
+	 * @param id
+	 *          the id
 	 */
 	public UserInfoItem(String name, String surname, String sex, String id) {
 		super();
@@ -72,7 +76,7 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -81,8 +85,9 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Sets the name.
-	 *
-	 * @param name the new name
+	 * 
+	 * @param name
+	 *          the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -90,7 +95,7 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Gets the surname.
-	 *
+	 * 
 	 * @return the surname
 	 */
 	public String getSurname() {
@@ -99,8 +104,9 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Sets the surname.
-	 *
-	 * @param surname the new surname
+	 * 
+	 * @param surname
+	 *          the new surname
 	 */
 	public void setSurname(String surname) {
 		this.surname = surname;
@@ -108,7 +114,7 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Gets the sex.
-	 *
+	 * 
 	 * @return the sex
 	 */
 	public String getSex() {
@@ -117,8 +123,9 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Sets the sex.
-	 *
-	 * @param sex the new sex
+	 * 
+	 * @param sex
+	 *          the new sex
 	 */
 	public void setSex(String sex) {
 		this.sex = sex;
@@ -126,7 +133,7 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public String getId() {
@@ -135,14 +142,17 @@ public class UserInfoItem implements IsSerializable {
 
 	/**
 	 * Sets the id.
-	 *
-	 * @param id the new id
+	 * 
+	 * @param id
+	 *          the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -153,7 +163,9 @@ public class UserInfoItem implements IsSerializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

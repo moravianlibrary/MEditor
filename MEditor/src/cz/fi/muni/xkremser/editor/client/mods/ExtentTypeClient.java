@@ -42,16 +42,16 @@ public class ExtentTypeClient implements IsSerializable {
 
 	/** The start. */
 	protected String start;
-	
+
 	/** The end. */
 	protected String end;
-	
+
 	/** The total. */
 	protected String total;
-	
+
 	/** The list. */
 	protected String list;
-	
+
 	/** The unit. */
 	protected String unit;
 

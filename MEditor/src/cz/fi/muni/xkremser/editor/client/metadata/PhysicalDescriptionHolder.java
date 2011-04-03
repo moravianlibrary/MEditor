@@ -39,22 +39,22 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
  * The Class PhysicalDescriptionHolder.
  */
 public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The internet types. */
 	private final ListOfSimpleValuesHolder internetTypes;
-	
+
 	/** The extents. */
 	private final ListOfSimpleValuesHolder extents;
-	
+
 	/** The forms. */
 	private final ListOfListOfSimpleValuesHolder forms;
-	
+
 	/** The notes. */
 	private final ListOfListOfSimpleValuesHolder notes;
-	
+
 	/** The reformatting quality. */
 	private final ListOfSimpleValuesHolder reformattingQuality;
-	
+
 	/** The digital origin. */
 	private final ListOfSimpleValuesHolder digitalOrigin;
 
@@ -73,7 +73,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the physical description.
-	 *
+	 * 
 	 * @return the physical description
 	 */
 	public PhysicalDescriptionTypeClient getPhysicalDescription() {
@@ -137,32 +137,46 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 		return physicalDescriptionTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -171,7 +185,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the publishers.
-	 *
+	 * 
 	 * @return the publishers
 	 */
 	public ListOfSimpleValuesHolder getPublishers() {
@@ -180,7 +194,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the editions.
-	 *
+	 * 
 	 * @return the editions
 	 */
 	public ListOfSimpleValuesHolder getEditions() {
@@ -189,7 +203,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the frequencies.
-	 *
+	 * 
 	 * @return the frequencies
 	 */
 	public ListOfListOfSimpleValuesHolder getFrequencies() {
@@ -198,7 +212,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the internet types.
-	 *
+	 * 
 	 * @return the internet types
 	 */
 	public ListOfSimpleValuesHolder getInternetTypes() {
@@ -207,7 +221,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the extents.
-	 *
+	 * 
 	 * @return the extents
 	 */
 	public ListOfSimpleValuesHolder getExtents() {
@@ -216,7 +230,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the forms.
-	 *
+	 * 
 	 * @return the forms
 	 */
 	public ListOfListOfSimpleValuesHolder getForms() {
@@ -225,7 +239,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the notes.
-	 *
+	 * 
 	 * @return the notes
 	 */
 	public ListOfListOfSimpleValuesHolder getNotes() {
@@ -234,7 +248,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the reformatting quality.
-	 *
+	 * 
 	 * @return the reformatting quality
 	 */
 	public ListOfSimpleValuesHolder getReformattingQuality() {
@@ -243,7 +257,7 @@ public class PhysicalDescriptionHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the digital origin.
-	 *
+	 * 
 	 * @return the digital origin
 	 */
 	public ListOfSimpleValuesHolder getDigitalOrigin() {

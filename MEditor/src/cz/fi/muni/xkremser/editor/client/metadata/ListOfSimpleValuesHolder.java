@@ -48,15 +48,20 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 	public ListOfSimpleValuesHolder() {
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -64,7 +69,9 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -91,8 +98,11 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 		return values;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -101,7 +111,7 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 
 	/**
 	 * Gets the attribute form2.
-	 *
+	 * 
 	 * @return the attribute form2
 	 */
 	public DynamicForm getAttributeForm2() {
@@ -110,8 +120,9 @@ public class ListOfSimpleValuesHolder extends MetadataHolder {
 
 	/**
 	 * Sets the attribute form2.
-	 *
-	 * @param attributeForm2 the new attribute form2
+	 * 
+	 * @param attributeForm2
+	 *          the new attribute form2
 	 */
 	public void setAttributeForm2(DynamicForm attributeForm2) {
 		this.attributeForm2 = attributeForm2;

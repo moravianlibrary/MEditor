@@ -45,7 +45,7 @@ public class StringPlusDisplayLabelPlusTypeClient extends StringPlusDisplayLabel
 
 	/**
 	 * Gets the at type.
-	 *
+	 * 
 	 * @return the at type
 	 */
 	public String getAtType() {
@@ -54,8 +54,9 @@ public class StringPlusDisplayLabelPlusTypeClient extends StringPlusDisplayLabel
 
 	/**
 	 * Sets the at type.
-	 *
-	 * @param value the new at type
+	 * 
+	 * @param value
+	 *          the new at type
 	 */
 	public void setAtType(String value) {
 		this.atType = value;

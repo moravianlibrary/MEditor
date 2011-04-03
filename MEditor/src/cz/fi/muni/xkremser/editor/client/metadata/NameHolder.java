@@ -41,19 +41,19 @@ import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
  * The Class NameHolder.
  */
 public class NameHolder extends MetadataHolder {
-	
+
 	/** The display forms. */
 	private final ListOfSimpleValuesHolder displayForms;
-	
+
 	/** The affiliations. */
 	private final ListOfSimpleValuesHolder affiliations;
-	
+
 	/** The descriptions. */
 	private final ListOfSimpleValuesHolder descriptions;
 
 	/** The name parts. */
 	private final ListOfListOfSimpleValuesHolder nameParts;
-	
+
 	/** The roles. */
 	private final ListOfListOfSimpleValuesHolder roles;
 
@@ -70,7 +70,7 @@ public class NameHolder extends MetadataHolder {
 
 	/**
 	 * Gets the name.
-	 *
+	 * 
 	 * @return the name
 	 */
 	public NameTypeClient getName() {
@@ -114,15 +114,20 @@ public class NameHolder extends MetadataHolder {
 		return nameTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
 	 */
 	@Override
@@ -130,7 +135,9 @@ public class NameHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
 	 */
 	@Override
@@ -138,8 +145,11 @@ public class NameHolder extends MetadataHolder {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {
@@ -148,7 +158,7 @@ public class NameHolder extends MetadataHolder {
 
 	/**
 	 * Gets the display forms.
-	 *
+	 * 
 	 * @return the display forms
 	 */
 	public ListOfSimpleValuesHolder getDisplayForms() {
@@ -157,7 +167,7 @@ public class NameHolder extends MetadataHolder {
 
 	/**
 	 * Gets the affiliations.
-	 *
+	 * 
 	 * @return the affiliations
 	 */
 	public ListOfSimpleValuesHolder getAffiliations() {
@@ -166,7 +176,7 @@ public class NameHolder extends MetadataHolder {
 
 	/**
 	 * Gets the name parts.
-	 *
+	 * 
 	 * @return the name parts
 	 */
 	public ListOfListOfSimpleValuesHolder getNameParts() {
@@ -175,7 +185,7 @@ public class NameHolder extends MetadataHolder {
 
 	/**
 	 * Gets the roles.
-	 *
+	 * 
 	 * @return the roles
 	 */
 	public ListOfListOfSimpleValuesHolder getRoles() {
@@ -184,7 +194,7 @@ public class NameHolder extends MetadataHolder {
 
 	/**
 	 * Gets the descriptions.
-	 *
+	 * 
 	 * @return the descriptions
 	 */
 	public ListOfSimpleValuesHolder getDescriptions() {

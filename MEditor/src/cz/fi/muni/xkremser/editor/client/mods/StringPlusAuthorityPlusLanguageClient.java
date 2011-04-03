@@ -42,13 +42,13 @@ public class StringPlusAuthorityPlusLanguageClient extends StringPlusAuthorityCl
 
 	/** The xml lang. */
 	protected String xmlLang;
-	
+
 	/** The lang. */
 	protected String lang;
-	
+
 	/** The script. */
 	protected String script;
-	
+
 	/** The transliteration. */
 	protected String transliteration;
 

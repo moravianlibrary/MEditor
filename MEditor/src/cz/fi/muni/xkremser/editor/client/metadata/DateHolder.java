@@ -38,18 +38,20 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
  * The Class DateHolder.
  */
 public class DateHolder extends ListOfSimpleValuesHolder {
-	
+
 	/** The date name. */
 	private final String dateName;
-	
+
 	/** The other date. */
 	private final boolean otherDate;
 
 	/**
 	 * Instantiates a new date holder.
-	 *
-	 * @param dateName the date name
-	 * @param otherDate the other date
+	 * 
+	 * @param dateName
+	 *          the date name
+	 * @param otherDate
+	 *          the other date
 	 */
 	public DateHolder(String dateName, boolean otherDate) {
 		this.dateName = dateName;
@@ -58,7 +60,7 @@ public class DateHolder extends ListOfSimpleValuesHolder {
 
 	/**
 	 * Gets the date.
-	 *
+	 * 
 	 * @return the date
 	 */
 	public DateTypeClient getDate() {
@@ -78,32 +80,46 @@ public class DateHolder extends ListOfSimpleValuesHolder {
 		return dateTypeClient;
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getSubelements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getSubelements()
 	 */
 	@Override
 	public List<MetadataHolder> getSubelements() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+	 * ()
 	 */
 	@Override
 	public String getValue() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+	 * ()
 	 */
 	@Override
 	public List<String> getValues() {
 		throw new UnsupportedOperationException("Mods");
 	}
 
-	/* (non-Javadoc)
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getAttributes()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+	 * getAttributes()
 	 */
 	@Override
 	public List<String> getAttributes() {

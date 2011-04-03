@@ -32,32 +32,35 @@ import java.io.StringReader;
 // TODO: Auto-generated Javadoc
 /**
  * The Class CharBuffer.
- *
+ * 
  * @author pavels
  */
 public class CharBuffer {
 
 	/** The buffer. */
 	private int[] buffer = null;
-	
+
 	/** The positions. */
 	private int[] positions = null;
-	
+
 	/** The depth. */
 	private int depth = 0;
-	
+
 	/** The input. */
 	private StringReader input = null;
-	
+
 	/** The counter. */
 	private int counter = 0;
 
 	/**
 	 * Instantiates a new char buffer.
-	 *
-	 * @param inputString the input string
-	 * @param depth the depth
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @param inputString
+	 *          the input string
+	 * @param depth
+	 *          the depth
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public CharBuffer(String inputString, int depth) throws LexerException {
 		try {
@@ -77,10 +80,12 @@ public class CharBuffer {
 
 	/**
 	 * La.
-	 *
-	 * @param pos the pos
+	 * 
+	 * @param pos
+	 *          the pos
 	 * @return the int
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public int la(int pos) throws LexerException {
 		if ((pos >= 1) && (pos <= this.depth)) {
@@ -91,10 +96,12 @@ public class CharBuffer {
 
 	/**
 	 * Position.
-	 *
-	 * @param pos the pos
+	 * 
+	 * @param pos
+	 *          the pos
 	 * @return the int
-	 * @throws LexerException the lexer exception
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public int position(int pos) throws LexerException {
 		if ((pos >= 1) && (pos <= this.depth)) {
@@ -105,8 +112,9 @@ public class CharBuffer {
 
 	/**
 	 * Consume.
-	 *
-	 * @throws LexerException the lexer exception
+	 * 
+	 * @throws LexerException
+	 *           the lexer exception
 	 */
 	public void consume() throws LexerException {
 		try {
