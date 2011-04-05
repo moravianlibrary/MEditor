@@ -89,8 +89,8 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 		LOGGER.debug("Processing action: LogoutAction");
 		ServerUtils.checkExpiredSession(httpSessionProvider);
 
-		ACCESS_LOGGER.info("LOG OUT: User " + session.getAttribute(HttpCookies.NAME_KEY) + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY)
-				+ " and IP " + reqProvider.get().getRemoteAddr() + " at " + FORMATTER.format(new Date()));
+		ACCESS_LOGGER.info("LOG OUT: [" + FORMATTER.format(new Date()) + "] User " + session.getAttribute(HttpCookies.NAME_KEY) + " with openID "
+				+ session.getAttribute(HttpCookies.SESSION_ID_KEY) + " and IP " + reqProvider.get().getRemoteAddr());
 		session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
 		session.invalidate();
 		return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));

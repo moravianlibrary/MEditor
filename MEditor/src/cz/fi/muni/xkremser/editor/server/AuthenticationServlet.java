@@ -121,7 +121,7 @@ public class AuthenticationServlet extends HttpServlet {
 				+ (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? "" : (":" + req.getServerPort())) : "") + URLS.ROOT()
 				+ (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
 		if (identifier != null && !"".equals(identifier)) {
-			ACCESS_LOGGER.info("LOG IN: User " + name + " with openID " + identifier + " and IP " + req.getRemoteAddr() + " at " + FORMATTER.format(new Date()));
+			ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] User " + name + " with openID " + identifier + " and IP " + req.getRemoteAddr());
 			int userStatus = UserDAO.UNKNOWN;
 			try {
 				userStatus = userDAO.isSupported(identifier);
