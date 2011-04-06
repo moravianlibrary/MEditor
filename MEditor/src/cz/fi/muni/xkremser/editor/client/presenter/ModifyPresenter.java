@@ -87,6 +87,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult
 import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -471,8 +472,10 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					pagesData = new Record[detail.getPages().size()];
 					List<PageDetail> pages = detail.getPages();
 					for (int i = 0, total = pages.size(); i < total; i++) {
-						pagesData[i] = new PageRecord(pages.get(i).getDc().getTitle().get(0), pages.get(i).getDc().getIdentifier().get(0), pages.get(i).getDc()
-								.getIdentifier().get(0));
+						DublinCore dc = pages.get(i).getDc();
+						String title = dc.getTitle() == null ? "no title" : dc.getTitle().get(0);
+						String id = dc.getIdentifier() == null ? "unknown id" : dc.getIdentifier().get(0);
+						pagesData[i] = new PageRecord(title, id, id);
 					}
 				}
 				int containerNumber = detail.hasContainers();
@@ -492,7 +495,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 					for (int j = 0, total = containers.get(i).size(); j < total; j++) {
 						AbstractDigitalObjectDetail aDetail = container.get(j);
 						String title = aDetail.getDc().getTitle() == null ? "no title" : aDetail.getDc().getTitle().get(0);
-						containerData[j] = new ContainerRecord(title, aDetail.getDc().getIdentifier().get(0), detail.getChildContainerModels().get(i).getIcon());
+						String id = aDetail.getDc().getIdentifier() == null ? "unknown id" : aDetail.getDc().getIdentifier().get(0);
+						containerData[j] = new ContainerRecord(title, id, detail.getChildContainerModels().get(i).getIcon());
 					}
 					containerDataList.add(containerData);
 					containerModelList.add(detail.getChildContainerModels().get(i));

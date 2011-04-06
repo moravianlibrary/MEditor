@@ -100,6 +100,7 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 			} else {
 				msg = "Unable to obtain digital object with uuid " + uuid + ". ";
 			}
+			LOGGER.error(msg);
 			throw new ActionException(msg);
 		}
 	}
