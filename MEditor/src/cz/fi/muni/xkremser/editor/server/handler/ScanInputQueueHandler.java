@@ -42,7 +42,7 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
@@ -156,7 +156,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	 */
 	private void checkDocumentTypes(String[] types) throws ActionException {
 		for (String uuid : types) {
-			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + KrameriusModel.toString(KrameriusModel.parseString(uuid)))) {
+			if (!fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX + DigitalObjectModel.toString(DigitalObjectModel.parseString(uuid)))) {
 				LOGGER.error("Model " + uuid + " is not present in repository.");
 				throw new ActionException(Constants.FEDORA_MODEL_PREFIX + uuid);
 			}

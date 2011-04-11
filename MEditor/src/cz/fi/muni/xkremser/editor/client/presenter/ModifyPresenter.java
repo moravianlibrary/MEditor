@@ -26,7 +26,6 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.Timer;
@@ -61,14 +60,15 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
+import cz.fi.muni.xkremser.editor.client.view.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
@@ -84,9 +84,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -149,32 +147,15 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 */
 		public Canvas getEditor(String text, String uuid, boolean common);
 
-		/**
-		 * Adds the digital object.
-		 * 
-		 * @param pageData
-		 *          the page data
-		 * @param containerDataList
-		 *          the container data list
-		 * @param containerModelList
-		 *          the container model list
-		 * @param dc
-		 *          the dc
-		 * @param uuid
-		 *          the uuid
-		 * @param picture
-		 *          the picture
-		 * @param foxml
-		 *          the foxml
-		 * @param ocr
-		 *          the ocr
-		 * @param refresh
-		 *          the refresh
-		 * @param krameriusModel
-		 *          the kramerius model
-		 */
-		void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList, final Streams dc,
-				final String uuid, final boolean picture, String foxml, final String ocr, final boolean refresh, final KrameriusModel krameriusModel);
+		void addDigitalObject(String uuid, DublinCore dc, ModsCollectionClient mods, String foxml, String ocr, boolean refresh, DigitalObjectModel krameriusModel);
+
+		void addStream(Record[] items, String uuid, DigitalObjectModel model);
+
+		// void addDigitalObject(final Record[] pageData, final List<Record[]>
+		// containerDataList, final List<DigitalObjectModel> containerModelList,
+		// final Streams dc,
+		// final String uuid, final boolean picture, String foxml, final String ocr,
+		// final boolean refresh, final DigitalObjectModel krameriusModel);
 	}
 
 	/**
@@ -458,51 +439,13 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 * @return the object
 	 */
 	private void getObject(boolean refresh) {
-		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, refresh);
+		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, refresh, null);
 		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
 			@Override
 			public void callback(GetDigitalObjectDetailResult result) {
-				AbstractDigitalObjectDetail detail = result.getDetail();
-				Record[] pagesData = null;
-				List<Record[]> containerDataList = null;
-				List<KrameriusModel> containerModelList = null;
-				List<? extends List<? extends AbstractDigitalObjectDetail>> containers = null;
+				DigitalObjectDetail detail = result.getDetail();
 
-				if (detail.hasPages()) {
-					pagesData = new Record[detail.getPages().size()];
-					List<PageDetail> pages = detail.getPages();
-					for (int i = 0, total = pages.size(); i < total; i++) {
-						DublinCore dc = pages.get(i).getDc();
-						String title = dc.getTitle() == null ? "no title" : dc.getTitle().get(0);
-						String id = dc.getIdentifier() == null ? "unknown id" : dc.getIdentifier().get(0);
-						pagesData[i] = new PageRecord(title, id, id);
-					}
-				}
-				int containerNumber = detail.hasContainers();
-				if (containerNumber != 0) {
-					containerDataList = new ArrayList<Record[]>();
-					containerModelList = new ArrayList<KrameriusModel>();
-					containers = detail.getContainers();
-
-				}
-				for (int i = 0; i < containerNumber; i++) {
-					Record[] containerData = null;
-					containerData = new Record[detail.getContainers().get(i).size()];
-					List<? extends AbstractDigitalObjectDetail> container = containers.get(i);
-					// if (container == null || container.size() == 0)
-					// continue;
-					// copy data
-					for (int j = 0, total = containers.get(i).size(); j < total; j++) {
-						AbstractDigitalObjectDetail aDetail = container.get(j);
-						String title = aDetail.getDc().getTitle() == null ? "no title" : aDetail.getDc().getTitle().get(0);
-						String id = aDetail.getDc().getIdentifier() == null ? "unknown id" : aDetail.getDc().getIdentifier().get(0);
-						containerData[j] = new ContainerRecord(title, id, detail.getChildContainerModels().get(i).getIcon());
-					}
-					containerDataList.add(containerData);
-					containerModelList.add(detail.getChildContainerModels().get(i));
-				}
-				getView().addDigitalObject(pagesData, containerDataList, containerModelList, detail.getStreams(), uuid, detail.isImage(), detail.getFoxml(),
-						detail.getOcr(), result.isRefresh(), detail.getModel());
+				getView().addDigitalObject(uuid, detail.getDc(), detail.getMods(), detail.getFoxml(), detail.getOcr(), result.isRefresh(), detail.getModel());
 				String title = detail.getDc().getTitle() == null ? "no title" : detail.getDc().getTitle().get(0);
 				DigitalObjectOpenedEvent
 						.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, title, "", detail.getModel()), result.getDetail().getRelated());
@@ -590,7 +533,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 * (cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail)
 	 */
 	@Override
-	public void onSaveDigitalObject(AbstractDigitalObjectDetail digitalObject) {
+	public void onSaveDigitalObject(DigitalObjectDetail digitalObject) {
 		dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject), new DispatchCallback<PutDigitalObjectDetailResult>() {
 			@Override
 			public void callback(PutDigitalObjectDetailResult result) {
@@ -618,6 +561,62 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	@Override
 	public void onRefresh(String uuid) {
 		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid).with(Constants.URL_PARAM_REFRESH, "yes"));
+	}
+
+	@Override
+	public void getStream(final String uuid, final DigitalObjectModel model, final TabSet ts) {
+
+		final ModalWindow mw = new ModalWindow(ts);
+		mw.setLoadingIcon("loadingAnimation.gif");
+		mw.show(true);
+
+		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, false, model);
+		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
+			@Override
+			public void callback(GetDigitalObjectDetailResult result) {
+				DigitalObjectDetail detail = result.getDetail();
+				List<DigitalObjectDetail> itemList = detail.getItems();
+				Record[] items = null;
+				if (itemList.size() > 0) {
+					items = new Record[itemList.size()];
+					for (int i = 0, total = itemList.size(); i < total; i++) {
+						DublinCore dc = itemList.get(i).getDc();
+						String title = dc.getTitle() == null ? lang.noTitle() : dc.getTitle().get(0);
+						String id = dc.getIdentifier() == null ? lang.noTitle() : dc.getIdentifier().get(0);
+						items[i] = new PageRecord(title, id, id);
+					}
+				}
+
+				getView().addStream(items, uuid, model);
+				mw.hide();
+			}
+
+			@Override
+			public void callbackError(final Throwable t) {
+				if (t.getMessage() != null && t.getMessage().length() > 0 && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+					SC.confirm("Session has expired. Do you want to be redirected to login page?", new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value != null && value) {
+								MEditor.redirect(t.getMessage().substring(1));
+							}
+						}
+					});
+				} else {
+					SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value != null && value) {
+								getStream(uuid, model, ts);
+							}
+						}
+					});
+				}
+				mw.hide();
+			}
+		};
+
+		dispatcher.execute(action, callback);
 	}
 
 }

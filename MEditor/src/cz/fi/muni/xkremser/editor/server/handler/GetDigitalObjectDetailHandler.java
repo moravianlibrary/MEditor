@@ -44,7 +44,7 @@ import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -89,7 +89,12 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 
 		try {
 			ServerUtils.checkExpiredSession(httpSessionProvider);
-			AbstractDigitalObjectDetail obj = handler.getDigitalObject(uuid, true);
+			DigitalObjectDetail obj = null;
+			if (action.getModel() == null) {
+				obj = handler.getDigitalObject(uuid);
+			} else {
+				obj = handler.getDigitalObjectItems(uuid, action.getModel());
+			}
 			return new GetDigitalObjectDetailResult(obj, action.isRefreshIn());
 		} catch (IOException e) {
 			String msg = null;
@@ -100,8 +105,8 @@ public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalOb
 			} else {
 				msg = "Unable to obtain digital object with uuid " + uuid + ". ";
 			}
-			LOGGER.error(msg);
-			throw new ActionException(msg);
+			LOGGER.error(msg, e);
+			throw new ActionException(msg, e);
 		}
 	}
 

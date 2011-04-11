@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
@@ -174,7 +174,7 @@ public class RecentlyModifiedItemDAOImpl extends AbstractDAO implements Recently
 			ResultSet rs = selectSt.executeQuery();
 			while (rs.next()) {
 				int modelId = rs.getInt("model");
-				retList.add(new RecentlyModifiedItem(rs.getString("uuid"), rs.getString("name"), openID != null ? rs.getString("description") : "", KrameriusModel
+				retList.add(new RecentlyModifiedItem(rs.getString("uuid"), rs.getString("name"), openID != null ? rs.getString("description") : "", DigitalObjectModel
 						.values()[modelId]));
 			}
 		} catch (SQLException e) {

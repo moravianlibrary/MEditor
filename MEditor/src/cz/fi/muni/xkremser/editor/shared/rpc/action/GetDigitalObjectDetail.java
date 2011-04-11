@@ -31,7 +31,8 @@ import com.gwtplatform.annotation.In;
 import com.gwtplatform.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -48,9 +49,12 @@ public class GetDigitalObjectDetail extends UnsecuredActionImpl<GetDigitalObject
 	@In(2)
 	private boolean refreshIn;
 
+	@In(3)
+	private DigitalObjectModel model;
+
 	/** The detail. */
 	@Out(1)
-	private AbstractDigitalObjectDetail detail;
+	private DigitalObjectDetail detail;
 
 	/** The refresh. */
 	@Out(2)

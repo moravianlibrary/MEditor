@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
@@ -47,7 +47,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 	private String description;
 
 	/** The model. */
-	private KrameriusModel model;
+	private DigitalObjectModel model;
 
 	// @SuppressWarnings("unused")
 	/**
@@ -69,7 +69,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 	 * @param model
 	 *          the model
 	 */
-	public RecentlyModifiedRecord(String uuid, String name, String description, KrameriusModel model) {
+	public RecentlyModifiedRecord(String uuid, String name, String description, DigitalObjectModel model) {
 		super();
 		setUuid(uuid);
 		setName(name);
@@ -139,8 +139,8 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 	 * 
 	 * @return the model
 	 */
-	public KrameriusModel getModel() {
-		return KrameriusModel.parseString(getAttribute(Constants.ATTR_MODEL));
+	public DigitalObjectModel getModel() {
+		return DigitalObjectModel.parseString(getAttribute(Constants.ATTR_MODEL));
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class RecentlyModifiedRecord extends ListGridRecord {
 	 * @param model
 	 *          the new model
 	 */
-	public void setModel(KrameriusModel model) {
+	public void setModel(DigitalObjectModel model) {
 		setAttribute(Constants.ATTR_MODEL, model);
 	}
 

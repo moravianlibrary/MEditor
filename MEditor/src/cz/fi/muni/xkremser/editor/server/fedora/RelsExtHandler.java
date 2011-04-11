@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.server.fedora;
 
 import org.w3c.dom.Element;
 
-import cz.fi.muni.xkremser.editor.client.FedoraRelationship;
+import cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship;
 
 // TODO: Auto-generated Javadoc
 /**

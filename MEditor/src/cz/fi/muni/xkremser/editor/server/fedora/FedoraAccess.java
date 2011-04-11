@@ -39,7 +39,7 @@ import org.fedora.api.ObjectFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,7 +70,7 @@ public interface FedoraAccess {
 	 * @return the kramerius model
 	 * @see KrameriusModel
 	 */
-	public KrameriusModel getKrameriusModel(Document relsExt);
+	public DigitalObjectModel getDigitalObjectModel(Document relsExt);
 
 	/**
 	 * Returns KrameriusModel of given object.
@@ -81,7 +81,7 @@ public interface FedoraAccess {
 	 * @throws IOException
 	 *           Signals that an I/O exception has occurred.
 	 */
-	public KrameriusModel getKrameriusModel(String uuid) throws IOException;
+	public DigitalObjectModel getDigitalObjectModel(String uuid) throws IOException;
 
 	/**
 	 * Recursive processing fedora objects.
@@ -365,6 +365,8 @@ public interface FedoraAccess {
 	 *           Signals that an I/O exception has occurred.
 	 */
 	public List<String> getMonographUnitsUuid(String uuid) throws IOException;
+
+	public List<String> getChildrenUuid(String uuid, DigitalObjectModel parentModel, DigitalObjectModel childModel) throws IOException;
 
 	/**
 	 * Gets the periodical items uuid.

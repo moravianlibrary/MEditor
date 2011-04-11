@@ -24,7 +24,7 @@
  *
  * 
  */
-package cz.fi.muni.xkremser.editor.server.fedora;
+package cz.fi.muni.xkremser.editor.client.domain;
 
 // TODO: Auto-generated Javadoc
 /**

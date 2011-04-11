@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
 
 import java.util.ArrayList;
 import java.util.List;

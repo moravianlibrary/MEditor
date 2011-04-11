@@ -41,10 +41,10 @@ import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
@@ -254,7 +254,7 @@ public class RecentlyTreeGwtRPCDS extends AbstractGwtRPCDS {
 		to.setUuid(from.getAttributeAsString(Constants.ATTR_UUID));
 		to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
 		to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
-		to.setModel((KrameriusModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
+		to.setModel((DigitalObjectModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
 	}
 
 	/**

@@ -70,8 +70,11 @@ import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.client.FedoraRelationship;
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.ConnectionException;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces;
+import cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship;
+import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.LexerException;
@@ -137,9 +140,9 @@ public class FedoraAccessImpl implements FedoraAccess {
 		String relsExtUrl = relsExtUrl(uuid);
 		LOGGER.debug("Reading rels ext +" + relsExtUrl);
 		InputStream docStream = RESTHelper.inputStream(relsExtUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
-		if (docStream == null)
-			return null;
-
+		if (docStream == null) {
+			throw new ConnectionException("Cannot get RELS EXT stream.");
+		}
 		try {
 			return XMLUtils.parseDocument(docStream, true);
 		} catch (ParserConfigurationException e) {
@@ -161,14 +164,14 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 * (org.w3c.dom.Document)
 	 */
 	@Override
-	public KrameriusModel getKrameriusModel(Document relsExt) {
+	public DigitalObjectModel getDigitalObjectModel(Document relsExt) {
 		try {
 			Element foundElement = XMLUtils.findElement(relsExt.getDocumentElement(), "hasModel", FedoraNamespaces.FEDORA_MODELS_URI);
 			if (foundElement != null) {
 				String sform = foundElement.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI, "resource");
 				PIDParser pidParser = new PIDParser(sform);
 				pidParser.disseminationURI();
-				KrameriusModel model = KrameriusModel.parseString(pidParser.getObjectId());
+				DigitalObjectModel model = DigitalObjectModel.parseString(pidParser.getObjectId());
 				return model;
 			} else
 				throw new IllegalArgumentException("cannot find model of ");
@@ -189,8 +192,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 * (java.lang.String)
 	 */
 	@Override
-	public KrameriusModel getKrameriusModel(String uuid) throws IOException {
-		return getKrameriusModel(getRelsExt(uuid));
+	public DigitalObjectModel getDigitalObjectModel(String uuid) throws IOException {
+		return getDigitalObjectModel(getRelsExt(uuid));
 	}
 
 	/*
@@ -506,6 +509,12 @@ public class FedoraAccessImpl implements FedoraAccess {
 		org.w3c.dom.Document doc = builder.parse(is);
 		is.close();
 		return doc;
+	}
+
+	@Override
+	public List<String> getChildrenUuid(String uuid, DigitalObjectModel parentModel, DigitalObjectModel childModel) throws IOException {
+		FedoraRelationship relation = NamedGraphModel.getRelationship(parentModel, childModel);
+		return getUuids(uuid, relation.getXPathNamespaceAwareQuery());
 	}
 
 	/*

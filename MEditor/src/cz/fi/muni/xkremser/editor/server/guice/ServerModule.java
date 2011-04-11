@@ -32,7 +32,6 @@ import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
 import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
@@ -45,7 +44,6 @@ import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
-import cz.fi.muni.xkremser.editor.server.config.KrameriusModelMapping;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaceContext;
@@ -75,6 +73,8 @@ import cz.fi.muni.xkremser.editor.server.handler.RemoveUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
+import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
+import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
@@ -152,11 +152,7 @@ public class ServerModule extends HandlerModule {
 		bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess")).to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
 		bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
 
-		// Fedora/Kramerius models
-		int total = KrameriusModel.values().length;
-		for (int i = 0; i < total; i++) {
-			bind(KrameriusModelMapping.TYPES.get(KrameriusModel.values()[i])).in(Scopes.SINGLETON);
-		}
+		bind(DigitalObjectHandler.class).to(DigitalObjectHandlerImpl.class);
 
 		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
 		// bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);

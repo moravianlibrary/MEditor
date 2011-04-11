@@ -24,53 +24,52 @@
  *
  * 
  */
-package cz.fi.muni.xkremser.editor.client;
+package cz.fi.muni.xkremser.editor.client.domain;
 
-import static cz.fi.muni.xkremser.editor.client.KrameriusModel.INTERNALPART;
-import static cz.fi.muni.xkremser.editor.client.KrameriusModel.MONOGRAPHUNIT;
-import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PAGE;
-import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PERIODICALITEM;
-import static cz.fi.muni.xkremser.editor.client.KrameriusModel.PERIODICALVOLUME;
+import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.INTERNALPART;
+import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.MONOGRAPHUNIT;
+import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.PAGE;
+import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.PERIODICALITEM;
+import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.PERIODICALVOLUME;
 
 // TODO: Auto-generated Javadoc
-/**
- * Relationships in fedora.
- * 
- * @author pavels
- */
 public enum FedoraRelationship {
+
+	// this class depends on FedoraNamespaceContext
 
 	// our fedora relationship
 	/** The has page. */
-	hasPage(PAGE, "hasPage"),
+	hasPage(PAGE, "hasPage", "/rdf:RDF/rdf:Description/kramerius:hasPage/@rdf:resource"),
 	/** The has volume. */
-	hasVolume(PERIODICALVOLUME, "hasVolume"),
+	hasVolume(PERIODICALVOLUME, "hasVolume", "/rdf:RDF/rdf:Description/kramerius:hasVolume/@rdf:resource"),
 	/** The has item. */
-	hasItem(PERIODICALITEM, "hasItem"),
+	hasItem(PERIODICALITEM, "hasItem", "/rdf:RDF/rdf:Description/kramerius:hasItem/@rdf:resource"),
 	/** The has unit. */
-	hasUnit(MONOGRAPHUNIT, "hasUnit"),
+	hasUnit(MONOGRAPHUNIT, "hasUnit", "/rdf:RDF/rdf:Description/kramerius:hasUnit/@rdf:resource"),
 	/** The has internal part. */
-	hasInternalPart(INTERNALPART, "hasInternalPart"),
+	hasInternalPart(INTERNALPART, "hasInternalPart", "/rdf:RDF/rdf:Description/kramerius:hasInternalPart/@rdf:resource"),
 	/** The has int comp part. */
-	hasIntCompPart(INTERNALPART, "hasIntCompPart"),
+	hasIntCompPart(INTERNALPART, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart/@rdf:resource"),
 
 	/** The is on page. */
-	isOnPage(null, "isOnPage");
+	isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage/@rdf:resource");
 
 	/** The poiting model. */
-	private KrameriusModel poitingModel;
+	private DigitalObjectModel targetModel;
 
 	/** The string representation. */
 	private String stringRepresentation;
 
+	private String xPathNamespaceAwareQuery;
+
 	/**
 	 * Instantiates a new fedora relationship.
 	 * 
-	 * @param pointingModel
+	 * @param targetModel
 	 *          the pointing model
 	 */
-	private FedoraRelationship(KrameriusModel pointingModel) {
-		this.poitingModel = pointingModel;
+	private FedoraRelationship(DigitalObjectModel targetModel) {
+		this.targetModel = targetModel;
 	}
 
 	/**
@@ -81,9 +80,15 @@ public enum FedoraRelationship {
 	 * @param label
 	 *          the label
 	 */
-	private FedoraRelationship(KrameriusModel pointingModel, String label) {
-		this.poitingModel = pointingModel;
+	private FedoraRelationship(DigitalObjectModel targetModel, String label) {
+		this.targetModel = targetModel;
 		this.stringRepresentation = label;
+	}
+
+	private FedoraRelationship(DigitalObjectModel targetModel, String label, String xPathNamespaceAwareQuery) {
+		this.targetModel = targetModel;
+		this.stringRepresentation = label;
+		this.xPathNamespaceAwareQuery = xPathNamespaceAwareQuery;
 	}
 
 	/**
@@ -91,8 +96,8 @@ public enum FedoraRelationship {
 	 * 
 	 * @return the pointing model
 	 */
-	public KrameriusModel getPointingModel() {
-		return poitingModel;
+	public DigitalObjectModel getTargetModel() {
+		return targetModel;
 	}
 
 	/**
@@ -102,6 +107,10 @@ public enum FedoraRelationship {
 	 */
 	public String getStringRepresentation() {
 		return stringRepresentation;
+	}
+
+	public String getXPathNamespaceAwareQuery() {
+		return xPathNamespaceAwareQuery;
 	}
 
 	/**

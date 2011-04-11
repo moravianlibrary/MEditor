@@ -31,7 +31,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
@@ -39,10 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 /**
  * The Class AbstractDigitalObjectDetail.
  */
-public abstract class AbstractDigitalObjectDetail implements IsSerializable {
-
-	/** The streams. */
-	private Streams streams;
+public class DigitalObjectDetail implements IsSerializable {
 
 	/** The foxml. */
 	private String foxml;
@@ -50,8 +47,13 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	/** The ocr. */
 	private String ocr;
 
-	/** The pages. */
-	private List<PageDetail> pages;
+	/** The ocr. */
+	private String tei;
+
+	/** The items. */
+	private List<DigitalObjectDetail> items;
+
+	private List<List<DigitalObjectDetail>> allItems;
 
 	/** The related. */
 	private ArrayList<ArrayList<String>> related;
@@ -68,13 +70,16 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	/** The ocr changed. */
 	private boolean ocrChanged;
 
-	/** The containers. */
-	private ArrayList<List<? extends AbstractDigitalObjectDetail>> containers;
+	private boolean itemsChanged;
 
-	/**
-	 * Instantiates a new abstract digital object detail.
-	 */
-	public AbstractDigitalObjectDetail() {
+	private DublinCore dc;
+
+	private ModsCollectionClient mods;
+
+	private DigitalObjectModel model;
+
+	public DigitalObjectDetail() {
+
 	}
 
 	/**
@@ -83,7 +88,8 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 * @param related
 	 *          the related
 	 */
-	public AbstractDigitalObjectDetail(ArrayList<ArrayList<String>> related) {
+	public DigitalObjectDetail(DigitalObjectModel model, ArrayList<ArrayList<String>> related) {
+		this.model = model;
 		this.related = related;
 	}
 
@@ -92,7 +98,9 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 * 
 	 * @return the model
 	 */
-	public abstract KrameriusModel getModel();
+	public DigitalObjectModel getModel() {
+		return model;
+	}
 
 	/**
 	 * Gets the related.
@@ -104,35 +112,13 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	}
 
 	/**
-	 * Gets the streams.
-	 * 
-	 * @return the streams
-	 */
-	public Streams getStreams() {
-		return this.streams;
-	}
-
-	/**
-	 * Sets the streams.
-	 * 
-	 * @param streams
-	 *          the new streams
-	 */
-	public void setStreams(Streams streams) {
-		this.streams = streams;
-	}
-
-	/**
 	 * Sets the dc.
 	 * 
 	 * @param dc
 	 *          the new dc
 	 */
 	public void setDc(DublinCore dc) {
-		if (getStreams() == null) {
-			setStreams(new Streams());
-		}
-		getStreams().setDc(dc);
+		this.dc = dc;
 	}
 
 	/**
@@ -141,10 +127,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 * @return the dc
 	 */
 	public DublinCore getDc() {
-		if (getStreams() != null)
-			return getStreams().getDc();
-		else
-			return null;
+		return dc;
 	}
 
 	/**
@@ -154,10 +137,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 *          the new mods
 	 */
 	public void setMods(ModsCollectionClient mods) {
-		if (getStreams() == null) {
-			setStreams(new Streams());
-		}
-		getStreams().setMods(mods);
+		this.mods = mods;
 	}
 
 	/**
@@ -166,10 +146,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 * @return the mods
 	 */
 	public ModsCollectionClient getMods() {
-		if (getStreams() != null)
-			return getStreams().getMods();
-		else
-			return null;
+		return mods;
 	}
 
 	/*
@@ -179,83 +156,7 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 */
 	@Override
 	public String toString() {
-		return "model: " + getModel() + "\nStreams: " + getStreams();
-	}
-
-	/**
-	 * Checks for pages.
-	 * 
-	 * @return true, if successful
-	 */
-	public abstract boolean hasPages();
-
-	/**
-	 * Checks if is image.
-	 * 
-	 * @return true, if is image
-	 */
-	public boolean isImage() {
-		return false;
-	}
-
-	/**
-	 * Checks for containers.
-	 * 
-	 * @return the int
-	 */
-	public abstract int hasContainers();
-
-	/**
-	 * Gets the pages.
-	 * 
-	 * @return the pages
-	 */
-	public List<PageDetail> getPages() {
-		if (!hasPages())
-			throw new UnsupportedOperationException();
-		return pages;
-	}
-
-	/**
-	 * Sets the pages.
-	 * 
-	 * @param pages
-	 *          the new pages
-	 */
-	public void setPages(List<PageDetail> pages) {
-		if (!hasPages())
-			throw new UnsupportedOperationException();
-		this.pages = pages;
-	}
-
-	// TODO: consider strategy DP
-	/**
-	 * Gets the child container models.
-	 * 
-	 * @return the child container models
-	 */
-	public abstract List<KrameriusModel> getChildContainerModels();
-
-	/**
-	 * Gets the containers.
-	 * 
-	 * @return the containers
-	 */
-	public List<List<? extends AbstractDigitalObjectDetail>> getContainers() {
-		if (containers == null) {
-			containers = new ArrayList<List<? extends AbstractDigitalObjectDetail>>();
-		}
-		return containers;
-	}
-
-	/**
-	 * Sets the containers.
-	 * 
-	 * @param containers
-	 *          the new containers
-	 */
-	public void setContainers(ArrayList<List<? extends AbstractDigitalObjectDetail>> containers) {
-		this.containers = containers;
+		return "uuid" + getUuid() + " model: " + getModel() + "\nItems: " + getItems();
 	}
 
 	/**
@@ -380,6 +281,42 @@ public abstract class AbstractDigitalObjectDetail implements IsSerializable {
 	 */
 	public void setOcrChanged(boolean ocrChanged) {
 		this.ocrChanged = ocrChanged;
+	}
+
+	public String getTei() {
+		return tei;
+	}
+
+	public void setTei(String tei) {
+		this.tei = tei;
+	}
+
+	public List<DigitalObjectDetail> getItems() {
+		return items;
+	}
+
+	public void setItems(List<DigitalObjectDetail> items) {
+		this.items = items;
+	}
+
+	public boolean getItemsChanged() {
+		return itemsChanged;
+	}
+
+	public void setItemsChanged(boolean itemsChanged) {
+		this.itemsChanged = itemsChanged;
+	}
+
+	public void setModel(DigitalObjectModel model) {
+		this.model = model;
+	}
+
+	public List<List<DigitalObjectDetail>> getAllItems() {
+		return allItems;
+	}
+
+	public void setAllItems(List<List<DigitalObjectDetail>> allItems) {
+		this.allItems = allItems;
 	}
 
 }

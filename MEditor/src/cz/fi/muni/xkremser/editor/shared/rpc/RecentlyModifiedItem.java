@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -46,7 +46,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 	private String description;
 
 	/** The model. */
-	private KrameriusModel model;
+	private DigitalObjectModel model;
 
 	// @SuppressWarnings("unused")
 	/**
@@ -68,7 +68,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 	 * @param model
 	 *          the model
 	 */
-	public RecentlyModifiedItem(String uuid, String name, String description, KrameriusModel model) {
+	public RecentlyModifiedItem(String uuid, String name, String description, DigitalObjectModel model) {
 		super();
 		this.uuid = uuid;
 		this.name = name;
@@ -138,7 +138,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 	 * 
 	 * @return the model
 	 */
-	public KrameriusModel getModel() {
+	public DigitalObjectModel getModel() {
 		return model;
 	}
 
@@ -148,7 +148,7 @@ public class RecentlyModifiedItem implements IsSerializable {
 	 * @param model
 	 *          the new model
 	 */
-	public void setModel(KrameriusModel model) {
+	public void setModel(DigitalObjectModel model) {
 		this.model = model;
 	}
 

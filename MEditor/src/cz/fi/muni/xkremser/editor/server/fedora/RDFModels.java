@@ -26,7 +26,7 @@
  */
 package cz.fi.muni.xkremser.editor.server.fedora;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -47,19 +47,19 @@ public class RDFModels {
 	 *          the rdf
 	 * @return the kramerius model
 	 */
-	public static KrameriusModel convertRDFToModel(String rdf) {
+	public static DigitalObjectModel convertRDFToModel(String rdf) {
 		if (rdf.contains("hasPage")) {
-			return KrameriusModel.PAGE;
+			return DigitalObjectModel.PAGE;
 		} else if (rdf.contains("hasUnit")) {
-			return KrameriusModel.MONOGRAPHUNIT;
+			return DigitalObjectModel.MONOGRAPHUNIT;
 		} else if (rdf.contains("hasVolume")) {
-			return KrameriusModel.PERIODICALVOLUME;
+			return DigitalObjectModel.PERIODICALVOLUME;
 		} else if (rdf.contains("hasItem")) {
-			return KrameriusModel.PERIODICALITEM;
+			return DigitalObjectModel.PERIODICALITEM;
 		} else if (rdf.contains("hasIntCompPart")) {
-			return KrameriusModel.INTERNALPART;
+			return DigitalObjectModel.INTERNALPART;
 		} else if (rdf.contains("isOnPage")) {
-			return KrameriusModel.PAGE;
+			return DigitalObjectModel.PAGE;
 			// } else if (rdf.contains("hasDonator")) {
 			// return KrameriusModel.DONATOR;
 		} else {
@@ -75,7 +75,7 @@ public class RDFModels {
 	 *          the km
 	 * @return the string
 	 */
-	public static String convertToRdf(KrameriusModel km) {
+	public static String convertToRdf(DigitalObjectModel km) {
 		switch (km) {
 			case MONOGRAPH:
 				return "monograph";

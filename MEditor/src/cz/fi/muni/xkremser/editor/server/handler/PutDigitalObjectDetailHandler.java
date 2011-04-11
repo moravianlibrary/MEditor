@@ -59,7 +59,9 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces;
+import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
@@ -68,14 +70,12 @@ import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -184,7 +184,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 
 		if (write) {
-			AbstractDigitalObjectDetail detail = action.getDetail();
+			DigitalObjectDetail detail = action.getDetail();
 			modifyRelations(detail);
 			if (detail.isDcChanged())
 				modifyDublinCore(detail);
@@ -288,10 +288,9 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * @param detail
 	 *          the detail
 	 */
-	private void modifyRelations(AbstractDigitalObjectDetail detail) {
+	private void modifyRelations(DigitalObjectDetail detail) {
 		StringBuilder sb = new StringBuilder();
-		boolean hasAnything = (detail.hasPages() && detail.getPages() != null) || detail.hasContainers() != 0;
-		if (!hasAnything)
+		if (detail.getAllItems() == null)
 			return;
 		Document relsExt = null;
 		StringBuilder contentBuilder = new StringBuilder();
@@ -352,27 +351,18 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			String head = str.substring(0, lastIndex).trim();
 			String tail = str.substring(lastIndex, str.length());
 
-			// page structure
-			if (detail.hasPages() && detail.getPages() != null) {
-				String relation = RDFModels.convertToRdf(KrameriusModel.PAGE);
-				for (PageDetail page : detail.getPages()) {
-					sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation).append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21).append(page.getUuid())
-							.append(lameNS ? RELS_EXT_PART_32 : RELS_EXT_PART_31).append(relation).append(TERMINATOR1);
-				}
-
-			}
 			// container structure
-			if (detail.hasContainers() != 0) {
-				for (int i = 0; i < detail.hasContainers(); i++) {
-					if (detail.getContainers().size() <= i || detail.getContainers().get(i) == null) {
-					} else {
-						String relation = RDFModels.convertToRdf(detail.getChildContainerModels().get(i));
-						for (AbstractDigitalObjectDetail obj : detail.getContainers().get(i)) {
-							sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation).append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21)
-									.append(obj.getUuid()).append(lameNS ? RELS_EXT_PART_32 : RELS_EXT_PART_31).append(relation).append(TERMINATOR1);
-						}
+			int i = 0;
+			List<DigitalObjectModel> models = NamedGraphModel.getChildren(detail.getModel());
+			for (List<DigitalObjectDetail> data : detail.getAllItems()) {
+				if (data != null) {
+					String relation = RDFModels.convertToRdf(models.get(i));
+					for (DigitalObjectDetail obj : data) {
+						sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation).append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21).append(obj.getUuid())
+								.append(lameNS ? RELS_EXT_PART_32 : RELS_EXT_PART_31).append(relation).append(TERMINATOR1);
 					}
 				}
+				i++;
 			}
 
 			contentBuilder.append(head).append(sb).append(tail);
@@ -385,7 +375,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		String pass = configuration.getFedoraPassword();
 		String content = contentBuilder.toString();
 
-		RESTHelper.put(url, content, usr, pass);
+		// RESTHelper.put(url, content, usr, pass);
 	}
 
 	/**
@@ -412,7 +402,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * @param detail
 	 *          the detail
 	 */
-	private void modifyDublinCore(AbstractDigitalObjectDetail detail) {
+	private void modifyDublinCore(DigitalObjectDetail detail) {
 		DublinCore dc = null;
 		if ((dc = detail.getDc()) != null) {
 			StringBuilder contentBuilder = new StringBuilder();
@@ -448,7 +438,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * @param detail
 	 *          the detail
 	 */
-	private void modifyMods(AbstractDigitalObjectDetail detail) {
+	private void modifyMods(DigitalObjectDetail detail) {
 		if (detail.getMods() != null) {
 			ModsCollectionClient modsCollection = detail.getMods();
 			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=false";
@@ -466,7 +456,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * @param detail
 	 *          the detail
 	 */
-	private void modifyOcr(AbstractDigitalObjectDetail detail) {
+	private void modifyOcr(DigitalObjectDetail detail) {
 		if (detail.getOcr() != null) {
 			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=false";
 			String usr = configuration.getFedoraLogin();

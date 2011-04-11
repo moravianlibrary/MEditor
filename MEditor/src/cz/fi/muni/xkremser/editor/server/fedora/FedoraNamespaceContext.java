@@ -26,12 +26,12 @@
  */
 package cz.fi.muni.xkremser.editor.server.fedora;
 
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.BIBILO_MODS_URI;
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.DC_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.FEDORA_MODELS_URI;
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.KRAMERIUS_URI;
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.OAI_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaces.RDF_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.BIBILO_MODS_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.FEDORA_MODELS_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.KRAMERIUS_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.RDF_NAMESPACE_URI;
 
 import java.util.Arrays;
 import java.util.Collections;

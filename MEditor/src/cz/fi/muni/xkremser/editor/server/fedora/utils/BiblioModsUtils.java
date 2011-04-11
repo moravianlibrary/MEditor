@@ -47,7 +47,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.AccessConditionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.BaseDateTypeClient;
@@ -202,7 +202,7 @@ public final class BiblioModsUtils {
 	 *          the model
 	 * @return the title
 	 */
-	public static String getTitle(Document doc, KrameriusModel model) {
+	public static String getTitle(Document doc, DigitalObjectModel model) {
 		String title = titleFromBiblioMods(doc);
 		if ((title == null) || (title.equals(""))) {
 			switch (model) {

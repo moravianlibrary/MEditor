@@ -24,25 +24,17 @@
  *
  * 
  */
-package cz.fi.muni.xkremser.editor.client;
+package cz.fi.muni.xkremser.editor.client.domain;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.InternalPartDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.MonographDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.MonographUnitDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PeriodicalDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PeriodicalItemDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PeriodicalVolumeDetail;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Enum KrameriusModel.
  */
-public enum KrameriusModel implements IsSerializable {
+public enum DigitalObjectModel implements IsSerializable {
 
 	/** The MONOGRAPH. */
 	MONOGRAPH("monograph", ""), /** The MONOGRAPHUNIT. */
@@ -73,7 +65,7 @@ public enum KrameriusModel implements IsSerializable {
 	 */
 	;
 
-	private KrameriusModel(String value, String icon) {
+	private DigitalObjectModel(String value, String icon) {
 		this.value = value;
 		this.icon = icon;
 	}
@@ -109,7 +101,7 @@ public enum KrameriusModel implements IsSerializable {
 	 *          the km
 	 * @return the string
 	 */
-	public static String toString(KrameriusModel km) {
+	public static String toString(DigitalObjectModel km) {
 		return km.getValue();
 	}
 
@@ -120,47 +112,13 @@ public enum KrameriusModel implements IsSerializable {
 	 *          the s
 	 * @return the kramerius model
 	 */
-	public static KrameriusModel parseString(String s) {
-		KrameriusModel[] values = KrameriusModel.values();
-		for (KrameriusModel model : values) {
+	public static DigitalObjectModel parseString(String s) {
+		DigitalObjectModel[] values = DigitalObjectModel.values();
+		for (DigitalObjectModel model : values) {
 			if (model.getValue().equalsIgnoreCase(s))
 				return model;
 		}
 		throw new RuntimeException("Unsupported type");
 	}
 
-	/**
-	 * Gets the detail.
-	 * 
-	 * @param model
-	 *          the model
-	 * @return the detail
-	 */
-	public static AbstractDigitalObjectDetail getDetail(KrameriusModel model) {
-		AbstractDigitalObjectDetail object = null;
-		switch (model) {
-			case INTERNALPART:
-				object = new InternalPartDetail(null);
-			break;
-			case MONOGRAPHUNIT:
-				object = new MonographUnitDetail(null);
-			break;
-			case MONOGRAPH:
-				object = new MonographDetail(null);
-			break;
-			case PAGE:
-				object = new PageDetail(null);
-			break;
-			case PERIODICAL:
-				object = new PeriodicalDetail(null);
-			break;
-			case PERIODICALVOLUME:
-				object = new PeriodicalVolumeDetail(null);
-			break;
-			case PERIODICALITEM:
-				object = new PeriodicalItemDetail(null);
-			break;
-		}
-		return object;
-	}
 }

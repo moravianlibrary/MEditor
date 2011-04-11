@@ -90,17 +90,17 @@ import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
+import cz.fi.muni.xkremser.editor.client.view.tab.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.PageDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.Streams;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -114,69 +114,19 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * The Interface MyUiHandlers.
 	 */
 	public interface MyUiHandlers extends UiHandlers {
-
-		/**
-		 * On add digital object.
-		 * 
-		 * @param tileGrid
-		 *          the tile grid
-		 * @param menu
-		 *          the menu
-		 */
 		void onAddDigitalObject(final TileGrid tileGrid, final Menu menu);
 
-		/**
-		 * On add digital object.
-		 * 
-		 * @param uuid
-		 *          the uuid
-		 * @param closeButton
-		 *          the close button
-		 * @param menu
-		 *          the menu
-		 */
 		void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu);
 
-		/**
-		 * On save digital object.
-		 * 
-		 * @param digitalObject
-		 *          the digital object
-		 */
-		void onSaveDigitalObject(final AbstractDigitalObjectDetail digitalObject);
+		void onSaveDigitalObject(final DigitalObjectDetail digitalObject);
 
-		/**
-		 * Gets the description.
-		 * 
-		 * @param uuid
-		 *          the uuid
-		 * @param tabSet
-		 *          the tab set
-		 * @param tabId
-		 *          the tab id
-		 * @return the description
-		 */
 		void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
-		/**
-		 * Put description.
-		 * 
-		 * @param uuid
-		 *          the uuid
-		 * @param description
-		 *          the description
-		 * @param common
-		 *          the common
-		 */
 		void putDescription(final String uuid, final String description, boolean common);
 
-		/**
-		 * On refresh.
-		 * 
-		 * @param uuid
-		 *          the uuid
-		 */
 		void onRefresh(final String uuid);
+
+		void getStream(final String uuid, final DigitalObjectModel model, TabSet ts);
 	}
 
 	/** The Constant ID_DC. */
@@ -244,6 +194,10 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 	/** The mods tab. */
 	private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
+
+	private final Map<TabSet, List<Tab>> itemTabs = new HashMap<TabSet, List<Tab>>();
+
+	private final HashMap<TabSet, Map<DigitalObjectModel, TileGrid>> itemGrids = new HashMap<TabSet, Map<DigitalObjectModel, TileGrid>>();
 
 	/** The opened objects tabsets. */
 	private final Map<String, TabSet> openedObjectsTabsets = new HashMap<String, TabSet>();
@@ -318,16 +272,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		this.clipboard = data;
 	}
 
-	/**
-	 * Prints the.
-	 */
-	public void print() {
-		// Record[] data = tileGrid.getData();
-		// for (Record rec : data) {
-		// System.out.println(rec.getAttribute(Constants.ATTR_NAME));
-		// }
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -336,11 +280,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(final Record[] pageData, final List<Record[]> containerDataList, final List<KrameriusModel> containerModelList,
-			final Streams streams, final String uuid, final boolean picture, final String foxml, final String ocr, boolean refresh, final KrameriusModel model) {
-
-		final DublinCore dc = streams.getDc();
-		final ModsCollectionClient mods = streams.getMods();
+	public void addDigitalObject(final String uuid, final DublinCore dc, final ModsCollectionClient mods, String foxml, String ocr, boolean refresh,
+			DigitalObjectModel model) {
 
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
@@ -354,8 +295,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			TabSet toDelete = openedObjectsTabsets.get(uuid);
 			if (toDelete != null) {
 				insertPosition = layout.getMemberNumber(toDelete);
-				dcTab.put(toDelete, null);
-				modsTab.put(toDelete, null);
 				layout.removeMember(toDelete);
 				removeTuple(toDelete);
 				toDelete.destroy();
@@ -365,55 +304,55 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		}
 		makeTuple(uuid, topTabSet);
 
-		Tab imageTab = null;
-		final TileGrid pageGrid = pageData != null ? getTileGrid(true, "page") : null;
-		List<Tab> containerTabs = null;
-		if (pageData != null) {
-			pageGrid.setData(pageData);
-			imageTab = new Tab(lang.page(), "pieces/16/pawn_red.png");
-			imageTab.setPane(pageGrid);
-		}
-
-		final TileGrid[] containerGrids = containerModelList == null ? null : new TileGrid[containerModelList.size()];
-		if (containerDataList != null) {
-			containerTabs = new ArrayList<Tab>(containerModelList.size());
-			Map<String, String> labels = new HashMap<String, String>();
-			labels.put(KrameriusModel.INTERNALPART.getValue(), lang.internalpart());
-			labels.put(KrameriusModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
-			labels.put(KrameriusModel.PERIODICALITEM.getValue(), lang.periodicalitem());
-			labels.put(KrameriusModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
-			for (int i = 0; i < containerModelList.size(); i++) {
-				String label = containerModelList.get(i).getValue();
-				String newLabel = labels.get(label);
-				if (newLabel == null || newLabel.equals("")) {
-					newLabel = label.substring(0, 1).toUpperCase() + label.substring(1) + "s";
-				}
-				containerGrids[i] = getTileGrid(false, newLabel);
-				containerGrids[i].setData(containerDataList.get(i));
-				Tab containerTab = new Tab(containerModelList.get(i).getValue(), "pieces/16/pawn_red.png");
-				containerTab.setAttribute(ID_MODEL, containerModelList.get(i).getValue());
-				containerTab.setPane(containerGrids[i]);
-				containerTab.setWidth(100);
-				containerTabs.add(containerTab);
+		List<Tab> containerTabs = new ArrayList<Tab>();
+		List<DigitalObjectModel> models = NamedGraphModel.getChildren(model);
+		Map<String, String> labels = new HashMap<String, String>();
+		labels.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalparts());
+		labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunits());
+		labels.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitems());
+		labels.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolumes());
+		int i = 0;
+		for (DigitalObjectModel md : models) {
+			Tab containerTab = null;
+			if (md.equals(DigitalObjectModel.PAGE)) {
+				containerTab = new Tab(lang.pages(), "pieces/16/pawn_red.png");
+				containerTab.setWidth(lang.pages().length() * 6 + 35);
+			} else {
+				containerTab = new Tab(labels.get(md.getValue()), "pieces/16/cubes_" + (i == 0 ? "green" : i == 1 ? "blue" : "yellow") + ".png");
+				containerTab.setWidth(((labels.get(md.getValue())).length() * 6) + 30);
 			}
+			containerTab.setAttribute(TAB_INITIALIZED, false);
+			containerTab.setAttribute(ID_MODEL, md.getValue());
+			containerTabs.add(containerTab);
+			i++;
 		}
+		itemTabs.put(topTabSet, containerTabs);
+		Map<String, String> labelsSingular = new HashMap<String, String>();
+		labelsSingular.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
+		labelsSingular.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
+		labelsSingular.put(DigitalObjectModel.PAGE.getValue(), lang.page());
+		labelsSingular.put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
+		labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
+		labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
+		final Tab infoTab = new InfoTab("Info", "pieces/16/cubes_all.png", dc, lang, labelsSingular.get(model.getValue()));
 
-		final Tab dublinTab = new Tab("DC", "pieces/16/pawn_green.png");
+		final Tab dublinTab = new Tab("DC", "pieces/16/piece_green.png");
 		dublinTab.setAttribute(TAB_INITIALIZED, false);
 		dublinTab.setAttribute(ID_TAB, ID_DC);
 		dcTab.put(topTabSet, dublinTab);
 
-		final Tab moTab = new Tab("MODS", "pieces/16/pawn_blue.png");
+		final Tab moTab = new Tab("MODS", "pieces/16/piece_blue.png");
 		moTab.setAttribute(TAB_INITIALIZED, false);
 		moTab.setAttribute(ID_TAB, ID_MODS);
 		modsTab.put(topTabSet, moTab);
 
-		final Tab descriptionTab = new Tab(lang.description(), "pieces/16/pawn_blue.png");
+		final Tab descriptionTab = new Tab(lang.description(), "pieces/16/pieces.png");
 		descriptionTab.setAttribute(TAB_INITIALIZED, false);
 		descriptionTab.setAttribute(ID_TAB, ID_DESC);
 		descriptionTab.setWidth(100);
 
 		Tab thumbTab = null;
+		boolean picture = model.equals(DigitalObjectModel.PAGE);
 		Tab ocTab = picture ? new Tab("OCR", "pieces/16/pawn_white.png") : null;
 
 		Tab fullTab = null;
@@ -433,7 +372,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			ocTab.setPane(form);
 			ocrContent.put(topTabSet, ocrItem);
 
-			thumbTab = new Tab(lang.thumbnail(), "pieces/16/pawn_white.png");
+			thumbTab = new Tab(lang.thumbnail(), "pieces/16/pawn_yellow.png");
 			final Image full2 = new Image("images/thumbnail/" + uuid);
 			final Img image = new Img("thumbnail/" + uuid, full2.getWidth(), full2.getHeight());
 			image.setAnimateTime(500);
@@ -458,20 +397,17 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		Tab foxmlTab = null;
 		boolean fox = foxml != null && !"".equals(foxml);
 		if (fox) {
-			foxmlTab = new Tab("FOXML", "pieces/16/piece_blue.png");
+			foxmlTab = new Tab("FOXML", "pieces/16/cube_frame.png");
 			Label l = new Label("<code>" + foxml + "</code>");
 			l.setCanSelectText(true);
 			foxmlTab.setPane(l);
 		}
 
 		List<Tab> tabList = new ArrayList<Tab>();
-		if (imageTab != null)
-			tabList.add(imageTab);
+		tabList.add(infoTab);
 		if (containerTabs != null && containerTabs.size() > 0)
 			tabList.addAll(containerTabs);
-		tabList.add(dublinTab);
-		tabList.add(moTab);
-		tabList.add(descriptionTab);
+		tabList.addAll(Arrays.asList(dublinTab, moTab, descriptionTab));
 		if (picture) {
 			tabList.add(ocTab);
 			tabList.add(thumbTab);
@@ -514,6 +450,18 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 							TabSet ts = event.getTab().getTabSet();
 							ts.setTabPane(event.getTab().getID(), t.getPane());
 							t.setAttribute(TAB_INITIALIZED, true);
+							mw.hide();
+						}
+					};
+					timer.schedule(25);
+				} else if (event.getTab().getAttribute(ID_MODEL) != null && event.getTab().getPane() == null) {
+					final ModalWindow mw = new ModalWindow(topTabSet);
+					mw.setLoadingIcon("loadingAnimation.gif");
+					mw.show(true);
+					Timer timer = new Timer() {
+						@Override
+						public void run() {
+							getUiHandlers().getStream(uuid, DigitalObjectModel.parseString(event.getTab().getAttribute(ID_MODEL)), event.getTab().getTabSet());
 							mw.hide();
 						}
 					};
@@ -564,155 +512,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		});
 
 		// MENU
-		Menu menu = new Menu();
-		menu.setShowShadow(true);
-		menu.setShadowDepth(10);
-
-		MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
-		// MenuItem descItem = new MenuItem("Desciption", "icons/16/message.png");
-		// MenuItem loadItem = new MenuItem("Load metadata",
-		// "icons/16/document_plain_new.png");
-		MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png");
-		MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
-		// MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png",
-		// "Ctrl+O");
-		MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
-		MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
-		MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
-		MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png");
-		MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png");
-
-		// openItem.addClickHandler(new
-		// com.smartgwt.client.widgets.menu.events.ClickHandler() {
-		// @Override
-		// public void onClick(MenuItemClickEvent event) {
-		//
-		// Dialog dialog = new Dialog();
-		// // dialog.
-		//
-		// SC.askforValue("Open digital object", "uuid", new ValueCallback() {
-		//
-		// @Override
-		// public void execute(String value) {
-		// System.out.println(value);
-		// }
-		// });
-		// // final Window winModal = new Window();
-		// // // winModal.setResizeFrom("B", "R", "BR");
-		// // winModal.setHeight(200);
-		// // winModal.setWidth(600);
-		// // winModal.setCanDragResize(true);
-		// // winModal.setShowEdges(true);
-		// // winModal.setTitle("Description");
-		// // winModal.setShowMinimizeButton(false);
-		// // winModal.setIsModal(true);
-		// // winModal.setShowModalMask(true);
-		// // winModal.centerInPage();
-		// // winModal.addCloseClickHandler(new CloseClickHandler() {
-		// // @Override
-		// // public void onCloseClick(CloseClientEvent event) {
-		// // winModal.destroy();
-		// // // TODO: save
-		// // }
-		// // });
-		// //
-		// // winModal.show();
-		// }
-		// });
-
-		refreshItem.setAttribute(ID_TABSET, topTabSet);
-		refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-			@Override
-			public void onClick(final MenuItemClickEvent event) {
-				TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-				String uuid = openedObjectsUuids.get(ts);
-				getUiHandlers().onRefresh(uuid);
-			}
-		});
-
-		publishItem.setAttribute(ID_TABSET, topTabSet);
-		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-			@Override
-			public void onClick(final MenuItemClickEvent event) {
-				SC.confirm("Publish digital object", "Are you sure you want to publish the digital object?", new BooleanCallback() {
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							AbstractDigitalObjectDetail object = KrameriusModel.getDetail(model);
-							TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-							Tab dcT = dcTab.get(ts);
-							Tab modsT = modsTab.get(ts);
-							TextAreaItem ocrTextItem = null;
-							if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
-								String val = (String) ocrTextItem.getValue();
-								if (!ocrTextContent.get(ocrTextItem).equals(val)) {
-									object.setOcr(val);
-									object.setOcrChanged(true);
-								}
-							} else {
-								object.setOcrChanged(false);
-							}
-							object.setUuid(openedObjectsUuids.get(ts));
-
-							DublinCore changedDC = null;
-							if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-								DCTab dcT_ = (DCTab) dcT;
-								changedDC = dcT_.getDc();
-								object.setDcChanged(true);
-							} else {
-								changedDC = dc;
-								object.setDcChanged(false);
-							}
-							object.setDc(changedDC);
-							ModsCollectionClient changedMods = null;
-							if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-								ModsTab modsT_ = (ModsTab) modsT;
-								changedMods = new ModsCollectionClient();
-								changedMods.setMods(Arrays.asList(modsT_.getMods()));
-								object.setModsChanged(true);
-							} else {
-								changedMods = mods;
-								object.setModsChanged(false);
-							}
-							object.setMods(changedMods);
-							if (object.hasPages() && pageGrid != null && pageGrid.getData() != null && pageGrid.getData().length > 0) {
-								List<PageDetail> pages = new ArrayList<PageDetail>(pageGrid.getData().length);
-								for (Record rec : pageGrid.getData()) {
-									PageDetail page = new PageDetail(null);
-									page.setUuid(((PageRecord) rec).getUuid());
-									pages.add(page);
-								}
-								object.setPages(pages);
-							}
-							int cont = object.hasContainers();
-							int i = 0;
-							if (cont != 0) {
-								for (KrameriusModel containerModel : object.getChildContainerModels()) {
-									ArrayList<AbstractDigitalObjectDetail> list = null;
-									if (containerGrids != null && containerGrids[i] != null && containerGrids[i].getData() != null && containerGrids[i].getData().length > 0) {
-										list = new ArrayList<AbstractDigitalObjectDetail>(containerGrids[i].getData().length);
-										for (Record rec : containerGrids[i].getData()) {
-											AbstractDigitalObjectDetail subObject = KrameriusModel.getDetail(containerModel);
-											subObject.setUuid(((ContainerRecord) rec).getUuid());
-											list.add(subObject);
-										}
-									}
-									object.getContainers().add(list);
-									i++;
-								}
-							}
-
-							getUiHandlers().onSaveDigitalObject(object);
-						}
-					}
-				});
-			}
-		});
-
-		menu.setItems(newItem/* , descItem , loadItem */, lockItem, lockTabItem/*
-																																						 * ,
-																																						 * openItem
-																																						 */, saveItem, refreshItem, downloadItem, removeItem, publishItem);
+		Menu menu = getMenu(topTabSet, model, dc, mods);
 		IMenuButton menuButton = new IMenuButton("Menu", menu);
 		menuButton.setWidth(60);
 		menuButton.setHeight(16);
@@ -742,8 +542,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 					first = !first;
 				}
 				if (topTabSet1 == topTabSet) {
-					dcTab.put(topTabSet1, null);
-					modsTab.put(topTabSet1, null);
 					removeTuple(topTabSet1);
 					topTabSet1.destroy();
 					topTabSet1 = null;
@@ -752,8 +550,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 						topTabSet2 = null;
 					}
 				} else {
-					dcTab.put(topTabSet2, null);
-					modsTab.put(topTabSet2, null);
 					removeTuple(topTabSet2);
 					topTabSet2.destroy();
 					topTabSet2 = null;
@@ -769,8 +565,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 				if (topTabSet1 != null) {
 					TabSet toDelete = topTabSet1;
-					dcTab.put(toDelete, null);
-					modsTab.put(toDelete, null);
 					layout.removeMember(toDelete);
 					removeTuple(toDelete);
 					toDelete.destroy();
@@ -780,8 +574,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			} else {
 				if (topTabSet2 != null) {
 					TabSet toDelete = topTabSet2;
-					dcTab.put(toDelete, null);
-					modsTab.put(toDelete, null);
 					layout.removeMember(toDelete);
 					removeTuple(toDelete);
 					toDelete.destroy();
@@ -1013,7 +805,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		final VLayout layout = new VLayout();
 		layout.setWidth100();
 		layout.setHeight100();
-		String title = common ? "<h3>" + lang.descriptionAll() + "</h3>" : "<h3>" + lang.descriptionSingle() + "</h3>";
+		String title = common ? "<h3>" + lang.descriptionAll() + "</h3><br />" : "<h3>" + lang.descriptionSingle() + "</h3><br />";
 		HTMLFlow titleHTML = new HTMLFlow(title);
 		final RichTextEditor richTextEditor = new RichTextEditor();
 		richTextEditor.setHeight100();
@@ -1084,6 +876,140 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		String u = openedObjectsUuids.get(tabSet);
 		openedObjectsTabsets.remove(u);
 		openedObjectsUuids.remove(tabSet);
+		dcTab.remove(tabSet);
+		modsTab.remove(tabSet);
+		itemTabs.remove(tabSet);
+		itemGrids.remove(tabSet);
 	}
 
+	private Menu getMenu(final TabSet topTabSet, final DigitalObjectModel model, final DublinCore dc, final ModsCollectionClient mods) {
+		Menu menu = new Menu();
+		menu.setShowShadow(true);
+		menu.setShadowDepth(10);
+
+		MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
+		MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png");
+		MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
+		MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
+		MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
+		MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
+		MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png");
+		MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png");
+
+		refreshItem.setAttribute(ID_TABSET, topTabSet);
+		refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(final MenuItemClickEvent event) {
+				TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+				String uuid = openedObjectsUuids.get(ts);
+				getUiHandlers().onRefresh(uuid);
+			}
+		});
+
+		publishItem.setAttribute(ID_TABSET, topTabSet);
+		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(final MenuItemClickEvent event) {
+				SC.confirm("Publish digital object", "Are you sure you want to publish the digital object?", new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+							TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+							Tab dcT = dcTab.get(ts);
+							Tab modsT = modsTab.get(ts);
+							TextAreaItem ocrTextItem = null;
+							if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
+								String val = (String) ocrTextItem.getValue();
+								if (!ocrTextContent.get(ocrTextItem).equals(val)) {
+									object.setOcr(val);
+									object.setOcrChanged(true);
+								}
+							} else {
+								object.setOcrChanged(false);
+							}
+							object.setUuid(openedObjectsUuids.get(ts));
+
+							DublinCore changedDC = null;
+							if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+								DCTab dcT_ = (DCTab) dcT;
+								changedDC = dcT_.getDc();
+								object.setDcChanged(true);
+							} else {
+								changedDC = dc;
+								object.setDcChanged(false);
+							}
+							object.setDc(changedDC);
+							ModsCollectionClient changedMods = null;
+							if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+								ModsTab modsT_ = (ModsTab) modsT;
+								changedMods = new ModsCollectionClient();
+								changedMods.setMods(Arrays.asList(modsT_.getMods()));
+								object.setModsChanged(true);
+							} else {
+								changedMods = mods;
+								object.setModsChanged(false);
+							}
+							object.setMods(changedMods);
+							Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
+							if (tilegrids != null) { // structure has been changed, or at
+																				// least opened
+								List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
+								List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
+								for (DigitalObjectModel md : children) {
+									List<DigitalObjectDetail> data = null;
+									TileGrid tg = tilegrids.get(md);
+									if (tg != null && tg.getData() != null) {
+										data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
+										for (Record rec : tg.getData()) {
+											DigitalObjectDetail child = new DigitalObjectDetail();
+											child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
+											data.add(child);
+										}
+									}
+									structure.add(data);
+								}
+								object.setAllItems(structure);
+							}
+							getUiHandlers().onSaveDigitalObject(object);
+						}
+					}
+				});
+			}
+		});
+
+		menu.setItems(newItem/* , descItem , loadItem */, lockItem, lockTabItem/*
+																																						 * ,
+																																						 * openItem
+																																						 */, saveItem, refreshItem, downloadItem, removeItem, publishItem);
+		return menu;
+
+	}
+
+	@Override
+	public void addStream(Record[] items, String uuid, DigitalObjectModel model) {
+		TabSet topTabSet = openedObjectsTabsets.get(uuid);
+		List<Tab> containers = itemTabs.get(topTabSet);
+		Tab toAdd = null;
+		for (Tab tab : containers) {
+			if (tab.getAttribute(ID_MODEL).equals(model.getValue())) {
+				toAdd = tab;
+				break;
+			}
+		}
+		if (toAdd == null)
+			throw new RuntimeException("There is no tab with model " + model);
+
+		final TileGrid grid = getTileGrid(model.equals(DigitalObjectModel.PAGE), model.getValue());
+		topTabSet.setTabPane(topTabSet.getSelectedTab().getID(), grid);
+		if (items != null) {
+			grid.setData(items);
+		}
+		toAdd.setPane(grid);
+		toAdd.setAttribute(TAB_INITIALIZED, true);
+		if (itemGrids.get(topTabSet) == null) {
+			itemGrids.put(topTabSet, new HashMap<DigitalObjectModel, TileGrid>());
+		}
+		itemGrids.get(topTabSet).put(model, grid);
+	}
 }

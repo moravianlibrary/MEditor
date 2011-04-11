@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import cz.fi.muni.xkremser.editor.client.KrameriusModel;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -182,8 +182,8 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 	 * (org.w3c.dom.Document)
 	 */
 	@Override
-	public KrameriusModel getKrameriusModel(Document relsExt) {
-		return rawAccess.getKrameriusModel(relsExt);
+	public DigitalObjectModel getDigitalObjectModel(Document relsExt) {
+		return rawAccess.getDigitalObjectModel(relsExt);
 	}
 
 	/*
@@ -194,8 +194,8 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 	 * (java.lang.String)
 	 */
 	@Override
-	public KrameriusModel getKrameriusModel(String uuid) throws IOException {
-		return rawAccess.getKrameriusModel(uuid);
+	public DigitalObjectModel getDigitalObjectModel(String uuid) throws IOException {
+		return rawAccess.getDigitalObjectModel(uuid);
 	}
 
 	/*
@@ -539,6 +539,11 @@ public class SecuredFedoraAccessImpl implements FedoraAccess {
 	@Override
 	public String getOcr(String uuid) {
 		return rawAccess.getOcr(uuid);
+	}
+
+	@Override
+	public List<String> getChildrenUuid(String uuid, DigitalObjectModel parentModel, DigitalObjectModel childModel) throws IOException {
+		return rawAccess.getChildrenUuid(uuid, parentModel, childModel);
 	}
 
 }

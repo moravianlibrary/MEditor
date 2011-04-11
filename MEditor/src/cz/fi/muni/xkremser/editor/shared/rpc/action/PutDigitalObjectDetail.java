@@ -31,7 +31,7 @@ import com.gwtplatform.annotation.In;
 import com.gwtplatform.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -42,7 +42,7 @@ public class PutDigitalObjectDetail extends UnsecuredActionImpl<PutDigitalObject
 
 	/** The detail. */
 	@In(1)
-	private AbstractDigitalObjectDetail detail;
+	private DigitalObjectDetail detail;
 
 	/** The saved. */
 	@Out(1)
