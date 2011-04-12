@@ -74,6 +74,8 @@ public class DigitalObjectDetail implements IsSerializable {
 
 	private DublinCore dc;
 
+	private String firstPageURL;
+
 	private ModsCollectionClient mods;
 
 	private DigitalObjectModel model;
@@ -317,6 +319,14 @@ public class DigitalObjectDetail implements IsSerializable {
 
 	public void setAllItems(List<List<DigitalObjectDetail>> allItems) {
 		this.allItems = allItems;
+	}
+
+	public String getFirstPageURL() {
+		return firstPageURL;
+	}
+
+	public void setFirstPageURL(String firstPageURL) {
+		this.firstPageURL = firstPageURL;
 	}
 
 }

@@ -520,6 +520,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String descriptionSingle();
 
   /**
+   * Translated "First Page".
+   * 
+   * @return translated "First Page"
+   */
+  @DefaultStringValue("First Page")
+  @Key("doFirstPage")
+  String doFirstPage();
+
+  /**
    * Translated "Digital object information".
    * 
    * @return translated "Digital object information"
@@ -608,60 +617,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("is running")
   @Key("isRunning")
   String isRunning();
-
-  /**
-   * Translated "lang.);".
-   * 
-   * @return translated "lang.);"
-   */
-  @DefaultStringValue("lang.);")
-  @Key("labels.put(DigitalObjectModel.INTERNALPART.getValue(),")
-  String labels_put_DigitalObjectModel_INTERNALPART_getValue___();
-
-  /**
-   * Translated "lang.);".
-   * 
-   * @return translated "lang.);"
-   */
-  @DefaultStringValue("lang.);")
-  @Key("labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(),")
-  String labels_put_DigitalObjectModel_MONOGRAPHUNIT_getValue___();
-
-  /**
-   * Translated "lang.);".
-   * 
-   * @return translated "lang.);"
-   */
-  @DefaultStringValue("lang.);")
-  @Key("labels.put(DigitalObjectModel.PAGE.getValue(),")
-  String labels_put_DigitalObjectModel_PAGE_getValue___();
-
-  /**
-   * Translated "lang.());".
-   * 
-   * @return translated "lang.());"
-   */
-  @DefaultStringValue("lang.());")
-  @Key("labels.put(DigitalObjectModel.PERIODICAL.getValue(),")
-  String labels_put_DigitalObjectModel_PERIODICAL_getValue___();
-
-  /**
-   * Translated "lang.());".
-   * 
-   * @return translated "lang.());"
-   */
-  @DefaultStringValue("lang.());")
-  @Key("labels.put(DigitalObjectModel.PERIODICALITEM.getValue(),")
-  String labels_put_DigitalObjectModel_PERIODICALITEM_getValue___();
-
-  /**
-   * Translated "lang.());".
-   * 
-   * @return translated "lang.());"
-   */
-  @DefaultStringValue("lang.());")
-  @Key("labels.put(DigitalObjectModel.PERIODICALVOLUME.getValue(),")
-  String labels_put_DigitalObjectModel_PERIODICALVOLUME_getValue___();
 
   /**
    * Translated "Last Name".
@@ -806,6 +761,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Do you want to try it again?")
   @Key("mesTryAgain")
   String mesTryAgain();
+
+  /**
+   * Translated "Monograph".
+   * 
+   * @return translated "Monograph"
+   */
+  @DefaultStringValue("Monograph")
+  @Key("monograph")
+  String monograph();
 
   /**
    * Translated "Monograph Unit".

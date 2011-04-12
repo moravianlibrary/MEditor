@@ -115,6 +115,7 @@ public class DigitalObjectHandlerImpl implements DigitalObjectHandler {
 		detail.setMods(handleMods(uuid));
 		detail.setFoxml(handleFOXML(uuid));
 		detail.setOcr(handleOCR(uuid));
+		detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
 		return detail;
 	}
 

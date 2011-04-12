@@ -280,8 +280,12 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void addDigitalObject(final String uuid, final DublinCore dc, final ModsCollectionClient mods, String foxml, String ocr, boolean refresh,
-			DigitalObjectModel model) {
+	public void addDigitalObject(final String uuid, DigitalObjectDetail detail, boolean refresh) {
+		final DublinCore dc = detail.getDc();
+		final ModsCollectionClient mods = detail.getMods();
+		String foxml = detail.getFoxml();
+		String ocr = detail.getOcr();
+		DigitalObjectModel model = detail.getModel();
 
 		final TabSet topTabSet = new TabSet();
 		topTabSet.setTabBarPosition(Side.TOP);
@@ -304,37 +308,41 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		}
 		makeTuple(uuid, topTabSet);
 
-		List<Tab> containerTabs = new ArrayList<Tab>();
 		List<DigitalObjectModel> models = NamedGraphModel.getChildren(model);
-		Map<String, String> labels = new HashMap<String, String>();
-		labels.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalparts());
-		labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunits());
-		labels.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitems());
-		labels.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolumes());
-		int i = 0;
-		for (DigitalObjectModel md : models) {
-			Tab containerTab = null;
-			if (md.equals(DigitalObjectModel.PAGE)) {
-				containerTab = new Tab(lang.pages(), "pieces/16/pawn_red.png");
-				containerTab.setWidth(lang.pages().length() * 6 + 35);
-			} else {
-				containerTab = new Tab(labels.get(md.getValue()), "pieces/16/cubes_" + (i == 0 ? "green" : i == 1 ? "blue" : "yellow") + ".png");
-				containerTab.setWidth(((labels.get(md.getValue())).length() * 6) + 30);
+		List<Tab> containerTabs = new ArrayList<Tab>();
+		if (models != null) { // has any containers (if not, it is a page)
+			Map<String, String> labels = new HashMap<String, String>();
+			labels.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalparts());
+			labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunits());
+			labels.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitems());
+			labels.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolumes());
+			int i = 0;
+			for (DigitalObjectModel md : models) {
+				Tab containerTab = null;
+				if (md.equals(DigitalObjectModel.PAGE)) {
+					containerTab = new Tab(lang.pages(), "pieces/16/pawn_red.png");
+					containerTab.setWidth(lang.pages().length() * 6 + 35);
+				} else {
+					containerTab = new Tab(labels.get(md.getValue()), "pieces/16/cubes_" + (i == 0 ? "green" : i == 1 ? "blue" : "yellow") + ".png");
+					containerTab.setWidth(((labels.get(md.getValue())).length() * 6) + 30);
+				}
+				containerTab.setAttribute(TAB_INITIALIZED, false);
+				containerTab.setAttribute(ID_MODEL, md.getValue());
+				containerTabs.add(containerTab);
+				i++;
 			}
-			containerTab.setAttribute(TAB_INITIALIZED, false);
-			containerTab.setAttribute(ID_MODEL, md.getValue());
-			containerTabs.add(containerTab);
-			i++;
+			itemTabs.put(topTabSet, containerTabs);
 		}
-		itemTabs.put(topTabSet, containerTabs);
 		Map<String, String> labelsSingular = new HashMap<String, String>();
 		labelsSingular.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
+		labelsSingular.put(DigitalObjectModel.MONOGRAPH.getValue(), lang.monograph());
 		labelsSingular.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
 		labelsSingular.put(DigitalObjectModel.PAGE.getValue(), lang.page());
 		labelsSingular.put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
 		labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
 		labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
-		final Tab infoTab = new InfoTab("Info", "pieces/16/cubes_all.png", dc, lang, labelsSingular.get(model.getValue()));
+		String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
+		final Tab infoTab = new InfoTab("Info", "pieces/16/cubes_all.png", dc, lang, labelsSingular.get(model.getValue()), model, previewPID);
 
 		final Tab dublinTab = new Tab("DC", "pieces/16/piece_green.png");
 		dublinTab.setAttribute(TAB_INITIALIZED, false);
@@ -373,6 +381,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			ocrContent.put(topTabSet, ocrItem);
 
 			thumbTab = new Tab(lang.thumbnail(), "pieces/16/pawn_yellow.png");
+			thumbTab.setWidth((lang.thumbnail().length() * 6) + 30);
 			final Image full2 = new Image("images/thumbnail/" + uuid);
 			final Img image = new Img("thumbnail/" + uuid, full2.getWidth(), full2.getHeight());
 			image.setAnimateTime(500);
@@ -391,6 +400,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			});
 			thumbTab.setPane(image);
 			fullTab = new Tab(lang.fullImg(), "pieces/16/pawn_yellow.png");
+			fullTab.setWidth((lang.fullImg().length() * 6) + 30);
 			fullTab.setAttribute(ID_TAB, ID_FULL);
 		}
 

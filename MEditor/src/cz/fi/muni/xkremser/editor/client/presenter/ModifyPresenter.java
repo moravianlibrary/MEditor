@@ -65,7 +65,6 @@ import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModalWindow;
@@ -147,7 +146,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		 */
 		public Canvas getEditor(String text, String uuid, boolean common);
 
-		void addDigitalObject(String uuid, DublinCore dc, ModsCollectionClient mods, String foxml, String ocr, boolean refresh, DigitalObjectModel krameriusModel);
+		void addDigitalObject(String uuid, DigitalObjectDetail detail, boolean refresh);
 
 		void addStream(Record[] items, String uuid, DigitalObjectModel model);
 
@@ -438,14 +437,14 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 *          the refresh
 	 * @return the object
 	 */
-	private void getObject(boolean refresh) {
+	private void getObject(final boolean refresh) {
 		final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, refresh, null);
 		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
 			@Override
 			public void callback(GetDigitalObjectDetailResult result) {
 				DigitalObjectDetail detail = result.getDetail();
 
-				getView().addDigitalObject(uuid, detail.getDc(), detail.getMods(), detail.getFoxml(), detail.getOcr(), result.isRefresh(), detail.getModel());
+				getView().addDigitalObject(uuid, detail, refresh);
 				String title = detail.getDc().getTitle() == null ? "no title" : detail.getDc().getTitle().get(0);
 				DigitalObjectOpenedEvent
 						.fire(ModifyPresenter.this, true, new RecentlyModifiedItem(uuid, title, "", detail.getModel()), result.getDetail().getRelated());
