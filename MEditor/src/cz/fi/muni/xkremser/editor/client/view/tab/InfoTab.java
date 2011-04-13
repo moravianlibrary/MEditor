@@ -26,7 +26,7 @@ public class InfoTab extends Tab {
 		String imgTitle = isPage ? lang.fullImg() : lang.doFirstPage();
 		HTMLFlow prev = new HTMLFlow("<b>" + imgTitle + ":</b>");
 		prev.setExtraSpace(5);
-		HTMLFlow img = new HTMLFlow("<img style='border: 3px solid;max-height: 700px;max-width: 700px;' src='./images/full/" + (isPage ? "" : "uuid:")
+		HTMLFlow img = new HTMLFlow("<img style='border: 3px solid;max-height: 300px;max-width: 300px;' src='./images/full/" + (isPage ? "" : "uuid:")
 				+ firstPageURL + "' />");
 		layout.setMembers(info, pid, tit, typ, prev, img);
 

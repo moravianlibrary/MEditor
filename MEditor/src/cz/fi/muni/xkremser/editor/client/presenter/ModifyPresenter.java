@@ -67,6 +67,7 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
@@ -582,7 +583,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						DublinCore dc = itemList.get(i).getDc();
 						String title = dc.getTitle() == null ? lang.noTitle() : dc.getTitle().get(0);
 						String id = dc.getIdentifier() == null ? lang.noTitle() : dc.getIdentifier().get(0);
-						items[i] = new PageRecord(title, id, id);
+						items[i] = new ContainerRecord(title, id, DigitalObjectModel.PAGE.equals(model) ? id : model.getIcon());
 					}
 				}
 

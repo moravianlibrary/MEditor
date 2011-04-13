@@ -59,8 +59,8 @@ public class NamedGraphModel implements IsSerializable {
 	static {
 		/** The MONOGRAPH. */
 		putRelationship(MONOGRAPH, hasPage, PAGE);
-		putRelationship(MONOGRAPH, hasUnit, MONOGRAPHUNIT);
 		putRelationship(MONOGRAPH, hasIntCompPart, INTERNALPART);
+		putRelationship(MONOGRAPH, hasUnit, MONOGRAPHUNIT);
 		putRelationship(MONOGRAPHUNIT, hasPage, PAGE);
 		putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);
 		putRelationship(INTERNALPART, hasPage, PAGE);
@@ -68,8 +68,8 @@ public class NamedGraphModel implements IsSerializable {
 		putRelationship(PERIODICAL, hasPage, PAGE);
 		putRelationship(PERIODICAL, hasVolume, PERIODICALVOLUME);
 		putRelationship(PERIODICALVOLUME, hasPage, PAGE);
-		putRelationship(PERIODICALVOLUME, hasItem, PERIODICALITEM);
 		putRelationship(PERIODICALVOLUME, hasIntCompPart, INTERNALPART);
+		putRelationship(PERIODICALVOLUME, hasItem, PERIODICALITEM);
 		putRelationship(PERIODICALITEM, hasPage, PAGE);
 		putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
 	}

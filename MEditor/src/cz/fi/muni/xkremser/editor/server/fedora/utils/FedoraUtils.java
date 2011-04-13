@@ -50,9 +50,8 @@ import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -105,15 +104,9 @@ public class FedoraUtils {
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
-			// ??
-			// e.printStackTrace();
-			// pids.add(e.toString());
 		}
 		return pids;
 	}
-
-	// http://localhost:8080/fedora/risearch?type=triples&lang=spo&format=N-Triples&limit=20&query=*%20*%20%3Cinfo:fedora/uuid:4a8a8630-af36-11dd-ae9c-000d606f5dc6%3E
-	// http://localhost:8080/fedora/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20*
 
 	/**
 	 * Gets the subject pids.
@@ -161,68 +154,6 @@ public class FedoraUtils {
 	}
 
 	/**
-	 * The main method.
-	 * 
-	 * @param args
-	 *          the arguments
-	 */
-	public static void main(String[] args) {
-		getSubjectPids("uuid:4a8a8630-af36-11dd-ae9c-000d606f5dc6");
-	}
-
-	/**
-	 * Fill first page pid.
-	 * 
-	 * @param pids
-	 *          the pids
-	 * @param models
-	 *          the models
-	 * @return true, if successful
-	 */
-	public static boolean fillFirstPagePid(ArrayList<String> pids, ArrayList<String> models) {
-
-		String pid = pids.get(pids.size() - 1);
-		try {
-			String command = configuration.getFedoraHost() + "/get/uuid:" + pid + "/RELS-EXT";
-			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
-			Document contentDom = XMLUtils.parseDocument(is);
-			XPathFactory factory = XPathFactory.newInstance();
-			XPath xpath = factory.newXPath();
-			XPathExpression expr = xpath.compile("/RDF/Description/*");
-			NodeList nodes = (NodeList) expr.evaluate(contentDom, XPathConstants.NODESET);
-			for (int i = 0; i < nodes.getLength(); i++) {
-				Node childnode = nodes.item(i);
-				String nodeName = childnode.getNodeName();
-				if (nodeName.contains("hasPage") || nodeName.contains("isOnPage")) {
-					if (childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().contains("uuid:")) {
-						pids.add(childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("uuid:")[1]);
-					} else {
-						// obcas import neni v poradku a chybi uuid:. zustaneme u
-						// info:fedora/
-						pids.add(childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("info:fedora/")[1]);
-					}
-					models.add("page");
-					return true;
-				} else if (nodeName.contains("hasItem") || nodeName.contains("hasVolume") || nodeName.contains("hasUnit")) {
-					if (childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().contains("uuid:")) {
-						pids.add(childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("uuid:")[1]);
-					} else {
-						// obcas import neni v poradku a chybi uuid:. zustaneme u
-						// info:fedora/
-						pids.add(childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("info:fedora/")[1]);
-					}
-					models.add(DigitalObjectModel.toString(RDFModels.convertRDFToModel(nodeName)));
-					return FedoraUtils.fillFirstPagePid(pids, models);
-				}
-			}
-
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-		return false;
-	}
-
-	/**
 	 * Find first page pid.
 	 * 
 	 * @param pid
@@ -243,10 +174,9 @@ public class FedoraUtils {
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node childnode = nodes.item(i);
 				String nodeName = childnode.getNodeName();
-				if (nodeName.contains("hasPage")) {
+				if (nodeName.contains(FedoraRelationship.hasPage.getStringRepresentation()) || nodeName.contains(FedoraRelationship.isOnPage.getStringRepresentation())) {
 					return childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("uuid:")[1];
 				} else if (!nodeName.contains("hasModel") && childnode.hasAttributes() && childnode.getAttributes().getNamedItem("rdf:resource") != null) {
-
 					pids.add(childnode.getAttributes().getNamedItem("rdf:resource").getNodeValue().split("/")[1]);
 				}
 			}

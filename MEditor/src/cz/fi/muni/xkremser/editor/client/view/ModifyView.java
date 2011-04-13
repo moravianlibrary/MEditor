@@ -621,8 +621,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			tileGrid.setTileWidth(90);
 			tileGrid.setTileHeight(135);
 		} else {
-			tileGrid.setTileWidth(115);
-			tileGrid.setTileHeight(125);
+			tileGrid.setTileWidth(105);
+			tileGrid.setTileHeight(115);
 		}
 		tileGrid.setHeight100();
 		tileGrid.setWidth100();
@@ -773,10 +773,10 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		if (pages) {
 			pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');
 			pictureField.setImageWidth(80);
-			pictureField.setImageHeight(120);
-		} else {
-			pictureField.setImageWidth(110);
 			pictureField.setImageHeight(110);
+		} else {
+			pictureField.setImageWidth(95);
+			pictureField.setImageHeight(95);
 		}
 
 		DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
@@ -993,7 +993,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 																																						 * openItem
 																																						 */, saveItem, refreshItem, downloadItem, removeItem, publishItem);
 		return menu;
-
 	}
 
 	@Override
@@ -1014,6 +1013,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		topTabSet.setTabPane(topTabSet.getSelectedTab().getID(), grid);
 		if (items != null) {
 			grid.setData(items);
+		} else {
+			grid.setData(new ContainerRecord[] {});
 		}
 		toAdd.setPane(grid);
 		toAdd.setAttribute(TAB_INITIALIZED, true);
