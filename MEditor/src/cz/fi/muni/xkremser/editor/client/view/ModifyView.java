@@ -941,11 +941,13 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				});
 
 				HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
-				label.setExtraSpace(15);
+				label.setMargin(5);
+				label.setExtraSpace(10);
 				final DynamicForm form = new DynamicForm();
 				form.setMargin(0);
 				form.setWidth(100);
 				form.setHeight(20);
+				form.setExtraSpace(7);
 
 				final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
 				Button publish = new Button();
@@ -1026,7 +1028,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				hLayout.setMembersMargin(10);
 				hLayout.addMember(publish);
 				hLayout.addMember(cancel);
-				hLayout.setMargin(10);
+				hLayout.setMargin(5);
 				form.setFields(versionable);
 				winModal.addItem(label);
 				winModal.addItem(form);
