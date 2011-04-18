@@ -514,7 +514,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public List<String> getChildrenUuid(String uuid, DigitalObjectModel parentModel, DigitalObjectModel childModel) throws IOException {
 		FedoraRelationship relation = NamedGraphModel.getRelationship(parentModel, childModel);
-		return getUuids(uuid, relation.getXPathNamespaceAwareQuery());
+		return getUuids(uuid, relation.getXPathNamespaceAwareQuery() + FedoraRelationship.ATTR_RESOURCE_SUFIX);
 	}
 
 	/*

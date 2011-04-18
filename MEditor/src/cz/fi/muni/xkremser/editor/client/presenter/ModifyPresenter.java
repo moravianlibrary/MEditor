@@ -533,8 +533,8 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 	 * (cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail)
 	 */
 	@Override
-	public void onSaveDigitalObject(DigitalObjectDetail digitalObject) {
-		dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject), new DispatchCallback<PutDigitalObjectDetailResult>() {
+	public void onSaveDigitalObject(DigitalObjectDetail digitalObject, boolean versionable) {
+		dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject, versionable), new DispatchCallback<PutDigitalObjectDetailResult>() {
 			@Override
 			public void callback(PutDigitalObjectDetailResult result) {
 				if (!result.isSaved()) {

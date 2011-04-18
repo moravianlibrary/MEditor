@@ -183,18 +183,26 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			throw new ActionException(e);
 		}
 
+		boolean shouldReindex = false;
 		if (write) {
 			DigitalObjectDetail detail = action.getDetail();
-			modifyRelations(detail);
-			if (detail.isDcChanged())
-				modifyDublinCore(detail);
-			if (detail.isModsChanged())
-				modifyMods(detail);
-			if (detail.isOcrChanged())
-				modifyOcr(detail);
-			reindex(detail.getUuid());
+			shouldReindex = modifyRelations(detail, action.isVersioning());
+			if (detail.isDcChanged()) {
+				modifyDublinCore(detail, action.isVersioning());
+				shouldReindex = true;
+			}
+			if (detail.isModsChanged()) {
+				modifyMods(detail, action.isVersioning());
+				shouldReindex = true;
+			}
+			if (detail.isOcrChanged()) {
+				modifyOcr(detail, action.isVersioning());
+				shouldReindex = true;
+			}
+			if (shouldReindex) {
+				reindex(detail.getUuid());
+			}
 		}
-		// reindex(detail.getUuid());
 		return new PutDigitalObjectDetailResult(write);
 	}
 
@@ -215,11 +223,9 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		try {
 			RESTHelper.openConnection(url, login, password);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Unable to reindex", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Unable to reindex", e);
 		}
 	}
 
@@ -264,7 +270,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 				parent.removeChild(nodes.item(i));
 			}
 		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+			LOGGER.error("Unable to remove elements", e);
 		}
 	}
 
@@ -287,11 +293,12 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * 
 	 * @param detail
 	 *          the detail
+	 * @param versionable
 	 */
-	private void modifyRelations(DigitalObjectDetail detail) {
+	private boolean modifyRelations(DigitalObjectDetail detail, boolean versionable) {
 		StringBuilder sb = new StringBuilder();
 		if (detail.getAllItems() == null)
-			return;
+			return false;
 		Document relsExt = null;
 		StringBuilder contentBuilder = new StringBuilder();
 		try {
@@ -300,32 +307,26 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			e.printStackTrace();
 		}
 		try {
-			String hasPageXPath = "/rdf:RDF/rdf:Description/kramerius:hasPage";
-			String hasUnitXPath = "/rdf:RDF/rdf:Description/kramerius:hasUnit";
-			String hasVolumeXPath = "/rdf:RDF/rdf:Description/kramerius:hasVolume";
-			String hasItemXPath = "/rdf:RDF/rdf:Description/kramerius:hasItem";
-			String hasIntCompPartXPath = "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart";
-			String hasIsOnPageXPath = "/rdf:RDF/rdf:Description/kramerius:isOnPage";
-			String paretnStr = "/rdf:RDF/rdf:Description";
-
-			XPathExpression expr1 = makeNSAwareXpath().compile(paretnStr);
-			XPathExpression expr2 = makeNSAwareXpath().compile(hasPageXPath);
-			XPathExpression expr3 = makeNSAwareXpath().compile(hasUnitXPath);
-			XPathExpression expr4 = makeNSAwareXpath().compile(hasVolumeXPath);
-			XPathExpression expr5 = makeNSAwareXpath().compile(hasItemXPath);
-			XPathExpression expr6 = makeNSAwareXpath().compile(hasIntCompPartXPath);
-			XPathExpression expr7 = makeNSAwareXpath().compile(hasIsOnPageXPath);
-			NodeList nodes1 = (NodeList) expr1.evaluate(relsExt, XPathConstants.NODESET);
+			XPathExpression all = makeNSAwareXpath().compile("/rdf:RDF/rdf:Description");
+			NodeList nodes1 = (NodeList) all.evaluate(relsExt, XPathConstants.NODESET);
 			Element parent = null;
 			if (nodes1.getLength() != 0) {
 				parent = (Element) nodes1.item(0);
 			}
-			removeElements(parent, relsExt, expr2);
-			removeElements(parent, relsExt, expr3);
-			removeElements(parent, relsExt, expr4);
-			removeElements(parent, relsExt, expr5);
-			removeElements(parent, relsExt, expr6);
-			removeElements(parent, relsExt, expr7);
+
+			int modelId = 0;
+			boolean changed = false;
+			List<DigitalObjectModel> models = NamedGraphModel.getChildren(detail.getModel());
+			for (List<DigitalObjectDetail> data : detail.getAllItems()) {
+				if (data != null) { // is changed
+					changed = true;
+					String xPathString = NamedGraphModel.getRelationship(detail.getModel(), models.get(modelId)).getXPathNamespaceAwareQuery();
+					removeElements(parent, relsExt, makeNSAwareXpath().compile(xPathString));
+				}
+				modelId++;
+			}
+			if (!changed)
+				return false;
 
 			TransformerFactory transFactory = TransformerFactory.newInstance();
 			Transformer transformer = null;
@@ -353,9 +354,8 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 
 			// container structure
 			int i = 0;
-			List<DigitalObjectModel> models = NamedGraphModel.getChildren(detail.getModel());
 			for (List<DigitalObjectDetail> data : detail.getAllItems()) {
-				if (data != null) {
+				if (data != null) { // is changed
 					String relation = RDFModels.convertToRdf(models.get(i));
 					for (DigitalObjectDetail obj : data) {
 						sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation).append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21).append(obj.getUuid())
@@ -368,14 +368,16 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			contentBuilder.append(head).append(sb).append(tail);
 
 		} catch (XPathExpressionException e) {
+			LOGGER.warn("XPath failure", e);
 		}
 
-		String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/RELS-EXT?versionable=false";
+		String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/RELS-EXT?versionable=" + (versionable ? "true" : "false");
 		String usr = configuration.getFedoraLogin();
 		String pass = configuration.getFedoraPassword();
 		String content = contentBuilder.toString();
 
-		// RESTHelper.put(url, content, usr, pass);
+		RESTHelper.put(url, content, usr, pass);
+		return true;
 	}
 
 	/**
@@ -401,8 +403,9 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * 
 	 * @param detail
 	 *          the detail
+	 * @param versionable
 	 */
-	private void modifyDublinCore(DigitalObjectDetail detail) {
+	private void modifyDublinCore(DigitalObjectDetail detail, boolean versionable) {
 		DublinCore dc = null;
 		if ((dc = detail.getDc()) != null) {
 			StringBuilder contentBuilder = new StringBuilder();
@@ -423,7 +426,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			appendDCElement(contentBuilder, dc.getTitle(), DublinCoreConstants.DC_TITLE);
 			appendDCElement(contentBuilder, dc.getType(), DublinCoreConstants.DC_TYPE);
 			contentBuilder.append(DC_TAIL);
-			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/DC?versionable=false";
+			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/DC?versionable=" + (versionable ? "true" : "false");
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			String content = contentBuilder.toString();
@@ -438,10 +441,10 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * @param detail
 	 *          the detail
 	 */
-	private void modifyMods(DigitalObjectDetail detail) {
+	private void modifyMods(DigitalObjectDetail detail, boolean versionable) {
 		if (detail.getMods() != null) {
 			ModsCollectionClient modsCollection = detail.getMods();
-			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=false";
+			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/BIBLIO_MODS?versionable=" + (versionable ? "true" : "false");
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			String content = BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
@@ -455,10 +458,11 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 	 * 
 	 * @param detail
 	 *          the detail
+	 * @param versionable
 	 */
-	private void modifyOcr(DigitalObjectDetail detail) {
+	private void modifyOcr(DigitalObjectDetail detail, boolean versionable) {
 		if (detail.getOcr() != null) {
-			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=false";
+			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=" + (versionable ? "true" : "false");
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
 			RESTHelper.put(url, detail.getOcr(), usr, pass);

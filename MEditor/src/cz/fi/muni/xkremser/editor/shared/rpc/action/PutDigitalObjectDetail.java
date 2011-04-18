@@ -44,6 +44,9 @@ public class PutDigitalObjectDetail extends UnsecuredActionImpl<PutDigitalObject
 	@In(1)
 	private DigitalObjectDetail detail;
 
+	@In(2)
+	private boolean versioning;
+
 	/** The saved. */
 	@Out(1)
 	private boolean saved;

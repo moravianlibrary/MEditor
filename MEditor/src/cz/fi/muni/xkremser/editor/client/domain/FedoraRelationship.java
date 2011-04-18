@@ -39,20 +39,22 @@ public enum FedoraRelationship {
 
 	// our fedora relationship
 	/** The has page. */
-	hasPage(PAGE, "hasPage", "/rdf:RDF/rdf:Description/kramerius:hasPage/@rdf:resource"),
+	hasPage(PAGE, "hasPage", "/rdf:RDF/rdf:Description/kramerius:hasPage"),
 	/** The has volume. */
-	hasVolume(PERIODICALVOLUME, "hasVolume", "/rdf:RDF/rdf:Description/kramerius:hasVolume/@rdf:resource"),
+	hasVolume(PERIODICALVOLUME, "hasVolume", "/rdf:RDF/rdf:Description/kramerius:hasVolume"),
 	/** The has item. */
-	hasItem(PERIODICALITEM, "hasItem", "/rdf:RDF/rdf:Description/kramerius:hasItem/@rdf:resource"),
+	hasItem(PERIODICALITEM, "hasItem", "/rdf:RDF/rdf:Description/kramerius:hasItem"),
 	/** The has unit. */
-	hasUnit(MONOGRAPHUNIT, "hasUnit", "/rdf:RDF/rdf:Description/kramerius:hasUnit/@rdf:resource"),
+	hasUnit(MONOGRAPHUNIT, "hasUnit", "/rdf:RDF/rdf:Description/kramerius:hasUnit"),
 	/** The has internal part. */
-	hasInternalPart(INTERNALPART, "hasInternalPart", "/rdf:RDF/rdf:Description/kramerius:hasInternalPart/@rdf:resource"),
+	hasInternalPart(INTERNALPART, "hasInternalPart", "/rdf:RDF/rdf:Description/kramerius:hasInternalPart"),
 	/** The has int comp part. */
-	hasIntCompPart(INTERNALPART, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart/@rdf:resource"),
+	hasIntCompPart(INTERNALPART, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart"),
 
 	/** The is on page. */
-	isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage/@rdf:resource");
+	isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage");
+
+	public static final String ATTR_RESOURCE_SUFIX = "/@rdf:resource";
 
 	/** The poiting model. */
 	private DigitalObjectModel targetModel;

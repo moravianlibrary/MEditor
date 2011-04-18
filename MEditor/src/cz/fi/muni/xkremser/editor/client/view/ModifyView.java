@@ -53,26 +53,30 @@ import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
-import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
-import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.RichTextEditor;
+import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -118,7 +122,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 
 		void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu);
 
-		void onSaveDigitalObject(final DigitalObjectDetail digitalObject);
+		void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable);
 
 		void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
@@ -920,71 +924,126 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 			@Override
 			public void onClick(final MenuItemClickEvent event) {
-				SC.confirm("Publish digital object", "Are you sure you want to publish the digital object?", new BooleanCallback() {
+				final Window winModal = new Window();
+				winModal.setHeight(130);
+				winModal.setWidth(350);
+				winModal.setCanDragResize(true);
+				winModal.setShowEdges(true);
+				winModal.setTitle(lang.publishName());
+				winModal.setShowMinimizeButton(false);
+				winModal.setIsModal(true);
+				winModal.setShowModalMask(true);
+				winModal.addCloseClickHandler(new CloseClickHandler() {
 					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							DigitalObjectDetail object = new DigitalObjectDetail(model, null);
-							TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-							Tab dcT = dcTab.get(ts);
-							Tab modsT = modsTab.get(ts);
-							TextAreaItem ocrTextItem = null;
-							if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
-								String val = (String) ocrTextItem.getValue();
-								if (!ocrTextContent.get(ocrTextItem).equals(val)) {
-									object.setOcr(val);
-									object.setOcrChanged(true);
-								}
-							} else {
-								object.setOcrChanged(false);
-							}
-							object.setUuid(openedObjectsUuids.get(ts));
-
-							DublinCore changedDC = null;
-							if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-								DCTab dcT_ = (DCTab) dcT;
-								changedDC = dcT_.getDc();
-								object.setDcChanged(true);
-							} else {
-								changedDC = dc;
-								object.setDcChanged(false);
-							}
-							object.setDc(changedDC);
-							ModsCollectionClient changedMods = null;
-							if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-								ModsTab modsT_ = (ModsTab) modsT;
-								changedMods = new ModsCollectionClient();
-								changedMods.setMods(Arrays.asList(modsT_.getMods()));
-								object.setModsChanged(true);
-							} else {
-								changedMods = mods;
-								object.setModsChanged(false);
-							}
-							object.setMods(changedMods);
-							Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
-							if (tilegrids != null) { // structure has been changed, or at
-																				// least opened
-								List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
-								List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
-								for (DigitalObjectModel md : children) {
-									List<DigitalObjectDetail> data = null;
-									TileGrid tg = tilegrids.get(md);
-									if (tg != null && tg.getData() != null) {
-										data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
-										for (Record rec : tg.getData()) {
-											DigitalObjectDetail child = new DigitalObjectDetail();
-											child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
-											data.add(child);
-										}
-									}
-									structure.add(data);
-								}
-								object.setAllItems(structure);
-							}
-							getUiHandlers().onSaveDigitalObject(object);
-						}
+					public void onCloseClick(CloseClientEvent event) {
+						winModal.destroy();
 					}
 				});
+
+				HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
+				label.setExtraSpace(15);
+				final DynamicForm form = new DynamicForm();
+				form.setMargin(0);
+				form.setWidth(100);
+				form.setHeight(20);
+
+				final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
+				Button publish = new Button();
+				publish.setTitle(lang.ok());
+				publish.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event2) {
+
+						DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+						TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+						Tab dcT = dcTab.get(ts);
+						Tab modsT = modsTab.get(ts);
+						TextAreaItem ocrTextItem = null;
+						if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
+							String val = (String) ocrTextItem.getValue();
+							if (!ocrTextContent.get(ocrTextItem).equals(val)) {
+								object.setOcr(val);
+								object.setOcrChanged(true);
+							}
+						} else {
+							object.setOcrChanged(false);
+						}
+						object.setUuid(openedObjectsUuids.get(ts));
+
+						DublinCore changedDC = null;
+						if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+							DCTab dcT_ = (DCTab) dcT;
+							changedDC = dcT_.getDc();
+							object.setDcChanged(true);
+						} else {
+							changedDC = dc;
+							object.setDcChanged(false);
+						}
+						object.setDc(changedDC);
+						ModsCollectionClient changedMods = null;
+						if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+							ModsTab modsT_ = (ModsTab) modsT;
+							changedMods = new ModsCollectionClient();
+							changedMods.setMods(Arrays.asList(modsT_.getMods()));
+							object.setModsChanged(true);
+						} else {
+							changedMods = mods;
+							object.setModsChanged(false);
+						}
+						object.setMods(changedMods);
+						Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
+						if (tilegrids != null) { // structure has been changed, or at
+																			// least opened
+							List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
+							List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
+							for (DigitalObjectModel md : children) {
+								List<DigitalObjectDetail> data = null;
+								TileGrid tg = tilegrids.get(md);
+								if (tg != null && tg.getData() != null) {
+									data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
+									for (Record rec : tg.getData()) {
+										DigitalObjectDetail child = new DigitalObjectDetail();
+										child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
+										data.add(child);
+									}
+								}
+								structure.add(data);
+							}
+							object.setAllItems(structure);
+						}
+						getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
+					}
+				});
+				Button cancel = new Button();
+				cancel.setTitle(lang.cancel());
+				cancel.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event2) {
+						winModal.destroy();
+					}
+				});
+				HLayout hLayout = new HLayout();
+				hLayout.setMembersMargin(10);
+				hLayout.addMember(publish);
+				hLayout.addMember(cancel);
+				hLayout.setMargin(10);
+				form.setFields(versionable);
+				winModal.addItem(label);
+				winModal.addItem(form);
+				winModal.addItem(hLayout);
+
+				winModal.centerInPage();
+				winModal.show();
+
+				// SC.confirm("Publish digital object",
+				// "Are you sure you want to publish the digital object?", new
+				// BooleanCallback() {
+				// @Override
+				// public void execute(Boolean value) {
+				// if (value) {
+				// }
+				// }
+				// });
 			}
 		});
 
