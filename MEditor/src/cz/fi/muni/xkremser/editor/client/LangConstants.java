@@ -43,6 +43,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String all();
 
   /**
+   * Translated "Are you sure you want to publish the digital object?".
+   * 
+   * @return translated "Are you sure you want to publish the digital object?"
+   */
+  @DefaultStringValue("Are you sure you want to publish the digital object?")
+  @Key("areYouSure")
+  String areYouSure();
+
+  /**
    * Translated "Cancel".
    * 
    * @return translated "Cancel"
@@ -844,6 +853,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String noTitle();
 
   /**
+   * Translated "Ok".
+   * 
+   * @return translated "Ok"
+   */
+  @DefaultStringValue("Ok")
+  @Key("ok")
+  String ok();
+
+  /**
    * Translated "Open".
    * 
    * @return translated "Open"
@@ -950,6 +968,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Publish")
   @Key("publishItem")
   String publishItem();
+
+  /**
+   * Translated "Publish digital object".
+   * 
+   * @return translated "Publish digital object"
+   */
+  @DefaultStringValue("Publish digital object")
+  @Key("publishName")
+  String publishName();
 
   /**
    * Translated "Recently modified".
@@ -1103,6 +1130,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Users")
   @Key("users")
   String users();
+
+  /**
+   * Translated "keep also the previous versions".
+   * 
+   * @return translated "keep also the previous versions"
+   */
+  @DefaultStringValue("keep also the previous versions")
+  @Key("versionable")
+  String versionable();
 
   /**
    * Translated "With \"uuid:\" prefix".
