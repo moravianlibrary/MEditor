@@ -79,6 +79,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String closeHoover();
 
   /**
+   * Translated "Create a new object".
+   * 
+   * @return translated "Create a new object"
+   */
+  @DefaultStringValue("Create a new object")
+  @Key("create")
+  String create();
+
+  /**
    * Translated "Created by Jiri Kremser.".
    * 
    * @return translated "Created by Jiri Kremser."
@@ -556,6 +565,42 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String downloadItem();
 
   /**
+   * Translated "barcode".
+   * 
+   * @return translated "barcode"
+   */
+  @DefaultStringValue("barcode")
+  @Key("fbarcode")
+  String fbarcode();
+
+  /**
+   * Translated "Find".
+   * 
+   * @return translated "Find"
+   */
+  @DefaultStringValue("Find")
+  @Key("find")
+  String find();
+
+  /**
+   * Translated "Find by".
+   * 
+   * @return translated "Find by"
+   */
+  @DefaultStringValue("Find by")
+  @Key("findBy")
+  String findBy();
+
+  /**
+   * Translated "Find metadata via protocol Z39.50".
+   * 
+   * @return translated "Find metadata via protocol Z39.50"
+   */
+  @DefaultStringValue("Find metadata via protocol Z39.50")
+  @Key("findMetadata")
+  String findMetadata();
+
+  /**
    * Translated "First Name".
    * 
    * @return translated "First Name"
@@ -563,6 +608,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("First Name")
   @Key("firstName")
   String firstName();
+
+  /**
+   * Translated "title".
+   * 
+   * @return translated "title"
+   */
+  @DefaultStringValue("title")
+  @Key("ftitle")
+  String ftitle();
 
   /**
    * Translated "Full Image".
@@ -1042,6 +1096,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String requests();
 
   /**
+   * Translated "Results".
+   * 
+   * @return translated "Results"
+   */
+  @DefaultStringValue("Results")
+  @Key("results")
+  String results();
+
+  /**
    * Translated "Role".
    * 
    * @return translated "Role"
@@ -1085,6 +1148,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Save")
   @Key("saveItem")
   String saveItem();
+
+  /**
+   * Translated "Show".
+   * 
+   * @return translated "Show"
+   */
+  @DefaultStringValue("Show")
+  @Key("show")
+  String show();
 
   /**
    * Translated "Show only objects modified by".
