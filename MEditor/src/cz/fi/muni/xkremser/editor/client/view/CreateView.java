@@ -98,9 +98,9 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
+import cz.fi.muni.xkremser.editor.client.presenter.CreatePresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.CreateView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
@@ -111,7 +111,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 /**
  * The Class ModifyView.
  */
-public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
+public class CreateView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
 	private final LangConstants lang;
 
 	/**
@@ -230,7 +230,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	 * Instantiates a new modify view.
 	 */
 	@Inject
-	public ModifyView(LangConstants lang) {
+	public CreateView(LangConstants lang) {
 		this.lang = lang;
 		layout = new VLayout();
 		// layout.addMember(new Label("working"));
@@ -671,7 +671,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		pasteItem.setEnableIfCondition(new MenuItemIfFunction() {
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return ModifyView.this.clipboard != null && ModifyView.this.clipboard.length > 0;
+				return CreateView.this.clipboard != null && CreateView.this.clipboard.length > 0;
 			}
 		});
 
@@ -1014,7 +1014,6 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 							object.setAllItems(structure);
 						}
 						getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
-						winModal.destroy();
 					}
 				});
 				Button cancel = new Button();

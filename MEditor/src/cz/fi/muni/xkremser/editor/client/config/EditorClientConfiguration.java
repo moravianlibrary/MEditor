@@ -33,7 +33,7 @@ package cz.fi.muni.xkremser.editor.client.config;
 public abstract class EditorClientConfiguration {
 
 	/**
-	 * The Class Constants.
+	 * The Class ServerConstants.
 	 */
 	public static class Constants {
 

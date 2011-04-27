@@ -28,7 +28,7 @@ package cz.fi.muni.xkremser.editor.client.util;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Constants.
+ * The Class ServerConstants.
  */
 public class Constants {
 
@@ -55,6 +55,8 @@ public class Constants {
 
 	/** The Constant URL_PARAM_ACTION_MODIFY. */
 	public static final String URL_PARAM_ACTION_MODIFY = "modify";
+
+	public static final String URL_PARAM_CODE = "code";
 
 	// db
 	/** The Constant TABLE_INPUT_QUEUE_NAME. */
@@ -172,5 +174,18 @@ public class Constants {
 	public static final String RELS_EXT_LAST_ELEMENT = "</rdf:Description>";
 
 	public static final char SESSION_EXPIRED_FLAG = '#';
+
+	/**
+	 * The Enum SEARCH_FIELD.
+	 */
+	public static enum SEARCH_FIELD {
+
+		/** The SYSNO. */
+		SYSNO,
+		/** The BAR. */
+		BAR,
+		/** The TITLE. */
+		TITLE
+	}
 
 }

@@ -54,6 +54,11 @@ public class NameTokens {
 	/** The Constant MODIFY. */
 	public static final String MODIFY = "modify";
 
+	/** The Constant MODIFY. */
+	public static final String CREATE = "create";
+
+	public static final String FIND_METADATA = "findMetadata";
+
 	/** The Constant USERS. */
 	public static final String USERS = "users";
 

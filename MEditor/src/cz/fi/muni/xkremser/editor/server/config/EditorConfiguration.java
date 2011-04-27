@@ -39,9 +39,9 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 public abstract class EditorConfiguration {
 
 	/**
-	 * The Class Constants.
+	 * The Class ServerConstants.
 	 */
-	public static class Constants {
+	public static class ServerConstants {
 
 		/** The Constant UNDEF. */
 		public static final Integer UNDEF = new Integer(-1);
@@ -213,7 +213,7 @@ public abstract class EditorConfiguration {
 	 * @return the client configuration
 	 */
 	public Configuration getClientConfiguration() {
-		return getConfiguration().subset(Constants.GUI_CONFIGURATION_PPREFIX);
+		return getConfiguration().subset(ServerConstants.GUI_CONFIGURATION_PPREFIX);
 	}
 
 	/**
@@ -222,7 +222,7 @@ public abstract class EditorConfiguration {
 	 * @return the show input queue
 	 */
 	public boolean getShowInputQueue() {
-		return getConfiguration().getBoolean(Constants.GUI_SHOW_INPUT_QUEUE, Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
+		return getConfiguration().getBoolean(ServerConstants.GUI_SHOW_INPUT_QUEUE, ServerConstants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
 	}
 
 	/**
@@ -231,7 +231,7 @@ public abstract class EditorConfiguration {
 	 * @return the scan input queue path
 	 */
 	public String getScanInputQueuePath() {
-		return getConfiguration().getString(Constants.INPUT_QUEUE);
+		return getConfiguration().getString(ServerConstants.INPUT_QUEUE);
 	}
 
 	/**
@@ -240,7 +240,7 @@ public abstract class EditorConfiguration {
 	 * @return the z3950 profile
 	 */
 	public String getZ3950Profile() {
-		return getConfiguration().getString(Constants.Z3950_PROFILE, Constants.Z3950_PROFILE_DEFAULT);
+		return getConfiguration().getString(ServerConstants.Z3950_PROFILE, ServerConstants.Z3950_PROFILE_DEFAULT);
 	}
 
 	/**
@@ -249,7 +249,7 @@ public abstract class EditorConfiguration {
 	 * @return the z3950 host
 	 */
 	public String getZ3950Host() {
-		return getConfiguration().getString(Constants.Z3950_HOST);
+		return getConfiguration().getString(ServerConstants.Z3950_HOST);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public abstract class EditorConfiguration {
 	 * @return the z3950 port
 	 */
 	public String getZ3950Port() {
-		return getConfiguration().getString(Constants.Z3950_PORT);
+		return getConfiguration().getString(ServerConstants.Z3950_PORT);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public abstract class EditorConfiguration {
 	 * @return the z3950 base
 	 */
 	public String getZ3950Base() {
-		return getConfiguration().getString(Constants.Z3950_BASE);
+		return getConfiguration().getString(ServerConstants.Z3950_BASE);
 	}
 
 	/**
@@ -276,7 +276,7 @@ public abstract class EditorConfiguration {
 	 * @return the z3950 bar length
 	 */
 	public Integer getZ3950BarLength() {
-		return getConfiguration().getInteger(Constants.Z3950_BAR_LENGTH, Constants.UNDEF);
+		return getConfiguration().getInteger(ServerConstants.Z3950_BAR_LENGTH, ServerConstants.UNDEF);
 	}
 
 	/**
@@ -285,7 +285,7 @@ public abstract class EditorConfiguration {
 	 * @return the kramerius host
 	 */
 	public String getKrameriusHost() {
-		return getConfiguration().getString(Constants.KRAMERIUS_HOST, null);
+		return getConfiguration().getString(ServerConstants.KRAMERIUS_HOST, null);
 	}
 
 	/**
@@ -294,7 +294,7 @@ public abstract class EditorConfiguration {
 	 * @return the kramerius login
 	 */
 	public String getKrameriusLogin() {
-		return getConfiguration().getString(Constants.KRAMERIUS_LOGIN, null);
+		return getConfiguration().getString(ServerConstants.KRAMERIUS_LOGIN, null);
 	}
 
 	/**
@@ -303,7 +303,7 @@ public abstract class EditorConfiguration {
 	 * @return the kramerius password
 	 */
 	public String getKrameriusPassword() {
-		return getConfiguration().getString(Constants.KRAMERIUS_PASSWORD, null);
+		return getConfiguration().getString(ServerConstants.KRAMERIUS_PASSWORD, null);
 	}
 
 	/**
@@ -312,7 +312,7 @@ public abstract class EditorConfiguration {
 	 * @return the fedora host
 	 */
 	public String getFedoraHost() {
-		return getConfiguration().getString(Constants.FEDORA_HOST, null);
+		return getConfiguration().getString(ServerConstants.FEDORA_HOST, null);
 	}
 
 	/**
@@ -321,7 +321,7 @@ public abstract class EditorConfiguration {
 	 * @return the fedora login
 	 */
 	public String getFedoraLogin() {
-		return getConfiguration().getString(Constants.FEDORA_LOGIN, Constants.FEDORA_LOGIN_DEFAULT);
+		return getConfiguration().getString(ServerConstants.FEDORA_LOGIN, ServerConstants.FEDORA_LOGIN_DEFAULT);
 	}
 
 	/**
@@ -330,7 +330,7 @@ public abstract class EditorConfiguration {
 	 * @return the fedora password
 	 */
 	public String getFedoraPassword() {
-		return getConfiguration().getString(Constants.FEDORA_PASSWORD);
+		return getConfiguration().getString(ServerConstants.FEDORA_PASSWORD);
 	}
 
 	/**
@@ -339,7 +339,7 @@ public abstract class EditorConfiguration {
 	 * @return the document types
 	 */
 	public String[] getDocumentTypes() {
-		return getConfiguration().getStringArray(Constants.DOCUMENT_TYPES);
+		return getConfiguration().getStringArray(ServerConstants.DOCUMENT_TYPES);
 	}
 
 	/**
@@ -348,7 +348,7 @@ public abstract class EditorConfiguration {
 	 * @return the dB host
 	 */
 	public String getDBHost() {
-		return getConfiguration().getString(Constants.DB_HOST, Constants.DB_HOST_DEFAULT);
+		return getConfiguration().getString(ServerConstants.DB_HOST, ServerConstants.DB_HOST_DEFAULT);
 	}
 
 	/**
@@ -357,7 +357,7 @@ public abstract class EditorConfiguration {
 	 * @return the dB port
 	 */
 	public String getDBPort() {
-		return getConfiguration().getString(Constants.DB_PORT, Constants.DB_PORT_DEFAULT);
+		return getConfiguration().getString(ServerConstants.DB_PORT, ServerConstants.DB_PORT_DEFAULT);
 	}
 
 	/**
@@ -366,7 +366,7 @@ public abstract class EditorConfiguration {
 	 * @return the dB login
 	 */
 	public String getDBLogin() {
-		return getConfiguration().getString(Constants.DB_LOGIN, Constants.DB_LOGIN_DEFAULT);
+		return getConfiguration().getString(ServerConstants.DB_LOGIN, ServerConstants.DB_LOGIN_DEFAULT);
 	}
 
 	/**
@@ -375,7 +375,7 @@ public abstract class EditorConfiguration {
 	 * @return the dB password
 	 */
 	public String getDBPassword() {
-		return getConfiguration().getString(Constants.DB_PASSWORD);
+		return getConfiguration().getString(ServerConstants.DB_PASSWORD);
 	}
 
 	/**
@@ -384,7 +384,7 @@ public abstract class EditorConfiguration {
 	 * @return the dB name
 	 */
 	public String getDBName() {
-		return getConfiguration().getString(Constants.DB_NAME, Constants.DB_NAME_DEFAULT);
+		return getConfiguration().getString(ServerConstants.DB_NAME, ServerConstants.DB_NAME_DEFAULT);
 	}
 
 	/**
@@ -393,7 +393,7 @@ public abstract class EditorConfiguration {
 	 * @return the open id api key
 	 */
 	public String getOpenIDApiKey() {
-		return getConfiguration().getString(Constants.JANRAIN_API_KEY, Constants.JANRAIN_API_KEY_DEFAULT);
+		return getConfiguration().getString(ServerConstants.JANRAIN_API_KEY, ServerConstants.JANRAIN_API_KEY_DEFAULT);
 	}
 
 	/**
@@ -402,7 +402,7 @@ public abstract class EditorConfiguration {
 	 * @return the open id api url
 	 */
 	public String getOpenIDApiURL() {
-		return getConfiguration().getString(Constants.JANRAIN_API_URL, Constants.JANRAIN_API_URL_DEFAULT);
+		return getConfiguration().getString(ServerConstants.JANRAIN_API_URL, ServerConstants.JANRAIN_API_URL_DEFAULT);
 	}
 
 	/**
@@ -411,8 +411,8 @@ public abstract class EditorConfiguration {
 	 * @return the user access patterns
 	 */
 	public String[] getUserAccessPatterns() {
-		String property = getConfiguration().getString(Constants.ACCESS_USER_PATTERNS, Constants.ACCESS_USER_PATTERNS_DEFAULT);
-		StringTokenizer st = new StringTokenizer(property, Constants.ACCESS_PATTERN_SEPARATOR, false);
+		String property = getConfiguration().getString(ServerConstants.ACCESS_USER_PATTERNS, ServerConstants.ACCESS_USER_PATTERNS_DEFAULT);
+		StringTokenizer st = new StringTokenizer(property, ServerConstants.ACCESS_PATTERN_SEPARATOR, false);
 		String[] returnVal = new String[st.countTokens()];
 		int i = 0;
 		while (st.hasMoreTokens()) {
@@ -427,8 +427,8 @@ public abstract class EditorConfiguration {
 	 * @return the admin access patterns
 	 */
 	public String[] getAdminAccessPatterns() {
-		String property = getConfiguration().getString(Constants.ACCESS_ADMIN_PATTERNS, Constants.ACCESS_ADMIN_PATTERNS_DEFAULT);
-		StringTokenizer st = new StringTokenizer(property, Constants.ACCESS_PATTERN_SEPARATOR, false);
+		String property = getConfiguration().getString(ServerConstants.ACCESS_ADMIN_PATTERNS, ServerConstants.ACCESS_ADMIN_PATTERNS_DEFAULT);
+		StringTokenizer st = new StringTokenizer(property, ServerConstants.ACCESS_PATTERN_SEPARATOR, false);
 		String[] returnVal = new String[st.countTokens()];
 		int i = 0;
 		while (st.hasMoreTokens()) {
@@ -443,10 +443,10 @@ public abstract class EditorConfiguration {
 	 * @return the recently modified number
 	 */
 	public int getRecentlyModifiedNumber() {
-		return getConfiguration().getInt(Constants.GUI_RECENTLY_MODIFIED_NUMBER, Constants.GUI_RECENTLY_MODIFIED_NUMBER_DEFAULT);
+		return getConfiguration().getInt(ServerConstants.GUI_RECENTLY_MODIFIED_NUMBER, ServerConstants.GUI_RECENTLY_MODIFIED_NUMBER_DEFAULT);
 	}
 
 	public boolean isLocalhost() {
-		return getConfiguration().getBoolean(Constants.LOCALHOST, false);
+		return getConfiguration().getBoolean(ServerConstants.LOCALHOST, false);
 	}
 }

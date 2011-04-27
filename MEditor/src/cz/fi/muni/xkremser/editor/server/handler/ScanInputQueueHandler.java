@@ -115,8 +115,8 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 
 		if (!refresh) {
 			if (base == null || "".equals(base)) {
-				LOGGER.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
-				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.Constants.INPUT_QUEUE + " is not set.");
+				LOGGER.error("Scanning input queue: Action failed because attribut " + EditorConfiguration.ServerConstants.INPUT_QUEUE + " is not set.");
+				throw new ActionException("Scanning input queue: Action failed because attribut " + EditorConfiguration.ServerConstants.INPUT_QUEUE + " is not set.");
 			}
 			ArrayList<InputQueueItem> list; // due to gwt performance issues, more
 																			// concrete interface is used
@@ -174,7 +174,7 @@ public class ScanInputQueueHandler implements ActionHandler<ScanInputQueueAction
 	private ArrayList<InputQueueItem> updateDb(String base) throws DatabaseException {
 		String[] types = configuration.getDocumentTypes();
 		if (types == null || types.length == 0)
-			types = EditorConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
+			types = EditorConfiguration.ServerConstants.DOCUMENT_DEFAULT_TYPES;
 		try {
 			checkDocumentTypes(types);
 		} catch (ActionException e) {

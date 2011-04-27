@@ -43,7 +43,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.URLS;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
 
@@ -55,7 +55,7 @@ public class LogoutHandler implements ActionHandler<LogoutAction, LogoutResult> 
 
 	/** The logger. */
 	private static final Logger LOGGER = Logger.getLogger(LogoutHandler.class.getPackage().toString());
-	private static final Logger ACCESS_LOGGER = Logger.getLogger(Constants.ACCESS_LOG_ID);
+	private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
 	private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
 	/** The http session provider. */

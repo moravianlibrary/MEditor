@@ -9,12 +9,12 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 
 public class SessionListener implements HttpSessionListener {
 
 	private static final Logger LOGGER = Logger.getLogger(SessionListener.class);
-	private static final Logger ACCESS_LOGGER = Logger.getLogger(Constants.ACCESS_LOG_ID);
+	private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
 	private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	@Override

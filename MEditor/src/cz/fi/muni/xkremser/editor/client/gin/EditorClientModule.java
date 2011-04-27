@@ -44,12 +44,16 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.CreatePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
+import cz.fi.muni.xkremser.editor.client.view.CreateView;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
+import cz.fi.muni.xkremser.editor.client.view.FindMetadataView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.UserView;
@@ -75,7 +79,7 @@ public class EditorClientModule extends AbstractPresenterModule {
 		bind(RootPresenter.class).asEagerSingleton();
 		bind(ProxyFailureHandler.class).to(DefaultProxyFailureHandler.class).in(Singleton.class);
 
-		// Constants
+		// ServerConstants
 		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
 		bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
@@ -84,6 +88,8 @@ public class EditorClientModule extends AbstractPresenterModule {
 		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
 		bindPresenter(UserPresenter.class, UserPresenter.MyView.class, UserView.class, UserPresenter.MyProxy.class);
 		bindPresenter(ModifyPresenter.class, ModifyPresenter.MyView.class, ModifyView.class, ModifyPresenter.MyProxy.class);
+		bindPresenter(CreatePresenter.class, CreatePresenter.MyView.class, CreateView.class, CreatePresenter.MyProxy.class);
+		bindPresenter(FindMetadataPresenter.class, FindMetadataPresenter.MyView.class, FindMetadataView.class, FindMetadataPresenter.MyProxy.class);
 		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuView.class,
 				DigitalObjectMenuPresenter.MyProxy.class);
 

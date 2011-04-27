@@ -49,7 +49,7 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.Constants;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 // TODO: Auto-generated Javadoc
@@ -59,7 +59,7 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 public class AuthenticationServlet extends HttpServlet {
 
 	/** The Constant LOGGER. */
-	private static final Logger ACCESS_LOGGER = Logger.getLogger(Constants.ACCESS_LOG_ID);
+	private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
 
 	/** The user dao. */
 	@Inject

@@ -103,7 +103,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 		 * @param dispatcher
 		 *          the dispatcher
 		 */
-		void showInputQueue(DispatchAsync dispatcher);
+		void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager);
 
 		/**
 		 * Gets the input tree.
@@ -311,7 +311,7 @@ public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPrese
 	 */
 	@Override
 	public void onShowInputQueue() {
-		getView().showInputQueue(dispatcher);
+		getView().showInputQueue(dispatcher, placeManager);
 		registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
 
 			@Override

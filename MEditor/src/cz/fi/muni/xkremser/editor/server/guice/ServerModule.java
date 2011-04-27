@@ -34,6 +34,8 @@ import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
 import cz.fi.muni.xkremser.editor.server.URLS;
+import cz.fi.muni.xkremser.editor.server.Z3950Client;
+import cz.fi.muni.xkremser.editor.server.Z3950ClientImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
@@ -52,6 +54,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
+import cz.fi.muni.xkremser.editor.server.handler.FindMetadataHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRequestItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRolesHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
@@ -76,6 +79,7 @@ import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
@@ -134,6 +138,7 @@ public class ServerModule extends HandlerModule {
 		bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
 		bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
 		bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
+		bindHandler(FindMetadataAction.class, FindMetadataHandler.class);
 
 		bindHandler(LogoutAction.class, LogoutHandler.class);
 
@@ -153,6 +158,7 @@ public class ServerModule extends HandlerModule {
 		bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
 
 		bind(DigitalObjectHandler.class).to(DigitalObjectHandlerImpl.class);
+		bind(Z3950Client.class).to(Z3950ClientImpl.class);
 
 		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
 		// bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);

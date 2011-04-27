@@ -592,6 +592,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String findBy();
 
   /**
+   * Translated "Search value".
+   * 
+   * @return translated "Search value"
+   */
+  @DefaultStringValue("Search value")
+  @Key("findHint")
+  String findHint();
+
+  /**
    * Translated "Find metadata via protocol Z39.50".
    * 
    * @return translated "Find metadata via protocol Z39.50"

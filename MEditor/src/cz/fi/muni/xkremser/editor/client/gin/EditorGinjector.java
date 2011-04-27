@@ -36,7 +36,9 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.CreatePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
@@ -103,8 +105,10 @@ public interface EditorGinjector extends Ginjector {
 	 */
 	AsyncProvider<ModifyPresenter> getModifyPresenter();
 
-	// AsyncProvider<DigitalObjectMenuPresenter>
-	// getDigitalObjectMenuPresenterPresenter();
+	AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
+
+	AsyncProvider<CreatePresenter> getCreatePresenterPresenter();
+
 	/**
 	 * Gets the digital object menu presenter presenter.
 	 * 

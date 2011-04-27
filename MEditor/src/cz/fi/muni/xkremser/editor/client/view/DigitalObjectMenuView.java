@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
@@ -278,10 +279,10 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	 * MyView#showInputQueue(com.gwtplatform.dispatch.client.DispatchAsync)
 	 */
 	@Override
-	public void showInputQueue(DispatchAsync dispatcher) {
+	public void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager) {
 		SectionStackSection section1 = new SectionStackSection();
 		section1.setTitle("Input queue");
-		inputTree = new SideNavInputTree(dispatcher);
+		inputTree = new SideNavInputTree(dispatcher, placeManager, lang);
 		section1.setItems(inputTree);
 		refreshButton = new ImgButton();
 		refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
