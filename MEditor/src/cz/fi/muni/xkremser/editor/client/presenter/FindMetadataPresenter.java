@@ -211,7 +211,7 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 		dispatcher.execute(new FindMetadataAction(field, code), new DispatchCallback<FindMetadataResult>() {
 			@Override
 			public void callback(FindMetadataResult result) {
-
+				SC.say(result.getOutput().toString());
 			}
 
 			@Override

@@ -646,6 +646,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String identity();
 
   /**
+   * Translated "Input queue".
+   * 
+   * @return translated "Input queue"
+   */
+  @DefaultStringValue("Input queue")
+  @Key("inputQueue")
+  String inputQueue();
+
+  /**
    * Translated "Internal Part".
    * 
    * @return translated "Internal Part"

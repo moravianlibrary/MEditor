@@ -179,15 +179,15 @@ public class SideNavInputTree extends TreeGrid implements Refreshable {
 		TreeGridField field1 = new TreeGridField();
 		field1.setCanFilter(true);
 		field1.setName(Constants.ATTR_ISSN);
-		field1.setTitle("ISSN");
+		field1.setTitle("ID");
 
 		TreeGridField field2 = new TreeGridField();
 		field2.setCanFilter(true);
 		field2.setName(Constants.ATTR_NAME);
-		field2.setTitle("Name");
+		field2.setTitle(lang.name());
 
 		setFields(field1, field2);
-		setDataSource(new InputTreeGwtRPCDS(dispatcher));
+		setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
 	}
 
 	/*

@@ -281,7 +281,7 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 	@Override
 	public void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager) {
 		SectionStackSection section1 = new SectionStackSection();
-		section1.setTitle("Input queue");
+		section1.setTitle(lang.inputQueue());
 		inputTree = new SideNavInputTree(dispatcher, placeManager, lang);
 		section1.setItems(inputTree);
 		refreshButton = new ImgButton();
@@ -305,7 +305,6 @@ public class DigitalObjectMenuView extends ViewWithUiHandlers<DigitalObjectMenuV
 		section1.setResizeable(true);
 		section1.setExpanded(true);
 		sectionStack.addSection(section1, 0);
-		// inputTree.setHeight("600");
 	}
 
 	/*

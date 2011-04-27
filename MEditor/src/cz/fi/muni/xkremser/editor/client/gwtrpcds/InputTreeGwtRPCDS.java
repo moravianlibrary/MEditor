@@ -40,6 +40,7 @@ import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
@@ -62,7 +63,7 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 	 *          the dispatcher
 	 */
 	@Inject
-	public InputTreeGwtRPCDS(DispatchAsync dispatcher) {
+	public InputTreeGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
 		this.dispatcher = dispatcher;
 		DataSourceField field;
 		field = new DataSourceTextField(Constants.ATTR_ID, "id");
@@ -74,10 +75,11 @@ public class InputTreeGwtRPCDS extends AbstractGwtRPCDS {
 		field.setForeignKey(Constants.ATTR_ID);
 		field.setHidden(true);
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_NAME, "Name");
+		field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
 		field.setRequired(true);
 		addField(field);
-		field = new DataSourceTextField(Constants.ATTR_ISSN, "issn");
+		field = new DataSourceTextField(Constants.ATTR_ISSN, "ID");
+		field.setAttribute("width", "60%");
 		field.setRequired(true);
 		addField(field);
 

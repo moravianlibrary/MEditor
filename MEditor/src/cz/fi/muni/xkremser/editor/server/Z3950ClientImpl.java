@@ -50,7 +50,9 @@
 
 package cz.fi.muni.xkremser.editor.server;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
@@ -130,7 +132,7 @@ public class Z3950ClientImpl implements Z3950Client {
 	 * @return the dublin core xml
 	 */
 	@Override
-	public Object search(Constants.SEARCH_FIELD field, String what) {
+	public List<String> search(Constants.SEARCH_FIELD field, String what) {
 
 		// OIDRegister reg = OIDRegister.getRegister();
 
@@ -247,7 +249,7 @@ public class Z3950ClientImpl implements Z3950Client {
 		}
 		e.setQueryModel(new com.k_int.IR.QueryModels.PrefixString(query + "\"" + what + "\""));
 		LOGGER.debug("QUERY: " + e.getQueryModel().toString());
-
+		List<String> returnList = new ArrayList<String>();
 		try {
 			SearchTask st = s.createTask(e, null, null/* all_observers */);
 			int status = st.evaluate(150000);
@@ -259,6 +261,7 @@ public class Z3950ClientImpl implements Z3950Client {
 				InformationFragment f = (InformationFragment) rs_enum.nextElement();
 				System.out.println("Length of Next search element: " + f.toString()); // to
 																																							// something
+				returnList.add(f.toString());
 				LOGGER.info(f.toString());
 			}
 
@@ -270,7 +273,7 @@ public class Z3950ClientImpl implements Z3950Client {
 		}
 
 		s.destroy();
-		return null;
+		return returnList;
 	}
 
 	/**

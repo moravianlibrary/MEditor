@@ -26,6 +26,8 @@
  */
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -86,8 +88,8 @@ public class FindMetadataHandler implements ActionHandler<FindMetadataAction, Fi
 			LOGGER.debug("Processing action: FindMetadataAction: for code " + action.getCode());
 		}
 		ServerUtils.checkExpiredSession(httpSessionProvider);
-		client.search(action.getSearchType(), action.getCode());
-		return new FindMetadataResult(true);
+		List<String> documents = client.search(action.getSearchType(), action.getCode());
+		return new FindMetadataResult(documents);
 	}
 
 	/*
