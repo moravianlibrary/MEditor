@@ -71,6 +71,8 @@ import com.k_int.z3950.IRClient.Z3950Origin;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -132,7 +134,7 @@ public class Z3950ClientImpl implements Z3950Client {
 	 * @return the dublin core xml
 	 */
 	@Override
-	public List<String> search(Constants.SEARCH_FIELD field, String what) {
+	public List<DublinCore> search(Constants.SEARCH_FIELD field, String what) {
 
 		// OIDRegister reg = OIDRegister.getRegister();
 
@@ -249,7 +251,7 @@ public class Z3950ClientImpl implements Z3950Client {
 		}
 		e.setQueryModel(new com.k_int.IR.QueryModels.PrefixString(query + "\"" + what + "\""));
 		LOGGER.debug("QUERY: " + e.getQueryModel().toString());
-		List<String> returnList = new ArrayList<String>();
+		List<DublinCore> returnList = new ArrayList<DublinCore>();
 		try {
 			SearchTask st = s.createTask(e, null, null/* all_observers */);
 			int status = st.evaluate(150000);
@@ -261,7 +263,7 @@ public class Z3950ClientImpl implements Z3950Client {
 				InformationFragment f = (InformationFragment) rs_enum.nextElement();
 				System.out.println("Length of Next search element: " + f.toString()); // to
 																																							// something
-				returnList.add(f.toString());
+				returnList.add(DCUtils.getDC(f.toString()));
 				LOGGER.info(f.toString());
 			}
 

@@ -28,12 +28,21 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -43,6 +52,9 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class DCUtils.
  */
 public class DCUtils {
+	private static final String DC_RECORD = "dc-record";
+
+	private static final Logger LOGGER = Logger.getLogger(DCUtils.class.getPackage().toString());
 
 	/**
 	 * Title from dc.
@@ -269,6 +281,43 @@ public class DCUtils {
 		return elementsFromDC(dc, DublinCoreConstants.DC_TYPE);
 	}
 
+	public static DublinCore getDC(String xml) {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = null;
+		try {
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			LOGGER.warn("Unable to parse xml document", e);
+		}
+		org.w3c.dom.Document doc = null;
+		try {
+			if (db != null) {
+				InputSource is = new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8")));
+				doc = db.parse(is);
+			}
+		} catch (SAXException e) {
+			LOGGER.warn("Unable to parse xml document", e);
+		} catch (IOException e) {
+			LOGGER.warn("Unable to parse xml document", e);
+		}
+		if (doc != null) {
+			Element root = doc.getDocumentElement();
+			NodeList childNodes = root.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); i++) {
+				Node item = childNodes.item(i);
+				if (item != null && DC_RECORD.equals(item.getNodeName())) {
+					return getDC((Element) item, true);
+				}
+			}
+			return null;
+		} else
+			return null;
+	}
+
+	public static DublinCore getDC(org.w3c.dom.Document doc) {
+		return getDC(doc.getDocumentElement(), false);
+	}
+
 	/**
 	 * Gets the dC.
 	 * 
@@ -276,7 +325,7 @@ public class DCUtils {
 	 *          the doc
 	 * @return the dC
 	 */
-	public static DublinCore getDC(org.w3c.dom.Document doc) {
+	private static DublinCore getDC(Element root, boolean nodeName) {
 		DublinCore dc = new DublinCore();
 		List<String> contributor = new ArrayList<String>();
 		List<String> coverage = new ArrayList<String>();
@@ -294,40 +343,41 @@ public class DCUtils {
 		List<String> title = new ArrayList<String>();
 		List<String> type = new ArrayList<String>();
 
-		Element documentElement = doc.getDocumentElement();
-		NodeList childNodes = documentElement.getChildNodes();
+		NodeList childNodes = root.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node item = childNodes.item(i);
-			if (item.getNodeType() == Node.ELEMENT_NODE) {
-				if (item.getLocalName().equals(DublinCoreConstants.DC_CONTRIBUTOR)) {
+
+			if (item.getNodeType() == Node.ELEMENT_NODE && ((!nodeName && item.getLocalName() != null) || (nodeName && item.getNodeName() != null))) {
+				String name = nodeName ? item.getNodeName() : item.getLocalName();
+				if (name.equals(DublinCoreConstants.DC_CONTRIBUTOR)) {
 					contributor.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_COVERAGE)) {
+				} else if (name.equals(DublinCoreConstants.DC_COVERAGE)) {
 					coverage.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_CREATOR)) {
+				} else if (name.equals(DublinCoreConstants.DC_CREATOR)) {
 					creator.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_DATE)) {
+				} else if (name.equals(DublinCoreConstants.DC_DATE)) {
 					date.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_DESCRIPTION)) {
+				} else if (name.equals(DublinCoreConstants.DC_DESCRIPTION)) {
 					description.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_FORMAT)) {
+				} else if (name.equals(DublinCoreConstants.DC_FORMAT)) {
 					format.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_IDENTIFIER)) {
+				} else if (name.equals(DublinCoreConstants.DC_IDENTIFIER)) {
 					identifier.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_LANGUAGE)) {
+				} else if (name.equals(DublinCoreConstants.DC_LANGUAGE)) {
 					language.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_PUBLISHER)) {
+				} else if (name.equals(DublinCoreConstants.DC_PUBLISHER)) {
 					publisher.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_RELATION)) {
+				} else if (name.equals(DublinCoreConstants.DC_RELATION)) {
 					relation.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_RIGHTS)) {
+				} else if (name.equals(DublinCoreConstants.DC_RIGHTS)) {
 					rights.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_SOURCE)) {
+				} else if (name.equals(DublinCoreConstants.DC_SOURCE)) {
 					source.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_SUBJECT)) {
+				} else if (name.equals(DublinCoreConstants.DC_SUBJECT)) {
 					subject.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_TITLE)) {
+				} else if (name.equals(DublinCoreConstants.DC_TITLE)) {
 					title.add(item.getTextContent().trim());
-				} else if (item.getLocalName().equals(DublinCoreConstants.DC_TYPE)) {
+				} else if (name.equals(DublinCoreConstants.DC_TYPE)) {
 					type.add(item.getTextContent().trim());
 				}
 			}
@@ -350,5 +400,4 @@ public class DCUtils {
 
 		return dc;
 	}
-
 }

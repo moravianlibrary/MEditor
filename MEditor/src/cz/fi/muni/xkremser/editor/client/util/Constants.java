@@ -188,4 +188,5 @@ public class Constants {
 		TITLE
 	}
 
+	public static final String SYSNO = "SYSNO";
 }

@@ -619,6 +619,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String firstName();
 
   /**
+   * Translated "No metadata has been found".
+   * 
+   * @return translated "No metadata has been found"
+   */
+  @DefaultStringValue("No metadata has been found")
+  @Key("fnothing")
+  String fnothing();
+
+  /**
    * Translated "title".
    * 
    * @return translated "title"

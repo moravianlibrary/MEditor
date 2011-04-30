@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+
+import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -428,4 +431,53 @@ public class DublinCore implements IsSerializable {
 				+ description + ", format=" + format + ", subject=" + subject + ", type=" + type + ", rights=" + rights + "]";
 	}
 
+	public ListGridRecord toRecord() {
+		ListGridRecord record = new ListGridRecord();
+		if (getContributor() != null) {
+			record.setAttribute(DublinCoreConstants.DC_CONTRIBUTOR, getContributor().toArray(new String[] {}));
+		}
+		if (getCoverage() != null) {
+			record.setAttribute(DublinCoreConstants.DC_COVERAGE, getCoverage().toArray(new String[] {}));
+		}
+		if (getCreator() != null) {
+			record.setAttribute(DublinCoreConstants.DC_CREATOR, getCreator().toArray(new String[] {}));
+		}
+		if (getDate() != null) {
+			record.setAttribute(DublinCoreConstants.DC_DATE, getDate().toArray(new String[] {}));
+		}
+		if (getDescription() != null) {
+			record.setAttribute(DublinCoreConstants.DC_DESCRIPTION, getDescription().toArray(new String[] {}));
+		}
+		if (getFormat() != null) {
+			record.setAttribute(DublinCoreConstants.DC_FORMAT, getFormat().toArray(new String[] {}));
+		}
+		if (getIdentifier() != null) {
+			record.setAttribute(DublinCoreConstants.DC_IDENTIFIER, getIdentifier().toArray(new String[] {}));
+		}
+		if (getLanguage() != null) {
+			record.setAttribute(DublinCoreConstants.DC_LANGUAGE, getLanguage().toArray(new String[] {}));
+		}
+		if (getPublisher() != null) {
+			record.setAttribute(DublinCoreConstants.DC_PUBLISHER, getPublisher().toArray(new String[] {}));
+		}
+		if (getRelation() != null) {
+			record.setAttribute(DublinCoreConstants.DC_RELATION, getRelation().toArray(new String[] {}));
+		}
+		if (getRights() != null) {
+			record.setAttribute(DublinCoreConstants.DC_RIGHTS, getRights().toArray(new String[] {}));
+		}
+		if (getSource() != null) {
+			record.setAttribute(DublinCoreConstants.DC_SOURCE, getSource().toArray(new String[] {}));
+		}
+		if (getSubject() != null) {
+			record.setAttribute(DublinCoreConstants.DC_SUBJECT, getSubject().toArray(new String[] {}));
+		}
+		if (getTitle() != null) {
+			record.setAttribute(DublinCoreConstants.DC_TITLE, getTitle().toArray(new String[] {}));
+		}
+		if (getType() != null) {
+			record.setAttribute(DublinCoreConstants.DC_TYPE, getType().toArray(new String[] {}));
+		}
+		return record;
+	}
 }

@@ -43,6 +43,7 @@ import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -88,7 +89,7 @@ public class FindMetadataHandler implements ActionHandler<FindMetadataAction, Fi
 			LOGGER.debug("Processing action: FindMetadataAction: for code " + action.getCode());
 		}
 		ServerUtils.checkExpiredSession(httpSessionProvider);
-		List<String> documents = client.search(action.getSearchType(), action.getCode());
+		List<DublinCore> documents = client.search(action.getSearchType(), action.getCode());
 		return new FindMetadataResult(documents);
 	}
 

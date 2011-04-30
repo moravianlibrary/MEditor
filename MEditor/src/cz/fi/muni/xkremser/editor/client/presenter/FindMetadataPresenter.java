@@ -26,6 +26,8 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.List;
+
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.EventBus;
@@ -38,19 +40,22 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
+import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -71,47 +76,44 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 		 * @param krameriusUrl
 		 *          the kramerius url
 		 */
-		public void setURLs(String fedoraUrl, String krameriusUrl);
+		void setURLs(String fedoraUrl, String krameriusUrl);
 
 		/**
 		 * Sets the loading.
 		 */
-		public void setLoading();
+		void setLoading();
 
 		/**
 		 * Gets the uuid.
 		 * 
 		 * @return the uuid
 		 */
-		public TextItem getCode();
+		TextItem getCode();
 
-		/**
-		 * Gets the check availability.
-		 * 
-		 * @return the check availability
-		 */
-		public HasClickHandlers getCheckAvailability();
+		SelectItem getFindBy();
 
 		/**
 		 * Gets the uuid item.
 		 * 
 		 * @return the uuid item
 		 */
-		public HasChangedHandlers getUuidItem();
+		HasChangedHandlers getUuidItem();
 
 		/**
 		 * Gets the open.
 		 * 
 		 * @return the open
 		 */
-		public IButton getFind();
+		ButtonItem getFind();
 
 		/**
 		 * Gets the form.
 		 * 
 		 * @return the form
 		 */
-		public DynamicForm getForm();
+		DynamicForm getForm();
+
+		void refreshData(ListGridRecord[] data);
 	}
 
 	/**
@@ -131,6 +133,8 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 
 	/** The place manager. */
 	private final PlaceManager placeManager;
+
+	private final LangConstants lang;
 
 	private String code = null;
 
@@ -152,11 +156,12 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 	 */
 	@Inject
 	public FindMetadataPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher, final PlaceManager placeManager) {
+			final DispatchAsync dispatcher, final PlaceManager placeManager, final LangConstants lang) {
 		super(eventBus, view, proxy);
 		this.leftPresenter = leftPresenter;
 		this.dispatcher = dispatcher;
 		this.placeManager = placeManager;
+		this.lang = lang;
 		bind();
 	}
 
@@ -171,10 +176,20 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 		getView().getFind().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				findMetadata(Constants.SEARCH_FIELD.SYSNO, (String) getView().getCode().getValue());
-				// placeManager.revealRelativePlace(new
-				// PlaceRequest(NameTokens.CREATE).with(ServerConstants.URL_PARAM_UUID,
-				// getView().getCode()));
+				String finder = (String) getView().getFindBy().getValue();
+				Constants.SEARCH_FIELD findBy = null;
+				if (finder == null || finder.isEmpty()) {
+					return;
+				} else if (finder.equals(Constants.SYSNO)) {
+					findBy = Constants.SEARCH_FIELD.SYSNO;
+				} else if (finder.equals(lang.fbarcode())) {
+					findBy = Constants.SEARCH_FIELD.BAR;
+				} else if (finder.equals(lang.ftitle())) {
+					findBy = Constants.SEARCH_FIELD.TITLE;
+				}
+				if (findBy != null) {
+					findMetadata(findBy, (String) getView().getCode().getValue());
+				}
 			}
 		});
 		getView().getCode().setValue(code);
@@ -191,7 +206,7 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * (non-Javadoc) n
 	 * 
 	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
 	 */
@@ -211,7 +226,15 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 		dispatcher.execute(new FindMetadataAction(field, code), new DispatchCallback<FindMetadataResult>() {
 			@Override
 			public void callback(FindMetadataResult result) {
-				SC.say(result.getOutput().toString());
+				List<DublinCore> list = result.getOutput();
+				if (list != null && list.size() != 0) {
+					ListGridRecord[] data = new ListGridRecord[list.size()];
+					for (int i = 0; i < list.size(); i++) {
+						data[i] = list.get(i).toRecord();
+					}
+					getView().refreshData(data);
+				}
+				// SC.say(result.getOutput().toString());
 			}
 
 			@Override

@@ -34,6 +34,7 @@ import com.gwtplatform.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -49,6 +50,6 @@ public class FindMetadata extends UnsecuredActionImpl<CheckAvailabilityResult> {
 
 	/** The availability. */
 	@Out(1)
-	List<String> output;
+	List<DublinCore> output;
 
 }
