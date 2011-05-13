@@ -925,6 +925,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String newUser();
 
   /**
+   * Translated "Next".
+   * 
+   * @return translated "Next"
+   */
+  @DefaultStringValue("Next")
+  @Key("next")
+  String next();
+
+  /**
    * Translated "missing".
    * 
    * @return translated "missing"
