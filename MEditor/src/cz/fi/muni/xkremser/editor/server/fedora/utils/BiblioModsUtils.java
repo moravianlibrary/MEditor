@@ -542,6 +542,9 @@ public final class BiblioModsUtils {
 		if (stringPlusAuthority instanceof StringPlusAuthorityPlusLanguage) {
 			decorate((StringPlusAuthorityPlusLanguageClient) stringPlusAuthorityClient, (StringPlusAuthorityPlusLanguage) stringPlusAuthority);
 		}
+		if (stringPlusAuthority instanceof StringPlusAuthorityPlusType) {
+			decorate((StringPlusAuthorityPlusTypeClient) stringPlusAuthorityClient, (StringPlusAuthorityPlusType) stringPlusAuthority);
+		}
 		if (stringPlusAuthority instanceof StringPlusAuthorityPlusTypePlusLanguage) {
 			decorate((StringPlusAuthorityPlusTypePlusLanguageClient) stringPlusAuthorityClient, (StringPlusAuthorityPlusTypePlusLanguage) stringPlusAuthority);
 		}
@@ -564,6 +567,15 @@ public final class BiblioModsUtils {
 		stringPlusAuthorityPlusLanguageClient.setLang(stringPlusAuthorityPlusLanguage.getLang());
 		stringPlusAuthorityPlusLanguageClient.setScript(stringPlusAuthorityPlusLanguage.getScript());
 		stringPlusAuthorityPlusLanguageClient.setTransliteration(stringPlusAuthorityPlusLanguage.getTransliteration());
+		stringPlusAuthorityPlusLanguageClient.setValue(stringPlusAuthorityPlusLanguage.getValue());
+	}
+
+	private static void decorate(StringPlusAuthorityPlusTypeClient stringPlusAuthorityPlusTypeClient, StringPlusAuthorityPlusType stringPlusAuthorityPlusType) {
+		if (stringPlusAuthorityPlusType == null || stringPlusAuthorityPlusTypeClient == null)
+			return;
+		stringPlusAuthorityPlusTypeClient.setValue(stringPlusAuthorityPlusType.getValue());
+		stringPlusAuthorityPlusTypeClient.setAuthority(stringPlusAuthorityPlusType.getAuthority());
+		stringPlusAuthorityPlusTypeClient.setType(stringPlusAuthorityPlusType.getType());
 	}
 
 	/**
@@ -579,6 +591,7 @@ public final class BiblioModsUtils {
 		if (stringPlusAuthorityPlusTypePlusLanguage == null || stringPlusAuthorityPlusTypePlusLanguageClient == null)
 			return;
 		stringPlusAuthorityPlusTypePlusLanguageClient.setType(stringPlusAuthorityPlusTypePlusLanguage.getAtType());
+		stringPlusAuthorityPlusTypePlusLanguageClient.setValue(stringPlusAuthorityPlusTypePlusLanguage.getValue());
 	}
 
 	/**
@@ -606,6 +619,7 @@ public final class BiblioModsUtils {
 		unstructuredTextClient.setScript(unstructuredText.getScript());
 		unstructuredTextClient.setTransliteration(unstructuredText.getTransliteration());
 		unstructuredTextClient.setXlink(unstructuredText.getHref());
+		unstructuredTextClient.setValue(unstructuredText.getValue());
 
 		return unstructuredTextClient;
 	}
