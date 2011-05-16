@@ -98,7 +98,8 @@ public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView 
 		leftContainer.setShowResizeBar(true);
 		mainContainer = new VLayout(); // TODO: consider some panel
 		widget.setWidth100();
-		widget.setHeight100();
+		// widget.setHeight100();
+		widget.setHeight("98%");
 		widget.setLeaveScrollbarGap(true);
 		widget.setOverflow(Overflow.AUTO);
 		topContainer = new HLayout();
