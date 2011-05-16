@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -59,7 +61,6 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.RichTextEditor;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -412,7 +413,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 		boolean fox = foxml != null && !"".equals(foxml);
 		if (fox) {
 			foxmlTab = new Tab("FOXML", "pieces/16/cube_frame.png");
-			Label l = new Label("<code>" + foxml + "</code>");
+			HTMLFlow l = new HTMLFlow("<code>" + foxml + "</code>");
 			l.setCanSelectText(true);
 			foxmlTab.setPane(l);
 		}
@@ -738,10 +739,10 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 				@Override
 				public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
 					if (event.getRecord() != null) {
+						final ModalWindow mw = new ModalWindow(layout);
+						mw.setLoadingIcon("loadingAnimation.gif");
+						mw.show(true);
 						try {
-							final ModalWindow mw = new ModalWindow(layout);
-							mw.setLoadingIcon("loadingAnimation.gif");
-							mw.show(true);
 							final Image full = new Image("images/full/" + event.getRecord().getAttribute(Constants.ATTR_UUID));
 							full.setHeight("700px");
 							full.addLoadHandler(new LoadHandler() {
@@ -750,6 +751,16 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 									mw.hide();
 									imagePopup.setVisible(true);
 									imagePopup.center();
+								}
+							});
+							full.addErrorHandler(new ErrorHandler() {
+								@Override
+								public void onError(ErrorEvent event) {
+									mw.show(lang.unableToLoadImg(), true);
+									imagePopup.setWidget(null);
+									imagePopup.hide();
+									imagePopup.setVisible(false);
+									mw.hide();
 								}
 							});
 							imagePopup.setWidget(full);
@@ -764,8 +775,8 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 							imagePopup.setVisible(false);
 
 						} catch (Throwable t) {
-
-							// TODO: handle
+							System.out.println("iii");
+							mw.hide();
 						}
 					}
 				}

@@ -110,7 +110,7 @@ public class CheckAvailabilityHandler implements ActionHandler<CheckAvailability
 			throw new ActionException("Unknown server id");
 		}
 		try {
-			URLConnection con = RESTHelper.openConnection(url, usr, pass);
+			URLConnection con = RESTHelper.openConnection(url, usr, pass, false);
 			if (con instanceof HttpURLConnection) {
 				HttpURLConnection httpConnection = (HttpURLConnection) con;
 				if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {

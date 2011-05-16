@@ -221,7 +221,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		}
 		String url = host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + uuid + "," + uuid + "&userName=" + login + "&pswd=" + password;
 		try {
-			RESTHelper.openConnection(url, login, password);
+			RESTHelper.openConnection(url, login, password, false);
 		} catch (MalformedURLException e) {
 			LOGGER.error("Unable to reindex", e);
 		} catch (IOException e) {
@@ -376,7 +376,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 		String pass = configuration.getFedoraPassword();
 		String content = contentBuilder.toString();
 
-		RESTHelper.put(url, content, usr, pass);
+		RESTHelper.put(url, content, usr, pass, false);
 		return true;
 	}
 
@@ -431,7 +431,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			String pass = configuration.getFedoraPassword();
 			String content = contentBuilder.toString();
 
-			RESTHelper.put(url, content, usr, pass);
+			RESTHelper.put(url, content, usr, pass, false);
 		}
 	}
 
@@ -449,7 +449,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			String pass = configuration.getFedoraPassword();
 			String content = BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
 
-			RESTHelper.put(url, content, usr, pass);
+			RESTHelper.put(url, content, usr, pass, false);
 		}
 	}
 
@@ -465,7 +465,7 @@ public class PutDigitalObjectDetailHandler implements ActionHandler<PutDigitalOb
 			String url = configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "/datastreams/TEXT_OCR?versionable=" + (versionable ? "true" : "false");
 			String usr = configuration.getFedoraLogin();
 			String pass = configuration.getFedoraPassword();
-			RESTHelper.put(url, detail.getOcr(), usr, pass);
+			RESTHelper.put(url, detail.getOcr(), usr, pass, false);
 		}
 	}
 

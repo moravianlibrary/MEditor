@@ -139,7 +139,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public Document getRelsExt(String uuid) throws IOException {
 		String relsExtUrl = relsExtUrl(uuid);
 		LOGGER.debug("Reading rels ext +" + relsExtUrl);
-		InputStream docStream = RESTHelper.inputStream(relsExtUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		InputStream docStream = RESTHelper.inputStream(relsExtUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 		if (docStream == null) {
 			throw new ConnectionException("Cannot get RELS EXT stream.");
 		}
@@ -207,7 +207,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public Document getBiblioMods(String uuid) throws IOException {
 		String biblioModsUrl = biblioMods(uuid);
 		LOGGER.debug("Reading bibliomods +" + biblioModsUrl);
-		InputStream docStream = RESTHelper.inputStream(biblioModsUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		InputStream docStream = RESTHelper.inputStream(biblioModsUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 		if (docStream == null)
 			return null;
 		try {
@@ -234,7 +234,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	public Document getDC(String uuid) throws IOException {
 		String dcUrl = dc(uuid);
 		LOGGER.debug("Reading dc +" + dcUrl);
-		InputStream docStream = RESTHelper.inputStream(dcUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		InputStream docStream = RESTHelper.inputStream(dcUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword(), false);
 		if (docStream == null)
 			return null;
 		try {
@@ -263,7 +263,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 		LOGGER.debug("Reading OCR +" + ocrUrl);
 		InputStream docStream = null;
 		try {
-			docStream = RESTHelper.inputStream(ocrUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			docStream = RESTHelper.inputStream(ocrUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 			if (docStream == null)
 				return null;
 		} catch (IOException e) {
@@ -599,7 +599,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public InputStream getThumbnail(String uuid) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(FedoraUtils.getThumbnailFromFedora(uuid), configuration.getFedoraLogin(),
-				configuration.getFedoraPassword());
+				configuration.getFedoraPassword(), true);
 		InputStream thumbInputStream = con.getInputStream();
 		return thumbInputStream;
 	}
@@ -614,7 +614,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public Document getThumbnailProfile(String uuid) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(thumbImageProfile(uuid), configuration.getFedoraLogin(),
-				configuration.getFedoraPassword());
+				configuration.getFedoraPassword(), true);
 		InputStream stream = con.getInputStream();
 		try {
 			return XMLUtils.parseDocument(stream, true);
@@ -649,8 +649,8 @@ public class FedoraAccessImpl implements FedoraAccess {
 	 */
 	@Override
 	public InputStream getImageFULL(String uuid) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) RESTHelper
-				.openConnection(getDjVuImage(uuid), configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(getDjVuImage(uuid), configuration.getFedoraLogin(),
+				configuration.getFedoraPassword(), false);
 		con.connect();
 		if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			InputStream thumbInputStream = con.getInputStream();
@@ -669,7 +669,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public boolean isImageFULLAvailable(String uuid) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(getFedoraDatastreamsList(uuid), configuration.getFedoraLogin(),
-				configuration.getFedoraPassword());
+				configuration.getFedoraPassword(), true);
 		InputStream stream = con.getInputStream();
 		try {
 			Document parseDocument = XMLUtils.parseDocument(stream, true);
@@ -768,7 +768,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public Document getImageFULLProfile(String uuid) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(fullImageProfile(uuid), configuration.getFedoraLogin(),
-				configuration.getFedoraPassword());
+				configuration.getFedoraPassword(), true);
 		InputStream stream = con.getInputStream();
 		try {
 			return XMLUtils.parseDocument(stream, true);
@@ -1095,7 +1095,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public InputStream getDataStream(String pid, String datastreamName) throws IOException {
 		String datastream = configuration.getFedoraHost() + "/get/" + pid + "/" + datastreamName;
-		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(datastream, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(datastream, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 		con.connect();
 		if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			InputStream thumbInputStream = con.getInputStream();
@@ -1114,7 +1114,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 	@Override
 	public String getMimeTypeForStream(String pid, String datastreamName) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) RESTHelper.openConnection(dsProfileForPid(datastreamName, pid), configuration.getFedoraLogin(),
-				configuration.getFedoraPassword());
+				configuration.getFedoraPassword(), true);
 		InputStream stream = con.getInputStream();
 		try {
 			Document parseDocument = XMLUtils.parseDocument(stream, true);
@@ -1165,7 +1165,7 @@ public class FedoraAccessImpl implements FedoraAccess {
 		LOGGER.debug("Reading foxml +" + objUrl);
 		InputStream docStream = null;
 		try {
-			docStream = RESTHelper.inputStream(objUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			docStream = RESTHelper.inputStream(objUrl, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 			if (docStream == null)
 				return null;
 		} catch (IOException e1) {

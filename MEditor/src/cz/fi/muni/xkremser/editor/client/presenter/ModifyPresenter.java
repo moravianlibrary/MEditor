@@ -574,6 +574,7 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 		final DispatchCallback<GetDigitalObjectDetailResult> callback = new DispatchCallback<GetDigitalObjectDetailResult>() {
 			@Override
 			public void callback(GetDigitalObjectDetailResult result) {
+				mw.show(lang.rendering(), true);
 				DigitalObjectDetail detail = result.getDetail();
 				List<DigitalObjectDetail> itemList = detail.getItems();
 				Record[] items = null;
@@ -586,7 +587,6 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 						items[i] = new ContainerRecord(title, id, DigitalObjectModel.PAGE.equals(model) ? id : model.getIcon());
 					}
 				}
-
 				getView().addStream(items, uuid, model);
 				mw.hide();
 			}
@@ -618,5 +618,4 @@ public class ModifyPresenter extends Presenter<ModifyPresenter.MyView, ModifyPre
 
 		dispatcher.execute(action, callback);
 	}
-
 }

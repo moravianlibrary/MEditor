@@ -82,8 +82,8 @@ public class RESTHelper {
 	 * @throws IOException
 	 *           Signals that an I/O exception has occurred.
 	 */
-	public static InputStream inputStream(String urlString, String user, String pass) throws IOException {
-		URLConnection uc = openConnection(urlString, user, pass);
+	public static InputStream inputStream(String urlString, String user, String pass, boolean robustMode) throws IOException {
+		URLConnection uc = openConnection(urlString, user, pass, robustMode);
 		if (uc == null)
 			return null;
 		return uc.getInputStream();
@@ -104,8 +104,8 @@ public class RESTHelper {
 	 * @throws IOException
 	 *           Signals that an I/O exception has occurred.
 	 */
-	public static URLConnection openConnection(String urlString, String user, String pass) throws MalformedURLException, IOException {
-		return openConnection(urlString, user, pass, GET, null);
+	public static URLConnection openConnection(String urlString, String user, String pass, boolean robustMode) throws MalformedURLException, IOException {
+		return openConnection(urlString, user, pass, GET, null, robustMode);
 	}
 
 	/**
@@ -127,8 +127,8 @@ public class RESTHelper {
 	 * @throws IOException
 	 *           Signals that an I/O exception has occurred.
 	 */
-	public static URLConnection openConnection(String urlString, String user, String pass, final int method, String content) throws MalformedURLException,
-			IOException {
+	public static URLConnection openConnection(String urlString, String user, String pass, final int method, String content, boolean robustMode)
+			throws MalformedURLException, IOException {
 		URL url = new URL(urlString);
 		String userPassword = user + ":" + pass;
 		String encoded = Base64Utils.toBase64(userPassword.getBytes());
@@ -167,7 +167,11 @@ public class RESTHelper {
 			int resp = ((HttpURLConnection) uc).getResponseCode();
 			if (resp != 200) {
 				LOGGER.error("Unable to open connection on " + urlString + "  response code: " + resp);
-				return null;
+				if (robustMode) {
+					return null;
+				} else {
+					throw new ConnectionException("connection cannot be established");
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -189,10 +193,10 @@ public class RESTHelper {
 	 *          the pass
 	 * @return true, if successful
 	 */
-	public static boolean put(String urlString, String content, String user, String pass) {
+	public static boolean put(String urlString, String content, String user, String pass, boolean robustMode) {
 		URLConnection conn = null;
 		try {
-			conn = openConnection(urlString, user, pass, PUT, content);
+			conn = openConnection(urlString, user, pass, PUT, content, robustMode);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return false;
@@ -221,10 +225,10 @@ public class RESTHelper {
 	 *          the pass
 	 * @return true, if successful
 	 */
-	public static boolean delete(String urlString, String user, String pass) {
+	public static boolean delete(String urlString, String user, String pass, boolean robustMode) {
 		HttpURLConnection uc = null;
 		try {
-			uc = (HttpURLConnection) openConnection(urlString, user, pass);
+			uc = (HttpURLConnection) openConnection(urlString, user, pass, robustMode);
 			if (uc == null)
 				return false;
 		} catch (MalformedURLException e) {

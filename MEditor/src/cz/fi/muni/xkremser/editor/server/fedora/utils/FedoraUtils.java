@@ -89,7 +89,7 @@ public class FedoraUtils {
 		try {
 
 			String command = configuration.getFedoraHost() + "/get/" + pid + "/" + RELS_EXT_STREAM;
-			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 			Document contentDom = XMLUtils.parseDocument(is);
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();
@@ -120,7 +120,7 @@ public class FedoraUtils {
 		String command = configuration.getFedoraHost() + "/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20%3Cinfo:fedora/" + objectPid + "%3E";
 		InputStream stream = null;
 		try {
-			stream = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			stream = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 			if (stream == null)
 				return null;
 			String result = IOUtils.readAsString(stream, Charset.forName("UTF-8"), true);
@@ -165,7 +165,7 @@ public class FedoraUtils {
 		ArrayList<String> pids = new ArrayList<String>();
 		try {
 			String command = configuration.getFedoraHost() + "/get/" + pid + "/RELS-EXT";
-			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword());
+			InputStream is = RESTHelper.inputStream(command, configuration.getFedoraLogin(), configuration.getFedoraPassword(), true);
 			Document contentDom = XMLUtils.parseDocument(is);
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();

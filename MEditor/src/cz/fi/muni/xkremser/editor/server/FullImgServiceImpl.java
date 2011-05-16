@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.log4j.Logger;
+
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
@@ -59,6 +61,9 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
  * The Class FullImgServiceImpl.
  */
 public class FullImgServiceImpl extends HttpServlet {
+
+	/** The logger. */
+	private static final Logger LOGGER = Logger.getLogger(FullImgServiceImpl.class);
 
 	/** The config. */
 	@Inject
@@ -94,7 +99,7 @@ public class FullImgServiceImpl extends HttpServlet {
 				if (loadFromMimeType == ImageMimeType.JPEG || loadFromMimeType == ImageMimeType.PNG) {
 					StringBuffer sb = new StringBuffer();
 					sb.append(config.getFedoraHost()).append("/objects/").append(uuid).append("/datastreams/IMG_FULL/content");
-					InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword());
+					InputStream is = RESTHelper.inputStream(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword(), false);
 					if (is == null) {
 						return;
 					}
@@ -102,7 +107,7 @@ public class FullImgServiceImpl extends HttpServlet {
 						IOUtils.copyStreams(is, os);
 					} catch (IOException e) {
 						resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-						// TODO: zalogovat
+						LOGGER.error("Unable to open full image.", e);
 					} finally {
 						os.flush();
 						if (is != null) {
@@ -110,7 +115,7 @@ public class FullImgServiceImpl extends HttpServlet {
 								is.close();
 							} catch (IOException e) {
 								resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-								// TODO: zalogovat
+								LOGGER.error("Unable to close stream.", e);
 							} finally {
 								is = null;
 							}
@@ -128,10 +133,12 @@ public class FullImgServiceImpl extends HttpServlet {
 					resp.setContentType(ImageMimeType.JPEG.getValue());
 					resp.setStatus(HttpURLConnection.HTTP_OK);
 				}
-			} catch (XPathExpressionException e1) {
+			} catch (IOException e) {
 				resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-				e1.printStackTrace();
-				// TODO: log exception
+				LOGGER.error("Unable to open full image.", e);
+			} catch (XPathExpressionException e) {
+				resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
+				LOGGER.error("Unable to create XPath expression.", e);
 			} finally {
 				os.flush();
 			}
