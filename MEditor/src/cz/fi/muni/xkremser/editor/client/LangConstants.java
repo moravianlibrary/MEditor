@@ -1123,6 +1123,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String removeSelected();
 
   /**
+   * Translated "Rendering GUI".
+   * 
+   * @return translated "Rendering GUI"
+   */
+  @DefaultStringValue("Rendering GUI")
+  @Key("rendering")
+  String rendering();
+
+  /**
    * Translated "Requests for adding".
    * 
    * @return translated "Requests for adding"
@@ -1220,6 +1229,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Title")
   @Key("title")
   String title();
+
+  /**
+   * Translated "Unable to load image".
+   * 
+   * @return translated "Unable to load image"
+   */
+  @DefaultStringValue("Unable to load image")
+  @Key("unableToLoadImg")
+  String unableToLoadImg();
 
   /**
    * Translated "User Management".
