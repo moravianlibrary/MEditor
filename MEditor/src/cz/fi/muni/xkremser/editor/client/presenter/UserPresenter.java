@@ -29,9 +29,9 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
-import com.gwtplatform.mvp.client.EventBus;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
@@ -431,7 +431,8 @@ public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter
 				name.setWidth(320);
 				TextItem surname = new TextItem(Constants.ATTR_SURNAME, lang.lastName());
 				surname.setWidth(320);
-				// CheckboxItem sex = new CheckboxItem(ServerConstants.ATTR_SEX, "Male");
+				// CheckboxItem sex = new CheckboxItem(ServerConstants.ATTR_SEX,
+				// "Male");
 				ButtonItem add = new ButtonItem();
 				add.setTitle(lang.addUser());
 				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {

@@ -26,8 +26,8 @@
  */
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import com.gwtplatform.annotation.GenDispatch;
-import com.gwtplatform.annotation.In;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 // TODO: Auto-generated Javadoc

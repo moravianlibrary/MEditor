@@ -4,10 +4,7 @@
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-2.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-2.0.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.13.jar" sourcepath="/home/kremser/.m2/repository/log4j/log4j/1.2.13/log4j-1.2.13-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration-1.6.jar" sourcepath="/home/freon/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.5.jar" sourcepath="/home/freon/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5-sources.jar"/>
@@ -15,18 +12,14 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-jzkit-z3950-1_2_3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ki-util.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/marc4j.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-3.0.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt-skins.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/postgresql-8.4-701.jdbc4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/postgresql-8.4-701.jdbc4.jar" sourcepath="/home/kremser/Documents/jdbc.zip"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gin-r137.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtp-0.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-incubator-20100204-r1747.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javadjvu-0.8.09.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/pdfbox-1.2.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-servlet-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jhighlight-1.0.jar" sourcepath="/home/kremser/.m2/repository/com/uwyn/jhighlight/1.0/jhighlight-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-image-loader-1.1.4.jar"/>
@@ -36,5 +29,17 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/serializer.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/a2jruntime.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtp-all-0.5.1.jar" sourcepath="/home/kremser/.m2/repository/com/gwtplatform/gwtp-all/0.5.1/gwtp-all-0.5.1-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gin-1.5-post-gwt-2.2.jar" sourcepath="/home/kremser/.m2/repository/com/google/gwt/inject/gin/1.5.0/gin-1.5.0-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-assistedinject-snapshot.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-snapshot.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-servlet-3.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-3.1.2.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

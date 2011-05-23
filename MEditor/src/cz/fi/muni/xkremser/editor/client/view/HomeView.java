@@ -138,6 +138,7 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		open = new IButton();
 		open.setTitle(lang.open());
 		open.setDisabled(true);
+		open.setAutoShowParent(false);
 
 		HLayout hLayout = new HLayout();
 		hLayout.setMembersMargin(10);

@@ -28,9 +28,9 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
-import com.gwtplatform.mvp.client.EventBus;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
@@ -40,13 +40,11 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
-import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
@@ -68,50 +66,11 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 	 */
 	public interface MyView extends View {
 
-		/**
-		 * Sets the ur ls.
-		 * 
-		 * @param fedoraUrl
-		 *          the fedora url
-		 * @param krameriusUrl
-		 *          the kramerius url
-		 */
-		void setURLs(String fedoraUrl, String krameriusUrl);
-
-		/**
-		 * Sets the loading.
-		 */
-		void setLoading();
-
-		/**
-		 * Gets the uuid.
-		 * 
-		 * @return the uuid
-		 */
 		TextItem getCode();
 
 		SelectItem getFindBy();
 
-		/**
-		 * Gets the uuid item.
-		 * 
-		 * @return the uuid item
-		 */
-		HasChangedHandlers getUuidItem();
-
-		/**
-		 * Gets the open.
-		 * 
-		 * @return the open
-		 */
 		ButtonItem getFind();
-
-		/**
-		 * Gets the form.
-		 * 
-		 * @return the form
-		 */
-		DynamicForm getForm();
 
 		void refreshData(ListGridRecord[] data);
 	}
@@ -233,14 +192,14 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 						data[i] = list.get(i).toRecord();
 					}
 					getView().refreshData(data);
+				} else {
+					getView().refreshData(null);
 				}
-				// SC.say(result.getOutput().toString());
 			}
 
 			@Override
 			public void callbackError(Throwable t) {
 				SC.warn(t.getMessage());
-				// getView().refreshKramerius(false, null);
 			}
 		});
 	}

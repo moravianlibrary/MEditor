@@ -28,8 +28,8 @@ package cz.fi.muni.xkremser.editor.shared.event;
 
 import java.util.List;
 
-import com.gwtplatform.annotation.GenEvent;
-import com.gwtplatform.annotation.Order;
+import com.gwtplatform.dispatch.annotation.GenEvent;
+import com.gwtplatform.dispatch.annotation.Order;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 

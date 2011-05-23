@@ -32,13 +32,13 @@ import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -68,8 +68,9 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 	/** The layout. */
 	private final VStack layout;
 
-	/** The check button. */
 	private final ButtonItem findButton;
+
+	private final IButton nextButton;
 
 	/** The form. */
 	private final DynamicForm form;
@@ -82,6 +83,10 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 	private final LangConstants lang;
 
 	private final ListGrid resultGrid;
+
+	private final DetailViewer printViewer;
+
+	SectionStack printStack;
 
 	// @Inject
 	// public void setLang(LangConstants lang) {
@@ -148,26 +153,25 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 		hLayout.addMember(form);
 		hLayout.setExtraSpace(10);
 
-		SectionStack printStack = new SectionStack();
+		printStack = new SectionStack();
 		printStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		printStack.setWidth(600);
-		printStack.setHeight(450);
+		printStack.setHeight(560);
 
-		final DetailViewer printViewer = new DetailViewer();
+		printViewer = new DetailViewer();
 		printViewer.setWidth100();
 		printViewer.setMargin(15);
 		printViewer.setEmptyMessage(lang.fnothing());
 		printViewer.setDataSource(new Z3950ResultDS(lang));
 
 		resultGrid = new ListGrid();
-		resultGrid.setHeight(300);
+		resultGrid.setHeight(290);
 		resultGrid.setShowAllRecords(true);
 		resultGrid.setAutoFetchData(false);
-		ListGridField dcTitle = new ListGridField(DublinCoreConstants.DC_TITLE, lang.dcTitle(), 70);
+		ListGridField dcTitle = new ListGridField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
 		ListGridField dcPublisher = new ListGridField(DublinCoreConstants.DC_PUBLISHER, lang.dcPublisher());
 		ListGridField dcDate = new ListGridField(DublinCoreConstants.DC_DATE, lang.dcDate());
-		ListGridField dcIdentifier = new ListGridField(DublinCoreConstants.DC_IDENTIFIER, lang.dcIdentifier());
-		// resultGrid.setFields(dcTitle, dcPublisher, dcDate, dcIdentifier);
+		resultGrid.setFields(dcTitle, dcPublisher, dcDate);
 		resultGrid.setDataSource(new Z3950ResultDS(lang));
 
 		resultGrid.addRecordClickHandler(new RecordClickHandler() {
@@ -188,28 +192,16 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 		printStack.addSection(detailsSection);
 
 		final VLayout printContainer = new VLayout(10);
-
-		HLayout printButtonLayout = new HLayout(5);
-
 		printContainer.addMember(printStack);
-		printContainer.addMember(printButtonLayout);
+		printContainer.setExtraSpace(5);
 
-		// // The filter is just to limit the number of records in the ListGrid - we
-		// // don't want to print them all
-		// printGrid.filterData(new Criteria("CountryName", "land"), new
-		// DSCallback() {
-		// @Override
-		// public void execute(DSResponse response, Object rawData, DSRequest
-		// request) {
-		// printGrid.selectRecord(0);
-		// printViewer.setData(new Record[] { printGrid.getSelectedRecord() });
-		// }
-		// });
-		// printContainer.draw();
-		// hLayout.addMember(printContainer);
+		nextButton = new IButton(lang.next());
+		nextButton.setWidth(80);
+
 		layout.addMember(html1);
 		layout.addMember(hLayout);
 		layout.addMember(printContainer);
+		layout.addMember(nextButton);
 
 	}
 
@@ -238,46 +230,11 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getForm()
-	 */
-	@Override
-	public DynamicForm getForm() {
-		return form;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid()
 	 */
 	@Override
 	public TextItem getCode() {
 		return searchValue;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuidItem
-	 * ()
-	 */
-	@Override
-	public HasChangedHandlers getUuidItem() {
-		return searchValue;
-	}
-
-	@Override
-	public void setURLs(String fedoraUrl, String krameriusUrl) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setLoading() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -287,19 +244,13 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 
 	@Override
 	public void refreshData(ListGridRecord[] data) {
-		System.out.println(data[0].getAttribute(DublinCoreConstants.DC_TITLE));
-		System.out.println(data[0].getAttribute(DublinCoreConstants.DC_TYPE));
-		ListGridRecord[] data1 = new ListGridRecord[1];
-		data1[0] = new ListGridRecord();
-		data1[0].setAttribute(DublinCoreConstants.DC_TITLE, new String[] { "jmeno1", "jmeno2" });
-		data1[0].setAttribute(DublinCoreConstants.DC_TYPE, "typ");
-		data1[0].setAttribute(DublinCoreConstants.DC_PUBLISHER, "pub");
-		data1[0].setAttribute(DublinCoreConstants.DC_DATE, "date");
-		data1[0].setAttribute(DublinCoreConstants.DC_IDENTIFIER, new String[] { "id1", "id2" });
-		// System.out.println(data[0].g);
-
-		// resultGrid.setData(data1);
-		resultGrid.setData(data);
+		if (data == null) {
+			resultGrid.setData(new ListGridRecord[] {});
+		} else {
+			resultGrid.setData(data);
+			printViewer.setData(new Record[] { data[0] });
+			printStack.adjustForContent(true);
+		}
 	}
 
 }

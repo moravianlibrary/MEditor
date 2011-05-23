@@ -49,15 +49,14 @@ public class Z3950ResultDS extends DataSource {
 	@Inject
 	public Z3950ResultDS(LangConstants lang) {
 		DataSourceField field;
+		field = new DataSourceTextField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
+		field.setAttribute("width", "50%");
+		field.setRequired(true);
+		field.setMultiple(true);
+		addField(field);
 		field = new DataSourceTextField(DublinCoreConstants.DC_IDENTIFIER, lang.dcIdentifier());
 		field.setMultiple(true);
 		field.setPrimaryKey(true);
-		field.setHidden(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
-		field.setAttribute("width", "50%");
-		field.setHidden(false);
-		field.setMultiple(true);
 		addField(field);
 		field = new DataSourceTextField(DublinCoreConstants.DC_PUBLISHER, lang.dcPublisher());
 		field.setMultiple(true);
@@ -67,15 +66,15 @@ public class Z3950ResultDS extends DataSource {
 		addField(field);
 		field = new DataSourceTextField(DublinCoreConstants.DC_DESCRIPTION, lang.dcDescription());
 		field.setMultiple(true);
-		field.setDetail(true);
 		addField(field);
 		field = new DataSourceTextField(DublinCoreConstants.DC_LANGUAGE, lang.dcLanguage());
 		field.setMultiple(true);
-		field.setDetail(true);
 		addField(field);
 		field = new DataSourceTextField(DublinCoreConstants.DC_SUBJECT, lang.dcSubject());
 		field.setMultiple(true);
-		field.setDetail(true);
+		addField(field);
+		field = new DataSourceTextField(DublinCoreConstants.DC_RELATION, lang.dcRelation());
+		field.setMultiple(true);
 		addField(field);
 
 	}

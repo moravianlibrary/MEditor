@@ -62,17 +62,17 @@ public class MEditor implements EntryPoint {
 	 *          the url
 	 */
 	public static native void redirect(String url)/*-{
-																								$wnd.location = url;
-																								}-*/;
+		$wnd.location = url;
+	}-*/;
 
 	public static native void langRefresh(String locale)/*-{
-																											var pos = $wnd.location.search.indexOf('&locale=');
-																											var params = $wnd.location.search;
-																											if (pos == -1) {
-																											$wnd.location.search = params + '&locale=' + locale;
-																											} else {
-																											$wnd.location.search = params.substring(0, pos) + '&locale='
-																											+ locale + params.substring(pos + 13, params.length);
-																											}
-																											}-*/;
+		var pos = $wnd.location.search.indexOf('&locale=');
+		var params = $wnd.location.search;
+		if (pos == -1) {
+			$wnd.location.search = params + '&locale=' + locale;
+		} else {
+			$wnd.location.search = params.substring(0, pos) + '&locale='
+					+ locale + params.substring(pos + 13, params.length);
+		}
+	}-*/;
 }

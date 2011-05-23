@@ -26,8 +26,8 @@
  */
 package cz.fi.muni.xkremser.editor.shared.event;
 
-import com.gwtplatform.annotation.GenEvent;
-import com.gwtplatform.annotation.Order;
+import com.gwtplatform.dispatch.annotation.GenEvent;
+import com.gwtplatform.dispatch.annotation.Order;
 
 // TODO: Auto-generated Javadoc
 /**

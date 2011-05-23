@@ -28,9 +28,9 @@ package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.List;
 
-import com.gwtplatform.annotation.GenDispatch;
-import com.gwtplatform.annotation.In;
-import com.gwtplatform.annotation.Out;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
