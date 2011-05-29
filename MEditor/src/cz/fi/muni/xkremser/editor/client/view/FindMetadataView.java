@@ -86,7 +86,9 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 
 	private final DetailViewer printViewer;
 
-	SectionStack printStack;
+	private final SectionStack printStack;
+
+	private ModalWindow mw;
 
 	// @Inject
 	// public void setLang(LangConstants lang) {
@@ -156,7 +158,7 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 		printStack = new SectionStack();
 		printStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		printStack.setWidth(600);
-		printStack.setHeight(560);
+		printStack.setHeight(500);
 
 		printViewer = new DetailViewer();
 		printViewer.setWidth100();
@@ -165,7 +167,7 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 		printViewer.setDataSource(new Z3950ResultDS(lang));
 
 		resultGrid = new ListGrid();
-		resultGrid.setHeight(290);
+		resultGrid.setHeight(240);
 		resultGrid.setShowAllRecords(true);
 		resultGrid.setAutoFetchData(false);
 		ListGridField dcTitle = new ListGridField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
@@ -246,10 +248,28 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 	public void refreshData(ListGridRecord[] data) {
 		if (data == null) {
 			resultGrid.setData(new ListGridRecord[] {});
+			printViewer.setData(new ListGridRecord[] {});
 		} else {
 			resultGrid.setData(data);
 			printViewer.setData(new Record[] { data[0] });
 			printStack.adjustForContent(true);
+		}
+	}
+
+	@Override
+	public void showProgress(boolean show, boolean msg) {
+		if (show) {
+			if (mw == null) {
+				mw = new ModalWindow(printStack);
+			}
+			mw.setLoadingIcon("loadingAnimation.gif");
+			if (msg) {
+				mw.show(lang.rendering(), true);
+			} else {
+				mw.show(true);
+			}
+		} else {
+			mw.hide();
 		}
 	}
 

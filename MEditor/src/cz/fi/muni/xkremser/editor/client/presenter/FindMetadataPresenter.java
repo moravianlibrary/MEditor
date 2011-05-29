@@ -73,6 +73,8 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 		ButtonItem getFind();
 
 		void refreshData(ListGridRecord[] data);
+
+		void showProgress(boolean show, boolean msg);
 	}
 
 	/**
@@ -151,7 +153,6 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 				}
 			}
 		});
-		getView().getCode().setValue(code);
 	}
 
 	/*
@@ -179,12 +180,14 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 		super.prepareFromRequest(request);
 		code = request.getParameter(Constants.URL_PARAM_CODE, null);
 		getView().getCode().setValue(code);
+		findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
 	}
 
 	private void findMetadata(Constants.SEARCH_FIELD field, String code) {
 		dispatcher.execute(new FindMetadataAction(field, code), new DispatchCallback<FindMetadataResult>() {
 			@Override
 			public void callback(FindMetadataResult result) {
+				getView().showProgress(true, true);
 				List<DublinCore> list = result.getOutput();
 				if (list != null && list.size() != 0) {
 					ListGridRecord[] data = new ListGridRecord[list.size()];
@@ -195,12 +198,15 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 				} else {
 					getView().refreshData(null);
 				}
+				getView().showProgress(false, false);
 			}
 
 			@Override
 			public void callbackError(Throwable t) {
+				getView().showProgress(false, false);
 				SC.warn(t.getMessage());
 			}
 		});
+		getView().showProgress(true, false);
 	}
 }
