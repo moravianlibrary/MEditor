@@ -44,9 +44,12 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
+import com.smartgwt.client.widgets.form.fields.events.KeyPressEvent;
+import com.smartgwt.client.widgets.form.fields.events.KeyPressHandler;
 
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
@@ -108,7 +111,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		 * 
 		 * @return the uuid
 		 */
-		public String getUuid();
+		public TextItem getUuid();
 
 		/**
 		 * Gets the check availability.
@@ -208,11 +211,17 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		getView().getOpen().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (getView().getForm().validate())
-					placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, getView().getUuid()));
+				evaluateUuid();
 			}
 		});
-
+		getView().getUuid().addKeyPressHandler(new KeyPressHandler() {
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if (event.getKeyName().equals("Enter") && !getView().getOpen().getDisabled()) {
+					evaluateUuid();
+				}
+			}
+		});
 		getView().getUuidItem().addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -224,7 +233,11 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 				}
 			}
 		});
+	}
 
+	private void evaluateUuid() {
+		if (getView().getForm().validate())
+			placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, (String) getView().getUuid().getValue()));
 	}
 
 	/*

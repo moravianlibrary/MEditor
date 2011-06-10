@@ -303,8 +303,8 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid()
 	 */
 	@Override
-	public String getUuid() {
-		return (String) uuidField.getValue();
+	public TextItem getUuid() {
+		return uuidField;
 	}
 
 	/*

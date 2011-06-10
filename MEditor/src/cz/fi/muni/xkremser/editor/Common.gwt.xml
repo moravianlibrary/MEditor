@@ -77,15 +77,15 @@
 	<extend-configuration-property name="rpc.blacklist" value="com.google.gwt.user.client.ui.KeyboardListenerCollection"/>
 	  
     <!-- Internationalization support. -->
-       
+       <!-- 
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="cs"/>
   <set-property-fallback name="locale" value="cs"/>
- 
+ -->
 
-<!-- 
+
 <set-property name="user.agent" value="gecko1_8"/>
--->
+
 <!--
 <set-property name="user.agent" value="safari"/>
 -->

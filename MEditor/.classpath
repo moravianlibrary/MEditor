@@ -20,7 +20,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javadjvu-0.8.09.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/pdfbox-1.2.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jhighlight-1.0.jar" sourcepath="/home/kremser/.m2/repository/com/uwyn/jhighlight/1.0/jhighlight-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-image-loader-1.1.4.jar"/>
 	<classpathentry kind="src" path="generated">
@@ -41,5 +40,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-servlet-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-3.1.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
