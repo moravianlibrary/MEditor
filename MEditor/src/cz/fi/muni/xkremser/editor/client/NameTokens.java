@@ -59,6 +59,8 @@ public class NameTokens {
 
 	public static final String FIND_METADATA = "findMetadata";
 
+	public static final String ADJUST_PAGES = "adjust";
+
 	/** The Constant USERS. */
 	public static final String USERS = "users";
 

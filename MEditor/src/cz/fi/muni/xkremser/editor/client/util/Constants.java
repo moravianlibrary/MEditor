@@ -58,6 +58,12 @@ public class Constants {
 
 	public static final String URL_PARAM_CODE = "code";
 
+	public static final String URL_PARAM_METADATA = "metadata";
+
+	public static final String URL_PARAM_METADATA_FOUND = "found";
+
+	public static final String URL_PARAM_METADATA_NOT_FOUND = "notFound";
+
 	// db
 	/** The Constant TABLE_INPUT_QUEUE_NAME. */
 	public static final String TABLE_INPUT_QUEUE_NAME = "input_queue_item";

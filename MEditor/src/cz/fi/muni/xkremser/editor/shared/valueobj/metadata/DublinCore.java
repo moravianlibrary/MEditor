@@ -33,6 +33,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,6 +42,8 @@ import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
  * @author xholcik
  */
 public class DublinCore implements IsSerializable {
+
+	private int id;
 
 	/** The title. */
 	private List<String> title;
@@ -371,6 +374,14 @@ public class DublinCore implements IsSerializable {
 		return coverage;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
 	/**
 	 * Sets the coverage.
 	 * 
@@ -433,6 +444,7 @@ public class DublinCore implements IsSerializable {
 
 	public ListGridRecord toRecord() {
 		ListGridRecord record = new ListGridRecord();
+		record.setAttribute(Constants.ATTR_GENERIC_ID, getId());
 		if (getContributor() != null) {
 			record.setAttribute(DublinCoreConstants.DC_CONTRIBUTOR, getContributor().toArray(new String[] {}));
 		}

@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 
+import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreatePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
@@ -77,44 +78,21 @@ public interface EditorGinjector extends Ginjector {
 	 * Provider<> if you're using @ProxyStandard or AsyncProvider<> if you're
 	 * using @ProxyCodeSplit
 	 */
-	/**
-	 * Gets the app presenter.
-	 * 
-	 * @return the app presenter
-	 */
+
 	Provider<AppPresenter> getAppPresenter();
 
-	/**
-	 * Gets the home presenter.
-	 * 
-	 * @return the home presenter
-	 */
 	AsyncProvider<HomePresenter> getHomePresenter();
 
-	/**
-	 * Gets the user presenter.
-	 * 
-	 * @return the user presenter
-	 */
 	AsyncProvider<UserPresenter> getUserPresenter();
 
-	/**
-	 * Gets the modify presenter.
-	 * 
-	 * @return the modify presenter
-	 */
 	AsyncProvider<ModifyPresenter> getModifyPresenter();
 
 	AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
 
+	AsyncProvider<AdjustPagesPresenter> getAdjustPagesPresenterPresenter();
+
 	AsyncProvider<CreatePresenter> getCreatePresenterPresenter();
 
-	/**
-	 * Gets the digital object menu presenter presenter.
-	 * 
-	 * @return the digital object menu presenter presenter
-	 */
 	Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
-	// AsyncProvider<AboutUsPresenter> getAboutUsPresenter();
 
 }

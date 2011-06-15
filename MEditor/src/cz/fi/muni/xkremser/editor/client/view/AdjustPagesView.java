@@ -56,14 +56,14 @@ import com.smartgwt.client.widgets.viewer.DetailViewer;
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.Z3950ResultDS;
-import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HomeView.
  */
-public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.MyView {
+public class AdjustPagesView extends ViewImpl implements AdjustPagesPresenter.MyView {
 
 	/** The layout. */
 	private final VStack layout;
@@ -96,7 +96,7 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 	 * Instantiates a new home view.
 	 */
 	@Inject
-	public FindMetadataView(final LangConstants lang) {
+	public AdjustPagesView(final LangConstants lang) {
 		this.lang = lang;
 		layout = new VStack();
 		layout.setHeight100();
@@ -109,7 +109,7 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 		findButton.setColSpan(2);
 
 		HTMLFlow html1 = new HTMLFlow();
-		html1.setContents("<h1>" + lang.create() + "</h1>");
+		html1.setContents("<h1>ADJUSTING...</h1>");
 		html1.setExtraSpace(20);
 
 		findBy = new SelectItem();
@@ -196,15 +196,15 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 
 		nextButton = new IButton(lang.next());
 		nextButton.setWidth(80);
-		withoutButton = new IButton("Continue without metadata");
+		withoutButton = new IButton("Continu without metadata");
 		withoutButton.setAutoFit(true);
 		HLayout buttons = new HLayout();
 		buttons.setMembers(nextButton, withoutButton);
 
 		layout.addMember(html1);
-		layout.addMember(hLayout);
-		layout.addMember(printContainer);
-		layout.addMember(buttons);
+		// layout.addMember(hLayout);
+		// layout.addMember(printContainer);
+		// layout.addMember(buttons);
 
 	}
 
@@ -250,7 +250,6 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 		if (data == null) {
 			resultGrid.setData(new ListGridRecord[] {});
 			printViewer.setData(new ListGridRecord[] {});
-			nextButton.setDisabled(true);
 		} else {
 			resultGrid.setData(data);
 			printViewer.setData(new Record[] { data[0] });
@@ -283,11 +282,6 @@ public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.
 	@Override
 	public IButton getWithoutMetadata() {
 		return withoutButton;
-	}
-
-	@Override
-	public ListGrid getResults() {
-		return resultGrid;
 	}
 
 }

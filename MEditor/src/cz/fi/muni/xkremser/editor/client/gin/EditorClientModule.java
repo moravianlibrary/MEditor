@@ -43,6 +43,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
+import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreatePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
@@ -50,6 +51,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
+import cz.fi.muni.xkremser.editor.client.view.AdjustPagesView;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
 import cz.fi.muni.xkremser.editor.client.view.CreateView;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
@@ -58,7 +60,6 @@ import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.UserView;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
-import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -84,19 +85,20 @@ public class EditorClientModule extends AbstractPresenterModule {
 		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
 		bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
+		// Presenters
 		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
 		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
 		bindPresenter(UserPresenter.class, UserPresenter.MyView.class, UserView.class, UserPresenter.MyProxy.class);
 		bindPresenter(ModifyPresenter.class, ModifyPresenter.MyView.class, ModifyView.class, ModifyPresenter.MyProxy.class);
 		bindPresenter(CreatePresenter.class, CreatePresenter.MyView.class, CreateView.class, CreatePresenter.MyProxy.class);
 		bindPresenter(FindMetadataPresenter.class, FindMetadataPresenter.MyView.class, FindMetadataView.class, FindMetadataPresenter.MyProxy.class);
+		bindPresenter(AdjustPagesPresenter.class, AdjustPagesPresenter.MyView.class, AdjustPagesView.class, AdjustPagesPresenter.MyProxy.class);
 		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuView.class,
 				DigitalObjectMenuPresenter.MyProxy.class);
 
 		bind(CachingDispatchAsync.class);
 		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
-		requestStaticInjection(TabUtils.class);
 		requestStaticInjection(DCTab.class);
 
 	}

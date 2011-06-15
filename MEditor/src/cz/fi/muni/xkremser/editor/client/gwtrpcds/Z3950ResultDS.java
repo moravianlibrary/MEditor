@@ -29,10 +29,12 @@ package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 import com.google.inject.Inject;
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.DataSourceField;
+import com.smartgwt.client.data.fields.DataSourceIntegerField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -49,6 +51,10 @@ public class Z3950ResultDS extends DataSource {
 	@Inject
 	public Z3950ResultDS(LangConstants lang) {
 		DataSourceField field;
+		field = new DataSourceIntegerField(Constants.ATTR_GENERIC_ID, "id");
+		field.setPrimaryKey(true);
+		field.setRequired(true);
+		field.setHidden(true);
 		field = new DataSourceTextField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
 		field.setAttribute("width", "50%");
 		field.setRequired(true);

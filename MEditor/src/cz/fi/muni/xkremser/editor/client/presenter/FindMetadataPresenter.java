@@ -26,7 +26,9 @@
  */
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
@@ -40,17 +42,22 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.CellClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.shared.event.StartAdjustingPagesEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -72,9 +79,15 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 
 		ButtonItem getFind();
 
+		ListGrid getResults();
+
 		void refreshData(ListGridRecord[] data);
 
 		void showProgress(boolean show, boolean msg);
+
+		IButton getNext();
+
+		IButton getWithoutMetadata();
 	}
 
 	/**
@@ -98,6 +111,8 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 	private final LangConstants lang;
 
 	private String code = null;
+
+	private final Map<Integer, DublinCore> results = new HashMap<Integer, DublinCore>();
 
 	/**
 	 * Instantiates a new home presenter.
@@ -153,6 +168,32 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 				}
 			}
 		});
+		getView().getNext().setDisabled(true);
+		getView().getNext().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			@Override
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				System.out.println("click");
+				int id = getView().getResults().getSelectedRecord().getAttributeAsInt(Constants.ATTR_GENERIC_ID);
+				StartAdjustingPagesEvent.fire(getEventBus(), code, results.get(id));
+				// placeManager.revealRelativePlace(new
+				// PlaceRequest(NameTokens.ADJUST_PAGES).with(Constants.URL_PARAM_METADATA,
+				// Constants.URL_PARAM_METADATA_FOUND));
+			}
+		});
+		getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			@Override
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				// placeManager.revealRelativePlace(new
+				// PlaceRequest(NameTokens.ADJUST_PAGES).with(Constants.URL_PARAM_METADATA,
+				// Constants.URL_PARAM_METADATA_NOT_FOUND));
+			}
+		});
+		getView().getResults().addCellClickHandler(new CellClickHandler() {
+			@Override
+			public void onCellClick(CellClickEvent event) {
+				getView().getNext().setDisabled(false);
+			}
+		});
 	}
 
 	/*
@@ -178,12 +219,14 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 	@Override
 	public void prepareFromRequest(PlaceRequest request) {
 		super.prepareFromRequest(request);
+		results.clear();
 		code = request.getParameter(Constants.URL_PARAM_CODE, null);
 		getView().getCode().setValue(code);
 		findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
 	}
 
 	private void findMetadata(Constants.SEARCH_FIELD field, String code) {
+		results.clear();
 		dispatcher.execute(new FindMetadataAction(field, code), new DispatchCallback<FindMetadataResult>() {
 			@Override
 			public void callback(FindMetadataResult result) {
@@ -192,7 +235,9 @@ public class FindMetadataPresenter extends Presenter<FindMetadataPresenter.MyVie
 				if (list != null && list.size() != 0) {
 					ListGridRecord[] data = new ListGridRecord[list.size()];
 					for (int i = 0; i < list.size(); i++) {
+						list.get(i).setId(i);
 						data[i] = list.get(i).toRecord();
+						results.put(i, list.get(i));
 					}
 					getView().refreshData(data);
 				} else {
