@@ -936,7 +936,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			@Override
 			public void onClick(final MenuItemClickEvent event) {
 				final Window winModal = new Window();
-				winModal.setHeight(130);
+				winModal.setHeight(160);
 				winModal.setWidth(350);
 				winModal.setCanDragResize(true);
 				winModal.setShowEdges(true);

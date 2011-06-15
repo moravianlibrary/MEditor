@@ -58,6 +58,7 @@ import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.UserView;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
+import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -83,7 +84,6 @@ public class EditorClientModule extends AbstractPresenterModule {
 		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
 		bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
-		// Presenters
 		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
 		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
 		bindPresenter(UserPresenter.class, UserPresenter.MyView.class, UserView.class, UserPresenter.MyProxy.class);
@@ -96,6 +96,7 @@ public class EditorClientModule extends AbstractPresenterModule {
 		bind(CachingDispatchAsync.class);
 		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
+		requestStaticInjection(TabUtils.class);
 		requestStaticInjection(DCTab.class);
 
 	}
