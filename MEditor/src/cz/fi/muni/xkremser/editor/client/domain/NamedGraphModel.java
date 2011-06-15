@@ -38,6 +38,7 @@ import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.hasIte
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.hasPage;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.hasUnit;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.hasVolume;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.isOnPage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +64,7 @@ public class NamedGraphModel implements IsSerializable {
 		putRelationship(MONOGRAPH, hasUnit, MONOGRAPHUNIT);
 		putRelationship(MONOGRAPHUNIT, hasPage, PAGE);
 		putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);
-		putRelationship(INTERNALPART, hasPage, PAGE);
+		putRelationship(INTERNALPART, isOnPage, PAGE);
 		/** The PERIODICAL. */
 		putRelationship(PERIODICAL, hasPage, PAGE);
 		putRelationship(PERIODICAL, hasVolume, PERIODICALVOLUME);
