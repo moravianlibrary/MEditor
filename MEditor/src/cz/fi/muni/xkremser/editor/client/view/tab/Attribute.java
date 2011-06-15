@@ -77,9 +77,9 @@ public class Attribute {
 	 *          the tooltip
 	 */
 	public Attribute(Class<? extends FormItem> type, String name, String label, String tooltip) {
-		super();
 		this.type = type;
-		this.name = name;
+		// name does not support spaces
+		this.name = name != null ? name.toLowerCase().replaceAll(" ", "_") : name;
 		this.label = label;
 		this.tooltip = tooltip;
 	}
@@ -99,11 +99,7 @@ public class Attribute {
 	 *          the value
 	 */
 	public Attribute(Class<? extends FormItem> type, String name, String label, String tooltip, String value) {
-		super();
-		this.type = type;
-		this.name = name;
-		this.label = label;
-		this.tooltip = tooltip;
+		this(type, name, label, tooltip);
 		this.value = value;
 	}
 
@@ -120,10 +116,7 @@ public class Attribute {
 	 *          the tooltips
 	 */
 	public Attribute(Class<? extends FormItem> type, String name, String label, Map<String, String> tooltips) {
-		super();
-		this.type = type;
-		this.name = name;
-		this.label = label;
+		this(type, name, label, "");
 		this.tooltips = tooltips;
 		String[] labels = tooltips.keySet().toArray(new String[] {});
 		Arrays.sort(labels);
@@ -145,14 +138,7 @@ public class Attribute {
 	 *          the value
 	 */
 	public Attribute(Class<? extends FormItem> type, String name, String label, Map<String, String> tooltips, String value) {
-		super();
-		this.type = type;
-		this.name = name;
-		this.label = label;
-		this.tooltips = tooltips;
-		String[] labels = tooltips.keySet().toArray(new String[] {});
-		Arrays.sort(labels);
-		this.labels = labels;
+		this(type, name, label, tooltips);
 		this.value = value;
 	}
 

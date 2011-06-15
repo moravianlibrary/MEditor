@@ -3036,6 +3036,7 @@ public final class TabUtils {
 					list.add(val.getAuthority());
 					list.add(val.getXlink());
 					list.add(val.getLang());
+					list.add(val.getXmlLang());
 					list.add(val.getTransliteration());
 					list.add(val.getScript());
 					vals.add(list);
