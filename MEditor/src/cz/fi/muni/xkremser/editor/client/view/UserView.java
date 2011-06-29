@@ -112,7 +112,7 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		// hLayout.setPadding(10);
 		this.userGrid = new ListGrid();
 		userGrid.setWidth(400);
-		userGrid.setHeight(480);
+		userGrid.setHeight(380);
 		userGrid.setShowSortArrow(SortArrow.CORNER);
 		userGrid.setShowAllRecords(true);
 		userGrid.setAutoFetchData(true);
@@ -128,12 +128,12 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		detailLayout.setMargin(0);
 
 		VLayout rolesLayout = new VLayout();
-		rolesLayout.setHeight(300);
+		rolesLayout.setHeight(200);
 		rolesLayout.setPadding(0);
 		rolesLayout.setMargin(0);
 		this.userRolesGrid = new ListGrid();
 		userRolesGrid.setWidth(290);
-		userRolesGrid.setHeight(245);
+		userRolesGrid.setHeight(145);
 		userRolesGrid.setShowSortArrow(SortArrow.CORNER);
 		userRolesGrid.setShowAllRecords(true);
 		// userRolesGrid.setAutoFetchData(true);
@@ -413,6 +413,7 @@ public class UserView extends ViewImpl implements UserPresenter.MyView {
 		return removeUser;
 	}
 
+	@Override
 	public IButton getRemoveRequest() {
 		return removeRequest;
 	}
