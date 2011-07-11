@@ -1395,6 +1395,9 @@ public final class TabUtils {
 								itemsToAdd[i + 1]
 										.setValue(valueVector == null ? false : valueVector.get(i + 1) == null ? false : ClientUtils.toBoolean(valueVector.get(i + 1)));
 							} else {
+								// If it throws the IndexOutOfBoundsException, there are less
+								// values than it should be and the mistake is probably where
+								// the values list is created
 								itemsToAdd[i + 1].setValue(valueVector == null ? "" : valueVector.get(i + 1) == null ? "" : valueVector.get(i + 1));
 							}
 						}
@@ -2147,7 +2150,7 @@ public final class TabUtils {
 		tooltips.put("corporate", lang.corporateMARC());
 		tooltips.put("conference", lang.conferenceMARC());
 		Attribute[] attributes = new Attribute[] {
-				new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", tooltips, values == null ? "" : values.getType().value()),
+				new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", tooltips, values == null || values.getType() == null ? "" : values.getType().value()),
 				ATTR_LANG(values == null ? "" : values.getLang()), ATTR_AUTHORITY(values == null ? "" : values.getAuthority()),
 				ATTR_XML_LANG(values == null ? "" : values.getXmlLang()), ATTR_SCRIPT(values == null ? "" : values.getScript()),
 				ATTR_TRANSLITERATION(values == null ? "" : values.getTransliteration()), ATTR_XLINK(values == null ? "" : values.getXlink()),
@@ -2814,8 +2817,7 @@ public final class TabUtils {
 				if (code != null) {
 					List<String> list = new ArrayList<String>();
 					list.add(code.getValue());
-					if (code.getAuthority() != null)
-						list.add(code.getAuthority().value());
+					list.add(code.getAuthority() == null ? "" : code.getAuthority().value());
 					vals.add(list);
 				}
 			}
