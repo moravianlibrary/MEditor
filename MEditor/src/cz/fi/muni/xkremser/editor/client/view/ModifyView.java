@@ -38,6 +38,9 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
@@ -227,6 +230,22 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	/** The first. */
 	private boolean first = true;
 
+	int pressedCount = 0;
+	private static final String LEFT = "left";
+	private static final String RIGHT = "right";
+	private static final String UP = "up";
+	private static final String DOWN = "down";
+
+	private static final int CODELEFT = 100;
+	private static final int CODERIGHT = 102;
+	private static final int CODEUP = 104;
+	private static final int CODEDOWN = 98;
+	private static final int CHANGEFOCUS = 101;
+
+	private boolean isSecondFocused;
+	private static final String TAB = "tab";
+	private ModsTab myModsTab;
+
 	/**
 	 * Instantiates a new modify view.
 	 */
@@ -275,6 +294,110 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 	@Override
 	public void toClipboard(Record[] data) {
 		this.clipboard = data;
+	}
+
+	{
+		Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+			@Override
+			public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+				if (event.getNativeEvent().getCtrlKey()) {
+
+					if (event.getNativeEvent().getKeyCode() == CHANGEFOCUS && topTabSet2 != null) {
+						myKeyPressHandler(TAB, null);
+					}
+
+					System.out.println(event.getNativeEvent().getKeyCode());
+
+					if (!isSecondFocused || topTabSet2 == null) {
+
+						if (event.getNativeEvent().getKeyCode() == CODELEFT) {
+							myKeyPressHandler(LEFT, topTabSet1);
+
+						} else if (event.getNativeEvent().getKeyCode() == CODEUP) {
+							myKeyPressHandler(UP, topTabSet1);
+
+						} else if (event.getNativeEvent().getKeyCode() == CODERIGHT) {
+							myKeyPressHandler(RIGHT, topTabSet1);
+
+						} else if (event.getNativeEvent().getKeyCode() == CODEDOWN) {
+							myKeyPressHandler(DOWN, topTabSet1);
+
+						}
+					} else if (isSecondFocused && topTabSet2 != null) {
+
+						if (event.getNativeEvent().getKeyCode() == CODELEFT) {
+							myKeyPressHandler(LEFT, topTabSet2);
+
+						} else if (event.getNativeEvent().getKeyCode() == CODEUP) {
+							myKeyPressHandler(UP, topTabSet2);
+
+						} else if (event.getNativeEvent().getKeyCode() == CODERIGHT) {
+							myKeyPressHandler(RIGHT, topTabSet2);
+
+						} else if (event.getNativeEvent().getKeyCode() == CODEDOWN) {
+							myKeyPressHandler(DOWN, topTabSet2);
+						}
+					}
+				}
+			}
+
+		});
+	}
+
+	private void myKeyPressHandler(String direction, TabSet tabSet) {
+
+		if (pressedCount == 0) {
+
+			System.out.println();
+
+			if (direction.equals(TAB)) {
+				if (!isSecondFocused) {
+					pressedCount++;
+					isSecondFocused = true;
+				} else {
+					isSecondFocused = false;
+					pressedCount++;
+				}
+			} else {
+				int currentTab = tabSet.getSelectedTabNumber();
+				System.out.println();
+				System.out.println("current tab " + currentTab);
+				System.out.println("pressed count " + pressedCount);
+
+				if (direction.equals(LEFT)) {
+					if (currentTab == 0) {
+						currentTab = tabSet.getNumTabs();
+					}
+					tabSet.selectTab(currentTab - 1);
+					System.out.println("pushed key left");
+
+				} else if (direction.equals(RIGHT)) {
+					if (currentTab == tabSet.getNumTabs() - 1) {
+						currentTab = -1;
+					}
+					tabSet.selectTab(currentTab + 1);
+					System.out.println("pushed key right");
+
+				} else if (direction.equals(UP)) {
+					System.out.println("pushed key up");
+				} else if (direction.equals(DOWN)) {
+
+					System.out.println("pushed key down");
+				}
+
+				System.out.println("next tab " + tabSet.getSelectedTabNumber());
+				pressedCount++;
+			}
+		} else {
+			if (pressedCount == 1) {
+				pressedCount = 0;
+			} else {
+				pressedCount++;
+			}
+
+		}
 	}
 
 	/*
@@ -432,6 +555,7 @@ public class ModifyView extends ViewWithUiHandlers<MyUiHandlers> implements MyVi
 			tabList.add(foxmlTab);
 
 		topTabSet.setTabs(tabList.toArray(new Tab[] {}));
+
 		topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(final TabSelectedEvent event) {
