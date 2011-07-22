@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
@@ -38,96 +39,93 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 /**
  * The Class TypeOfResourceHolder.
  */
-public class TypeOfResourceHolder extends ListOfSimpleValuesHolder {
+public class TypeOfResourceHolder
+        extends ListOfSimpleValuesHolder {
 
-	/** The attribute form2. */
-	private DynamicForm attributeForm2;
+    /** The attribute form2. */
+    private DynamicForm attributeForm2;
 
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public TypeOfResourceTypeClient getType() {
-		TypeOfResourceTypeClient typeOfResourceTypeClient = new TypeOfResourceTypeClient();
-		if (getAttributeForm() != null) {
-			String val = getAttributeForm().getValueAsString(ModsConstants.COLLECTION);
-			if (val != null && ClientUtils.toBoolean(val)) {
-				typeOfResourceTypeClient.setCollection(YesClient.YES);
-			}
-			val = getAttributeForm().getValueAsString(ModsConstants.MANUSCRIPT);
-			if (val != null && ClientUtils.toBoolean(val)) {
-				typeOfResourceTypeClient.setManuscript(YesClient.YES);
-			}
-		}
-		typeOfResourceTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TYPE));
-		return typeOfResourceTypeClient;
-	}
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public TypeOfResourceTypeClient getType() {
+        TypeOfResourceTypeClient typeOfResourceTypeClient = new TypeOfResourceTypeClient();
+        if (getAttributeForm() != null) {
+            String val = getAttributeForm().getValueAsString(ModsConstants.COLLECTION);
+            if (val != null && ClientUtils.toBoolean(val)) {
+                typeOfResourceTypeClient.setCollection(YesClient.YES);
+            }
+            val = getAttributeForm().getValueAsString(ModsConstants.MANUSCRIPT);
+            if (val != null && ClientUtils.toBoolean(val)) {
+                typeOfResourceTypeClient.setManuscript(YesClient.YES);
+            }
+        }
+        typeOfResourceTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TYPE));
+        return typeOfResourceTypeClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getSubelements()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-	 * ()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+     * ()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-	 * ()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+     * ()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getAttributeForm2()
-	 */
-	public DynamicForm getAttributeForm2() {
-		return attributeForm2;
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getAttributeForm2()
+     */
+    @Override
+    public DynamicForm getAttributeForm2() {
+        return attributeForm2;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * setAttributeForm2(com.smartgwt.client.widgets.form.DynamicForm)
-	 */
-	public void setAttributeForm2(DynamicForm attributeForm2) {
-		this.attributeForm2 = attributeForm2;
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * setAttributeForm2(com.smartgwt.client.widgets.form.DynamicForm)
+     */
+    @Override
+    public void setAttributeForm2(DynamicForm attributeForm2) {
+        this.attributeForm2 = attributeForm2;
+    }
 
 }

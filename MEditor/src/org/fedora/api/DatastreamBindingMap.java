@@ -29,19 +29,20 @@ package org.fedora.api;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * ordered list of datastream binding maps
- * 
- * <p>Java class for DatastreamBindingMap complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for DatastreamBindingMap complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="DatastreamBindingMap">
@@ -68,45 +69,36 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DatastreamBindingMap", propOrder = {
-    "dsBindMapID",
-    "dsBindMechanismPID",
-    "dsBindMapLabel",
-    "state",
-    "dsBindings"
-})
+@XmlType(name = "DatastreamBindingMap", propOrder = {"dsBindMapID", "dsBindMechanismPID", "dsBindMapLabel",
+        "state", "dsBindings"})
 public class DatastreamBindingMap {
 
     /** The ds bind map id. */
     @XmlElement(required = true, nillable = true)
     protected String dsBindMapID;
-    
+
     /** The ds bind mechanism pid. */
     @XmlElement(required = true, nillable = true)
     protected String dsBindMechanismPID;
-    
+
     /** The ds bind map label. */
     @XmlElement(required = true, nillable = true)
     protected String dsBindMapLabel;
-    
+
     /** The state. */
     @XmlElement(required = true, nillable = true)
     protected String state;
-    
+
     /** The ds bindings. */
     @XmlElement(required = true, nillable = true)
     protected DatastreamBindingMap.DsBindings dsBindings;
 
     /**
      * Gets the value of the dsBindMapID property.
-     *
-     * @return the ds bind map id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds bind map id possible object is {@link String }
      */
     public String getDsBindMapID() {
         return dsBindMapID;
@@ -116,9 +108,7 @@ public class DatastreamBindingMap {
      * Sets the value of the dsBindMapID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsBindMapID(String value) {
         this.dsBindMapID = value;
@@ -126,10 +116,8 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the dsBindMechanismPID property.
-     *
-     * @return the ds bind mechanism pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds bind mechanism pid possible object is {@link String }
      */
     public String getDsBindMechanismPID() {
         return dsBindMechanismPID;
@@ -139,9 +127,7 @@ public class DatastreamBindingMap {
      * Sets the value of the dsBindMechanismPID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsBindMechanismPID(String value) {
         this.dsBindMechanismPID = value;
@@ -149,10 +135,8 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the dsBindMapLabel property.
-     *
-     * @return the ds bind map label
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds bind map label possible object is {@link String }
      */
     public String getDsBindMapLabel() {
         return dsBindMapLabel;
@@ -162,9 +146,7 @@ public class DatastreamBindingMap {
      * Sets the value of the dsBindMapLabel property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsBindMapLabel(String value) {
         this.dsBindMapLabel = value;
@@ -172,10 +154,8 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the state property.
-     *
-     * @return the state
-     * possible object is
-     * {@link String }
+     * 
+     * @return the state possible object is {@link String }
      */
     public String getState() {
         return state;
@@ -185,9 +165,7 @@ public class DatastreamBindingMap {
      * Sets the value of the state property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setState(String value) {
         this.state = value;
@@ -195,10 +173,9 @@ public class DatastreamBindingMap {
 
     /**
      * Gets the value of the dsBindings property.
-     *
-     * @return the ds bindings
-     * possible object is
-     * {@link DatastreamBindingMap.DsBindings }
+     * 
+     * @return the ds bindings possible object is
+     *         {@link DatastreamBindingMap.DsBindings }
      */
     public DatastreamBindingMap.DsBindings getDsBindings() {
         return dsBindings;
@@ -208,19 +185,18 @@ public class DatastreamBindingMap {
      * Sets the value of the dsBindings property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link DatastreamBindingMap.DsBindings }
-     *     
+     *        allowed object is {@link DatastreamBindingMap.DsBindings }
      */
     public void setDsBindings(DatastreamBindingMap.DsBindings value) {
         this.dsBindings = value;
     }
 
-
     /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * <p>
+     * Java class for anonymous complex type.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -233,13 +209,9 @@ public class DatastreamBindingMap {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "dsBinding"
-    })
+    @XmlType(name = "", propOrder = {"dsBinding"})
     public static class DsBindings {
 
         /** The ds binding. */
@@ -247,25 +219,21 @@ public class DatastreamBindingMap {
 
         /**
          * Gets the value of the dsBinding property.
-         * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the dsBinding property.
-         * 
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the dsBinding property.
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
          * getDsBinding().add(newItem);
          * </pre>
-         * 
-         * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         *
-         * @return the ds binding
-         * {@link DatastreamBinding }
+         * 
+         * @return the ds binding {@link DatastreamBinding }
          */
         public List<DatastreamBinding> getDsBinding() {
             if (dsBinding == null) {

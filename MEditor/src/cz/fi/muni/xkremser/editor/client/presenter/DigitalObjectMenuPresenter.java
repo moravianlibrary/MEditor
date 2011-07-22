@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.presenter;
 
 import java.util.List;
@@ -57,6 +58,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
+
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
@@ -69,293 +71,303 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 /**
  * The Class DigitalObjectMenuPresenter.
  */
-public class DigitalObjectMenuPresenter extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy> implements MyUiHandlers {
-	/**
-	 * The Interface MyView.
-	 */
-	public interface MyView extends View/* , HasUiHandlers<MyUiHandlers> */{
+public class DigitalObjectMenuPresenter
+        extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy>
+        implements MyUiHandlers {
 
-		/**
-		 * Gets the selected.
-		 * 
-		 * @return the selected
-		 */
-		HasValue<String> getSelected();
+    /**
+     * The Interface MyView.
+     */
+    public interface MyView
+            extends View/* , HasUiHandlers<MyUiHandlers> */{
 
-		/**
-		 * Expand node.
-		 * 
-		 * @param id
-		 *          the id
-		 */
-		void expandNode(String id);
+        /**
+         * Gets the selected.
+         * 
+         * @return the selected
+         */
+        HasValue<String> getSelected();
 
-		/**
-		 * Gets the refresh widget.
-		 * 
-		 * @return the refresh widget
-		 */
-		HasClickHandlers getRefreshWidget();
+        /**
+         * Expand node.
+         * 
+         * @param id
+         *        the id
+         */
+        void expandNode(String id);
 
-		/**
-		 * Show input queue.
-		 * 
-		 * @param dispatcher
-		 *          the dispatcher
-		 */
-		void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager);
+        /**
+         * Gets the refresh widget.
+         * 
+         * @return the refresh widget
+         */
+        HasClickHandlers getRefreshWidget();
 
-		/**
-		 * Gets the input tree.
-		 * 
-		 * @return the input tree
-		 */
-		Refreshable getInputTree();
+        /**
+         * Show input queue.
+         * 
+         * @param dispatcher
+         *        the dispatcher
+         */
+        void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager);
 
-		// TODO: ListGrid -> na nejake rozhrani
-		/**
-		 * Gets the recently modified tree.
-		 * 
-		 * @return the recently modified tree
-		 */
-		ListGrid getRecentlyModifiedGrid();
+        /**
+         * Gets the input tree.
+         * 
+         * @return the input tree
+         */
+        Refreshable getInputTree();
 
-		/**
-		 * Gets the related grid.
-		 * 
-		 * @return the related grid
-		 */
-		ListGrid getRelatedGrid();
+        // TODO: ListGrid -> na nejake rozhrani
+        /**
+         * Gets the recently modified tree.
+         * 
+         * @return the recently modified tree
+         */
+        ListGrid getRecentlyModifiedGrid();
 
-		/**
-		 * Sets the dS.
-		 * 
-		 * @param dispatcher
-		 *          the new dS
-		 */
-		void setDS(DispatchAsync dispatcher);
+        /**
+         * Gets the related grid.
+         * 
+         * @return the related grid
+         */
+        ListGrid getRelatedGrid();
 
-		/**
-		 * Sets the related documents.
-		 * 
-		 * @param data
-		 *          the new related documents
-		 */
-		void setRelatedDocuments(List<? extends List<String>> data);
-	}
+        /**
+         * Sets the dS.
+         * 
+         * @param dispatcher
+         *        the new dS
+         */
+        void setDS(DispatchAsync dispatcher);
 
-	/**
-	 * The Interface MyProxy.
-	 */
-	@ProxyStandard
-	public interface MyProxy extends Proxy<DigitalObjectMenuPresenter> {
+        /**
+         * Sets the related documents.
+         * 
+         * @param data
+         *        the new related documents
+         */
+        void setRelatedDocuments(List<? extends List<String>> data);
+    }
 
-	}
+    /**
+     * The Interface MyProxy.
+     */
+    @ProxyStandard
+    public interface MyProxy
+            extends Proxy<DigitalObjectMenuPresenter> {
 
-	/** The dispatcher. */
-	private final DispatchAsync dispatcher;
+    }
 
-	/** The input queue shown. */
-	private boolean inputQueueShown = false;
+    /** The dispatcher. */
+    private final DispatchAsync dispatcher;
 
-	/** The place manager. */
-	private final PlaceManager placeManager;
+    /** The input queue shown. */
+    private boolean inputQueueShown = false;
 
-	// @Inject
-	/** The config. */
-	private final EditorClientConfiguration config;
+    /** The place manager. */
+    private final PlaceManager placeManager;
 
-	/**
-	 * Instantiates a new digital object menu presenter.
-	 * 
-	 * @param view
-	 *          the view
-	 * @param eventBus
-	 *          the event bus
-	 * @param proxy
-	 *          the proxy
-	 * @param dispatcher
-	 *          the dispatcher
-	 * @param config
-	 *          the config
-	 * @param placeManager
-	 *          the place manager
-	 */
-	@Inject
-	public DigitalObjectMenuPresenter(final MyView view, final EventBus eventBus, final MyProxy proxy, final DispatchAsync dispatcher,
-			final EditorClientConfiguration config, PlaceManager placeManager) {
-		super(eventBus, view, proxy);
-		this.dispatcher = dispatcher;
-		this.config = config;
-		this.placeManager = placeManager;
-		bind();
-	}
+    // @Inject
+    /** The config. */
+    private final EditorClientConfiguration config;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
-	 */
-	@Override
-	protected void onBind() {
-		super.onBind();
+    /**
+     * Instantiates a new digital object menu presenter.
+     * 
+     * @param view
+     *        the view
+     * @param eventBus
+     *        the event bus
+     * @param proxy
+     *        the proxy
+     * @param dispatcher
+     *        the dispatcher
+     * @param config
+     *        the config
+     * @param placeManager
+     *        the place manager
+     */
+    @Inject
+    public DigitalObjectMenuPresenter(final MyView view,
+                                      final EventBus eventBus,
+                                      final MyProxy proxy,
+                                      final DispatchAsync dispatcher,
+                                      final EditorClientConfiguration config,
+                                      PlaceManager placeManager) {
+        super(eventBus, view, proxy);
+        this.dispatcher = dispatcher;
+        this.config = config;
+        this.placeManager = placeManager;
+        bind();
+    }
 
-		getView().setDS(dispatcher);
-		getView().getRecentlyModifiedGrid().setHoverCustomizer(new HoverCustomizer() {
-			@Override
-			public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-				return record.getAttribute(Constants.ATTR_DESC);
-			}
-		});
-		getView().getRecentlyModifiedGrid().addCellClickHandler(new CellClickHandler() {
-			@Override
-			public void onCellClick(CellClickEvent event) {
-				revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
-			}
-		});
-		getView().getRelatedGrid().addCellClickHandler(new CellClickHandler() {
-			@Override
-			public void onCellClick(CellClickEvent event) {
-				revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
-			}
-		});
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+     */
+    @Override
+    protected void onBind() {
+        super.onBind();
 
-		addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
-			@Override
-			public void onConfigReceived(ConfigReceivedEvent event) {
-				if (event.isStatusOK()) {
-					setInputQueueShown(config.getShowInputQueue());
-				} else {
-					setInputQueueShown(EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
-				}
-				if (isInputQueueShown()) {
-					onShowInputQueue();
-				}
-			}
-		});
+        getView().setDS(dispatcher);
+        getView().getRecentlyModifiedGrid().setHoverCustomizer(new HoverCustomizer() {
 
-		addRegisteredHandler(DigitalObjectOpenedEvent.getType(), new DigitalObjectOpenedHandler() {
-			@Override
-			public void onDigitalObjectOpened(DigitalObjectOpenedEvent event) {
-				if (event.isStatusOK()) {
-					onAddDigitalObject(event.getItem(), event.getRelated());
-				}
-			}
-		});
-	}
+            @Override
+            public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
+                return record.getAttribute(Constants.ATTR_DESC);
+            }
+        });
+        getView().getRecentlyModifiedGrid().addCellClickHandler(new CellClickHandler() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
-	 */
-	@Override
-	protected void onUnbind() {
-		super.onUnbind();
-		getView().getRecentlyModifiedGrid().setHoverCustomizer(null);
-	}
+            @Override
+            public void onCellClick(CellClickEvent event) {
+                revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+            }
+        });
+        getView().getRelatedGrid().addCellClickHandler(new CellClickHandler() {
 
-	/**
-	 * Checks if is input queue shown.
-	 * 
-	 * @return true, if is input queue shown
-	 */
-	public boolean isInputQueueShown() {
-		return inputQueueShown;
-	}
+            @Override
+            public void onCellClick(CellClickEvent event) {
+                revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+            }
+        });
 
-	/**
-	 * Sets the input queue shown.
-	 * 
-	 * @param inputQueueShown
-	 *          the new input queue shown
-	 */
-	public void setInputQueueShown(boolean inputQueueShown) {
-		this.inputQueueShown = inputQueueShown;
-	}
+        addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-	 * #onRefresh()
-	 */
-	@Override
-	public void onRefresh() {
-		dispatcher.execute(new ScanInputQueueAction(null, true), new DispatchCallback<ScanInputQueueResult>() {
+            @Override
+            public void onConfigReceived(ConfigReceivedEvent event) {
+                if (event.isStatusOK()) {
+                    setInputQueueShown(config.getShowInputQueue());
+                } else {
+                    setInputQueueShown(EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
+                }
+                if (isInputQueueShown()) {
+                    onShowInputQueue();
+                }
+            }
+        });
 
-			@Override
-			public void callback(ScanInputQueueResult result) {
-				getView().getInputTree().refreshTree();
-			}
-		});
-	}
+        addRegisteredHandler(DigitalObjectOpenedEvent.getType(), new DigitalObjectOpenedHandler() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
-	 */
-	@Override
-	protected void revealInParent() {
-		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, this);
-	}
+            @Override
+            public void onDigitalObjectOpened(DigitalObjectOpenedEvent event) {
+                if (event.isStatusOK()) {
+                    onAddDigitalObject(event.getItem(), event.getRelated());
+                }
+            }
+        });
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-	 * #onShowInputQueue()
-	 */
-	@Override
-	public void onShowInputQueue() {
-		getView().showInputQueue(dispatcher, placeManager);
-		registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
+     */
+    @Override
+    protected void onUnbind() {
+        super.onUnbind();
+        getView().getRecentlyModifiedGrid().setHoverCustomizer(null);
+    }
 
-			@Override
-			public void onClick(ClickEvent event) {
-				onRefresh();
-			}
-		}));
-	}
+    /**
+     * Checks if is input queue shown.
+     * 
+     * @return true, if is input queue shown
+     */
+    public boolean isInputQueueShown() {
+        return inputQueueShown;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-	 * #onAddDigitalObject
-	 * (cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
-	 */
-	@Override
-	public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
-		getView().setRelatedDocuments(related);
-		Timer timer = new Timer() {
-			@Override
-			public void run() {
-				RecentlyModifiedRecord record = ClientUtils.toRecord(item);
-				if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
-					getView().getRecentlyModifiedGrid().updateData(record);
-				} else {
-					getView().getRecentlyModifiedGrid().addData(record);
-				}
-			}
-		};
-		timer.schedule(500);
+    /**
+     * Sets the input queue shown.
+     * 
+     * @param inputQueueShown
+     *        the new input queue shown
+     */
+    public void setInputQueueShown(boolean inputQueueShown) {
+        this.inputQueueShown = inputQueueShown;
+    }
 
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+     * #onRefresh()
+     */
+    @Override
+    public void onRefresh() {
+        dispatcher.execute(new ScanInputQueueAction(null, true),
+                           new DispatchCallback<ScanInputQueueResult>() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-	 * #revealModifiedItem(java.lang.String)
-	 */
-	@Override
-	public void revealItem(String uuid) {
-		placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid));
-	}
+                               @Override
+                               public void callback(ScanInputQueueResult result) {
+                                   getView().getInputTree().refreshTree();
+                               }
+                           });
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+     */
+    @Override
+    protected void revealInParent() {
+        RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, this);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+     * #onShowInputQueue()
+     */
+    @Override
+    public void onShowInputQueue() {
+        getView().showInputQueue(dispatcher, placeManager);
+        registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                onRefresh();
+            }
+        }));
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+     * #onAddDigitalObject
+     * (cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
+     */
+    @Override
+    public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
+        getView().setRelatedDocuments(related);
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+                RecentlyModifiedRecord record = ClientUtils.toRecord(item);
+                if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
+                    getView().getRecentlyModifiedGrid().updateData(record);
+                } else {
+                    getView().getRecentlyModifiedGrid().addData(record);
+                }
+            }
+        };
+        timer.schedule(500);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+     * #revealModifiedItem(java.lang.String)
+     */
+    @Override
+    public void revealItem(String uuid) {
+        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
+                                                                                  uuid));
+    }
 }

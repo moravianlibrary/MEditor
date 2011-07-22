@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.dispatcher;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,72 +39,75 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
  * The Class DispatchCallback.
  * 
  * @param <T>
- *          the generic type
+ *        the generic type
  */
-public abstract class DispatchCallback<T> implements AsyncCallback<T> {
+public abstract class DispatchCallback<T>
+        implements AsyncCallback<T> {
 
-	/**
-	 * Instantiates a new dispatch callback.
-	 */
-	public DispatchCallback() {
+    /**
+     * Instantiates a new dispatch callback.
+     */
+    public DispatchCallback() {
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-	 */
-	@Override
-	public void onFailure(Throwable caught) {
-		// log
-		callbackError(caught);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable
+     * )
+     */
+    @Override
+    public void onFailure(Throwable caught) {
+        // log
+        callbackError(caught);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-	 */
-	@Override
-	public void onSuccess(T result) {
-		callback(result);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+     */
+    @Override
+    public void onSuccess(T result) {
+        callback(result);
+    }
 
-	/**
-	 * Must be overriden by clients to handle callbacks.
-	 * 
-	 * @param result
-	 *          the result
-	 */
-	public abstract void callback(T result);
+    /**
+     * Must be overriden by clients to handle callbacks.
+     * 
+     * @param result
+     *        the result
+     */
+    public abstract void callback(T result);
 
-	/**
-	 * Should be overriden by clients who want to handle error cases themselves.
-	 * 
-	 * @param t
-	 *          the t
-	 */
-	public void callbackError(final Throwable t) {
-		String msg = null;
-		final boolean redirect = (t.getMessage() != null && t.getMessage().length() > 0 && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG);
-		if (redirect) {
-			msg = "Session has expired. Do you want to be redirected to login page?";
-		}
-		SC.confirm((redirect ? "" : "RPC failed:" + t.getMessage()) + (msg == null ? "" : msg), new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value != null && value) {
-					if (redirect) {
-						MEditor.redirect(t.getMessage().substring(1));
-					}
-				} else {
+    /**
+     * Should be overriden by clients who want to handle error cases themselves.
+     * 
+     * @param t
+     *        the t
+     */
+    public void callbackError(final Throwable t) {
+        String msg = null;
+        final boolean redirect =
+                (t.getMessage() != null && t.getMessage().length() > 0 && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG);
+        if (redirect) {
+            msg = "Session has expired. Do you want to be redirected to login page?";
+        }
+        SC.confirm((redirect ? "" : "RPC failed:" + t.getMessage()) + (msg == null ? "" : msg),
+                   new BooleanCallback() {
 
-				}
-			}
-		});
+                       @Override
+                       public void execute(Boolean value) {
+                           if (value != null && value) {
+                               if (redirect) {
+                                   MEditor.redirect(t.getMessage().substring(1));
+                               }
+                           } else {
 
-	}
+                           }
+                       }
+                   });
+
+    }
 }

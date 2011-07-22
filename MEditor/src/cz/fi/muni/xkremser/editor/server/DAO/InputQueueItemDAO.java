@@ -24,12 +24,14 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 
 // TODO: Auto-generated Javadoc
@@ -38,21 +40,21 @@ import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
  */
 public interface InputQueueItemDAO {
 
-	/**
-	 * Update items.
-	 * 
-	 * @param toUpdate
-	 *          the to update
-	 */
-	void updateItems(List<InputQueueItem> toUpdate) throws DatabaseException;
+    /**
+     * Update items.
+     * 
+     * @param toUpdate
+     *        the to update
+     */
+    void updateItems(List<InputQueueItem> toUpdate) throws DatabaseException;
 
-	/**
-	 * Gets the items.
-	 * 
-	 * @param prefix
-	 *          the prefix
-	 * @return the items
-	 */
-	ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException;
+    /**
+     * Gets the items.
+     * 
+     * @param prefix
+     *        the prefix
+     * @return the items
+     */
+    ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException;
 
 }

@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "modifiedDate"
-})
+@XmlType(name = "", propOrder = {"modifiedDate"})
 @XmlRootElement(name = "setDatastreamStateResponse")
 public class SetDatastreamStateResponse {
 
@@ -67,10 +64,8 @@ public class SetDatastreamStateResponse {
 
     /**
      * Gets the value of the modifiedDate property.
-     *
-     * @return the modified date
-     * possible object is
-     * {@link String }
+     * 
+     * @return the modified date possible object is {@link String }
      */
     public String getModifiedDate() {
         return modifiedDate;
@@ -80,9 +75,7 @@ public class SetDatastreamStateResponse {
      * Sets the value of the modifiedDate property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setModifiedDate(String value) {
         this.modifiedDate = value;

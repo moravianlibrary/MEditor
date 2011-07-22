@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -53,35 +54,27 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "logMessage",
-    "force"
-})
+@XmlType(name = "", propOrder = {"pid", "logMessage", "force"})
 @XmlRootElement(name = "purgeObject")
 public class PurgeObject {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
-    
+
     /** The force. */
     protected boolean force;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -91,9 +84,7 @@ public class PurgeObject {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -101,10 +92,8 @@ public class PurgeObject {
 
     /**
      * Gets the value of the logMessage property.
-     *
-     * @return the log message
-     * possible object is
-     * {@link String }
+     * 
+     * @return the log message possible object is {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -114,9 +103,7 @@ public class PurgeObject {
      * Sets the value of the logMessage property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLogMessage(String value) {
         this.logMessage = value;
@@ -124,7 +111,7 @@ public class PurgeObject {
 
     /**
      * Gets the value of the force property.
-     *
+     * 
      * @return true, if is force
      */
     public boolean isForce() {
@@ -133,8 +120,9 @@ public class PurgeObject {
 
     /**
      * Sets the value of the force property.
-     *
-     * @param value the new force
+     * 
+     * @param value
+     *        the new force
      */
     public void setForce(boolean value) {
         this.force = value;

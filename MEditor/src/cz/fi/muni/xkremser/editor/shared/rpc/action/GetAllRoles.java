@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.ArrayList;
@@ -37,9 +38,10 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class GetAllRoles extends UnsecuredActionImpl<GetAllRolesResult> {
+public class GetAllRoles
+        extends UnsecuredActionImpl<GetAllRolesResult> {
 
-	/** The items. */
-	@Out(1)
-	private ArrayList<String> roles;
+    /** The items. */
+    @Out(1)
+    private ArrayList<String> roles;
 }

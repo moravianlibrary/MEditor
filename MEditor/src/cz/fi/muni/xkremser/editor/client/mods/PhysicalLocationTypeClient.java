@@ -37,6 +37,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class PhysicalLocationTypeClient.
  */
-public class PhysicalLocationTypeClient extends StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient implements IsSerializable {
+public class PhysicalLocationTypeClient
+        extends StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient
+        implements IsSerializable {
 
 }

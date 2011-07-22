@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "objectProfile"
-})
+@XmlType(name = "", propOrder = {"objectProfile"})
 @XmlRootElement(name = "getObjectProfileResponse")
 public class GetObjectProfileResponse {
 
@@ -67,10 +64,8 @@ public class GetObjectProfileResponse {
 
     /**
      * Gets the value of the objectProfile property.
-     *
-     * @return the object profile
-     * possible object is
-     * {@link ObjectProfile }
+     * 
+     * @return the object profile possible object is {@link ObjectProfile }
      */
     public ObjectProfile getObjectProfile() {
         return objectProfile;
@@ -80,9 +75,7 @@ public class GetObjectProfileResponse {
      * Sets the value of the objectProfile property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link ObjectProfile }
-     *     
+     *        allowed object is {@link ObjectProfile }
      */
     public void setObjectProfile(ObjectProfile value) {
         this.objectProfile = value;

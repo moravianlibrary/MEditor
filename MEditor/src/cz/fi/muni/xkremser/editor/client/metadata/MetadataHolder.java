@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
@@ -37,82 +38,82 @@ import com.smartgwt.client.widgets.layout.Layout;
  */
 public abstract class MetadataHolder {
 
-	/** The layout. */
-	protected Layout layout;
+    /** The layout. */
+    protected Layout layout;
 
-	/** The attribute form. */
-	private DynamicForm attributeForm;
+    /** The attribute form. */
+    private DynamicForm attributeForm;
 
-	/**
-	 * Instantiates a new metadata holder.
-	 */
-	public MetadataHolder() {
-	}
+    /**
+     * Instantiates a new metadata holder.
+     */
+    public MetadataHolder() {
+    }
 
-	/**
-	 * Sets the attribute form.
-	 * 
-	 * @param form
-	 *          the new attribute form
-	 */
-	public void setAttributeForm(DynamicForm form) {
-		this.attributeForm = form;
-	}
+    /**
+     * Sets the attribute form.
+     * 
+     * @param form
+     *        the new attribute form
+     */
+    public void setAttributeForm(DynamicForm form) {
+        this.attributeForm = form;
+    }
 
-	/**
-	 * Gets the attribute form.
-	 * 
-	 * @return the attribute form
-	 */
-	public DynamicForm getAttributeForm() {
-		return this.attributeForm;
-	}
+    /**
+     * Gets the attribute form.
+     * 
+     * @return the attribute form
+     */
+    public DynamicForm getAttributeForm() {
+        return this.attributeForm;
+    }
 
-	/**
-	 * Gets the subelements.
-	 * 
-	 * @return the subelements
-	 */
-	public abstract List<MetadataHolder> getSubelements();
+    /**
+     * Gets the subelements.
+     * 
+     * @return the subelements
+     */
+    public abstract List<MetadataHolder> getSubelements();
 
-	/**
-	 * Gets the values.
-	 * 
-	 * @return the values
-	 */
-	public abstract List<String> getValues();
+    /**
+     * Gets the values.
+     * 
+     * @return the values
+     */
+    public abstract List<String> getValues();
 
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public abstract String getValue();
+    /**
+     * Gets the value.
+     * 
+     * @return the value
+     */
+    public abstract String getValue();
 
-	/**
-	 * Gets the attributes.
-	 * 
-	 * @return the attributes
-	 */
-	public abstract List<String> getAttributes();
+    /**
+     * Gets the attributes.
+     * 
+     * @return the attributes
+     */
+    public abstract List<String> getAttributes();
 
-	/**
-	 * Gets the subelement.
-	 * 
-	 * @return the subelement
-	 */
-	public MetadataHolder getSubelement() {
-		return getSubelements().get(0);
-	}
+    /**
+     * Gets the subelement.
+     * 
+     * @return the subelement
+     */
+    public MetadataHolder getSubelement() {
+        return getSubelements().get(0);
+    }
 
-	/**
-	 * Sets the layout.
-	 * 
-	 * @param layout
-	 *          the new layout
-	 */
-	public void setLayout(Layout layout) {
-		this.layout = layout;
-	}
+    /**
+     * Sets the layout.
+     * 
+     * @param layout
+     *        the new layout
+     */
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 
 }

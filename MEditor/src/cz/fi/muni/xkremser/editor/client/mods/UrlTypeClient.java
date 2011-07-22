@@ -38,150 +38,139 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class UrlTypeClient.
  */
-public class UrlTypeClient implements IsSerializable {
+public class UrlTypeClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The date last accessed. */
-	protected String dateLastAccessed;
+    /** The date last accessed. */
+    protected String dateLastAccessed;
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/** The note. */
-	protected String note;
+    /** The note. */
+    protected String note;
 
-	/** The access. */
-	protected String access;
+    /** The access. */
+    protected String access;
 
-	/** The usage. */
-	protected String usage;
+    /** The usage. */
+    protected String usage;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the dateLastAccessed property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDateLastAccessed() {
-		return dateLastAccessed;
-	}
+    /**
+     * Gets the value of the dateLastAccessed property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getDateLastAccessed() {
+        return dateLastAccessed;
+    }
 
-	/**
-	 * Sets the value of the dateLastAccessed property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setDateLastAccessed(String value) {
-		this.dateLastAccessed = value;
-	}
+    /**
+     * Sets the value of the dateLastAccessed property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setDateLastAccessed(String value) {
+        this.dateLastAccessed = value;
+    }
 
-	/**
-	 * Gets the value of the displayLabel property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the value of the displayLabel property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the value of the displayLabel property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setDisplayLabel(String value) {
-		this.displayLabel = value;
-	}
+    /**
+     * Sets the value of the displayLabel property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setDisplayLabel(String value) {
+        this.displayLabel = value;
+    }
 
-	/**
-	 * Gets the value of the note property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getNote() {
-		return note;
-	}
+    /**
+     * Gets the value of the note property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getNote() {
+        return note;
+    }
 
-	/**
-	 * Sets the value of the note property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setNote(String value) {
-		this.note = value;
-	}
+    /**
+     * Sets the value of the note property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setNote(String value) {
+        this.note = value;
+    }
 
-	/**
-	 * Gets the value of the access property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getAccess() {
-		return access;
-	}
+    /**
+     * Gets the value of the access property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getAccess() {
+        return access;
+    }
 
-	/**
-	 * Sets the value of the access property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setAccess(String value) {
-		this.access = value;
-	}
+    /**
+     * Sets the value of the access property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setAccess(String value) {
+        this.access = value;
+    }
 
-	/**
-	 * Gets the value of the usage property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getUsage() {
-		return usage;
-	}
+    /**
+     * Gets the value of the usage property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getUsage() {
+        return usage;
+    }
 
-	/**
-	 * Sets the value of the usage property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setUsage(String value) {
-		this.usage = value;
-	}
+    /**
+     * Sets the value of the usage property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setUsage(String value) {
+        this.usage = value;
+    }
 
 }

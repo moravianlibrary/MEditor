@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,10 +35,13 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsResult;
 
@@ -47,76 +49,81 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsResult;
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetAllRequestItemsHandler implements ActionHandler<GetAllRequestItemsAction, GetAllRequestItemsResult> {
+public class GetAllRequestItemsHandler
+        implements ActionHandler<GetAllRequestItemsAction, GetAllRequestItemsResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetAllRequestItemsHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetAllRequestItemsHandler.class.getPackage()
+            .toString());
 
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+    /** The configuration. */
+    private final EditorConfiguration configuration;
 
-	/** The recently modified dao. */
-	private final RequestDAO requestDAO;
+    /** The recently modified dao. */
+    private final RequestDAO requestDAO;
 
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new gets the recently modified handler.
-	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
-	 * @param userDAO
-	 *          the user dao
-	 */
-	@Inject
-	public GetAllRequestItemsHandler(final EditorConfiguration configuration, final RequestDAO requestDAO) {
-		this.configuration = configuration;
-		this.requestDAO = requestDAO;
-	}
+    /**
+     * Instantiates a new gets the recently modified handler.
+     * 
+     * @param logger
+     *        the logger
+     * @param configuration
+     *        the configuration
+     * @param userDAO
+     *        the user dao
+     */
+    @Inject
+    public GetAllRequestItemsHandler(final EditorConfiguration configuration, final RequestDAO requestDAO) {
+        this.configuration = configuration;
+        this.requestDAO = requestDAO;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action, final ExecutionContext context) throws ActionException {
-		LOGGER.debug("Processing action: GetAllRequestItemsAction");
-		ServerUtils.checkExpiredSession(httpSessionProvider);
-		try {
-			return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action,
+                                            final ExecutionContext context) throws ActionException {
+        LOGGER.debug("Processing action: GetAllRequestItemsAction");
+        ServerUtils.checkExpiredSession(httpSessionProvider);
+        try {
+            return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetAllRequestItemsAction> getActionType() {
-		return GetAllRequestItemsAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetAllRequestItemsAction> getActionType() {
+        return GetAllRequestItemsAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetAllRequestItemsAction action, GetAllRequestItemsResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetAllRequestItemsAction action,
+                     GetAllRequestItemsResult result,
+                     ExecutionContext context) throws ActionException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

@@ -54,152 +54,156 @@ import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 /**
  * The Class SideNavInputTree.
  */
-public class SideNavInputTree extends TreeGrid implements Refreshable {
+public class SideNavInputTree
+        extends TreeGrid
+        implements Refreshable {
 
-	/** The id suffix. */
-	private final String idSuffix = "";
+    /** The id suffix. */
+    private final String idSuffix = "";
 
-	/**
-	 * Instantiates a new side nav input tree.
-	 * 
-	 * @param dispatcher
-	 *          the dispatcher
-	 * @param lang
-	 */
-	public SideNavInputTree(DispatchAsync dispatcher, final PlaceManager placeManager, LangConstants lang) {
-		setWidth100();
-		setHeight100();
-		setCustomIconProperty("icon");
-		setAnimateFolderTime(100);
-		setAnimateFolders(true);
-		setAnimateFolderSpeed(1000);
-		setNodeIcon("silk/application_view_list.png");
-		setFolderIcon("silk/folder.png");
-		setShowOpenIcons(true);
-		setShowDropIcons(false);
-		// setLoadingDataMessage("loading ...");
-		setShowSortArrow(SortArrow.CORNER);
-		setShowConnectors(true);
-		setShowAllRecords(true);
-		setLoadDataOnDemand(true);
-		setCanSort(true);
-		setAutoFetchData(true);
-		setShowRoot(false);
-		// addRowContextClickHandler(new RowContextClickHandler() {
-		// @Override
-		// public void onRowContextClick(RowContextClickEvent event) {
-		// SideNavInputTree.this.getContextMenu().showContextMenu();
-		// }
-		// });
-		// addClickHandler(new ClickHandler() {
-		//
-		// @Override
-		// public void onClick(ClickEvent event) {
-		// event.cancel();
-		//
-		// }
-		// });
-		// addCellContextClickHandler(new CellContextClickHandler() {
-		// @Override
-		// public void onCellContextClick(CellContextClickEvent event) {
-		// event.cancel();
-		// }
-		// });
-		MenuItem showItem = new MenuItem(lang.show(), "icons/16/structure.png");
-		// editItem.setAttribute(ID_NAME, ID_EDIT);
-		// editItem.setEnableIfCondition(new MenuItemIfFunction() {
-		// @Override
-		// public boolean execute(Canvas target, Menu menu, MenuItem item) {
-		// return true;
-		// }
-		// });
-		final Menu showMenu = new Menu();
-		showMenu.setShowShadow(true);
-		showMenu.setShadowDepth(10);
-		showMenu.setItems(showItem);
-		// setContextMenu(editMenu);
+    /**
+     * Instantiates a new side nav input tree.
+     * 
+     * @param dispatcher
+     *        the dispatcher
+     * @param lang
+     */
+    public SideNavInputTree(DispatchAsync dispatcher, final PlaceManager placeManager, LangConstants lang) {
+        setWidth100();
+        setHeight100();
+        setCustomIconProperty("icon");
+        setAnimateFolderTime(100);
+        setAnimateFolders(true);
+        setAnimateFolderSpeed(1000);
+        setNodeIcon("silk/application_view_list.png");
+        setFolderIcon("silk/folder.png");
+        setShowOpenIcons(true);
+        setShowDropIcons(false);
+        // setLoadingDataMessage("loading ...");
+        setShowSortArrow(SortArrow.CORNER);
+        setShowConnectors(true);
+        setShowAllRecords(true);
+        setLoadDataOnDemand(true);
+        setCanSort(true);
+        setAutoFetchData(true);
+        setShowRoot(false);
+        // addRowContextClickHandler(new RowContextClickHandler() {
+        // @Override
+        // public void onRowContextClick(RowContextClickEvent event) {
+        // SideNavInputTree.this.getContextMenu().showContextMenu();
+        // }
+        // });
+        // addClickHandler(new ClickHandler() {
+        //
+        // @Override
+        // public void onClick(ClickEvent event) {
+        // event.cancel();
+        //
+        // }
+        // });
+        // addCellContextClickHandler(new CellContextClickHandler() {
+        // @Override
+        // public void onCellContextClick(CellContextClickEvent event) {
+        // event.cancel();
+        // }
+        // });
+        MenuItem showItem = new MenuItem(lang.show(), "icons/16/structure.png");
+        // editItem.setAttribute(ID_NAME, ID_EDIT);
+        // editItem.setEnableIfCondition(new MenuItemIfFunction() {
+        // @Override
+        // public boolean execute(Canvas target, Menu menu, MenuItem item) {
+        // return true;
+        // }
+        // });
+        final Menu showMenu = new Menu();
+        showMenu.setShowShadow(true);
+        showMenu.setShadowDepth(10);
+        showMenu.setItems(showItem);
+        // setContextMenu(editMenu);
 
-		MenuItem createItem = new MenuItem(lang.create(), "icons/16/create2.png");
-		createItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-			@Override
-			public void onClick(final MenuItemClickEvent event) {
-				placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA).with(Constants.URL_PARAM_CODE, event.getMenu().getEmptyMessage()));
-			}
-		});
+        MenuItem createItem = new MenuItem(lang.create(), "icons/16/create2.png");
+        createItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
-		final Menu editMenu = new Menu();
-		editMenu.setShowShadow(true);
-		editMenu.setShadowDepth(10);
-		editMenu.setItems(createItem);
-		setContextMenu(editMenu);
+            @Override
+            public void onClick(final MenuItemClickEvent event) {
+                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
+                        .with(Constants.URL_PARAM_CODE, event.getMenu().getEmptyMessage()));
+            }
+        });
 
-		addCellContextClickHandler(new CellContextClickHandler() {
+        final Menu editMenu = new Menu();
+        editMenu.setShowShadow(true);
+        editMenu.setShadowDepth(10);
+        editMenu.setItems(createItem);
+        setContextMenu(editMenu);
 
-			@Override
-			public void onCellContextClick(CellContextClickEvent event) {
-				// to.setPath(from.getAttributeAsString(ServerConstants.ATTR_ID));
-				// to.setName(from.getAttributeAsString(ServerConstants.ATTR_NAME));
-				// to.setIssn(from.getAttributeAsString(ServerConstants.ATTR_ISSN));
+        addCellContextClickHandler(new CellContextClickHandler() {
 
-				ListGridRecord record = event.getRecord();
-				String path = record.getAttribute(Constants.ATTR_ID);
-				if (path != null && path.length() > 1 && path.substring(1).contains("/")) {
-					String id = path.substring(path.substring(1).indexOf("/") + 2);
-					if (id.contains("/")) {
-						id = id.substring(0, id.indexOf("/"));
-					}
+            @Override
+            public void onCellContextClick(CellContextClickEvent event) {
+                // to.setPath(from.getAttributeAsString(ServerConstants.ATTR_ID));
+                // to.setName(from.getAttributeAsString(ServerConstants.ATTR_NAME));
+                // to.setIssn(from.getAttributeAsString(ServerConstants.ATTR_ISSN));
 
-					editMenu.setEmptyMessage(id);
-					editMenu.showContextMenu();
-				} else {
-					showMenu.showContextMenu();
-				}
+                ListGridRecord record = event.getRecord();
+                String path = record.getAttribute(Constants.ATTR_ID);
+                if (path != null && path.length() > 1 && path.substring(1).contains("/")) {
+                    String id = path.substring(path.substring(1).indexOf("/") + 2);
+                    if (id.contains("/")) {
+                        id = id.substring(0, id.indexOf("/"));
+                    }
 
-				// getContextMenu().showContextMenu();
-			}
-		});
+                    editMenu.setEmptyMessage(id);
+                    editMenu.showContextMenu();
+                } else {
+                    showMenu.showContextMenu();
+                }
 
-		addCellClickHandler(new CellClickHandler() {
-			@Override
-			public void onCellClick(CellClickEvent event) {
-				// show the menu if the click happened on the first column
-				// if (event.getColNum() == 0) {
-				// // getContextMenu().showContextMenu();
-				// }
-			}
-		});
-		addShowContextMenuHandler(new ShowContextMenuHandler() {
+                // getContextMenu().showContextMenu();
+            }
+        });
 
-			@Override
-			public void onShowContextMenu(ShowContextMenuEvent event) {
-				event.cancel();
-			}
-		});
+        addCellClickHandler(new CellClickHandler() {
 
-		TreeGridField field1 = new TreeGridField();
-		field1.setCanFilter(true);
-		field1.setName(Constants.ATTR_ISSN);
-		field1.setTitle("ID");
+            @Override
+            public void onCellClick(CellClickEvent event) {
+                // show the menu if the click happened on the first column
+                // if (event.getColNum() == 0) {
+                // // getContextMenu().showContextMenu();
+                // }
+            }
+        });
+        addShowContextMenuHandler(new ShowContextMenuHandler() {
 
-		TreeGridField field2 = new TreeGridField();
-		field2.setCanFilter(true);
-		field2.setName(Constants.ATTR_NAME);
-		field2.setTitle(lang.name());
+            @Override
+            public void onShowContextMenu(ShowContextMenuEvent event) {
+                event.cancel();
+            }
+        });
 
-		setFields(field1, field2);
-		setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
-	}
+        TreeGridField field1 = new TreeGridField();
+        field1.setCanFilter(true);
+        field1.setName(Constants.ATTR_ISSN);
+        field1.setTitle("ID");
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable
-	 * #refreshTree()
-	 */
-	@Override
-	public void refreshTree() {
-		fetchData();
-	}
+        TreeGridField field2 = new TreeGridField();
+        field2.setCanFilter(true);
+        field2.setName(Constants.ATTR_NAME);
+        field2.setTitle(lang.name());
+
+        setFields(field1, field2);
+        setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable
+     * #refreshTree()
+     */
+    @Override
+    public void refreshTree() {
+        fetchData();
+    }
 
 }

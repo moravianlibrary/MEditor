@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.ArrayList;
@@ -41,17 +42,18 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class GetUserRolesAndIdentities extends UnsecuredActionImpl<GetUserRolesAndIdentitiesResult> {
+public class GetUserRolesAndIdentities
+        extends UnsecuredActionImpl<GetUserRolesAndIdentitiesResult> {
 
-	/** The id. */
-	@In(1)
-	private String id;
+    /** The id. */
+    @In(1)
+    private String id;
 
-	/** The roles. */
-	@Out(1)
-	private ArrayList<RoleItem> roles;
+    /** The roles. */
+    @Out(1)
+    private ArrayList<RoleItem> roles;
 
-	/** The identities. */
-	@Out(2)
-	private ArrayList<OpenIDItem> identities;
+    /** The identities. */
+    @Out(2)
+    private ArrayList<OpenIDItem> identities;
 }

@@ -41,78 +41,73 @@ import cz.fi.muni.xkremser.editor.server.mods.PlaceAuthority;
 /**
  * The Class PlaceTermTypeClient.
  */
-public class PlaceTermTypeClient implements IsSerializable {
+public class PlaceTermTypeClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The authority. */
-	protected PlaceAuthorityClient authority;
+    /** The authority. */
+    protected PlaceAuthorityClient authority;
 
-	/** The type. */
-	protected CodeOrTextClient type;
+    /** The type. */
+    protected CodeOrTextClient type;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the authority property.
-	 * 
-	 * @return possible object is {@link PlaceAuthority }
-	 * 
-	 */
-	public PlaceAuthorityClient getAuthority() {
-		return authority;
-	}
+    /**
+     * Gets the value of the authority property.
+     * 
+     * @return possible object is {@link PlaceAuthority }
+     */
+    public PlaceAuthorityClient getAuthority() {
+        return authority;
+    }
 
-	/**
-	 * Sets the value of the authority property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link PlaceAuthority }
-	 * 
-	 */
-	public void setAuthority(PlaceAuthorityClient value) {
-		this.authority = value;
-	}
+    /**
+     * Sets the value of the authority property.
+     * 
+     * @param value
+     *        allowed object is {@link PlaceAuthority }
+     */
+    public void setAuthority(PlaceAuthorityClient value) {
+        this.authority = value;
+    }
 
-	/**
-	 * Gets the value of the type property.
-	 * 
-	 * @return possible object is {@link CodeOrText }
-	 * 
-	 */
-	public CodeOrTextClient getType() {
-		return type;
-	}
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return possible object is {@link CodeOrText }
+     */
+    public CodeOrTextClient getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the value of the type property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link CodeOrText }
-	 * 
-	 */
-	public void setType(CodeOrTextClient value) {
-		this.type = value;
-	}
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *        allowed object is {@link CodeOrText }
+     */
+    public void setType(CodeOrTextClient value) {
+        this.type = value;
+    }
 
 }

@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "purgedDate"
-})
+@XmlType(name = "", propOrder = {"purgedDate"})
 @XmlRootElement(name = "purgeObjectResponse")
 public class PurgeObjectResponse {
 
@@ -67,10 +64,8 @@ public class PurgeObjectResponse {
 
     /**
      * Gets the value of the purgedDate property.
-     *
-     * @return the purged date
-     * possible object is
-     * {@link String }
+     * 
+     * @return the purged date possible object is {@link String }
      */
     public String getPurgedDate() {
         return purgedDate;
@@ -80,9 +75,7 @@ public class PurgeObjectResponse {
      * Sets the value of the purgedDate property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPurgedDate(String value) {
         this.purgedDate = value;

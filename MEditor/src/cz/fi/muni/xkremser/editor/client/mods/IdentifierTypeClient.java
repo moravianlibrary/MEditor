@@ -40,196 +40,183 @@ import cz.fi.muni.xkremser.editor.server.mods.Yes;
 /**
  * The Class IdentifierTypeClient.
  */
-public class IdentifierTypeClient implements IsSerializable {
+public class IdentifierTypeClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/** The invalid. */
-	protected YesClient invalid;
+    /** The invalid. */
+    protected YesClient invalid;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the type property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the value of the type property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setType(String value) {
-		this.type = value;
-	}
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setType(String value) {
+        this.type = value;
+    }
 
-	/**
-	 * Gets the value of the displayLabel property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the value of the displayLabel property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the value of the displayLabel property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setDisplayLabel(String value) {
-		this.displayLabel = value;
-	}
+    /**
+     * Sets the value of the displayLabel property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setDisplayLabel(String value) {
+        this.displayLabel = value;
+    }
 
-	/**
-	 * Gets the value of the invalid property.
-	 * 
-	 * @return possible object is {@link Yes }
-	 * 
-	 */
-	public YesClient getInvalid() {
-		return invalid;
-	}
+    /**
+     * Gets the value of the invalid property.
+     * 
+     * @return possible object is {@link Yes }
+     */
+    public YesClient getInvalid() {
+        return invalid;
+    }
 
-	/**
-	 * Sets the value of the invalid property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link Yes }
-	 * 
-	 */
-	public void setInvalid(YesClient value) {
-		this.invalid = value;
-	}
+    /**
+     * Sets the value of the invalid property.
+     * 
+     * @param value
+     *        allowed object is {@link Yes }
+     */
+    public void setInvalid(YesClient value) {
+        this.invalid = value;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the value of the lang property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the value of the lang property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the value of the lang property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setLang(String value) {
-		this.lang = value;
-	}
+    /**
+     * Sets the value of the lang property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setLang(String value) {
+        this.lang = value;
+    }
 
-	/**
-	 * Gets the value of the script property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the value of the script property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the value of the script property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setScript(String value) {
-		this.script = value;
-	}
+    /**
+     * Sets the value of the script property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setScript(String value) {
+        this.script = value;
+    }
 
-	/**
-	 * Gets the value of the transliteration property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the value of the transliteration property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the value of the transliteration property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setTransliteration(String value) {
-		this.transliteration = value;
-	}
+    /**
+     * Sets the value of the transliteration property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setTransliteration(String value) {
+        this.transliteration = value;
+    }
 
 }

@@ -24,9 +24,11 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 import java.io.IOException;
+
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -38,42 +40,42 @@ import com.google.inject.Inject;
 /**
  * The Class Handler.
  */
-public class Handler extends URLStreamHandler {
+public class Handler
+        extends URLStreamHandler {
 
-	/** The fedora access. */
-	private final FedoraAccess fedoraAccess;
+    /** The fedora access. */
+    private final FedoraAccess fedoraAccess;
 
-	/**
-	 * Instantiates a new handler.
-	 * 
-	 * @param fedoraAccess
-	 *          the fedora access
-	 */
-	@Inject
-	public Handler(FedoraAccess fedoraAccess) {
-		super();
-		this.fedoraAccess = fedoraAccess;
-	}
+    /**
+     * Instantiates a new handler.
+     * 
+     * @param fedoraAccess
+     *        the fedora access
+     */
+    @Inject
+    public Handler(FedoraAccess fedoraAccess) {
+        super();
+        this.fedoraAccess = fedoraAccess;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.net.URLStreamHandler#openConnection(java.net.URL)
-	 */
-	@Override
-	protected URLConnection openConnection(URL u) throws IOException {
-		return new FedoraURLConnection(u, fedoraAccess);
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.net.URLStreamHandler#openConnection(java.net.URL)
+     */
+    @Override
+    protected URLConnection openConnection(URL u) throws IOException {
+        return new FedoraURLConnection(u, fedoraAccess);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.net.URLStreamHandler#openConnection(java.net.URL, java.net.Proxy)
-	 */
-	@Override
-	protected URLConnection openConnection(URL u, Proxy p) throws IOException {
-		// TODO Auto-generated method stub
-		return super.openConnection(u, p);
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.net.URLStreamHandler#openConnection(java.net.URL,
+     * java.net.Proxy)
+     */
+    @Override
+    protected URLConnection openConnection(URL u, Proxy p) throws IOException {
+        // TODO Auto-generated method stub
+        return super.openConnection(u, p);
+    }
 
 }

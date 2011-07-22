@@ -43,60 +43,54 @@ import cz.fi.muni.xkremser.editor.server.mods.RoleType;
 /**
  * The Class RoleTypeClient.
  */
-public class RoleTypeClient implements IsSerializable {
+public class RoleTypeClient
+        implements IsSerializable {
 
-	/** The role term. */
-	protected List<RoleTypeClient.RoleTermClient> roleTerm;
+    /** The role term. */
+    protected List<RoleTypeClient.RoleTermClient> roleTerm;
 
-	/**
-	 * Gets the value of the roleTerm property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the roleTerm property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the roleTerm property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the roleTerm property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getRoleTerm().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * 
-	 * @return the role term {@link RoleType.RoleTerm }
-	 */
-	public List<RoleTypeClient.RoleTermClient> getRoleTerm() {
-		return this.roleTerm;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * 
+     * @return the role term {@link RoleType.RoleTerm }
+     */
+    public List<RoleTypeClient.RoleTermClient> getRoleTerm() {
+        return this.roleTerm;
+    }
 
-	/**
-	 * Sets the role term.
-	 * 
-	 * @param roleTerm
-	 *          the new role term
-	 */
-	public void setRoleTerm(List<RoleTypeClient.RoleTermClient> roleTerm) {
-		this.roleTerm = roleTerm;
-	}
+    /**
+     * Sets the role term.
+     * 
+     * @param roleTerm
+     *        the new role term
+     */
+    public void setRoleTerm(List<RoleTypeClient.RoleTermClient> roleTerm) {
+        this.roleTerm = roleTerm;
+    }
 
-	/**
-	 * if it is a code: 100, 110, 111, 700, 710, 711 $4. If it is text:100, 110,
-	 * 700, 710 $e.
-	 * 
-	 * 
-	 * <p>
-	 * Java class for anonymous complex type.
-	 * 
-	 * <p>
-	 * The following schema fragment specifies the expected content contained
-	 * within this class.
-	 * 
-	 * <pre>
+    /**
+     * if it is a code: 100, 110, 111, 700, 710, 711 $4. If it is text:100, 110,
+     * 700, 710 $e.
+     * <p>
+     * Java class for anonymous complex type.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
+     * 
+     * <pre>
 	 * &lt;complexType>
 	 *   &lt;simpleContent>
 	 *     &lt;extension base="&lt;http://www.loc.gov/mods/v3>stringPlusAuthority">
@@ -105,35 +99,33 @@ public class RoleTypeClient implements IsSerializable {
 	 *   &lt;/simpleContent>
 	 * &lt;/complexType>
 	 * </pre>
-	 * 
-	 * 
-	 */
-	public static class RoleTermClient extends StringPlusAuthorityClient implements IsSerializable {
+     */
+    public static class RoleTermClient
+            extends StringPlusAuthorityClient
+            implements IsSerializable {
 
-		/** The type. */
-		protected CodeOrTextClient type;
+        /** The type. */
+        protected CodeOrTextClient type;
 
-		/**
-		 * Gets the value of the type property.
-		 * 
-		 * @return possible object is {@link CodeOrText }
-		 * 
-		 */
-		public CodeOrTextClient getType() {
-			return type;
-		}
+        /**
+         * Gets the value of the type property.
+         * 
+         * @return possible object is {@link CodeOrText }
+         */
+        public CodeOrTextClient getType() {
+            return type;
+        }
 
-		/**
-		 * Sets the value of the type property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link CodeOrText }
-		 * 
-		 */
-		public void setType(CodeOrTextClient value) {
-			this.type = value;
-		}
+        /**
+         * Sets the value of the type property.
+         * 
+         * @param value
+         *        allowed object is {@link CodeOrText }
+         */
+        public void setType(CodeOrTextClient value) {
+            this.type = value;
+        }
 
-	}
+    }
 
 }

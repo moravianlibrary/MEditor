@@ -29,17 +29,19 @@ package org.fedora.api;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for MIMETypedStream complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for MIMETypedStream complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="MIMETypedStream">
@@ -64,35 +66,27 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MIMETypedStream", propOrder = {
-    "mimeType",
-    "stream",
-    "header"
-})
+@XmlType(name = "MIMETypedStream", propOrder = {"mimeType", "stream", "header"})
 public class MIMETypedStream {
 
     /** The mime type. */
     @XmlElement(name = "MIMEType", required = true, nillable = true)
     protected String mimeType;
-    
+
     /** The stream. */
     @XmlElement(required = true, nillable = true)
     protected byte[] stream;
-    
+
     /** The header. */
     @XmlElement(required = true, nillable = true)
     protected MIMETypedStream.Header header;
 
     /**
      * Gets the value of the mimeType property.
-     *
-     * @return the mIME type
-     * possible object is
-     * {@link String }
+     * 
+     * @return the mIME type possible object is {@link String }
      */
     public String getMIMEType() {
         return mimeType;
@@ -102,9 +96,7 @@ public class MIMETypedStream {
      * Sets the value of the mimeType property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setMIMEType(String value) {
         this.mimeType = value;
@@ -112,10 +104,8 @@ public class MIMETypedStream {
 
     /**
      * Gets the value of the stream property.
-     *
-     * @return the stream
-     * possible object is
-     * byte[]
+     * 
+     * @return the stream possible object is byte[]
      */
     public byte[] getStream() {
         return stream;
@@ -125,19 +115,16 @@ public class MIMETypedStream {
      * Sets the value of the stream property.
      * 
      * @param value
-     *     allowed object is
-     *     byte[]
+     *        allowed object is byte[]
      */
     public void setStream(byte[] value) {
-        this.stream = ((byte[]) value);
+        this.stream = (value);
     }
 
     /**
      * Gets the value of the header property.
-     *
-     * @return the header
-     * possible object is
-     * {@link MIMETypedStream.Header }
+     * 
+     * @return the header possible object is {@link MIMETypedStream.Header }
      */
     public MIMETypedStream.Header getHeader() {
         return header;
@@ -147,19 +134,18 @@ public class MIMETypedStream {
      * Sets the value of the header property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link MIMETypedStream.Header }
-     *     
+     *        allowed object is {@link MIMETypedStream.Header }
      */
     public void setHeader(MIMETypedStream.Header value) {
         this.header = value;
     }
 
-
     /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * <p>
+     * Java class for anonymous complex type.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -172,13 +158,9 @@ public class MIMETypedStream {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "property"
-    })
+    @XmlType(name = "", propOrder = {"property"})
     public static class Header {
 
         /** The property. */
@@ -186,25 +168,21 @@ public class MIMETypedStream {
 
         /**
          * Gets the value of the property property.
-         * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the property property.
-         * 
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the property property.
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
          * getProperty().add(newItem);
          * </pre>
-         * 
-         * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         *
-         * @return the property
-         * {@link Property }
+         * 
+         * @return the property {@link Property }
          */
         public List<Property> getProperty() {
             if (property == null) {

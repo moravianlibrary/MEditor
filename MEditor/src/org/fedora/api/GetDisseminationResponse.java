@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "dissemination"
-})
+@XmlType(name = "", propOrder = {"dissemination"})
 @XmlRootElement(name = "getDisseminationResponse")
 public class GetDisseminationResponse {
 
@@ -67,10 +64,8 @@ public class GetDisseminationResponse {
 
     /**
      * Gets the value of the dissemination property.
-     *
-     * @return the dissemination
-     * possible object is
-     * {@link MIMETypedStream }
+     * 
+     * @return the dissemination possible object is {@link MIMETypedStream }
      */
     public MIMETypedStream getDissemination() {
         return dissemination;
@@ -80,9 +75,7 @@ public class GetDisseminationResponse {
      * Sets the value of the dissemination property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link MIMETypedStream }
-     *     
+     *        allowed object is {@link MIMETypedStream }
      */
     public void setDissemination(MIMETypedStream value) {
         this.dissemination = value;

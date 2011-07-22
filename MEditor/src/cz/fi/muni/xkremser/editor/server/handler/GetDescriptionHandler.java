@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,10 +35,13 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 
@@ -47,74 +49,78 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 /**
  * The Class PutRecentlyModifiedHandler.
  */
-public class GetDescriptionHandler implements ActionHandler<GetDescriptionAction, GetDescriptionResult> {
+public class GetDescriptionHandler
+        implements ActionHandler<GetDescriptionAction, GetDescriptionResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetDescriptionHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger
+            .getLogger(GetDescriptionHandler.class.getPackage().toString());
 
-	/** The recently modified dao. */
-	@Inject
-	private RecentlyModifiedItemDAO recentlyModifiedDAO;
+    /** The recently modified dao. */
+    @Inject
+    private RecentlyModifiedItemDAO recentlyModifiedDAO;
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new put recently modified handler.
-	 */
-	@Inject
-	public GetDescriptionHandler() {
-	}
+    /**
+     * Instantiates a new put recently modified handler.
+     */
+    @Inject
+    public GetDescriptionHandler() {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetDescriptionResult execute(final GetDescriptionAction action, final ExecutionContext context) throws ActionException {
-		if (action.getUuid() == null || "".equals(action.getUuid()))
-			throw new NullPointerException("getUuid()");
-		LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
-		HttpSession session = httpSessionProvider.get();
-		ServerUtils.checkExpiredSession(session);
-		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		String commonDescription;
-		String userDescription;
-		try {
-			commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
-			userDescription = recentlyModifiedDAO.getUserDescription(openID, action.getUuid());
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-		return new GetDescriptionResult(commonDescription, userDescription);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetDescriptionResult execute(final GetDescriptionAction action, final ExecutionContext context)
+            throws ActionException {
+        if (action.getUuid() == null || "".equals(action.getUuid()))
+            throw new NullPointerException("getUuid()");
+        LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
+        HttpSession session = httpSessionProvider.get();
+        ServerUtils.checkExpiredSession(session);
+        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        String commonDescription;
+        String userDescription;
+        try {
+            commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
+            userDescription = recentlyModifiedDAO.getUserDescription(openID, action.getUuid());
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+        return new GetDescriptionResult(commonDescription, userDescription);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetDescriptionAction> getActionType() {
-		return GetDescriptionAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetDescriptionAction> getActionType() {
+        return GetDescriptionAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetDescriptionAction action, GetDescriptionResult result, ExecutionContext context) throws ActionException {
-		// TODO undo method
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetDescriptionAction action, GetDescriptionResult result, ExecutionContext context)
+            throws ActionException {
+        // TODO undo method
 
-	}
+    }
 }

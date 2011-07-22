@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -55,46 +56,36 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "state",
-    "label",
-    "ownerId",
-    "logMessage"
-})
+@XmlType(name = "", propOrder = {"pid", "state", "label", "ownerId", "logMessage"})
 @XmlRootElement(name = "modifyObject")
 public class ModifyObject {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The state. */
     @XmlElement(required = true)
     protected String state;
-    
+
     /** The label. */
     @XmlElement(required = true)
     protected String label;
-    
+
     /** The owner id. */
     @XmlElement(required = true)
     protected String ownerId;
-    
+
     /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -104,9 +95,7 @@ public class ModifyObject {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -114,10 +103,8 @@ public class ModifyObject {
 
     /**
      * Gets the value of the state property.
-     *
-     * @return the state
-     * possible object is
-     * {@link String }
+     * 
+     * @return the state possible object is {@link String }
      */
     public String getState() {
         return state;
@@ -127,9 +114,7 @@ public class ModifyObject {
      * Sets the value of the state property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setState(String value) {
         this.state = value;
@@ -137,10 +122,8 @@ public class ModifyObject {
 
     /**
      * Gets the value of the label property.
-     *
-     * @return the label
-     * possible object is
-     * {@link String }
+     * 
+     * @return the label possible object is {@link String }
      */
     public String getLabel() {
         return label;
@@ -150,9 +133,7 @@ public class ModifyObject {
      * Sets the value of the label property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLabel(String value) {
         this.label = value;
@@ -160,10 +141,8 @@ public class ModifyObject {
 
     /**
      * Gets the value of the ownerId property.
-     *
-     * @return the owner id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the owner id possible object is {@link String }
      */
     public String getOwnerId() {
         return ownerId;
@@ -173,9 +152,7 @@ public class ModifyObject {
      * Sets the value of the ownerId property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setOwnerId(String value) {
         this.ownerId = value;
@@ -183,10 +160,8 @@ public class ModifyObject {
 
     /**
      * Gets the value of the logMessage property.
-     *
-     * @return the log message
-     * possible object is
-     * {@link String }
+     * 
+     * @return the log message possible object is {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -196,9 +171,7 @@ public class ModifyObject {
      * Sets the value of the logMessage property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLogMessage(String value) {
         this.logMessage = value;

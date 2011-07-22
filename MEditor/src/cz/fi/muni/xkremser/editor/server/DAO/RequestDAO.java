@@ -24,12 +24,14 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.util.ArrayList;
 
-import cz.fi.muni.xkremser.editor.common.RequestItem;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
+import cz.fi.muni.xkremser.editor.common.RequestItem;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -37,10 +39,10 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
  */
 public interface RequestDAO {
 
-	boolean addOpenIDRequest(String name, String openID) throws DatabaseException;
+    boolean addOpenIDRequest(String name, String openID) throws DatabaseException;
 
-	void removeOpenIDRequest(long id) throws DatabaseException;
+    void removeOpenIDRequest(long id) throws DatabaseException;
 
-	ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException;
+    ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException;
 
 }

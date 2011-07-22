@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -53,36 +54,28 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "objectXML",
-    "format",
-    "logMessage"
-})
+@XmlType(name = "", propOrder = {"objectXML", "format", "logMessage"})
 @XmlRootElement(name = "ingest")
 public class Ingest {
 
     /** The object xml. */
     @XmlElement(required = true)
     protected byte[] objectXML;
-    
+
     /** The format. */
     @XmlElement(required = true)
     protected String format;
-    
+
     /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
 
     /**
      * Gets the value of the objectXML property.
-     *
-     * @return the object xml
-     * possible object is
-     * byte[]
+     * 
+     * @return the object xml possible object is byte[]
      */
     public byte[] getObjectXML() {
         return objectXML;
@@ -92,19 +85,16 @@ public class Ingest {
      * Sets the value of the objectXML property.
      * 
      * @param value
-     *     allowed object is
-     *     byte[]
+     *        allowed object is byte[]
      */
     public void setObjectXML(byte[] value) {
-        this.objectXML = ((byte[]) value);
+        this.objectXML = (value);
     }
 
     /**
      * Gets the value of the format property.
-     *
-     * @return the format
-     * possible object is
-     * {@link String }
+     * 
+     * @return the format possible object is {@link String }
      */
     public String getFormat() {
         return format;
@@ -114,9 +104,7 @@ public class Ingest {
      * Sets the value of the format property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setFormat(String value) {
         this.format = value;
@@ -124,10 +112,8 @@ public class Ingest {
 
     /**
      * Gets the value of the logMessage property.
-     *
-     * @return the log message
-     * possible object is
-     * {@link String }
+     * 
+     * @return the log message possible object is {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -137,9 +123,7 @@ public class Ingest {
      * Sets the value of the logMessage property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLogMessage(String value) {
         this.logMessage = value;

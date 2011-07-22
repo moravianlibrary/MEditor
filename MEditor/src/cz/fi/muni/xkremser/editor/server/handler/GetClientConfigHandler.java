@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.util.HashMap;
@@ -31,16 +32,17 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
-
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 
@@ -48,72 +50,79 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 /**
  * The Class GetClientConfigHandler.
  */
-public class GetClientConfigHandler implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
+public class GetClientConfigHandler
+        implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetClientConfigHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetClientConfigHandler.class.getPackage()
+            .toString());
 
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+    /** The configuration. */
+    private final EditorConfiguration configuration;
 
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new gets the client config handler.
-	 * 
-	 * @param configuration
-	 *          the configuration
-	 */
-	@Inject
-	public GetClientConfigHandler(final EditorConfiguration configuration) {
-		this.configuration = configuration;
-	}
+    /**
+     * Instantiates a new gets the client config handler.
+     * 
+     * @param configuration
+     *        the configuration
+     */
+    @Inject
+    public GetClientConfigHandler(final EditorConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context) throws ActionException {
-		LOGGER.debug("Processing action: GetClientConfigAction");
-		ServerUtils.checkExpiredSession(httpSessionProvider);
-		HashMap<String, Object> result = new HashMap<String, Object>();
-		Iterator<String> it = configuration.getClientConfiguration().getKeys();
-		while (it.hasNext()) {
-			String key = it.next();
-			result.put(key, configuration.getConfiguration().getProperty(EditorConfiguration.ServerConstants.GUI_CONFIGURATION_PPREFIX + '.' + key));
-		}
-		result.put(EditorConfiguration.ServerConstants.FEDORA_HOST, configuration.getFedoraHost());
-		result.put(EditorConfiguration.ServerConstants.KRAMERIUS_HOST, configuration.getKrameriusHost());
-		return new GetClientConfigResult(result);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context)
+            throws ActionException {
+        LOGGER.debug("Processing action: GetClientConfigAction");
+        ServerUtils.checkExpiredSession(httpSessionProvider);
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        Iterator<String> it = configuration.getClientConfiguration().getKeys();
+        while (it.hasNext()) {
+            String key = it.next();
+            result.put(key,
+                       configuration.getConfiguration()
+                               .getProperty(EditorConfiguration.ServerConstants.GUI_CONFIGURATION_PPREFIX
+                                       + '.' + key));
+        }
+        result.put(EditorConfiguration.ServerConstants.FEDORA_HOST, configuration.getFedoraHost());
+        result.put(EditorConfiguration.ServerConstants.KRAMERIUS_HOST, configuration.getKrameriusHost());
+        return new GetClientConfigResult(result);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetClientConfigAction> getActionType() {
-		return GetClientConfigAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetClientConfigAction> getActionType() {
+        return GetClientConfigAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetClientConfigAction action, GetClientConfigResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetClientConfigAction action, GetClientConfigResult result, ExecutionContext context)
+            throws ActionException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

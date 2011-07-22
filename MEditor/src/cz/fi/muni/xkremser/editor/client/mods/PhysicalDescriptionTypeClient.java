@@ -40,226 +40,227 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class PhysicalDescriptionTypeClient.
  */
-public class PhysicalDescriptionTypeClient implements IsSerializable {
+public class PhysicalDescriptionTypeClient
+        implements IsSerializable {
 
-	/** The form. */
-	protected List<StringPlusAuthorityPlusTypeClient> form;
+    /** The form. */
+    protected List<StringPlusAuthorityPlusTypeClient> form;
 
-	/** The reformatting quality. */
-	protected List<String> reformattingQuality;
+    /** The reformatting quality. */
+    protected List<String> reformattingQuality;
 
-	/** The internet media type. */
-	protected List<String> internetMediaType;
+    /** The internet media type. */
+    protected List<String> internetMediaType;
 
-	/** The extent. */
-	protected List<String> extent;
+    /** The extent. */
+    protected List<String> extent;
 
-	/** The digital origin. */
-	protected List<String> digitalOrigin;
+    /** The digital origin. */
+    protected List<String> digitalOrigin;
 
-	/** The note. */
-	protected List<NoteTypeClient> note;
+    /** The note. */
+    protected List<NoteTypeClient> note;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the form.
-	 * 
-	 * @return the form
-	 */
-	public List<StringPlusAuthorityPlusTypeClient> getForm() {
-		return form;
-	}
+    /**
+     * Gets the form.
+     * 
+     * @return the form
+     */
+    public List<StringPlusAuthorityPlusTypeClient> getForm() {
+        return form;
+    }
 
-	/**
-	 * Sets the form.
-	 * 
-	 * @param form
-	 *          the new form
-	 */
-	public void setForm(List<StringPlusAuthorityPlusTypeClient> form) {
-		this.form = form;
-	}
+    /**
+     * Sets the form.
+     * 
+     * @param form
+     *        the new form
+     */
+    public void setForm(List<StringPlusAuthorityPlusTypeClient> form) {
+        this.form = form;
+    }
 
-	/**
-	 * Gets the reformatting quality.
-	 * 
-	 * @return the reformatting quality
-	 */
-	public List<String> getReformattingQuality() {
-		return reformattingQuality;
-	}
+    /**
+     * Gets the reformatting quality.
+     * 
+     * @return the reformatting quality
+     */
+    public List<String> getReformattingQuality() {
+        return reformattingQuality;
+    }
 
-	/**
-	 * Sets the reformatting quality.
-	 * 
-	 * @param reformattingQuality
-	 *          the new reformatting quality
-	 */
-	public void setReformattingQuality(List<String> reformattingQuality) {
-		this.reformattingQuality = reformattingQuality;
-	}
+    /**
+     * Sets the reformatting quality.
+     * 
+     * @param reformattingQuality
+     *        the new reformatting quality
+     */
+    public void setReformattingQuality(List<String> reformattingQuality) {
+        this.reformattingQuality = reformattingQuality;
+    }
 
-	/**
-	 * Gets the internet media type.
-	 * 
-	 * @return the internet media type
-	 */
-	public List<String> getInternetMediaType() {
-		return internetMediaType;
-	}
+    /**
+     * Gets the internet media type.
+     * 
+     * @return the internet media type
+     */
+    public List<String> getInternetMediaType() {
+        return internetMediaType;
+    }
 
-	/**
-	 * Sets the internet media type.
-	 * 
-	 * @param internetMediaType
-	 *          the new internet media type
-	 */
-	public void setInternetMediaType(List<String> internetMediaType) {
-		this.internetMediaType = internetMediaType;
-	}
+    /**
+     * Sets the internet media type.
+     * 
+     * @param internetMediaType
+     *        the new internet media type
+     */
+    public void setInternetMediaType(List<String> internetMediaType) {
+        this.internetMediaType = internetMediaType;
+    }
 
-	/**
-	 * Gets the extent.
-	 * 
-	 * @return the extent
-	 */
-	public List<String> getExtent() {
-		return extent;
-	}
+    /**
+     * Gets the extent.
+     * 
+     * @return the extent
+     */
+    public List<String> getExtent() {
+        return extent;
+    }
 
-	/**
-	 * Sets the extent.
-	 * 
-	 * @param extent
-	 *          the new extent
-	 */
-	public void setExtent(List<String> extent) {
-		this.extent = extent;
-	}
+    /**
+     * Sets the extent.
+     * 
+     * @param extent
+     *        the new extent
+     */
+    public void setExtent(List<String> extent) {
+        this.extent = extent;
+    }
 
-	/**
-	 * Gets the digital origin.
-	 * 
-	 * @return the digital origin
-	 */
-	public List<String> getDigitalOrigin() {
-		return digitalOrigin;
-	}
+    /**
+     * Gets the digital origin.
+     * 
+     * @return the digital origin
+     */
+    public List<String> getDigitalOrigin() {
+        return digitalOrigin;
+    }
 
-	/**
-	 * Sets the digital origin.
-	 * 
-	 * @param digitalOrigin
-	 *          the new digital origin
-	 */
-	public void setDigitalOrigin(List<String> digitalOrigin) {
-		this.digitalOrigin = digitalOrigin;
-	}
+    /**
+     * Sets the digital origin.
+     * 
+     * @param digitalOrigin
+     *        the new digital origin
+     */
+    public void setDigitalOrigin(List<String> digitalOrigin) {
+        this.digitalOrigin = digitalOrigin;
+    }
 
-	/**
-	 * Gets the note.
-	 * 
-	 * @return the note
-	 */
-	public List<NoteTypeClient> getNote() {
-		return note;
-	}
+    /**
+     * Gets the note.
+     * 
+     * @return the note
+     */
+    public List<NoteTypeClient> getNote() {
+        return note;
+    }
 
-	/**
-	 * Sets the note.
-	 * 
-	 * @param note
-	 *          the new note
-	 */
-	public void setNote(List<NoteTypeClient> note) {
-		this.note = note;
-	}
+    /**
+     * Sets the note.
+     * 
+     * @param note
+     *        the new note
+     */
+    public void setNote(List<NoteTypeClient> note) {
+        this.note = note;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
 }

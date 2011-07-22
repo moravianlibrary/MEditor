@@ -38,30 +38,30 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class StringPlusAuthorityPlusEditionClient.
  */
-public class StringPlusAuthorityPlusEditionClient extends StringPlusAuthorityClient implements IsSerializable {
+public class StringPlusAuthorityPlusEditionClient
+        extends StringPlusAuthorityClient
+        implements IsSerializable {
 
-	/** The edition. */
-	protected String edition;
+    /** The edition. */
+    protected String edition;
 
-	/**
-	 * Gets the value of the edition property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getEdition() {
-		return edition;
-	}
+    /**
+     * Gets the value of the edition property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getEdition() {
+        return edition;
+    }
 
-	/**
-	 * Sets the value of the edition property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setEdition(String value) {
-		this.edition = value;
-	}
+    /**
+     * Sets the value of the edition property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setEdition(String value) {
+        this.edition = value;
+    }
 
 }

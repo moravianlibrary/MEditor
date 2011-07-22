@@ -38,160 +38,162 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class AccessConditionTypeClient.
  */
-public class AccessConditionTypeClient extends ExtensionTypeClient implements IsSerializable {
+public class AccessConditionTypeClient
+        extends ExtensionTypeClient
+        implements IsSerializable {
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/** The xlink. */
-	protected String xlink;
+    /** The xlink. */
+    protected String xlink;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the display label.
-	 * 
-	 * @return the display label
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the display label.
+     * 
+     * @return the display label
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the display label.
-	 * 
-	 * @param displayLabel
-	 *          the new display label
-	 */
-	public void setDisplayLabel(String displayLabel) {
-		this.displayLabel = displayLabel;
-	}
+    /**
+     * Sets the display label.
+     * 
+     * @param displayLabel
+     *        the new display label
+     */
+    public void setDisplayLabel(String displayLabel) {
+        this.displayLabel = displayLabel;
+    }
 
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the type.
-	 * 
-	 * @param type
-	 *          the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * Sets the type.
+     * 
+     * @param type
+     *        the new type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * Gets the xlink.
-	 * 
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * Gets the xlink.
+     * 
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 
-	/**
-	 * Sets the xlink.
-	 * 
-	 * @param xlink
-	 *          the new xlink
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * Sets the xlink.
+     * 
+     * @param xlink
+     *        the new xlink
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
 }

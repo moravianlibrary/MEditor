@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.List;
@@ -34,6 +35,7 @@ import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -41,15 +43,17 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
-public class FindMetadata extends UnsecuredActionImpl<CheckAvailabilityResult> {
-	@In(1)
-	Constants.SEARCH_FIELD searchType;
+public class FindMetadata
+        extends UnsecuredActionImpl<CheckAvailabilityResult> {
 
-	@In(2)
-	String code;
+    @In(1)
+    Constants.SEARCH_FIELD searchType;
 
-	/** The availability. */
-	@Out(1)
-	List<DublinCore> output;
+    @In(2)
+    String code;
+
+    /** The availability. */
+    @Out(1)
+    List<DublinCore> output;
 
 }

@@ -38,30 +38,30 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class StringPlusAuthorityPlusDisplayLabelClient.
  */
-public class StringPlusAuthorityPlusDisplayLabelClient extends StringPlusAuthorityClient implements IsSerializable {
+public class StringPlusAuthorityPlusDisplayLabelClient
+        extends StringPlusAuthorityClient
+        implements IsSerializable {
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/**
-	 * Gets the value of the displayLabel property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the value of the displayLabel property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the value of the displayLabel property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setDisplayLabel(String value) {
-		this.displayLabel = value;
-	}
+    /**
+     * Sets the value of the displayLabel property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setDisplayLabel(String value) {
+        this.displayLabel = value;
+    }
 
 }

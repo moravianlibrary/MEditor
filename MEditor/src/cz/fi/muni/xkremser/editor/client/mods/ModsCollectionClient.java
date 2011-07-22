@@ -40,28 +40,29 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class ModsCollectionClient.
  */
-public class ModsCollectionClient implements IsSerializable {
+public class ModsCollectionClient
+        implements IsSerializable {
 
-	/** The mods. */
-	protected List<ModsTypeClient> mods;
+    /** The mods. */
+    protected List<ModsTypeClient> mods;
 
-	/**
-	 * Gets the mods.
-	 * 
-	 * @return the mods
-	 */
-	public List<ModsTypeClient> getMods() {
-		return this.mods;
-	}
+    /**
+     * Gets the mods.
+     * 
+     * @return the mods
+     */
+    public List<ModsTypeClient> getMods() {
+        return this.mods;
+    }
 
-	/**
-	 * Sets the mods.
-	 * 
-	 * @param mods
-	 *          the new mods
-	 */
-	public void setMods(List<ModsTypeClient> mods) {
-		this.mods = mods;
-	}
+    /**
+     * Sets the mods.
+     * 
+     * @param mods
+     *        the new mods
+     */
+    public void setMods(List<ModsTypeClient> mods) {
+        this.mods = mods;
+    }
 
 }

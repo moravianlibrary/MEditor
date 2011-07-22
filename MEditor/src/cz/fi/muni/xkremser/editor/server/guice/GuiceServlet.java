@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.guice;
 
 import javax.servlet.ServletConfig;
@@ -38,38 +39,37 @@ import com.google.inject.Injector;
  * 
  * @author pavels
  */
-public class GuiceServlet extends HttpServlet {
+public class GuiceServlet
+        extends HttpServlet {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.GenericServlet#init()
-	 */
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		Injector injector = getInjector();
-		injector.injectMembers(this);
-	}
+    /*
+     * (non-Javadoc)
+     * @see javax.servlet.GenericServlet#init()
+     */
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        Injector injector = getInjector();
+        injector.injectMembers(this);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 */
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		Injector injector = getInjector();
-		injector.injectMembers(this);
-	}
+    /*
+     * (non-Javadoc)
+     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        Injector injector = getInjector();
+        injector.injectMembers(this);
+    }
 
-	/**
-	 * Gets the injector.
-	 * 
-	 * @return the injector
-	 */
-	protected Injector getInjector() {
-		return (Injector) getServletContext().getAttribute(Injector.class.getName());
-	}
+    /**
+     * Gets the injector.
+     * 
+     * @return the injector
+     */
+    protected Injector getInjector() {
+        return (Injector) getServletContext().getAttribute(Injector.class.getName());
+    }
 }

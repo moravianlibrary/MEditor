@@ -29,6 +29,7 @@ package org.fedora.api;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,12 +37,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for FieldSearchResult complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for FieldSearchResult complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="FieldSearchResult">
@@ -65,30 +67,24 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FieldSearchResult", propOrder = {
-    "listSession",
-    "resultList"
-})
+@XmlType(name = "FieldSearchResult", propOrder = {"listSession", "resultList"})
 public class FieldSearchResult {
 
     /** The list session. */
     @XmlElementRef(name = "listSession", type = JAXBElement.class)
     protected JAXBElement<ListSession> listSession;
-    
+
     /** The result list. */
     @XmlElement(required = true)
     protected FieldSearchResult.ResultList resultList;
 
     /**
      * Gets the value of the listSession property.
-     *
-     * @return the list session
-     * possible object is
-     * {@link JAXBElement }{@code <}{@link ListSession }{@code >}
+     * 
+     * @return the list session possible object is {@link JAXBElement }{@code <}
+     *         {@link ListSession }{@code >}
      */
     public JAXBElement<ListSession> getListSession() {
         return listSession;
@@ -98,20 +94,18 @@ public class FieldSearchResult {
      * Sets the value of the listSession property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link ListSession }{@code >}
-     *     
+     *        allowed object is {@link JAXBElement }{@code <}{@link ListSession }
+     *        {@code >}
      */
     public void setListSession(JAXBElement<ListSession> value) {
-        this.listSession = ((JAXBElement<ListSession> ) value);
+        this.listSession = (value);
     }
 
     /**
      * Gets the value of the resultList property.
-     *
-     * @return the result list
-     * possible object is
-     * {@link FieldSearchResult.ResultList }
+     * 
+     * @return the result list possible object is
+     *         {@link FieldSearchResult.ResultList }
      */
     public FieldSearchResult.ResultList getResultList() {
         return resultList;
@@ -121,19 +115,18 @@ public class FieldSearchResult {
      * Sets the value of the resultList property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link FieldSearchResult.ResultList }
-     *     
+     *        allowed object is {@link FieldSearchResult.ResultList }
      */
     public void setResultList(FieldSearchResult.ResultList value) {
         this.resultList = value;
     }
 
-
     /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * <p>
+     * Java class for anonymous complex type.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -146,13 +139,9 @@ public class FieldSearchResult {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "objectFields"
-    })
+    @XmlType(name = "", propOrder = {"objectFields"})
     public static class ResultList {
 
         /** The object fields. */
@@ -160,25 +149,21 @@ public class FieldSearchResult {
 
         /**
          * Gets the value of the objectFields property.
-         * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the objectFields property.
-         * 
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the objectFields property.
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
          * getObjectFields().add(newItem);
          * </pre>
-         * 
-         * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         *
-         * @return the object fields
-         * {@link ObjectFields }
+         * 
+         * @return the object fields {@link ObjectFields }
          */
         public List<ObjectFields> getObjectFields() {
             if (objectFields == null) {

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -32,6 +33,7 @@ import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
@@ -39,25 +41,26 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
  * The Class GetDigitalObjectDetail.
  */
 @GenDispatch(isSecure = false)
-public class GetDigitalObjectDetail extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
+public class GetDigitalObjectDetail
+        extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
 
-	/** The uuid. */
-	@In(1)
-	private String uuid;
+    /** The uuid. */
+    @In(1)
+    private String uuid;
 
-	/** The refresh in. */
-	@In(2)
-	private boolean refreshIn;
+    /** The refresh in. */
+    @In(2)
+    private boolean refreshIn;
 
-	@In(3)
-	private DigitalObjectModel model;
+    @In(3)
+    private DigitalObjectModel model;
 
-	/** The detail. */
-	@Out(1)
-	private DigitalObjectDetail detail;
+    /** The detail. */
+    @Out(1)
+    private DigitalObjectDetail detail;
 
-	/** The refresh. */
-	@Out(2)
-	private boolean refresh;
+    /** The refresh. */
+    @Out(2)
+    private boolean refresh;
 
 }

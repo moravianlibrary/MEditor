@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
@@ -34,115 +35,112 @@ import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
 /**
  * The Class DetailHolder.
  */
-public class DetailHolder extends ListOfSimpleValuesHolder {
+public class DetailHolder
+        extends ListOfSimpleValuesHolder {
 
-	/** The numbers. */
-	private final ListOfSimpleValuesHolder numbers;
+    /** The numbers. */
+    private final ListOfSimpleValuesHolder numbers;
 
-	/** The captions. */
-	private final ListOfSimpleValuesHolder captions;
+    /** The captions. */
+    private final ListOfSimpleValuesHolder captions;
 
-	/** The titles. */
-	private final ListOfSimpleValuesHolder titles;
+    /** The titles. */
+    private final ListOfSimpleValuesHolder titles;
 
-	/**
-	 * Instantiates a new detail holder.
-	 */
-	public DetailHolder() {
-		this.numbers = new ListOfSimpleValuesHolder();
-		this.captions = new ListOfSimpleValuesHolder();
-		this.titles = new ListOfSimpleValuesHolder();
-	}
+    /**
+     * Instantiates a new detail holder.
+     */
+    public DetailHolder() {
+        this.numbers = new ListOfSimpleValuesHolder();
+        this.captions = new ListOfSimpleValuesHolder();
+        this.titles = new ListOfSimpleValuesHolder();
+    }
 
-	/**
-	 * Gets the detail.
-	 * 
-	 * @return the detail
-	 */
-	public DetailTypeClient getDetail() {
-		DetailTypeClient detailTypeClient = new DetailTypeClient();
-		if (getAttributeForm() != null) {
-			detailTypeClient.setType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
-			detailTypeClient.setLevel(getAttributeForm().getValueAsString(ModsConstants.LEVEL));
-		}
-		detailTypeClient.setNumber(numbers.getValues());
-		detailTypeClient.setCaption(captions.getValues());
-		detailTypeClient.setTitle(titles.getValues());
+    /**
+     * Gets the detail.
+     * 
+     * @return the detail
+     */
+    public DetailTypeClient getDetail() {
+        DetailTypeClient detailTypeClient = new DetailTypeClient();
+        if (getAttributeForm() != null) {
+            detailTypeClient.setType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
+            detailTypeClient.setLevel(getAttributeForm().getValueAsString(ModsConstants.LEVEL));
+        }
+        detailTypeClient.setNumber(numbers.getValues());
+        detailTypeClient.setCaption(captions.getValues());
+        detailTypeClient.setTitle(titles.getValues());
 
-		return detailTypeClient;
-	}
+        return detailTypeClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getSubelements()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-	 * ()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+     * ()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-	 * ()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+     * ()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/**
-	 * Gets the numbers.
-	 * 
-	 * @return the numbers
-	 */
-	public ListOfSimpleValuesHolder getNumbers() {
-		return numbers;
-	}
+    /**
+     * Gets the numbers.
+     * 
+     * @return the numbers
+     */
+    public ListOfSimpleValuesHolder getNumbers() {
+        return numbers;
+    }
 
-	/**
-	 * Gets the captions.
-	 * 
-	 * @return the captions
-	 */
-	public ListOfSimpleValuesHolder getCaptions() {
-		return captions;
-	}
+    /**
+     * Gets the captions.
+     * 
+     * @return the captions
+     */
+    public ListOfSimpleValuesHolder getCaptions() {
+        return captions;
+    }
 
-	/**
-	 * Gets the titles.
-	 * 
-	 * @return the titles
-	 */
-	public ListOfSimpleValuesHolder getTitles() {
-		return titles;
-	}
+    /**
+     * Gets the titles.
+     * 
+     * @return the titles
+     */
+    public ListOfSimpleValuesHolder getTitles() {
+        return titles;
+    }
 
 }

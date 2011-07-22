@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -38,25 +39,26 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class PutUserRole extends UnsecuredActionImpl<PutUserRoleResult> {
+public class PutUserRole
+        extends UnsecuredActionImpl<PutUserRoleResult> {
 
-	/** The role. */
-	@In(1)
-	private RoleItem role;
+    /** The role. */
+    @In(1)
+    private RoleItem role;
 
-	/** The user id. */
-	@In(2)
-	private String userId;
+    /** The user id. */
+    @In(2)
+    private String userId;
 
-	/** The id. */
-	@Out(1)
-	private String id;
+    /** The id. */
+    @Out(1)
+    private String id;
 
-	/** The found. */
-	@Out(2)
-	private boolean found;
+    /** The found. */
+    @Out(2)
+    private boolean found;
 
-	/** The description. */
-	@Out(3)
-	private String description;
+    /** The description. */
+    @Out(3)
+    private String description;
 }

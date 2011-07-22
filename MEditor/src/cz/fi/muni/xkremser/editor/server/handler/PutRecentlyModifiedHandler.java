@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,10 +35,13 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
 
@@ -47,75 +49,78 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
 /**
  * The Class PutRecentlyModifiedHandler.
  */
-public class PutRecentlyModifiedHandler implements ActionHandler<PutRecentlyModifiedAction, PutRecentlyModifiedResult> {
+public class PutRecentlyModifiedHandler
+        implements ActionHandler<PutRecentlyModifiedAction, PutRecentlyModifiedResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(PutRecentlyModifiedHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(PutRecentlyModifiedHandler.class.getPackage()
+            .toString());
 
-	/** The recently modified dao. */
-	@Inject
-	private RecentlyModifiedItemDAO recentlyModifiedDAO;
+    /** The recently modified dao. */
+    @Inject
+    private RecentlyModifiedItemDAO recentlyModifiedDAO;
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new put recently modified handler.
-	 * 
-	 */
-	@Inject
-	public PutRecentlyModifiedHandler() {
+    /**
+     * Instantiates a new put recently modified handler.
+     */
+    @Inject
+    public PutRecentlyModifiedHandler() {
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public PutRecentlyModifiedResult execute(final PutRecentlyModifiedAction action, final ExecutionContext context) throws ActionException {
-		if (action.getItem() == null)
-			throw new NullPointerException("getItem()");
-		if (action.getItem().getUuid() == null || "".equals(action.getItem().getUuid()))
-			throw new NullPointerException("getItem().getUuid()");
-		HttpSession session = httpSessionProvider.get();
-		ServerUtils.checkExpiredSession(session);
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public PutRecentlyModifiedResult execute(final PutRecentlyModifiedAction action,
+                                             final ExecutionContext context) throws ActionException {
+        if (action.getItem() == null) throw new NullPointerException("getItem()");
+        if (action.getItem().getUuid() == null || "".equals(action.getItem().getUuid()))
+            throw new NullPointerException("getItem().getUuid()");
+        HttpSession session = httpSessionProvider.get();
+        ServerUtils.checkExpiredSession(session);
 
-		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		LOGGER.debug("Processing action: PutRecentlyModified item:" + action.getItem());
-		try {
-			return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-	}
+        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        LOGGER.debug("Processing action: PutRecentlyModified item:" + action.getItem());
+        try {
+            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<PutRecentlyModifiedAction> getActionType() {
-		return PutRecentlyModifiedAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<PutRecentlyModifiedAction> getActionType() {
+        return PutRecentlyModifiedAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(PutRecentlyModifiedAction action, PutRecentlyModifiedResult result, ExecutionContext context) throws ActionException {
-		// TODO undo method
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(PutRecentlyModifiedAction action,
+                     PutRecentlyModifiedResult result,
+                     ExecutionContext context) throws ActionException {
+        // TODO undo method
 
-	}
+    }
 }

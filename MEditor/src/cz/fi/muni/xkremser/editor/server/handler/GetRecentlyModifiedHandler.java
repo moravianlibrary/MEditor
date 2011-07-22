@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,11 +35,14 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
 
@@ -48,81 +50,88 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetRecentlyModifiedHandler implements ActionHandler<GetRecentlyModifiedAction, GetRecentlyModifiedResult> {
+public class GetRecentlyModifiedHandler
+        implements ActionHandler<GetRecentlyModifiedAction, GetRecentlyModifiedResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetRecentlyModifiedHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetRecentlyModifiedHandler.class.getPackage()
+            .toString());
 
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+    /** The configuration. */
+    private final EditorConfiguration configuration;
 
-	/** The recently modified dao. */
-	private final RecentlyModifiedItemDAO recentlyModifiedDAO;
+    /** The recently modified dao. */
+    private final RecentlyModifiedItemDAO recentlyModifiedDAO;
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new gets the recently modified handler.
-	 * 
-	 * @param configuration
-	 *          the configuration
-	 * @param recentlyModifiedDAO
-	 *          the recently modified dao
-	 */
-	@Inject
-	public GetRecentlyModifiedHandler(final EditorConfiguration configuration, final RecentlyModifiedItemDAO recentlyModifiedDAO) {
-		this.configuration = configuration;
-		this.recentlyModifiedDAO = recentlyModifiedDAO;
-	}
+    /**
+     * Instantiates a new gets the recently modified handler.
+     * 
+     * @param configuration
+     *        the configuration
+     * @param recentlyModifiedDAO
+     *        the recently modified dao
+     */
+    @Inject
+    public GetRecentlyModifiedHandler(final EditorConfiguration configuration,
+                                      final RecentlyModifiedItemDAO recentlyModifiedDAO) {
+        this.configuration = configuration;
+        this.recentlyModifiedDAO = recentlyModifiedDAO;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action, final ExecutionContext context) throws ActionException {
-		LOGGER.debug("Processing action: GetRecentlyModified");
-		String openID = null;
-		if (!action.isForAllUsers()) {
-			HttpSession session = httpSessionProvider.get();
-			ServerUtils.checkExpiredSession(session);
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action,
+                                             final ExecutionContext context) throws ActionException {
+        LOGGER.debug("Processing action: GetRecentlyModified");
+        String openID = null;
+        if (!action.isForAllUsers()) {
+            HttpSession session = httpSessionProvider.get();
+            ServerUtils.checkExpiredSession(session);
 
-			openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		}
-		try {
-			return new GetRecentlyModifiedResult(recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID));
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-	}
+            openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        }
+        try {
+            return new GetRecentlyModifiedResult(recentlyModifiedDAO.getItems(configuration
+                    .getRecentlyModifiedNumber(), openID));
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetRecentlyModifiedAction> getActionType() {
-		return GetRecentlyModifiedAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetRecentlyModifiedAction> getActionType() {
+        return GetRecentlyModifiedAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetRecentlyModifiedAction action, GetRecentlyModifiedResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetRecentlyModifiedAction action,
+                     GetRecentlyModifiedResult result,
+                     ExecutionContext context) throws ActionException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.ArrayList;
@@ -39,9 +40,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class GetUserInfo extends UnsecuredActionImpl<GetUserInfoResult> {
+public class GetUserInfo
+        extends UnsecuredActionImpl<GetUserInfoResult> {
 
-	/** The items. */
-	@Out(1)
-	private ArrayList<UserInfoItem> items;
+    /** The items. */
+    @Out(1)
+    private ArrayList<UserInfoItem> items;
 }

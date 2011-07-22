@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
@@ -34,73 +35,72 @@ import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 /**
  * The Class NoteHolder.
  */
-public class NoteHolder extends ListOfSimpleValuesHolder {
+public class NoteHolder
+        extends ListOfSimpleValuesHolder {
 
-	/**
-	 * Gets the note.
-	 * 
-	 * @return the note
-	 */
-	public NoteTypeClient getNote() {
-		NoteTypeClient abstractTypeClient = new NoteTypeClient();
-		if (getAttributeForm() != null) {
-			abstractTypeClient.setAtType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
-			abstractTypeClient.setLang(getAttributeForm().getValueAsString(ModsConstants.LANG));
-			abstractTypeClient.setXmlLang(getAttributeForm().getValueAsString(ModsConstants.XML_LANG));
-			abstractTypeClient.setXlink(getAttributeForm().getValueAsString(ModsConstants.XLINK));
-			abstractTypeClient.setTransliteration(getAttributeForm().getValueAsString(ModsConstants.TRANSLITERATION));
-			abstractTypeClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
-			abstractTypeClient.setDisplayLabel(getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
-		}
-		if (getAttributeForm2() != null)
-			abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.NOTE));
-		return abstractTypeClient;
-	}
+    /**
+     * Gets the note.
+     * 
+     * @return the note
+     */
+    public NoteTypeClient getNote() {
+        NoteTypeClient abstractTypeClient = new NoteTypeClient();
+        if (getAttributeForm() != null) {
+            abstractTypeClient.setAtType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
+            abstractTypeClient.setLang(getAttributeForm().getValueAsString(ModsConstants.LANG));
+            abstractTypeClient.setXmlLang(getAttributeForm().getValueAsString(ModsConstants.XML_LANG));
+            abstractTypeClient.setXlink(getAttributeForm().getValueAsString(ModsConstants.XLINK));
+            abstractTypeClient.setTransliteration(getAttributeForm()
+                    .getValueAsString(ModsConstants.TRANSLITERATION));
+            abstractTypeClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
+            abstractTypeClient.setDisplayLabel(getAttributeForm()
+                    .getValueAsString(ModsConstants.DISPLAY_LABEL));
+        }
+        if (getAttributeForm2() != null)
+            abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.NOTE));
+        return abstractTypeClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getSubelements()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-	 * ()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+     * ()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-	 * ()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+     * ()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
 }

@@ -38,48 +38,49 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Enum CodeOrTextClient.
  */
-public enum CodeOrTextClient implements IsSerializable {
+public enum CodeOrTextClient
+        implements IsSerializable {
 
-	/** The CODE. */
-	CODE("code"), /** The TEXT. */
-	TEXT("text");
+    /** The CODE. */
+    CODE("code"), /** The TEXT. */
+    TEXT("text");
 
-	/** The value. */
-	private final String value;
+    /** The value. */
+    private final String value;
 
-	/**
-	 * Instantiates a new code or text client.
-	 * 
-	 * @param v
-	 *          the v
-	 */
-	CodeOrTextClient(String v) {
-		value = v;
-	}
+    /**
+     * Instantiates a new code or text client.
+     * 
+     * @param v
+     *        the v
+     */
+    CodeOrTextClient(String v) {
+        value = v;
+    }
 
-	/**
-	 * Value.
-	 * 
-	 * @return the string
-	 */
-	public String value() {
-		return value;
-	}
+    /**
+     * Value.
+     * 
+     * @return the string
+     */
+    public String value() {
+        return value;
+    }
 
-	/**
-	 * From value.
-	 * 
-	 * @param v
-	 *          the v
-	 * @return the code or text client
-	 */
-	public static CodeOrTextClient fromValue(String v) {
-		for (CodeOrTextClient c : CodeOrTextClient.values()) {
-			if (c.value.equals(v)) {
-				return c;
-			}
-		}
-		return null;
-	}
+    /**
+     * From value.
+     * 
+     * @param v
+     *        the v
+     * @return the code or text client
+     */
+    public static CodeOrTextClient fromValue(String v) {
+        for (CodeOrTextClient c : CodeOrTextClient.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
 }

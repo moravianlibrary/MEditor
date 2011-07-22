@@ -32,14 +32,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * binding key to datastream association
- * 
- * <p>Java class for DatastreamBinding complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for DatastreamBinding complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="DatastreamBinding">
@@ -55,40 +55,31 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DatastreamBinding", propOrder = {
-    "bindKeyName",
-    "bindLabel",
-    "datastreamID",
-    "seqNo"
-})
+@XmlType(name = "DatastreamBinding", propOrder = {"bindKeyName", "bindLabel", "datastreamID", "seqNo"})
 public class DatastreamBinding {
 
     /** The bind key name. */
     @XmlElement(required = true, nillable = true)
     protected String bindKeyName;
-    
+
     /** The bind label. */
     @XmlElement(required = true, nillable = true)
     protected String bindLabel;
-    
+
     /** The datastream id. */
     @XmlElement(required = true, nillable = true)
     protected String datastreamID;
-    
+
     /** The seq no. */
     @XmlElement(required = true, nillable = true)
     protected String seqNo;
 
     /**
      * Gets the value of the bindKeyName property.
-     *
-     * @return the bind key name
-     * possible object is
-     * {@link String }
+     * 
+     * @return the bind key name possible object is {@link String }
      */
     public String getBindKeyName() {
         return bindKeyName;
@@ -98,9 +89,7 @@ public class DatastreamBinding {
      * Sets the value of the bindKeyName property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setBindKeyName(String value) {
         this.bindKeyName = value;
@@ -108,10 +97,8 @@ public class DatastreamBinding {
 
     /**
      * Gets the value of the bindLabel property.
-     *
-     * @return the bind label
-     * possible object is
-     * {@link String }
+     * 
+     * @return the bind label possible object is {@link String }
      */
     public String getBindLabel() {
         return bindLabel;
@@ -121,9 +108,7 @@ public class DatastreamBinding {
      * Sets the value of the bindLabel property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setBindLabel(String value) {
         this.bindLabel = value;
@@ -131,10 +116,8 @@ public class DatastreamBinding {
 
     /**
      * Gets the value of the datastreamID property.
-     *
-     * @return the datastream id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the datastream id possible object is {@link String }
      */
     public String getDatastreamID() {
         return datastreamID;
@@ -144,9 +127,7 @@ public class DatastreamBinding {
      * Sets the value of the datastreamID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDatastreamID(String value) {
         this.datastreamID = value;
@@ -154,10 +135,8 @@ public class DatastreamBinding {
 
     /**
      * Gets the value of the seqNo property.
-     *
-     * @return the seq no
-     * possible object is
-     * {@link String }
+     * 
+     * @return the seq no possible object is {@link String }
      */
     public String getSeqNo() {
         return seqNo;
@@ -167,9 +146,7 @@ public class DatastreamBinding {
      * Sets the value of the seqNo property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setSeqNo(String value) {
         this.seqNo = value;

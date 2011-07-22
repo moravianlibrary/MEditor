@@ -40,123 +40,125 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class LanguageTypeClient.
  */
-public class LanguageTypeClient implements IsSerializable {
+public class LanguageTypeClient
+        implements IsSerializable {
 
-	/** The language term. */
-	protected List<LanguageTypeClient.LanguageTermClient> languageTerm;
+    /** The language term. */
+    protected List<LanguageTypeClient.LanguageTermClient> languageTerm;
 
-	/** The object part. */
-	protected String objectPart;
+    /** The object part. */
+    protected String objectPart;
 
-	/**
-	 * Gets the language term.
-	 * 
-	 * @return the language term
-	 */
-	public List<LanguageTypeClient.LanguageTermClient> getLanguageTerm() {
-		return this.languageTerm;
-	}
+    /**
+     * Gets the language term.
+     * 
+     * @return the language term
+     */
+    public List<LanguageTypeClient.LanguageTermClient> getLanguageTerm() {
+        return this.languageTerm;
+    }
 
-	/**
-	 * Sets the language term.
-	 * 
-	 * @param languageTerm
-	 *          the new language term
-	 */
-	public void setLanguageTerm(List<LanguageTypeClient.LanguageTermClient> languageTerm) {
-		this.languageTerm = languageTerm;
-	}
+    /**
+     * Sets the language term.
+     * 
+     * @param languageTerm
+     *        the new language term
+     */
+    public void setLanguageTerm(List<LanguageTypeClient.LanguageTermClient> languageTerm) {
+        this.languageTerm = languageTerm;
+    }
 
-	/**
-	 * Gets the object part.
-	 * 
-	 * @return the object part
-	 */
-	public String getObjectPart() {
-		return objectPart;
-	}
+    /**
+     * Gets the object part.
+     * 
+     * @return the object part
+     */
+    public String getObjectPart() {
+        return objectPart;
+    }
 
-	/**
-	 * Sets the object part.
-	 * 
-	 * @param value
-	 *          the new object part
-	 */
-	public void setObjectPart(String value) {
-		this.objectPart = value;
-	}
+    /**
+     * Sets the object part.
+     * 
+     * @param value
+     *        the new object part
+     */
+    public void setObjectPart(String value) {
+        this.objectPart = value;
+    }
 
-	/**
-	 * The Class LanguageTermClient.
-	 */
-	public static class LanguageTermClient implements IsSerializable {
+    /**
+     * The Class LanguageTermClient.
+     */
+    public static class LanguageTermClient
+            implements IsSerializable {
 
-		/** The value. */
-		protected String value;
+        /** The value. */
+        protected String value;
 
-		/** The authority. */
-		protected String authority;
+        /** The authority. */
+        protected String authority;
 
-		/** The type. */
-		protected CodeOrTextClient type;
+        /** The type. */
+        protected CodeOrTextClient type;
 
-		/**
-		 * Gets the value.
-		 * 
-		 * @return the value
-		 */
-		public String getValue() {
-			return value;
-		}
+        /**
+         * Gets the value.
+         * 
+         * @return the value
+         */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * Sets the value.
-		 * 
-		 * @param value
-		 *          the new value
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /**
+         * Sets the value.
+         * 
+         * @param value
+         *        the new value
+         */
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		/**
-		 * Gets the authority.
-		 * 
-		 * @return the authority
-		 */
-		public String getAuthority() {
-			return authority;
-		}
+        /**
+         * Gets the authority.
+         * 
+         * @return the authority
+         */
+        public String getAuthority() {
+            return authority;
+        }
 
-		/**
-		 * Sets the authority.
-		 * 
-		 * @param value
-		 *          the new authority
-		 */
-		public void setAuthority(String value) {
-			this.authority = value;
-		}
+        /**
+         * Sets the authority.
+         * 
+         * @param value
+         *        the new authority
+         */
+        public void setAuthority(String value) {
+            this.authority = value;
+        }
 
-		/**
-		 * Gets the type.
-		 * 
-		 * @return the type
-		 */
-		public CodeOrTextClient getType() {
-			return type;
-		}
+        /**
+         * Gets the type.
+         * 
+         * @return the type
+         */
+        public CodeOrTextClient getType() {
+            return type;
+        }
 
-		/**
-		 * Sets the type.
-		 * 
-		 * @param value
-		 *          the new type
-		 */
-		public void setType(CodeOrTextClient value) {
-			this.type = value;
-		}
+        /**
+         * Sets the type.
+         * 
+         * @param value
+         *        the new type
+         */
+        public void setType(CodeOrTextClient value) {
+            this.type = value;
+        }
 
-	}
+    }
 
 }

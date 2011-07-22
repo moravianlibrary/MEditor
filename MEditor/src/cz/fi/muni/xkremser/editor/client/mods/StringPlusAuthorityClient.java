@@ -38,54 +38,51 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class StringPlusAuthorityClient.
  */
-public class StringPlusAuthorityClient implements IsSerializable {
+public class StringPlusAuthorityClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The authority. */
-	protected String authority;
+    /** The authority. */
+    protected String authority;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the authority property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getAuthority() {
-		return authority;
-	}
+    /**
+     * Gets the value of the authority property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getAuthority() {
+        return authority;
+    }
 
-	/**
-	 * Sets the value of the authority property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setAuthority(String value) {
-		this.authority = value;
-	}
+    /**
+     * Sets the value of the authority property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setAuthority(String value) {
+        this.authority = value;
+    }
 
 }

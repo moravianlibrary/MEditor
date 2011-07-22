@@ -38,54 +38,51 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class EnumerationAndChronologyTypeClient.
  */
-public class EnumerationAndChronologyTypeClient implements IsSerializable {
+public class EnumerationAndChronologyTypeClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The unit type. */
-	protected String unitType;
+    /** The unit type. */
+    protected String unitType;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the unitType property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getUnitType() {
-		return unitType;
-	}
+    /**
+     * Gets the value of the unitType property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getUnitType() {
+        return unitType;
+    }
 
-	/**
-	 * Sets the value of the unitType property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setUnitType(String value) {
-		this.unitType = value;
-	}
+    /**
+     * Sets the value of the unitType property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setUnitType(String value) {
+        this.unitType = value;
+    }
 
 }

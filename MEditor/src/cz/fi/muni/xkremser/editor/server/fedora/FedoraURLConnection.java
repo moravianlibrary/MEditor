@@ -24,73 +24,75 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.StringTokenizer;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class FedoraURLConnection.
  */
-public class FedoraURLConnection extends URLConnection {
+public class FedoraURLConnection
+        extends URLConnection {
 
-	/** The Constant IMG_FULL. */
-	public static final String IMG_FULL = "IMG_FULL";
+    /** The Constant IMG_FULL. */
+    public static final String IMG_FULL = "IMG_FULL";
 
-	/** The Constant IMG_THUMB. */
-	public static final String IMG_THUMB = "IMG_THUMB";
+    /** The Constant IMG_THUMB. */
+    public static final String IMG_THUMB = "IMG_THUMB";
 
-	/** The fedora access. */
-	private final FedoraAccess fedoraAccess;
+    /** The fedora access. */
+    private final FedoraAccess fedoraAccess;
 
-	/**
-	 * Instantiates a new fedora url connection.
-	 * 
-	 * @param url
-	 *          the url
-	 * @param fedoraAccess
-	 *          the fedora access
-	 */
-	FedoraURLConnection(URL url, FedoraAccess fedoraAccess) {
-		super(url);
-		this.fedoraAccess = fedoraAccess;
-	}
+    /**
+     * Instantiates a new fedora url connection.
+     * 
+     * @param url
+     *        the url
+     * @param fedoraAccess
+     *        the fedora access
+     */
+    FedoraURLConnection(URL url, FedoraAccess fedoraAccess) {
+        super(url);
+        this.fedoraAccess = fedoraAccess;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.net.URLConnection#getInputStream()
-	 */
-	@Override
-	public InputStream getInputStream() throws IOException {
-		String path = getURL().getPath();
-		String uuid = null;
-		String stream = null;
-		StringTokenizer tokenizer = new StringTokenizer(path, "/");
-		if (tokenizer.hasMoreTokens()) {
-			uuid = tokenizer.nextToken();
-		}
-		if (tokenizer.hasMoreTokens()) {
-			stream = tokenizer.nextToken();
-		}
-		if (stream.equals(IMG_FULL)) {
-			return this.fedoraAccess.getImageFULL(uuid);
-		} else if (stream.equals(IMG_THUMB)) {
-			return this.fedoraAccess.getThumbnail(uuid);
-		} else
-			throw new IOException("uknown stream !");
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.net.URLConnection#getInputStream()
+     */
+    @Override
+    public InputStream getInputStream() throws IOException {
+        String path = getURL().getPath();
+        String uuid = null;
+        String stream = null;
+        StringTokenizer tokenizer = new StringTokenizer(path, "/");
+        if (tokenizer.hasMoreTokens()) {
+            uuid = tokenizer.nextToken();
+        }
+        if (tokenizer.hasMoreTokens()) {
+            stream = tokenizer.nextToken();
+        }
+        if (stream.equals(IMG_FULL)) {
+            return this.fedoraAccess.getImageFULL(uuid);
+        } else if (stream.equals(IMG_THUMB)) {
+            return this.fedoraAccess.getThumbnail(uuid);
+        } else
+            throw new IOException("uknown stream !");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.net.URLConnection#connect()
-	 */
-	@Override
-	public void connect() throws IOException {
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.net.URLConnection#connect()
+     */
+    @Override
+    public void connect() throws IOException {
+    }
 }

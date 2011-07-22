@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.mods;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -32,49 +33,50 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class BiblioModsClient.
  */
-public class BiblioModsClient implements IsSerializable {
+public class BiblioModsClient
+        implements IsSerializable {
 
-	/** The mods collection. */
-	private ModsCollectionClient modsCollection;
+    /** The mods collection. */
+    private ModsCollectionClient modsCollection;
 
-	/** The mods. */
-	private ModsTypeClient mods;
+    /** The mods. */
+    private ModsTypeClient mods;
 
-	/**
-	 * Gets the mods collection.
-	 * 
-	 * @return the mods collection
-	 */
-	public ModsCollectionClient getModsCollection() {
-		return modsCollection;
-	}
+    /**
+     * Gets the mods collection.
+     * 
+     * @return the mods collection
+     */
+    public ModsCollectionClient getModsCollection() {
+        return modsCollection;
+    }
 
-	/**
-	 * Sets the mods collection.
-	 * 
-	 * @param modsCollection
-	 *          the new mods collection
-	 */
-	public void setModsCollection(ModsCollectionClient modsCollection) {
-		this.modsCollection = modsCollection;
-	}
+    /**
+     * Sets the mods collection.
+     * 
+     * @param modsCollection
+     *        the new mods collection
+     */
+    public void setModsCollection(ModsCollectionClient modsCollection) {
+        this.modsCollection = modsCollection;
+    }
 
-	/**
-	 * Gets the mods.
-	 * 
-	 * @return the mods
-	 */
-	public ModsTypeClient getMods() {
-		return mods;
-	}
+    /**
+     * Gets the mods.
+     * 
+     * @return the mods
+     */
+    public ModsTypeClient getMods() {
+        return mods;
+    }
 
-	/**
-	 * Sets the mods.
-	 * 
-	 * @param mods
-	 *          the new mods
-	 */
-	public void setMods(ModsTypeClient mods) {
-		this.mods = mods;
-	}
+    /**
+     * Sets the mods.
+     * 
+     * @param mods
+     *        the new mods
+     */
+    public void setMods(ModsTypeClient mods) {
+        this.mods = mods;
+    }
 }

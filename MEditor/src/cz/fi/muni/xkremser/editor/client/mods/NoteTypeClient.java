@@ -38,30 +38,30 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class NoteTypeClient.
  */
-public class NoteTypeClient extends UnstructuredTextClient implements IsSerializable {
+public class NoteTypeClient
+        extends UnstructuredTextClient
+        implements IsSerializable {
 
-	/** The id. */
-	protected String id;
+    /** The id. */
+    protected String id;
 
-	/**
-	 * Gets the value of the id property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getID() {
-		return id;
-	}
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getID() {
+        return id;
+    }
 
-	/**
-	 * Sets the value of the id property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setID(String value) {
-		this.id = value;
-	}
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setID(String value) {
+        this.id = value;
+    }
 
 }

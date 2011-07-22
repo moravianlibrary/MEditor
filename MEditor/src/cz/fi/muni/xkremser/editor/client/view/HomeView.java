@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -48,275 +49,269 @@ import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 /**
  * The Class HomeView.
  */
-public class HomeView extends ViewImpl implements HomePresenter.MyView {
+public class HomeView
+        extends ViewImpl
+        implements HomePresenter.MyView {
 
-	/** The Constant LOADING. */
-	private static final int LOADING = -1;
+    /** The Constant LOADING. */
+    private static final int LOADING = -1;
 
-	/** The Constant NOT_AVAIL. */
-	private static final int NOT_AVAIL = 0;
+    /** The Constant NOT_AVAIL. */
+    private static final int NOT_AVAIL = 0;
 
-	/** The Constant AVAIL. */
-	private static final int AVAIL = 1;
+    /** The Constant AVAIL. */
+    private static final int AVAIL = 1;
 
-	/** The fedora url. */
-	private volatile String fedoraUrl = "#";
+    /** The fedora url. */
+    private volatile String fedoraUrl = "#";
 
-	/** The kramerius url. */
-	private volatile String krameriusUrl = "#";
+    /** The kramerius url. */
+    private volatile String krameriusUrl = "#";
 
-	/** The fedora status. */
-	private volatile int fedoraStatus = LOADING;
+    /** The fedora status. */
+    private volatile int fedoraStatus = LOADING;
 
-	/** The kramerius status. */
-	private volatile int krameriusStatus = LOADING;
+    /** The kramerius status. */
+    private volatile int krameriusStatus = LOADING;
 
-	/** The layout. */
-	private final VStack layout;
+    /** The layout. */
+    private final VStack layout;
 
-	/** The check button. */
-	private final IButton checkButton;
+    /** The check button. */
+    private final IButton checkButton;
 
-	/** The status. */
-	private final HTMLFlow status;
+    /** The status. */
+    private final HTMLFlow status;
 
-	/** The form. */
-	private final DynamicForm form;
+    /** The form. */
+    private final DynamicForm form;
 
-	/** The open. */
-	private final IButton open;
+    /** The open. */
+    private final IButton open;
 
-	/** The uuid field. */
-	private final TextItem uuidField;
+    /** The uuid field. */
+    private final TextItem uuidField;
 
-	private final LangConstants lang;
+    private final LangConstants lang;
 
-	// @Inject
-	// public void setLang(LangConstants lang) {
-	// this.lang = lang;
-	// }
+    // @Inject
+    // public void setLang(LangConstants lang) {
+    // this.lang = lang;
+    // }
 
-	/**
-	 * Instantiates a new home view.
-	 */
-	@Inject
-	public HomeView(LangConstants lang) {
-		this.lang = lang;
-		layout = new VStack();
-		layout.setHeight100();
-		layout.setPadding(15);
-		HTMLFlow html1 = new HTMLFlow();
-		html1.setContents(lang.introduction());
-		html1.setExtraSpace(15);
+    /**
+     * Instantiates a new home view.
+     */
+    @Inject
+    public HomeView(LangConstants lang) {
+        this.lang = lang;
+        layout = new VStack();
+        layout.setHeight100();
+        layout.setPadding(15);
+        HTMLFlow html1 = new HTMLFlow();
+        html1.setContents(lang.introduction());
+        html1.setExtraSpace(15);
 
-		status = new HTMLFlow(getStatusString());
+        status = new HTMLFlow(getStatusString());
 
-		checkButton = new IButton(lang.checkAvailability());
-		checkButton.setAutoFit(true);
-		checkButton.setExtraSpace(60);
-		checkButton.setStylePrimaryName("checkButton");
+        checkButton = new IButton(lang.checkAvailability());
+        checkButton.setAutoFit(true);
+        checkButton.setExtraSpace(60);
+        checkButton.setStylePrimaryName("checkButton");
 
-		HTMLFlow html2 = new HTMLFlow();
-		html2.setContents("<h2>" + lang.openDigitalObject() + "</h2>");
-		html2.setExtraSpace(30);
+        HTMLFlow html2 = new HTMLFlow();
+        html2.setContents("<h2>" + lang.openDigitalObject() + "</h2>");
+        html2.setExtraSpace(30);
 
-		DataSource dataSource = new DataSource();
-		dataSource.setID("regularExpression");
+        DataSource dataSource = new DataSource();
+        dataSource.setID("regularExpression");
 
-		RegExpValidator regExpValidator = new RegExpValidator();
-		regExpValidator.setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
+        RegExpValidator regExpValidator = new RegExpValidator();
+        regExpValidator
+                .setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
 
-		uuidField = new TextItem();
-		uuidField.setTitle("PID");
-		uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
-		uuidField.setValidators(regExpValidator);
+        uuidField = new TextItem();
+        uuidField.setTitle("PID");
+        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
+        uuidField.setValidators(regExpValidator);
 
-		form = new DynamicForm();
-		form.setWidth(300);
-		form.setFields(uuidField);
+        form = new DynamicForm();
+        form.setWidth(300);
+        form.setFields(uuidField);
 
-		open = new IButton();
-		open.setTitle(lang.open());
-		open.setDisabled(true);
-		open.setAutoShowParent(false);
+        open = new IButton();
+        open.setTitle(lang.open());
+        open.setDisabled(true);
+        open.setAutoShowParent(false);
 
-		HLayout hLayout = new HLayout();
-		hLayout.setMembersMargin(10);
-		hLayout.addMember(form);
-		hLayout.addMember(open);
+        HLayout hLayout = new HLayout();
+        hLayout.setMembersMargin(10);
+        hLayout.addMember(form);
+        hLayout.addMember(open);
 
-		HTMLFlow html3 = new HTMLFlow();
-		// html3.setAlign(Alignment.RIGHT);
-		html3.setHeight("*");
-		html3.setLayoutAlign(VerticalAlignment.BOTTOM);
-		html3.setContents(lang.credits());
-		html3.setHeight(20);
+        HTMLFlow html3 = new HTMLFlow();
+        // html3.setAlign(Alignment.RIGHT);
+        html3.setHeight("*");
+        html3.setLayoutAlign(VerticalAlignment.BOTTOM);
+        html3.setContents(lang.credits());
+        html3.setHeight(20);
 
-		layout.addMember(html1);
-		layout.addMember(status);
-		layout.addMember(checkButton);
-		layout.addMember(html2);
-		layout.addMember(hLayout);
-		layout.addMember(html3);
-	}
+        layout.addMember(html1);
+        layout.addMember(status);
+        layout.addMember(checkButton);
+        layout.addMember(html2);
+        layout.addMember(hLayout);
+        layout.addMember(html3);
+    }
 
-	/**
-	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
-	 * 
-	 * @return the widget
-	 */
-	@Override
-	public Widget asWidget() {
-		return layout;
-	}
+    /**
+     * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+     * 
+     * @return the widget
+     */
+    @Override
+    public Widget asWidget() {
+        return layout;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
-	 * getCheckAvailability()
-	 */
-	@Override
-	public HasClickHandlers getCheckAvailability() {
-		return checkButton;
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
+     * getCheckAvailability()
+     */
+    @Override
+    public HasClickHandlers getCheckAvailability() {
+        return checkButton;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#refreshFedora
-	 * (boolean, java.lang.String)
-	 */
-	@Override
-	public void refreshFedora(boolean fedoraRunning, String url) {
-		this.fedoraStatus = fedoraRunning ? AVAIL : NOT_AVAIL;
-		if (url != null)
-			this.fedoraUrl = url;
-		status.setContents(getStatusString());
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
+     * refreshFedora (boolean, java.lang.String)
+     */
+    @Override
+    public void refreshFedora(boolean fedoraRunning, String url) {
+        this.fedoraStatus = fedoraRunning ? AVAIL : NOT_AVAIL;
+        if (url != null) this.fedoraUrl = url;
+        status.setContents(getStatusString());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
-	 * refreshKramerius(boolean, java.lang.String)
-	 */
-	@Override
-	public void refreshKramerius(boolean krameriusRunning, String url) {
-		this.krameriusStatus = krameriusRunning ? AVAIL : NOT_AVAIL;
-		if (url != null)
-			this.krameriusUrl = url;
-		status.setContents(getStatusString());
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#
+     * refreshKramerius(boolean, java.lang.String)
+     */
+    @Override
+    public void refreshKramerius(boolean krameriusRunning, String url) {
+        this.krameriusStatus = krameriusRunning ? AVAIL : NOT_AVAIL;
+        if (url != null) this.krameriusUrl = url;
+        status.setContents(getStatusString());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#setURLs
-	 * (java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void setURLs(String fedoraUrl, String krameriusUrl) {
-		if (fedoraUrl != null)
-			this.fedoraUrl = fedoraUrl;
-		if (krameriusUrl != null)
-			this.krameriusUrl = krameriusUrl;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#setURLs
+     * (java.lang.String, java.lang.String)
+     */
+    @Override
+    public void setURLs(String fedoraUrl, String krameriusUrl) {
+        if (fedoraUrl != null) this.fedoraUrl = fedoraUrl;
+        if (krameriusUrl != null) this.krameriusUrl = krameriusUrl;
+    }
 
-	/**
-	 * Gets the status string.
-	 * 
-	 * @return the status string
-	 */
-	private String getStatusString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<ul><li>Fedora (<a href='").append(fedoraUrl == null ? "" : fedoraUrl).append("'>link</a>) <span class='");
-		switch (fedoraStatus) {
-			case (LOADING):
-				sb.append("loading'>" + lang.loading() + "...");
-			break;
-			case (AVAIL):
-				sb.append("greenFont'>" + lang.isRunning());
-			break;
-			case (NOT_AVAIL):
-				sb.append("redFont'>" + lang.isNotRunning());
-			break;
-		}
-		sb.append("</span></li><li>Kramerius 4 (<a href='").append(krameriusUrl == null ? "" : krameriusUrl).append("'>link</a>) <span class='");
-		switch (krameriusStatus) {
-			case (LOADING):
-				sb.append("loading'>" + lang.loading() + "...");
-			break;
-			case (AVAIL):
-				sb.append("greenFont'>" + lang.isRunning());
-			break;
-			case (NOT_AVAIL):
-				sb.append("redFont'>" + lang.isNotRunning());
-			break;
-		}
-		sb.append("</span></li></ul>");
-		return sb.toString();
-	}
+    /**
+     * Gets the status string.
+     * 
+     * @return the status string
+     */
+    private String getStatusString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<ul><li>Fedora (<a href='").append(fedoraUrl == null ? "" : fedoraUrl)
+                .append("'>link</a>) <span class='");
+        switch (fedoraStatus) {
+            case (LOADING):
+                sb.append("loading'>" + lang.loading() + "...");
+                break;
+            case (AVAIL):
+                sb.append("greenFont'>" + lang.isRunning());
+                break;
+            case (NOT_AVAIL):
+                sb.append("redFont'>" + lang.isNotRunning());
+                break;
+        }
+        sb.append("</span></li><li>Kramerius 4 (<a href='").append(krameriusUrl == null ? "" : krameriusUrl)
+                .append("'>link</a>) <span class='");
+        switch (krameriusStatus) {
+            case (LOADING):
+                sb.append("loading'>" + lang.loading() + "...");
+                break;
+            case (AVAIL):
+                sb.append("greenFont'>" + lang.isRunning());
+                break;
+            case (NOT_AVAIL):
+                sb.append("redFont'>" + lang.isNotRunning());
+                break;
+        }
+        sb.append("</span></li></ul>");
+        return sb.toString();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#setLoading
-	 * ()
-	 */
-	@Override
-	public void setLoading() {
-		this.krameriusStatus = LOADING;
-		this.fedoraStatus = LOADING;
-		status.setContents(getStatusString());
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#setLoading
+     * ()
+     */
+    @Override
+    public void setLoading() {
+        this.krameriusStatus = LOADING;
+        this.fedoraStatus = LOADING;
+        status.setContents(getStatusString());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getOpen()
-	 */
-	@Override
-	public IButton getOpen() {
-		return open;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getOpen
+     * ()
+     */
+    @Override
+    public IButton getOpen() {
+        return open;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getForm()
-	 */
-	@Override
-	public DynamicForm getForm() {
-		return form;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getForm
+     * ()
+     */
+    @Override
+    public DynamicForm getForm() {
+        return form;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid()
-	 */
-	@Override
-	public TextItem getUuid() {
-		return uuidField;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid
+     * ()
+     */
+    @Override
+    public TextItem getUuid() {
+        return uuidField;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuidItem
-	 * ()
-	 */
-	@Override
-	public HasChangedHandlers getUuidItem() {
-		return uuidField;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuidItem
+     * ()
+     */
+    @Override
+    public HasChangedHandlers getUuidItem() {
+        return uuidField;
+    }
 
 }

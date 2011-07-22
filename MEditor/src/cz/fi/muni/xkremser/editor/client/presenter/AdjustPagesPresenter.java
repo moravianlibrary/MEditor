@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.presenter;
 
 import com.google.gwt.event.shared.EventBus;
@@ -45,128 +46,134 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.shared.event.StartAdjustingPagesEvent;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HomePresenter.
  */
-public class AdjustPagesPresenter extends Presenter<AdjustPagesPresenter.MyView, AdjustPagesPresenter.MyProxy> implements
-		StartAdjustingPagesEvent.StartAdjustingPagesHandler {
+public class AdjustPagesPresenter
+        extends Presenter<AdjustPagesPresenter.MyView, AdjustPagesPresenter.MyProxy>
+        implements StartAdjustingPagesEvent.StartAdjustingPagesHandler {
 
-	/**
-	 * The Interface MyView.
-	 */
-	public interface MyView extends View {
+    /**
+     * The Interface MyView.
+     */
+    public interface MyView
+            extends View {
 
-		TextItem getCode();
+        TextItem getCode();
 
-		SelectItem getFindBy();
+        SelectItem getFindBy();
 
-		ButtonItem getFind();
+        ButtonItem getFind();
 
-		void refreshData(ListGridRecord[] data);
+        void refreshData(ListGridRecord[] data);
 
-		void showProgress(boolean show, boolean msg);
+        void showProgress(boolean show, boolean msg);
 
-		IButton getNext();
+        IButton getNext();
 
-		IButton getWithoutMetadata();
-	}
+        IButton getWithoutMetadata();
+    }
 
-	/**
-	 * The Interface MyProxy.
-	 */
-	@ProxyCodeSplit
-	// @NameToken(NameTokens.ADJUST_PAGES)
-	public interface MyProxy extends Proxy<AdjustPagesPresenter> {
+    /**
+     * The Interface MyProxy.
+     */
+    @ProxyCodeSplit
+    // @NameToken(NameTokens.ADJUST_PAGES)
+    public interface MyProxy
+            extends Proxy<AdjustPagesPresenter> {
 
-	}
+    }
 
-	/** The dispatcher. */
-	private final DispatchAsync dispatcher;
+    /** The dispatcher. */
+    private final DispatchAsync dispatcher;
 
-	/** The left presenter. */
-	private final DigitalObjectMenuPresenter leftPresenter;
+    /** The left presenter. */
+    private final DigitalObjectMenuPresenter leftPresenter;
 
-	/** The place manager. */
-	private final PlaceManager placeManager;
+    /** The place manager. */
+    private final PlaceManager placeManager;
 
-	private final LangConstants lang;
+    private final LangConstants lang;
 
-	private String code = null;
+    private String code = null;
 
-	/**
-	 * Instantiates a new home presenter.
-	 * 
-	 * @param eventBus
-	 *          the event bus
-	 * @param view
-	 *          the view
-	 * @param proxy
-	 *          the proxy
-	 * @param leftPresenter
-	 *          the left presenter
-	 * @param dispatcher
-	 *          the dispatcher
-	 * @param placeManager
-	 *          the place manager
-	 */
-	@Inject
-	public AdjustPagesPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher, final PlaceManager placeManager, final LangConstants lang) {
-		super(eventBus, view, proxy);
-		this.leftPresenter = leftPresenter;
-		this.dispatcher = dispatcher;
-		this.placeManager = placeManager;
-		this.lang = lang;
-		bind();
-	}
+    /**
+     * Instantiates a new home presenter.
+     * 
+     * @param eventBus
+     *        the event bus
+     * @param view
+     *        the view
+     * @param proxy
+     *        the proxy
+     * @param leftPresenter
+     *        the left presenter
+     * @param dispatcher
+     *        the dispatcher
+     * @param placeManager
+     *        the place manager
+     */
+    @Inject
+    public AdjustPagesPresenter(final EventBus eventBus,
+                                final MyView view,
+                                final MyProxy proxy,
+                                final DigitalObjectMenuPresenter leftPresenter,
+                                final DispatchAsync dispatcher,
+                                final PlaceManager placeManager,
+                                final LangConstants lang) {
+        super(eventBus, view, proxy);
+        this.leftPresenter = leftPresenter;
+        this.dispatcher = dispatcher;
+        this.placeManager = placeManager;
+        this.lang = lang;
+        bind();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
-	 */
-	@Override
-	protected void onBind() {
-		super.onBind();
-		System.out.println("on bind");
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+     */
+    @Override
+    protected void onBind() {
+        super.onBind();
+        System.out.println("on bind");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
-	 */
-	@Override
-	protected void onReset() {
-		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
+     */
+    @Override
+    protected void onReset() {
+        RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+    }
 
-	/*
-	 * (non-Javadoc) n
-	 * 
-	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
-	 */
-	@Override
-	protected void revealInParent() {
-		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
-	}
+    /*
+     * (non-Javadoc) n
+     * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+     */
+    @Override
+    protected void revealInParent() {
+        RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
+    }
 
-	@Override
-	public void prepareFromRequest(PlaceRequest request) {
-		super.prepareFromRequest(request);
-		code = request.getParameter(Constants.URL_PARAM_CODE, null);
-		getView().getCode().setValue(code);
-	}
+    @Override
+    public void prepareFromRequest(PlaceRequest request) {
+        super.prepareFromRequest(request);
+        code = request.getParameter(Constants.URL_PARAM_CODE, null);
+        getView().getCode().setValue(code);
+    }
 
-	@ProxyEvent
-	@Override
-	public void onStartAdjustingPages(StartAdjustingPagesEvent event) {
-		forceReveal();
-		System.out.println("dc   :  " + event.getDc());
-		System.out.println("path :  " + event.getPath());
-	}
+    @ProxyEvent
+    @Override
+    public void onStartAdjustingPages(StartAdjustingPagesEvent event) {
+        forceReveal();
+        System.out.println("dc   :  " + event.getDc());
+        System.out.println("path :  " + event.getPath());
+    }
 
 }

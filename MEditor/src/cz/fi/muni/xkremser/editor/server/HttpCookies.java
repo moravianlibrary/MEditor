@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server;
 
 import javax.servlet.http.Cookie;
@@ -36,109 +37,112 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HttpCookies {
 
-	/** The Constant dayInSeconds. */
-	public static final int dayInSeconds = 86400;
+    /** The Constant dayInSeconds. */
+    public static final int dayInSeconds = 86400;
 
-	/** The Constant SESSION_ID_KEY. */
-	public static final String SESSION_ID_KEY = "dR#5hJ_F$";
+    /** The Constant SESSION_ID_KEY. */
+    public static final String SESSION_ID_KEY = "dR#5hJ_F$";
 
-	public static final String UNKNOWN_ID_KEY = "dR#5hJ_F9";
+    public static final String UNKNOWN_ID_KEY = "dR#5hJ_F9";
 
-	public static final String NAME_KEY = "dR#@hJ_F9";
+    public static final String NAME_KEY = "dR#@hJ_F9";
 
-	/** The Constant ADMIN. */
-	public static final String ADMIN = "dR#6hJ_F$";
+    /** The Constant ADMIN. */
+    public static final String ADMIN = "dR#6hJ_F$";
 
-	/** The Constant ADMIN_YES. */
-	public static final String ADMIN_YES = "dE#5hJ_F$";
+    /** The Constant ADMIN_YES. */
+    public static final String ADMIN_YES = "dE#5hJ_F$";
 
-	/** The Constant PARAMS. */
-	public static final String PARAMS = "cE#5hJ_F$";
+    /** The Constant PARAMS. */
+    public static final String PARAMS = "cE#5hJ_F$";
 
-	/** The Constant TARGET_URL. */
-	public static final String TARGET_URL = "cR#5hJ_F$";
+    /** The Constant TARGET_URL. */
+    public static final String TARGET_URL = "cR#5hJ_F$";
 
-	/**
-	 * Find cookie.
-	 * 
-	 * @param request
-	 *          the request
-	 * @param name
-	 *          the name
-	 * @return the cookie
-	 */
-	public static Cookie findCookie(HttpServletRequest request, String name) {
-		final Cookie[] cookies = request.getCookies();
+    /**
+     * Find cookie.
+     * 
+     * @param request
+     *        the request
+     * @param name
+     *        the name
+     * @return the cookie
+     */
+    public static Cookie findCookie(HttpServletRequest request, String name) {
+        final Cookie[] cookies = request.getCookies();
 
-		if (cookies == null) {
-			return null;
-		}
+        if (cookies == null) {
+            return null;
+        }
 
-		for (Cookie cookie : cookies) {
-			if (name.equals(cookie.getName())) {
-				return cookie;
-			}
-		}
+        for (Cookie cookie : cookies) {
+            if (name.equals(cookie.getName())) {
+                return cookie;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Gets the cookie value.
-	 * 
-	 * @param request
-	 *          the request
-	 * @param name
-	 *          the name
-	 * @return the cookie value
-	 */
-	public static String getCookieValue(HttpServletRequest request, String name) {
-		Cookie cookie = findCookie(request, name);
+    /**
+     * Gets the cookie value.
+     * 
+     * @param request
+     *        the request
+     * @param name
+     *        the name
+     * @return the cookie value
+     */
+    public static String getCookieValue(HttpServletRequest request, String name) {
+        Cookie cookie = findCookie(request, name);
 
-		return cookie != null ? cookie.getValue() : null;
-	}
+        return cookie != null ? cookie.getValue() : null;
+    }
 
-	/**
-	 * Reset cookie.
-	 * 
-	 * @param request
-	 *          the request
-	 * @param response
-	 *          the response
-	 * @param name
-	 *          the name
-	 */
-	public static void resetCookie(HttpServletRequest request, HttpServletResponse response, String name) {
-		Cookie cookie = findCookie(request, name);
-		if (cookie != null) {
-			cookie.setMaxAge(0);
-			response.addCookie(cookie);
-		}
-	}
+    /**
+     * Reset cookie.
+     * 
+     * @param request
+     *        the request
+     * @param response
+     *        the response
+     * @param name
+     *        the name
+     */
+    public static void resetCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+        Cookie cookie = findCookie(request, name);
+        if (cookie != null) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+    }
 
-	/**
-	 * Sets the cookie.
-	 * 
-	 * @param request
-	 *          the request
-	 * @param response
-	 *          the response
-	 * @param cookieName
-	 *          the cookie name
-	 * @param cookieValue
-	 *          the cookie value
-	 */
-	public static void setCookie(HttpServletRequest request, HttpServletResponse response, final String cookieName, String cookieValue) {
-		Cookie cookie = findCookie(request, cookieName);
+    /**
+     * Sets the cookie.
+     * 
+     * @param request
+     *        the request
+     * @param response
+     *        the response
+     * @param cookieName
+     *        the cookie name
+     * @param cookieValue
+     *        the cookie value
+     */
+    public static void setCookie(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 final String cookieName,
+                                 String cookieValue) {
+        Cookie cookie = findCookie(request, cookieName);
 
-		if (cookie == null) {
-			cookie = new Cookie(cookieName, cookieValue);
-		} else {
-			cookie.setValue(cookieValue);
-		}
+        if (cookie == null) {
+            cookie = new Cookie(cookieName, cookieValue);
+        } else {
+            cookie.setValue(cookieValue);
+        }
 
-		cookie.setMaxAge(dayInSeconds); // one day
-		response.addCookie(cookie);
-	}
+        cookie.setMaxAge(dayInSeconds); // one day
+        response.addCookie(cookie);
+    }
 
 }

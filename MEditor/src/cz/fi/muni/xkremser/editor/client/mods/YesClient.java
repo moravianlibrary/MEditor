@@ -38,47 +38,48 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Enum YesClient.
  */
-public enum YesClient implements IsSerializable {
+public enum YesClient
+        implements IsSerializable {
 
-	/** The YES. */
-	YES("yes");
+    /** The YES. */
+    YES("yes");
 
-	/** The value. */
-	private final String value;
+    /** The value. */
+    private final String value;
 
-	/**
-	 * Instantiates a new yes client.
-	 * 
-	 * @param v
-	 *          the v
-	 */
-	YesClient(String v) {
-		value = v;
-	}
+    /**
+     * Instantiates a new yes client.
+     * 
+     * @param v
+     *        the v
+     */
+    YesClient(String v) {
+        value = v;
+    }
 
-	/**
-	 * Value.
-	 * 
-	 * @return the string
-	 */
-	public String value() {
-		return value;
-	}
+    /**
+     * Value.
+     * 
+     * @return the string
+     */
+    public String value() {
+        return value;
+    }
 
-	/**
-	 * From value.
-	 * 
-	 * @param v
-	 *          the v
-	 * @return the yes client
-	 */
-	public static YesClient fromValue(String v) {
-		for (YesClient c : YesClient.values()) {
-			if (c.value.equals(v)) {
-				return c;
-			}
-		}
-		return null;
-	}
+    /**
+     * From value.
+     * 
+     * @param v
+     *        the v
+     * @return the yes client
+     */
+    public static YesClient fromValue(String v) {
+        for (YesClient c : YesClient.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
 }

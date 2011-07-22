@@ -38,102 +38,95 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class BaseDateTypeClient.
  */
-public class BaseDateTypeClient implements IsSerializable {
+public class BaseDateTypeClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The encoding. */
-	protected String encoding;
+    /** The encoding. */
+    protected String encoding;
 
-	/** The qualifier. */
-	protected String qualifier;
+    /** The qualifier. */
+    protected String qualifier;
 
-	/** The point. */
-	protected String point;
+    /** The point. */
+    protected String point;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the encoding property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getEncoding() {
-		return encoding;
-	}
+    /**
+     * Gets the value of the encoding property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getEncoding() {
+        return encoding;
+    }
 
-	/**
-	 * Sets the value of the encoding property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setEncoding(String value) {
-		this.encoding = value;
-	}
+    /**
+     * Sets the value of the encoding property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setEncoding(String value) {
+        this.encoding = value;
+    }
 
-	/**
-	 * Gets the value of the qualifier property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getQualifier() {
-		return qualifier;
-	}
+    /**
+     * Gets the value of the qualifier property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getQualifier() {
+        return qualifier;
+    }
 
-	/**
-	 * Sets the value of the qualifier property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setQualifier(String value) {
-		this.qualifier = value;
-	}
+    /**
+     * Sets the value of the qualifier property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setQualifier(String value) {
+        this.qualifier = value;
+    }
 
-	/**
-	 * Gets the value of the point property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getPoint() {
-		return point;
-	}
+    /**
+     * Gets the value of the point property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getPoint() {
+        return point;
+    }
 
-	/**
-	 * Sets the value of the point property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setPoint(String value) {
-		this.point = value;
-	}
+    /**
+     * Sets the value of the point property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setPoint(String value) {
+        this.point = value;
+    }
 
 }

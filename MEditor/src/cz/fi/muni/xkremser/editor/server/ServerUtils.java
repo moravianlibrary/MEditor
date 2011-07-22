@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server;
 
 import javax.servlet.http.HttpSession;
@@ -39,35 +40,34 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
  */
 public class ServerUtils {
 
-	/**
-	 * Checks if is caused by exception.
-	 * 
-	 * @param t
-	 *          the t
-	 * @param type
-	 *          the type
-	 * @return true, if is caused by exception
-	 */
-	public static boolean isCausedByException(Throwable t, Class<? extends Exception> type) {
-		if (t == null)
-			return false;
-		Throwable aux = t;
-		while (aux != null) {
-			if (type.isInstance(aux))
-				return true;
-			aux = aux.getCause();
-		}
-		return false;
-	}
+    /**
+     * Checks if is caused by exception.
+     * 
+     * @param t
+     *        the t
+     * @param type
+     *        the type
+     * @return true, if is caused by exception
+     */
+    public static boolean isCausedByException(Throwable t, Class<? extends Exception> type) {
+        if (t == null) return false;
+        Throwable aux = t;
+        while (aux != null) {
+            if (type.isInstance(aux)) return true;
+            aux = aux.getCause();
+        }
+        return false;
+    }
 
-	public static void checkExpiredSession(Provider<HttpSession> httpSessionProvider) throws ActionException {
-		checkExpiredSession(httpSessionProvider.get());
-	}
+    public static void checkExpiredSession(Provider<HttpSession> httpSessionProvider) throws ActionException {
+        checkExpiredSession(httpSessionProvider.get());
+    }
 
-	public static void checkExpiredSession(HttpSession session) throws ActionException {
-		if (session.getAttribute(HttpCookies.SESSION_ID_KEY) == null) {
-			throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
-		}
-	}
+    public static void checkExpiredSession(HttpSession session) throws ActionException {
+        if (session.getAttribute(HttpCookies.SESSION_ID_KEY) == null) {
+            throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
+                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
+    }
 
 }

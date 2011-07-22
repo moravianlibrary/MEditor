@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.smartgwt.client.widgets.tile.TileRecord;
@@ -34,141 +35,141 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 /**
  * The Class PageRecord.
  */
-public class PageRecord extends TileRecord {
+public class PageRecord
+        extends TileRecord {
 
-	/**
-	 * Instantiates a new page record.
-	 */
-	public PageRecord() {
-	}
+    /**
+     * Instantiates a new page record.
+     */
+    public PageRecord() {
+    }
 
-	/**
-	 * Instantiates a new page record.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param uuid
-	 *          the uuid
-	 * @param picture
-	 *          the picture
-	 */
-	public PageRecord(String name, String uuid, String picture) {
-		this(name, uuid, picture, null);
-	}
+    /**
+     * Instantiates a new page record.
+     * 
+     * @param name
+     *        the name
+     * @param uuid
+     *        the uuid
+     * @param picture
+     *        the picture
+     */
+    public PageRecord(String name, String uuid, String picture) {
+        this(name, uuid, picture, null);
+    }
 
-	/**
-	 * Instantiates a new page record.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param uuid
-	 *          the uuid
-	 * @param picture
-	 *          the picture
-	 * @param description
-	 *          the description
-	 */
-	public PageRecord(String name, String uuid, String picture, String description) {
-		setName(name);
-		setUuid(uuid);
-		setPicture(picture);
-		setDescription(description);
-	}
+    /**
+     * Instantiates a new page record.
+     * 
+     * @param name
+     *        the name
+     * @param uuid
+     *        the uuid
+     * @param picture
+     *        the picture
+     * @param description
+     *        the description
+     */
+    public PageRecord(String name, String uuid, String picture, String description) {
+        setName(name);
+        setUuid(uuid);
+        setPicture(picture);
+        setDescription(description);
+    }
 
-	/**
-	 * Set the name.
-	 * 
-	 * @param name
-	 *          the name
-	 */
-	public void setName(String name) {
-		setAttribute(Constants.ATTR_NAME, name);
-	}
+    /**
+     * Set the name.
+     * 
+     * @param name
+     *        the name
+     */
+    public void setName(String name) {
+        setAttribute(Constants.ATTR_NAME, name);
+    }
 
-	/**
-	 * Return the name.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return getAttribute(Constants.ATTR_NAME);
-	}
+    /**
+     * Return the name.
+     * 
+     * @return the name
+     */
+    public String getName() {
+        return getAttribute(Constants.ATTR_NAME);
+    }
 
-	/**
-	 * Set the uuid.
-	 * 
-	 * @param uuid
-	 *          the uuid
-	 */
-	public void setUuid(String uuid) {
-		setAttribute(Constants.ATTR_UUID, uuid);
-	}
+    /**
+     * Set the uuid.
+     * 
+     * @param uuid
+     *        the uuid
+     */
+    public void setUuid(String uuid) {
+        setAttribute(Constants.ATTR_UUID, uuid);
+    }
 
-	/**
-	 * Return the uuid.
-	 * 
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return getAttribute(Constants.ATTR_UUID);
-	}
+    /**
+     * Return the uuid.
+     * 
+     * @return the uuid
+     */
+    public String getUuid() {
+        return getAttribute(Constants.ATTR_UUID);
+    }
 
-	/**
-	 * Set the picture.
-	 * 
-	 * @param picture
-	 *          the picture
-	 */
-	public void setPicture(String picture) {
-		setAttribute(Constants.ATTR_PICTURE, picture);
-	}
+    /**
+     * Set the picture.
+     * 
+     * @param picture
+     *        the picture
+     */
+    public void setPicture(String picture) {
+        setAttribute(Constants.ATTR_PICTURE, picture);
+    }
 
-	/**
-	 * Return the picture.
-	 * 
-	 * @return the picture
-	 */
-	public String getPicture() {
-		return getAttribute(Constants.ATTR_PICTURE);
-	}
+    /**
+     * Return the picture.
+     * 
+     * @return the picture
+     */
+    public String getPicture() {
+        return getAttribute(Constants.ATTR_PICTURE);
+    }
 
-	/**
-	 * Set the description.
-	 * 
-	 * @param description
-	 *          the description
-	 */
-	public void setDescription(String description) {
-		setAttribute(Constants.ATTR_DESC, description);
-	}
+    /**
+     * Set the description.
+     * 
+     * @param description
+     *        the description
+     */
+    public void setDescription(String description) {
+        setAttribute(Constants.ATTR_DESC, description);
+    }
 
-	/**
-	 * Return the description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() {
-		return getAttribute(Constants.ATTR_DESC);
-	}
+    /**
+     * Return the description.
+     * 
+     * @return the description
+     */
+    public String getDescription() {
+        return getAttribute(Constants.ATTR_DESC);
+    }
 
-	/**
-	 * Deep copy.
-	 * 
-	 * @return the page record
-	 */
-	public PageRecord deepCopy() {
-		return new PageRecord(getName(), getUuid(), getPicture(), getDescription());
-	}
+    /**
+     * Deep copy.
+     * 
+     * @return the page record
+     */
+    public PageRecord deepCopy() {
+        return new PageRecord(getName(), getUuid(), getPicture(), getDescription());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "PageRecord [getName()=" + getName() + ", getUuid()=" + getUuid() + ", getPicture()=" + getPicture() + ", getDescription()=" + getDescription()
-				+ "]";
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "PageRecord [getName()=" + getName() + ", getUuid()=" + getUuid() + ", getPicture()="
+                + getPicture() + ", getDescription()=" + getDescription() + "]";
+    }
 
 }

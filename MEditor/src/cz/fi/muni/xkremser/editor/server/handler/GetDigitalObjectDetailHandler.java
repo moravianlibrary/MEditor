@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.FileNotFoundException;
@@ -31,17 +32,19 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
-
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
@@ -50,86 +53,91 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 /**
  * The Class GetDigitalObjectDetailHandler.
  */
-public class GetDigitalObjectDetailHandler implements ActionHandler<GetDigitalObjectDetailAction, GetDigitalObjectDetailResult> {
+public class GetDigitalObjectDetailHandler
+        implements ActionHandler<GetDigitalObjectDetailAction, GetDigitalObjectDetailResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
+            .toString());
 
-	/** The handler. */
-	private final DigitalObjectHandler handler;
+    /** The handler. */
+    private final DigitalObjectHandler handler;
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new gets the digital object detail handler.
-	 * 
-	 * @param handler
-	 *          the handler
-	 */
-	@Inject
-	public GetDigitalObjectDetailHandler(final DigitalObjectHandler handler) {
-		this.handler = handler;
-	}
+    /**
+     * Instantiates a new gets the digital object detail handler.
+     * 
+     * @param handler
+     *        the handler
+     */
+    @Inject
+    public GetDigitalObjectDetailHandler(final DigitalObjectHandler handler) {
+        this.handler = handler;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetDigitalObjectDetailResult execute(final GetDigitalObjectDetailAction action, final ExecutionContext context) throws ActionException {
-		// parse input
-		String uuid = action.getUuid();
-		LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetDigitalObjectDetailResult execute(final GetDigitalObjectDetailAction action,
+                                                final ExecutionContext context) throws ActionException {
+        // parse input
+        String uuid = action.getUuid();
+        LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
 
-		try {
-			ServerUtils.checkExpiredSession(httpSessionProvider);
-			DigitalObjectDetail obj = null;
-			if (action.getModel() == null) {
-				obj = handler.getDigitalObject(uuid);
-			} else {
-				obj = handler.getDigitalObjectItems(uuid, action.getModel());
-			}
-			return new GetDigitalObjectDetailResult(obj, action.isRefreshIn());
-		} catch (IOException e) {
-			String msg = null;
-			if (ServerUtils.isCausedByException(e, FileNotFoundException.class)) {
-				msg = "Digital object with uuid " + uuid + " is not present in the repository. ";
-			} else if (ServerUtils.isCausedByException(e, ConnectionException.class)) {
-				msg = "Connection cannot be established. Please check whether Fedora is running. ";
-			} else {
-				msg = "Unable to obtain digital object with uuid " + uuid + ". ";
-			}
-			LOGGER.error(msg, e);
-			throw new ActionException(msg, e);
-		}
-	}
+        try {
+            ServerUtils.checkExpiredSession(httpSessionProvider);
+            DigitalObjectDetail obj = null;
+            if (action.getModel() == null) {
+                obj = handler.getDigitalObject(uuid);
+            } else {
+                obj = handler.getDigitalObjectItems(uuid, action.getModel());
+            }
+            return new GetDigitalObjectDetailResult(obj, action.isRefreshIn());
+        } catch (IOException e) {
+            String msg = null;
+            if (ServerUtils.isCausedByException(e, FileNotFoundException.class)) {
+                msg = "Digital object with uuid " + uuid + " is not present in the repository. ";
+            } else if (ServerUtils.isCausedByException(e, ConnectionException.class)) {
+                msg = "Connection cannot be established. Please check whether Fedora is running. ";
+            } else {
+                msg = "Unable to obtain digital object with uuid " + uuid + ". ";
+            }
+            LOGGER.error(msg, e);
+            throw new ActionException(msg, e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetDigitalObjectDetailAction> getActionType() {
-		return GetDigitalObjectDetailAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetDigitalObjectDetailAction> getActionType() {
+        return GetDigitalObjectDetailAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetDigitalObjectDetailAction action, GetDigitalObjectDetailResult result, ExecutionContext context) throws ActionException {
-		// idempotency -> no need for undo
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetDigitalObjectDetailAction action,
+                     GetDigitalObjectDetailResult result,
+                     ExecutionContext context) throws ActionException {
+        // idempotency -> no need for undo
+    }
 }

@@ -45,240 +45,220 @@ import cz.fi.muni.xkremser.editor.server.mods.StringPlusDisplayLabelPlusType;
 /**
  * The Class CopyInformationTypeClient.
  */
-public class CopyInformationTypeClient implements IsSerializable {
+public class CopyInformationTypeClient
+        implements IsSerializable {
 
-	/** The form. */
-	protected StringPlusAuthorityClient form;
+    /** The form. */
+    protected StringPlusAuthorityClient form;
 
-	/** The sub location. */
-	protected List<String> subLocation;
+    /** The sub location. */
+    protected List<String> subLocation;
 
-	/** The shelf locator. */
-	protected List<String> shelfLocator;
+    /** The shelf locator. */
+    protected List<String> shelfLocator;
 
-	/** The electronic locator. */
-	protected List<String> electronicLocator;
+    /** The electronic locator. */
+    protected List<String> electronicLocator;
 
-	/** The note. */
-	protected List<StringPlusDisplayLabelPlusTypeClient> note;
+    /** The note. */
+    protected List<StringPlusDisplayLabelPlusTypeClient> note;
 
-	/** The enumeration and chronology. */
-	protected List<EnumerationAndChronologyTypeClient> enumerationAndChronology;
+    /** The enumeration and chronology. */
+    protected List<EnumerationAndChronologyTypeClient> enumerationAndChronology;
 
-	/**
-	 * Gets the value of the form property.
-	 * 
-	 * @return possible object is {@link StringPlusAuthority }
-	 * 
-	 */
-	public StringPlusAuthorityClient getForm() {
-		return form;
-	}
+    /**
+     * Gets the value of the form property.
+     * 
+     * @return possible object is {@link StringPlusAuthority }
+     */
+    public StringPlusAuthorityClient getForm() {
+        return form;
+    }
 
-	/**
-	 * Sets the value of the form property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link StringPlusAuthority }
-	 * 
-	 */
-	public void setForm(StringPlusAuthorityClient value) {
-		this.form = value;
-	}
+    /**
+     * Sets the value of the form property.
+     * 
+     * @param value
+     *        allowed object is {@link StringPlusAuthority }
+     */
+    public void setForm(StringPlusAuthorityClient value) {
+        this.form = value;
+    }
 
-	/**
-	 * Gets the value of the subLocation property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the subLocation property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the subLocation property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the subLocation property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getSubLocation().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list {@link String }
-	 * 
-	 * @return the sub location
-	 */
-	public List<String> getSubLocation() {
-		if (subLocation == null) {
-			subLocation = new ArrayList<String>();
-		}
-		return this.subLocation;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link String }
+     * 
+     * @return the sub location
+     */
+    public List<String> getSubLocation() {
+        if (subLocation == null) {
+            subLocation = new ArrayList<String>();
+        }
+        return this.subLocation;
+    }
 
-	/**
-	 * Gets the value of the shelfLocator property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the shelfLocator property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the shelfLocator property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the shelfLocator property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getShelfLocator().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list {@link String }
-	 * 
-	 * @return the shelf locator
-	 */
-	public List<String> getShelfLocator() {
-		if (shelfLocator == null) {
-			shelfLocator = new ArrayList<String>();
-		}
-		return this.shelfLocator;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link String }
+     * 
+     * @return the shelf locator
+     */
+    public List<String> getShelfLocator() {
+        if (shelfLocator == null) {
+            shelfLocator = new ArrayList<String>();
+        }
+        return this.shelfLocator;
+    }
 
-	/**
-	 * Gets the value of the electronicLocator property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the electronicLocator property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the electronicLocator property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the electronicLocator property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getElectronicLocator().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list {@link String }
-	 * 
-	 * @return the electronic locator
-	 */
-	public List<String> getElectronicLocator() {
-		if (electronicLocator == null) {
-			electronicLocator = new ArrayList<String>();
-		}
-		return this.electronicLocator;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link String }
+     * 
+     * @return the electronic locator
+     */
+    public List<String> getElectronicLocator() {
+        if (electronicLocator == null) {
+            electronicLocator = new ArrayList<String>();
+        }
+        return this.electronicLocator;
+    }
 
-	/**
-	 * Gets the value of the note property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the note property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the note property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the note property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getNote().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * 
-	 * @return the note {@link StringPlusDisplayLabelPlusType }
-	 */
-	public List<StringPlusDisplayLabelPlusTypeClient> getNote() {
-		if (note == null) {
-			note = new ArrayList<StringPlusDisplayLabelPlusTypeClient>();
-		}
-		return this.note;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * 
+     * @return the note {@link StringPlusDisplayLabelPlusType }
+     */
+    public List<StringPlusDisplayLabelPlusTypeClient> getNote() {
+        if (note == null) {
+            note = new ArrayList<StringPlusDisplayLabelPlusTypeClient>();
+        }
+        return this.note;
+    }
 
-	/**
-	 * Gets the value of the enumerationAndChronology property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the enumerationAndChronology property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the enumerationAndChronology property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the enumerationAndChronology property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getEnumerationAndChronology().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * 
-	 * @return the enumeration and chronology {@link EnumerationAndChronologyType }
-	 */
-	public List<EnumerationAndChronologyTypeClient> getEnumerationAndChronology() {
-		if (enumerationAndChronology == null) {
-			enumerationAndChronology = new ArrayList<EnumerationAndChronologyTypeClient>();
-		}
-		return this.enumerationAndChronology;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * 
+     * @return the enumeration and chronology
+     *         {@link EnumerationAndChronologyType }
+     */
+    public List<EnumerationAndChronologyTypeClient> getEnumerationAndChronology() {
+        if (enumerationAndChronology == null) {
+            enumerationAndChronology = new ArrayList<EnumerationAndChronologyTypeClient>();
+        }
+        return this.enumerationAndChronology;
+    }
 
-	/**
-	 * Sets the sub location.
-	 * 
-	 * @param subLocation
-	 *          the new sub location
-	 */
-	public void setSubLocation(List<String> subLocation) {
-		this.subLocation = subLocation;
-	}
+    /**
+     * Sets the sub location.
+     * 
+     * @param subLocation
+     *        the new sub location
+     */
+    public void setSubLocation(List<String> subLocation) {
+        this.subLocation = subLocation;
+    }
 
-	/**
-	 * Sets the shelf locator.
-	 * 
-	 * @param shelfLocator
-	 *          the new shelf locator
-	 */
-	public void setShelfLocator(List<String> shelfLocator) {
-		this.shelfLocator = shelfLocator;
-	}
+    /**
+     * Sets the shelf locator.
+     * 
+     * @param shelfLocator
+     *        the new shelf locator
+     */
+    public void setShelfLocator(List<String> shelfLocator) {
+        this.shelfLocator = shelfLocator;
+    }
 
-	/**
-	 * Sets the electronic locator.
-	 * 
-	 * @param electronicLocator
-	 *          the new electronic locator
-	 */
-	public void setElectronicLocator(List<String> electronicLocator) {
-		this.electronicLocator = electronicLocator;
-	}
+    /**
+     * Sets the electronic locator.
+     * 
+     * @param electronicLocator
+     *        the new electronic locator
+     */
+    public void setElectronicLocator(List<String> electronicLocator) {
+        this.electronicLocator = electronicLocator;
+    }
 
-	/**
-	 * Sets the note.
-	 * 
-	 * @param note
-	 *          the new note
-	 */
-	public void setNote(List<StringPlusDisplayLabelPlusTypeClient> note) {
-		this.note = note;
-	}
+    /**
+     * Sets the note.
+     * 
+     * @param note
+     *        the new note
+     */
+    public void setNote(List<StringPlusDisplayLabelPlusTypeClient> note) {
+        this.note = note;
+    }
 
-	/**
-	 * Sets the enumeration and chronology.
-	 * 
-	 * @param enumerationAndChronology
-	 *          the new enumeration and chronology
-	 */
-	public void setEnumerationAndChronology(List<EnumerationAndChronologyTypeClient> enumerationAndChronology) {
-		this.enumerationAndChronology = enumerationAndChronology;
-	}
+    /**
+     * Sets the enumeration and chronology.
+     * 
+     * @param enumerationAndChronology
+     *        the new enumeration and chronology
+     */
+    public void setEnumerationAndChronology(List<EnumerationAndChronologyTypeClient> enumerationAndChronology) {
+        this.enumerationAndChronology = enumerationAndChronology;
+    }
 
 }

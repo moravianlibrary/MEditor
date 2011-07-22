@@ -24,11 +24,13 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 // TODO: Auto-generated Javadoc
@@ -37,69 +39,69 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
  */
 public interface RecentlyModifiedItemDAO {
 
-	/**
-	 * Put.
-	 * 
-	 * @param toPut
-	 *          the to put
-	 * @param openID
-	 *          the open id
-	 * @return true, if successful
-	 */
-	boolean put(RecentlyModifiedItem toPut, String openID) throws DatabaseException;
+    /**
+     * Put.
+     * 
+     * @param toPut
+     *        the to put
+     * @param openID
+     *        the open id
+     * @return true, if successful
+     */
+    boolean put(RecentlyModifiedItem toPut, String openID) throws DatabaseException;
 
-	/**
-	 * Put description.
-	 * 
-	 * @param uuid
-	 *          the uuid
-	 * @param description
-	 *          the description
-	 * @return true, if successful
-	 */
-	boolean putDescription(String uuid, String description) throws DatabaseException;
+    /**
+     * Put description.
+     * 
+     * @param uuid
+     *        the uuid
+     * @param description
+     *        the description
+     * @return true, if successful
+     */
+    boolean putDescription(String uuid, String description) throws DatabaseException;
 
-	/**
-	 * Gets the description.
-	 * 
-	 * @param uuid
-	 *          the uuid
-	 * @return the description
-	 */
-	String getDescription(String uuid) throws DatabaseException;
+    /**
+     * Gets the description.
+     * 
+     * @param uuid
+     *        the uuid
+     * @return the description
+     */
+    String getDescription(String uuid) throws DatabaseException;
 
-	/**
-	 * Put user description.
-	 * 
-	 * @param openID
-	 *          the open id
-	 * @param uuid
-	 *          the uuid
-	 * @param description
-	 *          the description
-	 * @return true, if successful
-	 */
-	boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException;
+    /**
+     * Put user description.
+     * 
+     * @param openID
+     *        the open id
+     * @param uuid
+     *        the uuid
+     * @param description
+     *        the description
+     * @return true, if successful
+     */
+    boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException;
 
-	/**
-	 * Gets the user description.
-	 * 
-	 * @param openID
-	 *          the open id
-	 * @param uuid
-	 *          the uuid
-	 * @return the user description
-	 */
-	String getUserDescription(String openID, String uuid) throws DatabaseException;
+    /**
+     * Gets the user description.
+     * 
+     * @param openID
+     *        the open id
+     * @param uuid
+     *        the uuid
+     * @return the user description
+     */
+    String getUserDescription(String openID, String uuid) throws DatabaseException;
 
-	/**
-	 * Gets the items.
-	 * 
-	 * @param nLatest
-	 *          the n latest
-	 * @param openID
-	 *          the open id
-	 * @return the items
-	 */
-	ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) throws DatabaseException;
+    /**
+     * Gets the items.
+     * 
+     * @param nLatest
+     *        the n latest
+     * @param openID
+     *        the open id
+     * @return the items
+     */
+    ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) throws DatabaseException;
 }

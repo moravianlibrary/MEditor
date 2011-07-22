@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,10 +35,13 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesResult;
 
@@ -47,72 +49,75 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesResult;
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetAllRolesHandler implements ActionHandler<GetAllRolesAction, GetAllRolesResult> {
+public class GetAllRolesHandler
+        implements ActionHandler<GetAllRolesAction, GetAllRolesResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetAllRolesHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetAllRolesHandler.class.getPackage().toString());
 
-	/** The recently modified dao. */
-	private final UserDAO userDAO;
+    /** The recently modified dao. */
+    private final UserDAO userDAO;
 
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new gets the recently modified handler.
-	 * 
-	 * @param logger
-	 *          the logger
-	 * @param configuration
-	 *          the configuration
-	 * @param userDAO
-	 *          the user dao
-	 */
-	@Inject
-	public GetAllRolesHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
+    /**
+     * Instantiates a new gets the recently modified handler.
+     * 
+     * @param logger
+     *        the logger
+     * @param configuration
+     *        the configuration
+     * @param userDAO
+     *        the user dao
+     */
+    @Inject
+    public GetAllRolesHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context) throws ActionException {
-		LOGGER.debug("Processing action: GetAllRolesResult");
-		ServerUtils.checkExpiredSession(httpSessionProvider);
-		try {
-			return new GetAllRolesResult(userDAO.getRoles());
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context)
+            throws ActionException {
+        LOGGER.debug("Processing action: GetAllRolesResult");
+        ServerUtils.checkExpiredSession(httpSessionProvider);
+        try {
+            return new GetAllRolesResult(userDAO.getRoles());
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetAllRolesAction> getActionType() {
-		return GetAllRolesAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetAllRolesAction> getActionType() {
+        return GetAllRolesAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetAllRolesAction action, GetAllRolesResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetAllRolesAction action, GetAllRolesResult result, ExecutionContext context)
+            throws ActionException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

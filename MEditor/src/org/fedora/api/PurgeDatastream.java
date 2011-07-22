@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -56,50 +57,39 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "dsID",
-    "startDT",
-    "endDT",
-    "logMessage",
-    "force"
-})
+@XmlType(name = "", propOrder = {"pid", "dsID", "startDT", "endDT", "logMessage", "force"})
 @XmlRootElement(name = "purgeDatastream")
 public class PurgeDatastream {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
-    
+
     /** The start dt. */
     @XmlElement(required = true, nillable = true)
     protected String startDT;
-    
+
     /** The end dt. */
     @XmlElement(required = true, nillable = true)
     protected String endDT;
-    
+
     /** The log message. */
     @XmlElement(required = true, nillable = true)
     protected String logMessage;
-    
+
     /** The force. */
     protected boolean force;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -109,9 +99,7 @@ public class PurgeDatastream {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -119,10 +107,8 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the dsID property.
-     *
-     * @return the ds id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds id possible object is {@link String }
      */
     public String getDsID() {
         return dsID;
@@ -132,9 +118,7 @@ public class PurgeDatastream {
      * Sets the value of the dsID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsID(String value) {
         this.dsID = value;
@@ -142,10 +126,8 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the startDT property.
-     *
-     * @return the start dt
-     * possible object is
-     * {@link String }
+     * 
+     * @return the start dt possible object is {@link String }
      */
     public String getStartDT() {
         return startDT;
@@ -155,9 +137,7 @@ public class PurgeDatastream {
      * Sets the value of the startDT property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setStartDT(String value) {
         this.startDT = value;
@@ -165,10 +145,8 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the endDT property.
-     *
-     * @return the end dt
-     * possible object is
-     * {@link String }
+     * 
+     * @return the end dt possible object is {@link String }
      */
     public String getEndDT() {
         return endDT;
@@ -178,9 +156,7 @@ public class PurgeDatastream {
      * Sets the value of the endDT property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setEndDT(String value) {
         this.endDT = value;
@@ -188,10 +164,8 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the logMessage property.
-     *
-     * @return the log message
-     * possible object is
-     * {@link String }
+     * 
+     * @return the log message possible object is {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -201,9 +175,7 @@ public class PurgeDatastream {
      * Sets the value of the logMessage property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLogMessage(String value) {
         this.logMessage = value;
@@ -211,7 +183,7 @@ public class PurgeDatastream {
 
     /**
      * Gets the value of the force property.
-     *
+     * 
      * @return true, if is force
      */
     public boolean isForce() {
@@ -220,8 +192,9 @@ public class PurgeDatastream {
 
     /**
      * Sets the value of the force property.
-     *
-     * @param value the new force
+     * 
+     * @param value
+     *        the new force
      */
     public void setForce(boolean value) {
         this.force = value;

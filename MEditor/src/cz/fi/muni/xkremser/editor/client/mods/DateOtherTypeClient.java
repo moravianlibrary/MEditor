@@ -38,30 +38,30 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class DateOtherTypeClient.
  */
-public class DateOtherTypeClient extends DateTypeClient implements IsSerializable {
+public class DateOtherTypeClient
+        extends DateTypeClient
+        implements IsSerializable {
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/**
-	 * Gets the value of the type property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the value of the type property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setType(String value) {
-		this.type = value;
-	}
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setType(String value) {
+        this.type = value;
+    }
 
 }

@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "objectPID"
-})
+@XmlType(name = "", propOrder = {"objectPID"})
 @XmlRootElement(name = "ingestResponse")
 public class IngestResponse {
 
@@ -67,10 +64,8 @@ public class IngestResponse {
 
     /**
      * Gets the value of the objectPID property.
-     *
-     * @return the object pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the object pid possible object is {@link String }
      */
     public String getObjectPID() {
         return objectPID;
@@ -80,9 +75,7 @@ public class IngestResponse {
      * Sets the value of the objectPID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setObjectPID(String value) {
         this.objectPID = value;

@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,10 +35,13 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 
@@ -47,76 +49,81 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetLoggedUserHandler implements ActionHandler<GetLoggedUserAction, GetLoggedUserResult> {
+public class GetLoggedUserHandler
+        implements ActionHandler<GetLoggedUserAction, GetLoggedUserResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(GetLoggedUserHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetLoggedUserHandler.class.getPackage().toString());
 
-	/** The recently modified dao. */
-	private final UserDAO userDAO;
+    /** The recently modified dao. */
+    private final UserDAO userDAO;
 
-	/** The http session provider. */
-	private final Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    private final Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new gets the recently modified handler.
-	 * 
-	 * @param userDAO
-	 *          the user dao
-	 * @param httpSessionProvider
-	 *          the http session provider
-	 */
-	@Inject
-	public GetLoggedUserHandler(final UserDAO userDAO, Provider<HttpSession> httpSessionProvider) {
-		this.userDAO = userDAO;
-		this.httpSessionProvider = httpSessionProvider;
-	}
+    /**
+     * Instantiates a new gets the recently modified handler.
+     * 
+     * @param userDAO
+     *        the user dao
+     * @param httpSessionProvider
+     *        the http session provider
+     */
+    @Inject
+    public GetLoggedUserHandler(final UserDAO userDAO, Provider<HttpSession> httpSessionProvider) {
+        this.userDAO = userDAO;
+        this.httpSessionProvider = httpSessionProvider;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public GetLoggedUserResult execute(final GetLoggedUserAction action, final ExecutionContext context) throws ActionException {
-		LOGGER.debug("Processing action: GetLoggedUserAction");
-		HttpSession session = httpSessionProvider.get();
-		ServerUtils.checkExpiredSession(session);
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public GetLoggedUserResult execute(final GetLoggedUserAction action, final ExecutionContext context)
+            throws ActionException {
+        LOGGER.debug("Processing action: GetLoggedUserAction");
+        HttpSession session = httpSessionProvider.get();
+        ServerUtils.checkExpiredSession(session);
 
-		String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		boolean editUsers;
-		try {
-			editUsers = HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN)) || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
-			return new GetLoggedUserResult(userDAO.getName(openID), editUsers);
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-	}
+        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        boolean editUsers;
+        try {
+            editUsers =
+                    HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN))
+                            || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
+            return new GetLoggedUserResult(userDAO.getName(openID), editUsers);
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<GetLoggedUserAction> getActionType() {
-		return GetLoggedUserAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<GetLoggedUserAction> getActionType() {
+        return GetLoggedUserAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(GetLoggedUserAction action, GetLoggedUserResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(GetLoggedUserAction action, GetLoggedUserResult result, ExecutionContext context)
+            throws ActionException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

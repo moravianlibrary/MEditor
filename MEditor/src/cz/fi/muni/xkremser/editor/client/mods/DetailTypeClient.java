@@ -40,116 +40,117 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class DetailTypeClient.
  */
-public class DetailTypeClient implements IsSerializable {
+public class DetailTypeClient
+        implements IsSerializable {
 
-	/** The number. */
-	protected List<String> number;
+    /** The number. */
+    protected List<String> number;
 
-	/** The caption. */
-	protected List<String> caption;
+    /** The caption. */
+    protected List<String> caption;
 
-	/** The title. */
-	protected List<String> title;
+    /** The title. */
+    protected List<String> title;
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/** The level. */
-	protected String level;
+    /** The level. */
+    protected String level;
 
-	/**
-	 * Gets the number.
-	 * 
-	 * @return the number
-	 */
-	public List<String> getNumber() {
-		return number;
-	}
+    /**
+     * Gets the number.
+     * 
+     * @return the number
+     */
+    public List<String> getNumber() {
+        return number;
+    }
 
-	/**
-	 * Sets the number.
-	 * 
-	 * @param number
-	 *          the new number
-	 */
-	public void setNumber(List<String> number) {
-		this.number = number;
-	}
+    /**
+     * Sets the number.
+     * 
+     * @param number
+     *        the new number
+     */
+    public void setNumber(List<String> number) {
+        this.number = number;
+    }
 
-	/**
-	 * Gets the caption.
-	 * 
-	 * @return the caption
-	 */
-	public List<String> getCaption() {
-		return caption;
-	}
+    /**
+     * Gets the caption.
+     * 
+     * @return the caption
+     */
+    public List<String> getCaption() {
+        return caption;
+    }
 
-	/**
-	 * Sets the caption.
-	 * 
-	 * @param caption
-	 *          the new caption
-	 */
-	public void setCaption(List<String> caption) {
-		this.caption = caption;
-	}
+    /**
+     * Sets the caption.
+     * 
+     * @param caption
+     *        the new caption
+     */
+    public void setCaption(List<String> caption) {
+        this.caption = caption;
+    }
 
-	/**
-	 * Gets the title.
-	 * 
-	 * @return the title
-	 */
-	public List<String> getTitle() {
-		return title;
-	}
+    /**
+     * Gets the title.
+     * 
+     * @return the title
+     */
+    public List<String> getTitle() {
+        return title;
+    }
 
-	/**
-	 * Sets the title.
-	 * 
-	 * @param title
-	 *          the new title
-	 */
-	public void setTitle(List<String> title) {
-		this.title = title;
-	}
+    /**
+     * Sets the title.
+     * 
+     * @param title
+     *        the new title
+     */
+    public void setTitle(List<String> title) {
+        this.title = title;
+    }
 
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the type.
-	 * 
-	 * @param type
-	 *          the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * Sets the type.
+     * 
+     * @param type
+     *        the new type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * Gets the level.
-	 * 
-	 * @return the level
-	 */
-	public String getLevel() {
-		return level;
-	}
+    /**
+     * Gets the level.
+     * 
+     * @return the level
+     */
+    public String getLevel() {
+        return level;
+    }
 
-	/**
-	 * Sets the level.
-	 * 
-	 * @param level
-	 *          the new level
-	 */
-	public void setLevel(String level) {
-		this.level = level;
-	}
+    /**
+     * Sets the level.
+     * 
+     * @param level
+     *        the new level
+     */
+    public void setLevel(String level) {
+        this.level = level;
+    }
 
 }

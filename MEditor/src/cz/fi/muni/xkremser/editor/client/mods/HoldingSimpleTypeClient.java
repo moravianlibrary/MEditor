@@ -40,28 +40,29 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class HoldingSimpleTypeClient.
  */
-public class HoldingSimpleTypeClient implements IsSerializable {
+public class HoldingSimpleTypeClient
+        implements IsSerializable {
 
-	/** The copy information. */
-	protected List<CopyInformationTypeClient> copyInformation;
+    /** The copy information. */
+    protected List<CopyInformationTypeClient> copyInformation;
 
-	/**
-	 * Gets the copy information.
-	 * 
-	 * @return the copy information
-	 */
-	public List<CopyInformationTypeClient> getCopyInformation() {
-		return this.copyInformation;
-	}
+    /**
+     * Gets the copy information.
+     * 
+     * @return the copy information
+     */
+    public List<CopyInformationTypeClient> getCopyInformation() {
+        return this.copyInformation;
+    }
 
-	/**
-	 * Sets the copy information.
-	 * 
-	 * @param copyInformation
-	 *          the new copy information
-	 */
-	public void setCopyInformation(List<CopyInformationTypeClient> copyInformation) {
-		this.copyInformation = copyInformation;
-	}
+    /**
+     * Sets the copy information.
+     * 
+     * @param copyInformation
+     *        the new copy information
+     */
+    public void setCopyInformation(List<CopyInformationTypeClient> copyInformation) {
+        this.copyInformation = copyInformation;
+    }
 
 }

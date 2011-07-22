@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,10 +35,13 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityResult;
 
@@ -47,74 +49,77 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityResult;
 /**
  * The Class PutRecentlyModifiedHandler.
  */
-public class RemoveUserIdentityHandler implements ActionHandler<RemoveUserIdentityAction, RemoveUserIdentityResult> {
+public class RemoveUserIdentityHandler
+        implements ActionHandler<RemoveUserIdentityAction, RemoveUserIdentityResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(RemoveUserIdentityHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(RemoveUserIdentityHandler.class.getPackage()
+            .toString());
 
-	/** The recently modified dao. */
-	@Inject
-	private UserDAO userDAO;
+    /** The recently modified dao. */
+    @Inject
+    private UserDAO userDAO;
 
-	/**
-	 * Instantiates a new put recently modified handler.
-	 * 
-	 */
-	@Inject
-	public RemoveUserIdentityHandler(final EditorConfiguration configuration) {
+    /**
+     * Instantiates a new put recently modified handler.
+     */
+    @Inject
+    public RemoveUserIdentityHandler(final EditorConfiguration configuration) {
 
-	}
+    }
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public RemoveUserIdentityResult execute(final RemoveUserIdentityAction action, final ExecutionContext context) throws ActionException {
-		if (action.getId() == null)
-			throw new NullPointerException("getId()");
-		LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
-		ServerUtils.checkExpiredSession(httpSessionProvider);
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public RemoveUserIdentityResult execute(final RemoveUserIdentityAction action,
+                                            final ExecutionContext context) throws ActionException {
+        if (action.getId() == null) throw new NullPointerException("getId()");
+        LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
+        ServerUtils.checkExpiredSession(httpSessionProvider);
 
-		try {
-			userDAO.removeUserIdentity(Long.parseLong(action.getId()));
-		} catch (NumberFormatException e) {
-			throw new ActionException(e);
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-		return new RemoveUserIdentityResult();
-	}
+        try {
+            userDAO.removeUserIdentity(Long.parseLong(action.getId()));
+        } catch (NumberFormatException e) {
+            throw new ActionException(e);
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+        return new RemoveUserIdentityResult();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<RemoveUserIdentityAction> getActionType() {
-		return RemoveUserIdentityAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<RemoveUserIdentityAction> getActionType() {
+        return RemoveUserIdentityAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(RemoveUserIdentityAction action, RemoveUserIdentityResult result, ExecutionContext context) throws ActionException {
-		// TODO undo method
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(RemoveUserIdentityAction action,
+                     RemoveUserIdentityResult result,
+                     ExecutionContext context) throws ActionException {
+        // TODO undo method
 
-	}
+    }
 }

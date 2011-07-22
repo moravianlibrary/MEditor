@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.gin;
 
 import com.google.gwt.event.shared.EventBus;
@@ -65,41 +66,64 @@ import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 /**
  * The Class EditorClientModule.
  */
-public class EditorClientModule extends AbstractPresenterModule {
+public class EditorClientModule
+        extends AbstractPresenterModule {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.inject.client.AbstractGinModule#configure()
-	 */
-	@Override
-	protected void configure() {
-		// Singletons
-		bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
-		bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(Singleton.class);
-		bind(PlaceManager.class).to(EditorPlaceManager.class).in(Singleton.class);
-		bind(RootPresenter.class).asEagerSingleton();
-		bind(ProxyFailureHandler.class).to(DefaultProxyFailureHandler.class).in(Singleton.class);
+    /*
+     * (non-Javadoc)
+     * @see com.google.gwt.inject.client.AbstractGinModule#configure()
+     */
+    @Override
+    protected void configure() {
+        // Singletons
+        bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
+        bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(Singleton.class);
+        bind(PlaceManager.class).to(EditorPlaceManager.class).in(Singleton.class);
+        bind(RootPresenter.class).asEagerSingleton();
+        bind(ProxyFailureHandler.class).to(DefaultProxyFailureHandler.class).in(Singleton.class);
 
-		// ServerConstants
-		bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
-		bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
+        // ServerConstants
+        bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
+        bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
-		// Presenters
-		bindPresenter(AppPresenter.class, AppPresenter.MyView.class, AppView.class, AppPresenter.MyProxy.class);
-		bindPresenter(HomePresenter.class, HomePresenter.MyView.class, HomeView.class, HomePresenter.MyProxy.class);
-		bindPresenter(UserPresenter.class, UserPresenter.MyView.class, UserView.class, UserPresenter.MyProxy.class);
-		bindPresenter(ModifyPresenter.class, ModifyPresenter.MyView.class, ModifyView.class, ModifyPresenter.MyProxy.class);
-		bindPresenter(CreatePresenter.class, CreatePresenter.MyView.class, CreateView.class, CreatePresenter.MyProxy.class);
-		bindPresenter(FindMetadataPresenter.class, FindMetadataPresenter.MyView.class, FindMetadataView.class, FindMetadataPresenter.MyProxy.class);
-		bindPresenter(AdjustPagesPresenter.class, AdjustPagesPresenter.MyView.class, AdjustPagesView.class, AdjustPagesPresenter.MyProxy.class);
-		bindPresenter(DigitalObjectMenuPresenter.class, DigitalObjectMenuPresenter.MyView.class, DigitalObjectMenuView.class,
-				DigitalObjectMenuPresenter.MyProxy.class);
+        // Presenters
+        bindPresenter(AppPresenter.class,
+                      AppPresenter.MyView.class,
+                      AppView.class,
+                      AppPresenter.MyProxy.class);
+        bindPresenter(HomePresenter.class,
+                      HomePresenter.MyView.class,
+                      HomeView.class,
+                      HomePresenter.MyProxy.class);
+        bindPresenter(UserPresenter.class,
+                      UserPresenter.MyView.class,
+                      UserView.class,
+                      UserPresenter.MyProxy.class);
+        bindPresenter(ModifyPresenter.class,
+                      ModifyPresenter.MyView.class,
+                      ModifyView.class,
+                      ModifyPresenter.MyProxy.class);
+        bindPresenter(CreatePresenter.class,
+                      CreatePresenter.MyView.class,
+                      CreateView.class,
+                      CreatePresenter.MyProxy.class);
+        bindPresenter(FindMetadataPresenter.class,
+                      FindMetadataPresenter.MyView.class,
+                      FindMetadataView.class,
+                      FindMetadataPresenter.MyProxy.class);
+        bindPresenter(AdjustPagesPresenter.class,
+                      AdjustPagesPresenter.MyView.class,
+                      AdjustPagesView.class,
+                      AdjustPagesPresenter.MyProxy.class);
+        bindPresenter(DigitalObjectMenuPresenter.class,
+                      DigitalObjectMenuPresenter.MyView.class,
+                      DigitalObjectMenuView.class,
+                      DigitalObjectMenuPresenter.MyProxy.class);
 
-		bind(CachingDispatchAsync.class);
-		bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
+        bind(CachingDispatchAsync.class);
+        bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
-		requestStaticInjection(DCTab.class);
+        requestStaticInjection(DCTab.class);
 
-	}
+    }
 }

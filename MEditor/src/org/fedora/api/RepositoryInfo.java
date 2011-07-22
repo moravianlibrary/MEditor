@@ -32,12 +32,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for RepositoryInfo complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for RepositoryInfo complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="RepositoryInfo">
@@ -62,85 +63,69 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RepositoryInfo", propOrder = {
-    "repositoryName",
-    "repositoryVersion",
-    "repositoryBaseURL",
-    "repositoryPIDNamespace",
-    "defaultExportFormat",
-    "oaiNamespace",
-    "adminEmailList",
-    "samplePID",
-    "sampleOAIIdentifier",
-    "sampleSearchURL",
-    "sampleAccessURL",
-    "sampleOAIURL",
-    "retainPIDs"
-})
+@XmlType(name = "RepositoryInfo", propOrder = {"repositoryName", "repositoryVersion", "repositoryBaseURL",
+        "repositoryPIDNamespace", "defaultExportFormat", "oaiNamespace", "adminEmailList", "samplePID",
+        "sampleOAIIdentifier", "sampleSearchURL", "sampleAccessURL", "sampleOAIURL", "retainPIDs"})
 public class RepositoryInfo {
 
     /** The repository name. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryName;
-    
+
     /** The repository version. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryVersion;
-    
+
     /** The repository base url. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryBaseURL;
-    
+
     /** The repository pid namespace. */
     @XmlElement(required = true, nillable = true)
     protected String repositoryPIDNamespace;
-    
+
     /** The default export format. */
     @XmlElement(required = true, nillable = true)
     protected String defaultExportFormat;
-    
+
     /** The oai namespace. */
     @XmlElement(name = "OAINamespace", required = true, nillable = true)
     protected String oaiNamespace;
-    
+
     /** The admin email list. */
     @XmlElement(required = true, nillable = true)
     protected ArrayOfString adminEmailList;
-    
+
     /** The sample pid. */
     @XmlElement(required = true, nillable = true)
     protected String samplePID;
-    
+
     /** The sample oai identifier. */
     @XmlElement(required = true, nillable = true)
     protected String sampleOAIIdentifier;
-    
+
     /** The sample search url. */
     @XmlElement(required = true, nillable = true)
     protected String sampleSearchURL;
-    
+
     /** The sample access url. */
     @XmlElement(required = true, nillable = true)
     protected String sampleAccessURL;
-    
+
     /** The sample oaiurl. */
     @XmlElement(required = true, nillable = true)
     protected String sampleOAIURL;
-    
+
     /** The retain pi ds. */
     @XmlElement(required = true, nillable = true)
     protected ArrayOfString retainPIDs;
 
     /**
      * Gets the value of the repositoryName property.
-     *
-     * @return the repository name
-     * possible object is
-     * {@link String }
+     * 
+     * @return the repository name possible object is {@link String }
      */
     public String getRepositoryName() {
         return repositoryName;
@@ -150,9 +135,7 @@ public class RepositoryInfo {
      * Sets the value of the repositoryName property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setRepositoryName(String value) {
         this.repositoryName = value;
@@ -160,10 +143,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the repositoryVersion property.
-     *
-     * @return the repository version
-     * possible object is
-     * {@link String }
+     * 
+     * @return the repository version possible object is {@link String }
      */
     public String getRepositoryVersion() {
         return repositoryVersion;
@@ -173,9 +154,7 @@ public class RepositoryInfo {
      * Sets the value of the repositoryVersion property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setRepositoryVersion(String value) {
         this.repositoryVersion = value;
@@ -183,10 +162,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the repositoryBaseURL property.
-     *
-     * @return the repository base url
-     * possible object is
-     * {@link String }
+     * 
+     * @return the repository base url possible object is {@link String }
      */
     public String getRepositoryBaseURL() {
         return repositoryBaseURL;
@@ -196,9 +173,7 @@ public class RepositoryInfo {
      * Sets the value of the repositoryBaseURL property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setRepositoryBaseURL(String value) {
         this.repositoryBaseURL = value;
@@ -206,10 +181,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the repositoryPIDNamespace property.
-     *
-     * @return the repository pid namespace
-     * possible object is
-     * {@link String }
+     * 
+     * @return the repository pid namespace possible object is {@link String }
      */
     public String getRepositoryPIDNamespace() {
         return repositoryPIDNamespace;
@@ -219,9 +192,7 @@ public class RepositoryInfo {
      * Sets the value of the repositoryPIDNamespace property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setRepositoryPIDNamespace(String value) {
         this.repositoryPIDNamespace = value;
@@ -229,10 +200,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the defaultExportFormat property.
-     *
-     * @return the default export format
-     * possible object is
-     * {@link String }
+     * 
+     * @return the default export format possible object is {@link String }
      */
     public String getDefaultExportFormat() {
         return defaultExportFormat;
@@ -242,9 +211,7 @@ public class RepositoryInfo {
      * Sets the value of the defaultExportFormat property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDefaultExportFormat(String value) {
         this.defaultExportFormat = value;
@@ -252,10 +219,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the oaiNamespace property.
-     *
-     * @return the oAI namespace
-     * possible object is
-     * {@link String }
+     * 
+     * @return the oAI namespace possible object is {@link String }
      */
     public String getOAINamespace() {
         return oaiNamespace;
@@ -265,9 +230,7 @@ public class RepositoryInfo {
      * Sets the value of the oaiNamespace property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setOAINamespace(String value) {
         this.oaiNamespace = value;
@@ -275,10 +238,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the adminEmailList property.
-     *
-     * @return the admin email list
-     * possible object is
-     * {@link ArrayOfString }
+     * 
+     * @return the admin email list possible object is {@link ArrayOfString }
      */
     public ArrayOfString getAdminEmailList() {
         return adminEmailList;
@@ -288,9 +249,7 @@ public class RepositoryInfo {
      * Sets the value of the adminEmailList property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link ArrayOfString }
-     *     
+     *        allowed object is {@link ArrayOfString }
      */
     public void setAdminEmailList(ArrayOfString value) {
         this.adminEmailList = value;
@@ -298,10 +257,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the samplePID property.
-     *
-     * @return the sample pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the sample pid possible object is {@link String }
      */
     public String getSamplePID() {
         return samplePID;
@@ -311,9 +268,7 @@ public class RepositoryInfo {
      * Sets the value of the samplePID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setSamplePID(String value) {
         this.samplePID = value;
@@ -321,10 +276,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleOAIIdentifier property.
-     *
-     * @return the sample oai identifier
-     * possible object is
-     * {@link String }
+     * 
+     * @return the sample oai identifier possible object is {@link String }
      */
     public String getSampleOAIIdentifier() {
         return sampleOAIIdentifier;
@@ -334,9 +287,7 @@ public class RepositoryInfo {
      * Sets the value of the sampleOAIIdentifier property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setSampleOAIIdentifier(String value) {
         this.sampleOAIIdentifier = value;
@@ -344,10 +295,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleSearchURL property.
-     *
-     * @return the sample search url
-     * possible object is
-     * {@link String }
+     * 
+     * @return the sample search url possible object is {@link String }
      */
     public String getSampleSearchURL() {
         return sampleSearchURL;
@@ -357,9 +306,7 @@ public class RepositoryInfo {
      * Sets the value of the sampleSearchURL property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setSampleSearchURL(String value) {
         this.sampleSearchURL = value;
@@ -367,10 +314,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleAccessURL property.
-     *
-     * @return the sample access url
-     * possible object is
-     * {@link String }
+     * 
+     * @return the sample access url possible object is {@link String }
      */
     public String getSampleAccessURL() {
         return sampleAccessURL;
@@ -380,9 +325,7 @@ public class RepositoryInfo {
      * Sets the value of the sampleAccessURL property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setSampleAccessURL(String value) {
         this.sampleAccessURL = value;
@@ -390,10 +333,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the sampleOAIURL property.
-     *
-     * @return the sample oaiurl
-     * possible object is
-     * {@link String }
+     * 
+     * @return the sample oaiurl possible object is {@link String }
      */
     public String getSampleOAIURL() {
         return sampleOAIURL;
@@ -403,9 +344,7 @@ public class RepositoryInfo {
      * Sets the value of the sampleOAIURL property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setSampleOAIURL(String value) {
         this.sampleOAIURL = value;
@@ -413,10 +352,8 @@ public class RepositoryInfo {
 
     /**
      * Gets the value of the retainPIDs property.
-     *
-     * @return the retain pi ds
-     * possible object is
-     * {@link ArrayOfString }
+     * 
+     * @return the retain pi ds possible object is {@link ArrayOfString }
      */
     public ArrayOfString getRetainPIDs() {
         return retainPIDs;
@@ -426,9 +363,7 @@ public class RepositoryInfo {
      * Sets the value of the retainPIDs property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link ArrayOfString }
-     *     
+     *        allowed object is {@link ArrayOfString }
      */
     public void setRetainPIDs(ArrayOfString value) {
         this.retainPIDs = value;

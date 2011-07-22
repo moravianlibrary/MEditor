@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -63,231 +64,236 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 /**
  * The Class HomeView.
  */
-public class FindMetadataView extends ViewImpl implements FindMetadataPresenter.MyView {
+public class FindMetadataView
+        extends ViewImpl
+        implements FindMetadataPresenter.MyView {
 
-	/** The layout. */
-	private final VStack layout;
+    /** The layout. */
+    private final VStack layout;
 
-	private final ButtonItem findButton;
+    private final ButtonItem findButton;
 
-	private final IButton nextButton;
+    private final IButton nextButton;
 
-	private final IButton withoutButton;
+    private final IButton withoutButton;
 
-	/** The form. */
-	private final DynamicForm form;
+    /** The form. */
+    private final DynamicForm form;
 
-	/** The uuid field. */
-	private final TextItem searchValue;
+    /** The uuid field. */
+    private final TextItem searchValue;
 
-	private final SelectItem findBy;
+    private final SelectItem findBy;
 
-	private final LangConstants lang;
+    private final LangConstants lang;
 
-	private final ListGrid resultGrid;
+    private final ListGrid resultGrid;
 
-	private final DetailViewer printViewer;
+    private final DetailViewer printViewer;
 
-	private final SectionStack printStack;
+    private final SectionStack printStack;
 
-	private ModalWindow mw;
+    private ModalWindow mw;
 
-	/**
-	 * Instantiates a new home view.
-	 */
-	@Inject
-	public FindMetadataView(final LangConstants lang) {
-		this.lang = lang;
-		layout = new VStack();
-		layout.setHeight100();
-		layout.setPadding(15);
+    /**
+     * Instantiates a new home view.
+     */
+    @Inject
+    public FindMetadataView(final LangConstants lang) {
+        this.lang = lang;
+        layout = new VStack();
+        layout.setHeight100();
+        layout.setPadding(15);
 
-		findButton = new ButtonItem(lang.find());
-		findButton.setAutoFit(true);
-		findButton.setStartRow(false);
-		findButton.setWidth(80);
-		findButton.setColSpan(2);
+        findButton = new ButtonItem(lang.find());
+        findButton.setAutoFit(true);
+        findButton.setStartRow(false);
+        findButton.setWidth(80);
+        findButton.setColSpan(2);
 
-		HTMLFlow html1 = new HTMLFlow();
-		html1.setContents("<h1>" + lang.create() + "</h1>");
-		html1.setExtraSpace(20);
+        HTMLFlow html1 = new HTMLFlow();
+        html1.setContents("<h1>" + lang.create() + "</h1>");
+        html1.setExtraSpace(20);
 
-		findBy = new SelectItem();
-		findBy.setTitle(lang.findBy());
-		// findBy.setType("comboBox");
-		findBy.setValueMap(Constants.SYSNO, lang.fbarcode(), lang.ftitle());
-		findBy.setValue(Constants.SYSNO);
-		findBy.addChangedHandler(new ChangedHandler() {
-			@Override
-			public void onChanged(ChangedEvent event) {
-				searchValue.setTitle((String) event.getValue());
-				searchValue.redraw();
-			}
-		});
-		searchValue = new TextItem();
-		// searchValue.setShowTitle(false);
-		searchValue.setTitle(Constants.SYSNO);
-		searchValue.setHoverOpacity(75);
-		searchValue.setHoverWidth(330);
-		searchValue.setHoverStyle("interactImageHover");
-		searchValue.addItemHoverHandler(new ItemHoverHandler() {
-			@Override
-			public void onItemHover(ItemHoverEvent event) {
-				searchValue.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
-			}
-		});
+        findBy = new SelectItem();
+        findBy.setTitle(lang.findBy());
+        // findBy.setType("comboBox");
+        findBy.setValueMap(Constants.SYSNO, lang.fbarcode(), lang.ftitle());
+        findBy.setValue(Constants.SYSNO);
+        findBy.addChangedHandler(new ChangedHandler() {
 
-		form = new DynamicForm();
-		form.setGroupTitle(lang.findMetadata());
-		form.setIsGroup(true);
-		form.setWidth(220);
-		form.setHeight(90);
-		form.setNumCols(2);
-		form.setColWidths(70, "*");
-		form.setPadding(5);
-		form.setFields(findBy, searchValue, findButton);
+            @Override
+            public void onChanged(ChangedEvent event) {
+                searchValue.setTitle((String) event.getValue());
+                searchValue.redraw();
+            }
+        });
+        searchValue = new TextItem();
+        // searchValue.setShowTitle(false);
+        searchValue.setTitle(Constants.SYSNO);
+        searchValue.setHoverOpacity(75);
+        searchValue.setHoverWidth(330);
+        searchValue.setHoverStyle("interactImageHover");
+        searchValue.addItemHoverHandler(new ItemHoverHandler() {
 
-		HLayout hLayout = new HLayout();
-		hLayout.setMembersMargin(10);
-		hLayout.addMember(form);
-		hLayout.setExtraSpace(10);
+            @Override
+            public void onItemHover(ItemHoverEvent event) {
+                searchValue.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
+            }
+        });
 
-		printStack = new SectionStack();
-		printStack.setVisibilityMode(VisibilityMode.MULTIPLE);
-		printStack.setWidth(600);
-		printStack.setHeight(500);
+        form = new DynamicForm();
+        form.setGroupTitle(lang.findMetadata());
+        form.setIsGroup(true);
+        form.setWidth(220);
+        form.setHeight(90);
+        form.setNumCols(2);
+        form.setColWidths(70, "*");
+        form.setPadding(5);
+        form.setFields(findBy, searchValue, findButton);
 
-		printViewer = new DetailViewer();
-		printViewer.setWidth100();
-		printViewer.setMargin(15);
-		printViewer.setEmptyMessage(lang.fnothing());
-		printViewer.setDataSource(new Z3950ResultDS(lang));
+        HLayout hLayout = new HLayout();
+        hLayout.setMembersMargin(10);
+        hLayout.addMember(form);
+        hLayout.setExtraSpace(10);
 
-		resultGrid = new ListGrid();
-		resultGrid.setHeight(240);
-		resultGrid.setShowAllRecords(true);
-		resultGrid.setAutoFetchData(false);
-		ListGridField dcTitle = new ListGridField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
-		ListGridField dcPublisher = new ListGridField(DublinCoreConstants.DC_PUBLISHER, lang.dcPublisher());
-		ListGridField dcDate = new ListGridField(DublinCoreConstants.DC_DATE, lang.dcDate());
-		resultGrid.setFields(dcTitle, dcPublisher, dcDate);
-		resultGrid.setDataSource(new Z3950ResultDS(lang));
+        printStack = new SectionStack();
+        printStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+        printStack.setWidth(600);
+        printStack.setHeight(500);
 
-		resultGrid.addRecordClickHandler(new RecordClickHandler() {
-			@Override
-			public void onRecordClick(final RecordClickEvent event) {
-				printViewer.setData(new Record[] { event.getRecord() });
-			}
-		});
+        printViewer = new DetailViewer();
+        printViewer.setWidth100();
+        printViewer.setMargin(15);
+        printViewer.setEmptyMessage(lang.fnothing());
+        printViewer.setDataSource(new Z3950ResultDS(lang));
 
-		SectionStackSection resultsSection = new SectionStackSection(lang.results());
-		resultsSection.setExpanded(true);
-		resultsSection.addItem(resultGrid);
-		printStack.addSection(resultsSection);
+        resultGrid = new ListGrid();
+        resultGrid.setHeight(240);
+        resultGrid.setShowAllRecords(true);
+        resultGrid.setAutoFetchData(false);
+        ListGridField dcTitle = new ListGridField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
+        ListGridField dcPublisher = new ListGridField(DublinCoreConstants.DC_PUBLISHER, lang.dcPublisher());
+        ListGridField dcDate = new ListGridField(DublinCoreConstants.DC_DATE, lang.dcDate());
+        resultGrid.setFields(dcTitle, dcPublisher, dcDate);
+        resultGrid.setDataSource(new Z3950ResultDS(lang));
 
-		SectionStackSection detailsSection = new SectionStackSection("Detail");
-		detailsSection.setExpanded(true);
-		detailsSection.addItem(printViewer);
-		printStack.addSection(detailsSection);
+        resultGrid.addRecordClickHandler(new RecordClickHandler() {
 
-		final VLayout printContainer = new VLayout(10);
-		printContainer.addMember(printStack);
-		printContainer.setExtraSpace(5);
+            @Override
+            public void onRecordClick(final RecordClickEvent event) {
+                printViewer.setData(new Record[] {event.getRecord()});
+            }
+        });
 
-		nextButton = new IButton(lang.next());
-		nextButton.setWidth(80);
-		withoutButton = new IButton("Continue without metadata");
-		withoutButton.setAutoFit(true);
-		HLayout buttons = new HLayout();
-		buttons.setMembers(nextButton, withoutButton);
+        SectionStackSection resultsSection = new SectionStackSection(lang.results());
+        resultsSection.setExpanded(true);
+        resultsSection.addItem(resultGrid);
+        printStack.addSection(resultsSection);
 
-		layout.addMember(html1);
-		layout.addMember(hLayout);
-		layout.addMember(printContainer);
-		layout.addMember(buttons);
+        SectionStackSection detailsSection = new SectionStackSection("Detail");
+        detailsSection.setExpanded(true);
+        detailsSection.addItem(printViewer);
+        printStack.addSection(detailsSection);
 
-	}
+        final VLayout printContainer = new VLayout(10);
+        printContainer.addMember(printStack);
+        printContainer.setExtraSpace(5);
 
-	/**
-	 * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
-	 * 
-	 * @return the widget
-	 */
-	@Override
-	public Widget asWidget() {
-		return layout;
-	}
+        nextButton = new IButton(lang.next());
+        nextButton.setWidth(80);
+        withoutButton = new IButton("Continue without metadata");
+        withoutButton.setAutoFit(true);
+        HLayout buttons = new HLayout();
+        buttons.setMembers(nextButton, withoutButton);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getOpen()
-	 */
-	@Override
-	public ButtonItem getFind() {
-		return findButton;
-	}
+        layout.addMember(html1);
+        layout.addMember(hLayout);
+        layout.addMember(printContainer);
+        layout.addMember(buttons);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid()
-	 */
-	@Override
-	public TextItem getCode() {
-		return searchValue;
-	}
+    }
 
-	@Override
-	public SelectItem getFindBy() {
-		return findBy;
-	}
+    /**
+     * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+     * 
+     * @return the widget
+     */
+    @Override
+    public Widget asWidget() {
+        return layout;
+    }
 
-	@Override
-	public void refreshData(ListGridRecord[] data) {
-		if (data == null) {
-			resultGrid.setData(new ListGridRecord[] {});
-			printViewer.setData(new ListGridRecord[] {});
-			nextButton.setDisabled(true);
-		} else {
-			resultGrid.setData(data);
-			printViewer.setData(new Record[] { data[0] });
-			printStack.adjustForContent(true);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getOpen
+     * ()
+     */
+    @Override
+    public ButtonItem getFind() {
+        return findButton;
+    }
 
-	@Override
-	public void showProgress(boolean show, boolean msg) {
-		if (show) {
-			if (mw == null) {
-				mw = new ModalWindow(printStack);
-			}
-			mw.setLoadingIcon("loadingAnimation.gif");
-			if (msg) {
-				mw.show(lang.rendering(), true);
-			} else {
-				mw.show(true);
-			}
-		} else {
-			mw.hide();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.HomePresenter.MyView#getUuid
+     * ()
+     */
+    @Override
+    public TextItem getCode() {
+        return searchValue;
+    }
 
-	@Override
-	public IButton getNext() {
-		return nextButton;
-	}
+    @Override
+    public SelectItem getFindBy() {
+        return findBy;
+    }
 
-	@Override
-	public IButton getWithoutMetadata() {
-		return withoutButton;
-	}
+    @Override
+    public void refreshData(ListGridRecord[] data) {
+        if (data == null) {
+            resultGrid.setData(new ListGridRecord[] {});
+            printViewer.setData(new ListGridRecord[] {});
+            nextButton.setDisabled(true);
+        } else {
+            resultGrid.setData(data);
+            printViewer.setData(new Record[] {data[0]});
+            printStack.adjustForContent(true);
+        }
+    }
 
-	@Override
-	public ListGrid getResults() {
-		return resultGrid;
-	}
+    @Override
+    public void showProgress(boolean show, boolean msg) {
+        if (show) {
+            if (mw == null) {
+                mw = new ModalWindow(printStack);
+            }
+            mw.setLoadingIcon("loadingAnimation.gif");
+            if (msg) {
+                mw.show(lang.rendering(), true);
+            } else {
+                mw.show(true);
+            }
+        } else {
+            mw.hide();
+        }
+    }
+
+    @Override
+    public IButton getNext() {
+        return nextButton;
+    }
+
+    @Override
+    public IButton getWithoutMetadata() {
+        return withoutButton;
+    }
+
+    @Override
+    public ListGrid getResults() {
+        return resultGrid;
+    }
 
 }

@@ -37,6 +37,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class TableOfContentsTypeClient.
  */
-public class TableOfContentsTypeClient extends UnstructuredTextClient implements IsSerializable {
+public class TableOfContentsTypeClient
+        extends UnstructuredTextClient
+        implements IsSerializable {
 
 }

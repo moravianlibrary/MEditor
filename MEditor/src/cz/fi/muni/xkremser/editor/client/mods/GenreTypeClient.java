@@ -37,6 +37,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class GenreTypeClient.
  */
-public class GenreTypeClient extends StringPlusAuthorityPlusTypePlusLanguageClient implements IsSerializable {
+public class GenreTypeClient
+        extends StringPlusAuthorityPlusTypePlusLanguageClient
+        implements IsSerializable {
 
 }

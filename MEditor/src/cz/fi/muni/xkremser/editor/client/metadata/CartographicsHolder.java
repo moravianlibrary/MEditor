@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
@@ -34,106 +35,106 @@ import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.CartographicsCli
 /**
  * The Class CartographicsHolder.
  */
-public class CartographicsHolder extends MetadataHolder {
+public class CartographicsHolder
+        extends MetadataHolder {
 
-	/** The coordinates. */
-	private final ListOfSimpleValuesHolder coordinates;
+    /** The coordinates. */
+    private final ListOfSimpleValuesHolder coordinates;
 
-	/** The scales. */
-	private final ListOfSimpleValuesHolder scales;
+    /** The scales. */
+    private final ListOfSimpleValuesHolder scales;
 
-	/** The projections. */
-	private final ListOfSimpleValuesHolder projections;
+    /** The projections. */
+    private final ListOfSimpleValuesHolder projections;
 
-	/**
-	 * Instantiates a new cartographics holder.
-	 */
-	public CartographicsHolder() {
-		this.coordinates = new ListOfSimpleValuesHolder();
-		this.scales = new ListOfSimpleValuesHolder();
-		this.projections = new ListOfSimpleValuesHolder();
-	}
+    /**
+     * Instantiates a new cartographics holder.
+     */
+    public CartographicsHolder() {
+        this.coordinates = new ListOfSimpleValuesHolder();
+        this.scales = new ListOfSimpleValuesHolder();
+        this.projections = new ListOfSimpleValuesHolder();
+    }
 
-	/**
-	 * Gets the cartographics.
-	 * 
-	 * @return the cartographics
-	 */
-	public CartographicsClient getCartographics() {
-		CartographicsClient cartographicsClient = new CartographicsClient();
-		cartographicsClient.setCoordinates(coordinates.getValues());
-		cartographicsClient.setScale(scales.getValues().size() > 0 ? scales.getValues().get(0) : null);
-		cartographicsClient.setProjection(projections.getValues().size() > 0 ? projections.getValues().get(0) : null);
-		return cartographicsClient;
-	}
+    /**
+     * Gets the cartographics.
+     * 
+     * @return the cartographics
+     */
+    public CartographicsClient getCartographics() {
+        CartographicsClient cartographicsClient = new CartographicsClient();
+        cartographicsClient.setCoordinates(coordinates.getValues());
+        cartographicsClient.setScale(scales.getValues().size() > 0 ? scales.getValues().get(0) : null);
+        cartographicsClient.setProjection(projections.getValues().size() > 0 ? projections.getValues().get(0)
+                : null);
+        return cartographicsClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements
+     * ()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/**
-	 * Gets the coordinates.
-	 * 
-	 * @return the coordinates
-	 */
-	public ListOfSimpleValuesHolder getCoordinates() {
-		return coordinates;
-	}
+    /**
+     * Gets the coordinates.
+     * 
+     * @return the coordinates
+     */
+    public ListOfSimpleValuesHolder getCoordinates() {
+        return coordinates;
+    }
 
-	/**
-	 * Gets the scales.
-	 * 
-	 * @return the scales
-	 */
-	public ListOfSimpleValuesHolder getScales() {
-		return scales;
-	}
+    /**
+     * Gets the scales.
+     * 
+     * @return the scales
+     */
+    public ListOfSimpleValuesHolder getScales() {
+        return scales;
+    }
 
-	/**
-	 * Gets the projections.
-	 * 
-	 * @return the projections
-	 */
-	public ListOfSimpleValuesHolder getProjections() {
-		return projections;
-	}
+    /**
+     * Gets the projections.
+     * 
+     * @return the projections
+     */
+    public ListOfSimpleValuesHolder getProjections() {
+        return projections;
+    }
 
 }

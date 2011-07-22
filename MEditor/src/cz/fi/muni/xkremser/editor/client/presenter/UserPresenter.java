@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.presenter;
 
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ import cz.fi.muni.xkremser.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.UsersGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailability;
@@ -92,668 +94,747 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleResult;
 /**
  * The Class HomePresenter.
  */
-public class UserPresenter extends Presenter<UserPresenter.MyView, UserPresenter.MyProxy> {
-	private final LangConstants lang;
+public class UserPresenter
+        extends Presenter<UserPresenter.MyView, UserPresenter.MyProxy> {
 
-	/**
-	 * The Interface MyView.
-	 */
-	public interface MyView extends View {
+    private final LangConstants lang;
 
-		/**
-		 * Gets the name.
-		 * 
-		 * @param fedoraRunning
-		 *          the fedora running
-		 * @param url
-		 *          the url
-		 * @return the name
-		 */
-		public void refreshFedora(boolean fedoraRunning, String url);
+    /**
+     * The Interface MyView.
+     */
+    public interface MyView
+            extends View {
 
-		/**
-		 * Refresh kramerius.
-		 * 
-		 * @param krameriusRunning
-		 *          the kramerius running
-		 * @param url
-		 *          the url
-		 */
-		public void refreshKramerius(boolean krameriusRunning, String url);
+        /**
+         * Gets the name.
+         * 
+         * @param fedoraRunning
+         *        the fedora running
+         * @param url
+         *        the url
+         * @return the name
+         */
+        public void refreshFedora(boolean fedoraRunning, String url);
 
-		/**
-		 * Sets the ur ls.
-		 * 
-		 * @param fedoraUrl
-		 *          the fedora url
-		 * @param krameriusUrl
-		 *          the kramerius url
-		 */
-		public void setURLs(String fedoraUrl, String krameriusUrl);
+        /**
+         * Refresh kramerius.
+         * 
+         * @param krameriusRunning
+         *        the kramerius running
+         * @param url
+         *        the url
+         */
+        public void refreshKramerius(boolean krameriusRunning, String url);
 
-		/**
-		 * Sets the loading.
-		 */
-		public void setLoading();
+        /**
+         * Sets the ur ls.
+         * 
+         * @param fedoraUrl
+         *        the fedora url
+         * @param krameriusUrl
+         *        the kramerius url
+         */
+        public void setURLs(String fedoraUrl, String krameriusUrl);
 
-		/**
-		 * Gets the user grid.
-		 * 
-		 * @return the user grid
-		 */
-		public ListGrid getUserGrid();
+        /**
+         * Sets the loading.
+         */
+        public void setLoading();
 
-		public ListGrid getRequestsGrid();
+        /**
+         * Gets the user grid.
+         * 
+         * @return the user grid
+         */
+        public ListGrid getUserGrid();
 
-		/**
-		 * Gets the user role grid.
-		 * 
-		 * @return the user role grid
-		 */
-		public ListGrid getUserRoleGrid();
+        public ListGrid getRequestsGrid();
 
-		/**
-		 * Gets the user identity grid.
-		 * 
-		 * @return the user identity grid
-		 */
-		public ListGrid getUserIdentityGrid();
+        /**
+         * Gets the user role grid.
+         * 
+         * @return the user role grid
+         */
+        public ListGrid getUserRoleGrid();
 
-		/**
-		 * Gets the removes the user.
-		 * 
-		 * @return the removes the user
-		 */
-		public IButton getRemoveUser();
+        /**
+         * Gets the user identity grid.
+         * 
+         * @return the user identity grid
+         */
+        public ListGrid getUserIdentityGrid();
 
-		/**
-		 * Gets the adds the user.
-		 * 
-		 * @return the adds the user
-		 */
-		public IButton getAddUser();
+        /**
+         * Gets the removes the user.
+         * 
+         * @return the removes the user
+         */
+        public IButton getRemoveUser();
 
-		/**
-		 * Gets the removes the role.
-		 * 
-		 * @return the removes the role
-		 */
-		public IButton getRemoveRole();
+        /**
+         * Gets the adds the user.
+         * 
+         * @return the adds the user
+         */
+        public IButton getAddUser();
 
-		/**
-		 * Gets the adds the role.
-		 * 
-		 * @return the adds the role
-		 */
-		public IButton getAddRole();
+        /**
+         * Gets the removes the role.
+         * 
+         * @return the removes the role
+         */
+        public IButton getRemoveRole();
 
-		/**
-		 * Gets the removes the identity.
-		 * 
-		 * @return the removes the identity
-		 */
-		public IButton getRemoveIdentity();
+        /**
+         * Gets the adds the role.
+         * 
+         * @return the adds the role
+         */
+        public IButton getAddRole();
 
-		public IButton getRemoveRequest();
+        /**
+         * Gets the removes the identity.
+         * 
+         * @return the removes the identity
+         */
+        public IButton getRemoveIdentity();
 
-		/**
-		 * Gets the adds the identity.
-		 * 
-		 * @return the adds the identity
-		 */
-		public IButton getAddIdentity();
+        public IButton getRemoveRequest();
 
-		/**
-		 * Gets the uuid item.
-		 * 
-		 * @return the uuid item
-		 */
-		public HasChangedHandlers getUuidItem();
+        /**
+         * Gets the adds the identity.
+         * 
+         * @return the adds the identity
+         */
+        public IButton getAddIdentity();
 
-		/**
-		 * Gets the open.
-		 * 
-		 * @return the open
-		 */
-		public IButton getOpen();
+        /**
+         * Gets the uuid item.
+         * 
+         * @return the uuid item
+         */
+        public HasChangedHandlers getUuidItem();
 
-		/**
-		 * Gets the form.
-		 * 
-		 * @return the form
-		 */
-		public DynamicForm getForm();
-	}
+        /**
+         * Gets the open.
+         * 
+         * @return the open
+         */
+        public IButton getOpen();
 
-	/**
-	 * The Interface MyProxy.
-	 */
-	@ProxyCodeSplit
-	@NameToken(NameTokens.USERS)
-	public interface MyProxy extends ProxyPlace<UserPresenter> {
+        /**
+         * Gets the form.
+         * 
+         * @return the form
+         */
+        public DynamicForm getForm();
+    }
 
-	}
+    /**
+     * The Interface MyProxy.
+     */
+    @ProxyCodeSplit
+    @NameToken(NameTokens.USERS)
+    public interface MyProxy
+            extends ProxyPlace<UserPresenter> {
 
-	/** The dispatcher. */
-	private final DispatchAsync dispatcher;
+    }
 
-	/** The left presenter. */
-	private final DigitalObjectMenuPresenter leftPresenter;
+    /** The dispatcher. */
+    private final DispatchAsync dispatcher;
 
-	/** The place manager. */
-	private final PlaceManager placeManager;
+    /** The left presenter. */
+    private final DigitalObjectMenuPresenter leftPresenter;
 
-	/** The roles. */
-	private List<String> roles;
+    /** The place manager. */
+    private final PlaceManager placeManager;
 
-	/**
-	 * Instantiates a new home presenter.
-	 * 
-	 * @param eventBus
-	 *          the event bus
-	 * @param view
-	 *          the view
-	 * @param proxy
-	 *          the proxy
-	 * @param leftPresenter
-	 *          the left presenter
-	 * @param dispatcher
-	 *          the dispatcher
-	 * @param placeManager
-	 *          the place manager
-	 */
-	@Inject
-	public UserPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher, final PlaceManager placeManager, LangConstants lang) {
-		super(eventBus, view, proxy);
-		this.leftPresenter = leftPresenter;
-		this.dispatcher = dispatcher;
-		this.placeManager = placeManager;
-		this.lang = lang;
-		dispatcher.execute(new GetAllRolesAction(), new DispatchCallback<GetAllRolesResult>() {
-			@Override
-			public void callback(GetAllRolesResult result) {
-				UserPresenter.this.roles = result.getRoles();
-			}
-		});
-		bind();
-	}
+    /** The roles. */
+    private List<String> roles;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
-	 */
-	@Override
-	protected void onBind() {
-		super.onBind();
-		final UsersGwtRPCDS usrSource = new UsersGwtRPCDS(dispatcher, lang);
-		final RequestsGwtRPCDS reqSource = new RequestsGwtRPCDS(dispatcher, lang);
-		getView().getUserGrid().setDataSource(usrSource);
-		getView().getRequestsGrid().setDataSource(reqSource);
+    /**
+     * Instantiates a new home presenter.
+     * 
+     * @param eventBus
+     *        the event bus
+     * @param view
+     *        the view
+     * @param proxy
+     *        the proxy
+     * @param leftPresenter
+     *        the left presenter
+     * @param dispatcher
+     *        the dispatcher
+     * @param placeManager
+     *        the place manager
+     */
+    @Inject
+    public UserPresenter(final EventBus eventBus,
+                         final MyView view,
+                         final MyProxy proxy,
+                         final DigitalObjectMenuPresenter leftPresenter,
+                         final DispatchAsync dispatcher,
+                         final PlaceManager placeManager,
+                         LangConstants lang) {
+        super(eventBus, view, proxy);
+        this.leftPresenter = leftPresenter;
+        this.dispatcher = dispatcher;
+        this.placeManager = placeManager;
+        this.lang = lang;
+        dispatcher.execute(new GetAllRolesAction(), new DispatchCallback<GetAllRolesResult>() {
 
-		// fetch roles and identities
-		getView().getUserGrid().addRecordClickHandler(new RecordClickHandler() {
-			@Override
-			public void onRecordClick(RecordClickEvent event) {
-				dispatcher.execute(new GetUserRolesAndIdentitiesAction(event.getRecord().getAttribute(Constants.ATTR_USER_ID)),
-						new DispatchCallback<GetUserRolesAndIdentitiesResult>() {
-							@Override
-							public void callback(GetUserRolesAndIdentitiesResult result) {
-								if (result != null) {
-									ArrayList<RoleItem> roles = result.getRoles();
-									if (roles != null && roles.size() > 0) {
-										ListGridRecord[] roleRecords = new ListGridRecord[roles.size()];
-										for (int i = 0, lastIndex = roles.size(); i < lastIndex; i++) {
-											ListGridRecord rec = new ListGridRecord();
-											copyValues(roles.get(i), rec);
-											roleRecords[i] = rec;
-										}
-										getView().getUserRoleGrid().setData(roleRecords);
-									} else {
-										getView().getUserRoleGrid().setData(new ListGridRecord[] {});
-									}
+            @Override
+            public void callback(GetAllRolesResult result) {
+                UserPresenter.this.roles = result.getRoles();
+            }
+        });
+        bind();
+    }
 
-									ArrayList<OpenIDItem> identities = result.getIdentities();
-									if (identities != null && identities.size() > 0) {
-										ListGridRecord[] identityRecords = new ListGridRecord[identities.size()];
-										for (int i = 0, lastIndex = identities.size(); i < lastIndex; i++) {
-											ListGridRecord rec = new ListGridRecord();
-											copyValues(identities.get(i), rec);
-											identityRecords[i] = rec;
-										}
-										getView().getUserIdentityGrid().setData(identityRecords);
-									} else {
-										getView().getUserIdentityGrid().setData(new ListGridRecord[] {});
-									}
-								} else {
-									getView().getUserRoleGrid().setData(new ListGridRecord[] {});
-									getView().getUserIdentityGrid().setData(new ListGridRecord[] {});
-								}
-							}
-						});
-			}
-		});
-		getView().getUserRoleGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-			@Override
-			public void onSelectionChanged(SelectionEvent event) {
-				ListGridRecord[] selection = event.getSelection();
-				if (selection != null && selection.length > 0) {
-					getView().getRemoveRole().setDisabled(false);
-				} else {
-					getView().getRemoveRole().setDisabled(true);
-				}
-			}
-		});
-		getView().getUserGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-			@Override
-			public void onSelectionChanged(SelectionEvent event) {
-				ListGridRecord[] selection = event.getSelection();
-				if (selection != null && selection.length > 0) {
-					getView().getRemoveUser().setDisabled(false);
-					getView().getAddRole().setDisabled(false);
-					getView().getAddIdentity().setDisabled(false);
-				} else {
-					getView().getRemoveUser().setDisabled(true);
-					getView().getAddRole().setDisabled(true);
-					getView().getAddIdentity().setDisabled(true);
-				}
-			}
-		});
-		getView().getUserIdentityGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-			@Override
-			public void onSelectionChanged(SelectionEvent event) {
-				ListGridRecord[] selection = event.getSelection();
-				if (selection != null && selection.length > 0) {
-					getView().getRemoveIdentity().setDisabled(false);
-				} else {
-					getView().getRemoveIdentity().setDisabled(true);
-				}
-			}
-		});
-		getView().getRequestsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-			@Override
-			public void onSelectionChanged(SelectionEvent event) {
-				ListGridRecord[] selection = event.getSelection();
-				if (selection != null && selection.length > 0) {
-					getView().getRemoveRequest().setDisabled(false);
-				} else {
-					getView().getRemoveRequest().setDisabled(true);
-				}
-			}
-		});
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+     */
+    @Override
+    protected void onBind() {
+        super.onBind();
+        final UsersGwtRPCDS usrSource = new UsersGwtRPCDS(dispatcher, lang);
+        final RequestsGwtRPCDS reqSource = new RequestsGwtRPCDS(dispatcher, lang);
+        getView().getUserGrid().setDataSource(usrSource);
+        getView().getRequestsGrid().setDataSource(reqSource);
 
-		// remove request
-		getView().getRemoveRequest().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getView().getRequestsGrid().removeSelectedData();
-			}
-		});
+        // fetch roles and identities
+        getView().getUserGrid().addRecordClickHandler(new RecordClickHandler() {
 
-		// remove user
-		getView().getRemoveUser().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getView().getUserGrid().removeSelectedData();
-				getView().getUserRoleGrid().setData(new ListGridRecord[] {});
-				getView().getUserIdentityGrid().setData(new ListGridRecord[] {});
-			}
-		});
+            @Override
+            public void onRecordClick(RecordClickEvent event) {
+                dispatcher.execute(new GetUserRolesAndIdentitiesAction(event.getRecord()
+                                           .getAttribute(Constants.ATTR_USER_ID)),
+                                   new DispatchCallback<GetUserRolesAndIdentitiesResult>() {
 
-		// add user
-		getView().getAddUser().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				final Window winModal = new Window();
-				winModal.setHeight(200);
-				winModal.setWidth(550);
-				// winModal.setPadding(15);
-				winModal.setCanDragResize(true);
-				winModal.setShowEdges(true);
-				winModal.setTitle(lang.newUser());
-				winModal.setShowMinimizeButton(false);
-				winModal.setIsModal(true);
-				winModal.setShowModalMask(true);
-				winModal.addCloseClickHandler(new CloseClickHandler() {
-					@Override
-					public void onCloseClick(CloseClientEvent event) {
-						winModal.destroy();
-					}
-				});
-				final DynamicForm form = new DynamicForm();
-				form.setMargin(15);
-				form.setWidth(500);
-				form.setHeight(150);
-				form.setDataSource(usrSource);
-				HiddenItem id = new HiddenItem(Constants.ATTR_USER_ID);
-				TextItem name = new TextItem(Constants.ATTR_NAME, lang.firstName());
-				name.setWidth(320);
-				TextItem surname = new TextItem(Constants.ATTR_SURNAME, lang.lastName());
-				surname.setWidth(320);
-				// CheckboxItem sex = new CheckboxItem(ServerConstants.ATTR_SEX,
-				// "Male");
-				ButtonItem add = new ButtonItem();
-				add.setTitle(lang.addUser());
-				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						form.saveData(new DSCallback() {
-							@Override
-							public void execute(DSResponse response, Object rawData, DSRequest request) {
-								winModal.destroy();
-							}
-						});
-					}
-				});
-				ButtonItem cancel = new ButtonItem();
-				cancel.setColSpan(0);
-				cancel.setTitle(lang.cancel());
-				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						winModal.destroy();
-					}
-				});
-				form.setFields(name, surname/* , sex */, add, cancel, id);
-				winModal.addItem(form);
+                                       @Override
+                                       public void callback(GetUserRolesAndIdentitiesResult result) {
+                                           if (result != null) {
+                                               ArrayList<RoleItem> roles = result.getRoles();
+                                               if (roles != null && roles.size() > 0) {
+                                                   ListGridRecord[] roleRecords =
+                                                           new ListGridRecord[roles.size()];
+                                                   for (int i = 0, lastIndex = roles.size(); i < lastIndex; i++) {
+                                                       ListGridRecord rec = new ListGridRecord();
+                                                       copyValues(roles.get(i), rec);
+                                                       roleRecords[i] = rec;
+                                                   }
+                                                   getView().getUserRoleGrid().setData(roleRecords);
+                                               } else {
+                                                   getView().getUserRoleGrid()
+                                                           .setData(new ListGridRecord[] {});
+                                               }
 
-				winModal.centerInPage();
-				winModal.show();
-			}
-		});
+                                               ArrayList<OpenIDItem> identities = result.getIdentities();
+                                               if (identities != null && identities.size() > 0) {
+                                                   ListGridRecord[] identityRecords =
+                                                           new ListGridRecord[identities.size()];
+                                                   for (int i = 0, lastIndex = identities.size(); i < lastIndex; i++) {
+                                                       ListGridRecord rec = new ListGridRecord();
+                                                       copyValues(identities.get(i), rec);
+                                                       identityRecords[i] = rec;
+                                                   }
+                                                   getView().getUserIdentityGrid().setData(identityRecords);
+                                               } else {
+                                                   getView().getUserIdentityGrid()
+                                                           .setData(new ListGridRecord[] {});
+                                               }
+                                           } else {
+                                               getView().getUserRoleGrid().setData(new ListGridRecord[] {});
+                                               getView().getUserIdentityGrid()
+                                                       .setData(new ListGridRecord[] {});
+                                           }
+                                       }
+                                   });
+            }
+        });
+        getView().getUserRoleGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
-		// remove identity
-		getView().getRemoveIdentity().addClickHandler(new ClickHandler() {
-			private volatile int deletedCounter;
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    getView().getRemoveRole().setDisabled(false);
+                } else {
+                    getView().getRemoveRole().setDisabled(true);
+                }
+            }
+        });
+        getView().getUserGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
-			private void deleteFromGUI(int total, ListGridRecord[] selection) {
-				if (deletedCounter == total) {
-					ListGridRecord[] oldData = getView().getUserIdentityGrid().getRecords();
-					ListGridRecord[] newData = ClientUtils.subtract(oldData, selection);
-					getView().getUserIdentityGrid().setData(newData);
-				}
-			}
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    getView().getRemoveUser().setDisabled(false);
+                    getView().getAddRole().setDisabled(false);
+                    getView().getAddIdentity().setDisabled(false);
+                } else {
+                    getView().getRemoveUser().setDisabled(true);
+                    getView().getAddRole().setDisabled(true);
+                    getView().getAddIdentity().setDisabled(true);
+                }
+            }
+        });
+        getView().getUserIdentityGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
-			@Override
-			public void onClick(ClickEvent event) {
-				final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelection();
-				if (selection != null && selection.length > 0) {
-					final int total = selection.length;
-					for (final ListGridRecord record : selection) {
-						dispatcher.execute(new RemoveUserIdentityAction(record.getAttribute(Constants.ATTR_GENERIC_ID)), new DispatchCallback<RemoveUserIdentityResult>() {
-							@Override
-							public void callback(RemoveUserIdentityResult result) {
-								deletedCounter++;
-								deleteFromGUI(total, selection);
-							}
-						});
-					}
-				}
-			}
-		});
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    getView().getRemoveIdentity().setDisabled(false);
+                } else {
+                    getView().getRemoveIdentity().setDisabled(true);
+                }
+            }
+        });
+        getView().getRequestsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
-		// add identity
-		getView().getAddIdentity().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				final Window winModal = new Window();
-				winModal.setHeight(200);
-				winModal.setWidth(550);
-				winModal.setCanDragResize(true);
-				winModal.setShowEdges(true);
-				winModal.setTitle(lang.newIdentity());
-				winModal.setShowMinimizeButton(false);
-				winModal.setIsModal(true);
-				winModal.setShowModalMask(true);
-				winModal.addCloseClickHandler(new CloseClickHandler() {
-					@Override
-					public void onCloseClick(CloseClientEvent event) {
-						winModal.destroy();
-					}
-				});
-				final DynamicForm form = new DynamicForm();
-				// form.setNumCols(8);
-				form.setMargin(15);
-				form.setWidth(500);
-				form.setHeight(150);
-				final TextItem identity = new TextItem(Constants.ATTR_IDENTITY, lang.openId());
-				identity.setWidth(320);
-				ButtonItem add = new ButtonItem();
-				add.setEndRow(false);
-				add.setTitle(lang.addIdentity());
-				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						final String identityValue = (String) identity.getValue();
-						if (identityValue != null && !"".equals(identityValue.trim())) {
-							String userId = getView().getUserGrid().getSelectedRecord().getAttribute(Constants.ATTR_USER_ID);
-							dispatcher.execute(new PutUserIdentityAction(new OpenIDItem(identityValue, "PleaseGenerateIDForMe"), userId),
-									new DispatchCallback<PutUserIdentityResult>() {
-										@Override
-										public void callback(PutUserIdentityResult result) {
-											if (!result.isFound() && !"error".equals(result.getId())) {
-												ListGridRecord record = new ListGridRecord();
-												record.setAttribute(Constants.ATTR_GENERIC_ID, result.getId());
-												record.setAttribute(Constants.ATTR_IDENTITY, identityValue);
-												ListGridRecord[] previousData = getView().getUserIdentityGrid().getRecords();
-												ListGridRecord[] newData = new ListGridRecord[previousData.length + 1];
-												System.arraycopy(previousData, 0, newData, 0, previousData.length);
-												newData[previousData.length] = record;
-												getView().getUserIdentityGrid().setData(newData);
-											}
-											winModal.destroy();
-										}
-									});
-						}
-					}
-				});
-				ButtonItem cancel = new ButtonItem();
-				cancel.setEndRow(false);
-				// cancel.setColSpan(1);
-				cancel.setTitle(lang.cancel());
-				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						winModal.destroy();
-					}
-				});
-				form.setFields(identity, add, cancel);
-				winModal.addItem(form);
-				winModal.centerInPage();
-				winModal.show();
-			}
-		});
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    getView().getRemoveRequest().setDisabled(false);
+                } else {
+                    getView().getRemoveRequest().setDisabled(true);
+                }
+            }
+        });
 
-		// remove role
-		getView().getRemoveRole().addClickHandler(new ClickHandler() {
-			private volatile int deletedCounter;
+        // remove request
+        getView().getRemoveRequest().addClickHandler(new ClickHandler() {
 
-			private void deleteFromGUI(int total, ListGridRecord[] selection) {
-				if (deletedCounter == total) {
-					ListGridRecord[] oldData = getView().getUserRoleGrid().getRecords();
-					ListGridRecord[] newData = ClientUtils.subtract(oldData, selection);
-					getView().getUserRoleGrid().setData(newData);
-				}
-			}
+            @Override
+            public void onClick(ClickEvent event) {
+                getView().getRequestsGrid().removeSelectedData();
+            }
+        });
 
-			@Override
-			public void onClick(ClickEvent event) {
-				final ListGridRecord[] selection = getView().getUserRoleGrid().getSelection();
-				if (selection != null && selection.length > 0) {
-					final int total = selection.length;
-					for (final ListGridRecord record : selection) {
-						dispatcher.execute(new RemoveUserRoleAction(record.getAttribute(Constants.ATTR_GENERIC_ID)), new DispatchCallback<RemoveUserRoleResult>() {
-							@Override
-							public void callback(RemoveUserRoleResult result) {
-								deletedCounter++;
-								deleteFromGUI(total, selection);
-							}
-						});
-					}
-				}
-			}
-		});
+        // remove user
+        getView().getRemoveUser().addClickHandler(new ClickHandler() {
 
-		// add role
-		getView().getAddRole().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				final Window winModal = new Window();
-				winModal.setHeight(200);
-				winModal.setWidth(550);
-				winModal.setCanDragResize(true);
-				winModal.setShowEdges(true);
-				winModal.setTitle(lang.newRole());
-				winModal.setShowMinimizeButton(false);
-				winModal.setIsModal(true);
-				winModal.setShowModalMask(true);
-				winModal.addCloseClickHandler(new CloseClickHandler() {
-					@Override
-					public void onCloseClick(CloseClientEvent event) {
-						winModal.destroy();
-					}
-				});
-				final DynamicForm form = new DynamicForm();
-				// form.setNumCols(8);
-				form.setMargin(15);
-				form.setWidth(500);
-				form.setHeight(150);
-				final SelectItem role = new SelectItem(Constants.ATTR_NAME, lang.role());
-				role.setWidth(320);
-				role.setValueMap(roles.toArray(new String[] {}));
-				ButtonItem add = new ButtonItem();
-				add.setEndRow(false);
-				add.setTitle(lang.addRole());
-				add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						final String roleValue = (String) role.getValue();
-						if (roleValue != null && !"".equals(roleValue.trim())) {
-							String userId = getView().getUserGrid().getSelectedRecord().getAttribute(Constants.ATTR_USER_ID);
-							dispatcher.execute(new PutUserRoleAction(new RoleItem(roleValue, "", "PleaseGenerateIDForMe"), userId),
-									new DispatchCallback<PutUserRoleResult>() {
-										@Override
-										public void callback(PutUserRoleResult result) {
-											if (!result.isFound() && !"error".equals(result.getId())) {
-												ListGridRecord record = new ListGridRecord();
-												record.setAttribute(Constants.ATTR_GENERIC_ID, result.getId());
-												record.setAttribute(Constants.ATTR_NAME, roleValue);
-												record.setAttribute(Constants.ATTR_DESC, result.getDescription());
-												ListGridRecord[] previousData = getView().getUserRoleGrid().getRecords();
-												ListGridRecord[] newData = new ListGridRecord[previousData.length + 1];
-												System.arraycopy(previousData, 0, newData, 0, previousData.length);
-												newData[previousData.length] = record;
-												getView().getUserRoleGrid().setData(newData);
-											}
-											winModal.destroy();
-										}
-									});
-						}
-					}
-				});
-				ButtonItem cancel = new ButtonItem();
-				cancel.setEndRow(false);
-				cancel.setTitle(lang.cancel());
-				cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						winModal.destroy();
-					}
-				});
-				form.setFields(role, add, cancel);
-				winModal.addItem(form);
-				winModal.centerInPage();
-				winModal.show();
-			}
-		});
+            @Override
+            public void onClick(ClickEvent event) {
+                getView().getUserGrid().removeSelectedData();
+                getView().getUserRoleGrid().setData(new ListGridRecord[] {});
+                getView().getUserIdentityGrid().setData(new ListGridRecord[] {});
+            }
+        });
 
-	}
+        // add user
+        getView().getAddUser().addClickHandler(new ClickHandler() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
-	 */
-	@Override
-	protected void onReset() {
-		super.onReset();
-		RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
-	}
+            @Override
+            public void onClick(ClickEvent event) {
+                final Window winModal = new Window();
+                winModal.setHeight(200);
+                winModal.setWidth(550);
+                // winModal.setPadding(15);
+                winModal.setCanDragResize(true);
+                winModal.setShowEdges(true);
+                winModal.setTitle(lang.newUser());
+                winModal.setShowMinimizeButton(false);
+                winModal.setIsModal(true);
+                winModal.setShowModalMask(true);
+                winModal.addCloseClickHandler(new CloseClickHandler() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
-	 */
-	@Override
-	protected void revealInParent() {
-		RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
-	}
+                    @Override
+                    public void onCloseClick(CloseClientEvent event) {
+                        winModal.destroy();
+                    }
+                });
+                final DynamicForm form = new DynamicForm();
+                form.setMargin(15);
+                form.setWidth(500);
+                form.setHeight(150);
+                form.setDataSource(usrSource);
+                HiddenItem id = new HiddenItem(Constants.ATTR_USER_ID);
+                TextItem name = new TextItem(Constants.ATTR_NAME, lang.firstName());
+                name.setWidth(320);
+                TextItem surname = new TextItem(Constants.ATTR_SURNAME, lang.lastName());
+                surname.setWidth(320);
+                // CheckboxItem sex = new CheckboxItem(ServerConstants.ATTR_SEX,
+                // "Male");
+                ButtonItem add = new ButtonItem();
+                add.setTitle(lang.addUser());
+                add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
-	/**
-	 * Check availability.
-	 */
-	private void checkAvailability() {
-		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID), new DispatchCallback<CheckAvailabilityResult>() {
-			@Override
-			public void callback(CheckAvailabilityResult result) {
-				String krameriusURL = result.getUrl();
-				getView().refreshKramerius(result.isAvailability(), krameriusURL);
-				if (krameriusURL == null || "".equals(krameriusURL)) {
-					SC.warn("Please set " + EditorClientConfiguration.Constants.KRAMERIUS_HOST + " in system configuration.");
-				}
-			}
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        form.saveData(new DSCallback() {
 
-			@Override
-			public void callbackError(Throwable t) {
-				SC.warn(t.getMessage());
-				getView().refreshKramerius(false, null);
-			}
-		});
+                            @Override
+                            public void execute(DSResponse response, Object rawData, DSRequest request) {
+                                winModal.destroy();
+                            }
+                        });
+                    }
+                });
+                ButtonItem cancel = new ButtonItem();
+                cancel.setColSpan(0);
+                cancel.setTitle(lang.cancel());
+                cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
-		dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID), new DispatchCallback<CheckAvailabilityResult>() {
-			@Override
-			public void callback(CheckAvailabilityResult result) {
-				String fedoraURL = result.getUrl();
-				getView().refreshFedora(result.isAvailability(), fedoraURL);
-				if (fedoraURL == null || "".equals(fedoraURL)) {
-					SC.warn("Please set " + EditorClientConfiguration.Constants.FEDORA_HOST + " in system configuration.");
-				}
-			}
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        winModal.destroy();
+                    }
+                });
+                form.setFields(name, surname/* , sex */, add, cancel, id);
+                winModal.addItem(form);
 
-			@Override
-			public void callbackError(Throwable t) {
-				SC.warn(t.getMessage());
-				getView().refreshFedora(false, null);
-			}
-		});
-	}
+                winModal.centerInPage();
+                winModal.show();
+            }
+        });
 
-	/**
-	 * Copy values.
-	 * 
-	 * @param from
-	 *          the from
-	 * @param to
-	 *          the to
-	 */
-	private static void copyValues(RoleItem from, ListGridRecord to) {
-		to.setAttribute(Constants.ATTR_NAME, from.getName());
-		to.setAttribute(Constants.ATTR_DESC, from.getDescription());
-		to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
-	}
+        // remove identity
+        getView().getRemoveIdentity().addClickHandler(new ClickHandler() {
 
-	/**
-	 * Copy values.
-	 * 
-	 * @param from
-	 *          the from
-	 * @param to
-	 *          the to
-	 */
-	private static void copyValues(OpenIDItem from, ListGridRecord to) {
-		to.setAttribute(Constants.ATTR_IDENTITY, from.getIdentity());
-		to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
-	}
+            private volatile int deletedCounter;
+
+            private void deleteFromGUI(int total, ListGridRecord[] selection) {
+                if (deletedCounter == total) {
+                    ListGridRecord[] oldData = getView().getUserIdentityGrid().getRecords();
+                    ListGridRecord[] newData = ClientUtils.subtract(oldData, selection);
+                    getView().getUserIdentityGrid().setData(newData);
+                }
+            }
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelection();
+                if (selection != null && selection.length > 0) {
+                    final int total = selection.length;
+                    for (final ListGridRecord record : selection) {
+                        dispatcher.execute(new RemoveUserIdentityAction(record
+                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
+                                           new DispatchCallback<RemoveUserIdentityResult>() {
+
+                                               @Override
+                                               public void callback(RemoveUserIdentityResult result) {
+                                                   deletedCounter++;
+                                                   deleteFromGUI(total, selection);
+                                               }
+                                           });
+                    }
+                }
+            }
+        });
+
+        // add identity
+        getView().getAddIdentity().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final Window winModal = new Window();
+                winModal.setHeight(200);
+                winModal.setWidth(550);
+                winModal.setCanDragResize(true);
+                winModal.setShowEdges(true);
+                winModal.setTitle(lang.newIdentity());
+                winModal.setShowMinimizeButton(false);
+                winModal.setIsModal(true);
+                winModal.setShowModalMask(true);
+                winModal.addCloseClickHandler(new CloseClickHandler() {
+
+                    @Override
+                    public void onCloseClick(CloseClientEvent event) {
+                        winModal.destroy();
+                    }
+                });
+                final DynamicForm form = new DynamicForm();
+                // form.setNumCols(8);
+                form.setMargin(15);
+                form.setWidth(500);
+                form.setHeight(150);
+                final TextItem identity = new TextItem(Constants.ATTR_IDENTITY, lang.openId());
+                identity.setWidth(320);
+                ButtonItem add = new ButtonItem();
+                add.setEndRow(false);
+                add.setTitle(lang.addIdentity());
+                add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        final String identityValue = (String) identity.getValue();
+                        if (identityValue != null && !"".equals(identityValue.trim())) {
+                            String userId =
+                                    getView().getUserGrid().getSelectedRecord()
+                                            .getAttribute(Constants.ATTR_USER_ID);
+                            dispatcher
+                                    .execute(new PutUserIdentityAction(new OpenIDItem(identityValue,
+                                                                                      "PleaseGenerateIDForMe"),
+                                                                       userId),
+                                             new DispatchCallback<PutUserIdentityResult>() {
+
+                                                 @Override
+                                                 public void callback(PutUserIdentityResult result) {
+                                                     if (!result.isFound() && !"error".equals(result.getId())) {
+                                                         ListGridRecord record = new ListGridRecord();
+                                                         record.setAttribute(Constants.ATTR_GENERIC_ID,
+                                                                             result.getId());
+                                                         record.setAttribute(Constants.ATTR_IDENTITY,
+                                                                             identityValue);
+                                                         ListGridRecord[] previousData =
+                                                                 getView().getUserIdentityGrid().getRecords();
+                                                         ListGridRecord[] newData =
+                                                                 new ListGridRecord[previousData.length + 1];
+                                                         System.arraycopy(previousData,
+                                                                          0,
+                                                                          newData,
+                                                                          0,
+                                                                          previousData.length);
+                                                         newData[previousData.length] = record;
+                                                         getView().getUserIdentityGrid().setData(newData);
+                                                     }
+                                                     winModal.destroy();
+                                                 }
+                                             });
+                        }
+                    }
+                });
+                ButtonItem cancel = new ButtonItem();
+                cancel.setEndRow(false);
+                // cancel.setColSpan(1);
+                cancel.setTitle(lang.cancel());
+                cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        winModal.destroy();
+                    }
+                });
+                form.setFields(identity, add, cancel);
+                winModal.addItem(form);
+                winModal.centerInPage();
+                winModal.show();
+            }
+        });
+
+        // remove role
+        getView().getRemoveRole().addClickHandler(new ClickHandler() {
+
+            private volatile int deletedCounter;
+
+            private void deleteFromGUI(int total, ListGridRecord[] selection) {
+                if (deletedCounter == total) {
+                    ListGridRecord[] oldData = getView().getUserRoleGrid().getRecords();
+                    ListGridRecord[] newData = ClientUtils.subtract(oldData, selection);
+                    getView().getUserRoleGrid().setData(newData);
+                }
+            }
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final ListGridRecord[] selection = getView().getUserRoleGrid().getSelection();
+                if (selection != null && selection.length > 0) {
+                    final int total = selection.length;
+                    for (final ListGridRecord record : selection) {
+                        dispatcher.execute(new RemoveUserRoleAction(record
+                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
+                                           new DispatchCallback<RemoveUserRoleResult>() {
+
+                                               @Override
+                                               public void callback(RemoveUserRoleResult result) {
+                                                   deletedCounter++;
+                                                   deleteFromGUI(total, selection);
+                                               }
+                                           });
+                    }
+                }
+            }
+        });
+
+        // add role
+        getView().getAddRole().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final Window winModal = new Window();
+                winModal.setHeight(200);
+                winModal.setWidth(550);
+                winModal.setCanDragResize(true);
+                winModal.setShowEdges(true);
+                winModal.setTitle(lang.newRole());
+                winModal.setShowMinimizeButton(false);
+                winModal.setIsModal(true);
+                winModal.setShowModalMask(true);
+                winModal.addCloseClickHandler(new CloseClickHandler() {
+
+                    @Override
+                    public void onCloseClick(CloseClientEvent event) {
+                        winModal.destroy();
+                    }
+                });
+                final DynamicForm form = new DynamicForm();
+                // form.setNumCols(8);
+                form.setMargin(15);
+                form.setWidth(500);
+                form.setHeight(150);
+                final SelectItem role = new SelectItem(Constants.ATTR_NAME, lang.role());
+                role.setWidth(320);
+                role.setValueMap(roles.toArray(new String[] {}));
+                ButtonItem add = new ButtonItem();
+                add.setEndRow(false);
+                add.setTitle(lang.addRole());
+                add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        final String roleValue = (String) role.getValue();
+                        if (roleValue != null && !"".equals(roleValue.trim())) {
+                            String userId =
+                                    getView().getUserGrid().getSelectedRecord()
+                                            .getAttribute(Constants.ATTR_USER_ID);
+                            dispatcher.execute(new PutUserRoleAction(new RoleItem(roleValue,
+                                                                                  "",
+                                                                                  "PleaseGenerateIDForMe"),
+                                                                     userId),
+                                               new DispatchCallback<PutUserRoleResult>() {
+
+                                                   @Override
+                                                   public void callback(PutUserRoleResult result) {
+                                                       if (!result.isFound()
+                                                               && !"error".equals(result.getId())) {
+                                                           ListGridRecord record = new ListGridRecord();
+                                                           record.setAttribute(Constants.ATTR_GENERIC_ID,
+                                                                               result.getId());
+                                                           record.setAttribute(Constants.ATTR_NAME, roleValue);
+                                                           record.setAttribute(Constants.ATTR_DESC,
+                                                                               result.getDescription());
+                                                           ListGridRecord[] previousData =
+                                                                   getView().getUserRoleGrid().getRecords();
+                                                           ListGridRecord[] newData =
+                                                                   new ListGridRecord[previousData.length + 1];
+                                                           System.arraycopy(previousData,
+                                                                            0,
+                                                                            newData,
+                                                                            0,
+                                                                            previousData.length);
+                                                           newData[previousData.length] = record;
+                                                           getView().getUserRoleGrid().setData(newData);
+                                                       }
+                                                       winModal.destroy();
+                                                   }
+                                               });
+                        }
+                    }
+                });
+                ButtonItem cancel = new ButtonItem();
+                cancel.setEndRow(false);
+                cancel.setTitle(lang.cancel());
+                cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        winModal.destroy();
+                    }
+                });
+                form.setFields(role, add, cancel);
+                winModal.addItem(form);
+                winModal.centerInPage();
+                winModal.show();
+            }
+        });
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
+     */
+    @Override
+    protected void onReset() {
+        super.onReset();
+        RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+     */
+    @Override
+    protected void revealInParent() {
+        RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
+    }
+
+    /**
+     * Check availability.
+     */
+    private void checkAvailability() {
+        dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID),
+                           new DispatchCallback<CheckAvailabilityResult>() {
+
+                               @Override
+                               public void callback(CheckAvailabilityResult result) {
+                                   String krameriusURL = result.getUrl();
+                                   getView().refreshKramerius(result.isAvailability(), krameriusURL);
+                                   if (krameriusURL == null || "".equals(krameriusURL)) {
+                                       SC.warn("Please set "
+                                               + EditorClientConfiguration.Constants.KRAMERIUS_HOST
+                                               + " in system configuration.");
+                                   }
+                               }
+
+                               @Override
+                               public void callbackError(Throwable t) {
+                                   SC.warn(t.getMessage());
+                                   getView().refreshKramerius(false, null);
+                               }
+                           });
+
+        dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID),
+                           new DispatchCallback<CheckAvailabilityResult>() {
+
+                               @Override
+                               public void callback(CheckAvailabilityResult result) {
+                                   String fedoraURL = result.getUrl();
+                                   getView().refreshFedora(result.isAvailability(), fedoraURL);
+                                   if (fedoraURL == null || "".equals(fedoraURL)) {
+                                       SC.warn("Please set "
+                                               + EditorClientConfiguration.Constants.FEDORA_HOST
+                                               + " in system configuration.");
+                                   }
+                               }
+
+                               @Override
+                               public void callbackError(Throwable t) {
+                                   SC.warn(t.getMessage());
+                                   getView().refreshFedora(false, null);
+                               }
+                           });
+    }
+
+    /**
+     * Copy values.
+     * 
+     * @param from
+     *        the from
+     * @param to
+     *        the to
+     */
+    private static void copyValues(RoleItem from, ListGridRecord to) {
+        to.setAttribute(Constants.ATTR_NAME, from.getName());
+        to.setAttribute(Constants.ATTR_DESC, from.getDescription());
+        to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
+    }
+
+    /**
+     * Copy values.
+     * 
+     * @param from
+     *        the from
+     * @param to
+     *        the to
+     */
+    private static void copyValues(OpenIDItem from, ListGridRecord to) {
+        to.setAttribute(Constants.ATTR_IDENTITY, from.getIdentity());
+        to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
+    }
 }

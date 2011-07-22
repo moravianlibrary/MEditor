@@ -34,23 +34,24 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 /**
  * The Class SideNavRecentlyTree.
  */
-public class SideNavRecentlyGrid extends ListGrid {
+public class SideNavRecentlyGrid
+        extends ListGrid {
 
-	/** The id suffix. */
-	private final String idSuffix = "";
+    /** The id suffix. */
+    private final String idSuffix = "";
 
-	/**
-	 * Instantiates a new side nav recently tree.
-	 */
-	public SideNavRecentlyGrid() {
-		setWidth100();
-		setHeight100();
-		setShowSortArrow(SortArrow.CORNER);
-		setShowAllRecords(true);
-		setAutoFetchData(true);
-		setCanHover(true);
-		setCanSort(false); // TODO: sort by date (define in datasource)
-		setHoverOpacity(75);
-		setHoverStyle("interactImageHover");
-	}
+    /**
+     * Instantiates a new side nav recently tree.
+     */
+    public SideNavRecentlyGrid() {
+        setWidth100();
+        setHeight100();
+        setShowSortArrow(SortArrow.CORNER);
+        setShowAllRecords(true);
+        setAutoFetchData(true);
+        setCanHover(true);
+        setCanSort(false); // TODO: sort by date (define in datasource)
+        setHoverOpacity(75);
+        setHoverStyle("interactImageHover");
+    }
 }

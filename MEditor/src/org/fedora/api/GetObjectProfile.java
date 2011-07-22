@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -52,31 +53,24 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "asOfDateTime"
-})
+@XmlType(name = "", propOrder = {"pid", "asOfDateTime"})
 @XmlRootElement(name = "getObjectProfile")
 public class GetObjectProfile {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The as of date time. */
     @XmlElement(required = true, nillable = true)
     protected String asOfDateTime;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -86,9 +80,7 @@ public class GetObjectProfile {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -96,10 +88,8 @@ public class GetObjectProfile {
 
     /**
      * Gets the value of the asOfDateTime property.
-     *
-     * @return the as of date time
-     * possible object is
-     * {@link String }
+     * 
+     * @return the as of date time possible object is {@link String }
      */
     public String getAsOfDateTime() {
         return asOfDateTime;
@@ -109,9 +99,7 @@ public class GetObjectProfile {
      * Sets the value of the asOfDateTime property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setAsOfDateTime(String value) {
         this.asOfDateTime = value;

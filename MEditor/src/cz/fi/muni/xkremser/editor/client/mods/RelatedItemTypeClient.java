@@ -38,116 +38,117 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class RelatedItemTypeClient.
  */
-public class RelatedItemTypeClient implements IsSerializable {
+public class RelatedItemTypeClient
+        implements IsSerializable {
 
-	/** The mods. */
-	protected ModsTypeClient mods;
+    /** The mods. */
+    protected ModsTypeClient mods;
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/** The id. */
-	protected String id;
+    /** The id. */
+    protected String id;
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/** The xlink. */
-	protected String xlink;
+    /** The xlink. */
+    protected String xlink;
 
-	/**
-	 * Gets the mods.
-	 * 
-	 * @return the mods
-	 */
-	public ModsTypeClient getMods() {
-		return mods;
-	}
+    /**
+     * Gets the mods.
+     * 
+     * @return the mods
+     */
+    public ModsTypeClient getMods() {
+        return mods;
+    }
 
-	/**
-	 * Sets the mods.
-	 * 
-	 * @param mods
-	 *          the new mods
-	 */
-	public void setMods(ModsTypeClient mods) {
-		this.mods = mods;
-	}
+    /**
+     * Sets the mods.
+     * 
+     * @param mods
+     *        the new mods
+     */
+    public void setMods(ModsTypeClient mods) {
+        this.mods = mods;
+    }
 
-	/**
-	 * Gets the display label.
-	 * 
-	 * @return the display label
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the display label.
+     * 
+     * @return the display label
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the display label.
-	 * 
-	 * @param displayLabel
-	 *          the new display label
-	 */
-	public void setDisplayLabel(String displayLabel) {
-		this.displayLabel = displayLabel;
-	}
+    /**
+     * Sets the display label.
+     * 
+     * @param displayLabel
+     *        the new display label
+     */
+    public void setDisplayLabel(String displayLabel) {
+        this.displayLabel = displayLabel;
+    }
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *          the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *        the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the type.
-	 * 
-	 * @param type
-	 *          the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * Sets the type.
+     * 
+     * @param type
+     *        the new type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * Gets the xlink.
-	 * 
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * Gets the xlink.
+     * 
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 
-	/**
-	 * Sets the xlink.
-	 * 
-	 * @param xlink
-	 *          the new xlink
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * Sets the xlink.
+     * 
+     * @param xlink
+     *        the new xlink
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
 
 }

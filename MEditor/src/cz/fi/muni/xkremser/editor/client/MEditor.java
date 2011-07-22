@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -37,42 +38,42 @@ import cz.fi.muni.xkremser.editor.client.gin.EditorGinjector;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class MEditor implements EntryPoint {
+public class MEditor
+        implements EntryPoint {
 
-	/** The injector. */
-	private final EditorGinjector injector = GWT.create(EditorGinjector.class);
+    /** The injector. */
+    private final EditorGinjector injector = GWT.create(EditorGinjector.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
-	 */
-	@Override
-	public void onModuleLoad() {
-		DelayedBindRegistry.bind(injector);
-		injector.getPlaceManager().revealCurrentPlace();
-		// remove progressbar
-		RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
+     */
+    @Override
+    public void onModuleLoad() {
+        DelayedBindRegistry.bind(injector);
+        injector.getPlaceManager().revealCurrentPlace();
+        // remove progressbar
+        RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
+    }
 
-	/**
-	 * Redirect.
-	 * 
-	 * @param url
-	 *          the url
-	 */
-	public static native void redirect(String url)/*-{
-		$wnd.location = url;
-	}-*/;
+    /**
+     * Redirect.
+     * 
+     * @param url
+     *        the url
+     */
+    public static native void redirect(String url)/*-{
+                                                  $wnd.location = url;
+                                                  }-*/;
 
-	public static native void langRefresh(String locale)/*-{
-		var pos = $wnd.location.search.indexOf('&locale=');
-		var params = $wnd.location.search;
-		if (pos == -1) {
-			$wnd.location.search = params + '&locale=' + locale;
-		} else {
-			$wnd.location.search = params.substring(0, pos) + '&locale='
-					+ locale + params.substring(pos + 13, params.length);
-		}
-	}-*/;
+    public static native void langRefresh(String locale)/*-{
+                                                        var pos = $wnd.location.search.indexOf('&locale=');
+                                                        var params = $wnd.location.search;
+                                                        if (pos == -1) {
+                                                        $wnd.location.search = params + '&locale=' + locale;
+                                                        } else {
+                                                        $wnd.location.search = params.substring(0, pos) + '&locale='
+                                                        + locale + params.substring(pos + 13, params.length);
+                                                        }
+                                                        }-*/;
 }

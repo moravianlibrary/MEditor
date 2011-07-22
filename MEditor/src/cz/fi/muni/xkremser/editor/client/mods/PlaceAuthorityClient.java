@@ -38,49 +38,50 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Enum PlaceAuthorityClient.
  */
-public enum PlaceAuthorityClient implements IsSerializable {
+public enum PlaceAuthorityClient
+        implements IsSerializable {
 
-	/** The MARCGAC. */
-	MARCGAC("marcgac"), /** The MARCCOUNTRY. */
-	MARCCOUNTRY("marccountry"), /** The IS o_3166. */
-	ISO_3166("iso3166");
+    /** The MARCGAC. */
+    MARCGAC("marcgac"), /** The MARCCOUNTRY. */
+    MARCCOUNTRY("marccountry"), /** The IS o_3166. */
+    ISO_3166("iso3166");
 
-	/** The value. */
-	private final String value;
+    /** The value. */
+    private final String value;
 
-	/**
-	 * Instantiates a new place authority client.
-	 * 
-	 * @param v
-	 *          the v
-	 */
-	PlaceAuthorityClient(String v) {
-		value = v;
-	}
+    /**
+     * Instantiates a new place authority client.
+     * 
+     * @param v
+     *        the v
+     */
+    PlaceAuthorityClient(String v) {
+        value = v;
+    }
 
-	/**
-	 * Value.
-	 * 
-	 * @return the string
-	 */
-	public String value() {
-		return value;
-	}
+    /**
+     * Value.
+     * 
+     * @return the string
+     */
+    public String value() {
+        return value;
+    }
 
-	/**
-	 * From value.
-	 * 
-	 * @param v
-	 *          the v
-	 * @return the place authority client
-	 */
-	public static PlaceAuthorityClient fromValue(String v) {
-		for (PlaceAuthorityClient c : PlaceAuthorityClient.values()) {
-			if (c.value.equals(v)) {
-				return c;
-			}
-		}
-		return null;
-	}
+    /**
+     * From value.
+     * 
+     * @param v
+     *        the v
+     * @return the place authority client
+     */
+    public static PlaceAuthorityClient fromValue(String v) {
+        for (PlaceAuthorityClient c : PlaceAuthorityClient.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
 }

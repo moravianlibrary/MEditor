@@ -38,115 +38,117 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class UnstructuredTextClient.
  */
-public class UnstructuredTextClient extends StringPlusDisplayLabelPlusTypeClient implements IsSerializable {
+public class UnstructuredTextClient
+        extends StringPlusDisplayLabelPlusTypeClient
+        implements IsSerializable {
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/** The xlink. */
-	protected String xlink;
+    /** The xlink. */
+    protected String xlink;
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
-	/**
-	 * Gets the xlink.
-	 * 
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * Gets the xlink.
+     * 
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 
-	/**
-	 * Sets the xlink.
-	 * 
-	 * @param xlink
-	 *          the new xlink
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * Sets the xlink.
+     * 
+     * @param xlink
+     *        the new xlink
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
 }

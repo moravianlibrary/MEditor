@@ -40,160 +40,161 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class PartTypeClient.
  */
-public class PartTypeClient implements IsSerializable {
+public class PartTypeClient
+        implements IsSerializable {
 
-	// TODO: Object to Serializable
-	/** The detail. */
-	protected List<DetailTypeClient> detail;
+    // TODO: Object to Serializable
+    /** The detail. */
+    protected List<DetailTypeClient> detail;
 
-	/** The extent. */
-	protected List<ExtentTypeClient> extent;
+    /** The extent. */
+    protected List<ExtentTypeClient> extent;
 
-	/** The date. */
-	protected List<BaseDateTypeClient> date;
+    /** The date. */
+    protected List<BaseDateTypeClient> date;
 
-	/** The text. */
-	protected List<String> text;
+    /** The text. */
+    protected List<String> text;
 
-	/** The id. */
-	protected String id;
+    /** The id. */
+    protected String id;
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/** The order. */
-	protected String order;
+    /** The order. */
+    protected String order;
 
-	/**
-	 * Gets the detail.
-	 * 
-	 * @return the detail
-	 */
-	public List<DetailTypeClient> getDetail() {
-		return detail;
-	}
+    /**
+     * Gets the detail.
+     * 
+     * @return the detail
+     */
+    public List<DetailTypeClient> getDetail() {
+        return detail;
+    }
 
-	/**
-	 * Sets the detail.
-	 * 
-	 * @param detail
-	 *          the new detail
-	 */
-	public void setDetail(List<DetailTypeClient> detail) {
-		this.detail = detail;
-	}
+    /**
+     * Sets the detail.
+     * 
+     * @param detail
+     *        the new detail
+     */
+    public void setDetail(List<DetailTypeClient> detail) {
+        this.detail = detail;
+    }
 
-	/**
-	 * Gets the extent.
-	 * 
-	 * @return the extent
-	 */
-	public List<ExtentTypeClient> getExtent() {
-		return extent;
-	}
+    /**
+     * Gets the extent.
+     * 
+     * @return the extent
+     */
+    public List<ExtentTypeClient> getExtent() {
+        return extent;
+    }
 
-	/**
-	 * Sets the extent.
-	 * 
-	 * @param extent
-	 *          the new extent
-	 */
-	public void setExtent(List<ExtentTypeClient> extent) {
-		this.extent = extent;
-	}
+    /**
+     * Sets the extent.
+     * 
+     * @param extent
+     *        the new extent
+     */
+    public void setExtent(List<ExtentTypeClient> extent) {
+        this.extent = extent;
+    }
 
-	/**
-	 * Gets the date.
-	 * 
-	 * @return the date
-	 */
-	public List<BaseDateTypeClient> getDate() {
-		return date;
-	}
+    /**
+     * Gets the date.
+     * 
+     * @return the date
+     */
+    public List<BaseDateTypeClient> getDate() {
+        return date;
+    }
 
-	/**
-	 * Sets the date.
-	 * 
-	 * @param date
-	 *          the new date
-	 */
-	public void setDate(List<BaseDateTypeClient> date) {
-		this.date = date;
-	}
+    /**
+     * Sets the date.
+     * 
+     * @param date
+     *        the new date
+     */
+    public void setDate(List<BaseDateTypeClient> date) {
+        this.date = date;
+    }
 
-	/**
-	 * Gets the text.
-	 * 
-	 * @return the text
-	 */
-	public List<String> getText() {
-		return text;
-	}
+    /**
+     * Gets the text.
+     * 
+     * @return the text
+     */
+    public List<String> getText() {
+        return text;
+    }
 
-	/**
-	 * Sets the text.
-	 * 
-	 * @param text
-	 *          the new text
-	 */
-	public void setText(List<String> text) {
-		this.text = text;
-	}
+    /**
+     * Sets the text.
+     * 
+     * @param text
+     *        the new text
+     */
+    public void setText(List<String> text) {
+        this.text = text;
+    }
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *          the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *        the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the type.
-	 * 
-	 * @param type
-	 *          the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * Sets the type.
+     * 
+     * @param type
+     *        the new type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * Gets the order.
-	 * 
-	 * @return the order
-	 */
-	public String getOrder() {
-		return order;
-	}
+    /**
+     * Gets the order.
+     * 
+     * @return the order
+     */
+    public String getOrder() {
+        return order;
+    }
 
-	/**
-	 * Sets the order.
-	 * 
-	 * @param order
-	 *          the new order
-	 */
-	public void setOrder(String order) {
-		this.order = order;
-	}
+    /**
+     * Sets the order.
+     * 
+     * @param order
+     *        the new order
+     */
+    public void setOrder(String order) {
+        this.order = order;
+    }
 }

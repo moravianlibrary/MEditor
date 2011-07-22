@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
@@ -36,85 +37,84 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 /**
  * The Class ListOfListOfSimpleValuesHolder.
  */
-public class ListOfListOfSimpleValuesHolder extends MetadataHolder {
+public class ListOfListOfSimpleValuesHolder
+        extends MetadataHolder {
 
-	/** The keys. */
-	private final String[] keys;
+    /** The keys. */
+    private final String[] keys;
 
-	/**
-	 * Instantiates a new list of list of simple values holder.
-	 * 
-	 * @param keys
-	 *          the keys
-	 */
-	public ListOfListOfSimpleValuesHolder(String... keys) {
-		this.keys = keys;
-	}
+    /**
+     * Instantiates a new list of list of simple values holder.
+     * 
+     * @param keys
+     *        the keys
+     */
+    public ListOfListOfSimpleValuesHolder(String... keys) {
+        this.keys = keys;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements
+     * ()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * Gets the list of list.
-	 * 
-	 * @return the list of list
-	 */
-	public List<List<String>> getListOfList() {
-		if (this.layout == null) {
-			throw new IllegalStateException("bind the holder to some layout with data first");
-		}
-		Canvas[] canvases = this.layout.getMembers();
-		List<List<String>> values = new ArrayList<List<String>>(canvases.length);
-		int i = 0;
-		for (Canvas canvas : canvases) {
-			values.add(new ArrayList<String>());
-			DynamicForm form = (DynamicForm) canvas;
-			for (String key : keys) {
-				String value = form.getValueAsString(key);
-				values.get(i).add(value == null ? null : value.trim());
-			}
-			i++;
-		}
-		return values;
-	}
+    /**
+     * Gets the list of list.
+     * 
+     * @return the list of list
+     */
+    public List<List<String>> getListOfList() {
+        if (this.layout == null) {
+            throw new IllegalStateException("bind the holder to some layout with data first");
+        }
+        Canvas[] canvases = this.layout.getMembers();
+        List<List<String>> values = new ArrayList<List<String>>(canvases.length);
+        int i = 0;
+        for (Canvas canvas : canvases) {
+            values.add(new ArrayList<String>());
+            DynamicForm form = (DynamicForm) canvas;
+            for (String key : keys) {
+                String value = form.getValueAsString(key);
+                values.get(i).add(value == null ? null : value.trim());
+            }
+            i++;
+        }
+        return values;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException();
+    }
 
 }

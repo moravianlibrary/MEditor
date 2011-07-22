@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.domain;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -34,91 +35,94 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 /**
  * The Enum KrameriusModel.
  */
-public enum DigitalObjectModel implements IsSerializable {
+public enum DigitalObjectModel
+        implements IsSerializable {
 
-	/** The MONOGRAPH. */
-	MONOGRAPH("monograph", ""), /** The MONOGRAPHUNIT. */
-	MONOGRAPHUNIT("monographunit", Constants.MONOGRAPH_UNIT_ICON), /**
-	 * The
-	 * PERIODICAL.
-	 */
-	PERIODICAL("periodical", ""), /** The PERIODICALVOLUME. */
-	PERIODICALVOLUME("periodicalvolume", Constants.VOLUME_ICON), /**
-	 * The
-	 * PERIODICALITEM.
-	 */
-	PERIODICALITEM("periodicalitem", Constants.PERIODICAL_ITEM_ICON), /** The PAGE. */
-	PAGE("page", ""),
-	/** The INTERNALPART. */
-	INTERNALPART("internalpart", Constants.INTERNAL_PART_ICON)/*
-																														 * ,
-																														 * DONATOR("donator"
-																														 * )
-																														 *//**
-	 * Instantiates a
-	 * new kramerius model.
-	 * 
-	 * @param value
-	 *          the value
-	 * @param icon
-	 *          the icon
-	 */
-	;
+    /** The MONOGRAPH. */
+    MONOGRAPH("monograph", ""), /** The MONOGRAPHUNIT. */
+    MONOGRAPHUNIT("monographunit", Constants.MONOGRAPH_UNIT_ICON), /**
+     * The
+     * PERIODICAL.
+     */
+    PERIODICAL("periodical", ""), /** The PERIODICALVOLUME. */
+    PERIODICALVOLUME("periodicalvolume", Constants.VOLUME_ICON), /**
+     * The
+     * PERIODICALITEM.
+     */
+    PERIODICALITEM("periodicalitem", Constants.PERIODICAL_ITEM_ICON), /**
+     * The
+     * PAGE.
+     */
+    PAGE("page", ""),
+    /** The INTERNALPART. */
+    INTERNALPART("internalpart", Constants.INTERNAL_PART_ICON)/*
+                                                               * ,
+                                                               * DONATOR("donator"
+                                                               * )
+                                                               *//**
+     * Instantiates
+     * a new kramerius model.
+     * 
+     * @param value
+     *        the value
+     * @param icon
+     *        the icon
+     */
+    ;
 
-	private DigitalObjectModel(String value, String icon) {
-		this.value = value;
-		this.icon = icon;
-	}
+    private DigitalObjectModel(String value, String icon) {
+        this.value = value;
+        this.icon = icon;
+    }
 
-	/** The value. */
-	private final String value;
+    /** The value. */
+    private final String value;
 
-	/** The icon. */
-	private final String icon;
+    /** The icon. */
+    private final String icon;
 
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value.
+     * 
+     * @return the value
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Gets the icon.
-	 * 
-	 * @return the icon
-	 */
-	public String getIcon() {
-		return icon;
-	}
+    /**
+     * Gets the icon.
+     * 
+     * @return the icon
+     */
+    public String getIcon() {
+        return icon;
+    }
 
-	/**
-	 * To string.
-	 * 
-	 * @param km
-	 *          the km
-	 * @return the string
-	 */
-	public static String toString(DigitalObjectModel km) {
-		return km.getValue();
-	}
+    /**
+     * To string.
+     * 
+     * @param km
+     *        the km
+     * @return the string
+     */
+    public static String toString(DigitalObjectModel km) {
+        return km.getValue();
+    }
 
-	/**
-	 * Parses the string.
-	 * 
-	 * @param s
-	 *          the s
-	 * @return the kramerius model
-	 */
-	public static DigitalObjectModel parseString(String s) {
-		DigitalObjectModel[] values = DigitalObjectModel.values();
-		for (DigitalObjectModel model : values) {
-			if (model.getValue().equalsIgnoreCase(s))
-				return model;
-		}
-		throw new RuntimeException("Unsupported type");
-	}
+    /**
+     * Parses the string.
+     * 
+     * @param s
+     *        the s
+     * @return the kramerius model
+     */
+    public static DigitalObjectModel parseString(String s) {
+        DigitalObjectModel[] values = DigitalObjectModel.values();
+        for (DigitalObjectModel model : values) {
+            if (model.getValue().equalsIgnoreCase(s)) return model;
+        }
+        throw new RuntimeException("Unsupported type");
+    }
 
 }

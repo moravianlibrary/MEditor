@@ -42,45 +42,42 @@ import cz.fi.muni.xkremser.editor.server.mods.PlaceTermType;
 /**
  * The Class PlaceTypeClient.
  */
-public class PlaceTypeClient implements IsSerializable {
+public class PlaceTypeClient
+        implements IsSerializable {
 
-	/** The place term. */
-	protected List<PlaceTermTypeClient> placeTerm;
+    /** The place term. */
+    protected List<PlaceTermTypeClient> placeTerm;
 
-	/**
-	 * Gets the value of the placeTerm property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a snapshot.
-	 * Therefore any modification you make to the returned list will be present
-	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
-	 * for the placeTerm property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
+    /**
+     * Gets the value of the placeTerm property.
+     * <p>
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the placeTerm property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
 	 * getPlaceTerm().add(newItem);
 	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * 
-	 * @return the place term {@link PlaceTermType }
-	 */
-	public List<PlaceTermTypeClient> getPlaceTerm() {
-		return this.placeTerm;
-	}
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * 
+     * @return the place term {@link PlaceTermType }
+     */
+    public List<PlaceTermTypeClient> getPlaceTerm() {
+        return this.placeTerm;
+    }
 
-	/**
-	 * Sets the place term.
-	 * 
-	 * @param placeTerm
-	 *          the new place term
-	 */
-	public void setPlaceTerm(List<PlaceTermTypeClient> placeTerm) {
-		this.placeTerm = placeTerm;
-	}
+    /**
+     * Sets the place term.
+     * 
+     * @param placeTerm
+     *        the new place term
+     */
+    public void setPlaceTerm(List<PlaceTermTypeClient> placeTerm) {
+        this.placeTerm = placeTerm;
+    }
 
 }

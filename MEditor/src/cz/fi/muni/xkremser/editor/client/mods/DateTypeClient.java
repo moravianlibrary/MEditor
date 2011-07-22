@@ -40,30 +40,30 @@ import cz.fi.muni.xkremser.editor.server.mods.Yes;
 /**
  * The Class DateTypeClient.
  */
-public class DateTypeClient extends BaseDateTypeClient implements IsSerializable {
+public class DateTypeClient
+        extends BaseDateTypeClient
+        implements IsSerializable {
 
-	/** The key date. */
-	protected YesClient keyDate;
+    /** The key date. */
+    protected YesClient keyDate;
 
-	/**
-	 * Gets the value of the keyDate property.
-	 * 
-	 * @return possible object is {@link Yes }
-	 * 
-	 */
-	public YesClient getKeyDate() {
-		return keyDate;
-	}
+    /**
+     * Gets the value of the keyDate property.
+     * 
+     * @return possible object is {@link Yes }
+     */
+    public YesClient getKeyDate() {
+        return keyDate;
+    }
 
-	/**
-	 * Sets the value of the keyDate property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link Yes }
-	 * 
-	 */
-	public void setKeyDate(YesClient value) {
-		this.keyDate = value;
-	}
+    /**
+     * Sets the value of the keyDate property.
+     * 
+     * @param value
+     *        allowed object is {@link Yes }
+     */
+    public void setKeyDate(YesClient value) {
+        this.keyDate = value;
+    }
 
 }

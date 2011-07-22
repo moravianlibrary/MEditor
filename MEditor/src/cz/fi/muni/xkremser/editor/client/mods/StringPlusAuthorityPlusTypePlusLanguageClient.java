@@ -38,28 +38,30 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class StringPlusAuthorityPlusTypePlusLanguageClient.
  */
-public class StringPlusAuthorityPlusTypePlusLanguageClient extends StringPlusAuthorityPlusLanguageClient implements IsSerializable {
+public class StringPlusAuthorityPlusTypePlusLanguageClient
+        extends StringPlusAuthorityPlusLanguageClient
+        implements IsSerializable {
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the type.
-	 * 
-	 * @param value
-	 *          the new type
-	 */
-	public void setType(String value) {
-		this.type = value;
-	}
+    /**
+     * Sets the type.
+     * 
+     * @param value
+     *        the new type
+     */
+    public void setType(String value) {
+        this.type = value;
+    }
 
 }

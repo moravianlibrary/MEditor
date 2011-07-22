@@ -42,120 +42,117 @@ import cz.fi.muni.xkremser.editor.server.mods.HoldingSimpleType;
 /**
  * The Class LocationTypeClient.
  */
-public class LocationTypeClient implements IsSerializable {
+public class LocationTypeClient
+        implements IsSerializable {
 
-	/** The physical location. */
-	protected List<PhysicalLocationTypeClient> physicalLocation;
+    /** The physical location. */
+    protected List<PhysicalLocationTypeClient> physicalLocation;
 
-	/** The shelf locator. */
-	protected List<String> shelfLocator;
+    /** The shelf locator. */
+    protected List<String> shelfLocator;
 
-	/** The url. */
-	protected List<UrlTypeClient> url;
+    /** The url. */
+    protected List<UrlTypeClient> url;
 
-	/** The holding simple. */
-	protected HoldingSimpleTypeClient holdingSimple;
+    /** The holding simple. */
+    protected HoldingSimpleTypeClient holdingSimple;
 
-	/** The holding external. */
-	protected ExtensionTypeClient holdingExternal;
+    /** The holding external. */
+    protected ExtensionTypeClient holdingExternal;
 
-	/**
-	 * Gets the physical location.
-	 * 
-	 * @return the physical location
-	 */
-	public List<PhysicalLocationTypeClient> getPhysicalLocation() {
-		return this.physicalLocation;
-	}
+    /**
+     * Gets the physical location.
+     * 
+     * @return the physical location
+     */
+    public List<PhysicalLocationTypeClient> getPhysicalLocation() {
+        return this.physicalLocation;
+    }
 
-	/**
-	 * Gets the shelf locator.
-	 * 
-	 * @return the shelf locator
-	 */
-	public List<String> getShelfLocator() {
-		return this.shelfLocator;
-	}
+    /**
+     * Gets the shelf locator.
+     * 
+     * @return the shelf locator
+     */
+    public List<String> getShelfLocator() {
+        return this.shelfLocator;
+    }
 
-	/**
-	 * Gets the url.
-	 * 
-	 * @return the url
-	 */
-	public List<UrlTypeClient> getUrl() {
-		return this.url;
-	}
+    /**
+     * Gets the url.
+     * 
+     * @return the url
+     */
+    public List<UrlTypeClient> getUrl() {
+        return this.url;
+    }
 
-	/**
-	 * Sets the physical location.
-	 * 
-	 * @param physicalLocation
-	 *          the new physical location
-	 */
-	public void setPhysicalLocation(List<PhysicalLocationTypeClient> physicalLocation) {
-		this.physicalLocation = physicalLocation;
-	}
+    /**
+     * Sets the physical location.
+     * 
+     * @param physicalLocation
+     *        the new physical location
+     */
+    public void setPhysicalLocation(List<PhysicalLocationTypeClient> physicalLocation) {
+        this.physicalLocation = physicalLocation;
+    }
 
-	/**
-	 * Sets the shelf locator.
-	 * 
-	 * @param shelfLocator
-	 *          the new shelf locator
-	 */
-	public void setShelfLocator(List<String> shelfLocator) {
-		this.shelfLocator = shelfLocator;
-	}
+    /**
+     * Sets the shelf locator.
+     * 
+     * @param shelfLocator
+     *        the new shelf locator
+     */
+    public void setShelfLocator(List<String> shelfLocator) {
+        this.shelfLocator = shelfLocator;
+    }
 
-	/**
-	 * Sets the url.
-	 * 
-	 * @param url
-	 *          the new url
-	 */
-	public void setUrl(List<UrlTypeClient> url) {
-		this.url = url;
-	}
+    /**
+     * Sets the url.
+     * 
+     * @param url
+     *        the new url
+     */
+    public void setUrl(List<UrlTypeClient> url) {
+        this.url = url;
+    }
 
-	/**
-	 * Gets the value of the holdingSimple property.
-	 * 
-	 * @return possible object is {@link HoldingSimpleType }
-	 * 
-	 */
-	public HoldingSimpleTypeClient getHoldingSimple() {
-		return holdingSimple;
-	}
+    /**
+     * Gets the value of the holdingSimple property.
+     * 
+     * @return possible object is {@link HoldingSimpleType }
+     */
+    public HoldingSimpleTypeClient getHoldingSimple() {
+        return holdingSimple;
+    }
 
-	/**
-	 * Sets the value of the holdingSimple property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link HoldingSimpleType }
-	 * 
-	 */
-	public void setHoldingSimple(HoldingSimpleTypeClient value) {
-		this.holdingSimple = value;
-	}
+    /**
+     * Sets the value of the holdingSimple property.
+     * 
+     * @param value
+     *        allowed object is {@link HoldingSimpleType }
+     */
+    public void setHoldingSimple(HoldingSimpleTypeClient value) {
+        this.holdingSimple = value;
+    }
 
-	/**
-	 * Gets the value of the holdingExternal property.
-	 * 
-	 * @return possible object is {@link ExtensionType }
-	 * 
-	 */
-	public ExtensionTypeClient getHoldingExternal() {
-		return holdingExternal;
-	}
+    /**
+     * Gets the value of the holdingExternal property.
+     * 
+     * @return possible object is {@link ExtensionType }
+     */
+    public ExtensionTypeClient getHoldingExternal() {
+        return holdingExternal;
+    }
 
-	/**
-	 * Sets the value of the holdingExternal property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link ExtensionType }
-	 * 
-	 */
-	public void setHoldingExternal(ExtensionTypeClient value) {
-		this.holdingExternal = value;
-	}
+    /**
+     * Sets the value of the holdingExternal property.
+     * 
+     * @param value
+     *        allowed object is {@link ExtensionType }
+     */
+    public void setHoldingExternal(ExtensionTypeClient value) {
+        this.holdingExternal = value;
+    }
 
 }

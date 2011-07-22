@@ -38,126 +38,117 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class ExtentTypeClient.
  */
-public class ExtentTypeClient implements IsSerializable {
+public class ExtentTypeClient
+        implements IsSerializable {
 
-	/** The start. */
-	protected String start;
+    /** The start. */
+    protected String start;
 
-	/** The end. */
-	protected String end;
+    /** The end. */
+    protected String end;
 
-	/** The total. */
-	protected String total;
+    /** The total. */
+    protected String total;
 
-	/** The list. */
-	protected String list;
+    /** The list. */
+    protected String list;
 
-	/** The unit. */
-	protected String unit;
+    /** The unit. */
+    protected String unit;
 
-	/**
-	 * Gets the value of the start property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getStart() {
-		return start;
-	}
+    /**
+     * Gets the value of the start property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getStart() {
+        return start;
+    }
 
-	/**
-	 * Sets the value of the start property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setStart(String value) {
-		this.start = value;
-	}
+    /**
+     * Sets the value of the start property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setStart(String value) {
+        this.start = value;
+    }
 
-	/**
-	 * Gets the value of the end property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getEnd() {
-		return end;
-	}
+    /**
+     * Gets the value of the end property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getEnd() {
+        return end;
+    }
 
-	/**
-	 * Sets the value of the end property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setEnd(String value) {
-		this.end = value;
-	}
+    /**
+     * Sets the value of the end property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setEnd(String value) {
+        this.end = value;
+    }
 
-	/**
-	 * Gets the value of the total property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getTotal() {
-		return total;
-	}
+    /**
+     * Gets the value of the total property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getTotal() {
+        return total;
+    }
 
-	/**
-	 * Sets the value of the total property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setTotal(String value) {
-		this.total = value;
-	}
+    /**
+     * Sets the value of the total property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setTotal(String value) {
+        this.total = value;
+    }
 
-	/**
-	 * Gets the value of the list property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getList() {
-		return list;
-	}
+    /**
+     * Gets the value of the list property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getList() {
+        return list;
+    }
 
-	/**
-	 * Sets the value of the list property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setList(String value) {
-		this.list = value;
-	}
+    /**
+     * Sets the value of the list property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setList(String value) {
+        this.list = value;
+    }
 
-	/**
-	 * Gets the value of the unit property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getUnit() {
-		return unit;
-	}
+    /**
+     * Gets the value of the unit property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getUnit() {
+        return unit;
+    }
 
-	/**
-	 * Sets the value of the unit property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setUnit(String value) {
-		this.unit = value;
-	}
+    /**
+     * Sets the value of the unit property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setUnit(String value) {
+        this.unit = value;
+    }
 
 }

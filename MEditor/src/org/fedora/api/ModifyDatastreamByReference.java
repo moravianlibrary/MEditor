@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -61,75 +62,60 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "dsID",
-    "altIDs",
-    "dsLabel",
-    "mimeType",
-    "formatURI",
-    "dsLocation",
-    "checksumType",
-    "checksum",
-    "logMessage",
-    "force"
-})
+@XmlType(name = "", propOrder = {"pid", "dsID", "altIDs", "dsLabel", "mimeType", "formatURI", "dsLocation",
+        "checksumType", "checksum", "logMessage", "force"})
 @XmlRootElement(name = "modifyDatastreamByReference")
 public class ModifyDatastreamByReference {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
-    
+
     /** The alt i ds. */
     @XmlElement(required = true)
     protected ArrayOfString altIDs;
-    
+
     /** The ds label. */
     @XmlElement(required = true)
     protected String dsLabel;
-    
+
     /** The mime type. */
     @XmlElement(name = "MIMEType", required = true)
     protected String mimeType;
-    
+
     /** The format uri. */
     @XmlElement(required = true)
     protected String formatURI;
-    
+
     /** The ds location. */
     @XmlElement(required = true)
     protected String dsLocation;
-    
+
     /** The checksum type. */
     @XmlElement(required = true)
     protected String checksumType;
-    
+
     /** The checksum. */
     @XmlElement(required = true)
     protected String checksum;
-    
+
     /** The log message. */
     @XmlElement(required = true)
     protected String logMessage;
-    
+
     /** The force. */
     protected boolean force;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -139,9 +125,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -149,10 +133,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the dsID property.
-     *
-     * @return the ds id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds id possible object is {@link String }
      */
     public String getDsID() {
         return dsID;
@@ -162,9 +144,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the dsID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsID(String value) {
         this.dsID = value;
@@ -172,10 +152,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the altIDs property.
-     *
-     * @return the alt i ds
-     * possible object is
-     * {@link ArrayOfString }
+     * 
+     * @return the alt i ds possible object is {@link ArrayOfString }
      */
     public ArrayOfString getAltIDs() {
         return altIDs;
@@ -185,9 +163,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the altIDs property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link ArrayOfString }
-     *     
+     *        allowed object is {@link ArrayOfString }
      */
     public void setAltIDs(ArrayOfString value) {
         this.altIDs = value;
@@ -195,10 +171,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the dsLabel property.
-     *
-     * @return the ds label
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds label possible object is {@link String }
      */
     public String getDsLabel() {
         return dsLabel;
@@ -208,9 +182,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the dsLabel property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsLabel(String value) {
         this.dsLabel = value;
@@ -218,10 +190,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the mimeType property.
-     *
-     * @return the mIME type
-     * possible object is
-     * {@link String }
+     * 
+     * @return the mIME type possible object is {@link String }
      */
     public String getMIMEType() {
         return mimeType;
@@ -231,9 +201,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the mimeType property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setMIMEType(String value) {
         this.mimeType = value;
@@ -241,10 +209,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the formatURI property.
-     *
-     * @return the format uri
-     * possible object is
-     * {@link String }
+     * 
+     * @return the format uri possible object is {@link String }
      */
     public String getFormatURI() {
         return formatURI;
@@ -254,9 +220,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the formatURI property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setFormatURI(String value) {
         this.formatURI = value;
@@ -264,10 +228,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the dsLocation property.
-     *
-     * @return the ds location
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds location possible object is {@link String }
      */
     public String getDsLocation() {
         return dsLocation;
@@ -277,9 +239,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the dsLocation property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsLocation(String value) {
         this.dsLocation = value;
@@ -287,10 +247,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the checksumType property.
-     *
-     * @return the checksum type
-     * possible object is
-     * {@link String }
+     * 
+     * @return the checksum type possible object is {@link String }
      */
     public String getChecksumType() {
         return checksumType;
@@ -300,9 +258,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the checksumType property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setChecksumType(String value) {
         this.checksumType = value;
@@ -310,10 +266,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the checksum property.
-     *
-     * @return the checksum
-     * possible object is
-     * {@link String }
+     * 
+     * @return the checksum possible object is {@link String }
      */
     public String getChecksum() {
         return checksum;
@@ -323,9 +277,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the checksum property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setChecksum(String value) {
         this.checksum = value;
@@ -333,10 +285,8 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the logMessage property.
-     *
-     * @return the log message
-     * possible object is
-     * {@link String }
+     * 
+     * @return the log message possible object is {@link String }
      */
     public String getLogMessage() {
         return logMessage;
@@ -346,9 +296,7 @@ public class ModifyDatastreamByReference {
      * Sets the value of the logMessage property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLogMessage(String value) {
         this.logMessage = value;
@@ -356,7 +304,7 @@ public class ModifyDatastreamByReference {
 
     /**
      * Gets the value of the force property.
-     *
+     * 
      * @return true, if is force
      */
     public boolean isForce() {
@@ -365,8 +313,9 @@ public class ModifyDatastreamByReference {
 
     /**
      * Sets the value of the force property.
-     *
-     * @param value the new force
+     * 
+     * @param value
+     *        the new force
      */
     public void setForce(boolean value) {
         this.force = value;

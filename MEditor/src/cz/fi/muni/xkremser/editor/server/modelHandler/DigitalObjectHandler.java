@@ -24,11 +24,13 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
 import java.io.IOException;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
@@ -37,7 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
  */
 public interface DigitalObjectHandler {
 
-	DigitalObjectDetail getDigitalObject(String uuid) throws IOException;
+    DigitalObjectDetail getDigitalObject(String uuid) throws IOException;
 
-	DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel) throws IOException;
+    DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel) throws IOException;
 }

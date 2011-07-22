@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "result"
-})
+@XmlType(name = "", propOrder = {"result"})
 @XmlRootElement(name = "findObjectsResponse")
 public class FindObjectsResponse {
 
@@ -67,10 +64,8 @@ public class FindObjectsResponse {
 
     /**
      * Gets the value of the result property.
-     *
-     * @return the result
-     * possible object is
-     * {@link FieldSearchResult }
+     * 
+     * @return the result possible object is {@link FieldSearchResult }
      */
     public FieldSearchResult getResult() {
         return result;
@@ -80,9 +75,7 @@ public class FindObjectsResponse {
      * Sets the value of the result property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link FieldSearchResult }
-     *     
+     *        allowed object is {@link FieldSearchResult }
      */
     public void setResult(FieldSearchResult value) {
         this.result = value;

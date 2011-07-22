@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "repositoryInfo"
-})
+@XmlType(name = "", propOrder = {"repositoryInfo"})
 @XmlRootElement(name = "describeRepositoryResponse")
 public class DescribeRepositoryResponse {
 
@@ -67,10 +64,8 @@ public class DescribeRepositoryResponse {
 
     /**
      * Gets the value of the repositoryInfo property.
-     *
-     * @return the repository info
-     * possible object is
-     * {@link RepositoryInfo }
+     * 
+     * @return the repository info possible object is {@link RepositoryInfo }
      */
     public RepositoryInfo getRepositoryInfo() {
         return repositoryInfo;
@@ -80,9 +75,7 @@ public class DescribeRepositoryResponse {
      * Sets the value of the repositoryInfo property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link RepositoryInfo }
-     *     
+     *        allowed object is {@link RepositoryInfo }
      */
     public void setRepositoryInfo(RepositoryInfo value) {
         this.repositoryInfo = value;

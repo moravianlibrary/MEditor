@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "datastream"
-})
+@XmlType(name = "", propOrder = {"datastream"})
 @XmlRootElement(name = "getDatastreamResponse")
 public class GetDatastreamResponse {
 
@@ -67,10 +64,8 @@ public class GetDatastreamResponse {
 
     /**
      * Gets the value of the datastream property.
-     *
-     * @return the datastream
-     * possible object is
-     * {@link Datastream }
+     * 
+     * @return the datastream possible object is {@link Datastream }
      */
     public Datastream getDatastream() {
         return datastream;
@@ -80,9 +75,7 @@ public class GetDatastreamResponse {
      * Sets the value of the datastream property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link Datastream }
-     *     
+     *        allowed object is {@link Datastream }
      */
     public void setDatastream(Datastream value) {
         this.datastream = value;

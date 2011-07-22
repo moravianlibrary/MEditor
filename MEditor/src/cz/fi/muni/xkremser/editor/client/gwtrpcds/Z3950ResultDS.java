@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
 import com.google.inject.Inject;
@@ -40,48 +41,49 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 /**
  * The Class InputTreeGwtRPCDS.
  */
-public class Z3950ResultDS extends DataSource {
+public class Z3950ResultDS
+        extends DataSource {
 
-	/**
-	 * Instantiates a new input tree gwt rpcds.
-	 * 
-	 * @param dispatcher
-	 *          the dispatcher
-	 */
-	@Inject
-	public Z3950ResultDS(LangConstants lang) {
-		DataSourceField field;
-		field = new DataSourceIntegerField(Constants.ATTR_GENERIC_ID, "id");
-		field.setPrimaryKey(true);
-		field.setRequired(true);
-		field.setHidden(true);
-		field = new DataSourceTextField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
-		field.setAttribute("width", "50%");
-		field.setRequired(true);
-		field.setMultiple(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_IDENTIFIER, lang.dcIdentifier());
-		field.setMultiple(true);
-		field.setPrimaryKey(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_PUBLISHER, lang.dcPublisher());
-		field.setMultiple(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_DATE, lang.dcDate());
-		field.setMultiple(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_DESCRIPTION, lang.dcDescription());
-		field.setMultiple(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_LANGUAGE, lang.dcLanguage());
-		field.setMultiple(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_SUBJECT, lang.dcSubject());
-		field.setMultiple(true);
-		addField(field);
-		field = new DataSourceTextField(DublinCoreConstants.DC_RELATION, lang.dcRelation());
-		field.setMultiple(true);
-		addField(field);
+    /**
+     * Instantiates a new input tree gwt rpcds.
+     * 
+     * @param dispatcher
+     *        the dispatcher
+     */
+    @Inject
+    public Z3950ResultDS(LangConstants lang) {
+        DataSourceField field;
+        field = new DataSourceIntegerField(Constants.ATTR_GENERIC_ID, "id");
+        field.setPrimaryKey(true);
+        field.setRequired(true);
+        field.setHidden(true);
+        field = new DataSourceTextField(DublinCoreConstants.DC_TITLE, lang.dcTitle());
+        field.setAttribute("width", "50%");
+        field.setRequired(true);
+        field.setMultiple(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_IDENTIFIER, lang.dcIdentifier());
+        field.setMultiple(true);
+        field.setPrimaryKey(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_PUBLISHER, lang.dcPublisher());
+        field.setMultiple(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_DATE, lang.dcDate());
+        field.setMultiple(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_DESCRIPTION, lang.dcDescription());
+        field.setMultiple(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_LANGUAGE, lang.dcLanguage());
+        field.setMultiple(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_SUBJECT, lang.dcSubject());
+        field.setMultiple(true);
+        addField(field);
+        field = new DataSourceTextField(DublinCoreConstants.DC_RELATION, lang.dcRelation());
+        field.setMultiple(true);
+        addField(field);
 
-	}
+    }
 }

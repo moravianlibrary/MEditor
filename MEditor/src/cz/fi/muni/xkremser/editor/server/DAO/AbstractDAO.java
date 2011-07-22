@@ -24,20 +24,22 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
-
 import com.google.inject.Inject;
+
+import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -48,114 +50,119 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
  */
 public class AbstractDAO {
 
-	/** The conn. */
-	private Connection conn = null;
+    /** The conn. */
+    private Connection conn = null;
 
-	/** The conf. */
-	@Inject
-	private EditorConfiguration conf;
+    /** The conf. */
+    @Inject
+    private EditorConfiguration conf;
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
-	private static final String DRIVER = "org.postgresql.Driver";
+    private static final String DRIVER = "org.postgresql.Driver";
 
-	/** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
-	private static final String JNDI_DB_POOL_ID = "jdbc/editor";
+    /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
+    private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
-	private static final int POOLABLE_YES = 1;
-	private static final int POOLABLE_NO = 0;
-	private static int poolable = -1;
+    private static final int POOLABLE_YES = 1;
+    private static final int POOLABLE_NO = 0;
+    private static int poolable = -1;
 
-	@Resource(name = JNDI_DB_POOL_ID)
-	private DataSource pool;
+    @Resource(name = JNDI_DB_POOL_ID)
+    private DataSource pool;
 
-	/**
-	 * Inits the connection.
-	 * 
-	 * @throws DatabaseException
-	 */
-	private void initConnection() throws DatabaseException {
-		if (poolable != POOLABLE_NO && pool == null) {
-			InitialContext cxt = null;
-			try {
-				cxt = new InitialContext();
-			} catch (NamingException e) {
-				poolable = POOLABLE_NO;
-				LOGGER.warn("Unable to get initial context.", e);
-			}
-			if (cxt != null) {
-				try {
-					pool = (DataSource) cxt.lookup("java:/comp/env/" + JNDI_DB_POOL_ID);
-				} catch (NamingException e) {
-					poolable = POOLABLE_NO;
-					LOGGER.warn("Unable to get connection pool.", e);
-				}
-			}
-		}
-		if (pool == null) { // DI is working and servlet container manages the
-												// connections
-			poolable = POOLABLE_NO;
-			initConnectionWithoutPool();
-		} else {
-			poolable = POOLABLE_YES;
-			try {
-				conn = pool.getConnection();
-			} catch (SQLException ex) {
-				LOGGER.error("Unable to get a connection from connection pool " + JNDI_DB_POOL_ID, ex);
-				throw new DatabaseException("Unable to connect to database.", ex);
-			}
-		}
-	}
+    /**
+     * Inits the connection.
+     * 
+     * @throws DatabaseException
+     */
+    private void initConnection() throws DatabaseException {
+        if (poolable != POOLABLE_NO && pool == null) {
+            InitialContext cxt = null;
+            try {
+                cxt = new InitialContext();
+            } catch (NamingException e) {
+                poolable = POOLABLE_NO;
+                LOGGER.warn("Unable to get initial context.", e);
+            }
+            if (cxt != null) {
+                try {
+                    pool = (DataSource) cxt.lookup("java:/comp/env/" + JNDI_DB_POOL_ID);
+                } catch (NamingException e) {
+                    poolable = POOLABLE_NO;
+                    LOGGER.warn("Unable to get connection pool.", e);
+                }
+            }
+        }
+        if (pool == null) { // DI is working and servlet container manages the
+                            // connections
+            poolable = POOLABLE_NO;
+            initConnectionWithoutPool();
+        } else {
+            poolable = POOLABLE_YES;
+            try {
+                conn = pool.getConnection();
+            } catch (SQLException ex) {
+                LOGGER.error("Unable to get a connection from connection pool " + JNDI_DB_POOL_ID, ex);
+                throw new DatabaseException("Unable to connect to database.", ex);
+            }
+        }
+    }
 
-	private void initConnectionWithoutPool() throws DatabaseException {
-		try {
-			Class.forName(DRIVER);
-		} catch (ClassNotFoundException ex) {
-			LOGGER.error("Could not find the driver " + DRIVER, ex);
-		}
-		String login = conf.getDBLogin();
-		String password = conf.getDBPassword();
-		String host = conf.getDBHost();
-		String port = conf.getDBPort();
-		String name = conf.getDBName();
-		if (password == null || password.length() < 3) {
-			LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "' reason: no password set.");
-			return;
-		}
-		try {
-			conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, login, password);
-		} catch (SQLException ex) {
-			LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "'", ex);
-			throw new DatabaseException("Unable to connect to database.");
-		}
-	}
+    private void initConnectionWithoutPool() throws DatabaseException {
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException ex) {
+            LOGGER.error("Could not find the driver " + DRIVER, ex);
+        }
+        String login = conf.getDBLogin();
+        String password = conf.getDBPassword();
+        String host = conf.getDBHost();
+        String port = conf.getDBPort();
+        String name = conf.getDBName();
+        if (password == null || password.length() < 3) {
+            LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/"
+                    + name + "' reason: no password set.");
+            return;
+        }
+        try {
+            conn =
+                    DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name,
+                                                login,
+                                                password);
+        } catch (SQLException ex) {
+            LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/"
+                    + name + "'", ex);
+            throw new DatabaseException("Unable to connect to database.");
+        }
+    }
 
-	/**
-	 * Gets the connection.
-	 * 
-	 * @return the connection
-	 * @throws DatabaseException
-	 */
-	protected Connection getConnection() throws DatabaseException {
-		if (conn == null) {
-			initConnection();
-		}
-		return conn;
-	}
+    /**
+     * Gets the connection.
+     * 
+     * @return the connection
+     * @throws DatabaseException
+     */
+    protected Connection getConnection() throws DatabaseException {
+        if (conn == null) {
+            initConnection();
+        }
+        return conn;
+    }
 
-	/**
-	 * Close connection.
-	 */
-	protected void closeConnection() {
-		try {
-			if (conn != null) {
-				conn.close();
-			}
-		} catch (SQLException ex) {
-			LOGGER.error("Connection was not closed", ex);
-		}
-		conn = null;
-	}
+    /**
+     * Close connection.
+     */
+    protected void closeConnection() {
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Connection was not closed", ex);
+        }
+        conn = null;
+    }
 
 }

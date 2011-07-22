@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 // TODO: Auto-generated Javadoc
@@ -32,97 +33,96 @@ package cz.fi.muni.xkremser.editor.server.fedora;
  */
 public enum ImageMimeType {
 
-	/** The JPEG. */
-	JPEG("image/jpeg", "jpg", true, false), /** The PNG. */
-	PNG("image/png", "png", true, false), /** The JPE g2000. */
-	JPEG2000("image/jp2", "jp2", true, false),
+    /** The JPEG. */
+    JPEG("image/jpeg", "jpg", true, false), /** The PNG. */
+    PNG("image/png", "png", true, false), /** The JPE g2000. */
+    JPEG2000("image/jp2", "jp2", true, false),
 
-	/** The XDJVU. */
-	XDJVU("image/x.djvu", "djvu", false, true), /** The VNDDJVU. */
-	VNDDJVU("image/vnd.djvu", "djvu", false, true), /** The DJVU. */
-	DJVU("image/djvu", "djvu", false, true), /** The PDF. */
-	PDF("application/pdf", "pdf", false, true);
+    /** The XDJVU. */
+    XDJVU("image/x.djvu", "djvu", false, true), /** The VNDDJVU. */
+    VNDDJVU("image/vnd.djvu", "djvu", false, true), /** The DJVU. */
+    DJVU("image/djvu", "djvu", false, true), /** The PDF. */
+    PDF("application/pdf", "pdf", false, true);
 
-	/** The value. */
-	private String value;
+    /** The value. */
+    private String value;
 
-	/** The supportedby java. */
-	private boolean supportedbyJava;
+    /** The supportedby java. */
+    private boolean supportedbyJava;
 
-	/** The multipage format. */
-	private boolean multipageFormat;
+    /** The multipage format. */
+    private boolean multipageFormat;
 
-	/** The default file extension. */
-	private String defaultFileExtension;
+    /** The default file extension. */
+    private String defaultFileExtension;
 
-	/**
-	 * Instantiates a new image mime type.
-	 * 
-	 * @param value
-	 *          the value
-	 * @param defaultExtension
-	 *          the default extension
-	 * @param javasupport
-	 *          the javasupport
-	 * @param multipageformat
-	 *          the multipageformat
-	 */
-	private ImageMimeType(String value, String defaultExtension, boolean javasupport, boolean multipageformat) {
-		this.value = value;
-		this.supportedbyJava = javasupport;
-		this.multipageFormat = multipageformat;
-		this.defaultFileExtension = defaultExtension;
-	}
+    /**
+     * Instantiates a new image mime type.
+     * 
+     * @param value
+     *        the value
+     * @param defaultExtension
+     *        the default extension
+     * @param javasupport
+     *        the javasupport
+     * @param multipageformat
+     *        the multipageformat
+     */
+    private ImageMimeType(String value, String defaultExtension, boolean javasupport, boolean multipageformat) {
+        this.value = value;
+        this.supportedbyJava = javasupport;
+        this.multipageFormat = multipageformat;
+        this.defaultFileExtension = defaultExtension;
+    }
 
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value.
+     * 
+     * @return the value
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Java native support.
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean javaNativeSupport() {
-		return supportedbyJava;
-	}
+    /**
+     * Java native support.
+     * 
+     * @return true, if successful
+     */
+    public boolean javaNativeSupport() {
+        return supportedbyJava;
+    }
 
-	/**
-	 * Checks if is multipage format.
-	 * 
-	 * @return true, if is multipage format
-	 */
-	public boolean isMultipageFormat() {
-		return this.multipageFormat;
-	}
+    /**
+     * Checks if is multipage format.
+     * 
+     * @return true, if is multipage format
+     */
+    public boolean isMultipageFormat() {
+        return this.multipageFormat;
+    }
 
-	/**
-	 * Gets the default file extension.
-	 * 
-	 * @return the default file extension
-	 */
-	public String getDefaultFileExtension() {
-		return defaultFileExtension;
-	}
+    /**
+     * Gets the default file extension.
+     * 
+     * @return the default file extension
+     */
+    public String getDefaultFileExtension() {
+        return defaultFileExtension;
+    }
 
-	/**
-	 * Load from mime type.
-	 * 
-	 * @param mime
-	 *          the mime
-	 * @return the image mime type
-	 */
-	public static ImageMimeType loadFromMimeType(String mime) {
-		ImageMimeType[] values = values();
-		for (ImageMimeType iType : values) {
-			if (iType.getValue().equals(mime))
-				return iType;
-		}
-		return null;
-	}
+    /**
+     * Load from mime type.
+     * 
+     * @param mime
+     *        the mime
+     * @return the image mime type
+     */
+    public static ImageMimeType loadFromMimeType(String mime) {
+        ImageMimeType[] values = values();
+        for (ImageMimeType iType : values) {
+            if (iType.getValue().equals(mime)) return iType;
+        }
+        return null;
+    }
 }

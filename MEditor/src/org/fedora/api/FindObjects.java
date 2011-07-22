@@ -28,6 +28,7 @@
 package org.fedora.api;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,12 +36,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -55,37 +57,29 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "resultFields",
-    "maxResults",
-    "query"
-})
+@XmlType(name = "", propOrder = {"resultFields", "maxResults", "query"})
 @XmlRootElement(name = "findObjects")
 public class FindObjects {
 
     /** The result fields. */
     @XmlElement(required = true)
     protected ArrayOfString resultFields;
-    
+
     /** The max results. */
     @XmlElement(required = true)
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger maxResults;
-    
+
     /** The query. */
     @XmlElement(required = true)
     protected FieldSearchQuery query;
 
     /**
      * Gets the value of the resultFields property.
-     *
-     * @return the result fields
-     * possible object is
-     * {@link ArrayOfString }
+     * 
+     * @return the result fields possible object is {@link ArrayOfString }
      */
     public ArrayOfString getResultFields() {
         return resultFields;
@@ -95,9 +89,7 @@ public class FindObjects {
      * Sets the value of the resultFields property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link ArrayOfString }
-     *     
+     *        allowed object is {@link ArrayOfString }
      */
     public void setResultFields(ArrayOfString value) {
         this.resultFields = value;
@@ -105,10 +97,8 @@ public class FindObjects {
 
     /**
      * Gets the value of the maxResults property.
-     *
-     * @return the max results
-     * possible object is
-     * {@link BigInteger }
+     * 
+     * @return the max results possible object is {@link BigInteger }
      */
     public BigInteger getMaxResults() {
         return maxResults;
@@ -118,9 +108,7 @@ public class FindObjects {
      * Sets the value of the maxResults property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *        allowed object is {@link BigInteger }
      */
     public void setMaxResults(BigInteger value) {
         this.maxResults = value;
@@ -128,10 +116,8 @@ public class FindObjects {
 
     /**
      * Gets the value of the query property.
-     *
-     * @return the query
-     * possible object is
-     * {@link FieldSearchQuery }
+     * 
+     * @return the query possible object is {@link FieldSearchQuery }
      */
     public FieldSearchQuery getQuery() {
         return query;
@@ -141,9 +127,7 @@ public class FindObjects {
      * Sets the value of the query property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link FieldSearchQuery }
-     *     
+     *        allowed object is {@link FieldSearchQuery }
      */
     public void setQuery(FieldSearchQuery value) {
         this.query = value;

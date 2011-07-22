@@ -40,358 +40,359 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class OriginInfoTypeClient.
  */
-public class OriginInfoTypeClient implements IsSerializable {
+public class OriginInfoTypeClient
+        implements IsSerializable {
 
-	/** The place. */
-	protected List<PlaceTypeClient> place;
+    /** The place. */
+    protected List<PlaceTypeClient> place;
 
-	/** The publisher. */
-	protected List<String> publisher;
+    /** The publisher. */
+    protected List<String> publisher;
 
-	/** The date issued. */
-	protected List<DateTypeClient> dateIssued;
+    /** The date issued. */
+    protected List<DateTypeClient> dateIssued;
 
-	/** The date created. */
-	protected List<DateTypeClient> dateCreated;
+    /** The date created. */
+    protected List<DateTypeClient> dateCreated;
 
-	/** The date captured. */
-	protected List<DateTypeClient> dateCaptured;
+    /** The date captured. */
+    protected List<DateTypeClient> dateCaptured;
 
-	/** The date valid. */
-	protected List<DateTypeClient> dateValid;
+    /** The date valid. */
+    protected List<DateTypeClient> dateValid;
 
-	/** The date modified. */
-	protected List<DateTypeClient> dateModified;
+    /** The date modified. */
+    protected List<DateTypeClient> dateModified;
 
-	/** The copyright date. */
-	protected List<DateTypeClient> copyrightDate;
+    /** The copyright date. */
+    protected List<DateTypeClient> copyrightDate;
 
-	/** The date other. */
-	protected List<DateOtherTypeClient> dateOther;
+    /** The date other. */
+    protected List<DateOtherTypeClient> dateOther;
 
-	/** The edition. */
-	protected List<String> edition;
+    /** The edition. */
+    protected List<String> edition;
 
-	/** The issuance. */
-	protected List<String> issuance;
+    /** The issuance. */
+    protected List<String> issuance;
 
-	/** The frequency. */
-	protected List<StringPlusAuthorityClient> frequency;
+    /** The frequency. */
+    protected List<StringPlusAuthorityClient> frequency;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the place.
-	 * 
-	 * @return the place
-	 */
-	public List<PlaceTypeClient> getPlace() {
-		return place;
-	}
+    /**
+     * Gets the place.
+     * 
+     * @return the place
+     */
+    public List<PlaceTypeClient> getPlace() {
+        return place;
+    }
 
-	/**
-	 * Sets the place.
-	 * 
-	 * @param place
-	 *          the new place
-	 */
-	public void setPlace(List<PlaceTypeClient> place) {
-		this.place = place;
-	}
+    /**
+     * Sets the place.
+     * 
+     * @param place
+     *        the new place
+     */
+    public void setPlace(List<PlaceTypeClient> place) {
+        this.place = place;
+    }
 
-	/**
-	 * Gets the publisher.
-	 * 
-	 * @return the publisher
-	 */
-	public List<String> getPublisher() {
-		return publisher;
-	}
+    /**
+     * Gets the publisher.
+     * 
+     * @return the publisher
+     */
+    public List<String> getPublisher() {
+        return publisher;
+    }
 
-	/**
-	 * Sets the publisher.
-	 * 
-	 * @param publisher
-	 *          the new publisher
-	 */
-	public void setPublisher(List<String> publisher) {
-		this.publisher = publisher;
-	}
+    /**
+     * Sets the publisher.
+     * 
+     * @param publisher
+     *        the new publisher
+     */
+    public void setPublisher(List<String> publisher) {
+        this.publisher = publisher;
+    }
 
-	/**
-	 * Gets the date issued.
-	 * 
-	 * @return the date issued
-	 */
-	public List<DateTypeClient> getDateIssued() {
-		return dateIssued;
-	}
+    /**
+     * Gets the date issued.
+     * 
+     * @return the date issued
+     */
+    public List<DateTypeClient> getDateIssued() {
+        return dateIssued;
+    }
 
-	/**
-	 * Sets the date issued.
-	 * 
-	 * @param dateIssued
-	 *          the new date issued
-	 */
-	public void setDateIssued(List<DateTypeClient> dateIssued) {
-		this.dateIssued = dateIssued;
-	}
+    /**
+     * Sets the date issued.
+     * 
+     * @param dateIssued
+     *        the new date issued
+     */
+    public void setDateIssued(List<DateTypeClient> dateIssued) {
+        this.dateIssued = dateIssued;
+    }
 
-	/**
-	 * Gets the date created.
-	 * 
-	 * @return the date created
-	 */
-	public List<DateTypeClient> getDateCreated() {
-		return dateCreated;
-	}
+    /**
+     * Gets the date created.
+     * 
+     * @return the date created
+     */
+    public List<DateTypeClient> getDateCreated() {
+        return dateCreated;
+    }
 
-	/**
-	 * Sets the date created.
-	 * 
-	 * @param dateCreated
-	 *          the new date created
-	 */
-	public void setDateCreated(List<DateTypeClient> dateCreated) {
-		this.dateCreated = dateCreated;
-	}
+    /**
+     * Sets the date created.
+     * 
+     * @param dateCreated
+     *        the new date created
+     */
+    public void setDateCreated(List<DateTypeClient> dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
-	/**
-	 * Gets the date captured.
-	 * 
-	 * @return the date captured
-	 */
-	public List<DateTypeClient> getDateCaptured() {
-		return dateCaptured;
-	}
+    /**
+     * Gets the date captured.
+     * 
+     * @return the date captured
+     */
+    public List<DateTypeClient> getDateCaptured() {
+        return dateCaptured;
+    }
 
-	/**
-	 * Sets the date captured.
-	 * 
-	 * @param dateCaptured
-	 *          the new date captured
-	 */
-	public void setDateCaptured(List<DateTypeClient> dateCaptured) {
-		this.dateCaptured = dateCaptured;
-	}
+    /**
+     * Sets the date captured.
+     * 
+     * @param dateCaptured
+     *        the new date captured
+     */
+    public void setDateCaptured(List<DateTypeClient> dateCaptured) {
+        this.dateCaptured = dateCaptured;
+    }
 
-	/**
-	 * Gets the date valid.
-	 * 
-	 * @return the date valid
-	 */
-	public List<DateTypeClient> getDateValid() {
-		return dateValid;
-	}
+    /**
+     * Gets the date valid.
+     * 
+     * @return the date valid
+     */
+    public List<DateTypeClient> getDateValid() {
+        return dateValid;
+    }
 
-	/**
-	 * Sets the date valid.
-	 * 
-	 * @param dateValid
-	 *          the new date valid
-	 */
-	public void setDateValid(List<DateTypeClient> dateValid) {
-		this.dateValid = dateValid;
-	}
+    /**
+     * Sets the date valid.
+     * 
+     * @param dateValid
+     *        the new date valid
+     */
+    public void setDateValid(List<DateTypeClient> dateValid) {
+        this.dateValid = dateValid;
+    }
 
-	/**
-	 * Gets the date modified.
-	 * 
-	 * @return the date modified
-	 */
-	public List<DateTypeClient> getDateModified() {
-		return dateModified;
-	}
+    /**
+     * Gets the date modified.
+     * 
+     * @return the date modified
+     */
+    public List<DateTypeClient> getDateModified() {
+        return dateModified;
+    }
 
-	/**
-	 * Sets the date modified.
-	 * 
-	 * @param dateModified
-	 *          the new date modified
-	 */
-	public void setDateModified(List<DateTypeClient> dateModified) {
-		this.dateModified = dateModified;
-	}
+    /**
+     * Sets the date modified.
+     * 
+     * @param dateModified
+     *        the new date modified
+     */
+    public void setDateModified(List<DateTypeClient> dateModified) {
+        this.dateModified = dateModified;
+    }
 
-	/**
-	 * Gets the copyright date.
-	 * 
-	 * @return the copyright date
-	 */
-	public List<DateTypeClient> getCopyrightDate() {
-		return copyrightDate;
-	}
+    /**
+     * Gets the copyright date.
+     * 
+     * @return the copyright date
+     */
+    public List<DateTypeClient> getCopyrightDate() {
+        return copyrightDate;
+    }
 
-	/**
-	 * Sets the copyright date.
-	 * 
-	 * @param copyrightDate
-	 *          the new copyright date
-	 */
-	public void setCopyrightDate(List<DateTypeClient> copyrightDate) {
-		this.copyrightDate = copyrightDate;
-	}
+    /**
+     * Sets the copyright date.
+     * 
+     * @param copyrightDate
+     *        the new copyright date
+     */
+    public void setCopyrightDate(List<DateTypeClient> copyrightDate) {
+        this.copyrightDate = copyrightDate;
+    }
 
-	/**
-	 * Gets the date other.
-	 * 
-	 * @return the date other
-	 */
-	public List<DateOtherTypeClient> getDateOther() {
-		return dateOther;
-	}
+    /**
+     * Gets the date other.
+     * 
+     * @return the date other
+     */
+    public List<DateOtherTypeClient> getDateOther() {
+        return dateOther;
+    }
 
-	/**
-	 * Sets the date other.
-	 * 
-	 * @param dateOther
-	 *          the new date other
-	 */
-	public void setDateOther(List<DateOtherTypeClient> dateOther) {
-		this.dateOther = dateOther;
-	}
+    /**
+     * Sets the date other.
+     * 
+     * @param dateOther
+     *        the new date other
+     */
+    public void setDateOther(List<DateOtherTypeClient> dateOther) {
+        this.dateOther = dateOther;
+    }
 
-	/**
-	 * Gets the edition.
-	 * 
-	 * @return the edition
-	 */
-	public List<String> getEdition() {
-		return edition;
-	}
+    /**
+     * Gets the edition.
+     * 
+     * @return the edition
+     */
+    public List<String> getEdition() {
+        return edition;
+    }
 
-	/**
-	 * Sets the edition.
-	 * 
-	 * @param edition
-	 *          the new edition
-	 */
-	public void setEdition(List<String> edition) {
-		this.edition = edition;
-	}
+    /**
+     * Sets the edition.
+     * 
+     * @param edition
+     *        the new edition
+     */
+    public void setEdition(List<String> edition) {
+        this.edition = edition;
+    }
 
-	/**
-	 * Gets the issuance.
-	 * 
-	 * @return the issuance
-	 */
-	public List<String> getIssuance() {
-		return issuance;
-	}
+    /**
+     * Gets the issuance.
+     * 
+     * @return the issuance
+     */
+    public List<String> getIssuance() {
+        return issuance;
+    }
 
-	/**
-	 * Sets the issuance.
-	 * 
-	 * @param issuance
-	 *          the new issuance
-	 */
-	public void setIssuance(List<String> issuance) {
-		this.issuance = issuance;
-	}
+    /**
+     * Sets the issuance.
+     * 
+     * @param issuance
+     *        the new issuance
+     */
+    public void setIssuance(List<String> issuance) {
+        this.issuance = issuance;
+    }
 
-	/**
-	 * Gets the frequency.
-	 * 
-	 * @return the frequency
-	 */
-	public List<StringPlusAuthorityClient> getFrequency() {
-		return frequency;
-	}
+    /**
+     * Gets the frequency.
+     * 
+     * @return the frequency
+     */
+    public List<StringPlusAuthorityClient> getFrequency() {
+        return frequency;
+    }
 
-	/**
-	 * Sets the frequency.
-	 * 
-	 * @param frequency
-	 *          the new frequency
-	 */
-	public void setFrequency(List<StringPlusAuthorityClient> frequency) {
-		this.frequency = frequency;
-	}
+    /**
+     * Sets the frequency.
+     * 
+     * @param frequency
+     *        the new frequency
+     */
+    public void setFrequency(List<StringPlusAuthorityClient> frequency) {
+        this.frequency = frequency;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
 }

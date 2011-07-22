@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.event;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -32,14 +33,15 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * The Interface GreetingSentEventHandler.
  */
-public interface GreetingSentEventHandler extends EventHandler {
+public interface GreetingSentEventHandler
+        extends EventHandler {
 
-	/**
-	 * On greeting sent.
-	 * 
-	 * @param event
-	 *          the event
-	 */
-	void onGreetingSent(GreetingSentEvent event);
+    /**
+     * On greeting sent.
+     * 
+     * @param event
+     *        the event
+     */
+    void onGreetingSent(GreetingSentEvent event);
 
 }

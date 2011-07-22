@@ -31,13 +31,15 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for ComparisonOperator.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for ComparisonOperator.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="ComparisonOperator">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -50,7 +52,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "ComparisonOperator")
 @XmlEnum
@@ -59,34 +60,35 @@ public enum ComparisonOperator {
     /** The HAS. */
     @XmlEnumValue("has")
     HAS("has"),
-    
+
     /** The EQ. */
     @XmlEnumValue("eq")
     EQ("eq"),
-    
+
     /** The LT. */
     @XmlEnumValue("lt")
     LT("lt"),
-    
+
     /** The LE. */
     @XmlEnumValue("le")
     LE("le"),
-    
+
     /** The GT. */
     @XmlEnumValue("gt")
     GT("gt"),
-    
+
     /** The GE. */
     @XmlEnumValue("ge")
     GE("ge");
-    
+
     /** The value. */
     private final String value;
 
     /**
      * Instantiates a new comparison operator.
-     *
-     * @param v the v
+     * 
+     * @param v
+     *        the v
      */
     ComparisonOperator(String v) {
         value = v;
@@ -94,7 +96,7 @@ public enum ComparisonOperator {
 
     /**
      * Value.
-     *
+     * 
      * @return the string
      */
     public String value() {
@@ -103,12 +105,13 @@ public enum ComparisonOperator {
 
     /**
      * From value.
-     *
-     * @param v the v
+     * 
+     * @param v
+     *        the v
      * @return the comparison operator
      */
     public static ComparisonOperator fromValue(String v) {
-        for (ComparisonOperator c: ComparisonOperator.values()) {
+        for (ComparisonOperator c : ComparisonOperator.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

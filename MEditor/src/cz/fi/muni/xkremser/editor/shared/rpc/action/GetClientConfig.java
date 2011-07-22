@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.HashMap;
@@ -37,9 +38,10 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
-public class GetClientConfig extends UnsecuredActionImpl<GetClientConfigResult> {
+public class GetClientConfig
+        extends UnsecuredActionImpl<GetClientConfigResult> {
 
-	/** The config. */
-	@Out(1)
-	HashMap<String, Object> config;
+    /** The config. */
+    @Out(1)
+    HashMap<String, Object> config;
 }

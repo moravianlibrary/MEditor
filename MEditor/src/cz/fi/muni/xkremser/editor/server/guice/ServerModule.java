@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.guice;
 
 import javax.xml.namespace.NamespaceContext;
@@ -78,6 +79,7 @@ import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
@@ -106,67 +108,69 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 /**
  * Module which binds the handlers and configurations.
  */
-public class ServerModule extends HandlerModule {
+public class ServerModule
+        extends HandlerModule {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.guice.HandlerModule#configureHandlers()
-	 */
-	@Override
-	protected void configureHandlers() {
-		// bindHandler(SendGreeting.class, SendGreetingHandler.class);
-		bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
-		bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
-		bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
-		bindHandler(PutDigitalObjectDetailAction.class, PutDigitalObjectDetailHandler.class);
-		bindHandler(GetRecentlyModifiedAction.class, GetRecentlyModifiedHandler.class);
-		bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
-		bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
-		bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
-		bindHandler(CheckAvailabilityAction.class, CheckAvailabilityHandler.class);
-		bindHandler(GetUserInfoAction.class, GetUserInfoHandler.class);
-		bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
-		bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
-		bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
-		bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
-		bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);
-		bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
-		bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
-		bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
-		bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
-		bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
-		bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
-		bindHandler(FindMetadataAction.class, FindMetadataHandler.class);
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.guice.HandlerModule#configureHandlers()
+     */
+    @Override
+    protected void configureHandlers() {
+        // bindHandler(SendGreeting.class, SendGreetingHandler.class);
+        bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
+        bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
+        bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
+        bindHandler(PutDigitalObjectDetailAction.class, PutDigitalObjectDetailHandler.class);
+        bindHandler(GetRecentlyModifiedAction.class, GetRecentlyModifiedHandler.class);
+        bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
+        bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
+        bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
+        bindHandler(CheckAvailabilityAction.class, CheckAvailabilityHandler.class);
+        bindHandler(GetUserInfoAction.class, GetUserInfoHandler.class);
+        bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
+        bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
+        bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
+        bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
+        bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);
+        bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
+        bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
+        bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
+        bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
+        bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
+        bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
+        bindHandler(FindMetadataAction.class, FindMetadataHandler.class);
 
-		bindHandler(LogoutAction.class, LogoutHandler.class);
+        bindHandler(LogoutAction.class, LogoutHandler.class);
 
-		// bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
-		bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
+        // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
+        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
-		// DAO
-		bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
-		bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
-		bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
-		bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
-		// bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
+        // DAO
+        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
+        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
+        bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
+        bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
+        // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
-		// Fedora
-		bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class).in(Scopes.SINGLETON);
-		bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess")).to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
-		bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
+        // Fedora
+        bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
+                .in(Scopes.SINGLETON);
+        bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess"))
+                .to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
+        bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
 
-		bind(DigitalObjectHandler.class).to(DigitalObjectHandlerImpl.class);
-		bind(Z3950Client.class).to(Z3950ClientImpl.class);
+        bind(DigitalObjectHandler.class).to(DigitalObjectHandlerImpl.class);
+        bind(Z3950Client.class).to(Z3950ClientImpl.class);
 
-		bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
-		// bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);
+        bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
+        // bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);
 
-		// static injection
-		requestStaticInjection(FedoraUtils.class);
-		requestStaticInjection(AuthenticationServlet.class);
-		requestStaticInjection(URLS.class);
+        // static injection
+        requestStaticInjection(FedoraUtils.class);
+        requestStaticInjection(AuthenticationServlet.class);
+        requestStaticInjection(URLS.class);
 
-	}
+    }
 }

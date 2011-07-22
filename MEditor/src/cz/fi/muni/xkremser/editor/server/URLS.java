@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server;
 
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -44,93 +46,94 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
  */
 public class URLS {
 
-	@Inject
-	private static EditorConfiguration config;
+    @Inject
+    private static EditorConfiguration config;
 
-	/** The Constant LOCALHOST. */
-	public static boolean LOCALHOST() {
-		if (config != null) {
-			return config.isLocalhost();
-		} else {
-			return false;
-		}
-	};
+    /** The Constant LOCALHOST. */
+    public static boolean LOCALHOST() {
+        if (config != null) {
+            return config.isLocalhost();
+        } else {
+            return false;
+        }
+    };
 
-	/** The Constant ROOT. */
-	public static final String ROOT() {
-		return LOCALHOST() ? "" : "/meditor";
-	}
+    /** The Constant ROOT. */
+    public static final String ROOT() {
+        return LOCALHOST() ? "" : "/meditor";
+    }
 
-	// public static final String ROOT = "/skin1";
+    // public static final String ROOT = "/skin1";
 
-	/** The Constant MAIN_PAGE. */
-	public static final String MAIN_PAGE = "/MEditor.html";
+    /** The Constant MAIN_PAGE. */
+    public static final String MAIN_PAGE = "/MEditor.html";
 
-	/** The Constant LOGIN_PAGE. */
-	public static final String LOGIN_PAGE = "/login.html";
-	public static final String LOGIN_LOCAL_PAGE = "/loginLocal.html";
+    /** The Constant LOGIN_PAGE. */
+    public static final String LOGIN_PAGE = "/login.html";
+    public static final String LOGIN_LOCAL_PAGE = "/loginLocal.html";
 
-	/** The Constant INFO_PAGE. */
-	public static final String INFO_PAGE = "/info.html";
+    /** The Constant INFO_PAGE. */
+    public static final String INFO_PAGE = "/info.html";
 
-	public static final String ICON = "/favicon.ico";
+    public static final String ICON = "/favicon.ico";
 
-	public static final String FLAGS = "/flags.gif";
+    public static final String FLAGS = "/flags.gif";
 
-	public static final String CSS = "/MEditor.css";
+    public static final String CSS = "/MEditor.css";
 
-	public static final String REQUEST_PREFIX = "/request";
+    public static final String REQUEST_PREFIX = "/request";
 
-	/** The Constant AUTH_SERVLET. */
-	public static final String AUTH_SERVLET = "/auth";
+    /** The Constant AUTH_SERVLET. */
+    public static final String AUTH_SERVLET = "/auth";
 
-	public static Set<String> nonRestricted = new HashSet<String>() {
-		{
-			add(LOGIN_PAGE);
-			add(LOGIN_LOCAL_PAGE);
-			add(INFO_PAGE);
-			add(AUTH_SERVLET);
-			add(CSS);
-			add(ICON);
-			add(FLAGS);
-		}
-	};
+    public static Set<String> nonRestricted = new HashSet<String>() {
 
-	/**
-	 * Redirect.
-	 * 
-	 * @param resp
-	 *          the resp
-	 * @param where
-	 *          the where
-	 */
-	public static void redirect(HttpServletResponse resp, String where) {
-		resp.setContentType("text/plain");
-		resp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-		resp.setHeader("Location", where);
-	}
+        {
+            add(LOGIN_PAGE);
+            add(LOGIN_LOCAL_PAGE);
+            add(INFO_PAGE);
+            add(AUTH_SERVLET);
+            add(CSS);
+            add(ICON);
+            add(FLAGS);
+        }
+    };
 
-	/**
-	 * Convert to ajaxurl.
-	 * 
-	 * @param parameters
-	 *          the parameters
-	 * @return the string
-	 */
-	public static String convertToAJAXURL(Map parameters) {
-		StringBuilder sufix = new StringBuilder();
-		sufix.append('#');
-		if (parameters.containsKey(Constants.URL_PARAM_UUID)) {
-			sufix.append(NameTokens.MODIFY + ";");
-		}
-		for (Object keyObj : parameters.keySet()) {
-			sufix.append(keyObj);
-			String[] values = (String[]) parameters.get(keyObj);
-			if (values.length > 0 && !"".equals(values[0])) {
-				sufix.append('=').append(values[0]);
-			}
-			sufix.append(';');
-		}
-		return sufix.toString();
-	}
+    /**
+     * Redirect.
+     * 
+     * @param resp
+     *        the resp
+     * @param where
+     *        the where
+     */
+    public static void redirect(HttpServletResponse resp, String where) {
+        resp.setContentType("text/plain");
+        resp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+        resp.setHeader("Location", where);
+    }
+
+    /**
+     * Convert to ajaxurl.
+     * 
+     * @param parameters
+     *        the parameters
+     * @return the string
+     */
+    public static String convertToAJAXURL(Map parameters) {
+        StringBuilder sufix = new StringBuilder();
+        sufix.append('#');
+        if (parameters.containsKey(Constants.URL_PARAM_UUID)) {
+            sufix.append(NameTokens.MODIFY + ";");
+        }
+        for (Object keyObj : parameters.keySet()) {
+            sufix.append(keyObj);
+            String[] values = (String[]) parameters.get(keyObj);
+            if (values.length > 0 && !"".equals(values[0])) {
+                sufix.append('=').append(values[0]);
+            }
+            sufix.append(';');
+        }
+        return sufix.toString();
+    }
 }

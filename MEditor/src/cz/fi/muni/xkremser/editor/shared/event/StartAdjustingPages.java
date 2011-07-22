@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.event;
 
 import com.gwtplatform.dispatch.annotation.GenEvent;
@@ -38,15 +39,16 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
  */
 @GenEvent
 public class StartAdjustingPages {
-	// @Order(1)
-	// HasEventBus source;
 
-	/** The status ok. */
-	@Order(1)
-	String path;
+    // @Order(1)
+    // HasEventBus source;
 
-	@Order(2)
-	@Optional
-	DublinCore dc;
+    /** The status ok. */
+    @Order(1)
+    String path;
+
+    @Order(2)
+    @Optional
+    DublinCore dc;
 
 }

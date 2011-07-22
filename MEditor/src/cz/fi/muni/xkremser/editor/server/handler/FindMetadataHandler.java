@@ -24,13 +24,12 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -38,9 +37,12 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -49,64 +51,66 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 /**
  * The Class PutRecentlyModifiedHandler.
  */
-public class FindMetadataHandler implements ActionHandler<FindMetadataAction, FindMetadataResult> {
+public class FindMetadataHandler
+        implements ActionHandler<FindMetadataAction, FindMetadataResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(FindMetadataHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(FindMetadataHandler.class.getPackage().toString());
 
-	/** The configuration. */
-	private final EditorConfiguration configuration;
+    /** The configuration. */
+    private final EditorConfiguration configuration;
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	private final Z3950Client client;
+    private final Z3950Client client;
 
-	/**
-	 * Instantiates a new put recently modified handler.
-	 * 
-	 * @param configuration
-	 *          the configuration
-	 */
-	@Inject
-	public FindMetadataHandler(final EditorConfiguration configuration, Z3950Client client) {
-		this.configuration = configuration;
-		this.client = client;
-	}
+    /**
+     * Instantiates a new put recently modified handler.
+     * 
+     * @param configuration
+     *        the configuration
+     */
+    @Inject
+    public FindMetadataHandler(final EditorConfiguration configuration, Z3950Client client) {
+        this.configuration = configuration;
+        this.client = client;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public FindMetadataResult execute(final FindMetadataAction action, final ExecutionContext context) throws ActionException {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Processing action: FindMetadataAction: for code " + action.getCode());
-		}
-		ServerUtils.checkExpiredSession(httpSessionProvider);
-		List<DublinCore> documents = client.search(action.getSearchType(), action.getCode());
-		return new FindMetadataResult(documents);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public FindMetadataResult execute(final FindMetadataAction action, final ExecutionContext context)
+            throws ActionException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Processing action: FindMetadataAction: for code " + action.getCode());
+        }
+        ServerUtils.checkExpiredSession(httpSessionProvider);
+        List<DublinCore> documents = client.search(action.getSearchType(), action.getCode());
+        return new FindMetadataResult(documents);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<FindMetadataAction> getActionType() {
-		return FindMetadataAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<FindMetadataAction> getActionType() {
+        return FindMetadataAction.class;
+    }
 
-	@Override
-	public void undo(FindMetadataAction action, FindMetadataResult result, ExecutionContext context) throws ActionException {
-		// TODO Auto-generated method stub
+    @Override
+    public void undo(FindMetadataAction action, FindMetadataResult result, ExecutionContext context)
+            throws ActionException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

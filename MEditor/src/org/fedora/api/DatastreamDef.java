@@ -32,12 +32,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for DatastreamDef complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for DatastreamDef complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="DatastreamDef">
@@ -52,35 +53,27 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DatastreamDef", propOrder = {
-    "id",
-    "label",
-    "mimeType"
-})
+@XmlType(name = "DatastreamDef", propOrder = {"id", "label", "mimeType"})
 public class DatastreamDef {
 
     /** The id. */
     @XmlElement(name = "ID", required = true, nillable = true)
     protected String id;
-    
+
     /** The label. */
     @XmlElement(required = true, nillable = true)
     protected String label;
-    
+
     /** The mime type. */
     @XmlElement(name = "MIMEType", required = true, nillable = true)
     protected String mimeType;
 
     /**
      * Gets the value of the id property.
-     *
-     * @return the iD
-     * possible object is
-     * {@link String }
+     * 
+     * @return the iD possible object is {@link String }
      */
     public String getID() {
         return id;
@@ -90,9 +83,7 @@ public class DatastreamDef {
      * Sets the value of the id property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setID(String value) {
         this.id = value;
@@ -100,10 +91,8 @@ public class DatastreamDef {
 
     /**
      * Gets the value of the label property.
-     *
-     * @return the label
-     * possible object is
-     * {@link String }
+     * 
+     * @return the label possible object is {@link String }
      */
     public String getLabel() {
         return label;
@@ -113,9 +102,7 @@ public class DatastreamDef {
      * Sets the value of the label property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setLabel(String value) {
         this.label = value;
@@ -123,10 +110,8 @@ public class DatastreamDef {
 
     /**
      * Gets the value of the mimeType property.
-     *
-     * @return the mIME type
-     * possible object is
-     * {@link String }
+     * 
+     * @return the mIME type possible object is {@link String }
      */
     public String getMIMEType() {
         return mimeType;
@@ -136,9 +121,7 @@ public class DatastreamDef {
      * Sets the value of the mimeType property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setMIMEType(String value) {
         this.mimeType = value;

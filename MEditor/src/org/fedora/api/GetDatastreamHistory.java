@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -52,31 +53,24 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "dsID"
-})
+@XmlType(name = "", propOrder = {"pid", "dsID"})
 @XmlRootElement(name = "getDatastreamHistory")
 public class GetDatastreamHistory {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -86,9 +80,7 @@ public class GetDatastreamHistory {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -96,10 +88,8 @@ public class GetDatastreamHistory {
 
     /**
      * Gets the value of the dsID property.
-     *
-     * @return the ds id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds id possible object is {@link String }
      */
     public String getDsID() {
         return dsID;
@@ -109,9 +99,7 @@ public class GetDatastreamHistory {
      * Sets the value of the dsID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsID(String value) {
         this.dsID = value;

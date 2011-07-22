@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client;
 
 import java.io.IOException;
@@ -32,15 +33,16 @@ import java.io.IOException;
 /**
  * The Class ConnectionException.
  */
-public class ConnectionException extends IOException {
+public class ConnectionException
+        extends IOException {
 
-	/**
-	 * Instantiates a new connection exception.
-	 * 
-	 * @param msg
-	 *          the msg
-	 */
-	public ConnectionException(String msg) {
-		super(msg);
-	}
+    /**
+     * Instantiates a new connection exception.
+     * 
+     * @param msg
+     *        the msg
+     */
+    public ConnectionException(String msg) {
+        super(msg);
+    }
 }

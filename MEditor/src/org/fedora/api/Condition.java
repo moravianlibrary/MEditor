@@ -32,12 +32,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for Condition complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for Condition complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="Condition">
@@ -52,35 +53,27 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Condition", propOrder = {
-    "property",
-    "operator",
-    "value"
-})
+@XmlType(name = "Condition", propOrder = {"property", "operator", "value"})
 public class Condition {
 
     /** The property. */
     @XmlElement(required = true, nillable = true)
     protected String property;
-    
+
     /** The operator. */
     @XmlElement(required = true, nillable = true)
     protected ComparisonOperator operator;
-    
+
     /** The value. */
     @XmlElement(required = true, nillable = true)
     protected String value;
 
     /**
      * Gets the value of the property property.
-     *
-     * @return the property
-     * possible object is
-     * {@link String }
+     * 
+     * @return the property possible object is {@link String }
      */
     public String getProperty() {
         return property;
@@ -90,9 +83,7 @@ public class Condition {
      * Sets the value of the property property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setProperty(String value) {
         this.property = value;
@@ -100,10 +91,8 @@ public class Condition {
 
     /**
      * Gets the value of the operator property.
-     *
-     * @return the operator
-     * possible object is
-     * {@link ComparisonOperator }
+     * 
+     * @return the operator possible object is {@link ComparisonOperator }
      */
     public ComparisonOperator getOperator() {
         return operator;
@@ -113,9 +102,7 @@ public class Condition {
      * Sets the value of the operator property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link ComparisonOperator }
-     *     
+     *        allowed object is {@link ComparisonOperator }
      */
     public void setOperator(ComparisonOperator value) {
         this.operator = value;
@@ -123,10 +110,8 @@ public class Condition {
 
     /**
      * Gets the value of the value property.
-     *
-     * @return the value
-     * possible object is
-     * {@link String }
+     * 
+     * @return the value possible object is {@link String }
      */
     public String getValue() {
         return value;
@@ -136,9 +121,7 @@ public class Condition {
      * Sets the value of the value property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setValue(String value) {
         this.value = value;

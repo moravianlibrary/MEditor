@@ -38,102 +38,96 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class StringPlusAuthorityPlusLanguageClient.
  */
-public class StringPlusAuthorityPlusLanguageClient extends StringPlusAuthorityClient implements IsSerializable {
+public class StringPlusAuthorityPlusLanguageClient
+        extends StringPlusAuthorityClient
+        implements IsSerializable {
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the value of the valueToFixError3 property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the value of the valueToFixError3 property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the value of the valueToFixError3 property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setXmlLang(String value) {
-		this.xmlLang = value;
-	}
+    /**
+     * Sets the value of the valueToFixError3 property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setXmlLang(String value) {
+        this.xmlLang = value;
+    }
 
-	/**
-	 * Gets the value of the lang property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the value of the lang property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the value of the lang property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setLang(String value) {
-		this.lang = value;
-	}
+    /**
+     * Sets the value of the lang property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setLang(String value) {
+        this.lang = value;
+    }
 
-	/**
-	 * Gets the value of the script property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the value of the script property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the value of the script property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setScript(String value) {
-		this.script = value;
-	}
+    /**
+     * Sets the value of the script property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setScript(String value) {
+        this.script = value;
+    }
 
-	/**
-	 * Gets the value of the transliteration property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the value of the transliteration property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the value of the transliteration property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setTransliteration(String value) {
-		this.transliteration = value;
-	}
+    /**
+     * Sets the value of the transliteration property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setTransliteration(String value) {
+        this.transliteration = value;
+    }
 
 }

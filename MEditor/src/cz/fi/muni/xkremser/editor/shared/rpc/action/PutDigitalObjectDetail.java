@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -38,17 +39,18 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
  * The Class GetDigitalObjectDetail.
  */
 @GenDispatch(isSecure = false)
-public class PutDigitalObjectDetail extends UnsecuredActionImpl<PutDigitalObjectDetailResult> {
+public class PutDigitalObjectDetail
+        extends UnsecuredActionImpl<PutDigitalObjectDetailResult> {
 
-	/** The detail. */
-	@In(1)
-	private DigitalObjectDetail detail;
+    /** The detail. */
+    @In(1)
+    private DigitalObjectDetail detail;
 
-	@In(2)
-	private boolean versioning;
+    @In(2)
+    private boolean versioning;
 
-	/** The saved. */
-	@Out(1)
-	private boolean saved;
+    /** The saved. */
+    @Out(1)
+    private boolean saved;
 
 }

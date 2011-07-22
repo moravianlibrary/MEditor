@@ -32,12 +32,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -50,13 +51,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "purged"
-})
+@XmlType(name = "", propOrder = {"purged"})
 @XmlRootElement(name = "purgeRelationshipResponse")
 public class PurgeRelationshipResponse {
 
@@ -65,7 +62,7 @@ public class PurgeRelationshipResponse {
 
     /**
      * Gets the value of the purged property.
-     *
+     * 
      * @return true, if is purged
      */
     public boolean isPurged() {
@@ -74,8 +71,9 @@ public class PurgeRelationshipResponse {
 
     /**
      * Sets the value of the purged property.
-     *
-     * @param value the new purged
+     * 
+     * @param value
+     *        the new purged
      */
     public void setPurged(boolean value) {
         this.purged = value;

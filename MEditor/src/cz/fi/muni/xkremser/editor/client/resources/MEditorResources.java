@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.resources;
 
 import com.google.gwt.core.client.GWT;
@@ -34,20 +35,21 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * The Interface MEditorResources.
  */
-public interface MEditorResources extends ClientBundle {
+public interface MEditorResources
+        extends ClientBundle {
 
-	/** The Constant INSTANCE. */
-	public static final MEditorResources INSTANCE = GWT.create(MEditorResources.class);
+    /** The Constant INSTANCE. */
+    public static final MEditorResources INSTANCE = GWT.create(MEditorResources.class);
 
-	/**
-	 * Logo.
-	 * 
-	 * @return the image resource
-	 */
-	@Source("logo.png")
-	ImageResource logo();
+    /**
+     * Logo.
+     * 
+     * @return the image resource
+     */
+    @Source("logo.png")
+    ImageResource logo();
 
-	// @Source("logo_blue.gif")
-	// ImageResource logoBlue();
+    // @Source("logo_blue.gif")
+    // ImageResource logoBlue();
 
 }

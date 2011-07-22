@@ -24,9 +24,11 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
+
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -43,70 +45,73 @@ import javax.servlet.http.HttpSession;
 /**
  * The Class AuthenticationFilter.
  */
-public class AuthenticationFilter implements Filter {
+public class AuthenticationFilter
+        implements Filter {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.Filter#destroy()
-	 */
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
+    /*
+     * (non-Javadoc)
+     * @see javax.servlet.Filter#destroy()
+     */
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
-	 */
-	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-		final HttpServletRequest request = (HttpServletRequest) req;
-		final String path = request.getServletPath();
-		final HttpSession session = request.getSession(true);
-		final Map parameters = req.getParameterMap();
-		final String sessionId = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-		final boolean sessionIdBool = sessionId != null;
-		final boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;
+    /*
+     * (non-Javadoc)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     * javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
+            ServletException {
+        final HttpServletRequest request = (HttpServletRequest) req;
+        final String path = request.getServletPath();
+        final HttpSession session = request.getSession(true);
+        final Map parameters = req.getParameterMap();
+        final String sessionId = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        final boolean sessionIdBool = sessionId != null;
+        final boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;
 
-		if (!URLS.LOCALHOST() && sessionIdBool && paramSizeGreaterThanOne && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {
-			final String sufixUrl = URLS.convertToAJAXURL(parameters);
-			URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT() + path + sufixUrl);
-			return;
-		}
+        if (!URLS.LOCALHOST() && sessionIdBool && paramSizeGreaterThanOne
+                && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {
+            final String sufixUrl = URLS.convertToAJAXURL(parameters);
+            URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT()
+                    + path + sufixUrl);
+            return;
+        }
 
-		// URLs allowed when user is not logged in
-		if (sessionIdBool || URLS.nonRestricted.contains(path) || path.startsWith(URLS.REQUEST_PREFIX)) {
-			if (!URLS.LOCALHOST() && "http".equals(request.getScheme()) && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {
-				URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT() + path);
-				return;
-			}
-			chain.doFilter(req, res);
-		} else {
-			final HttpServletResponse response = (HttpServletResponse) res;
-			if (paramSizeGreaterThanOne) { // store parameters to session
-				final String sufixSUrl = URLS.convertToAJAXURL(parameters);
-				session.setAttribute(HttpCookies.TARGET_URL,
-						(URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName() + URLS.ROOT() + path
-								+ (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "") + sufixSUrl);
-			}
-			// redirect to login page
-			URLS.redirect(response, (URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName() + URLS.ROOT()
-					+ (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
-		}
-	}
+        // URLs allowed when user is not logged in
+        if (sessionIdBool || URLS.nonRestricted.contains(path) || path.startsWith(URLS.REQUEST_PREFIX)) {
+            if (!URLS.LOCALHOST() && "http".equals(request.getScheme())
+                    && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {
+                URLS.redirect((HttpServletResponse) res, "https://" + request.getServerName() + URLS.ROOT()
+                        + path);
+                return;
+            }
+            chain.doFilter(req, res);
+        } else {
+            final HttpServletResponse response = (HttpServletResponse) res;
+            if (paramSizeGreaterThanOne) { // store parameters to session
+                final String sufixSUrl = URLS.convertToAJAXURL(parameters);
+                session.setAttribute(HttpCookies.TARGET_URL, (URLS.LOCALHOST() ? "http://" : "https://")
+                        + request.getServerName() + URLS.ROOT() + path
+                        + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "") + sufixSUrl);
+            }
+            // redirect to login page
+            URLS.redirect(response, (URLS.LOCALHOST() ? "http://" : "https://") + request.getServerName()
+                    + URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-	 */
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+     */
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

@@ -48,37 +48,37 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
  */
 public class NameTokens {
 
-	/** The Constant HOME. */
-	public static final String HOME = "home";
+    /** The Constant HOME. */
+    public static final String HOME = "home";
 
-	/** The Constant MODIFY. */
-	public static final String MODIFY = "modify";
+    /** The Constant MODIFY. */
+    public static final String MODIFY = "modify";
 
-	/** The Constant MODIFY. */
-	public static final String CREATE = "create";
+    /** The Constant MODIFY. */
+    public static final String CREATE = "create";
 
-	public static final String FIND_METADATA = "findMetadata";
+    public static final String FIND_METADATA = "findMetadata";
 
-	public static final String ADJUST_PAGES = "adjust";
+    public static final String ADJUST_PAGES = "adjust";
 
-	/** The Constant USERS. */
-	public static final String USERS = "users";
+    /** The Constant USERS. */
+    public static final String USERS = "users";
 
-	/**
-	 * Gets the home.
-	 * 
-	 * @return the home
-	 */
-	public static String getHome() {
-		return HOME;
-	}
+    /**
+     * Gets the home.
+     * 
+     * @return the home
+     */
+    public static String getHome() {
+        return HOME;
+    }
 
-	/**
-	 * Gets the modify.
-	 * 
-	 * @return the modify
-	 */
-	public static String getModify() {
-		return MODIFY;
-	}
+    /**
+     * Gets the modify.
+     * 
+     * @return the modify
+     */
+    public static String getModify() {
+        return MODIFY;
+    }
 }

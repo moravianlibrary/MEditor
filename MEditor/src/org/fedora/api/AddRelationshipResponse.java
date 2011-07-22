@@ -32,12 +32,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -50,13 +51,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "added"
-})
+@XmlType(name = "", propOrder = {"added"})
 @XmlRootElement(name = "addRelationshipResponse")
 public class AddRelationshipResponse {
 
@@ -65,7 +62,7 @@ public class AddRelationshipResponse {
 
     /**
      * Gets the value of the added property.
-     *
+     * 
      * @return true, if is added
      */
     public boolean isAdded() {
@@ -74,8 +71,9 @@ public class AddRelationshipResponse {
 
     /**
      * Sets the value of the added property.
-     *
-     * @param value the new added
+     * 
+     * @param value
+     *        the new added
      */
     public void setAdded(boolean value) {
         this.added = value;

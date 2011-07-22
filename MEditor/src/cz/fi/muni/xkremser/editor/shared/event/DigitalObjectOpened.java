@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.event;
 
 import java.util.List;
@@ -40,15 +41,15 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 @GenEvent
 public class DigitalObjectOpened {
 
-	/** The status ok. */
-	@Order(1)
-	boolean statusOK;
+    /** The status ok. */
+    @Order(1)
+    boolean statusOK;
 
-	/** The item. */
-	@Order(2)
-	RecentlyModifiedItem item;
+    /** The item. */
+    @Order(2)
+    RecentlyModifiedItem item;
 
-	/** The related. */
-	@Order(3)
-	List<? extends List<String>> related;
+    /** The related. */
+    @Order(3)
+    List<? extends List<String>> related;
 }

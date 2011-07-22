@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.valueobj;
 
 import java.util.ArrayList;
@@ -33,300 +34,301 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
+
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractDigitalObjectDetail.
  */
-public class DigitalObjectDetail implements IsSerializable {
+public class DigitalObjectDetail
+        implements IsSerializable {
 
-	/** The foxml. */
-	private String foxml;
+    /** The foxml. */
+    private String foxml;
 
-	/** The ocr. */
-	private String ocr;
+    /** The ocr. */
+    private String ocr;
 
-	/** The ocr. */
-	private String tei;
+    /** The ocr. */
+    private String tei;
 
-	/** The items. */
-	private List<DigitalObjectDetail> items;
+    /** The items. */
+    private List<DigitalObjectDetail> items;
 
-	private List<List<DigitalObjectDetail>> allItems;
+    private List<List<DigitalObjectDetail>> allItems;
 
-	/** The related. */
-	private ArrayList<ArrayList<String>> related;
+    /** The related. */
+    private ArrayList<ArrayList<String>> related;
 
-	/** The uuid. */
-	private String uuid;
+    /** The uuid. */
+    private String uuid;
 
-	/** The dc changed. */
-	private boolean dcChanged;
+    /** The dc changed. */
+    private boolean dcChanged;
 
-	/** The mods changed. */
-	private boolean modsChanged;
+    /** The mods changed. */
+    private boolean modsChanged;
 
-	/** The ocr changed. */
-	private boolean ocrChanged;
+    /** The ocr changed. */
+    private boolean ocrChanged;
 
-	private boolean itemsChanged;
+    private boolean itemsChanged;
 
-	private DublinCore dc;
+    private DublinCore dc;
 
-	private String firstPageURL;
+    private String firstPageURL;
 
-	private ModsCollectionClient mods;
+    private ModsCollectionClient mods;
 
-	private DigitalObjectModel model;
+    private DigitalObjectModel model;
 
-	public DigitalObjectDetail() {
+    public DigitalObjectDetail() {
 
-	}
+    }
 
-	/**
-	 * Instantiates a new abstract digital object detail.
-	 * 
-	 * @param related
-	 *          the related
-	 */
-	public DigitalObjectDetail(DigitalObjectModel model, ArrayList<ArrayList<String>> related) {
-		this.model = model;
-		this.related = related;
-	}
+    /**
+     * Instantiates a new abstract digital object detail.
+     * 
+     * @param related
+     *        the related
+     */
+    public DigitalObjectDetail(DigitalObjectModel model, ArrayList<ArrayList<String>> related) {
+        this.model = model;
+        this.related = related;
+    }
 
-	/**
-	 * Gets the model.
-	 * 
-	 * @return the model
-	 */
-	public DigitalObjectModel getModel() {
-		return model;
-	}
+    /**
+     * Gets the model.
+     * 
+     * @return the model
+     */
+    public DigitalObjectModel getModel() {
+        return model;
+    }
 
-	/**
-	 * Gets the related.
-	 * 
-	 * @return the related
-	 */
-	public ArrayList<ArrayList<String>> getRelated() {
-		return related;
-	}
+    /**
+     * Gets the related.
+     * 
+     * @return the related
+     */
+    public ArrayList<ArrayList<String>> getRelated() {
+        return related;
+    }
 
-	/**
-	 * Sets the dc.
-	 * 
-	 * @param dc
-	 *          the new dc
-	 */
-	public void setDc(DublinCore dc) {
-		this.dc = dc;
-	}
+    /**
+     * Sets the dc.
+     * 
+     * @param dc
+     *        the new dc
+     */
+    public void setDc(DublinCore dc) {
+        this.dc = dc;
+    }
 
-	/**
-	 * Gets the dc.
-	 * 
-	 * @return the dc
-	 */
-	public DublinCore getDc() {
-		return dc;
-	}
+    /**
+     * Gets the dc.
+     * 
+     * @return the dc
+     */
+    public DublinCore getDc() {
+        return dc;
+    }
 
-	/**
-	 * Sets the mods.
-	 * 
-	 * @param mods
-	 *          the new mods
-	 */
-	public void setMods(ModsCollectionClient mods) {
-		this.mods = mods;
-	}
+    /**
+     * Sets the mods.
+     * 
+     * @param mods
+     *        the new mods
+     */
+    public void setMods(ModsCollectionClient mods) {
+        this.mods = mods;
+    }
 
-	/**
-	 * Gets the mods.
-	 * 
-	 * @return the mods
-	 */
-	public ModsCollectionClient getMods() {
-		return mods;
-	}
+    /**
+     * Gets the mods.
+     * 
+     * @return the mods
+     */
+    public ModsCollectionClient getMods() {
+        return mods;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "uuid" + getUuid() + " model: " + getModel() + "\nItems: " + getItems();
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "uuid" + getUuid() + " model: " + getModel() + "\nItems: " + getItems();
+    }
 
-	/**
-	 * Gets the foxml.
-	 * 
-	 * @return the foxml
-	 */
-	public String getFoxml() {
-		return foxml;
-	}
+    /**
+     * Gets the foxml.
+     * 
+     * @return the foxml
+     */
+    public String getFoxml() {
+        return foxml;
+    }
 
-	/**
-	 * Sets the foxml.
-	 * 
-	 * @param foxml
-	 *          the new foxml
-	 */
-	public void setFoxml(String foxml) {
-		this.foxml = foxml;
-	}
+    /**
+     * Sets the foxml.
+     * 
+     * @param foxml
+     *        the new foxml
+     */
+    public void setFoxml(String foxml) {
+        this.foxml = foxml;
+    }
 
-	/**
-	 * Gets the ocr.
-	 * 
-	 * @return the ocr
-	 */
-	public String getOcr() {
-		return ocr;
-	}
+    /**
+     * Gets the ocr.
+     * 
+     * @return the ocr
+     */
+    public String getOcr() {
+        return ocr;
+    }
 
-	/**
-	 * Sets the ocr.
-	 * 
-	 * @param ocr
-	 *          the new ocr
-	 */
-	public void setOcr(String ocr) {
-		this.ocr = ocr;
-	}
+    /**
+     * Sets the ocr.
+     * 
+     * @param ocr
+     *        the new ocr
+     */
+    public void setOcr(String ocr) {
+        this.ocr = ocr;
+    }
 
-	/**
-	 * Sets the related.
-	 * 
-	 * @param related
-	 *          the new related
-	 */
-	public void setRelated(ArrayList<ArrayList<String>> related) {
-		this.related = related;
-	}
+    /**
+     * Sets the related.
+     * 
+     * @param related
+     *        the new related
+     */
+    public void setRelated(ArrayList<ArrayList<String>> related) {
+        this.related = related;
+    }
 
-	/**
-	 * Gets the uuid.
-	 * 
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return uuid;
-	}
+    /**
+     * Gets the uuid.
+     * 
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
 
-	/**
-	 * Sets the uuid.
-	 * 
-	 * @param uuid
-	 *          the new uuid
-	 */
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    /**
+     * Sets the uuid.
+     * 
+     * @param uuid
+     *        the new uuid
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	/**
-	 * Checks if is dc changed.
-	 * 
-	 * @return true, if is dc changed
-	 */
-	public boolean isDcChanged() {
-		return dcChanged;
-	}
+    /**
+     * Checks if is dc changed.
+     * 
+     * @return true, if is dc changed
+     */
+    public boolean isDcChanged() {
+        return dcChanged;
+    }
 
-	/**
-	 * Sets the dc changed.
-	 * 
-	 * @param dcChanged
-	 *          the new dc changed
-	 */
-	public void setDcChanged(boolean dcChanged) {
-		this.dcChanged = dcChanged;
-	}
+    /**
+     * Sets the dc changed.
+     * 
+     * @param dcChanged
+     *        the new dc changed
+     */
+    public void setDcChanged(boolean dcChanged) {
+        this.dcChanged = dcChanged;
+    }
 
-	/**
-	 * Checks if is mods changed.
-	 * 
-	 * @return true, if is mods changed
-	 */
-	public boolean isModsChanged() {
-		return modsChanged;
-	}
+    /**
+     * Checks if is mods changed.
+     * 
+     * @return true, if is mods changed
+     */
+    public boolean isModsChanged() {
+        return modsChanged;
+    }
 
-	/**
-	 * Sets the mods changed.
-	 * 
-	 * @param modsChanged
-	 *          the new mods changed
-	 */
-	public void setModsChanged(boolean modsChanged) {
-		this.modsChanged = modsChanged;
-	}
+    /**
+     * Sets the mods changed.
+     * 
+     * @param modsChanged
+     *        the new mods changed
+     */
+    public void setModsChanged(boolean modsChanged) {
+        this.modsChanged = modsChanged;
+    }
 
-	/**
-	 * Checks if is ocr changed.
-	 * 
-	 * @return true, if is ocr changed
-	 */
-	public boolean isOcrChanged() {
-		return ocrChanged;
-	}
+    /**
+     * Checks if is ocr changed.
+     * 
+     * @return true, if is ocr changed
+     */
+    public boolean isOcrChanged() {
+        return ocrChanged;
+    }
 
-	/**
-	 * Sets the ocr changed.
-	 * 
-	 * @param ocrChanged
-	 *          the new ocr changed
-	 */
-	public void setOcrChanged(boolean ocrChanged) {
-		this.ocrChanged = ocrChanged;
-	}
+    /**
+     * Sets the ocr changed.
+     * 
+     * @param ocrChanged
+     *        the new ocr changed
+     */
+    public void setOcrChanged(boolean ocrChanged) {
+        this.ocrChanged = ocrChanged;
+    }
 
-	public String getTei() {
-		return tei;
-	}
+    public String getTei() {
+        return tei;
+    }
 
-	public void setTei(String tei) {
-		this.tei = tei;
-	}
+    public void setTei(String tei) {
+        this.tei = tei;
+    }
 
-	public List<DigitalObjectDetail> getItems() {
-		return items;
-	}
+    public List<DigitalObjectDetail> getItems() {
+        return items;
+    }
 
-	public void setItems(List<DigitalObjectDetail> items) {
-		this.items = items;
-	}
+    public void setItems(List<DigitalObjectDetail> items) {
+        this.items = items;
+    }
 
-	public boolean getItemsChanged() {
-		return itemsChanged;
-	}
+    public boolean getItemsChanged() {
+        return itemsChanged;
+    }
 
-	public void setItemsChanged(boolean itemsChanged) {
-		this.itemsChanged = itemsChanged;
-	}
+    public void setItemsChanged(boolean itemsChanged) {
+        this.itemsChanged = itemsChanged;
+    }
 
-	public void setModel(DigitalObjectModel model) {
-		this.model = model;
-	}
+    public void setModel(DigitalObjectModel model) {
+        this.model = model;
+    }
 
-	public List<List<DigitalObjectDetail>> getAllItems() {
-		return allItems;
-	}
+    public List<List<DigitalObjectDetail>> getAllItems() {
+        return allItems;
+    }
 
-	public void setAllItems(List<List<DigitalObjectDetail>> allItems) {
-		this.allItems = allItems;
-	}
+    public void setAllItems(List<List<DigitalObjectDetail>> allItems) {
+        this.allItems = allItems;
+    }
 
-	public String getFirstPageURL() {
-		return firstPageURL;
-	}
+    public String getFirstPageURL() {
+        return firstPageURL;
+    }
 
-	public void setFirstPageURL(String firstPageURL) {
-		this.firstPageURL = firstPageURL;
-	}
+    public void setFirstPageURL(String firstPageURL) {
+        this.firstPageURL = firstPageURL;
+    }
 
 }

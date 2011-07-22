@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "checksum"
-})
+@XmlType(name = "", propOrder = {"checksum"})
 @XmlRootElement(name = "compareDatastreamChecksumResponse")
 public class CompareDatastreamChecksumResponse {
 
@@ -67,10 +64,8 @@ public class CompareDatastreamChecksumResponse {
 
     /**
      * Gets the value of the checksum property.
-     *
-     * @return the checksum
-     * possible object is
-     * {@link String }
+     * 
+     * @return the checksum possible object is {@link String }
      */
     public String getChecksum() {
         return checksum;
@@ -80,9 +75,7 @@ public class CompareDatastreamChecksumResponse {
      * Sets the value of the checksum property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setChecksum(String value) {
         this.checksum = value;

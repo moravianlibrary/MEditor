@@ -29,18 +29,20 @@ package org.fedora.api;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -67,46 +69,36 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "serviceDefinitionPid",
-    "methodName",
-    "parameters",
-    "asOfDateTime"
-})
+@XmlType(name = "", propOrder = {"pid", "serviceDefinitionPid", "methodName", "parameters", "asOfDateTime"})
 @XmlRootElement(name = "getDissemination")
 public class GetDissemination {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The service definition pid. */
     @XmlElement(required = true)
     protected String serviceDefinitionPid;
-    
+
     /** The method name. */
     @XmlElement(required = true)
     protected String methodName;
-    
+
     /** The parameters. */
     @XmlElement(required = true)
     protected GetDissemination.Parameters parameters;
-    
+
     /** The as of date time. */
     @XmlElement(required = true, nillable = true)
     protected String asOfDateTime;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -116,9 +108,7 @@ public class GetDissemination {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -126,10 +116,8 @@ public class GetDissemination {
 
     /**
      * Gets the value of the serviceDefinitionPid property.
-     *
-     * @return the service definition pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the service definition pid possible object is {@link String }
      */
     public String getServiceDefinitionPid() {
         return serviceDefinitionPid;
@@ -139,9 +127,7 @@ public class GetDissemination {
      * Sets the value of the serviceDefinitionPid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setServiceDefinitionPid(String value) {
         this.serviceDefinitionPid = value;
@@ -149,10 +135,8 @@ public class GetDissemination {
 
     /**
      * Gets the value of the methodName property.
-     *
-     * @return the method name
-     * possible object is
-     * {@link String }
+     * 
+     * @return the method name possible object is {@link String }
      */
     public String getMethodName() {
         return methodName;
@@ -162,9 +146,7 @@ public class GetDissemination {
      * Sets the value of the methodName property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setMethodName(String value) {
         this.methodName = value;
@@ -172,10 +154,9 @@ public class GetDissemination {
 
     /**
      * Gets the value of the parameters property.
-     *
-     * @return the parameters
-     * possible object is
-     * {@link GetDissemination.Parameters }
+     * 
+     * @return the parameters possible object is
+     *         {@link GetDissemination.Parameters }
      */
     public GetDissemination.Parameters getParameters() {
         return parameters;
@@ -185,9 +166,7 @@ public class GetDissemination {
      * Sets the value of the parameters property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link GetDissemination.Parameters }
-     *     
+     *        allowed object is {@link GetDissemination.Parameters }
      */
     public void setParameters(GetDissemination.Parameters value) {
         this.parameters = value;
@@ -195,10 +174,8 @@ public class GetDissemination {
 
     /**
      * Gets the value of the asOfDateTime property.
-     *
-     * @return the as of date time
-     * possible object is
-     * {@link String }
+     * 
+     * @return the as of date time possible object is {@link String }
      */
     public String getAsOfDateTime() {
         return asOfDateTime;
@@ -208,19 +185,18 @@ public class GetDissemination {
      * Sets the value of the asOfDateTime property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setAsOfDateTime(String value) {
         this.asOfDateTime = value;
     }
 
-
     /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * <p>
+     * Java class for anonymous complex type.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -233,13 +209,9 @@ public class GetDissemination {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "parameter"
-    })
+    @XmlType(name = "", propOrder = {"parameter"})
     public static class Parameters {
 
         /** The parameter. */
@@ -247,25 +219,21 @@ public class GetDissemination {
 
         /**
          * Gets the value of the parameter property.
-         * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the parameter property.
-         * 
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the parameter property.
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
          * getParameter().add(newItem);
          * </pre>
-         * 
-         * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         *
-         * @return the parameter
-         * {@link Property }
+         * 
+         * @return the parameter {@link Property }
          */
         public List<Property> getParameter() {
             if (parameter == null) {

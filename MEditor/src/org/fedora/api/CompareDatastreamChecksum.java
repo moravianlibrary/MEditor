@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -53,36 +54,28 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "dsID",
-    "versionDate"
-})
+@XmlType(name = "", propOrder = {"pid", "dsID", "versionDate"})
 @XmlRootElement(name = "compareDatastreamChecksum")
 public class CompareDatastreamChecksum {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The ds id. */
     @XmlElement(required = true)
     protected String dsID;
-    
+
     /** The version date. */
     @XmlElement(required = true, nillable = true)
     protected String versionDate;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -92,9 +85,7 @@ public class CompareDatastreamChecksum {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -102,10 +93,8 @@ public class CompareDatastreamChecksum {
 
     /**
      * Gets the value of the dsID property.
-     *
-     * @return the ds id
-     * possible object is
-     * {@link String }
+     * 
+     * @return the ds id possible object is {@link String }
      */
     public String getDsID() {
         return dsID;
@@ -115,9 +104,7 @@ public class CompareDatastreamChecksum {
      * Sets the value of the dsID property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setDsID(String value) {
         this.dsID = value;
@@ -125,10 +112,8 @@ public class CompareDatastreamChecksum {
 
     /**
      * Gets the value of the versionDate property.
-     *
-     * @return the version date
-     * possible object is
-     * {@link String }
+     * 
+     * @return the version date possible object is {@link String }
      */
     public String getVersionDate() {
         return versionDate;
@@ -138,9 +123,7 @@ public class CompareDatastreamChecksum {
      * Sets the value of the versionDate property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setVersionDate(String value) {
         this.versionDate = value;

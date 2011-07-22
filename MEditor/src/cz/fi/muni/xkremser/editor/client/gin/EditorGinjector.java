@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.gin;
 
 import com.google.gwt.event.shared.EventBus;
@@ -48,51 +49,50 @@ import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 /**
  * The Interface EditorGinjector.
  */
-@GinModules({ DispatchAsyncModule.class, EditorClientModule.class })
-public interface EditorGinjector extends Ginjector {
+@GinModules({DispatchAsyncModule.class, EditorClientModule.class})
+public interface EditorGinjector
+        extends Ginjector {
 
-	/**
-	 * Gets the place manager.
-	 * 
-	 * @return the place manager
-	 */
-	PlaceManager getPlaceManager();
+    /**
+     * Gets the place manager.
+     * 
+     * @return the place manager
+     */
+    PlaceManager getPlaceManager();
 
-	/**
-	 * Gets the proxy failure handler.
-	 * 
-	 * @return the proxy failure handler
-	 */
-	ProxyFailureHandler getProxyFailureHandler();
+    /**
+     * Gets the proxy failure handler.
+     * 
+     * @return the proxy failure handler
+     */
+    ProxyFailureHandler getProxyFailureHandler();
 
-	/**
-	 * Gets the event bus.
-	 * 
-	 * @return the event bus
-	 */
-	EventBus getEventBus();
+    /**
+     * Gets the event bus.
+     * 
+     * @return the event bus
+     */
+    EventBus getEventBus();
 
-	/*
-	 * PRESENTERS
-	 * 
-	 * Provider<> if you're using @ProxyStandard or AsyncProvider<> if you're
-	 * using @ProxyCodeSplit
-	 */
+    /*
+     * PRESENTERS Provider<> if you're using @ProxyStandard or AsyncProvider<>
+     * if you're using @ProxyCodeSplit
+     */
 
-	Provider<AppPresenter> getAppPresenter();
+    Provider<AppPresenter> getAppPresenter();
 
-	AsyncProvider<HomePresenter> getHomePresenter();
+    AsyncProvider<HomePresenter> getHomePresenter();
 
-	AsyncProvider<UserPresenter> getUserPresenter();
+    AsyncProvider<UserPresenter> getUserPresenter();
 
-	AsyncProvider<ModifyPresenter> getModifyPresenter();
+    AsyncProvider<ModifyPresenter> getModifyPresenter();
 
-	AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
+    AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
 
-	AsyncProvider<AdjustPagesPresenter> getAdjustPagesPresenterPresenter();
+    AsyncProvider<AdjustPagesPresenter> getAdjustPagesPresenterPresenter();
 
-	AsyncProvider<CreatePresenter> getCreatePresenterPresenter();
+    AsyncProvider<CreatePresenter> getCreatePresenterPresenter();
 
-	Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
+    Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
 
 }

@@ -40,292 +40,293 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class BaseTitleInfoTypeClient.
  */
-public class BaseTitleInfoTypeClient implements IsSerializable {
+public class BaseTitleInfoTypeClient
+        implements IsSerializable {
 
-	/** The title. */
-	protected List<String> title;
+    /** The title. */
+    protected List<String> title;
 
-	/** The sub title. */
-	protected List<String> subTitle;
+    /** The sub title. */
+    protected List<String> subTitle;
 
-	/** The part number. */
-	protected List<String> partNumber;
+    /** The part number. */
+    protected List<String> partNumber;
 
-	/** The part name. */
-	protected List<String> partName;
+    /** The part name. */
+    protected List<String> partName;
 
-	/** The non sort. */
-	protected List<String> nonSort;
+    /** The non sort. */
+    protected List<String> nonSort;
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/** The id. */
-	protected String id;
+    /** The id. */
+    protected String id;
 
-	/** The authority. */
-	protected String authority;
+    /** The authority. */
+    protected String authority;
 
-	/** The xlink. */
-	protected String xlink;
+    /** The xlink. */
+    protected String xlink;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the title.
-	 * 
-	 * @return the title
-	 */
-	public List<String> getTitle() {
-		return title;
-	}
+    /**
+     * Gets the title.
+     * 
+     * @return the title
+     */
+    public List<String> getTitle() {
+        return title;
+    }
 
-	/**
-	 * Sets the title.
-	 * 
-	 * @param title
-	 *          the new title
-	 */
-	public void setTitle(List<String> title) {
-		this.title = title;
-	}
+    /**
+     * Sets the title.
+     * 
+     * @param title
+     *        the new title
+     */
+    public void setTitle(List<String> title) {
+        this.title = title;
+    }
 
-	/**
-	 * Gets the sub title.
-	 * 
-	 * @return the sub title
-	 */
-	public List<String> getSubTitle() {
-		return subTitle;
-	}
+    /**
+     * Gets the sub title.
+     * 
+     * @return the sub title
+     */
+    public List<String> getSubTitle() {
+        return subTitle;
+    }
 
-	/**
-	 * Sets the sub title.
-	 * 
-	 * @param subTitle
-	 *          the new sub title
-	 */
-	public void setSubTitle(List<String> subTitle) {
-		this.subTitle = subTitle;
-	}
+    /**
+     * Sets the sub title.
+     * 
+     * @param subTitle
+     *        the new sub title
+     */
+    public void setSubTitle(List<String> subTitle) {
+        this.subTitle = subTitle;
+    }
 
-	/**
-	 * Gets the part number.
-	 * 
-	 * @return the part number
-	 */
-	public List<String> getPartNumber() {
-		return partNumber;
-	}
+    /**
+     * Gets the part number.
+     * 
+     * @return the part number
+     */
+    public List<String> getPartNumber() {
+        return partNumber;
+    }
 
-	/**
-	 * Sets the part number.
-	 * 
-	 * @param partNumber
-	 *          the new part number
-	 */
-	public void setPartNumber(List<String> partNumber) {
-		this.partNumber = partNumber;
-	}
+    /**
+     * Sets the part number.
+     * 
+     * @param partNumber
+     *        the new part number
+     */
+    public void setPartNumber(List<String> partNumber) {
+        this.partNumber = partNumber;
+    }
 
-	/**
-	 * Gets the part name.
-	 * 
-	 * @return the part name
-	 */
-	public List<String> getPartName() {
-		return partName;
-	}
+    /**
+     * Gets the part name.
+     * 
+     * @return the part name
+     */
+    public List<String> getPartName() {
+        return partName;
+    }
 
-	/**
-	 * Sets the part name.
-	 * 
-	 * @param partName
-	 *          the new part name
-	 */
-	public void setPartName(List<String> partName) {
-		this.partName = partName;
-	}
+    /**
+     * Sets the part name.
+     * 
+     * @param partName
+     *        the new part name
+     */
+    public void setPartName(List<String> partName) {
+        this.partName = partName;
+    }
 
-	/**
-	 * Gets the non sort.
-	 * 
-	 * @return the non sort
-	 */
-	public List<String> getNonSort() {
-		return nonSort;
-	}
+    /**
+     * Gets the non sort.
+     * 
+     * @return the non sort
+     */
+    public List<String> getNonSort() {
+        return nonSort;
+    }
 
-	/**
-	 * Sets the non sort.
-	 * 
-	 * @param nonSort
-	 *          the new non sort
-	 */
-	public void setNonSort(List<String> nonSort) {
-		this.nonSort = nonSort;
-	}
+    /**
+     * Sets the non sort.
+     * 
+     * @param nonSort
+     *        the new non sort
+     */
+    public void setNonSort(List<String> nonSort) {
+        this.nonSort = nonSort;
+    }
 
-	/**
-	 * Gets the display label.
-	 * 
-	 * @return the display label
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the display label.
+     * 
+     * @return the display label
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the display label.
-	 * 
-	 * @param displayLabel
-	 *          the new display label
-	 */
-	public void setDisplayLabel(String displayLabel) {
-		this.displayLabel = displayLabel;
-	}
+    /**
+     * Sets the display label.
+     * 
+     * @param displayLabel
+     *        the new display label
+     */
+    public void setDisplayLabel(String displayLabel) {
+        this.displayLabel = displayLabel;
+    }
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *          the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *        the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * Gets the authority.
-	 * 
-	 * @return the authority
-	 */
-	public String getAuthority() {
-		return authority;
-	}
+    /**
+     * Gets the authority.
+     * 
+     * @return the authority
+     */
+    public String getAuthority() {
+        return authority;
+    }
 
-	/**
-	 * Sets the authority.
-	 * 
-	 * @param authority
-	 *          the new authority
-	 */
-	public void setAuthority(String authority) {
-		this.authority = authority;
-	}
+    /**
+     * Sets the authority.
+     * 
+     * @param authority
+     *        the new authority
+     */
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
 
-	/**
-	 * Gets the xlink.
-	 * 
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * Gets the xlink.
+     * 
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 
-	/**
-	 * Sets the xlink.
-	 * 
-	 * @param xlink
-	 *          the new xlink
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * Sets the xlink.
+     * 
+     * @param xlink
+     *        the new xlink
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
 }

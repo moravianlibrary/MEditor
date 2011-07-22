@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -51,13 +52,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "objectXML"
-})
+@XmlType(name = "", propOrder = {"objectXML"})
 @XmlRootElement(name = "getObjectXMLResponse")
 public class GetObjectXMLResponse {
 
@@ -67,10 +64,8 @@ public class GetObjectXMLResponse {
 
     /**
      * Gets the value of the objectXML property.
-     *
-     * @return the object xml
-     * possible object is
-     * byte[]
+     * 
+     * @return the object xml possible object is byte[]
      */
     public byte[] getObjectXML() {
         return objectXML;
@@ -80,11 +75,10 @@ public class GetObjectXMLResponse {
      * Sets the value of the objectXML property.
      * 
      * @param value
-     *     allowed object is
-     *     byte[]
+     *        allowed object is byte[]
      */
     public void setObjectXML(byte[] value) {
-        this.objectXML = ((byte[]) value);
+        this.objectXML = (value);
     }
 
 }

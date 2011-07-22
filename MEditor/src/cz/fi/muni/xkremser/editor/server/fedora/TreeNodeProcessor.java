@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 // TODO: Auto-generated Javadoc
@@ -32,12 +33,12 @@ package cz.fi.muni.xkremser.editor.server.fedora;
  */
 public interface TreeNodeProcessor {
 
-	/**
-	 * Process.
-	 * 
-	 * @param pid
-	 *          the pid
-	 */
-	public void process(String pid);
+    /**
+     * Process.
+     * 
+     * @param pid
+     *        the pid
+     */
+    public void process(String pid);
 
 }

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.domain;
 
 import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.INTERNALPART;
@@ -35,124 +36,123 @@ import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.PERIOD
 // TODO: Auto-generated Javadoc
 public enum FedoraRelationship {
 
-	// this class depends on FedoraNamespaceContext
+    // this class depends on FedoraNamespaceContext
 
-	// our fedora relationship
-	/** The has page. */
-	hasPage(PAGE, "hasPage", "/rdf:RDF/rdf:Description/kramerius:hasPage"),
-	/** The has volume. */
-	hasVolume(PERIODICALVOLUME, "hasVolume", "/rdf:RDF/rdf:Description/kramerius:hasVolume"),
-	/** The has item. */
-	hasItem(PERIODICALITEM, "hasItem", "/rdf:RDF/rdf:Description/kramerius:hasItem"),
-	/** The has unit. */
-	hasUnit(MONOGRAPHUNIT, "hasUnit", "/rdf:RDF/rdf:Description/kramerius:hasUnit"),
-	/** The has internal part. */
-	hasInternalPart(INTERNALPART, "hasInternalPart", "/rdf:RDF/rdf:Description/kramerius:hasInternalPart"),
-	/** The has int comp part. */
-	hasIntCompPart(INTERNALPART, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart"),
+    // our fedora relationship
+    /** The has page. */
+    hasPage(PAGE, "hasPage", "/rdf:RDF/rdf:Description/kramerius:hasPage"),
+    /** The has volume. */
+    hasVolume(PERIODICALVOLUME, "hasVolume", "/rdf:RDF/rdf:Description/kramerius:hasVolume"),
+    /** The has item. */
+    hasItem(PERIODICALITEM, "hasItem", "/rdf:RDF/rdf:Description/kramerius:hasItem"),
+    /** The has unit. */
+    hasUnit(MONOGRAPHUNIT, "hasUnit", "/rdf:RDF/rdf:Description/kramerius:hasUnit"),
+    /** The has internal part. */
+    hasInternalPart(INTERNALPART, "hasInternalPart", "/rdf:RDF/rdf:Description/kramerius:hasInternalPart"),
+    /** The has int comp part. */
+    hasIntCompPart(INTERNALPART, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart"),
 
-	/** The is on page. */
-	isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage");
+    /** The is on page. */
+    isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage");
 
-	public static final String ATTR_RESOURCE_SUFIX = "/@rdf:resource";
+    public static final String ATTR_RESOURCE_SUFIX = "/@rdf:resource";
 
-	/** The poiting model. */
-	private DigitalObjectModel targetModel;
+    /** The poiting model. */
+    private DigitalObjectModel targetModel;
 
-	/** The string representation. */
-	private String stringRepresentation;
+    /** The string representation. */
+    private String stringRepresentation;
 
-	private String xPathNamespaceAwareQuery;
+    private String xPathNamespaceAwareQuery;
 
-	/**
-	 * Instantiates a new fedora relationship.
-	 * 
-	 * @param targetModel
-	 *          the pointing model
-	 */
-	private FedoraRelationship(DigitalObjectModel targetModel) {
-		this.targetModel = targetModel;
-	}
+    /**
+     * Instantiates a new fedora relationship.
+     * 
+     * @param targetModel
+     *        the pointing model
+     */
+    private FedoraRelationship(DigitalObjectModel targetModel) {
+        this.targetModel = targetModel;
+    }
 
-	/**
-	 * Instantiates a new fedora relationship.
-	 * 
-	 * @param pointingModel
-	 *          the pointing model
-	 * @param label
-	 *          the label
-	 */
-	private FedoraRelationship(DigitalObjectModel targetModel, String label) {
-		this.targetModel = targetModel;
-		this.stringRepresentation = label;
-	}
+    /**
+     * Instantiates a new fedora relationship.
+     * 
+     * @param pointingModel
+     *        the pointing model
+     * @param label
+     *        the label
+     */
+    private FedoraRelationship(DigitalObjectModel targetModel, String label) {
+        this.targetModel = targetModel;
+        this.stringRepresentation = label;
+    }
 
-	private FedoraRelationship(DigitalObjectModel targetModel, String label, String xPathNamespaceAwareQuery) {
-		this.targetModel = targetModel;
-		this.stringRepresentation = label;
-		this.xPathNamespaceAwareQuery = xPathNamespaceAwareQuery;
-	}
+    private FedoraRelationship(DigitalObjectModel targetModel, String label, String xPathNamespaceAwareQuery) {
+        this.targetModel = targetModel;
+        this.stringRepresentation = label;
+        this.xPathNamespaceAwareQuery = xPathNamespaceAwareQuery;
+    }
 
-	/**
-	 * Gets the pointing model.
-	 * 
-	 * @return the pointing model
-	 */
-	public DigitalObjectModel getTargetModel() {
-		return targetModel;
-	}
+    /**
+     * Gets the pointing model.
+     * 
+     * @return the pointing model
+     */
+    public DigitalObjectModel getTargetModel() {
+        return targetModel;
+    }
 
-	/**
-	 * Gets the string representation.
-	 * 
-	 * @return the string representation
-	 */
-	public String getStringRepresentation() {
-		return stringRepresentation;
-	}
+    /**
+     * Gets the string representation.
+     * 
+     * @return the string representation
+     */
+    public String getStringRepresentation() {
+        return stringRepresentation;
+    }
 
-	public String getXPathNamespaceAwareQuery() {
-		return xPathNamespaceAwareQuery;
-	}
+    public String getXPathNamespaceAwareQuery() {
+        return xPathNamespaceAwareQuery;
+    }
 
-	/**
-	 * Find relation.
-	 * 
-	 * @param element
-	 *          the element
-	 * @return the fedora relationship
-	 */
-	public static FedoraRelationship findRelation(String element) {
-		FedoraRelationship[] values = FedoraRelationship.values();
-		for (FedoraRelationship fedoraRelationship : values) {
-			if (fedoraRelationship.name().equals(element))
-				return fedoraRelationship;
-		}
-		return null;
-	}
+    /**
+     * Find relation.
+     * 
+     * @param element
+     *        the element
+     * @return the fedora relationship
+     */
+    public static FedoraRelationship findRelation(String element) {
+        FedoraRelationship[] values = FedoraRelationship.values();
+        for (FedoraRelationship fedoraRelationship : values) {
+            if (fedoraRelationship.name().equals(element)) return fedoraRelationship;
+        }
+        return null;
+    }
 
-	// relationship defined in Fedora Ontology Relationship
-	// http://www.fedora-commons.org/definitions/1/0/fedora-relsext-ontology.rdfs
-	// isPartOf,
-	// hasPart,
-	// isConstituentOf,
-	// hasConstituent,
-	// isMemberOf,
-	// hasMember,
-	// isSubsetOf,
-	// hasSubset,
-	// isMemberOfCollection,
-	// hasCollectionMember,
-	// isDerivationOf,
-	// hasDerivation,
-	// isDependentOf,
-	// hasDependent,
-	// isDescriptionOf,
-	// HasDescription,
-	// isMetadataFor,
-	// HasMetadata,
-	// isAnnotationOf,
-	// HasAnnotation,
-	// hasEquivalent,
+    // relationship defined in Fedora Ontology Relationship
+    // http://www.fedora-commons.org/definitions/1/0/fedora-relsext-ontology.rdfs
+    // isPartOf,
+    // hasPart,
+    // isConstituentOf,
+    // hasConstituent,
+    // isMemberOf,
+    // hasMember,
+    // isSubsetOf,
+    // hasSubset,
+    // isMemberOfCollection,
+    // hasCollectionMember,
+    // isDerivationOf,
+    // hasDerivation,
+    // isDependentOf,
+    // hasDependent,
+    // isDescriptionOf,
+    // HasDescription,
+    // isMetadataFor,
+    // HasMetadata,
+    // isAnnotationOf,
+    // HasAnnotation,
+    // hasEquivalent,
 
 }

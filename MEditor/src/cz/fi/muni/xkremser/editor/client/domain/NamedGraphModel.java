@@ -24,7 +24,16 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.domain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.INTERNALPART;
 import static cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel.MONOGRAPH;
@@ -40,59 +49,56 @@ import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.hasUni
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.hasVolume;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship.isOnPage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Enum NamedGraphModel.
  */
-public class NamedGraphModel implements IsSerializable {
+public class NamedGraphModel
+        implements IsSerializable {
 
-	private static final Map<List<DigitalObjectModel>, FedoraRelationship> relations = new HashMap<List<DigitalObjectModel>, FedoraRelationship>();
-	private static Map<DigitalObjectModel, List<DigitalObjectModel>> children = new HashMap<DigitalObjectModel, List<DigitalObjectModel>>();
+    private static final Map<List<DigitalObjectModel>, FedoraRelationship> relations =
+            new HashMap<List<DigitalObjectModel>, FedoraRelationship>();
+    private static Map<DigitalObjectModel, List<DigitalObjectModel>> children =
+            new HashMap<DigitalObjectModel, List<DigitalObjectModel>>();
 
-	static {
-		/** The MONOGRAPH. */
-		putRelationship(MONOGRAPH, hasPage, PAGE);
-		putRelationship(MONOGRAPH, hasIntCompPart, INTERNALPART);
-		putRelationship(MONOGRAPH, hasUnit, MONOGRAPHUNIT);
-		putRelationship(MONOGRAPHUNIT, hasPage, PAGE);
-		putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);
-		putRelationship(INTERNALPART, isOnPage, PAGE);
-		/** The PERIODICAL. */
-		putRelationship(PERIODICAL, hasPage, PAGE);
-		putRelationship(PERIODICAL, hasVolume, PERIODICALVOLUME);
-		putRelationship(PERIODICALVOLUME, hasPage, PAGE);
-		putRelationship(PERIODICALVOLUME, hasIntCompPart, INTERNALPART);
-		putRelationship(PERIODICALVOLUME, hasItem, PERIODICALITEM);
-		putRelationship(PERIODICALITEM, hasPage, PAGE);
-		putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
-	}
+    static {
+        /** The MONOGRAPH. */
+        putRelationship(MONOGRAPH, hasPage, PAGE);
+        putRelationship(MONOGRAPH, hasIntCompPart, INTERNALPART);
+        putRelationship(MONOGRAPH, hasUnit, MONOGRAPHUNIT);
+        putRelationship(MONOGRAPHUNIT, hasPage, PAGE);
+        putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);
+        putRelationship(INTERNALPART, isOnPage, PAGE);
+        /** The PERIODICAL. */
+        putRelationship(PERIODICAL, hasPage, PAGE);
+        putRelationship(PERIODICAL, hasVolume, PERIODICALVOLUME);
+        putRelationship(PERIODICALVOLUME, hasPage, PAGE);
+        putRelationship(PERIODICALVOLUME, hasIntCompPart, INTERNALPART);
+        putRelationship(PERIODICALVOLUME, hasItem, PERIODICALITEM);
+        putRelationship(PERIODICALITEM, hasPage, PAGE);
+        putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
+    }
 
-	private static void putRelationship(DigitalObjectModel source, FedoraRelationship relationship, DigitalObjectModel target) {
-		NamedGraphModel.relations.put(Arrays.asList(target, source), relationship);
-		putChild(source, target);
-	}
+    private static void putRelationship(DigitalObjectModel source,
+                                        FedoraRelationship relationship,
+                                        DigitalObjectModel target) {
+        NamedGraphModel.relations.put(Arrays.asList(target, source), relationship);
+        putChild(source, target);
+    }
 
-	public static FedoraRelationship getRelationship(DigitalObjectModel source, DigitalObjectModel target) {
-		return relations.get(Arrays.asList(target, source));
-	}
+    public static FedoraRelationship getRelationship(DigitalObjectModel source, DigitalObjectModel target) {
+        return relations.get(Arrays.asList(target, source));
+    }
 
-	private static void putChild(DigitalObjectModel parent, DigitalObjectModel child) {
-		if (children.get(parent) == null) {
-			children.put(parent, new ArrayList<DigitalObjectModel>());
-		}
-		children.get(parent).add(child);
-	}
+    private static void putChild(DigitalObjectModel parent, DigitalObjectModel child) {
+        if (children.get(parent) == null) {
+            children.put(parent, new ArrayList<DigitalObjectModel>());
+        }
+        children.get(parent).add(child);
+    }
 
-	public static List<DigitalObjectModel> getChildren(DigitalObjectModel parent) {
-		return children.get(parent);
-	}
+    public static List<DigitalObjectModel> getChildren(DigitalObjectModel parent) {
+        return children.get(parent);
+    }
 
 }

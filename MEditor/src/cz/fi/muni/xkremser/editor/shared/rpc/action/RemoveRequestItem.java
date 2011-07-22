@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -35,10 +36,11 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class RemoveRequestItem extends UnsecuredActionImpl<RemoveUserRoleResult> {
+public class RemoveRequestItem
+        extends UnsecuredActionImpl<RemoveUserRoleResult> {
 
-	/** The id. */
-	@In(1)
-	private Long id;
+    /** The id. */
+    @In(1)
+    private Long id;
 
 }

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -36,23 +37,24 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
-public class CheckAvailability extends UnsecuredActionImpl<CheckAvailabilityResult> {
+public class CheckAvailability
+        extends UnsecuredActionImpl<CheckAvailabilityResult> {
 
-	/** The Constant FEDORA_ID. */
-	public static final int FEDORA_ID = 0;
+    /** The Constant FEDORA_ID. */
+    public static final int FEDORA_ID = 0;
 
-	/** The Constant KRAMERIUS_ID. */
-	public static final int KRAMERIUS_ID = 1;
+    /** The Constant KRAMERIUS_ID. */
+    public static final int KRAMERIUS_ID = 1;
 
-	/** The config. */
-	@In(1)
-	int serverId;
+    /** The config. */
+    @In(1)
+    int serverId;
 
-	/** The availability. */
-	@Out(1)
-	boolean availability;
+    /** The availability. */
+    @Out(1)
+    boolean availability;
 
-	/** The url. */
-	@Out(2)
-	String url;
+    /** The url. */
+    @Out(2)
+    String url;
 }

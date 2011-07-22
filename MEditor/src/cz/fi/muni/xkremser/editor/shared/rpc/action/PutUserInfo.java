@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -38,17 +39,18 @@ import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class PutUserInfo extends UnsecuredActionImpl<PutUserInfoResult> {
+public class PutUserInfo
+        extends UnsecuredActionImpl<PutUserInfoResult> {
 
-	/** The user. */
-	@In(1)
-	private UserInfoItem user;
+    /** The user. */
+    @In(1)
+    private UserInfoItem user;
 
-	/** The id. */
-	@Out(1)
-	private String id;
+    /** The id. */
+    @Out(1)
+    private String id;
 
-	/** The found. */
-	@Out(2)
-	private boolean found;
+    /** The found. */
+    @Out(2)
+    private boolean found;
 }

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -35,9 +36,10 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
-public class Logout extends UnsecuredActionImpl<LogoutResult> {
+public class Logout
+        extends UnsecuredActionImpl<LogoutResult> {
 
-	@Out(1)
-	String url;
+    @Out(1)
+    String url;
 
 }

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.presenter;
 
 import com.google.gwt.event.shared.EventBus;
@@ -48,6 +49,7 @@ import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
@@ -57,165 +59,175 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutResult;
 /**
  * The Class AppPresenter.
  */
-public class AppPresenter extends Presenter<AppPresenter.MyView, AppPresenter.MyProxy> implements MyUiHandlers {
+public class AppPresenter
+        extends Presenter<AppPresenter.MyView, AppPresenter.MyProxy>
+        implements MyUiHandlers {
 
-	private LangConstants lang;
-	private volatile boolean unknown = true;
+    private LangConstants lang;
+    private volatile boolean unknown = true;
 
-	@Inject
-	public void setLang(LangConstants lang) {
-		this.lang = lang;
-	}
+    @Inject
+    public void setLang(LangConstants lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Use this in leaf presenters, inside their {@link #revealInParent} method.
-	 */
-	@ContentSlot
-	public static final Type<RevealContentHandler<?>> TYPE_SetMainContent = new Type<RevealContentHandler<?>>();
+    /**
+     * Use this in leaf presenters, inside their {@link #revealInParent} method.
+     */
+    @ContentSlot
+    public static final Type<RevealContentHandler<?>> TYPE_SetMainContent =
+            new Type<RevealContentHandler<?>>();
 
-	// @ContentSlot
-	// public static final Type<RevealContentHandler<?>> TYPE_SetTopContent = new
-	// Type<RevealContentHandler<?>>();
+    // @ContentSlot
+    // public static final Type<RevealContentHandler<?>> TYPE_SetTopContent = new
+    // Type<RevealContentHandler<?>>();
 
-	/** The Constant TYPE_SetLeftContent. */
-	@ContentSlot
-	public static final Type<RevealContentHandler<?>> TYPE_SetLeftContent = new Type<RevealContentHandler<?>>();
+    /** The Constant TYPE_SetLeftContent. */
+    @ContentSlot
+    public static final Type<RevealContentHandler<?>> TYPE_SetLeftContent =
+            new Type<RevealContentHandler<?>>();
 
-	/**
-	 * The Interface MyProxy.
-	 */
-	@ProxyStandard
-	public interface MyProxy extends Proxy<AppPresenter> {
+    /**
+     * The Interface MyProxy.
+     */
+    @ProxyStandard
+    public interface MyProxy
+            extends Proxy<AppPresenter> {
 
-	}
+    }
 
-	/**
-	 * The Interface MyView.
-	 */
-	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
+    /**
+     * The Interface MyView.
+     */
+    public interface MyView
+            extends View, HasUiHandlers<MyUiHandlers> {
 
-		/**
-		 * Gets the username.
-		 * 
-		 * @return the username
-		 */
-		HTMLFlow getUsername();
+        /**
+         * Gets the username.
+         * 
+         * @return the username
+         */
+        HTMLFlow getUsername();
 
-		/**
-		 * Gets the edits the users.
-		 * 
-		 * @return the edits the users
-		 */
-		HTMLFlow getEditUsers();
-	}
+        /**
+         * Gets the edits the users.
+         * 
+         * @return the edits the users
+         */
+        HTMLFlow getEditUsers();
+    }
 
-	/** The left presenter. */
-	DigitalObjectMenuPresenter leftPresenter;
+    /** The left presenter. */
+    DigitalObjectMenuPresenter leftPresenter;
 
-	/** The dispatcher. */
-	private final DispatchAsync dispatcher;
+    /** The dispatcher. */
+    private final DispatchAsync dispatcher;
 
-	/** The place manager. */
-	private final PlaceManager placeManager;
+    /** The place manager. */
+    private final PlaceManager placeManager;
 
-	/**
-	 * Instantiates a new app presenter.
-	 * 
-	 * @param eventBus
-	 *          the event bus
-	 * @param view
-	 *          the view
-	 * @param proxy
-	 *          the proxy
-	 * @param leftPresenter
-	 *          the left presenter
-	 * @param dispatcher
-	 *          the dispatcher
-	 * @param placeManager
-	 *          the place manager
-	 */
-	@Inject
-	// public AppPresenter(final DispatchAsync dispatcher, final HomePresenter
-	// homePresenter, final DigitalObjectMenuPresenter treePresenter,
-	// final DigitalObjectMenuPresenter digitalObjectMenuPresenter, final
-	// EditorClientConfiguration config) {
-	public AppPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy, final DigitalObjectMenuPresenter leftPresenter,
-			final DispatchAsync dispatcher, final PlaceManager placeManager) {
-		super(eventBus, view, proxy);
-		this.dispatcher = dispatcher;
-		this.leftPresenter = leftPresenter;
-		this.placeManager = placeManager;
-		getView().setUiHandlers(this);
-		bind();
-	}
+    /**
+     * Instantiates a new app presenter.
+     * 
+     * @param eventBus
+     *        the event bus
+     * @param view
+     *        the view
+     * @param proxy
+     *        the proxy
+     * @param leftPresenter
+     *        the left presenter
+     * @param dispatcher
+     *        the dispatcher
+     * @param placeManager
+     *        the place manager
+     */
+    @Inject
+    // public AppPresenter(final DispatchAsync dispatcher, final HomePresenter
+    // homePresenter, final DigitalObjectMenuPresenter treePresenter,
+    // final DigitalObjectMenuPresenter digitalObjectMenuPresenter, final
+    // EditorClientConfiguration config) {
+    public AppPresenter(final EventBus eventBus,
+                        final MyView view,
+                        final MyProxy proxy,
+                        final DigitalObjectMenuPresenter leftPresenter,
+                        final DispatchAsync dispatcher,
+                        final PlaceManager placeManager) {
+        super(eventBus, view, proxy);
+        this.dispatcher = dispatcher;
+        this.leftPresenter = leftPresenter;
+        this.placeManager = placeManager;
+        getView().setUiHandlers(this);
+        bind();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
-	 */
-	@Override
-	protected void onBind() {
-		super.onBind();
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+     */
+    @Override
+    protected void onBind() {
+        super.onBind();
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
-	 */
-	@Override
-	protected void onReset() {
-		super.onReset();
-		if (unknown) {
-			unknown = false;
-			dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
-				@Override
-				public void callback(GetLoggedUserResult result) {
-					getView().getUsername().setContents("<b>" + result.getName() + "</b>");
-					if (result.isEditUsers()) {
-						getView().getEditUsers().setContents(lang.userMgmt());
-						getView().getEditUsers().setCursor(Cursor.HAND);
-						getView().getEditUsers().setWidth(120);
-						getView().getEditUsers().setHeight(15);
-						getView().getEditUsers().setStyleName("pseudolink");
-						getView().getEditUsers().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-							@Override
-							public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-								placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
-							}
-						});
-					}
-				}
-			});
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
+     */
+    @Override
+    protected void onReset() {
+        super.onReset();
+        if (unknown) {
+            unknown = false;
+            dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
-	 */
-	@Override
-	protected void revealInParent() {
-		RevealRootContentEvent.fire(this, this);
-	}
+                @Override
+                public void callback(GetLoggedUserResult result) {
+                    getView().getUsername().setContents("<b>" + result.getName() + "</b>");
+                    if (result.isEditUsers()) {
+                        getView().getEditUsers().setContents(lang.userMgmt());
+                        getView().getEditUsers().setCursor(Cursor.HAND);
+                        getView().getEditUsers().setWidth(120);
+                        getView().getEditUsers().setHeight(15);
+                        getView().getEditUsers().setStyleName("pseudolink");
+                        getView().getEditUsers()
+                                .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers#logout()
-	 */
-	@Override
-	public void logout() {
-		dispatcher.execute(new LogoutAction(), new DispatchCallback<LogoutResult>() {
-			@Override
-			public void callback(LogoutResult result) {
-				unknown = true;
-				MEditor.redirect(result.getUrl());
-			}
-		});
-	}
+                                    @Override
+                                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
+                                    }
+                                });
+                    }
+                }
+            });
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+     */
+    @Override
+    protected void revealInParent() {
+        RevealRootContentEvent.fire(this, this);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers#logout()
+     */
+    @Override
+    public void logout() {
+        dispatcher.execute(new LogoutAction(), new DispatchCallback<LogoutResult>() {
+
+            @Override
+            public void callback(LogoutResult result) {
+                unknown = true;
+                MEditor.redirect(result.getUrl());
+            }
+        });
+    }
 
 }

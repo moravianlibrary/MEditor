@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
@@ -37,62 +38,63 @@ import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
 public class RDFModels {
 
-	/** The Constant LOGGER. */
-	public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RDFModels.class.getName());
+    /** The Constant LOGGER. */
+    public static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RDFModels.class
+            .getName());
 
-	/**
-	 * Convert rdf to model.
-	 * 
-	 * @param rdf
-	 *          the rdf
-	 * @return the kramerius model
-	 */
-	public static DigitalObjectModel convertRDFToModel(String rdf) {
-		if (rdf.contains("hasPage")) {
-			return DigitalObjectModel.PAGE;
-		} else if (rdf.contains("hasUnit")) {
-			return DigitalObjectModel.MONOGRAPHUNIT;
-		} else if (rdf.contains("hasVolume")) {
-			return DigitalObjectModel.PERIODICALVOLUME;
-		} else if (rdf.contains("hasItem")) {
-			return DigitalObjectModel.PERIODICALITEM;
-		} else if (rdf.contains("hasIntCompPart")) {
-			return DigitalObjectModel.INTERNALPART;
-		} else if (rdf.contains("isOnPage")) {
-			return DigitalObjectModel.PAGE;
-			// } else if (rdf.contains("hasDonator")) {
-			// return KrameriusModel.DONATOR;
-		} else {
-			System.out.println("Unfffsupported rdf: " + rdf);
-			return null;
-		}
-	}
+    /**
+     * Convert rdf to model.
+     * 
+     * @param rdf
+     *        the rdf
+     * @return the kramerius model
+     */
+    public static DigitalObjectModel convertRDFToModel(String rdf) {
+        if (rdf.contains("hasPage")) {
+            return DigitalObjectModel.PAGE;
+        } else if (rdf.contains("hasUnit")) {
+            return DigitalObjectModel.MONOGRAPHUNIT;
+        } else if (rdf.contains("hasVolume")) {
+            return DigitalObjectModel.PERIODICALVOLUME;
+        } else if (rdf.contains("hasItem")) {
+            return DigitalObjectModel.PERIODICALITEM;
+        } else if (rdf.contains("hasIntCompPart")) {
+            return DigitalObjectModel.INTERNALPART;
+        } else if (rdf.contains("isOnPage")) {
+            return DigitalObjectModel.PAGE;
+            // } else if (rdf.contains("hasDonator")) {
+            // return KrameriusModel.DONATOR;
+        } else {
+            System.out.println("Unfffsupported rdf: " + rdf);
+            return null;
+        }
+    }
 
-	/**
-	 * Convert to rdf.
-	 * 
-	 * @param km
-	 *          the km
-	 * @return the string
-	 */
-	public static String convertToRdf(DigitalObjectModel km) {
-		switch (km) {
-			case MONOGRAPH:
-				return "monograph";
-			case MONOGRAPHUNIT:
-				return "hasUnit";
-			case PERIODICAL:
-				return "periodical";
-			case PERIODICALVOLUME:
-				return "hasVolume";
-			case PERIODICALITEM:
-				return "hasItem";
-			case INTERNALPART:
-				return "hasIntCompPart";
-			case PAGE:
-				return "hasPage";
-			default:
-				return km.toString();
-		}
-	}
+    /**
+     * Convert to rdf.
+     * 
+     * @param km
+     *        the km
+     * @return the string
+     */
+    public static String convertToRdf(DigitalObjectModel km) {
+        switch (km) {
+            case MONOGRAPH:
+                return "monograph";
+            case MONOGRAPHUNIT:
+                return "hasUnit";
+            case PERIODICAL:
+                return "periodical";
+            case PERIODICALVOLUME:
+                return "hasVolume";
+            case PERIODICALITEM:
+                return "hasItem";
+            case INTERNALPART:
+                return "hasIntCompPart";
+            case PAGE:
+                return "hasPage";
+            default:
+                return km.toString();
+        }
+    }
 }

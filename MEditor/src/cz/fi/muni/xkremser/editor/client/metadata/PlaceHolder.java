@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
@@ -38,84 +39,81 @@ import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 /**
  * The Class PlaceHolder.
  */
-public class PlaceHolder extends ListOfListOfSimpleValuesHolder {
+public class PlaceHolder
+        extends ListOfListOfSimpleValuesHolder {
 
-	/**
-	 * Instantiates a new place holder.
-	 */
-	public PlaceHolder() {
-		super("place_term", ModsConstants.TYPE, ModsConstants.AUTHORITY);
-	}
+    /**
+     * Instantiates a new place holder.
+     */
+    public PlaceHolder() {
+        super("place_term", ModsConstants.TYPE, ModsConstants.AUTHORITY);
+    }
 
-	/**
-	 * Gets the place.
-	 * 
-	 * @return the place
-	 */
-	public PlaceTypeClient getPlace() {
-		List<List<String>> listOfValues = getListOfList();
-		if (listOfValues == null || listOfValues.size() == 0) {
-			return null;
-		}
-		PlaceTypeClient placeTypeClient = new PlaceTypeClient();
-		List<PlaceTermTypeClient> list = new ArrayList<PlaceTermTypeClient>();
-		for (List<String> values : listOfValues) {
-			PlaceTermTypeClient placeTermClient = new PlaceTermTypeClient();
-			placeTermClient.setValue(values.get(0));
-			placeTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
-			placeTermClient.setAuthority(PlaceAuthorityClient.fromValue(values.get(2)));
-			list.add(placeTermClient);
-		}
-		placeTypeClient.setPlaceTerm(list);
-		return placeTypeClient;
-	}
+    /**
+     * Gets the place.
+     * 
+     * @return the place
+     */
+    public PlaceTypeClient getPlace() {
+        List<List<String>> listOfValues = getListOfList();
+        if (listOfValues == null || listOfValues.size() == 0) {
+            return null;
+        }
+        PlaceTypeClient placeTypeClient = new PlaceTypeClient();
+        List<PlaceTermTypeClient> list = new ArrayList<PlaceTermTypeClient>();
+        for (List<String> values : listOfValues) {
+            PlaceTermTypeClient placeTermClient = new PlaceTermTypeClient();
+            placeTermClient.setValue(values.get(0));
+            placeTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+            placeTermClient.setAuthority(PlaceAuthorityClient.fromValue(values.get(2)));
+            list.add(placeTermClient);
+        }
+        placeTypeClient.setPlaceTerm(list);
+        return placeTypeClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
-	 * #getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+     * #getSubelements()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
-	 * #getValue()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+     * #getValue()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
-	 * #getValues()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+     * #getValues()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
-	 * #getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfListOfSimpleValuesHolder
+     * #getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
 }

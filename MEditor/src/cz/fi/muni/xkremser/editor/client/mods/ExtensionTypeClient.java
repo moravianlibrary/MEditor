@@ -38,50 +38,51 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class ExtensionTypeClient.
  */
-public class ExtensionTypeClient implements IsSerializable {
+public class ExtensionTypeClient
+        implements IsSerializable {
 
-	/** The content. */
-	protected String content;
+    /** The content. */
+    protected String content;
 
-	/** The name space. */
-	protected String nameSpace;
+    /** The name space. */
+    protected String nameSpace;
 
-	/**
-	 * Gets the content.
-	 * 
-	 * @return the content
-	 */
-	public String getContent() {
-		return this.content;
-	}
+    /**
+     * Gets the content.
+     * 
+     * @return the content
+     */
+    public String getContent() {
+        return this.content;
+    }
 
-	/**
-	 * Sets the content.
-	 * 
-	 * @param content
-	 *          the new content
-	 */
-	public void setContent(String content) {
-		this.content = content;
-	}
+    /**
+     * Sets the content.
+     * 
+     * @param content
+     *        the new content
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	/**
-	 * Gets the name space.
-	 * 
-	 * @return the name space
-	 */
-	public String getNameSpace() {
-		return nameSpace;
-	}
+    /**
+     * Gets the name space.
+     * 
+     * @return the name space
+     */
+    public String getNameSpace() {
+        return nameSpace;
+    }
 
-	/**
-	 * Sets the name space.
-	 * 
-	 * @param nameSpace
-	 *          the new name space
-	 */
-	public void setNameSpace(String nameSpace) {
-		this.nameSpace = nameSpace;
-	}
+    /**
+     * Sets the name space.
+     * 
+     * @param nameSpace
+     *        the new name space
+     */
+    public void setNameSpace(String nameSpace) {
+        this.nameSpace = nameSpace;
+    }
 
 }

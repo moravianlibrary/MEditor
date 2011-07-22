@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
@@ -37,95 +38,93 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 /**
  * The Class ListOfSimpleValuesHolder.
  */
-public class ListOfSimpleValuesHolder extends MetadataHolder {
+public class ListOfSimpleValuesHolder
+        extends MetadataHolder {
 
-	/** The attribute form2. */
-	private DynamicForm attributeForm2;
+    /** The attribute form2. */
+    private DynamicForm attributeForm2;
 
-	/**
-	 * Instantiates a new list of simple values holder.
-	 */
-	public ListOfSimpleValuesHolder() {
-	}
+    /**
+     * Instantiates a new list of simple values holder.
+     */
+    public ListOfSimpleValuesHolder() {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getSubelements
+     * ()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValue()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
-	 */
-	@Override
-	public List<String> getValues() {
-		if (layout == null)
-			return null;
-		List<String> values = new ArrayList<String>();
-		Canvas[] canvases = this.layout.getMembers();
-		for (Canvas canvas : canvases) {
-			DynamicForm form = (DynamicForm) canvas;
-			Object o = form.getFields()[0].getValue();
-			String value = null;
-			if (o != null) {
-				if (o instanceof String) {
-					value = (String) o;
-				} else if (o instanceof Date) {
-					value = ((Date) o).toGMTString();
-				}
-				if (!"".equals(value.trim())) {
-					values.add(value);
-				}
-			}
-		}
-		return values;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getValues()
+     */
+    @Override
+    public List<String> getValues() {
+        if (layout == null) return null;
+        List<String> values = new ArrayList<String>();
+        Canvas[] canvases = this.layout.getMembers();
+        for (Canvas canvas : canvases) {
+            DynamicForm form = (DynamicForm) canvas;
+            Object o = form.getFields()[0].getValue();
+            String value = null;
+            if (o != null) {
+                if (o instanceof String) {
+                    value = (String) o;
+                } else if (o instanceof Date) {
+                    value = ((Date) o).toGMTString();
+                }
+                if (!"".equals(value.trim())) {
+                    values.add(value);
+                }
+            }
+        }
+        return values;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder#getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * Gets the attribute form2.
-	 * 
-	 * @return the attribute form2
-	 */
-	public DynamicForm getAttributeForm2() {
-		return attributeForm2;
-	}
+    /**
+     * Gets the attribute form2.
+     * 
+     * @return the attribute form2
+     */
+    public DynamicForm getAttributeForm2() {
+        return attributeForm2;
+    }
 
-	/**
-	 * Sets the attribute form2.
-	 * 
-	 * @param attributeForm2
-	 *          the new attribute form2
-	 */
-	public void setAttributeForm2(DynamicForm attributeForm2) {
-		this.attributeForm2 = attributeForm2;
-	}
+    /**
+     * Sets the attribute form2.
+     * 
+     * @param attributeForm2
+     *        the new attribute form2
+     */
+    public void setAttributeForm2(DynamicForm attributeForm2) {
+        this.attributeForm2 = attributeForm2;
+    }
 
 }

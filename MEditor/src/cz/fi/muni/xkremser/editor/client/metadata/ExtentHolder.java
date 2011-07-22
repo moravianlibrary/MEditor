@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.List;
@@ -34,145 +35,142 @@ import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
 /**
  * The Class ExtentHolder.
  */
-public class ExtentHolder extends ListOfSimpleValuesHolder {
+public class ExtentHolder
+        extends ListOfSimpleValuesHolder {
 
-	/** The start. */
-	private final ListOfSimpleValuesHolder start;
+    /** The start. */
+    private final ListOfSimpleValuesHolder start;
 
-	/** The end. */
-	private final ListOfSimpleValuesHolder end;
+    /** The end. */
+    private final ListOfSimpleValuesHolder end;
 
-	/** The total. */
-	private final ListOfSimpleValuesHolder total;
+    /** The total. */
+    private final ListOfSimpleValuesHolder total;
 
-	/** The list. */
-	private final ListOfSimpleValuesHolder list;
+    /** The list. */
+    private final ListOfSimpleValuesHolder list;
 
-	/**
-	 * Instantiates a new extent holder.
-	 */
-	public ExtentHolder() {
-		this.start = new ListOfSimpleValuesHolder();
-		this.end = new ListOfSimpleValuesHolder();
-		this.total = new ListOfSimpleValuesHolder();
-		this.list = new ListOfSimpleValuesHolder();
-	}
+    /**
+     * Instantiates a new extent holder.
+     */
+    public ExtentHolder() {
+        this.start = new ListOfSimpleValuesHolder();
+        this.end = new ListOfSimpleValuesHolder();
+        this.total = new ListOfSimpleValuesHolder();
+        this.list = new ListOfSimpleValuesHolder();
+    }
 
-	/**
-	 * Gets the extent.
-	 * 
-	 * @return the extent
-	 */
-	public ExtentTypeClient getExtent() {
-		ExtentTypeClient extentTypeClient = new ExtentTypeClient();
-		if (getAttributeForm() != null) {
-			extentTypeClient.setUnit(getAttributeForm().getValueAsString(ModsConstants.UNIT));
-		}
-		extentTypeClient.setStart(safeGet(start, ModsConstants.START));
-		extentTypeClient.setEnd(safeGet(end, ModsConstants.END));
-		extentTypeClient.setTotal(safeGet(total, ModsConstants.TOTAL));
-		extentTypeClient.setList(safeGet(list, ModsConstants.LIST));
+    /**
+     * Gets the extent.
+     * 
+     * @return the extent
+     */
+    public ExtentTypeClient getExtent() {
+        ExtentTypeClient extentTypeClient = new ExtentTypeClient();
+        if (getAttributeForm() != null) {
+            extentTypeClient.setUnit(getAttributeForm().getValueAsString(ModsConstants.UNIT));
+        }
+        extentTypeClient.setStart(safeGet(start, ModsConstants.START));
+        extentTypeClient.setEnd(safeGet(end, ModsConstants.END));
+        extentTypeClient.setTotal(safeGet(total, ModsConstants.TOTAL));
+        extentTypeClient.setList(safeGet(list, ModsConstants.LIST));
 
-		return extentTypeClient;
-	}
+        return extentTypeClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getSubelements()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-	 * ()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+     * ()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-	 * ()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+     * ()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/**
-	 * Safe get.
-	 * 
-	 * @param holder
-	 *          the holder
-	 * @param key
-	 *          the key
-	 * @return the string
-	 */
-	private String safeGet(ListOfSimpleValuesHolder holder, String key) {
-		if ((holder.getValues() != null && holder.getValues().size() > 0 && holder.getValues().get(0) != null)
-				|| holder.getAttributeForm().getValueAsString(key) != null)
-			return holder.getAttributeForm().getValueAsString(key);
-		else
-			return null;
-	}
+    /**
+     * Safe get.
+     * 
+     * @param holder
+     *        the holder
+     * @param key
+     *        the key
+     * @return the string
+     */
+    private String safeGet(ListOfSimpleValuesHolder holder, String key) {
+        if ((holder.getValues() != null && holder.getValues().size() > 0 && holder.getValues().get(0) != null)
+                || holder.getAttributeForm().getValueAsString(key) != null)
+            return holder.getAttributeForm().getValueAsString(key);
+        else
+            return null;
+    }
 
-	/**
-	 * Gets the start.
-	 * 
-	 * @return the start
-	 */
-	public ListOfSimpleValuesHolder getStart() {
-		return start;
-	}
+    /**
+     * Gets the start.
+     * 
+     * @return the start
+     */
+    public ListOfSimpleValuesHolder getStart() {
+        return start;
+    }
 
-	/**
-	 * Gets the end.
-	 * 
-	 * @return the end
-	 */
-	public ListOfSimpleValuesHolder getEnd() {
-		return end;
-	}
+    /**
+     * Gets the end.
+     * 
+     * @return the end
+     */
+    public ListOfSimpleValuesHolder getEnd() {
+        return end;
+    }
 
-	/**
-	 * Gets the total.
-	 * 
-	 * @return the total
-	 */
-	public ListOfSimpleValuesHolder getTotal() {
-		return total;
-	}
+    /**
+     * Gets the total.
+     * 
+     * @return the total
+     */
+    public ListOfSimpleValuesHolder getTotal() {
+        return total;
+    }
 
-	/**
-	 * Gets the list.
-	 * 
-	 * @return the list
-	 */
-	public ListOfSimpleValuesHolder getList() {
-		return list;
-	}
+    /**
+     * Gets the list.
+     * 
+     * @return the list
+     */
+    public ListOfSimpleValuesHolder getList() {
+        return list;
+    }
 
 }

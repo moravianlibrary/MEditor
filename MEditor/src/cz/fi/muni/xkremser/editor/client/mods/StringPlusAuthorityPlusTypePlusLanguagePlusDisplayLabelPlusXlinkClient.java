@@ -39,53 +39,52 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class
  * StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient.
  */
-public class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient extends StringPlusAuthorityPlusTypePlusLanguageClient implements
-		IsSerializable {
+public class StringPlusAuthorityPlusTypePlusLanguagePlusDisplayLabelPlusXlinkClient
+        extends StringPlusAuthorityPlusTypePlusLanguageClient
+        implements IsSerializable {
 
-	/** The display label. */
-	protected String displayLabel;
+    /** The display label. */
+    protected String displayLabel;
 
-	/** The xlink. */
-	protected String xlink;
+    /** The xlink. */
+    protected String xlink;
 
-	/**
-	 * Gets the value of the displayLabel property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDisplayLabel() {
-		return displayLabel;
-	}
+    /**
+     * Gets the value of the displayLabel property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getDisplayLabel() {
+        return displayLabel;
+    }
 
-	/**
-	 * Sets the value of the displayLabel property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setDisplayLabel(String value) {
-		this.displayLabel = value;
-	}
+    /**
+     * Sets the value of the displayLabel property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setDisplayLabel(String value) {
+        this.displayLabel = value;
+    }
 
-	/**
-	 * Gets the xlink.
-	 * 
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * Gets the xlink.
+     * 
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 
-	/**
-	 * Sets the xlink.
-	 * 
-	 * @param xlink
-	 *          the new xlink
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * Sets the xlink.
+     * 
+     * @param xlink
+     *        the new xlink
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
 
 }

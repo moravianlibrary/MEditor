@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -49,195 +50,199 @@ import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
 /**
  * The Class AppView.
  */
-public class AppView extends ViewWithUiHandlers<MyUiHandlers> implements MyView {
+public class AppView
+        extends ViewWithUiHandlers<MyUiHandlers>
+        implements MyView {
 
-	/**
-	 * The Interface MyUiHandlers.
-	 */
-	public interface MyUiHandlers extends UiHandlers {
+    /**
+     * The Interface MyUiHandlers.
+     */
+    public interface MyUiHandlers
+            extends UiHandlers {
 
-		/**
-		 * Logout.
-		 */
-		void logout();
-	}
+        /**
+         * Logout.
+         */
+        void logout();
+    }
 
-	/** The left container. */
-	private final Layout leftContainer;
+    /** The left container. */
+    private final Layout leftContainer;
 
-	/** The top container. */
-	private final Layout topContainer;
+    /** The top container. */
+    private final Layout topContainer;
 
-	/** The main container. */
-	private final Layout mainContainer;
+    /** The main container. */
+    private final Layout mainContainer;
 
-	/** The widget. */
-	public VLayout widget;
+    /** The widget. */
+    public VLayout widget;
 
-	/** The username. */
-	private final HTMLFlow username;
+    /** The username. */
+    private final HTMLFlow username;
 
-	private final HTMLFlow langSelection;
+    private final HTMLFlow langSelection;
 
-	/** The edit users. */
-	private final HTMLFlow editUsers;
+    /** The edit users. */
+    private final HTMLFlow editUsers;
 
-	private final LangConstants lang;
+    private final LangConstants lang;
 
-	// private HasWidgets mainContainer;
+    // private HasWidgets mainContainer;
 
-	/**
-	 * Instantiates a new app view.
-	 */
-	@Inject
-	public AppView(LangConstants lang) {
-		this.lang = lang;
-		widget = new VLayout();
-		leftContainer = new VLayout();
-		leftContainer.setWidth(275);
-		leftContainer.setShowResizeBar(true);
-		mainContainer = new VLayout(); // TODO: consider some panel
-		widget.setWidth100();
-		// widget.setHeight100();
-		widget.setHeight("98%");
-		widget.setLeaveScrollbarGap(true);
-		widget.setOverflow(Overflow.AUTO);
-		topContainer = new HLayout();
-		topContainer.setWidth100();
-		topContainer.setHeight(45);
+    /**
+     * Instantiates a new app view.
+     */
+    @Inject
+    public AppView(LangConstants lang) {
+        this.lang = lang;
+        widget = new VLayout();
+        leftContainer = new VLayout();
+        leftContainer.setWidth(275);
+        leftContainer.setShowResizeBar(true);
+        mainContainer = new VLayout(); // TODO: consider some panel
+        widget.setWidth100();
+        // widget.setHeight100();
+        widget.setHeight("98%");
+        widget.setLeaveScrollbarGap(true);
+        widget.setOverflow(Overflow.AUTO);
+        topContainer = new HLayout();
+        topContainer.setWidth100();
+        topContainer.setHeight(45);
 
-		HTMLFlow logo = new HTMLFlow("<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
-		// Img logo = new Img("logo_bw.png", 140, 40);
-		// Img logo = new Img("mzk_logo.gif", 283, 87);
-		topContainer.addMember(logo);
+        HTMLFlow logo =
+                new HTMLFlow("<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
+        // Img logo = new Img("logo_bw.png", 140, 40);
+        // Img logo = new Img("mzk_logo.gif", 283, 87);
+        topContainer.addMember(logo);
 
-		HLayout logged = new HLayout();
-		username = new HTMLFlow();
-		username.setWidth(150);
-		username.setStyleName("username");
-		username.setHeight(15);
-		langSelection = new HTMLFlow();
-		langSelection.setWidth(63);
-		langSelection.setHeight(16);
-		final boolean en = LocaleInfo.getCurrentLocale().getLocaleName() != null && LocaleInfo.getCurrentLocale().getLocaleName().startsWith("en");
-		langSelection.setStyleName(en ? "langSelectionEN" : "langSelectionCZ");
-		langSelection.setCursor(Cursor.HAND);
-		langSelection.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-			@Override
-			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-				MEditor.langRefresh(en ? "cs_CZ" : "en_US");
-			}
-		});
-		HTMLFlow anchor = new HTMLFlow(lang.logout());
-		anchor.setCursor(Cursor.HAND);
-		anchor.setWidth(60);
-		anchor.setHeight(15);
-		anchor.setStyleName("pseudolink");
-		anchor.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-			@Override
-			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-				getUiHandlers().logout();
-			}
-		});
-		editUsers = new HTMLFlow();
-		logged.addMember(editUsers);
-		logged.addMember(username);
-		logged.addMember(langSelection);
-		logged.addMember(anchor);
-		logged.setAlign(Alignment.RIGHT);
-		topContainer.addMember(logged);
+        HLayout logged = new HLayout();
+        username = new HTMLFlow();
+        username.setWidth(150);
+        username.setStyleName("username");
+        username.setHeight(15);
+        langSelection = new HTMLFlow();
+        langSelection.setWidth(63);
+        langSelection.setHeight(16);
+        final boolean en =
+                LocaleInfo.getCurrentLocale().getLocaleName() != null
+                        && LocaleInfo.getCurrentLocale().getLocaleName().startsWith("en");
+        langSelection.setStyleName(en ? "langSelectionEN" : "langSelectionCZ");
+        langSelection.setCursor(Cursor.HAND);
+        langSelection.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-		widget.addMember(topContainer);
+            @Override
+            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                MEditor.langRefresh(en ? "cs_CZ" : "en_US");
+            }
+        });
+        HTMLFlow anchor = new HTMLFlow(lang.logout());
+        anchor.setCursor(Cursor.HAND);
+        anchor.setWidth(60);
+        anchor.setHeight(15);
+        anchor.setStyleName("pseudolink");
+        anchor.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-		HLayout underTop = new HLayout();
-		underTop.setAutoWidth();
-		underTop.setAutoHeight();
-		underTop.setOverflow(Overflow.AUTO);
-		underTop.setWidth100();
-		underTop.setHeight100();
-		widget.addMember(underTop);
+            @Override
+            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                getUiHandlers().logout();
+            }
+        });
+        editUsers = new HTMLFlow();
+        logged.addMember(editUsers);
+        logged.addMember(username);
+        logged.addMember(langSelection);
+        logged.addMember(anchor);
+        logged.setAlign(Alignment.RIGHT);
+        topContainer.addMember(logged);
 
-		underTop.addMember(leftContainer);
-		underTop.addMember(mainContainer);
-	}
+        widget.addMember(topContainer);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.View#asWidget()
-	 */
-	@Override
-	public Widget asWidget() {
-		return widget;
-	}
+        HLayout underTop = new HLayout();
+        underTop.setAutoWidth();
+        underTop.setAutoHeight();
+        underTop.setOverflow(Overflow.AUTO);
+        underTop.setWidth100();
+        underTop.setHeight100();
+        widget.addMember(underTop);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.mvp.client.ViewImpl#setInSlot(java.lang.Object,
-	 * com.google.gwt.user.client.ui.Widget)
-	 */
-	@Override
-	public void setInSlot(Object slot, Widget content) {
-		if (slot == AppPresenter.TYPE_SetMainContent) {
-			setMainContent(content);
-			// } else if (slot == AppPresenter.TYPE_SetTopContent) {
-			// setTopContent(content);
-		} else if (slot == AppPresenter.TYPE_SetLeftContent) {
-			setLeftContent(content);
-		} else {
-			super.setInSlot(slot, content);
-		}
-	}
+        underTop.addMember(leftContainer);
+        underTop.addMember(mainContainer);
+    }
 
-	/**
-	 * Sets the main content.
-	 * 
-	 * @param content
-	 *          the new main content
-	 */
-	private void setMainContent(Widget content) {
-		mainContainer.removeMembers(mainContainer.getMembers());
-		if (content != null) {
-			mainContainer.addMember(content);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.View#asWidget()
+     */
+    @Override
+    public Widget asWidget() {
+        return widget;
+    }
 
-	/**
-	 * Sets the left content.
-	 * 
-	 * @param content
-	 *          the new left content
-	 */
-	private void setLeftContent(Widget content) {
-		// leftContainer.clear();
-		if (content != null) {
-			leftContainer.addMember(content);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.gwtplatform.mvp.client.ViewImpl#setInSlot(java.lang.Object,
+     * com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public void setInSlot(Object slot, Widget content) {
+        if (slot == AppPresenter.TYPE_SetMainContent) {
+            setMainContent(content);
+            // } else if (slot == AppPresenter.TYPE_SetTopContent) {
+            // setTopContent(content);
+        } else if (slot == AppPresenter.TYPE_SetLeftContent) {
+            setLeftContent(content);
+        } else {
+            super.setInSlot(slot, content);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView#getUsername
-	 * ()
-	 */
-	@Override
-	public HTMLFlow getUsername() {
-		return username;
-	}
+    /**
+     * Sets the main content.
+     * 
+     * @param content
+     *        the new main content
+     */
+    private void setMainContent(Widget content) {
+        mainContainer.removeMembers(mainContainer.getMembers());
+        if (content != null) {
+            mainContainer.addMember(content);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView#getEditUsers
-	 * ()
-	 */
-	@Override
-	public HTMLFlow getEditUsers() {
-		return editUsers;
-	}
+    /**
+     * Sets the left content.
+     * 
+     * @param content
+     *        the new left content
+     */
+    private void setLeftContent(Widget content) {
+        // leftContainer.clear();
+        if (content != null) {
+            leftContainer.addMember(content);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView#getUsername
+     * ()
+     */
+    @Override
+    public HTMLFlow getUsername() {
+        return username;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView#getEditUsers
+     * ()
+     */
+    @Override
+    public HTMLFlow getEditUsers() {
+        return editUsers;
+    }
 
 }

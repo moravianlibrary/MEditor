@@ -38,28 +38,30 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class StringPlusDisplayLabelPlusTypeClient.
  */
-public class StringPlusDisplayLabelPlusTypeClient extends StringPlusDisplayLabelClient implements IsSerializable {
+public class StringPlusDisplayLabelPlusTypeClient
+        extends StringPlusDisplayLabelClient
+        implements IsSerializable {
 
-	/** The at type. */
-	protected String atType;
+    /** The at type. */
+    protected String atType;
 
-	/**
-	 * Gets the at type.
-	 * 
-	 * @return the at type
-	 */
-	public String getAtType() {
-		return atType;
-	}
+    /**
+     * Gets the at type.
+     * 
+     * @return the at type
+     */
+    public String getAtType() {
+        return atType;
+    }
 
-	/**
-	 * Sets the at type.
-	 * 
-	 * @param value
-	 *          the new at type
-	 */
-	public void setAtType(String value) {
-		this.atType = value;
-	}
+    /**
+     * Sets the at type.
+     * 
+     * @param value
+     *        the new at type
+     */
+    public void setAtType(String value) {
+        this.atType = value;
+    }
 
 }

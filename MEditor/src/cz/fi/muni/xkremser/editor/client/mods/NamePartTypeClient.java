@@ -38,54 +38,51 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class NamePartTypeClient.
  */
-public class NamePartTypeClient implements IsSerializable {
+public class NamePartTypeClient
+        implements IsSerializable {
 
-	/** The value. */
-	protected String value;
+    /** The value. */
+    protected String value;
 
-	/** The type. */
-	protected String type;
+    /** The type. */
+    protected String type;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Gets the value of the type property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Sets the value of the type property.
-	 * 
-	 * @param value
-	 *          allowed object is {@link String }
-	 * 
-	 */
-	public void setType(String value) {
-		this.type = value;
-	}
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *        allowed object is {@link String }
+     */
+    public void setType(String value) {
+        this.type = value;
+    }
 
 }

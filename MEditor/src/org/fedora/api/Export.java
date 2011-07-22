@@ -33,12 +33,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -53,36 +54,28 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "pid",
-    "format",
-    "context"
-})
+@XmlType(name = "", propOrder = {"pid", "format", "context"})
 @XmlRootElement(name = "export")
 public class Export {
 
     /** The pid. */
     @XmlElement(required = true)
     protected String pid;
-    
+
     /** The format. */
     @XmlElement(required = true)
     protected String format;
-    
+
     /** The context. */
     @XmlElement(required = true)
     protected String context;
 
     /**
      * Gets the value of the pid property.
-     *
-     * @return the pid
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid possible object is {@link String }
      */
     public String getPid() {
         return pid;
@@ -92,9 +85,7 @@ public class Export {
      * Sets the value of the pid property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPid(String value) {
         this.pid = value;
@@ -102,10 +93,8 @@ public class Export {
 
     /**
      * Gets the value of the format property.
-     *
-     * @return the format
-     * possible object is
-     * {@link String }
+     * 
+     * @return the format possible object is {@link String }
      */
     public String getFormat() {
         return format;
@@ -115,9 +104,7 @@ public class Export {
      * Sets the value of the format property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setFormat(String value) {
         this.format = value;
@@ -125,10 +112,8 @@ public class Export {
 
     /**
      * Gets the value of the context property.
-     *
-     * @return the context
-     * possible object is
-     * {@link String }
+     * 
+     * @return the context possible object is {@link String }
      */
     public String getContext() {
         return context;
@@ -138,9 +123,7 @@ public class Export {
      * Sets the value of the context property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setContext(String value) {
         this.context = value;

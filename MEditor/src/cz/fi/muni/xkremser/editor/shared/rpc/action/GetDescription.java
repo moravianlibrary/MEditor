@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
@@ -36,17 +37,18 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
-public class GetDescription extends UnsecuredActionImpl<GetDescriptionResult> {
+public class GetDescription
+        extends UnsecuredActionImpl<GetDescriptionResult> {
 
-	/** The config. */
-	@In(1)
-	String uuid;
+    /** The config. */
+    @In(1)
+    String uuid;
 
-	/** The description. */
-	@Out(1)
-	String description;
+    /** The description. */
+    @Out(1)
+    String description;
 
-	/** The user description. */
-	@Out(2)
-	String userDescription;
+    /** The user description. */
+    @Out(2)
+    String userDescription;
 }

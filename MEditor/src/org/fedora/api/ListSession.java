@@ -28,6 +28,7 @@
 package org.fedora.api;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,12 +37,13 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for ListSession complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for ListSession complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ListSession">
@@ -57,40 +59,31 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListSession", propOrder = {
-    "token",
-    "cursor",
-    "completeListSize",
-    "expirationDate"
-})
+@XmlType(name = "ListSession", propOrder = {"token", "cursor", "completeListSize", "expirationDate"})
 public class ListSession {
 
     /** The token. */
     @XmlElement(required = true, nillable = true)
     protected String token;
-    
+
     /** The cursor. */
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger cursor;
-    
+
     /** The complete list size. */
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger completeListSize;
-    
+
     /** The expiration date. */
     @XmlElementRef(name = "expirationDate", type = JAXBElement.class)
     protected JAXBElement<String> expirationDate;
 
     /**
      * Gets the value of the token property.
-     *
-     * @return the token
-     * possible object is
-     * {@link String }
+     * 
+     * @return the token possible object is {@link String }
      */
     public String getToken() {
         return token;
@@ -100,9 +93,7 @@ public class ListSession {
      * Sets the value of the token property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setToken(String value) {
         this.token = value;
@@ -110,10 +101,8 @@ public class ListSession {
 
     /**
      * Gets the value of the cursor property.
-     *
-     * @return the cursor
-     * possible object is
-     * {@link BigInteger }
+     * 
+     * @return the cursor possible object is {@link BigInteger }
      */
     public BigInteger getCursor() {
         return cursor;
@@ -123,9 +112,7 @@ public class ListSession {
      * Sets the value of the cursor property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *        allowed object is {@link BigInteger }
      */
     public void setCursor(BigInteger value) {
         this.cursor = value;
@@ -133,10 +120,8 @@ public class ListSession {
 
     /**
      * Gets the value of the completeListSize property.
-     *
-     * @return the complete list size
-     * possible object is
-     * {@link BigInteger }
+     * 
+     * @return the complete list size possible object is {@link BigInteger }
      */
     public BigInteger getCompleteListSize() {
         return completeListSize;
@@ -146,9 +131,7 @@ public class ListSession {
      * Sets the value of the completeListSize property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *        allowed object is {@link BigInteger }
      */
     public void setCompleteListSize(BigInteger value) {
         this.completeListSize = value;
@@ -156,10 +139,9 @@ public class ListSession {
 
     /**
      * Gets the value of the expirationDate property.
-     *
-     * @return the expiration date
-     * possible object is
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
+     * 
+     * @return the expiration date possible object is {@link JAXBElement }
+     *         {@code <}{@link String }{@code >}
      */
     public JAXBElement<String> getExpirationDate() {
         return expirationDate;
@@ -169,12 +151,11 @@ public class ListSession {
      * Sets the value of the expirationDate property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link String }{@code >}
-     *     
+     *        allowed object is {@link JAXBElement }{@code <}{@link String }
+     *        {@code >}
      */
     public void setExpirationDate(JAXBElement<String> value) {
-        this.expirationDate = ((JAXBElement<String> ) value);
+        this.expirationDate = (value);
     }
 
 }

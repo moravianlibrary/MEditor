@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.view;
 
 import com.google.gwt.user.client.Timer;
@@ -48,268 +49,272 @@ import com.smartgwt.client.widgets.layout.VLayout;
  */
 public class ModalWindow {
 
-	/** The canvas to be masked. */
-	private final Canvas canvas;
+    /** The canvas to be masked. */
+    private final Canvas canvas;
 
-	/** Parent for modal layer. */
-	private HLayout parent;
+    /** Parent for modal layer. */
+    private HLayout parent;
 
-	/** The modal layer. */
-	private VLayout modal;
+    /** The modal layer. */
+    private VLayout modal;
 
-	/** The reference to the transparent layer inside the modal HStack. */
-	private Canvas transparent;
+    /** The reference to the transparent layer inside the modal HStack. */
+    private Canvas transparent;
 
-	/** The exact time when show was called on this modal. */
-	private long showStartedTime;
+    /** The exact time when show was called on this modal. */
+    private long showStartedTime;
 
-	/**
-	 * The loading icon, by default "{@link Page#getSkinImgDir()}/loading.gif"
-	 */
-	private String loadingIcon = null;
+    /**
+     * The loading icon, by default "{@link Page#getSkinImgDir()}/loading.gif"
+     */
+    private String loadingIcon = null;
 
-	/** The color, by default white. */
-	private String messageBoxBgColor = "#fff";
+    /** The color, by default white. */
+    private String messageBoxBgColor = "#fff";
 
-	/** Holds the default opacity for the background masking color. */
-	private int opacity = 30;
+    /** Holds the default opacity for the background masking color. */
+    private int opacity = 30;
 
-	/** Holds the default color for the masking. */
-	private String maskingColor = "#555";
+    /** Holds the default color for the masking. */
+    private String maskingColor = "#555";
 
-	/**
-	 * Creates a new {@link ModalWindow} given the canvas to be masked (an.
-	 * 
-	 * @param canvas
-	 *          the canvas to be masked {@link Canvas#addChild(Canvas)} will be
-	 *          called to add the masking layer above the given canvas)
-	 */
-	public ModalWindow(Canvas canvas) {
-		this.canvas = canvas;
-		createModalPanel();
-	}
+    /**
+     * Creates a new {@link ModalWindow} given the canvas to be masked (an.
+     * 
+     * @param canvas
+     *        the canvas to be masked {@link Canvas#addChild(Canvas)} will be
+     *        called to add the masking layer above the given canvas)
+     */
+    public ModalWindow(Canvas canvas) {
+        this.canvas = canvas;
+        createModalPanel();
+    }
 
-	/**
-	 * Creates a new {@link ModalWindow} given the canvas to be masked (an.
-	 * 
-	 * @param canvas
-	 *          the canvas to be masked
-	 * @param opacity
-	 *          the opacity used for modal
-	 * @param maskingColor
-	 *          the color used for modal {@link Canvas#addChild(Canvas)} will be
-	 *          called to add the masking layer above the given canvas)
-	 */
-	public ModalWindow(Canvas canvas, int opacity, String maskingColor) {
-		this.canvas = canvas;
-		this.opacity = opacity;
-		this.maskingColor = maskingColor;
-		createModalPanel();
-	}
+    /**
+     * Creates a new {@link ModalWindow} given the canvas to be masked (an.
+     * 
+     * @param canvas
+     *        the canvas to be masked
+     * @param opacity
+     *        the opacity used for modal
+     * @param maskingColor
+     *        the color used for modal {@link Canvas#addChild(Canvas)} will be
+     *        called to add the masking layer above the given canvas)
+     */
+    public ModalWindow(Canvas canvas, int opacity, String maskingColor) {
+        this.canvas = canvas;
+        this.opacity = opacity;
+        this.maskingColor = maskingColor;
+        createModalPanel();
+    }
 
-	/**
-	 * Mask the {@link Canvas} with a transparent color.
-	 * 
-	 * @param showLoading
-	 *          whether to show a box with a loading indicator above the
-	 *          background
-	 */
-	public void show(boolean showLoading) {
-		showStartedTime = System.currentTimeMillis();
-		insertModalIntoCanvas();
-		clearLabel();
-		if (showLoading) {
-			modal.addMember(createLabel("", showLoading));
-		}
-		parent.show();
-	}
+    /**
+     * Mask the {@link Canvas} with a transparent color.
+     * 
+     * @param showLoading
+     *        whether to show a box with a loading indicator above the
+     *        background
+     */
+    public void show(boolean showLoading) {
+        showStartedTime = System.currentTimeMillis();
+        insertModalIntoCanvas();
+        clearLabel();
+        if (showLoading) {
+            modal.addMember(createLabel("", showLoading));
+        }
+        parent.show();
+    }
 
-	/**
-	 * Mask the {@link Canvas} with a transparent color and display a message
-	 * above it.
-	 * 
-	 * @param message
-	 *          the message to display above the background
-	 * @param showLoading
-	 *          whether to show a box with a loading indicator above the
-	 *          background
-	 */
-	public void show(String message, boolean showLoading) {
-		showStartedTime = System.currentTimeMillis();
-		insertModalIntoCanvas();
-		clearLabel();
-		if (showLoading || !message.equals("")) {
-			modal.addMember(createLabel(message, showLoading));
-		}
-		parent.show();
-	}
+    /**
+     * Mask the {@link Canvas} with a transparent color and display a message
+     * above it.
+     * 
+     * @param message
+     *        the message to display above the background
+     * @param showLoading
+     *        whether to show a box with a loading indicator above the
+     *        background
+     */
+    public void show(String message, boolean showLoading) {
+        showStartedTime = System.currentTimeMillis();
+        insertModalIntoCanvas();
+        clearLabel();
+        if (showLoading || !message.equals("")) {
+            modal.addMember(createLabel(message, showLoading));
+        }
+        parent.show();
+    }
 
-	/**
-	 * Hide the masking layer from the {@link Canvas}.
-	 */
-	public void hide() {
-		long showEndTime = System.currentTimeMillis();
-		// don't hide if is showed for less than 1s, avoid flickering
-		int delay = 1000;
-		if (showEndTime - showStartedTime < delay) {
-			new Timer() {
-				@Override
-				public void run() {
-					_hide();
-				}
-			}.schedule((int) (delay - (showEndTime - showStartedTime)));
-		} else {
-			_hide();
-		}
-	}
+    /**
+     * Hide the masking layer from the {@link Canvas}.
+     */
+    public void hide() {
+        long showEndTime = System.currentTimeMillis();
+        // don't hide if is showed for less than 1s, avoid flickering
+        int delay = 1000;
+        if (showEndTime - showStartedTime < delay) {
+            new Timer() {
 
-	/**
-	 * _hide.
-	 */
-	private void _hide() {
-		parent.hide();
-	}
+                @Override
+                public void run() {
+                    _hide();
+                }
+            }.schedule((int) (delay - (showEndTime - showStartedTime)));
+        } else {
+            _hide();
+        }
+    }
 
-	/**
-	 * Insert modal into canvas.
-	 */
-	private void insertModalIntoCanvas() {
-		if (!canvas.contains(parent)) {
-			canvas.addChild(parent);
-			canvas.addResizedHandler(new ResizedHandler() {
-				@Override
-				public void onResized(ResizedEvent event) {
-					parent.setWidth(canvas.getWidth());
-					parent.setHeight(canvas.getHeight());
-				}
-			});
-		}
-	}
+    /**
+     * _hide.
+     */
+    private void _hide() {
+        parent.hide();
+    }
 
-	/**
-	 * Clear label.
-	 */
-	private void clearLabel() {
-		Canvas[] children = modal.getChildren();
-		for (Canvas canvas : children) {
-			if (canvas instanceof Label) {
-				Label label = (Label) canvas;
-				modal.removeChild(label);
-				label.destroy();
-			}
-		}
-	}
+    /**
+     * Insert modal into canvas.
+     */
+    private void insertModalIntoCanvas() {
+        if (!canvas.contains(parent)) {
+            canvas.addChild(parent);
+            canvas.addResizedHandler(new ResizedHandler() {
 
-	/**
-	 * Creates the modal panel.
-	 */
-	private void createModalPanel() {
-		parent = new HLayout();
-		parent.setDefaultLayoutAlign(VerticalAlignment.CENTER);
-		parent.hide();
-		// we need a handler to ensure we always cover the entire canvas
-		parent.addDrawHandler(new DrawHandler() {
-			@Override
-			public void onDraw(DrawEvent event) {
-				parent.setWidth(canvas.getVisibleWidth());
-				parent.setHeight(canvas.getVisibleHeight());
-			}
-		});
+                @Override
+                public void onResized(ResizedEvent event) {
+                    parent.setWidth(canvas.getWidth());
+                    parent.setHeight(canvas.getHeight());
+                }
+            });
+        }
+    }
 
-		transparent = new Canvas();
-		transparent.setWidth100();
-		transparent.setHeight100();
-		transparent.setBackgroundColor(maskingColor);
-		transparent.setOpacity(opacity);
-		parent.addChild(transparent);
+    /**
+     * Clear label.
+     */
+    private void clearLabel() {
+        Canvas[] children = modal.getChildren();
+        for (Canvas canvas : children) {
+            if (canvas instanceof Label) {
+                Label label = (Label) canvas;
+                modal.removeChild(label);
+                label.destroy();
+            }
+        }
+    }
 
-		modal = new VLayout();
-		modal.setDefaultLayoutAlign(Alignment.CENTER);
-		modal.setHeight(25); // this is for label height
-		modal.setZIndex(transparent.getZIndex() + 2);
-		parent.addMember(modal);
+    /**
+     * Creates the modal panel.
+     */
+    private void createModalPanel() {
+        parent = new HLayout();
+        parent.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+        parent.hide();
+        // we need a handler to ensure we always cover the entire canvas
+        parent.addDrawHandler(new DrawHandler() {
 
-		insertModalIntoCanvas();
-	}
+            @Override
+            public void onDraw(DrawEvent event) {
+                parent.setWidth(canvas.getVisibleWidth());
+                parent.setHeight(canvas.getVisibleHeight());
+            }
+        });
 
-	/**
-	 * Creates the label.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param showLoading
-	 *          the show loading
-	 * @return the label
-	 */
-	private Label createLabel(String message, boolean showLoading) {
-		final Label label = new Label();
-		label.setWrap(false);
-		label.setPadding(5);
-		label.setWidth(1);
-		label.setHeight(1);
-		label.setContents(message);
-		label.setBackgroundColor(messageBoxBgColor);
-		label.setBorder("1px solid #999");
-		label.setShowShadow(true);
-		label.setShadowSoftness(0);
-		label.setShadowOffset(10);
-		label.addDrawHandler(new DrawHandler() {
-			@Override
-			public void onDraw(DrawEvent event) {
-				int visibleWidth = label.getVisibleWidth();
-				label.setWidth(visibleWidth);
-				label.setMargin(10);
-			}
-		});
-		label.setAlign(Alignment.CENTER);
-		if (showLoading) {
-			if (loadingIcon != null) { // icon provided by user
-				label.setIcon(loadingIcon);
-			} else { // show default icon from used skin
-				String icon = Page.getSkinImgDir() + "loading.gif";
-				label.setIcon(icon);
-			}
-			if (message.equals("")) { // no spacing, just show the loading icon
-				// centered
-				label.setIconSpacing(0);
-			}
-		}
-		label.setZIndex(modal.getZIndex() + 2);
-		return label;
-	}
+        transparent = new Canvas();
+        transparent.setWidth100();
+        transparent.setHeight100();
+        transparent.setBackgroundColor(maskingColor);
+        transparent.setOpacity(opacity);
+        parent.addChild(transparent);
 
-	/**
-	 * Destroy the {@link ModalWindow} freeing up resources.
-	 */
-	public void destroy() {
-		parent.destroy();
-	}
+        modal = new VLayout();
+        modal.setDefaultLayoutAlign(Alignment.CENTER);
+        modal.setHeight(25); // this is for label height
+        modal.setZIndex(transparent.getZIndex() + 2);
+        parent.addMember(modal);
 
-	/**
-	 * Optional icon to be used instead of the default one.
-	 * <P>
-	 * Specify as the partial URL to an image, relative to the imgDir (by default
-	 * "public/images/") of this component
-	 * 
-	 * @param loadingIcon
-	 *          icon URL of new image icon. Default value is <blockquote> "
-	 *          {@link Page#getSkinImgDir()}/loading.gif "
-	 */
-	public void setLoadingIcon(String loadingIcon) {
-		this.loadingIcon = loadingIcon;
-	}
+        insertModalIntoCanvas();
+    }
 
-	/**
-	 * The background color for the message/loading box. You can set this property
-	 * to an RGB value (e.g. #22AAFF) or a named color (e.g. red) from a list of
-	 * browser supported color names.
-	 * 
-	 * @param backgroundColor
-	 *          new background color to set to the message/loading box. Default
-	 *          value is "#fff"
-	 */
-	public void setBackgroundColor(String backgroundColor) {
-		this.messageBoxBgColor = backgroundColor;
-	}
+    /**
+     * Creates the label.
+     * 
+     * @param message
+     *        the message
+     * @param showLoading
+     *        the show loading
+     * @return the label
+     */
+    private Label createLabel(String message, boolean showLoading) {
+        final Label label = new Label();
+        label.setWrap(false);
+        label.setPadding(5);
+        label.setWidth(1);
+        label.setHeight(1);
+        label.setContents(message);
+        label.setBackgroundColor(messageBoxBgColor);
+        label.setBorder("1px solid #999");
+        label.setShowShadow(true);
+        label.setShadowSoftness(0);
+        label.setShadowOffset(10);
+        label.addDrawHandler(new DrawHandler() {
+
+            @Override
+            public void onDraw(DrawEvent event) {
+                int visibleWidth = label.getVisibleWidth();
+                label.setWidth(visibleWidth);
+                label.setMargin(10);
+            }
+        });
+        label.setAlign(Alignment.CENTER);
+        if (showLoading) {
+            if (loadingIcon != null) { // icon provided by user
+                label.setIcon(loadingIcon);
+            } else { // show default icon from used skin
+                String icon = Page.getSkinImgDir() + "loading.gif";
+                label.setIcon(icon);
+            }
+            if (message.equals("")) { // no spacing, just show the loading icon
+                // centered
+                label.setIconSpacing(0);
+            }
+        }
+        label.setZIndex(modal.getZIndex() + 2);
+        return label;
+    }
+
+    /**
+     * Destroy the {@link ModalWindow} freeing up resources.
+     */
+    public void destroy() {
+        parent.destroy();
+    }
+
+    /**
+     * Optional icon to be used instead of the default one.
+     * <P>
+     * Specify as the partial URL to an image, relative to the imgDir (by
+     * default "public/images/") of this component
+     * 
+     * @param loadingIcon
+     *        icon URL of new image icon. Default value is <blockquote> "
+     *        {@link Page#getSkinImgDir()}/loading.gif "
+     */
+    public void setLoadingIcon(String loadingIcon) {
+        this.loadingIcon = loadingIcon;
+    }
+
+    /**
+     * The background color for the message/loading box. You can set this
+     * property to an RGB value (e.g. #22AAFF) or a named color (e.g. red) from
+     * a list of browser supported color names.
+     * 
+     * @param backgroundColor
+     *        new background color to set to the message/loading box. Default
+     *        value is "#fff"
+     */
+    public void setBackgroundColor(String backgroundColor) {
+        this.messageBoxBgColor = backgroundColor;
+    }
 
 }

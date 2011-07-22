@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
 import javax.xml.xpath.XPath;
@@ -33,6 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
@@ -44,54 +46,56 @@ import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaceContext;
  */
 public class PeriodicalItemUtils {
 
-	/** The Constant LOGGER. */
-	private static final Logger LOGGER = Logger.getLogger(PeriodicalItemUtils.class);
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(PeriodicalItemUtils.class);
 
-	/**
-	 * Gets the date.
-	 * 
-	 * @param doc
-	 *          the doc
-	 * @return the date
-	 */
-	public static String getDate(Document doc) {
-		try {
-			XPathFactory xpfactory = XPathFactory.newInstance();
-			XPath xpath = xpfactory.newXPath();
-			xpath.setNamespaceContext(new FedoraNamespaceContext());
-			XPathExpression expr = xpath.compile("//mods:mods/mods:part[@type='PeriodicalIssue']/mods:date/text()");
-			Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
-			return (String) pageNumber;
-		} catch (XPathExpressionException e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		} catch (DOMException e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Gets the date.
+     * 
+     * @param doc
+     *        the doc
+     * @return the date
+     */
+    public static String getDate(Document doc) {
+        try {
+            XPathFactory xpfactory = XPathFactory.newInstance();
+            XPath xpath = xpfactory.newXPath();
+            xpath.setNamespaceContext(new FedoraNamespaceContext());
+            XPathExpression expr =
+                    xpath.compile("//mods:mods/mods:part[@type='PeriodicalIssue']/mods:date/text()");
+            Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
+            return (String) pageNumber;
+        } catch (XPathExpressionException e) {
+            LOGGER.error(e.getMessage(), e);
+            return null;
+        } catch (DOMException e) {
+            LOGGER.error(e.getMessage(), e);
+            return null;
+        }
+    }
 
-	/**
-	 * Gets the item number.
-	 * 
-	 * @param doc
-	 *          the doc
-	 * @return the item number
-	 */
-	public static String getItemNumber(Document doc) {
-		try {
-			XPathFactory xpfactory = XPathFactory.newInstance();
-			XPath xpath = xpfactory.newXPath();
-			xpath.setNamespaceContext(new FedoraNamespaceContext());
-			XPathExpression expr = xpath.compile("//mods:mods/mods:part[@type='PeriodicalIssue']/mods:detail[@type='issue']/mods:number/text()");
-			Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
-			return (String) pageNumber;
-		} catch (XPathExpressionException e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		} catch (DOMException e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Gets the item number.
+     * 
+     * @param doc
+     *        the doc
+     * @return the item number
+     */
+    public static String getItemNumber(Document doc) {
+        try {
+            XPathFactory xpfactory = XPathFactory.newInstance();
+            XPath xpath = xpfactory.newXPath();
+            xpath.setNamespaceContext(new FedoraNamespaceContext());
+            XPathExpression expr =
+                    xpath.compile("//mods:mods/mods:part[@type='PeriodicalIssue']/mods:detail[@type='issue']/mods:number/text()");
+            Object pageNumber = expr.evaluate(doc, XPathConstants.STRING);
+            return (String) pageNumber;
+        } catch (XPathExpressionException e) {
+            LOGGER.error(e.getMessage(), e);
+            return null;
+        } catch (DOMException e) {
+            LOGGER.error(e.getMessage(), e);
+            return null;
+        }
+    }
 }

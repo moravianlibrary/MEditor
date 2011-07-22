@@ -24,14 +24,15 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
-
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
+import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
@@ -39,73 +40,72 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 /**
  * The Class RequestIPaddressChecker.
  */
-public class RequestIPaddressChecker implements IPaddressChecker {
+public class RequestIPaddressChecker
+        implements IPaddressChecker {
 
-	private static final Logger LOGGER = Logger.getLogger(RequestIPaddressChecker.class);
+    private static final Logger LOGGER = Logger.getLogger(RequestIPaddressChecker.class);
 
-	/** The configuration. */
-	@Inject
-	private EditorConfiguration configuration;
+    /** The configuration. */
+    @Inject
+    private EditorConfiguration configuration;
 
-	/** The provider. */
-	private final Provider<HttpServletRequest> provider;
+    /** The provider. */
+    private final Provider<HttpServletRequest> provider;
 
-	/**
-	 * Instantiates a new request i paddress checker.
-	 * 
-	 * @param provider
-	 *          the provider
-	 */
-	@Inject
-	public RequestIPaddressChecker(Provider<HttpServletRequest> provider) {
-		super();
-		this.provider = provider;
-		LOGGER.debug("provider is '" + provider + "'");
-	}
+    /**
+     * Instantiates a new request i paddress checker.
+     * 
+     * @param provider
+     *        the provider
+     */
+    @Inject
+    public RequestIPaddressChecker(Provider<HttpServletRequest> provider) {
+        super();
+        this.provider = provider;
+        LOGGER.debug("provider is '" + provider + "'");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#privateVisitor()
-	 */
-	@Override
-	public boolean privateVisitor() {
-		String[] patterns = configuration.getUserAccessPatterns();
-		return checkPatterns(patterns);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#privateVisitor
+     * ()
+     */
+    @Override
+    public boolean privateVisitor() {
+        String[] patterns = configuration.getUserAccessPatterns();
+        return checkPatterns(patterns);
+    }
 
-	/**
-	 * Check patterns.
-	 * 
-	 * @param patterns
-	 *          the patterns
-	 * @return true, if successful
-	 */
-	private boolean checkPatterns(String[] patterns) {
-		HttpServletRequest httpServletRequest = this.provider.get();
-		String remoteAddr = httpServletRequest.getRemoteAddr();
-		if (patterns != null) {
-			for (String regex : patterns) {
-				if (remoteAddr.matches(regex))
-					return true;
-			}
-		}
-		LOGGER.info("Remote address is == " + remoteAddr);
-		return false;
-	}
+    /**
+     * Check patterns.
+     * 
+     * @param patterns
+     *        the patterns
+     * @return true, if successful
+     */
+    private boolean checkPatterns(String[] patterns) {
+        HttpServletRequest httpServletRequest = this.provider.get();
+        String remoteAddr = httpServletRequest.getRemoteAddr();
+        if (patterns != null) {
+            for (String regex : patterns) {
+                if (remoteAddr.matches(regex)) return true;
+            }
+        }
+        LOGGER.info("Remote address is == " + remoteAddr);
+        return false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#localHostVisitor
-	 * ()
-	 */
-	@Override
-	public boolean localHostVisitor() {
-		String[] patterns = configuration.getAdminAccessPatterns();
-		return checkPatterns(patterns);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker#localHostVisitor
+     * ()
+     */
+    @Override
+    public boolean localHostVisitor() {
+        String[] patterns = configuration.getAdminAccessPatterns();
+        return checkPatterns(patterns);
+    }
 
 }

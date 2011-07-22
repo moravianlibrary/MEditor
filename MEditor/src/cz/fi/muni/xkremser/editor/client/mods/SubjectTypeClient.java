@@ -42,470 +42,466 @@ import cz.fi.muni.xkremser.editor.server.mods.PlaceAuthority;
 /**
  * The Class SubjectTypeClient.
  */
-public class SubjectTypeClient implements IsSerializable {
+public class SubjectTypeClient
+        implements IsSerializable {
 
-	/** The topic. */
-	protected List<String> topic;
+    /** The topic. */
+    protected List<String> topic;
 
-	/** The geographic. */
-	protected List<String> geographic;
+    /** The geographic. */
+    protected List<String> geographic;
 
-	/** The temporal. */
-	protected List<DateTypeClient> temporal;
+    /** The temporal. */
+    protected List<DateTypeClient> temporal;
 
-	/** The title info. */
-	protected List<TitleInfoTypeClient> titleInfo;
+    /** The title info. */
+    protected List<TitleInfoTypeClient> titleInfo;
 
-	/** The name. */
-	protected List<NameTypeClient> name;
+    /** The name. */
+    protected List<NameTypeClient> name;
 
-	/** The geographic code. */
-	protected List<GeographicCodeClient> geographicCode;
+    /** The geographic code. */
+    protected List<GeographicCodeClient> geographicCode;
 
-	/** The hierarchical geographic. */
-	protected List<HierarchicalGeographicTypeClient> hierarchicalGeographic;
+    /** The hierarchical geographic. */
+    protected List<HierarchicalGeographicTypeClient> hierarchicalGeographic;
 
-	/** The cartographics. */
-	protected List<CartographicsClient> cartographics;
+    /** The cartographics. */
+    protected List<CartographicsClient> cartographics;
 
-	/** The occupation. */
-	protected List<String> occupation;
+    /** The occupation. */
+    protected List<String> occupation;
 
-	/** The genre. */
-	protected List<String> genre;
+    /** The genre. */
+    protected List<String> genre;
 
-	/** The id. */
-	protected String id;
+    /** The id. */
+    protected String id;
 
-	/** The authority. */
-	protected String authority;
+    /** The authority. */
+    protected String authority;
 
-	/** The xlink. */
-	protected String xlink;
+    /** The xlink. */
+    protected String xlink;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the topic.
-	 * 
-	 * @return the topic
-	 */
-	public List<String> getTopic() {
-		return topic;
-	}
+    /**
+     * Gets the topic.
+     * 
+     * @return the topic
+     */
+    public List<String> getTopic() {
+        return topic;
+    }
 
-	/**
-	 * Sets the topic.
-	 * 
-	 * @param topic
-	 *          the new topic
-	 */
-	public void setTopic(List<String> topic) {
-		this.topic = topic;
-	}
+    /**
+     * Sets the topic.
+     * 
+     * @param topic
+     *        the new topic
+     */
+    public void setTopic(List<String> topic) {
+        this.topic = topic;
+    }
 
-	/**
-	 * Gets the geographic.
-	 * 
-	 * @return the geographic
-	 */
-	public List<String> getGeographic() {
-		return geographic;
-	}
+    /**
+     * Gets the geographic.
+     * 
+     * @return the geographic
+     */
+    public List<String> getGeographic() {
+        return geographic;
+    }
 
-	/**
-	 * Sets the geographic.
-	 * 
-	 * @param geographic
-	 *          the new geographic
-	 */
-	public void setGeographic(List<String> geographic) {
-		this.geographic = geographic;
-	}
+    /**
+     * Sets the geographic.
+     * 
+     * @param geographic
+     *        the new geographic
+     */
+    public void setGeographic(List<String> geographic) {
+        this.geographic = geographic;
+    }
 
-	/**
-	 * Gets the temporal.
-	 * 
-	 * @return the temporal
-	 */
-	public List<DateTypeClient> getTemporal() {
-		return temporal;
-	}
+    /**
+     * Gets the temporal.
+     * 
+     * @return the temporal
+     */
+    public List<DateTypeClient> getTemporal() {
+        return temporal;
+    }
 
-	/**
-	 * Sets the temporal.
-	 * 
-	 * @param temporal
-	 *          the new temporal
-	 */
-	public void setTemporal(List<DateTypeClient> temporal) {
-		this.temporal = temporal;
-	}
+    /**
+     * Sets the temporal.
+     * 
+     * @param temporal
+     *        the new temporal
+     */
+    public void setTemporal(List<DateTypeClient> temporal) {
+        this.temporal = temporal;
+    }
 
-	/**
-	 * Gets the title info.
-	 * 
-	 * @return the title info
-	 */
-	public List<TitleInfoTypeClient> getTitleInfo() {
-		return titleInfo;
-	}
+    /**
+     * Gets the title info.
+     * 
+     * @return the title info
+     */
+    public List<TitleInfoTypeClient> getTitleInfo() {
+        return titleInfo;
+    }
 
-	/**
-	 * Sets the title info.
-	 * 
-	 * @param titleInfo
-	 *          the new title info
-	 */
-	public void setTitleInfo(List<TitleInfoTypeClient> titleInfo) {
-		this.titleInfo = titleInfo;
-	}
+    /**
+     * Sets the title info.
+     * 
+     * @param titleInfo
+     *        the new title info
+     */
+    public void setTitleInfo(List<TitleInfoTypeClient> titleInfo) {
+        this.titleInfo = titleInfo;
+    }
 
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public List<NameTypeClient> getName() {
-		return name;
-	}
+    /**
+     * Gets the name.
+     * 
+     * @return the name
+     */
+    public List<NameTypeClient> getName() {
+        return name;
+    }
 
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name
-	 *          the new name
-	 */
-	public void setName(List<NameTypeClient> name) {
-		this.name = name;
-	}
+    /**
+     * Sets the name.
+     * 
+     * @param name
+     *        the new name
+     */
+    public void setName(List<NameTypeClient> name) {
+        this.name = name;
+    }
 
-	/**
-	 * Gets the geographic code.
-	 * 
-	 * @return the geographic code
-	 */
-	public List<GeographicCodeClient> getGeographicCode() {
-		return geographicCode;
-	}
+    /**
+     * Gets the geographic code.
+     * 
+     * @return the geographic code
+     */
+    public List<GeographicCodeClient> getGeographicCode() {
+        return geographicCode;
+    }
 
-	/**
-	 * Sets the geographic code.
-	 * 
-	 * @param geographicCode
-	 *          the new geographic code
-	 */
-	public void setGeographicCode(List<GeographicCodeClient> geographicCode) {
-		this.geographicCode = geographicCode;
-	}
+    /**
+     * Sets the geographic code.
+     * 
+     * @param geographicCode
+     *        the new geographic code
+     */
+    public void setGeographicCode(List<GeographicCodeClient> geographicCode) {
+        this.geographicCode = geographicCode;
+    }
 
-	/**
-	 * Gets the hierarchical geographic.
-	 * 
-	 * @return the hierarchical geographic
-	 */
-	public List<HierarchicalGeographicTypeClient> getHierarchicalGeographic() {
-		return hierarchicalGeographic;
-	}
+    /**
+     * Gets the hierarchical geographic.
+     * 
+     * @return the hierarchical geographic
+     */
+    public List<HierarchicalGeographicTypeClient> getHierarchicalGeographic() {
+        return hierarchicalGeographic;
+    }
 
-	/**
-	 * Sets the hierarchical geographic.
-	 * 
-	 * @param hierarchicalGeographic
-	 *          the new hierarchical geographic
-	 */
-	public void setHierarchicalGeographic(List<HierarchicalGeographicTypeClient> hierarchicalGeographic) {
-		this.hierarchicalGeographic = hierarchicalGeographic;
-	}
+    /**
+     * Sets the hierarchical geographic.
+     * 
+     * @param hierarchicalGeographic
+     *        the new hierarchical geographic
+     */
+    public void setHierarchicalGeographic(List<HierarchicalGeographicTypeClient> hierarchicalGeographic) {
+        this.hierarchicalGeographic = hierarchicalGeographic;
+    }
 
-	/**
-	 * Gets the cartographics.
-	 * 
-	 * @return the cartographics
-	 */
-	public List<CartographicsClient> getCartographics() {
-		return cartographics;
-	}
+    /**
+     * Gets the cartographics.
+     * 
+     * @return the cartographics
+     */
+    public List<CartographicsClient> getCartographics() {
+        return cartographics;
+    }
 
-	/**
-	 * Sets the cartographics.
-	 * 
-	 * @param cartographics
-	 *          the new cartographics
-	 */
-	public void setCartographics(List<CartographicsClient> cartographics) {
-		this.cartographics = cartographics;
-	}
+    /**
+     * Sets the cartographics.
+     * 
+     * @param cartographics
+     *        the new cartographics
+     */
+    public void setCartographics(List<CartographicsClient> cartographics) {
+        this.cartographics = cartographics;
+    }
 
-	/**
-	 * Gets the occupation.
-	 * 
-	 * @return the occupation
-	 */
-	public List<String> getOccupation() {
-		return occupation;
-	}
+    /**
+     * Gets the occupation.
+     * 
+     * @return the occupation
+     */
+    public List<String> getOccupation() {
+        return occupation;
+    }
 
-	/**
-	 * Sets the occupation.
-	 * 
-	 * @param occupation
-	 *          the new occupation
-	 */
-	public void setOccupation(List<String> occupation) {
-		this.occupation = occupation;
-	}
+    /**
+     * Sets the occupation.
+     * 
+     * @param occupation
+     *        the new occupation
+     */
+    public void setOccupation(List<String> occupation) {
+        this.occupation = occupation;
+    }
 
-	/**
-	 * Gets the genre.
-	 * 
-	 * @return the genre
-	 */
-	public List<String> getGenre() {
-		return genre;
-	}
+    /**
+     * Gets the genre.
+     * 
+     * @return the genre
+     */
+    public List<String> getGenre() {
+        return genre;
+    }
 
-	/**
-	 * Sets the genre.
-	 * 
-	 * @param genre
-	 *          the new genre
-	 */
-	public void setGenre(List<String> genre) {
-		this.genre = genre;
-	}
+    /**
+     * Sets the genre.
+     * 
+     * @param genre
+     *        the new genre
+     */
+    public void setGenre(List<String> genre) {
+        this.genre = genre;
+    }
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *          the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *        the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * Gets the authority.
-	 * 
-	 * @return the authority
-	 */
-	public String getAuthority() {
-		return authority;
-	}
+    /**
+     * Gets the authority.
+     * 
+     * @return the authority
+     */
+    public String getAuthority() {
+        return authority;
+    }
 
-	/**
-	 * Sets the authority.
-	 * 
-	 * @param authority
-	 *          the new authority
-	 */
-	public void setAuthority(String authority) {
-		this.authority = authority;
-	}
+    /**
+     * Sets the authority.
+     * 
+     * @param authority
+     *        the new authority
+     */
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
 
-	/**
-	 * Gets the xlink.
-	 * 
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * Gets the xlink.
+     * 
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 
-	/**
-	 * Sets the xlink.
-	 * 
-	 * @param xlink
-	 *          the new xlink
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * Sets the xlink.
+     * 
+     * @param xlink
+     *        the new xlink
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
-	/**
-	 * The Class CartographicsClient.
-	 */
-	public static class CartographicsClient implements IsSerializable {
+    /**
+     * The Class CartographicsClient.
+     */
+    public static class CartographicsClient
+            implements IsSerializable {
 
-		/** The scale. */
-		protected String scale;
+        /** The scale. */
+        protected String scale;
 
-		/** The projection. */
-		protected String projection;
+        /** The projection. */
+        protected String projection;
 
-		/** The coordinates. */
-		protected List<String> coordinates;
+        /** The coordinates. */
+        protected List<String> coordinates;
 
-		/**
-		 * Gets the value of the scale property.
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getScale() {
-			return scale;
-		}
+        /**
+         * Gets the value of the scale property.
+         * 
+         * @return possible object is {@link String }
+         */
+        public String getScale() {
+            return scale;
+        }
 
-		/**
-		 * Sets the value of the scale property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link String }
-		 * 
-		 */
-		public void setScale(String value) {
-			this.scale = value;
-		}
+        /**
+         * Sets the value of the scale property.
+         * 
+         * @param value
+         *        allowed object is {@link String }
+         */
+        public void setScale(String value) {
+            this.scale = value;
+        }
 
-		/**
-		 * Gets the value of the projection property.
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getProjection() {
-			return projection;
-		}
+        /**
+         * Gets the value of the projection property.
+         * 
+         * @return possible object is {@link String }
+         */
+        public String getProjection() {
+            return projection;
+        }
 
-		/**
-		 * Sets the value of the projection property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link String }
-		 * 
-		 */
-		public void setProjection(String value) {
-			this.projection = value;
-		}
+        /**
+         * Sets the value of the projection property.
+         * 
+         * @param value
+         *        allowed object is {@link String }
+         */
+        public void setProjection(String value) {
+            this.projection = value;
+        }
 
-		/**
-		 * Gets the coordinates.
-		 * 
-		 * @return the coordinates
-		 */
-		public List<String> getCoordinates() {
-			return this.coordinates;
-		}
+        /**
+         * Gets the coordinates.
+         * 
+         * @return the coordinates
+         */
+        public List<String> getCoordinates() {
+            return this.coordinates;
+        }
 
-		/**
-		 * Sets the coordinates.
-		 * 
-		 * @param coordinates
-		 *          the new coordinates
-		 */
-		public void setCoordinates(List<String> coordinates) {
-			this.coordinates = coordinates;
-		}
+        /**
+         * Sets the coordinates.
+         * 
+         * @param coordinates
+         *        the new coordinates
+         */
+        public void setCoordinates(List<String> coordinates) {
+            this.coordinates = coordinates;
+        }
 
-	}
+    }
 
-	/**
-	 * 043
-	 * 
-	 * <p>
-	 * Java class for anonymous complex type.
-	 * 
-	 * <p>
-	 * The following schema fragment specifies the expected content contained
-	 * within this class.
-	 * 
-	 * <pre>
+    /**
+     * 043
+     * <p>
+     * Java class for anonymous complex type.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
+     * 
+     * <pre>
 	 * &lt;complexType>
 	 *   &lt;simpleContent>
 	 *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
@@ -514,59 +510,54 @@ public class SubjectTypeClient implements IsSerializable {
 	 *   &lt;/simpleContent>
 	 * &lt;/complexType>
 	 * </pre>
-	 * 
-	 * 
-	 */
-	public static class GeographicCodeClient implements IsSerializable {
+     */
+    public static class GeographicCodeClient
+            implements IsSerializable {
 
-		/** The value. */
-		protected String value;
+        /** The value. */
+        protected String value;
 
-		/** The authority. */
-		protected PlaceAuthorityClient authority;
+        /** The authority. */
+        protected PlaceAuthorityClient authority;
 
-		/**
-		 * Gets the value of the value property.
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /**
+         * Gets the value of the value property.
+         * 
+         * @return possible object is {@link String }
+         */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * Sets the value of the value property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /**
+         * Sets the value of the value property.
+         * 
+         * @param value
+         *        allowed object is {@link String }
+         */
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		/**
-		 * Gets the value of the authority property.
-		 * 
-		 * @return possible object is {@link PlaceAuthority }
-		 * 
-		 */
-		public PlaceAuthorityClient getAuthority() {
-			return authority;
-		}
+        /**
+         * Gets the value of the authority property.
+         * 
+         * @return possible object is {@link PlaceAuthority }
+         */
+        public PlaceAuthorityClient getAuthority() {
+            return authority;
+        }
 
-		/**
-		 * Sets the value of the authority property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link PlaceAuthority }
-		 * 
-		 */
-		public void setAuthority(PlaceAuthorityClient value) {
-			this.authority = value;
-		}
+        /**
+         * Sets the value of the authority property.
+         * 
+         * @param value
+         *        allowed object is {@link PlaceAuthority }
+         */
+        public void setAuthority(PlaceAuthorityClient value) {
+            this.authority = value;
+        }
 
-	}
+    }
 
 }

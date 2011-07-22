@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import java.util.ArrayList;
@@ -40,17 +41,18 @@ import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
  * The Class ScanInputQueue.
  */
 @GenDispatch(isSecure = false)
-public class ScanInputQueue extends UnsecuredActionImpl<ScanInputQueueResult> {
+public class ScanInputQueue
+        extends UnsecuredActionImpl<ScanInputQueueResult> {
 
-	/** The id. */
-	@In(1)
-	private String id;
+    /** The id. */
+    @In(1)
+    private String id;
 
-	/** The refresh. */
-	@In(2)
-	private boolean refresh;
+    /** The refresh. */
+    @In(2)
+    private boolean refresh;
 
-	/** The items. */
-	@Out(1)
-	private ArrayList<InputQueueItem> items;
+    /** The items. */
+    @Out(1)
+    private ArrayList<InputQueueItem> items;
 }

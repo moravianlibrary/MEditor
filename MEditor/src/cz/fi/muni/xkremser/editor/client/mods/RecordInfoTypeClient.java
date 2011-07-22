@@ -40,303 +40,301 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class RecordInfoTypeClient.
  */
-public class RecordInfoTypeClient implements IsSerializable {
+public class RecordInfoTypeClient
+        implements IsSerializable {
 
-	/** The record content source. */
-	protected List<StringPlusAuthorityPlusLanguageClient> recordContentSource;
+    /** The record content source. */
+    protected List<StringPlusAuthorityPlusLanguageClient> recordContentSource;
 
-	/** The record creation date. */
-	protected List<DateTypeClient> recordCreationDate;
+    /** The record creation date. */
+    protected List<DateTypeClient> recordCreationDate;
 
-	/** The record change date. */
-	protected List<DateTypeClient> recordChangeDate;
+    /** The record change date. */
+    protected List<DateTypeClient> recordChangeDate;
 
-	/** The record identifier. */
-	protected List<RecordIdentifierClient> recordIdentifier;
+    /** The record identifier. */
+    protected List<RecordIdentifierClient> recordIdentifier;
 
-	/** The language of cataloging. */
-	protected List<LanguageTypeClient> languageOfCataloging;
+    /** The language of cataloging. */
+    protected List<LanguageTypeClient> languageOfCataloging;
 
-	/** The record origin. */
-	protected List<String> recordOrigin;
+    /** The record origin. */
+    protected List<String> recordOrigin;
 
-	/** The description standard. */
-	protected List<StringPlusAuthorityClient> descriptionStandard;
+    /** The description standard. */
+    protected List<StringPlusAuthorityClient> descriptionStandard;
 
-	/** The xml lang. */
-	protected String xmlLang;
+    /** The xml lang. */
+    protected String xmlLang;
 
-	/** The lang. */
-	protected String lang;
+    /** The lang. */
+    protected String lang;
 
-	/** The script. */
-	protected String script;
+    /** The script. */
+    protected String script;
 
-	/** The transliteration. */
-	protected String transliteration;
+    /** The transliteration. */
+    protected String transliteration;
 
-	/**
-	 * Gets the record content source.
-	 * 
-	 * @return the record content source
-	 */
-	public List<StringPlusAuthorityPlusLanguageClient> getRecordContentSource() {
-		return recordContentSource;
-	}
+    /**
+     * Gets the record content source.
+     * 
+     * @return the record content source
+     */
+    public List<StringPlusAuthorityPlusLanguageClient> getRecordContentSource() {
+        return recordContentSource;
+    }
 
-	/**
-	 * Sets the record content source.
-	 * 
-	 * @param recordContentSource
-	 *          the new record content source
-	 */
-	public void setRecordContentSource(List<StringPlusAuthorityPlusLanguageClient> recordContentSource) {
-		this.recordContentSource = recordContentSource;
-	}
+    /**
+     * Sets the record content source.
+     * 
+     * @param recordContentSource
+     *        the new record content source
+     */
+    public void setRecordContentSource(List<StringPlusAuthorityPlusLanguageClient> recordContentSource) {
+        this.recordContentSource = recordContentSource;
+    }
 
-	/**
-	 * Gets the record creation date.
-	 * 
-	 * @return the record creation date
-	 */
-	public List<DateTypeClient> getRecordCreationDate() {
-		return recordCreationDate;
-	}
+    /**
+     * Gets the record creation date.
+     * 
+     * @return the record creation date
+     */
+    public List<DateTypeClient> getRecordCreationDate() {
+        return recordCreationDate;
+    }
 
-	/**
-	 * Sets the record creation date.
-	 * 
-	 * @param recordCreationDate
-	 *          the new record creation date
-	 */
-	public void setRecordCreationDate(List<DateTypeClient> recordCreationDate) {
-		this.recordCreationDate = recordCreationDate;
-	}
+    /**
+     * Sets the record creation date.
+     * 
+     * @param recordCreationDate
+     *        the new record creation date
+     */
+    public void setRecordCreationDate(List<DateTypeClient> recordCreationDate) {
+        this.recordCreationDate = recordCreationDate;
+    }
 
-	/**
-	 * Gets the record change date.
-	 * 
-	 * @return the record change date
-	 */
-	public List<DateTypeClient> getRecordChangeDate() {
-		return recordChangeDate;
-	}
+    /**
+     * Gets the record change date.
+     * 
+     * @return the record change date
+     */
+    public List<DateTypeClient> getRecordChangeDate() {
+        return recordChangeDate;
+    }
 
-	/**
-	 * Sets the record change date.
-	 * 
-	 * @param recordChangeDate
-	 *          the new record change date
-	 */
-	public void setRecordChangeDate(List<DateTypeClient> recordChangeDate) {
-		this.recordChangeDate = recordChangeDate;
-	}
+    /**
+     * Sets the record change date.
+     * 
+     * @param recordChangeDate
+     *        the new record change date
+     */
+    public void setRecordChangeDate(List<DateTypeClient> recordChangeDate) {
+        this.recordChangeDate = recordChangeDate;
+    }
 
-	/**
-	 * Gets the record identifier.
-	 * 
-	 * @return the record identifier
-	 */
-	public List<RecordIdentifierClient> getRecordIdentifier() {
-		return recordIdentifier;
-	}
+    /**
+     * Gets the record identifier.
+     * 
+     * @return the record identifier
+     */
+    public List<RecordIdentifierClient> getRecordIdentifier() {
+        return recordIdentifier;
+    }
 
-	/**
-	 * Sets the record identifier.
-	 * 
-	 * @param recordIdentifier
-	 *          the new record identifier
-	 */
-	public void setRecordIdentifier(List<RecordIdentifierClient> recordIdentifier) {
-		this.recordIdentifier = recordIdentifier;
-	}
+    /**
+     * Sets the record identifier.
+     * 
+     * @param recordIdentifier
+     *        the new record identifier
+     */
+    public void setRecordIdentifier(List<RecordIdentifierClient> recordIdentifier) {
+        this.recordIdentifier = recordIdentifier;
+    }
 
-	/**
-	 * Gets the language of cataloging.
-	 * 
-	 * @return the language of cataloging
-	 */
-	public List<LanguageTypeClient> getLanguageOfCataloging() {
-		return languageOfCataloging;
-	}
+    /**
+     * Gets the language of cataloging.
+     * 
+     * @return the language of cataloging
+     */
+    public List<LanguageTypeClient> getLanguageOfCataloging() {
+        return languageOfCataloging;
+    }
 
-	/**
-	 * Sets the language of cataloging.
-	 * 
-	 * @param languageOfCataloging
-	 *          the new language of cataloging
-	 */
-	public void setLanguageOfCataloging(List<LanguageTypeClient> languageOfCataloging) {
-		this.languageOfCataloging = languageOfCataloging;
-	}
+    /**
+     * Sets the language of cataloging.
+     * 
+     * @param languageOfCataloging
+     *        the new language of cataloging
+     */
+    public void setLanguageOfCataloging(List<LanguageTypeClient> languageOfCataloging) {
+        this.languageOfCataloging = languageOfCataloging;
+    }
 
-	/**
-	 * Gets the record origin.
-	 * 
-	 * @return the record origin
-	 */
-	public List<String> getRecordOrigin() {
-		return recordOrigin;
-	}
+    /**
+     * Gets the record origin.
+     * 
+     * @return the record origin
+     */
+    public List<String> getRecordOrigin() {
+        return recordOrigin;
+    }
 
-	/**
-	 * Sets the record origin.
-	 * 
-	 * @param recordOrigin
-	 *          the new record origin
-	 */
-	public void setRecordOrigin(List<String> recordOrigin) {
-		this.recordOrigin = recordOrigin;
-	}
+    /**
+     * Sets the record origin.
+     * 
+     * @param recordOrigin
+     *        the new record origin
+     */
+    public void setRecordOrigin(List<String> recordOrigin) {
+        this.recordOrigin = recordOrigin;
+    }
 
-	/**
-	 * Gets the description standard.
-	 * 
-	 * @return the description standard
-	 */
-	public List<StringPlusAuthorityClient> getDescriptionStandard() {
-		return descriptionStandard;
-	}
+    /**
+     * Gets the description standard.
+     * 
+     * @return the description standard
+     */
+    public List<StringPlusAuthorityClient> getDescriptionStandard() {
+        return descriptionStandard;
+    }
 
-	/**
-	 * Sets the description standard.
-	 * 
-	 * @param descriptionStandard
-	 *          the new description standard
-	 */
-	public void setDescriptionStandard(List<StringPlusAuthorityClient> descriptionStandard) {
-		this.descriptionStandard = descriptionStandard;
-	}
+    /**
+     * Sets the description standard.
+     * 
+     * @param descriptionStandard
+     *        the new description standard
+     */
+    public void setDescriptionStandard(List<StringPlusAuthorityClient> descriptionStandard) {
+        this.descriptionStandard = descriptionStandard;
+    }
 
-	/**
-	 * Gets the xml lang.
-	 * 
-	 * @return the xml lang
-	 */
-	public String getXmlLang() {
-		return xmlLang;
-	}
+    /**
+     * Gets the xml lang.
+     * 
+     * @return the xml lang
+     */
+    public String getXmlLang() {
+        return xmlLang;
+    }
 
-	/**
-	 * Sets the xml lang.
-	 * 
-	 * @param xmlLang
-	 *          the new xml lang
-	 */
-	public void setXmlLang(String xmlLang) {
-		this.xmlLang = xmlLang;
-	}
+    /**
+     * Sets the xml lang.
+     * 
+     * @param xmlLang
+     *        the new xml lang
+     */
+    public void setXmlLang(String xmlLang) {
+        this.xmlLang = xmlLang;
+    }
 
-	/**
-	 * Gets the lang.
-	 * 
-	 * @return the lang
-	 */
-	public String getLang() {
-		return lang;
-	}
+    /**
+     * Gets the lang.
+     * 
+     * @return the lang
+     */
+    public String getLang() {
+        return lang;
+    }
 
-	/**
-	 * Sets the lang.
-	 * 
-	 * @param lang
-	 *          the new lang
-	 */
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+    /**
+     * Sets the lang.
+     * 
+     * @param lang
+     *        the new lang
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	/**
-	 * Gets the script.
-	 * 
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
+    /**
+     * Gets the script.
+     * 
+     * @return the script
+     */
+    public String getScript() {
+        return script;
+    }
 
-	/**
-	 * Sets the script.
-	 * 
-	 * @param script
-	 *          the new script
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
+    /**
+     * Sets the script.
+     * 
+     * @param script
+     *        the new script
+     */
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * Gets the transliteration.
-	 * 
-	 * @return the transliteration
-	 */
-	public String getTransliteration() {
-		return transliteration;
-	}
+    /**
+     * Gets the transliteration.
+     * 
+     * @return the transliteration
+     */
+    public String getTransliteration() {
+        return transliteration;
+    }
 
-	/**
-	 * Sets the transliteration.
-	 * 
-	 * @param transliteration
-	 *          the new transliteration
-	 */
-	public void setTransliteration(String transliteration) {
-		this.transliteration = transliteration;
-	}
+    /**
+     * Sets the transliteration.
+     * 
+     * @param transliteration
+     *        the new transliteration
+     */
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
+    }
 
-	/**
-	 * The Class RecordIdentifierClient.
-	 */
-	public static class RecordIdentifierClient implements IsSerializable {
+    /**
+     * The Class RecordIdentifierClient.
+     */
+    public static class RecordIdentifierClient
+            implements IsSerializable {
 
-		/** The value. */
-		protected String value;
+        /** The value. */
+        protected String value;
 
-		/** The source. */
-		protected String source;
+        /** The source. */
+        protected String source;
 
-		/**
-		 * Gets the value of the value property.
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getValue() {
-			return value;
-		}
+        /**
+         * Gets the value of the value property.
+         * 
+         * @return possible object is {@link String }
+         */
+        public String getValue() {
+            return value;
+        }
 
-		/**
-		 * Sets the value of the value property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link String }
-		 * 
-		 */
-		public void setValue(String value) {
-			this.value = value;
-		}
+        /**
+         * Sets the value of the value property.
+         * 
+         * @param value
+         *        allowed object is {@link String }
+         */
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		/**
-		 * Gets the value of the source property.
-		 * 
-		 * @return possible object is {@link String }
-		 * 
-		 */
-		public String getSource() {
-			return source;
-		}
+        /**
+         * Gets the value of the source property.
+         * 
+         * @return possible object is {@link String }
+         */
+        public String getSource() {
+            return source;
+        }
 
-		/**
-		 * Sets the value of the source property.
-		 * 
-		 * @param value
-		 *          allowed object is {@link String }
-		 * 
-		 */
-		public void setSource(String value) {
-			this.source = value;
-		}
+        /**
+         * Sets the value of the source property.
+         * 
+         * @param value
+         *        allowed object is {@link String }
+         */
+        public void setSource(String value) {
+            this.source = value;
+        }
 
-	}
+    }
 
 }

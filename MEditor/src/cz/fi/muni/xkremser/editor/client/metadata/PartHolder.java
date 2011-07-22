@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
@@ -38,178 +39,175 @@ import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
 /**
  * The Class PartHolder.
  */
-public class PartHolder extends ListOfSimpleValuesHolder {
+public class PartHolder
+        extends ListOfSimpleValuesHolder {
 
-	/** The texts. */
-	private final ListOfSimpleValuesHolder texts;
+    /** The texts. */
+    private final ListOfSimpleValuesHolder texts;
 
-	/** The dates. */
-	private final List<DateHolder> dates;
+    /** The dates. */
+    private final List<DateHolder> dates;
 
-	/** The places. */
-	private final List<PlaceHolder> places;
+    /** The places. */
+    private final List<PlaceHolder> places;
 
-	/** The extents. */
-	private final List<ExtentHolder> extents;
+    /** The extents. */
+    private final List<ExtentHolder> extents;
 
-	/** The details. */
-	private final List<DetailHolder> details;
+    /** The details. */
+    private final List<DetailHolder> details;
 
-	/**
-	 * Instantiates a new part holder.
-	 */
-	public PartHolder() {
-		this.texts = new ListOfSimpleValuesHolder();
-		dates = new ArrayList<DateHolder>();
-		extents = new ArrayList<ExtentHolder>();
-		details = new ArrayList<DetailHolder>();
-		places = new ArrayList<PlaceHolder>();
-	}
+    /**
+     * Instantiates a new part holder.
+     */
+    public PartHolder() {
+        this.texts = new ListOfSimpleValuesHolder();
+        dates = new ArrayList<DateHolder>();
+        extents = new ArrayList<ExtentHolder>();
+        details = new ArrayList<DetailHolder>();
+        places = new ArrayList<PlaceHolder>();
+    }
 
-	/**
-	 * Gets the part.
-	 * 
-	 * @return the part
-	 */
-	public PartTypeClient getPart() {
-		PartTypeClient partTypeClient = new PartTypeClient();
-		if (getAttributeForm() != null) {
-			partTypeClient.setType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
-			partTypeClient.setOrder(getAttributeForm().getValueAsString(ModsConstants.ORDER));
-			partTypeClient.setId(getAttributeForm().getValueAsString(ModsConstants.ID));
-		}
+    /**
+     * Gets the part.
+     * 
+     * @return the part
+     */
+    public PartTypeClient getPart() {
+        PartTypeClient partTypeClient = new PartTypeClient();
+        if (getAttributeForm() != null) {
+            partTypeClient.setType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
+            partTypeClient.setOrder(getAttributeForm().getValueAsString(ModsConstants.ORDER));
+            partTypeClient.setId(getAttributeForm().getValueAsString(ModsConstants.ID));
+        }
 
-		partTypeClient.setText(texts.getValues());
-		partTypeClient.setDate(getDatesFromHolders(dates));
+        partTypeClient.setText(texts.getValues());
+        partTypeClient.setDate(getDatesFromHolders(dates));
 
-		List<ExtentTypeClient> extent = new ArrayList<ExtentTypeClient>(extents.size());
-		for (ExtentHolder holder : extents) {
-			extent.add(holder.getExtent());
-		}
-		partTypeClient.setExtent(extent);
+        List<ExtentTypeClient> extent = new ArrayList<ExtentTypeClient>(extents.size());
+        for (ExtentHolder holder : extents) {
+            extent.add(holder.getExtent());
+        }
+        partTypeClient.setExtent(extent);
 
-		List<DetailTypeClient> detail = new ArrayList<DetailTypeClient>(details.size());
-		for (DetailHolder holder : details) {
-			detail.add(holder.getDetail());
-		}
-		partTypeClient.setDetail(detail);
+        List<DetailTypeClient> detail = new ArrayList<DetailTypeClient>(details.size());
+        for (DetailHolder holder : details) {
+            detail.add(holder.getDetail());
+        }
+        partTypeClient.setDetail(detail);
 
-		return partTypeClient;
-	}
+        return partTypeClient;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getSubelements()
-	 */
-	@Override
-	public List<MetadataHolder> getSubelements() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getSubelements()
+     */
+    @Override
+    public List<MetadataHolder> getSubelements() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-	 * ()
-	 */
-	@Override
-	public String getValue() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValue
+     * ()
+     */
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-	 * ()
-	 */
-	@Override
-	public List<String> getValues() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#getValues
+     * ()
+     */
+    @Override
+    public List<String> getValues() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
-	 * getAttributes()
-	 */
-	@Override
-	public List<String> getAttributes() {
-		throw new UnsupportedOperationException("Mods");
-	}
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder#
+     * getAttributes()
+     */
+    @Override
+    public List<String> getAttributes() {
+        throw new UnsupportedOperationException("Mods");
+    }
 
-	/**
-	 * Gets the publishers.
-	 * 
-	 * @return the publishers
-	 */
-	public ListOfSimpleValuesHolder getPublishers() {
-		return texts;
-	}
+    /**
+     * Gets the publishers.
+     * 
+     * @return the publishers
+     */
+    public ListOfSimpleValuesHolder getPublishers() {
+        return texts;
+    }
 
-	/**
-	 * Gets the texts.
-	 * 
-	 * @return the texts
-	 */
-	public ListOfSimpleValuesHolder getTexts() {
-		return texts;
-	}
+    /**
+     * Gets the texts.
+     * 
+     * @return the texts
+     */
+    public ListOfSimpleValuesHolder getTexts() {
+        return texts;
+    }
 
-	/**
-	 * Gets the dates.
-	 * 
-	 * @return the dates
-	 */
-	public List<DateHolder> getDates() {
-		return dates;
-	}
+    /**
+     * Gets the dates.
+     * 
+     * @return the dates
+     */
+    public List<DateHolder> getDates() {
+        return dates;
+    }
 
-	/**
-	 * Gets the places.
-	 * 
-	 * @return the places
-	 */
-	public List<PlaceHolder> getPlaces() {
-		return places;
-	}
+    /**
+     * Gets the places.
+     * 
+     * @return the places
+     */
+    public List<PlaceHolder> getPlaces() {
+        return places;
+    }
 
-	/**
-	 * Gets the extents.
-	 * 
-	 * @return the extents
-	 */
-	public List<ExtentHolder> getExtents() {
-		return extents;
-	}
+    /**
+     * Gets the extents.
+     * 
+     * @return the extents
+     */
+    public List<ExtentHolder> getExtents() {
+        return extents;
+    }
 
-	/**
-	 * Gets the details.
-	 * 
-	 * @return the details
-	 */
-	public List<DetailHolder> getDetails() {
-		return details;
-	}
+    /**
+     * Gets the details.
+     * 
+     * @return the details
+     */
+    public List<DetailHolder> getDetails() {
+        return details;
+    }
 
-	/**
-	 * Gets the dates from holders.
-	 * 
-	 * @param holders
-	 *          the holders
-	 * @return the dates from holders
-	 */
-	private static List<BaseDateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
-		List<BaseDateTypeClient> dates = new ArrayList<BaseDateTypeClient>();
-		for (DateHolder holder : holders) {
-			dates.add(holder.getDate());
-		}
-		return dates;
-	}
+    /**
+     * Gets the dates from holders.
+     * 
+     * @param holders
+     *        the holders
+     * @return the dates from holders
+     */
+    private static List<BaseDateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
+        List<BaseDateTypeClient> dates = new ArrayList<BaseDateTypeClient>();
+        for (DateHolder holder : holders) {
+            dates.add(holder.getDate());
+        }
+        return dates;
+    }
 
 }

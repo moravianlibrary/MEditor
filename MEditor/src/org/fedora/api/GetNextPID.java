@@ -28,6 +28,7 @@
 package org.fedora.api;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,12 +36,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for anonymous complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -54,14 +56,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "numPIDs",
-    "pidNamespace"
-})
+@XmlType(name = "", propOrder = {"numPIDs", "pidNamespace"})
 @XmlRootElement(name = "getNextPID")
 public class GetNextPID {
 
@@ -69,17 +66,15 @@ public class GetNextPID {
     @XmlElement(required = true, nillable = true)
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger numPIDs;
-    
+
     /** The pid namespace. */
     @XmlElement(required = true, nillable = true)
     protected String pidNamespace;
 
     /**
      * Gets the value of the numPIDs property.
-     *
-     * @return the num pi ds
-     * possible object is
-     * {@link BigInteger }
+     * 
+     * @return the num pi ds possible object is {@link BigInteger }
      */
     public BigInteger getNumPIDs() {
         return numPIDs;
@@ -89,9 +84,7 @@ public class GetNextPID {
      * Sets the value of the numPIDs property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *        allowed object is {@link BigInteger }
      */
     public void setNumPIDs(BigInteger value) {
         this.numPIDs = value;
@@ -99,10 +92,8 @@ public class GetNextPID {
 
     /**
      * Gets the value of the pidNamespace property.
-     *
-     * @return the pid namespace
-     * possible object is
-     * {@link String }
+     * 
+     * @return the pid namespace possible object is {@link String }
      */
     public String getPidNamespace() {
         return pidNamespace;
@@ -112,9 +103,7 @@ public class GetNextPID {
      * Sets the value of the pidNamespace property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *        allowed object is {@link String }
      */
     public void setPidNamespace(String value) {
         this.pidNamespace = value;

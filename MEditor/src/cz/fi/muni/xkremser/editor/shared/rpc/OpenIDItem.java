@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -32,107 +33,101 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class RecentlyModifiedItem.
  */
-public class OpenIDItem implements IsSerializable {
+public class OpenIDItem
+        implements IsSerializable {
 
-	/** The identity. */
-	private String identity;
+    /** The identity. */
+    private String identity;
 
-	/** The id. */
-	private String id;
+    /** The id. */
+    private String id;
 
-	// @SuppressWarnings("unused")
-	/**
-	 * Instantiates a new recently modified item.
-	 */
-	public OpenIDItem() {
+    // @SuppressWarnings("unused")
+    /**
+     * Instantiates a new recently modified item.
+     */
+    public OpenIDItem() {
 
-	}
+    }
 
-	/**
-	 * Instantiates a new open id item.
-	 * 
-	 * @param identity
-	 *          the identity
-	 * @param id
-	 *          the id
-	 */
-	public OpenIDItem(String identity, String id) {
-		super();
-		this.identity = identity;
-		this.id = id;
-	}
+    /**
+     * Instantiates a new open id item.
+     * 
+     * @param identity
+     *        the identity
+     * @param id
+     *        the id
+     */
+    public OpenIDItem(String identity, String id) {
+        super();
+        this.identity = identity;
+        this.id = id;
+    }
 
-	/**
-	 * Gets the identity.
-	 * 
-	 * @return the identity
-	 */
-	public String getIdentity() {
-		return identity;
-	}
+    /**
+     * Gets the identity.
+     * 
+     * @return the identity
+     */
+    public String getIdentity() {
+        return identity;
+    }
 
-	/**
-	 * Sets the identity.
-	 * 
-	 * @param identity
-	 *          the new identity
-	 */
-	public void setIdentity(String identity) {
-		this.identity = identity;
-	}
+    /**
+     * Sets the identity.
+     * 
+     * @param identity
+     *        the new identity
+     */
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *          the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *        the new id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OpenIDItem other = (OpenIDItem) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        OpenIDItem other = (OpenIDItem) obj;
+        if (id == null) {
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
+        return true;
+    }
 
 }

@@ -24,6 +24,7 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.fedora;
 
 // TODO: Auto-generated Javadoc
@@ -33,17 +34,17 @@ package cz.fi.muni.xkremser.editor.server.fedora;
  */
 public interface IPaddressChecker {
 
-	/**
-	 * Private visitor.
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean privateVisitor();
+    /**
+     * Private visitor.
+     * 
+     * @return true, if successful
+     */
+    public boolean privateVisitor();
 
-	/**
-	 * Local host visitor.
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean localHostVisitor();
+    /**
+     * Local host visitor.
+     * 
+     * @return true, if successful
+     */
+    public boolean localHostVisitor();
 }

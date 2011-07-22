@@ -40,270 +40,271 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class HierarchicalGeographicTypeClient.
  */
-public class HierarchicalGeographicTypeClient implements IsSerializable {
+public class HierarchicalGeographicTypeClient
+        implements IsSerializable {
 
-	/** The extraterrestrial area. */
-	protected List<String> extraterrestrialArea;
+    /** The extraterrestrial area. */
+    protected List<String> extraterrestrialArea;
 
-	/** The continent. */
-	protected List<String> continent;
+    /** The continent. */
+    protected List<String> continent;
 
-	/** The country. */
-	protected List<String> country;
+    /** The country. */
+    protected List<String> country;
 
-	/** The province. */
-	protected List<String> province;
+    /** The province. */
+    protected List<String> province;
 
-	/** The region. */
-	protected List<String> region;
+    /** The region. */
+    protected List<String> region;
 
-	/** The state. */
-	protected List<String> state;
+    /** The state. */
+    protected List<String> state;
 
-	/** The territory. */
-	protected List<String> territory;
+    /** The territory. */
+    protected List<String> territory;
 
-	/** The county. */
-	protected List<String> county;
+    /** The county. */
+    protected List<String> county;
 
-	/** The city. */
-	protected List<String> city;
+    /** The city. */
+    protected List<String> city;
 
-	/** The city section. */
-	protected List<String> citySection;
+    /** The city section. */
+    protected List<String> citySection;
 
-	/** The island. */
-	protected List<String> island;
+    /** The island. */
+    protected List<String> island;
 
-	/** The area. */
-	protected List<String> area;
+    /** The area. */
+    protected List<String> area;
 
-	/**
-	 * Gets the island.
-	 * 
-	 * @return the island
-	 */
-	public List<String> getIsland() {
-		return island;
-	}
+    /**
+     * Gets the island.
+     * 
+     * @return the island
+     */
+    public List<String> getIsland() {
+        return island;
+    }
 
-	/**
-	 * Sets the island.
-	 * 
-	 * @param island
-	 *          the new island
-	 */
-	public void setIsland(List<String> island) {
-		this.island = island;
-	}
+    /**
+     * Sets the island.
+     * 
+     * @param island
+     *        the new island
+     */
+    public void setIsland(List<String> island) {
+        this.island = island;
+    }
 
-	/**
-	 * Gets the area.
-	 * 
-	 * @return the area
-	 */
-	public List<String> getArea() {
-		return area;
-	}
+    /**
+     * Gets the area.
+     * 
+     * @return the area
+     */
+    public List<String> getArea() {
+        return area;
+    }
 
-	/**
-	 * Sets the area.
-	 * 
-	 * @param area
-	 *          the new area
-	 */
-	public void setArea(List<String> area) {
-		this.area = area;
-	}
+    /**
+     * Sets the area.
+     * 
+     * @param area
+     *        the new area
+     */
+    public void setArea(List<String> area) {
+        this.area = area;
+    }
 
-	/**
-	 * Gets the extraterrestrial area.
-	 * 
-	 * @return the extraterrestrial area
-	 */
-	public List<String> getExtraterrestrialArea() {
-		return extraterrestrialArea;
-	}
+    /**
+     * Gets the extraterrestrial area.
+     * 
+     * @return the extraterrestrial area
+     */
+    public List<String> getExtraterrestrialArea() {
+        return extraterrestrialArea;
+    }
 
-	/**
-	 * Sets the extraterrestrial area.
-	 * 
-	 * @param extraterrestrialArea
-	 *          the new extraterrestrial area
-	 */
-	public void setExtraterrestrialArea(List<String> extraterrestrialArea) {
-		this.extraterrestrialArea = extraterrestrialArea;
-	}
+    /**
+     * Sets the extraterrestrial area.
+     * 
+     * @param extraterrestrialArea
+     *        the new extraterrestrial area
+     */
+    public void setExtraterrestrialArea(List<String> extraterrestrialArea) {
+        this.extraterrestrialArea = extraterrestrialArea;
+    }
 
-	/**
-	 * Gets the continent.
-	 * 
-	 * @return the continent
-	 */
-	public List<String> getContinent() {
-		return continent;
-	}
+    /**
+     * Gets the continent.
+     * 
+     * @return the continent
+     */
+    public List<String> getContinent() {
+        return continent;
+    }
 
-	/**
-	 * Sets the continent.
-	 * 
-	 * @param continent
-	 *          the new continent
-	 */
-	public void setContinent(List<String> continent) {
-		this.continent = continent;
-	}
+    /**
+     * Sets the continent.
+     * 
+     * @param continent
+     *        the new continent
+     */
+    public void setContinent(List<String> continent) {
+        this.continent = continent;
+    }
 
-	/**
-	 * Gets the country.
-	 * 
-	 * @return the country
-	 */
-	public List<String> getCountry() {
-		return country;
-	}
+    /**
+     * Gets the country.
+     * 
+     * @return the country
+     */
+    public List<String> getCountry() {
+        return country;
+    }
 
-	/**
-	 * Sets the country.
-	 * 
-	 * @param country
-	 *          the new country
-	 */
-	public void setCountry(List<String> country) {
-		this.country = country;
-	}
+    /**
+     * Sets the country.
+     * 
+     * @param country
+     *        the new country
+     */
+    public void setCountry(List<String> country) {
+        this.country = country;
+    }
 
-	/**
-	 * Gets the province.
-	 * 
-	 * @return the province
-	 */
-	public List<String> getProvince() {
-		return province;
-	}
+    /**
+     * Gets the province.
+     * 
+     * @return the province
+     */
+    public List<String> getProvince() {
+        return province;
+    }
 
-	/**
-	 * Sets the province.
-	 * 
-	 * @param province
-	 *          the new province
-	 */
-	public void setProvince(List<String> province) {
-		this.province = province;
-	}
+    /**
+     * Sets the province.
+     * 
+     * @param province
+     *        the new province
+     */
+    public void setProvince(List<String> province) {
+        this.province = province;
+    }
 
-	/**
-	 * Gets the region.
-	 * 
-	 * @return the region
-	 */
-	public List<String> getRegion() {
-		return region;
-	}
+    /**
+     * Gets the region.
+     * 
+     * @return the region
+     */
+    public List<String> getRegion() {
+        return region;
+    }
 
-	/**
-	 * Sets the region.
-	 * 
-	 * @param region
-	 *          the new region
-	 */
-	public void setRegion(List<String> region) {
-		this.region = region;
-	}
+    /**
+     * Sets the region.
+     * 
+     * @param region
+     *        the new region
+     */
+    public void setRegion(List<String> region) {
+        this.region = region;
+    }
 
-	/**
-	 * Gets the state.
-	 * 
-	 * @return the state
-	 */
-	public List<String> getState() {
-		return state;
-	}
+    /**
+     * Gets the state.
+     * 
+     * @return the state
+     */
+    public List<String> getState() {
+        return state;
+    }
 
-	/**
-	 * Sets the state.
-	 * 
-	 * @param state
-	 *          the new state
-	 */
-	public void setState(List<String> state) {
-		this.state = state;
-	}
+    /**
+     * Sets the state.
+     * 
+     * @param state
+     *        the new state
+     */
+    public void setState(List<String> state) {
+        this.state = state;
+    }
 
-	/**
-	 * Gets the territory.
-	 * 
-	 * @return the territory
-	 */
-	public List<String> getTerritory() {
-		return territory;
-	}
+    /**
+     * Gets the territory.
+     * 
+     * @return the territory
+     */
+    public List<String> getTerritory() {
+        return territory;
+    }
 
-	/**
-	 * Sets the territory.
-	 * 
-	 * @param territory
-	 *          the new territory
-	 */
-	public void setTerritory(List<String> territory) {
-		this.territory = territory;
-	}
+    /**
+     * Sets the territory.
+     * 
+     * @param territory
+     *        the new territory
+     */
+    public void setTerritory(List<String> territory) {
+        this.territory = territory;
+    }
 
-	/**
-	 * Gets the county.
-	 * 
-	 * @return the county
-	 */
-	public List<String> getCounty() {
-		return county;
-	}
+    /**
+     * Gets the county.
+     * 
+     * @return the county
+     */
+    public List<String> getCounty() {
+        return county;
+    }
 
-	/**
-	 * Sets the county.
-	 * 
-	 * @param county
-	 *          the new county
-	 */
-	public void setCounty(List<String> county) {
-		this.county = county;
-	}
+    /**
+     * Sets the county.
+     * 
+     * @param county
+     *        the new county
+     */
+    public void setCounty(List<String> county) {
+        this.county = county;
+    }
 
-	/**
-	 * Gets the city.
-	 * 
-	 * @return the city
-	 */
-	public List<String> getCity() {
-		return city;
-	}
+    /**
+     * Gets the city.
+     * 
+     * @return the city
+     */
+    public List<String> getCity() {
+        return city;
+    }
 
-	/**
-	 * Sets the city.
-	 * 
-	 * @param city
-	 *          the new city
-	 */
-	public void setCity(List<String> city) {
-		this.city = city;
-	}
+    /**
+     * Sets the city.
+     * 
+     * @param city
+     *        the new city
+     */
+    public void setCity(List<String> city) {
+        this.city = city;
+    }
 
-	/**
-	 * Gets the city section.
-	 * 
-	 * @return the city section
-	 */
-	public List<String> getCitySection() {
-		return citySection;
-	}
+    /**
+     * Gets the city section.
+     * 
+     * @return the city section
+     */
+    public List<String> getCitySection() {
+        return citySection;
+    }
 
-	/**
-	 * Sets the city section.
-	 * 
-	 * @param citySection
-	 *          the new city section
-	 */
-	public void setCitySection(List<String> citySection) {
-		this.citySection = citySection;
-	}
+    /**
+     * Sets the city section.
+     * 
+     * @param citySection
+     *        the new city section
+     */
+    public void setCitySection(List<String> citySection) {
+        this.citySection = citySection;
+    }
 
 }

@@ -24,11 +24,10 @@
  *
  * 
  */
+
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,9 +35,12 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoResult;
 
@@ -46,72 +48,73 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoResult;
 /**
  * The Class PutRecentlyModifiedHandler.
  */
-public class PutUserInfoHandler implements ActionHandler<PutUserInfoAction, PutUserInfoResult> {
+public class PutUserInfoHandler
+        implements ActionHandler<PutUserInfoAction, PutUserInfoResult> {
 
-	/** The logger. */
-	private static final Logger LOGGER = Logger.getLogger(PutUserInfoHandler.class.getPackage().toString());
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(PutUserInfoHandler.class.getPackage().toString());
 
-	/** The recently modified dao. */
-	@Inject
-	private UserDAO userDAO;
+    /** The recently modified dao. */
+    @Inject
+    private UserDAO userDAO;
 
-	/** The http session provider. */
-	@Inject
-	private Provider<HttpSession> httpSessionProvider;
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
-	/**
-	 * Instantiates a new put recently modified handler.
-	 * 
-	 */
-	@Inject
-	public PutUserInfoHandler() {
-	}
+    /**
+     * Instantiates a new put recently modified handler.
+     */
+    @Inject
+    public PutUserInfoHandler() {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-	 * .gwtplatform.dispatch.shared.Action,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public PutUserInfoResult execute(final PutUserInfoAction action, final ExecutionContext context) throws ActionException {
-		if (action.getUser() == null)
-			throw new NullPointerException("getUser()");
-		LOGGER.debug("Processing action: PutUserInfoAction user:" + action.getUser());
-		ServerUtils.checkExpiredSession(httpSessionProvider);
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public PutUserInfoResult execute(final PutUserInfoAction action, final ExecutionContext context)
+            throws ActionException {
+        if (action.getUser() == null) throw new NullPointerException("getUser()");
+        LOGGER.debug("Processing action: PutUserInfoAction user:" + action.getUser());
+        ServerUtils.checkExpiredSession(httpSessionProvider);
 
-		String id;
-		try {
-			id = userDAO.addUser(action.getUser());
-		} catch (DatabaseException e) {
-			throw new ActionException(e);
-		}
-		return new PutUserInfoResult(id, "exist".equals(id));
-	}
+        String id;
+        try {
+            id = userDAO.addUser(action.getUser());
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+        return new PutUserInfoResult(id, "exist".equals(id));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType()
-	 */
-	@Override
-	public Class<PutUserInfoAction> getActionType() {
-		return PutUserInfoAction.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
+    @Override
+    public Class<PutUserInfoAction> getActionType() {
+        return PutUserInfoAction.class;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-	 * gwtplatform.dispatch.shared.Action, com.gwtplatform.dispatch.shared.Result,
-	 * com.gwtplatform.dispatch.server.ExecutionContext)
-	 */
-	@Override
-	public void undo(PutUserInfoAction action, PutUserInfoResult result, ExecutionContext context) throws ActionException {
-		// TODO undo method
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
+    @Override
+    public void undo(PutUserInfoAction action, PutUserInfoResult result, ExecutionContext context)
+            throws ActionException {
+        // TODO undo method
 
-	}
+    }
 }

@@ -38,56 +38,56 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Enum NameTypeAttributeClient.
  */
-public enum NameTypeAttributeClient implements IsSerializable {
+public enum NameTypeAttributeClient
+        implements IsSerializable {
 
-	/** 100, 700. */
-	PERSONAL("personal"),
+    /** 100, 700. */
+    PERSONAL("personal"),
 
-	/**
-	 * 110, 710.
-	 * 
-	 */
-	CORPORATE("corporate"),
+    /**
+     * 110, 710.
+     */
+    CORPORATE("corporate"),
 
-	/** 111, 711. */
-	CONFERENCE("conference");
+    /** 111, 711. */
+    CONFERENCE("conference");
 
-	/** The value. */
-	private final String value;
+    /** The value. */
+    private final String value;
 
-	/**
-	 * Instantiates a new name type attribute client.
-	 * 
-	 * @param v
-	 *          the v
-	 */
-	NameTypeAttributeClient(String v) {
-		value = v;
-	}
+    /**
+     * Instantiates a new name type attribute client.
+     * 
+     * @param v
+     *        the v
+     */
+    NameTypeAttributeClient(String v) {
+        value = v;
+    }
 
-	/**
-	 * Value.
-	 * 
-	 * @return the string
-	 */
-	public String value() {
-		return value;
-	}
+    /**
+     * Value.
+     * 
+     * @return the string
+     */
+    public String value() {
+        return value;
+    }
 
-	/**
-	 * From value.
-	 * 
-	 * @param v
-	 *          the v
-	 * @return the name type attribute client
-	 */
-	public static NameTypeAttributeClient fromValue(String v) {
-		for (NameTypeAttributeClient c : NameTypeAttributeClient.values()) {
-			if (c.value.equals(v)) {
-				return c;
-			}
-		}
-		return null;
-	}
+    /**
+     * From value.
+     * 
+     * @param v
+     *        the v
+     * @return the name type attribute client
+     */
+    public static NameTypeAttributeClient fromValue(String v) {
+        for (NameTypeAttributeClient c : NameTypeAttributeClient.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
 }
