@@ -35,6 +35,8 @@ package cz.fi.muni.xkremser.editor.client.domain;
  */
 public interface FedoraNamespaces {
 
+    public static final String FOXML_NAMESPACE_URI = "info:fedora/fedora-system:def/foxml#";
+
     /** RDF namespace. */
     public static final String RDF_NAMESPACE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 

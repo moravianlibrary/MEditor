@@ -464,8 +464,8 @@ public class ModifyPresenter
 
                         getView().addDigitalObject(uuid, detail, refresh);
                         String title =
-                                detail.getDc().getTitle() == null ? "no title" : detail.getDc().getTitle()
-                                        .get(0);
+                                (detail.getDc().getTitle() == null || detail.getDc().getTitle().size() == 0) ? "no title"
+                                        : detail.getDc().getTitle().get(0);
                         DigitalObjectOpenedEvent.fire(ModifyPresenter.this,
                                                       true,
                                                       new RecentlyModifiedItem(uuid, title, "", detail

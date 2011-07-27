@@ -96,6 +96,10 @@ public class PutDigitalObjectDetailHandler
     private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
+    /** The Spaces-constants */
+    private static final String FOXML_SPACE = "%20";
+    private static final String SPACE = " ";
+
     /** The Constant RELS_EXT_PART_1. */
     private static final String RELS_EXT_PART_11 = "<kramerius:";
     private static final String RELS_EXT_PART_12 = "<";
@@ -201,6 +205,10 @@ public class PutDigitalObjectDetailHandler
         if (write) {
             DigitalObjectDetail detail = action.getDetail();
             shouldReindex = modifyRelations(detail, action.isVersioning());
+            if (detail.isLabelChanged()) {
+                modifyLabel(detail, action.isVersioning());
+                shouldReindex = true;
+            }
             if (detail.isDcChanged()) {
                 modifyDublinCore(detail, action.isVersioning());
                 shouldReindex = true;
@@ -497,6 +505,31 @@ public class PutDigitalObjectDetailHandler
             String pass = configuration.getFedoraPassword();
             RESTHelper.put(url, detail.getOcr(), usr, pass, false);
         }
+    }
+
+    private void modifyLabel(DigitalObjectDetail detail, boolean versionable) {
+        if (detail.getLabel() != null) {
+            String newLabel = getStringWithoutSpaces(detail.getLabel());
+            String url =
+                    configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "?label=" + newLabel;
+            String usr = configuration.getFedoraLogin();
+            String pass = configuration.getFedoraPassword();
+
+            RESTHelper.put(url, "", usr, pass, false);
+        }
+
+    }
+
+    private String getStringWithoutSpaces(String string) {
+        String[] splitedString = string.trim().split(SPACE);
+        StringBuffer bufferedString = new StringBuffer("");
+        for (int i = 0; i < splitedString.length; i++) {
+            bufferedString.append(splitedString[i]);
+            if (i != splitedString.length - 1) {
+                bufferedString.append(FOXML_SPACE);
+            }
+        }
+        return bufferedString.toString().trim();
     }
 
 }

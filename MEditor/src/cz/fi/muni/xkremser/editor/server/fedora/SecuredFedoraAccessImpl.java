@@ -519,5 +519,5 @@ public class SecuredFedoraAccessImpl
                                         DigitalObjectModel childModel) throws IOException {
         return rawAccess.getChildrenUuid(uuid, parentModel, childModel);
     }
-
+        
 }

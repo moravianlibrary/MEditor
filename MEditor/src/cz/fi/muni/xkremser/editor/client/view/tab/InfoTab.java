@@ -2,6 +2,8 @@
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
@@ -13,8 +15,12 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 public class InfoTab
         extends Tab {
 
+    TextItem labelItem = new TextItem("Label");
+    private final String originalLabel;
+
     public InfoTab(String title,
                    String icon,
+                   String label,
                    DublinCore dc,
                    LangConstants lang,
                    String type,
@@ -43,12 +49,30 @@ public class InfoTab
         String imgTitle = isPage ? lang.fullImg() : lang.doFirstPage();
         HTMLFlow prev = new HTMLFlow("<b>" + imgTitle + ":</b>");
         prev.setExtraSpace(5);
+
+        originalLabel = label;
+        labelItem.setDefaultValue(label);
+        if (label.length() > 25) {
+            labelItem.setWidth(label.length() + 200);
+        }
+        final DynamicForm form = new DynamicForm();
+        form.setFields(labelItem);
+        form.setWidth(150);
+        form.setExtraSpace(5);
         HTMLFlow img =
                 new HTMLFlow("<img style='border: 3px solid;max-height: 300px;max-width: 300px;' src='./images/full/"
                         + (isPage ? "" : "uuid:") + firstPageURL + "' />");
-        layout.setMembers(info, pid, tit, typ, prev, img);
+        layout.setMembers(info, pid, tit, typ, form, prev, img);
 
         setPane(layout);
+    }
+
+    public String getLabelItem() {
+        return labelItem.getValueAsString();
+    }
+
+    public String getOriginalLabel() {
+        return originalLabel;
     }
 
 }

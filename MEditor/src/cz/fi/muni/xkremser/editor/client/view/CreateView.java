@@ -290,7 +290,8 @@ public class CreateView
     public void addDigitalObject(final String uuid, DigitalObjectDetail detail, boolean refresh) {
         final DublinCore dc = detail.getDc();
         final ModsCollectionClient mods = detail.getMods();
-        String foxml = detail.getFoxml();
+        String foxmlString = detail.getFoxmlString();
+        String foxmlTitle = detail.getLabel();
         String ocr = detail.getOcr();
         DigitalObjectModel model = detail.getModel();
 
@@ -352,13 +353,8 @@ public class CreateView
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         final Tab infoTab =
-                new InfoTab("Info",
-                            "pieces/16/cubes_all.png",
-                            dc,
-                            lang,
-                            labelsSingular.get(model.getValue()),
-                            model,
-                            previewPID);
+                new InfoTab("Info", "pieces/16/cubes_all.png", foxmlTitle, dc, lang, labelsSingular.get(model
+                        .getValue()), model, previewPID);
 
         final Tab dublinTab = new Tab("DC", "pieces/16/piece_green.png");
         dublinTab.setAttribute(TAB_INITIALIZED, false);
@@ -422,10 +418,10 @@ public class CreateView
         }
 
         Tab foxmlTab = null;
-        boolean fox = foxml != null && !"".equals(foxml);
+        boolean fox = foxmlString != null && !"".equals(foxmlString);
         if (fox) {
             foxmlTab = new Tab("FOXML", "pieces/16/cube_frame.png");
-            Label l = new Label("<code>" + foxml + "</code>");
+            Label l = new Label("<code>" + foxmlString + "</code>");
             l.setCanSelectText(true);
             foxmlTab.setPane(l);
         }

@@ -34,7 +34,6 @@ import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.uwyn.jhighlight.renderer.XhtmlRendererFactory;
 
 import org.apache.log4j.Logger;
 
@@ -53,6 +52,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
+import cz.fi.muni.xkremser.editor.server.valueobj.metadata.Foxml;
+import cz.fi.muni.xkremser.editor.server.valueobj.metadata.FoxmlHandler;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -121,7 +122,9 @@ public class DigitalObjectHandlerImpl
         DigitalObjectDetail detail = new DigitalObjectDetail(model, getRelated(uuid));
         detail.setDc(handleDc(uuid, false));
         detail.setMods(handleMods(uuid));
-        detail.setFoxml(handleFOXML(uuid));
+        Foxml foxml = FoxmlHandler.handleFoxml(uuid, getFedoraAccess());
+        detail.setFoxmlString(foxml.getFoxml());
+        detail.setLabel(foxml.getLabel());
         detail.setOcr(handleOCR(uuid));
         detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
         return detail;
@@ -206,30 +209,6 @@ public class DigitalObjectHandlerImpl
      */
     protected String handleOCR(String uuid) {
         return getFedoraAccess().getOcr(uuid);
-    }
-
-    /**
-     * Handle foxml.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the string
-     */
-    protected String handleFOXML(String uuid) {
-        String returnString = null;
-        returnString = getFedoraAccess().getFOXML(uuid);
-        String highlighted = null;
-        try {
-            highlighted =
-                    XhtmlRendererFactory.getRenderer("xml").highlight("foxml",
-                                                                      returnString,
-                                                                      "Windows-1250",
-                                                                      true);
-        } catch (IOException e) {
-            LOGGER.error("Unable to get FOXML representation for " + uuid + "[" + e.getMessage() + "]", e);
-            return returnString;
-        }
-        return highlighted.substring(highlighted.indexOf('\n'));
     }
 
     /**

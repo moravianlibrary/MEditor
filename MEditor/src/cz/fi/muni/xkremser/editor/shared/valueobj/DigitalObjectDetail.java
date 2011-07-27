@@ -45,7 +45,7 @@ public class DigitalObjectDetail
         implements IsSerializable {
 
     /** The foxml. */
-    private String foxml;
+    private String foxmlString;
 
     /** The ocr. */
     private String ocr;
@@ -74,6 +74,10 @@ public class DigitalObjectDetail
     private boolean ocrChanged;
 
     private boolean itemsChanged;
+
+    private String label;
+
+    private boolean labelChanged;
 
     private DublinCore dc;
 
@@ -164,22 +168,60 @@ public class DigitalObjectDetail
     }
 
     /**
-     * Gets the foxml.
+     * Gets the foxmlString.
      * 
-     * @return the foxml
+     * @return the foxmlString
      */
-    public String getFoxml() {
-        return foxml;
+    public String getFoxmlString() {
+        return foxmlString;
     }
 
     /**
-     * Sets the foxml.
+     * Sets the foxmlString.
+     * 
+     * @param foxmlString
+     *        the new foxmlString
+     */
+    public void setFoxmlString(String foxmlString) {
+        this.foxmlString = foxmlString;
+    }
+
+    /**
+     * Gets the label.
+     * 
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * Sets the label.
      * 
      * @param foxml
-     *        the new foxml
+     *        the new label
      */
-    public void setFoxml(String foxml) {
-        this.foxml = foxml;
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    /**
+     * Checks if is label changed.
+     * 
+     * @return true, if is label changed
+     */
+    public boolean isLabelChanged() {
+        return labelChanged;
+    }
+
+    /**
+     * Sets the label changed.
+     * 
+     * @param labelChnged
+     *        the new label changed
+     */
+    public void setLabelChanged(boolean labelChanged) {
+        this.labelChanged = labelChanged;
     }
 
     /**

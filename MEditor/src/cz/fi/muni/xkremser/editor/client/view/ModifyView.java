@@ -210,6 +210,9 @@ public class ModifyView
     /** The mods tab. */
     private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
 
+    /** The info tab. */
+    private final Map<TabSet, Tab> infoTabs = new HashMap<TabSet, Tab>();
+
     private final Map<TabSet, List<Tab>> itemTabs = new HashMap<TabSet, List<Tab>>();
 
     private final HashMap<TabSet, Map<DigitalObjectModel, TileGrid>> itemGrids =
@@ -312,7 +315,7 @@ public class ModifyView
                         myKeyPressHandler(TAB, null);
                     }
 
-                    System.out.println(event.getNativeEvent().getKeyCode());
+                    //                    System.out.println(event.getNativeEvent().getKeyCode());
 
                     if (!isSecondFocused || topTabSet2 == null) {
 
@@ -414,7 +417,8 @@ public class ModifyView
     public void addDigitalObject(final String uuid, DigitalObjectDetail detail, boolean refresh) {
         final DublinCore dc = detail.getDc();
         final ModsCollectionClient mods = detail.getMods();
-        String foxml = detail.getFoxml();
+        final String label = detail.getLabel();
+        String foxmlString = detail.getFoxmlString();
         String ocr = detail.getOcr();
         DigitalObjectModel model = detail.getModel();
 
@@ -476,13 +480,9 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         final Tab infoTab =
-                new InfoTab("Info",
-                            "pieces/16/cubes_all.png",
-                            dc,
-                            lang,
-                            labelsSingular.get(model.getValue()),
-                            model,
-                            previewPID);
+                new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
+                        .getValue()), model, previewPID);
+        infoTabs.put(topTabSet, infoTab);
 
         final Tab dublinTab = new Tab("DC", "pieces/16/piece_green.png");
         dublinTab.setAttribute(TAB_INITIALIZED, false);
@@ -546,10 +546,10 @@ public class ModifyView
         }
 
         Tab foxmlTab = null;
-        boolean fox = foxml != null && !"".equals(foxml);
+        boolean fox = foxmlString != null && !"".equals(foxmlString);
         if (fox) {
             foxmlTab = new Tab("FOXML", "pieces/16/cube_frame.png");
-            HTMLFlow l = new HTMLFlow("<code>" + foxml + "</code>");
+            HTMLFlow l = new HTMLFlow("<code>" + foxmlString + "</code>");
             l.setCanSelectText(true);
             foxmlTab.setPane(l);
         }
@@ -1083,6 +1083,7 @@ public class ModifyView
         String u = openedObjectsUuids.get(tabSet);
         openedObjectsTabsets.remove(u);
         openedObjectsUuids.remove(tabSet);
+        infoTabs.remove(tabSet);
         dcTab.remove(tabSet);
         modsTab.remove(tabSet);
         itemTabs.remove(tabSet);
@@ -1158,8 +1159,20 @@ public class ModifyView
 
                         DigitalObjectDetail object = new DigitalObjectDetail(model, null);
                         TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+                        InfoTab infoT = (InfoTab) infoTabs.get(ts);
                         Tab dcT = dcTab.get(ts);
                         Tab modsT = modsTab.get(ts);
+
+                        if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
+                            object.setLabel("");
+                            object.setLabelChanged(true);
+                        } else if (!infoT.getLabelItem().equals(infoT.getOriginalLabel())) {
+                            object.setLabel(infoT.getLabelItem());
+                            object.setLabelChanged(true);
+                        } else {
+                            object.setLabelChanged(false);
+                        }
+
                         TextAreaItem ocrTextItem = null;
                         if ((ocrTextItem = ocrContent.get(ts)) != null
                                 && ocrTextContent.get(ocrTextItem) != null) {
