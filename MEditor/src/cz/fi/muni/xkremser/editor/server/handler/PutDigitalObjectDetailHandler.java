@@ -510,7 +510,7 @@ public class PutDigitalObjectDetailHandler
 
     private void modifyLabel(DigitalObjectDetail detail, boolean versionable) {
         if (detail.getLabel() != null) {
-            String newLabel = GetEncodedString(detail.getLabel());
+            String newLabel = getEncodedString(detail.getLabel());
             String url =
                     configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "?label=" + newLabel;
             String usr = configuration.getFedoraLogin();
@@ -521,7 +521,7 @@ public class PutDigitalObjectDetailHandler
 
     }
 
-    private String GetEncodedString(String string) {
+    private String getEncodedString(String string) {
         try {
             return java.net.URLEncoder.encode(string, "UTF-8");
         } catch (UnsupportedEncodingException e) {
