@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 
 import java.net.MalformedURLException;
 
@@ -509,7 +510,7 @@ public class PutDigitalObjectDetailHandler
 
     private void modifyLabel(DigitalObjectDetail detail, boolean versionable) {
         if (detail.getLabel() != null) {
-            String newLabel = getStringWithoutSpaces(detail.getLabel());
+            String newLabel = GetEncodedString(detail.getLabel());
             String url =
                     configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "?label=" + newLabel;
             String usr = configuration.getFedoraLogin();
@@ -520,16 +521,13 @@ public class PutDigitalObjectDetailHandler
 
     }
 
-    private String getStringWithoutSpaces(String string) {
-        String[] splitedString = string.trim().split(SPACE);
-        StringBuffer bufferedString = new StringBuffer("");
-        for (int i = 0; i < splitedString.length; i++) {
-            bufferedString.append(splitedString[i]);
-            if (i != splitedString.length - 1) {
-                bufferedString.append(FOXML_SPACE);
-            }
+    private String GetEncodedString(String string) {
+        try {
+            return java.net.URLEncoder.encode(string, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("nepodporovane kodovani", e);
+            e.printStackTrace();
         }
-        return bufferedString.toString().trim();
+        return null;
     }
-
 }
