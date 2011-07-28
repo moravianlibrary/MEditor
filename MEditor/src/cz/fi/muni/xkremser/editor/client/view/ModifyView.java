@@ -1166,11 +1166,9 @@ public class ModifyView
                         if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
                             object.setLabel("");
                             object.setLabelChanged(true);
-                        } else if (!infoT.getLabelItem().equals(infoT.getOriginalLabel())) {
-                            object.setLabel(infoT.getLabelItem());
-                            object.setLabelChanged(true);
                         } else {
-                            object.setLabelChanged(false);
+                            object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
+                            object.setLabel(infoT.getLabelItem());
                         }
 
                         TextAreaItem ocrTextItem = null;

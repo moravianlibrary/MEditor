@@ -51,14 +51,13 @@ import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 import cz.fi.muni.xkremser.editor.server.valueobj.metadata.Foxml;
-import cz.fi.muni.xkremser.editor.server.valueobj.metadata.FoxmlHandler;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IDigitalObjectHandler.
  */
@@ -122,7 +121,7 @@ public class DigitalObjectHandlerImpl
         DigitalObjectDetail detail = new DigitalObjectDetail(model, getRelated(uuid));
         detail.setDc(handleDc(uuid, false));
         detail.setMods(handleMods(uuid));
-        Foxml foxml = FoxmlHandler.handleFoxml(uuid, getFedoraAccess());
+        Foxml foxml = FoxmlUtils.handleFoxml(uuid, getFedoraAccess());
         detail.setFoxmlString(foxml.getFoxml());
         detail.setLabel(foxml.getLabel());
         detail.setOcr(handleOCR(uuid));

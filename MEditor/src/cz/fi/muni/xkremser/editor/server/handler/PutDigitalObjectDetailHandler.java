@@ -29,7 +29,6 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
 import java.net.MalformedURLException;
 
@@ -79,6 +78,7 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -96,10 +96,6 @@ public class PutDigitalObjectDetailHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage()
             .toString());
-
-    /** The Spaces-constants */
-    private static final String FOXML_SPACE = "%20";
-    private static final String SPACE = " ";
 
     /** The Constant RELS_EXT_PART_1. */
     private static final String RELS_EXT_PART_11 = "<kramerius:";
@@ -510,7 +506,7 @@ public class PutDigitalObjectDetailHandler
 
     private void modifyLabel(DigitalObjectDetail detail, boolean versionable) {
         if (detail.getLabel() != null) {
-            String newLabel = getEncodedString(detail.getLabel());
+            String newLabel = FoxmlUtils.encodeToURL(detail.getLabel());
             String url =
                     configuration.getFedoraHost() + "/objects/" + detail.getUuid() + "?label=" + newLabel;
             String usr = configuration.getFedoraLogin();
@@ -521,13 +517,4 @@ public class PutDigitalObjectDetailHandler
 
     }
 
-    private String getEncodedString(String string) {
-        try {
-            return java.net.URLEncoder.encode(string, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.error("nepodporovane kodovani", e);
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
