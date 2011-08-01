@@ -50,10 +50,14 @@ import com.smartgwt.client.types.Side;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Progressbar;
+import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
@@ -156,6 +160,12 @@ public class ModifyPresenter
 
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
 
+        public IButton getOpen();
+
+        public TextItem getUuidField();
+
+        public Window getUuidWindow();
+
         // void addDigitalObject(final Record[] pageData, final List<Record[]>
         // containerDataList, final List<DigitalObjectModel> containerModelList,
         // final Streams dc,
@@ -254,8 +264,46 @@ public class ModifyPresenter
                 }
             }
         });
+        getView().getOpen().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                evaluateUuid();
+            }
+        });
+        getView().getUuidField()
+                .addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {
+
+                    @Override
+                    public void onKeyPress(com.smartgwt.client.widgets.form.fields.events.KeyPressEvent event) {
+                        if (event.getKeyName().equals("Enter") && !getView().getOpen().getDisabled()) {
+                            evaluateUuid();
+                        }
+                    }
+                });
+        getView().getUuidField()
+                .addChangedHandler(new com.smartgwt.client.widgets.form.fields.events.ChangedHandler() {
+
+                    @Override
+                    public void onChanged(ChangedEvent event) {
+                        String text = (String) event.getValue();
+                        if (text != null && !"".equals(text)) {
+                            getView().getOpen().setDisabled(false);
+                        } else {
+                            getView().getOpen().setDisabled(true);
+                        }
+                    }
+                });
 
     };
+
+    private void evaluateUuid() {
+        if (getView().getUuidField().validate()) {
+            getView().getUuidWindow().destroy();
+            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, (String) getView().getUuidField().getValue()));
+        }
+    }
 
     /*
      * (non-Javadoc)

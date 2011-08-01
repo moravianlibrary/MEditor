@@ -391,4 +391,8 @@ public class DigitalObjectMenuView
     public ListGrid getRelatedGrid() {
         return relatedGrid;
     }
+
+    public SectionStack getSectionStack() {
+        return sectionStack;
+    }
 }

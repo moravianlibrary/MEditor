@@ -17,6 +17,7 @@ public class InfoTab
 
     TextItem labelItem = new TextItem("Label");
     private final String originalLabel;
+    private final DigitalObjectModel model;
 
     public InfoTab(String title,
                    String icon,
@@ -24,9 +25,10 @@ public class InfoTab
                    DublinCore dc,
                    LangConstants lang,
                    String type,
-                   DigitalObjectModel model,
+                   DigitalObjectModel mod,
                    String firstPageURL) {
         super(title, icon);
+        this.model = mod;
         VStack layout = new VStack();
         layout.setPadding(15);
         HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
@@ -75,4 +77,7 @@ public class InfoTab
         return originalLabel;
     }
 
+    public DigitalObjectModel getModel() {
+        return model;
+    }
 }

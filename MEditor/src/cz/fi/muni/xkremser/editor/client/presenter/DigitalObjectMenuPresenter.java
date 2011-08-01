@@ -30,6 +30,9 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -41,6 +44,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
@@ -49,6 +53,7 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.layout.SectionStack;
 
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
@@ -148,6 +153,8 @@ public class DigitalObjectMenuPresenter
          *        the new related documents
          */
         void setRelatedDocuments(List<? extends List<String>> data);
+
+        SectionStack getSectionStack();
     }
 
     /**
@@ -171,6 +178,54 @@ public class DigitalObjectMenuPresenter
     // @Inject
     /** The config. */
     private final EditorClientConfiguration config;
+
+    private static final int CODE_KEY_M = 77;
+    private static final int CODE_KEY_N = 78;
+    private static final int CODE_KEY_ENTER = 13;
+    {
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            @Override
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+                if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+
+                    if (event.getTypeInt() == Event.ONKEYDOWN) {
+                        switch (event.getNativeEvent().getKeyCode()) {
+
+                            case CODE_KEY_M:
+                                Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
+                                items2[0].focus();
+                                break;
+                            case CODE_KEY_N:
+                                Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
+                                if (items1.length > 0) {
+                                    items1[0].focus();
+                                }
+                        }
+                    }
+                } else if (event.getNativeEvent().getKeyCode() == CODE_KEY_ENTER
+                        && (event.getTypeInt() == Event.ONKEYDOWN)) {
+
+                    if (getView().getRecentlyModifiedGrid().getSelection().length > 0) {
+
+                        ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
+                        System.out.println("my event record's length: " + listGridRecords.length);
+
+                        revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+
+                    } else if (getView().getRelatedGrid().getSelection().length > 0) {
+
+                        ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
+                        System.out.println("my event record's length: " + listGridRecords.length);
+
+                        revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * Instantiates a new digital object menu presenter.

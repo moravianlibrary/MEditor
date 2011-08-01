@@ -59,10 +59,12 @@ import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
+import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.RichTextEditor;
@@ -79,9 +81,12 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
+import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -205,13 +210,16 @@ public class ModifyView
     private final Map<TextAreaItem, String> ocrTextContent = new HashMap<TextAreaItem, String>();
 
     /** The dc tab. */
-    private final Map<TabSet, Tab> dcTab = new HashMap<TabSet, Tab>();
+    private final Map<TabSet, DCTab> dcTab = new HashMap<TabSet, DCTab>();
 
     /** The mods tab. */
     private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
 
     /** The info tab. */
-    private final Map<TabSet, Tab> infoTabs = new HashMap<TabSet, Tab>();
+    private final Map<TabSet, InfoTab> infoTabs = new HashMap<TabSet, InfoTab>();
+
+    private final Map<TabSet, ModsCollectionClient> modsCollections =
+            new HashMap<TabSet, ModsCollectionClient>();
 
     private final Map<TabSet, List<Tab>> itemTabs = new HashMap<TabSet, List<Tab>>();
 
@@ -241,21 +249,89 @@ public class ModifyView
     /** The first. */
     private boolean first = true;
 
-    int pressedCount = 0;
     private static final String LEFT = "left";
     private static final String RIGHT = "right";
-    private static final String UP = "up";
-    private static final String DOWN = "down";
+    //    private static final String UP = "up";
+    //    private static final String DOWN = "down";
 
-    private static final int CODELEFT = 100;
-    private static final int CODERIGHT = 102;
-    private static final int CODEUP = 104;
-    private static final int CODEDOWN = 98;
-    private static final int CHANGEFOCUS = 101;
+    //    private static final int CODE_KEY_NUM_4 = 100;
+    //    private static final int CODE_KEY_NUM_6 = 102;
+    //    private static final int CODE_KEY_NUM_8 = 104;
+    //    private static final int CODE_KEY_NUM_2 = 98;
+    private static final int CODE_KEY_NUM_5 = 101;
+
+    private static final int CODE_KEY_ESC = 27;
+    private static final int CODE_KEY_PAGE_UP = 33;
+    private static final int CODE_KEY_PAGE_DOWN = 34;
+    private static final int CODE_KEY_C = 67;
+    private static final int CODE_KEY_N = 78;
+    private static final int CODE_KEY_P = 80;
+    private static final int CODE_KEY_R = 82;
+    //    private static final int CODE_KEY_S = 83;
+    private static final int CODE_KEY_U = 85;
+    private final TextItem uuidField = new TextItem();
+    private final IButton open = new IButton();
 
     private boolean isSecondFocused;
     private static final String TAB = "tab";
-    private ModsTab myModsTab;
+    private Window uuidWindow = null;
+    private Window winModal = null;
+
+    {
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            @Override
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+                if (event.getNativeEvent().getKeyCode() == CODE_KEY_ESC) {
+                    escShortCut();
+                } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+
+                    System.out.println("key code of pressed key in modify: "
+                            + event.getNativeEvent().getKeyCode());
+
+                    if (event.getTypeInt() == Event.ONKEYDOWN) {
+
+                        if (event.getNativeEvent().getKeyCode() == CODE_KEY_NUM_5 && topTabSet2 != null) {
+                            shiftShortCutHandler(TAB, null);
+                        } else {
+
+                            TabSet focusedTabSet = null;
+                            if (!isSecondFocused || topTabSet2 == null) {
+                                focusedTabSet = topTabSet1;
+                            } else if (isSecondFocused && topTabSet2 != null) {
+                                focusedTabSet = topTabSet2;
+                            }
+
+                            switch (event.getNativeEvent().getKeyCode()) {
+
+                                case CODE_KEY_PAGE_DOWN:
+                                    shiftShortCutHandler(RIGHT, focusedTabSet);
+                                    break;
+                                case CODE_KEY_PAGE_UP:
+                                    shiftShortCutHandler(LEFT, focusedTabSet);
+                                    break;
+                                case CODE_KEY_R:
+                                    refresh(focusedTabSet);
+                                    break;
+                                case CODE_KEY_U:
+                                    refreshShortCut(focusedTabSet);
+                                    break;
+                                case CODE_KEY_P:
+                                    publishShortCut(focusedTabSet);
+                                    break;
+                                case CODE_KEY_C:
+                                    close(focusedTabSet);
+                                    break;
+                                //                                case CODE_KEY_N:
+                                //                                    showRecentlyModifiedWindow();
+                                //                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * Instantiates a new modify view.
@@ -303,107 +379,128 @@ public class ModifyView
         this.clipboard = data;
     }
 
-    {
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-                if (event.getNativeEvent().getCtrlKey()) {
-
-                    if (event.getNativeEvent().getKeyCode() == CHANGEFOCUS && topTabSet2 != null) {
-                        myKeyPressHandler(TAB, null);
-                    }
-
-                    //                    System.out.println(event.getNativeEvent().getKeyCode());
-
-                    if (!isSecondFocused || topTabSet2 == null) {
-
-                        if (event.getNativeEvent().getKeyCode() == CODELEFT) {
-                            myKeyPressHandler(LEFT, topTabSet1);
-
-                        } else if (event.getNativeEvent().getKeyCode() == CODEUP) {
-                            myKeyPressHandler(UP, topTabSet1);
-
-                        } else if (event.getNativeEvent().getKeyCode() == CODERIGHT) {
-                            myKeyPressHandler(RIGHT, topTabSet1);
-
-                        } else if (event.getNativeEvent().getKeyCode() == CODEDOWN) {
-                            myKeyPressHandler(DOWN, topTabSet1);
-
-                        }
-                    } else if (isSecondFocused && topTabSet2 != null) {
-
-                        if (event.getNativeEvent().getKeyCode() == CODELEFT) {
-                            myKeyPressHandler(LEFT, topTabSet2);
-
-                        } else if (event.getNativeEvent().getKeyCode() == CODEUP) {
-                            myKeyPressHandler(UP, topTabSet2);
-
-                        } else if (event.getNativeEvent().getKeyCode() == CODERIGHT) {
-                            myKeyPressHandler(RIGHT, topTabSet2);
-
-                        } else if (event.getNativeEvent().getKeyCode() == CODEDOWN) {
-                            myKeyPressHandler(DOWN, topTabSet2);
-                        }
-                    }
-                }
-            }
-
-        });
+    private void publishShortCut(TabSet focusedTabSet) {
+        if (winModal != null) {
+            winModal.destroy();
+            winModal = null;
+        }
+        InfoTab infoT = infoTabs.get(focusedTabSet);
+        DCTab dcT = dcTab.get(focusedTabSet);
+        publish(focusedTabSet,
+                infoT.getModel(),
+                dcT.getDc(),
+                modsCollections.get(focusedTabSet),
+                focusedTabSet);
     }
 
-    private void myKeyPressHandler(String direction, TabSet tabSet) {
+    private void refreshShortCut(TabSet focusedTabSet) {
+        if (uuidWindow != null) {
+            uuidWindow.destroy();
+            uuidWindow = null;
+        }
+        showNewUuidWindow();
+        uuidWindow.focus();
+    }
 
-        if (pressedCount == 0) {
+    private void escShortCut() {
+        if (uuidWindow != null) {
+            uuidWindow.destroy();
+            uuidWindow = null;
+        }
+        if (winModal != null) {
+            winModal.destroy();
+            winModal = null;
+        }
+    }
 
-            System.out.println();
+    private void showNewUuidWindow() {
+        uuidWindow = new Window();
+        final DynamicForm form = new DynamicForm();
 
-            if (direction.equals(TAB)) {
-                if (!isSecondFocused) {
-                    pressedCount++;
-                    isSecondFocused = true;
-                } else {
-                    isSecondFocused = false;
-                    pressedCount++;
-                }
+        RegExpValidator regExpValidator = new RegExpValidator();
+        regExpValidator
+                .setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
+
+        uuidField.setTitle("PID");
+        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
+        uuidField.setValidators(regExpValidator);
+
+        form.setFields(uuidField);
+        form.setMargin(12);
+        form.setWidth(100);
+        form.setHeight(15);
+
+        open.setTitle(lang.open());
+        open.setDisabled(true);
+        open.setAutoShowParent(false);
+        uuidWindow.addItem(form);
+        uuidWindow.addItem(open);
+        uuidWindow.setHeight(125);
+        uuidWindow.setWidth(320);
+        uuidWindow.setEdgeOffset(15);
+        uuidWindow.setCanDragResize(true);
+        uuidWindow.setShowEdges(true);
+        uuidWindow.setTitle("PID");
+        uuidWindow.setShowMinimizeButton(false);
+        uuidWindow.setIsModal(true);
+        uuidWindow.setShowModalMask(true);
+        uuidWindow.centerInPage();
+        uuidWindow.show();
+    }
+
+    private void showRecentlyModifiedWindow() {
+        uuidWindow = new Window();
+        final VLayout locLayout = new VLayout();
+
+        final SectionStack sectionStack = new SectionStack();
+        //        sectionStack.addSection(new DigitalObjectMenuView(lang).getRecentlyModifiedStack());
+        sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
+        sectionStack.setAnimateSections(true);
+        sectionStack.setWidth100();
+        sectionStack.setHeight100();
+        sectionStack.setOverflow(Overflow.HIDDEN);
+        locLayout.addMember(sectionStack);
+
+        //        uuidWindow.addItem(locLayout);
+        uuidWindow.addItem(new DigitalObjectMenuView(lang).asWidget());
+        uuidWindow.setHeight(300);
+        uuidWindow.setWidth(520);
+        uuidWindow.setEdgeOffset(15);
+        uuidWindow.setCanDragResize(true);
+        uuidWindow.setShowEdges(true);
+        uuidWindow.setTitle("Recently modified");
+        uuidWindow.setShowMinimizeButton(false);
+        uuidWindow.setIsModal(true);
+        uuidWindow.setShowModalMask(true);
+        uuidWindow.centerInPage();
+        uuidWindow.show();
+    }
+
+    private void shiftShortCutHandler(String direction, TabSet tabSet) {
+
+        System.out.println();
+
+        if (direction.equals(TAB)) {
+            if (!isSecondFocused) {
+                isSecondFocused = true;
             } else {
-                int currentTab = tabSet.getSelectedTabNumber();
-                System.out.println();
-                System.out.println("current tab " + currentTab);
-                System.out.println("pressed count " + pressedCount);
-
-                if (direction.equals(LEFT)) {
-                    if (currentTab == 0) {
-                        currentTab = tabSet.getNumTabs();
-                    }
-                    tabSet.selectTab(currentTab - 1);
-                    System.out.println("pushed key left");
-
-                } else if (direction.equals(RIGHT)) {
-                    if (currentTab == tabSet.getNumTabs() - 1) {
-                        currentTab = -1;
-                    }
-                    tabSet.selectTab(currentTab + 1);
-                    System.out.println("pushed key right");
-
-                } else if (direction.equals(UP)) {
-                    System.out.println("pushed key up");
-                } else if (direction.equals(DOWN)) {
-
-                    System.out.println("pushed key down");
-                }
-
-                System.out.println("next tab " + tabSet.getSelectedTabNumber());
-                pressedCount++;
+                isSecondFocused = false;
             }
         } else {
-            if (pressedCount == 1) {
-                pressedCount = 0;
-            } else {
-                pressedCount++;
-            }
+            int currentTab = tabSet.getSelectedTabNumber();
 
+            if (direction.equals(LEFT)) {
+                if (currentTab == 0) {
+                    currentTab = tabSet.getNumTabs();
+                }
+                tabSet.selectTab(currentTab - 1);
+
+            } else if (direction.equals(RIGHT)) {
+                if (currentTab == tabSet.getNumTabs() - 1) {
+                    currentTab = -1;
+                }
+                tabSet.selectTab(currentTab + 1);
+            }
         }
     }
 
@@ -479,15 +576,16 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
+        modsCollections.put(topTabSet, mods);
         final Tab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
                         .getValue()), model, previewPID);
-        infoTabs.put(topTabSet, infoTab);
+        infoTabs.put(topTabSet, (InfoTab) infoTab);
 
-        final Tab dublinTab = new Tab("DC", "pieces/16/piece_green.png");
+        final Tab dublinTab = new DCTab("DC", "pieces/16/piece_green.png");
         dublinTab.setAttribute(TAB_INITIALIZED, false);
         dublinTab.setAttribute(ID_TAB, ID_DC);
-        dcTab.put(topTabSet, dublinTab);
+        dcTab.put(topTabSet, (DCTab) dublinTab);
 
         final Tab moTab = new Tab("MODS", "pieces/16/piece_blue.png");
         moTab.setAttribute(TAB_INITIALIZED, false);
@@ -702,7 +800,7 @@ public class ModifyView
 
             @Override
             public void onHover(HoverEvent event) {
-                closeButton.setPrompt(lang.closeHoover());
+                closeButton.setPrompt(lang.closeHoover() + " Ctrl+Alt+C");
             }
         });
 
@@ -710,23 +808,7 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event) {
-                layout.removeMember(topTabSet);
-                if (first || topTabSet1 == null || topTabSet2 == null) {
-                    first = !first;
-                }
-                if (topTabSet1 == topTabSet) {
-                    removeTuple(topTabSet1);
-                    topTabSet1.destroy();
-                    topTabSet1 = null;
-                    if (topTabSet2 != null) { // move up
-                        topTabSet1 = topTabSet2;
-                        topTabSet2 = null;
-                    }
-                } else {
-                    removeTuple(topTabSet2);
-                    topTabSet2.destroy();
-                    topTabSet2 = null;
-                }
+                close(topTabSet);
             }
         });
         topTabSet.setTabBarControls(TabBarControls.TAB_SCROLLER,
@@ -747,6 +829,7 @@ public class ModifyView
                 }
                 topTabSet1 = topTabSet;
                 layout.addMember(topTabSet1, 0);
+                isSecondFocused = false;
             } else {
                 if (topTabSet2 != null) {
                     TabSet toDelete = topTabSet2;
@@ -756,8 +839,10 @@ public class ModifyView
                 }
                 topTabSet2 = topTabSet;
                 layout.addMember(topTabSet2, 1);
+                isSecondFocused = true;
             }
             first = !first;
+
         } else if (insertPosition != -1) {
             if (insertPosition == 0) {
                 topTabSet1 = topTabSet;
@@ -769,6 +854,27 @@ public class ModifyView
         }
         layout.redraw();
         getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
+    }
+
+    private void close(TabSet topTabSet) {
+        layout.removeMember(topTabSet);
+        if (first || topTabSet1 == null || topTabSet2 == null) {
+            first = !first;
+
+        }
+        if (topTabSet1 == topTabSet) {
+            removeTuple(topTabSet1);
+            topTabSet1.destroy();
+            topTabSet1 = null;
+            if (topTabSet2 != null) { // move up
+                topTabSet1 = topTabSet2;
+                topTabSet2 = null;
+            }
+        } else {
+            removeTuple(topTabSet2);
+            topTabSet2.destroy();
+            topTabSet2 = null;
+        }
     }
 
     /**
@@ -1104,17 +1210,15 @@ public class ModifyView
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
-        MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png");
-        MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png");
+        MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
+        MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
 
         refreshItem.setAttribute(ID_TABSET, topTabSet);
         refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
-                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-                String uuid = openedObjectsUuids.get(ts);
-                getUiHandlers().onRefresh(uuid);
+                refresh((TabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
@@ -1123,144 +1227,7 @@ public class ModifyView
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
-                final Window winModal = new Window();
-                winModal.setHeight(160);
-                winModal.setWidth(350);
-                winModal.setCanDragResize(true);
-                winModal.setShowEdges(true);
-                winModal.setTitle(lang.publishName());
-                winModal.setShowMinimizeButton(false);
-                winModal.setIsModal(true);
-                winModal.setShowModalMask(true);
-                winModal.addCloseClickHandler(new CloseClickHandler() {
-
-                    @Override
-                    public void onCloseClick(CloseClientEvent event) {
-                        winModal.destroy();
-                    }
-                });
-
-                HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
-                label.setMargin(5);
-                label.setExtraSpace(10);
-                final DynamicForm form = new DynamicForm();
-                form.setMargin(0);
-                form.setWidth(100);
-                form.setHeight(20);
-                form.setExtraSpace(7);
-
-                final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
-                Button publish = new Button();
-                publish.setTitle(lang.ok());
-                publish.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event2) {
-
-                        DigitalObjectDetail object = new DigitalObjectDetail(model, null);
-                        TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-                        InfoTab infoT = (InfoTab) infoTabs.get(ts);
-                        Tab dcT = dcTab.get(ts);
-                        Tab modsT = modsTab.get(ts);
-
-                        if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
-                            object.setLabel("");
-                            object.setLabelChanged(true);
-                        } else {
-                            object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
-                            object.setLabel(infoT.getLabelItem());
-                        }
-
-                        TextAreaItem ocrTextItem = null;
-                        if ((ocrTextItem = ocrContent.get(ts)) != null
-                                && ocrTextContent.get(ocrTextItem) != null) {
-                            String val = (String) ocrTextItem.getValue();
-                            if (!ocrTextContent.get(ocrTextItem).equals(val)) {
-                                object.setOcr(val);
-                                object.setOcrChanged(true);
-                            }
-                        } else {
-                            object.setOcrChanged(false);
-                        }
-                        object.setUuid(openedObjectsUuids.get(ts));
-
-                        DublinCore changedDC = null;
-                        if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-                            DCTab dcT_ = (DCTab) dcT;
-                            changedDC = dcT_.getDc();
-                            object.setDcChanged(true);
-                        } else {
-                            changedDC = dc;
-                            object.setDcChanged(false);
-                        }
-                        object.setDc(changedDC);
-                        ModsCollectionClient changedMods = null;
-                        if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-                            ModsTab modsT_ = (ModsTab) modsT;
-                            changedMods = new ModsCollectionClient();
-                            changedMods.setMods(Arrays.asList(modsT_.getMods()));
-                            object.setModsChanged(true);
-                        } else {
-                            changedMods = mods;
-                            object.setModsChanged(false);
-                        }
-                        object.setMods(changedMods);
-                        Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
-                        if (tilegrids != null) { // structure has been changed, or at
-                                                 // least opened
-                            List<List<DigitalObjectDetail>> structure =
-                                    new ArrayList<List<DigitalObjectDetail>>(4);
-                            List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
-                            for (DigitalObjectModel md : children) {
-                                List<DigitalObjectDetail> data = null;
-                                TileGrid tg = tilegrids.get(md);
-                                if (tg != null && tg.getData() != null) {
-                                    data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
-                                    for (Record rec : tg.getData()) {
-                                        DigitalObjectDetail child = new DigitalObjectDetail();
-                                        child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
-                                        data.add(child);
-                                    }
-                                }
-                                structure.add(data);
-                            }
-                            object.setAllItems(structure);
-                        }
-                        getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
-                        winModal.destroy();
-                    }
-                });
-                Button cancel = new Button();
-                cancel.setTitle(lang.cancel());
-                cancel.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event2) {
-                        winModal.destroy();
-                    }
-                });
-                HLayout hLayout = new HLayout();
-                hLayout.setMembersMargin(10);
-                hLayout.addMember(publish);
-                hLayout.addMember(cancel);
-                hLayout.setMargin(5);
-                form.setFields(versionable);
-                winModal.addItem(label);
-                winModal.addItem(form);
-                winModal.addItem(hLayout);
-
-                winModal.centerInPage();
-                winModal.show();
-
-                // SC.confirm("Publish digital object",
-                // "Are you sure you want to publish the digital object?", new
-                // BooleanCallback() {
-                // @Override
-                // public void execute(Boolean value) {
-                // if (value) {
-                // }
-                // }
-                // });
+                publish(topTabSet, model, dc, mods, (TabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
@@ -1275,6 +1242,145 @@ public class ModifyView
                       removeItem,
                       publishItem);
         return menu;
+    }
+
+    private void publish(final TabSet topTabSet,
+                         final DigitalObjectModel model,
+                         final DublinCore dc,
+                         final ModsCollectionClient mods,
+                         final TabSet ts) {
+        winModal = new Window();
+        winModal.setHeight(160);
+        winModal.setWidth(350);
+        winModal.setCanDragResize(true);
+        winModal.setShowEdges(true);
+        winModal.setTitle(lang.publishName());
+        winModal.setShowMinimizeButton(false);
+        winModal.setIsModal(true);
+        winModal.setShowModalMask(true);
+        winModal.addCloseClickHandler(new CloseClickHandler() {
+
+            @Override
+            public void onCloseClick(CloseClientEvent event) {
+                winModal.destroy();
+            }
+        });
+
+        HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
+        label.setMargin(5);
+        label.setExtraSpace(10);
+        final DynamicForm form = new DynamicForm();
+        form.setMargin(0);
+        form.setWidth(100);
+        form.setHeight(20);
+        form.setExtraSpace(7);
+
+        final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
+        Button publish = new Button();
+        publish.setTitle(lang.ok());
+        publish.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event2) {
+
+                DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+                //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+                InfoTab infoT = infoTabs.get(ts);
+                Tab dcT = dcTab.get(ts);
+                Tab modsT = modsTab.get(ts);
+
+                if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
+                    object.setLabel("");
+                    object.setLabelChanged(true);
+                } else {
+                    object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
+                    object.setLabel(infoT.getLabelItem());
+                }
+
+                TextAreaItem ocrTextItem = null;
+                if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
+                    String val = (String) ocrTextItem.getValue();
+                    if (!ocrTextContent.get(ocrTextItem).equals(val)) {
+                        object.setOcr(val);
+                        object.setOcrChanged(true);
+                    }
+                } else {
+                    object.setOcrChanged(false);
+                }
+                object.setUuid(openedObjectsUuids.get(ts));
+
+                DublinCore changedDC = null;
+                if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+                    DCTab dcT_ = (DCTab) dcT;
+                    changedDC = dcT_.getDc();
+                    object.setDcChanged(true);
+                } else {
+                    changedDC = dc;
+                    object.setDcChanged(false);
+                }
+                object.setDc(changedDC);
+                ModsCollectionClient changedMods = null;
+                if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+                    ModsTab modsT_ = (ModsTab) modsT;
+                    changedMods = new ModsCollectionClient();
+                    changedMods.setMods(Arrays.asList(modsT_.getMods()));
+                    object.setModsChanged(true);
+                } else {
+                    changedMods = mods;
+                    object.setModsChanged(false);
+                }
+                object.setMods(changedMods);
+                Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
+                if (tilegrids != null) { // structure has been changed, or at
+                                         // least opened
+                    List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
+                    List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
+                    for (DigitalObjectModel md : children) {
+                        List<DigitalObjectDetail> data = null;
+                        TileGrid tg = tilegrids.get(md);
+                        if (tg != null && tg.getData() != null) {
+                            data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
+                            for (Record rec : tg.getData()) {
+                                DigitalObjectDetail child = new DigitalObjectDetail();
+                                child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
+                                data.add(child);
+                            }
+                        }
+                        structure.add(data);
+                    }
+                    object.setAllItems(structure);
+                }
+                getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
+                winModal.destroy();
+            }
+        });
+        Button cancel = new Button();
+        cancel.setTitle(lang.cancel());
+        cancel.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event2) {
+                winModal.destroy();
+            }
+        });
+        HLayout hLayout = new HLayout();
+        hLayout.setMembersMargin(10);
+        hLayout.addMember(publish);
+        hLayout.addMember(cancel);
+        hLayout.setMargin(5);
+        form.setFields(versionable);
+        winModal.addItem(label);
+        winModal.addItem(form);
+        winModal.addItem(hLayout);
+
+        winModal.centerInPage();
+        winModal.show();
+    }
+
+    private void refresh(final TabSet focusedTabSet) {
+        TabSet ts = focusedTabSet;
+        String uuid = openedObjectsUuids.get(ts);
+        getUiHandlers().onRefresh(uuid);
     }
 
     @Override
@@ -1303,5 +1409,20 @@ public class ModifyView
             itemGrids.put(topTabSet, new HashMap<DigitalObjectModel, TileGrid>());
         }
         itemGrids.get(topTabSet).put(model, grid);
+    }
+
+    @Override
+    public IButton getOpen() {
+        return open;
+    }
+
+    @Override
+    public TextItem getUuidField() {
+        return uuidField;
+    }
+
+    @Override
+    public Window getUuidWindow() {
+        return uuidWindow;
     }
 }
