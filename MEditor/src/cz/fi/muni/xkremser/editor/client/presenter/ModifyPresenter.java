@@ -160,10 +160,25 @@ public class ModifyPresenter
 
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
 
+        /**
+         * Gets the open button
+         * 
+         * @return the open button
+         */
         public IButton getOpen();
 
+        /**
+         * Gets the uuid text item
+         * 
+         * @return the uuid text item
+         */
         public TextItem getUuidField();
 
+        /**
+         * Gets the window for entering the new objet's PID
+         * 
+         * @return uuid window
+         */
         public Window getUuidWindow();
 
         // void addDigitalObject(final Record[] pageData, final List<Record[]>

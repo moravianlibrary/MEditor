@@ -59,7 +59,6 @@ import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
-import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
@@ -86,7 +85,6 @@ import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -218,6 +216,7 @@ public class ModifyView
     /** The info tab. */
     private final Map<TabSet, InfoTab> infoTabs = new HashMap<TabSet, InfoTab>();
 
+    /** The Map of ModsCollectionClients **/
     private final Map<TabSet, ModsCollectionClient> modsCollections =
             new HashMap<TabSet, ModsCollectionClient>();
 
@@ -249,50 +248,86 @@ public class ModifyView
     /** The first. */
     private boolean first = true;
 
-    private static final String LEFT = "left";
-    private static final String RIGHT = "right";
-    //    private static final String UP = "up";
-    //    private static final String DOWN = "down";
-
-    //    private static final int CODE_KEY_NUM_4 = 100;
-    //    private static final int CODE_KEY_NUM_6 = 102;
-    //    private static final int CODE_KEY_NUM_8 = 104;
-    //    private static final int CODE_KEY_NUM_2 = 98;
+    /**
+     * The value of nativeEvent-keyCode of button num5 - used for change focused
+     * tabSet
+     **/
     private static final int CODE_KEY_NUM_5 = 101;
 
+    /**
+     * The value of nativeEvent-keyCode of button Esc - used for close pop-up
+     * windows
+     **/
     private static final int CODE_KEY_ESC = 27;
+
+    /**
+     * The value of nativeEvent-keyCode of button Page Up - used for shift left
+     * in tabs
+     **/
     private static final int CODE_KEY_PAGE_UP = 33;
+
+    /**
+     * The value of nativeEvent-keyCode of button Page Down - used for shift
+     * right in tabs
+     **/
     private static final int CODE_KEY_PAGE_DOWN = 34;
+
+    /**
+     * The value of nativeEvent-keyCode of button C - used for close focused
+     * tabSet
+     **/
     private static final int CODE_KEY_C = 67;
-    private static final int CODE_KEY_N = 78;
+
+    /**
+     * The value of nativeEvent-keyCode of button P - used for display
+     * publish-window of focused tabSet
+     **/
     private static final int CODE_KEY_P = 80;
+
+    /**
+     * The value of nativeEvent-keyCode of button R - used for refresh focused
+     * tabSet
+     **/
     private static final int CODE_KEY_R = 82;
-    //    private static final int CODE_KEY_S = 83;
+
+    /**
+     * The value of nativeEvent-keyCode of button U - used for display window
+     * for entering new object's PID
+     **/
     private static final int CODE_KEY_U = 85;
+
+    /** The uuid text item **/
     private final TextItem uuidField = new TextItem();
+
+    /** The open button **/
     private final IButton open = new IButton();
 
+    /** Whether is topTabSet2 focused or not **/
     private boolean isSecondFocused;
-    private static final String TAB = "tab";
+
+    /** The uuid-window **/
     private Window uuidWindow = null;
+
+    /** The publish-window **/
     private Window winModal = null;
 
+    /** Hot-keys operations **/
     {
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
-                if (event.getNativeEvent().getKeyCode() == CODE_KEY_ESC) {
-                    escShortCut();
-                } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+                if (event.getTypeInt() == Event.ONKEYDOWN) {
+                    if (event.getNativeEvent().getKeyCode() == CODE_KEY_ESC) {
+                        escShortCut();
 
-                    System.out.println("key code of pressed key in modify: "
-                            + event.getNativeEvent().getKeyCode());
-
-                    if (event.getTypeInt() == Event.ONKEYDOWN) {
+                    } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+                        System.out.println("key code of pressed key in modify: "
+                                + event.getNativeEvent().getKeyCode());
 
                         if (event.getNativeEvent().getKeyCode() == CODE_KEY_NUM_5 && topTabSet2 != null) {
-                            shiftShortCutHandler(TAB, null);
+                            isSecondFocused = !isSecondFocused;
+
                         } else {
 
                             TabSet focusedTabSet = null;
@@ -305,16 +340,16 @@ public class ModifyView
                             switch (event.getNativeEvent().getKeyCode()) {
 
                                 case CODE_KEY_PAGE_DOWN:
-                                    shiftShortCutHandler(RIGHT, focusedTabSet);
+                                    shiftRight(focusedTabSet);
                                     break;
                                 case CODE_KEY_PAGE_UP:
-                                    shiftShortCutHandler(LEFT, focusedTabSet);
+                                    shiftLeft(focusedTabSet);
                                     break;
                                 case CODE_KEY_R:
                                     refresh(focusedTabSet);
                                     break;
                                 case CODE_KEY_U:
-                                    refreshShortCut(focusedTabSet);
+                                    displayEnterPIDWindow();
                                     break;
                                 case CODE_KEY_P:
                                     publishShortCut(focusedTabSet);
@@ -322,9 +357,6 @@ public class ModifyView
                                 case CODE_KEY_C:
                                     close(focusedTabSet);
                                     break;
-                                //                                case CODE_KEY_N:
-                                //                                    showRecentlyModifiedWindow();
-                                //                                    break;
                             }
                         }
                     }
@@ -379,6 +411,11 @@ public class ModifyView
         this.clipboard = data;
     }
 
+    /**
+     * Method for handle publish short-cut of focusedTabSet
+     * 
+     * @param focusedTabSet
+     */
     private void publishShortCut(TabSet focusedTabSet) {
         if (winModal != null) {
             winModal.destroy();
@@ -393,27 +430,14 @@ public class ModifyView
                 focusedTabSet);
     }
 
-    private void refreshShortCut(TabSet focusedTabSet) {
+    /**
+     * Method for handle enter-new-object's-PID short-cut
+     */
+    private void displayEnterPIDWindow() {
         if (uuidWindow != null) {
             uuidWindow.destroy();
             uuidWindow = null;
         }
-        showNewUuidWindow();
-        uuidWindow.focus();
-    }
-
-    private void escShortCut() {
-        if (uuidWindow != null) {
-            uuidWindow.destroy();
-            uuidWindow = null;
-        }
-        if (winModal != null) {
-            winModal.destroy();
-            winModal = null;
-        }
-    }
-
-    private void showNewUuidWindow() {
         uuidWindow = new Window();
         final DynamicForm form = new DynamicForm();
 
@@ -446,62 +470,47 @@ public class ModifyView
         uuidWindow.setShowModalMask(true);
         uuidWindow.centerInPage();
         uuidWindow.show();
+        uuidWindow.focus();
     }
 
-    private void showRecentlyModifiedWindow() {
-        uuidWindow = new Window();
-        final VLayout locLayout = new VLayout();
-
-        final SectionStack sectionStack = new SectionStack();
-        //        sectionStack.addSection(new DigitalObjectMenuView(lang).getRecentlyModifiedStack());
-        sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
-        sectionStack.setAnimateSections(true);
-        sectionStack.setWidth100();
-        sectionStack.setHeight100();
-        sectionStack.setOverflow(Overflow.HIDDEN);
-        locLayout.addMember(sectionStack);
-
-        //        uuidWindow.addItem(locLayout);
-        uuidWindow.addItem(new DigitalObjectMenuView(lang).asWidget());
-        uuidWindow.setHeight(300);
-        uuidWindow.setWidth(520);
-        uuidWindow.setEdgeOffset(15);
-        uuidWindow.setCanDragResize(true);
-        uuidWindow.setShowEdges(true);
-        uuidWindow.setTitle("Recently modified");
-        uuidWindow.setShowMinimizeButton(false);
-        uuidWindow.setIsModal(true);
-        uuidWindow.setShowModalMask(true);
-        uuidWindow.centerInPage();
-        uuidWindow.show();
-    }
-
-    private void shiftShortCutHandler(String direction, TabSet tabSet) {
-
-        System.out.println();
-
-        if (direction.equals(TAB)) {
-            if (!isSecondFocused) {
-                isSecondFocused = true;
-            } else {
-                isSecondFocused = false;
-            }
-        } else {
-            int currentTab = tabSet.getSelectedTabNumber();
-
-            if (direction.equals(LEFT)) {
-                if (currentTab == 0) {
-                    currentTab = tabSet.getNumTabs();
-                }
-                tabSet.selectTab(currentTab - 1);
-
-            } else if (direction.equals(RIGHT)) {
-                if (currentTab == tabSet.getNumTabs() - 1) {
-                    currentTab = -1;
-                }
-                tabSet.selectTab(currentTab + 1);
-            }
+    /**
+     * Method for close currently displayed window
+     */
+    private void escShortCut() {
+        if (uuidWindow != null) {
+            uuidWindow.destroy();
+            uuidWindow = null;
         }
+        if (winModal != null) {
+            winModal.destroy();
+            winModal = null;
+        }
+    }
+
+    /**
+     * Shifts the focus right in set of Tabs
+     * 
+     * @param tabSet
+     */
+    private void shiftRight(TabSet tabSet) {
+        int currentTab = tabSet.getSelectedTabNumber();
+        if (currentTab == tabSet.getNumTabs() - 1) {
+            currentTab = -1;
+        }
+        tabSet.selectTab(currentTab + 1);
+    }
+
+    /**
+     * Shifts the focus left in set of Tabs
+     * 
+     * @param tabSet
+     */
+    private void shiftLeft(TabSet tabSet) {
+        int currentTab = tabSet.getSelectedTabNumber();
+        if (currentTab == 0) {
+            currentTab = tabSet.getNumTabs();
+        }
+        tabSet.selectTab(currentTab - 1);
     }
 
     /*
@@ -856,6 +865,11 @@ public class ModifyView
         getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
     }
 
+    /**
+     * Method for close focused tabSet
+     * 
+     * @param topTabSet
+     */
     private void close(TabSet topTabSet) {
         layout.removeMember(topTabSet);
         if (first || topTabSet1 == null || topTabSet2 == null) {
@@ -1244,6 +1258,15 @@ public class ModifyView
         return menu;
     }
 
+    /**
+     * Method for publish focused tabSet
+     * 
+     * @param topTabSet
+     * @param model
+     * @param dc
+     * @param mods
+     * @param ts
+     */
     private void publish(final TabSet topTabSet,
                          final DigitalObjectModel model,
                          final DublinCore dc,
@@ -1377,6 +1400,11 @@ public class ModifyView
         winModal.show();
     }
 
+    /**
+     * Method for refresh focused tabSet
+     * 
+     * @param focusedTabSet
+     */
     private void refresh(final TabSet focusedTabSet) {
         TabSet ts = focusedTabSet;
         String uuid = openedObjectsUuids.get(ts);

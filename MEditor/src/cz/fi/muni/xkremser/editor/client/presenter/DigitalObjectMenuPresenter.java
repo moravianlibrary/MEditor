@@ -154,6 +154,11 @@ public class DigitalObjectMenuPresenter
          */
         void setRelatedDocuments(List<? extends List<String>> data);
 
+        /**
+         * Gets the section stack
+         * 
+         * @return the section stack
+         */
         SectionStack getSectionStack();
     }
 
@@ -179,9 +184,25 @@ public class DigitalObjectMenuPresenter
     /** The config. */
     private final EditorClientConfiguration config;
 
+    /**
+     * The value of nativeEvent-keyCode of button M - used for focus on
+     * Recently-modified-Tab
+     **/
     private static final int CODE_KEY_M = 77;
-    private static final int CODE_KEY_N = 78;
+
+    /**
+     * The value of nativeEvent-keyCode of button D - used for focus on
+     * Referenced-by-Tab
+     **/
+    private static final int CODE_KEY_D = 68;
+
+    /**
+     * The value of nativeEvent-keyCode of button Enter - used for confirmation
+     * of any choice
+     **/
     private static final int CODE_KEY_ENTER = 13;
+
+    /** Hot-keys operations **/
     {
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
@@ -197,11 +218,13 @@ public class DigitalObjectMenuPresenter
                                 Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
                                 items2[0].focus();
                                 break;
-                            case CODE_KEY_N:
+
+                            case CODE_KEY_D:
                                 Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
                                 if (items1.length > 0) {
                                     items1[0].focus();
                                 }
+                                break;
                         }
                     }
                 } else if (event.getNativeEvent().getKeyCode() == CODE_KEY_ENTER
@@ -210,17 +233,12 @@ public class DigitalObjectMenuPresenter
                     if (getView().getRecentlyModifiedGrid().getSelection().length > 0) {
 
                         ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
-                        System.out.println("my event record's length: " + listGridRecords.length);
-
                         revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
 
                     } else if (getView().getRelatedGrid().getSelection().length > 0) {
 
                         ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
-                        System.out.println("my event record's length: " + listGridRecords.length);
-
                         revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
-
                     }
                 }
             }

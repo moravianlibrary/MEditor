@@ -392,6 +392,7 @@ public class DigitalObjectMenuView
         return relatedGrid;
     }
 
+    @Override
     public SectionStack getSectionStack() {
         return sectionStack;
     }
