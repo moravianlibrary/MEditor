@@ -311,6 +311,12 @@ public class ModifyView
     /** The publish-window **/
     private Window winModal = null;
 
+    /** The value of background color of focused tabSet **/
+    private static final String bgColorFocused = "#ededed";
+
+    /** The value of background color of "unfocused" tabSet **/
+    private static final String bgColorUnfocused = "white";
+
     /** Hot-keys operations **/
     {
         Event.addNativePreviewHandler(new NativePreviewHandler() {
@@ -327,6 +333,7 @@ public class ModifyView
 
                         if (event.getNativeEvent().getKeyCode() == CODE_KEY_NUM_5 && topTabSet2 != null) {
                             isSecondFocused = !isSecondFocused;
+                            addBorder();
 
                         } else {
 
@@ -378,6 +385,23 @@ public class ModifyView
         imagePopup = new PopupPanel(true);
         imagePopup.setGlassEnabled(true);
         imagePopup.setAnimationEnabled(true);
+    }
+
+    /**
+     * Adds background color to tabSets on the basis of focus
+     */
+    private void addBorder() {
+        if (!isSecondFocused || topTabSet2 == null) {
+            if (topTabSet1 != null) {
+                topTabSet1.setBackgroundColor(bgColorFocused);
+            }
+            if (topTabSet2 != null) {
+                topTabSet2.setBackgroundColor(bgColorUnfocused);
+            }
+        } else if (isSecondFocused && topTabSet2 != null) {
+            topTabSet2.setBackgroundColor(bgColorFocused);
+            topTabSet1.setBackgroundColor(bgColorUnfocused);
+        }
     }
 
     /*
@@ -678,6 +702,8 @@ public class ModifyView
 
             @Override
             public void onTabSelected(final TabSelectedEvent event) {
+                isSecondFocused = topTabSet == topTabSet2;
+                addBorder();
                 // TODO: string(ID_MODS) -> int
                 if (ID_MODS.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
                     final ModalWindow mw = new ModalWindow(topTabSet);
@@ -851,7 +877,7 @@ public class ModifyView
                 isSecondFocused = true;
             }
             first = !first;
-
+            addBorder();
         } else if (insertPosition != -1) {
             if (insertPosition == 0) {
                 topTabSet1 = topTabSet;
@@ -889,6 +915,7 @@ public class ModifyView
             topTabSet2.destroy();
             topTabSet2 = null;
         }
+        addBorder();
     }
 
     /**
