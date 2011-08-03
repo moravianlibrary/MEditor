@@ -202,6 +202,8 @@ public class DigitalObjectMenuPresenter
      **/
     private static final int CODE_KEY_ENTER = 13;
 
+    private boolean isRefByFocused = false;
+
     /** Hot-keys operations **/
     {
         Event.addNativePreviewHandler(new NativePreviewHandler() {
@@ -216,13 +218,17 @@ public class DigitalObjectMenuPresenter
 
                             case CODE_KEY_M:
                                 Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
-                                items2[0].focus();
+                                if (items2.length > 0) {
+                                    items2[0].focus();
+                                    isRefByFocused = false;
+                                }
                                 break;
 
                             case CODE_KEY_D:
                                 Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
                                 if (items1.length > 0) {
                                     items1[0].focus();
+                                    isRefByFocused = true;
                                 }
                                 break;
                         }
@@ -230,12 +236,12 @@ public class DigitalObjectMenuPresenter
                 } else if (event.getNativeEvent().getKeyCode() == CODE_KEY_ENTER
                         && (event.getTypeInt() == Event.ONKEYDOWN)) {
 
-                    if (getView().getRecentlyModifiedGrid().getSelection().length > 0) {
+                    if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
 
                         ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
                         revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
 
-                    } else if (getView().getRelatedGrid().getSelection().length > 0) {
+                    } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
 
                         ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
                         revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));

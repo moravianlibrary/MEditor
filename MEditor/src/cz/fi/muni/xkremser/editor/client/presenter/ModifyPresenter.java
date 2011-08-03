@@ -499,14 +499,19 @@ public class ModifyPresenter
      * com.smartgwt.client.widgets.menu.Menu)
      */
     @Override
-    public void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu) {
+    public void onAddDigitalObject(final String uuid, final ImgButton closeButton) {
         closeButton.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-                DigitalObjectClosedEvent.fire(ModifyPresenter.this, uuid);
+                close(uuid);
             }
         });
+    }
+
+    @Override
+    public void close(String uuid) {
+        DigitalObjectClosedEvent.fire(ModifyPresenter.this, uuid);
     }
 
     /**

@@ -134,7 +134,7 @@ public class ModifyView
 
         void onAddDigitalObject(final TileGrid tileGrid, final Menu menu);
 
-        void onAddDigitalObject(final String uuid, final ImgButton closeButton, final Menu menu);
+        void onAddDigitalObject(final String uuid, final ImgButton closeButton);
 
         void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable);
 
@@ -145,6 +145,8 @@ public class ModifyView
         void onRefresh(final String uuid);
 
         void getStream(final String uuid, final DigitalObjectModel model, TabSet ts);
+
+        void close(final String uuid);
     }
 
     /** The Constant ID_DC. */
@@ -245,9 +247,6 @@ public class ModifyView
     /** The image popup. */
     private PopupPanel imagePopup;
 
-    /** The first. */
-    private boolean first = true;
-
     /**
      * The value of nativeEvent-keyCode of button num5 - used for change focused
      * tabSet
@@ -303,7 +302,7 @@ public class ModifyView
     private final IButton open = new IButton();
 
     /** Whether is topTabSet2 focused or not **/
-    private boolean isSecondFocused;
+    private boolean isSecondFocused = false;
 
     /** The uuid-window **/
     private Window uuidWindow = null;
@@ -323,7 +322,7 @@ public class ModifyView
 
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
-                if (event.getTypeInt() == Event.ONKEYDOWN) {
+                if (topTabSet1 != null && event.getTypeInt() == Event.ONKEYDOWN) {
                     if (event.getNativeEvent().getKeyCode() == CODE_KEY_ESC) {
                         escShortCut();
 
@@ -363,6 +362,7 @@ public class ModifyView
                                     break;
                                 case CODE_KEY_C:
                                     close(focusedTabSet);
+                                    getUiHandlers().close(openedObjectsUuids.get(focusedTabSet));
                                     break;
                             }
                         }
@@ -854,7 +854,7 @@ public class ModifyView
 
         layout.setMembersMargin(15);
         if (!refresh) {
-            if (first) {
+            if (isSecondFocused || topTabSet1 == null) {
 
                 if (topTabSet1 != null) {
                     TabSet toDelete = topTabSet1;
@@ -864,7 +864,6 @@ public class ModifyView
                 }
                 topTabSet1 = topTabSet;
                 layout.addMember(topTabSet1, 0);
-                isSecondFocused = false;
             } else {
                 if (topTabSet2 != null) {
                     TabSet toDelete = topTabSet2;
@@ -874,9 +873,8 @@ public class ModifyView
                 }
                 topTabSet2 = topTabSet;
                 layout.addMember(topTabSet2, 1);
-                isSecondFocused = true;
             }
-            first = !first;
+            isSecondFocused = !isSecondFocused;
             addBorder();
         } else if (insertPosition != -1) {
             if (insertPosition == 0) {
@@ -888,7 +886,7 @@ public class ModifyView
             }
         }
         layout.redraw();
-        getUiHandlers().onAddDigitalObject(uuid, closeButton, menu);
+        getUiHandlers().onAddDigitalObject(uuid, closeButton);
     }
 
     /**
@@ -898,10 +896,6 @@ public class ModifyView
      */
     private void close(TabSet topTabSet) {
         layout.removeMember(topTabSet);
-        if (first || topTabSet1 == null || topTabSet2 == null) {
-            first = !first;
-
-        }
         if (topTabSet1 == topTabSet) {
             removeTuple(topTabSet1);
             topTabSet1.destroy();
@@ -915,6 +909,7 @@ public class ModifyView
             topTabSet2.destroy();
             topTabSet2 = null;
         }
+        isSecondFocused = false;
         addBorder();
     }
 
