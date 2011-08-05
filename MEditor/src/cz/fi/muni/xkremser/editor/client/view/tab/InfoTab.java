@@ -17,6 +17,7 @@ public class InfoTab
 
     private final TextItem labelItem;
     private final String originalLabel;
+    private final DigitalObjectModel model;
 
     public InfoTab(String title,
                    String icon,
@@ -27,6 +28,8 @@ public class InfoTab
                    DigitalObjectModel model,
                    String firstPageURL) {
         super(title, icon);
+        this.model = model;
+        this.originalLabel = label;
         VStack layout = new VStack();
         layout.setPadding(15);
         HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
@@ -50,7 +53,6 @@ public class InfoTab
         HTMLFlow prev = new HTMLFlow("<b>" + imgTitle + ":</b>");
         prev.setExtraSpace(5);
 
-        originalLabel = label;
         labelItem = new TextItem();
         labelItem.setTitle("<b>Label</b>");
         labelItem.setTitleStyle("color: black;");
@@ -78,4 +80,7 @@ public class InfoTab
         return originalLabel;
     }
 
+    public DigitalObjectModel getModel() {
+        return model;
+    }
 }
