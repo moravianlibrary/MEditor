@@ -15,9 +15,8 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 public class InfoTab
         extends Tab {
 
-    TextItem labelItem = new TextItem("Label");
+    private final TextItem labelItem;
     private final String originalLabel;
-    private final DigitalObjectModel model;
 
     public InfoTab(String title,
                    String icon,
@@ -25,10 +24,9 @@ public class InfoTab
                    DublinCore dc,
                    LangConstants lang,
                    String type,
-                   DigitalObjectModel mod,
+                   DigitalObjectModel model,
                    String firstPageURL) {
         super(title, icon);
-        this.model = mod;
         VStack layout = new VStack();
         layout.setPadding(15);
         HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
@@ -53,7 +51,10 @@ public class InfoTab
         prev.setExtraSpace(5);
 
         originalLabel = label;
-        labelItem.setDefaultValue(label);
+        labelItem = new TextItem();
+        labelItem.setTitle("<b>Label</b>");
+        labelItem.setTitleStyle("color: black;");
+        labelItem.setValue(label);
         if (label.length() > 25) {
             labelItem.setWidth(label.length() + 200);
         }
@@ -77,7 +78,4 @@ public class InfoTab
         return originalLabel;
     }
 
-    public DigitalObjectModel getModel() {
-        return model;
-    }
 }
