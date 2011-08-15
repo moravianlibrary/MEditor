@@ -63,7 +63,6 @@ import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.RichTextEditor;
@@ -80,10 +79,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
-import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
@@ -247,65 +244,8 @@ public class ModifyView
     /** The image popup. */
     private PopupPanel imagePopup;
 
-    /**
-     * The value of nativeEvent-keyCode of button num5 - used for change focused
-     * tabSet
-     **/
-    private static final int CODE_KEY_NUM_5 = 101;
-
-    /**
-     * The value of nativeEvent-keyCode of button Esc - used for close pop-up
-     * windows
-     **/
-    private static final int CODE_KEY_ESC = 27;
-
-    /**
-     * The value of nativeEvent-keyCode of button Page Up - used for shift left
-     * in tabs
-     **/
-    private static final int CODE_KEY_PAGE_UP = 33;
-
-    /**
-     * The value of nativeEvent-keyCode of button Page Down - used for shift
-     * right in tabs
-     **/
-    private static final int CODE_KEY_PAGE_DOWN = 34;
-
-    /**
-     * The value of nativeEvent-keyCode of button C - used for close focused
-     * tabSet
-     **/
-    private static final int CODE_KEY_C = 67;
-
-    /**
-     * The value of nativeEvent-keyCode of button P - used for display
-     * publish-window of focused tabSet
-     **/
-    private static final int CODE_KEY_P = 80;
-
-    /**
-     * The value of nativeEvent-keyCode of button R - used for refresh focused
-     * tabSet
-     **/
-    private static final int CODE_KEY_R = 82;
-
-    /**
-     * The value of nativeEvent-keyCode of button U - used for display window
-     * for entering new object's PID
-     **/
-    private static final int CODE_KEY_U = 85;
-
-    /** The uuid text item **/
-    private final TextItem uuidField = new TextItem();
-
-    /** The open button **/
-    private final IButton open = new IButton();
-
     /** Whether is topTabSet2 focused or not **/
     private boolean isSecondFocused = false;
-
-    /** The uuid-window **/
-    private Window uuidWindow = null;
 
     /** The publish-window **/
     private Window winModal = null;
@@ -323,14 +263,15 @@ public class ModifyView
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
                 if (topTabSet1 != null && event.getTypeInt() == Event.ONKEYDOWN) {
-                    if (event.getNativeEvent().getKeyCode() == CODE_KEY_ESC) {
+                    if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_ESC) {
                         escShortCut();
 
                     } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
                         System.out.println("key code of pressed key in modify: "
                                 + event.getNativeEvent().getKeyCode());
 
-                        if (event.getNativeEvent().getKeyCode() == CODE_KEY_NUM_5 && topTabSet2 != null) {
+                        if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_NUM_5
+                                && topTabSet2 != null) {
                             isSecondFocused = !isSecondFocused;
                             addBorder();
 
@@ -345,24 +286,21 @@ public class ModifyView
 
                             switch (event.getNativeEvent().getKeyCode()) {
 
-                                case CODE_KEY_PAGE_DOWN:
+                                case Constants.CODE_KEY_PAGE_DOWN:
                                     shiftRight(focusedTabSet);
                                     break;
-                                case CODE_KEY_PAGE_UP:
+                                case Constants.CODE_KEY_PAGE_UP:
                                     shiftLeft(focusedTabSet);
                                     break;
-                                case CODE_KEY_R:
+                                case Constants.CODE_KEY_R:
                                     refresh(focusedTabSet);
                                     break;
-                                case CODE_KEY_U:
-                                    displayEnterPIDWindow();
-                                    break;
-                                case CODE_KEY_P:
+                                case Constants.CODE_KEY_P:
                                     publishShortCut(focusedTabSet);
                                     break;
-                                case CODE_KEY_C:
-                                    close(focusedTabSet);
+                                case Constants.CODE_KEY_C:
                                     getUiHandlers().close(openedObjectsUuids.get(focusedTabSet));
+                                    close(focusedTabSet);
                                     break;
                             }
                         }
@@ -455,56 +393,9 @@ public class ModifyView
     }
 
     /**
-     * Method for handle enter-new-object's-PID short-cut
-     */
-    private void displayEnterPIDWindow() {
-        if (uuidWindow != null) {
-            uuidWindow.destroy();
-            uuidWindow = null;
-        }
-        uuidWindow = new Window();
-        final DynamicForm form = new DynamicForm();
-
-        RegExpValidator regExpValidator = new RegExpValidator();
-        regExpValidator
-                .setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
-
-        uuidField.setTitle("PID");
-        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
-        uuidField.setValidators(regExpValidator);
-
-        form.setFields(uuidField);
-        form.setMargin(12);
-        form.setWidth(100);
-        form.setHeight(15);
-
-        open.setTitle(lang.open());
-        open.setDisabled(true);
-        open.setAutoShowParent(false);
-        uuidWindow.addItem(form);
-        uuidWindow.addItem(open);
-        uuidWindow.setHeight(125);
-        uuidWindow.setWidth(320);
-        uuidWindow.setEdgeOffset(15);
-        uuidWindow.setCanDragResize(true);
-        uuidWindow.setShowEdges(true);
-        uuidWindow.setTitle("PID");
-        uuidWindow.setShowMinimizeButton(false);
-        uuidWindow.setIsModal(true);
-        uuidWindow.setShowModalMask(true);
-        uuidWindow.centerInPage();
-        uuidWindow.show();
-        uuidWindow.focus();
-    }
-
-    /**
      * Method for close currently displayed window
      */
     private void escShortCut() {
-        if (uuidWindow != null) {
-            uuidWindow.destroy();
-            uuidWindow = null;
-        }
         if (winModal != null) {
             winModal.destroy();
             winModal = null;
@@ -1461,18 +1352,4 @@ public class ModifyView
         itemGrids.get(topTabSet).put(model, grid);
     }
 
-    @Override
-    public IButton getOpen() {
-        return open;
-    }
-
-    @Override
-    public TextItem getUuidField() {
-        return uuidField;
-    }
-
-    @Override
-    public Window getUuidWindow() {
-        return uuidWindow;
-    }
 }

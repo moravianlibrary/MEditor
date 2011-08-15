@@ -45,9 +45,15 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -55,6 +61,7 @@ import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 import com.smartgwt.client.widgets.layout.SectionStack;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -184,25 +191,12 @@ public class DigitalObjectMenuPresenter
     /** The config. */
     private final EditorClientConfiguration config;
 
-    /**
-     * The value of nativeEvent-keyCode of button M - used for focus on
-     * Recently-modified-Tab
-     **/
-    private static final int CODE_KEY_M = 77;
-
-    /**
-     * The value of nativeEvent-keyCode of button D - used for focus on
-     * Referenced-by-Tab
-     **/
-    private static final int CODE_KEY_D = 68;
-
-    /**
-     * The value of nativeEvent-keyCode of button Enter - used for confirmation
-     * of any choice
-     **/
-    private static final int CODE_KEY_ENTER = 13;
-
     private boolean isRefByFocused = false;
+
+    /** The uuid-window **/
+    private Window uuidWindow = null;
+
+    private final LangConstants lang;
 
     /** Hot-keys operations **/
     {
@@ -211,12 +205,15 @@ public class DigitalObjectMenuPresenter
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
 
-                if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+                if (event.getTypeInt() == Event.ONKEYDOWN) {
+                    if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_ESC) {
+                        escShortCut();
 
-                    if (event.getTypeInt() == Event.ONKEYDOWN) {
+                    } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+
                         switch (event.getNativeEvent().getKeyCode()) {
 
-                            case CODE_KEY_M:
+                            case Constants.CODE_KEY_M:
                                 Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
                                 if (items2.length > 0) {
                                     items2[0].focus();
@@ -224,30 +221,35 @@ public class DigitalObjectMenuPresenter
                                 }
                                 break;
 
-                            case CODE_KEY_D:
+                            case Constants.CODE_KEY_D:
                                 Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
                                 if (items1.length > 0) {
                                     items1[0].focus();
                                     isRefByFocused = true;
                                 }
                                 break;
+                            case Constants.CODE_KEY_U:
+                                displayEnterPIDWindow();
+                                break;
                         }
-                    }
-                } else if (event.getNativeEvent().getKeyCode() == CODE_KEY_ENTER
-                        && (event.getTypeInt() == Event.ONKEYDOWN)) {
 
-                    if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
+                    } else if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_ENTER) {
 
-                        ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
-                        revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+                        if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
 
-                    } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
+                            ListGridRecord[] listGridRecords =
+                                    getView().getRecentlyModifiedGrid().getSelection();
+                            revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
 
-                        ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
-                        revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+                        } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
+
+                            ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
+                            revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+                        }
                     }
                 }
             }
+
         });
     }
 
@@ -266,6 +268,8 @@ public class DigitalObjectMenuPresenter
      *        the config
      * @param placeManager
      *        the place manager
+     * @param lang
+     *        the lang constants
      */
     @Inject
     public DigitalObjectMenuPresenter(final MyView view,
@@ -273,12 +277,91 @@ public class DigitalObjectMenuPresenter
                                       final MyProxy proxy,
                                       final DispatchAsync dispatcher,
                                       final EditorClientConfiguration config,
-                                      PlaceManager placeManager) {
+                                      PlaceManager placeManager,
+                                      LangConstants lang) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
         this.config = config;
         this.placeManager = placeManager;
         bind();
+        this.lang = lang;
+    }
+
+    /**
+     * Method for handle enter-new-object's-PID short-cut
+     */
+    private void displayEnterPIDWindow() {
+        uuidWindow = new Window();
+        RegExpValidator regExpValidator = new RegExpValidator();
+        regExpValidator
+                .setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
+
+        final TextItem uuidField = new TextItem();
+        final ButtonItem open = new ButtonItem();
+
+        uuidField.setTitle("PID");
+        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
+        uuidField.setValidators(regExpValidator);
+        uuidField.addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(com.smartgwt.client.widgets.form.fields.events.KeyPressEvent event) {
+                if (event.getKeyName().equals("Enter") && !open.getDisabled()) {
+                    evaluateUuid(uuidField);
+                }
+            }
+        });
+        uuidField.addChangedHandler(new com.smartgwt.client.widgets.form.fields.events.ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                String text = (String) event.getValue();
+                if (text != null && !"".equals(text)) {
+                    open.setDisabled(false);
+                } else {
+                    open.setDisabled(true);
+                }
+            }
+        });
+        open.setTitle(lang.open());
+        open.setDisabled(true);
+        open.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+            @Override
+            public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                evaluateUuid(uuidField);
+            }
+        });
+
+        DynamicForm form = new DynamicForm();
+        form.setMargin(30);
+        form.setWidth(100);
+        form.setHeight(15);
+        form.setFields(uuidField, open);
+
+        uuidWindow.setHeight(150);
+        uuidWindow.setWidth(370);
+        uuidWindow.setEdgeOffset(15);
+        uuidWindow.setCanDragResize(true);
+        uuidWindow.setShowEdges(true);
+        uuidWindow.setTitle("PID");
+        uuidWindow.setShowMinimizeButton(false);
+        uuidWindow.setIsModal(true);
+        uuidWindow.setShowModalMask(true);
+        uuidWindow.centerInPage();
+        uuidWindow.addItem(form);
+        uuidWindow.show();
+        uuidWindow.focus();
+    }
+
+    /**
+     * Method for close currently displayed window
+     */
+    private void escShortCut() {
+        if (uuidWindow != null) {
+            uuidWindow.destroy();
+            //            uuidWindow = null;
+        }
     }
 
     /*
@@ -336,6 +419,16 @@ public class DigitalObjectMenuPresenter
                 }
             }
         });
+
+    };
+
+    private void evaluateUuid(TextItem uuidField) {
+        if (uuidField.validate()) {
+            uuidWindow.destroy();
+            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));
+        }
+
     }
 
     /*

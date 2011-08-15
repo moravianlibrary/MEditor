@@ -196,4 +196,70 @@ public class Constants {
     }
 
     public static final String SYSNO = "SYSNO";
+
+    /**
+     * The value of nativeEvent-keyCode of button M - used for focus on
+     * Recently-modified-Tab
+     **/
+    public static final int CODE_KEY_M = 77;
+
+    /**
+     * The value of nativeEvent-keyCode of button D - used for focus on
+     * Referenced-by-Tab
+     **/
+    public static final int CODE_KEY_D = 68;
+
+    /**
+     * The value of nativeEvent-keyCode of button Enter - used for confirmation
+     * of any choice
+     **/
+    public static final int CODE_KEY_ENTER = 13;
+
+    /**
+     * The value of nativeEvent-keyCode of button U - used for display window
+     * for entering new object's PID
+     **/
+    public static final int CODE_KEY_U = 85;
+
+    /**
+     * The value of nativeEvent-keyCode of button Esc - used for close pop-up
+     * windows
+     **/
+    public static final int CODE_KEY_ESC = 27;
+
+    /**
+     * The value of nativeEvent-keyCode of button num5 - used for change focused
+     * tabSet
+     **/
+    public static final int CODE_KEY_NUM_5 = 101;
+
+    /**
+     * The value of nativeEvent-keyCode of button Page Up - used for shift left
+     * in tabs
+     **/
+    public static final int CODE_KEY_PAGE_UP = 33;
+
+    /**
+     * The value of nativeEvent-keyCode of button Page Down - used for shift
+     * right in tabs
+     **/
+    public static final int CODE_KEY_PAGE_DOWN = 34;
+
+    /**
+     * The value of nativeEvent-keyCode of button C - used for close focused
+     * tabSet
+     **/
+    public static final int CODE_KEY_C = 67;
+
+    /**
+     * The value of nativeEvent-keyCode of button P - used for display
+     * publish-window of focused tabSet
+     **/
+    public static final int CODE_KEY_P = 80;
+
+    /**
+     * The value of nativeEvent-keyCode of button R - used for refresh focused
+     * tabSet
+     **/
+    public static final int CODE_KEY_R = 82;
 }
