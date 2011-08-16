@@ -74,6 +74,7 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
 
+import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
@@ -448,6 +449,11 @@ public class ModifyPresenter
     @Override
     public void close(String uuid) {
         DigitalObjectClosedEvent.fire(ModifyPresenter.this, uuid);
+    }
+
+    @Override
+    public void onChangeFocusedTabSet(String focusedUuid) {
+        ChangeFocusedTabSetEvent.fire(ModifyPresenter.this, focusedUuid);
     }
 
     /**

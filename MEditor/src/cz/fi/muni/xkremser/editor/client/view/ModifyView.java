@@ -144,6 +144,8 @@ public class ModifyView
         void getStream(final String uuid, final DigitalObjectModel model, TabSet ts);
 
         void close(final String uuid);
+
+        void onChangeFocusedTabSet(final String focusedUuid);
     }
 
     /** The Constant ID_DC. */
@@ -267,14 +269,13 @@ public class ModifyView
                         escShortCut();
 
                     } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
-                        System.out.println("key code of pressed key in modify: "
-                                + event.getNativeEvent().getKeyCode());
+                        //                        System.out.println("key code of pressed key in modify: "
+                        //                                + event.getNativeEvent().getKeyCode());
 
                         if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_NUM_5
                                 && topTabSet2 != null) {
                             isSecondFocused = !isSecondFocused;
-                            addBorder();
-
+                            changeFocus();
                         } else {
 
                             TabSet focusedTabSet = null;
@@ -328,10 +329,13 @@ public class ModifyView
     /**
      * Adds background color to tabSets on the basis of focus
      */
-    private void addBorder() {
+    private void changeFocus() {
         if (!isSecondFocused || topTabSet2 == null) {
             if (topTabSet1 != null) {
                 topTabSet1.setBackgroundColor(bgColorFocused);
+                getUiHandlers().onChangeFocusedTabSet(openedObjectsUuids.get(topTabSet1));
+            } else {
+                getUiHandlers().onChangeFocusedTabSet(null);
             }
             if (topTabSet2 != null) {
                 topTabSet2.setBackgroundColor(bgColorUnfocused);
@@ -339,6 +343,7 @@ public class ModifyView
         } else if (isSecondFocused && topTabSet2 != null) {
             topTabSet2.setBackgroundColor(bgColorFocused);
             topTabSet1.setBackgroundColor(bgColorUnfocused);
+            getUiHandlers().onChangeFocusedTabSet(openedObjectsUuids.get(topTabSet2));
         }
     }
 
@@ -594,7 +599,7 @@ public class ModifyView
             @Override
             public void onTabSelected(final TabSelectedEvent event) {
                 isSecondFocused = topTabSet == topTabSet2;
-                addBorder();
+                changeFocus();
                 // TODO: string(ID_MODS) -> int
                 if (ID_MODS.equals(event.getTab().getAttribute(ID_TAB)) && event.getTab().getPane() == null) {
                     final ModalWindow mw = new ModalWindow(topTabSet);
@@ -766,7 +771,7 @@ public class ModifyView
                 layout.addMember(topTabSet2, 1);
             }
             isSecondFocused = !isSecondFocused;
-            addBorder();
+            changeFocus();
         } else if (insertPosition != -1) {
             if (insertPosition == 0) {
                 topTabSet1 = topTabSet;
@@ -801,7 +806,7 @@ public class ModifyView
             topTabSet2 = null;
         }
         isSecondFocused = false;
-        addBorder();
+        changeFocus();
     }
 
     /**

@@ -27,7 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Event;
@@ -71,8 +73,12 @@ import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
 
+import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
+import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
@@ -197,6 +203,9 @@ public class DigitalObjectMenuPresenter
     private Window uuidWindow = null;
 
     private final LangConstants lang;
+
+    private final Map<String, List<? extends List<String>>> openedObjectsUuidAndRelated =
+            new HashMap<String, List<? extends List<String>>>();
 
     /** Hot-keys operations **/
     {
@@ -420,6 +429,21 @@ public class DigitalObjectMenuPresenter
             }
         });
 
+        addRegisteredHandler(ChangeFocusedTabSetEvent.getType(), new ChangeFocusedTabSetHandler() {
+
+            @Override
+            public void onChangeFocusedTabSet(ChangeFocusedTabSetEvent event) {
+                getView().setRelatedDocuments(openedObjectsUuidAndRelated.get(event.getFocusedUuid()));
+            }
+        });
+
+        addRegisteredHandler(DigitalObjectClosedEvent.getType(), new DigitalObjectClosedHandler() {
+
+            @Override
+            public void onDigitalObjectClosed(DigitalObjectClosedEvent event) {
+                openedObjectsUuidAndRelated.remove(event.getUuid());
+            }
+        });
     };
 
     private void evaluateUuid(TextItem uuidField) {
@@ -514,6 +538,7 @@ public class DigitalObjectMenuPresenter
      */
     @Override
     public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
+        openedObjectsUuidAndRelated.put(item.getUuid(), related);
         getView().setRelatedDocuments(related);
         Timer timer = new Timer() {
 
