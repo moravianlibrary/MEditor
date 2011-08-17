@@ -1240,6 +1240,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String geographicMARC();
 
   /**
+   * Translated "Help".
+   * 
+   * @return translated "Help"
+   */
+  @DefaultStringValue("Help")
+  @Key("help")
+  String help();
+
+  /**
    * Translated "Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema.".
    * 
    * @return translated "Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema."

@@ -33,14 +33,14 @@ import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.events.MouseOutEvent;
-import com.smartgwt.client.widgets.events.MouseOutHandler;
-import com.smartgwt.client.widgets.events.MouseOverEvent;
-import com.smartgwt.client.widgets.events.MouseOverHandler;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -93,7 +93,7 @@ public class AppView
 
     private final LangConstants lang;
 
-    private Window hotKeys = null;
+    private Window winModal;
 
     // private HasWidgets mainContainer;
 
@@ -155,82 +155,38 @@ public class AppView
                 getUiHandlers().logout();
             }
         });
+
         HTMLFlow hotKeysFlow = new HTMLFlow();
-        hotKeysFlow.setContents(lang.hotKeys());
-        hotKeysFlow.setWidth(60);
-        hotKeysFlow.setHeight(20);
-        hotKeysFlow.setExtraSpace(30);
-        hotKeysFlow.addMouseOverHandler(new MouseOverHandler() {
+        hotKeysFlow.setContents(lang.help());
+        hotKeysFlow.setCursor(Cursor.HAND);
+        hotKeysFlow.setWidth(80);
+        hotKeysFlow.setHeight(15);
+        hotKeysFlow.setStyleName("pseudolink");
+        hotKeysFlow.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
-            public void onMouseOver(MouseOverEvent event) {
-                hotKeys = new Window();
-                StringBuffer bufferedHotKeys = new StringBuffer("");
+            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                winModal = new Window();
+                winModal.setWidth(600);
+                winModal.setHeight(800);
+                winModal.setTitle(lang.help());
+                winModal.setShowMinimizeButton(false);
+                winModal.setIsModal(true);
+                winModal.setShowModalMask(true);
+                winModal.centerInPage();
+                winModal.addCloseClickHandler(new CloseClickHandler() {
 
-                bufferedHotKeys.append("<font size=\"2\"><table>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+5: ").append("</td>");
-                bufferedHotKeys.append("<td>").append(lang.changeTabSet()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Esc: ").append("</td>");
-                bufferedHotKeys.append(lang.closeWindow()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+Page Up: ").append("</td>");
-                bufferedHotKeys.append(lang.shiftTabLeft()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+Page Down: ").append("</td>");
-                bufferedHotKeys.append(lang.shiftTabRight()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+C: ").append("</td>");
-                bufferedHotKeys.append(lang.closeTabSet()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+P: ").append("</td>");
-                bufferedHotKeys.append(lang.publishWindow()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+R: ").append("</td>");
-                bufferedHotKeys.append(lang.refreshTabSet()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+U: ").append("</td>");
-                bufferedHotKeys.append(lang.pidWindow()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+M: ").append("</td>");
-                bufferedHotKeys.append(lang.recMod()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Ctrl+Alt+D: ").append("</td>");
-                bufferedHotKeys.append(lang.refBy()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("Enter: ").append("</td>");
-                bufferedHotKeys.append(lang.enter()).append("</td>").append("</tr>");
-
-                bufferedHotKeys.append("<tr><td>").append("</td><td>");
-
-                bufferedHotKeys.append("</td></table></tr></font>");
-
-                HTMLFlow hk = new HTMLFlow(bufferedHotKeys.toString());
-                hk.setMargin(5);
-
-                hotKeys.addItem(hk);
-                hotKeys.setWidth(600);
-                hotKeys.setTitle(lang.hotKeys());
-                hotKeys.setHeight(400);
-                hotKeys.setMinimized(false);
-                hotKeys.setBackgroundColor("white");
-                hotKeys.setShowMinimizeButton(false);
-                hotKeys.setShowCloseButton(false);
-                hotKeys.setShowEdges(false);
-                hotKeys.setBorder("1px solid grey");
-                hotKeys.centerInPage();
-                hotKeys.show();
-            }
-        });
-        hotKeysFlow.addMouseOutHandler(new MouseOutHandler() {
-
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                if (hotKeys != null) {
-                    hotKeys.destroy();
-                }
-
+                    @Override
+                    public void onCloseClick(CloseClientEvent event) {
+                        escShortCut();
+                    }
+                });
+                HTMLPane helpPane = new HTMLPane();
+                helpPane.setPadding(15);
+                helpPane.setContentsURL("./help_" + (en ? "en.html" : "cs.html"));
+                helpPane.setContentsType(ContentsType.FRAGMENT);
+                winModal.addItem(helpPane);
+                winModal.show();
             }
         });
         logged.addMember(hotKeysFlow);
@@ -330,6 +286,17 @@ public class AppView
     @Override
     public HTMLFlow getEditUsers() {
         return editUsers;
+    }
+
+    /**
+     * Method for close currently displayed window
+     */
+    @Override
+    public void escShortCut() {
+        if (winModal != null) {
+            winModal.destroy();
+            winModal = null;
+        }
     }
 
 }
