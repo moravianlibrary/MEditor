@@ -122,7 +122,7 @@ public enum DigitalObjectModel
         for (DigitalObjectModel model : values) {
             if (model.getValue().equalsIgnoreCase(s)) return model;
         }
-        throw new RuntimeException("Unsupported type");
+        throw new RuntimeException("Unsupported type: " + s);
     }
 
 }
