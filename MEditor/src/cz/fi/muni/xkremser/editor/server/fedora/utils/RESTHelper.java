@@ -84,7 +84,7 @@ public class RESTHelper {
      * @throws IOException
      *         Signals that an I/O exception has occurred.
      */
-    public static InputStream inputStream(String urlString, String user, String pass, boolean robustMode)
+    public static InputStream get(String urlString, String user, String pass, boolean robustMode)
             throws IOException {
         URLConnection uc = openConnection(urlString, user, pass, robustMode);
         if (uc == null) return null;

@@ -37,11 +37,6 @@ import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
-/**
- * Value object pro Dublin core stream.
- * 
- * @author xholcik
- */
 public class DublinCore
         implements IsSerializable {
 

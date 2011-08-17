@@ -39,9 +39,6 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
@@ -257,59 +254,6 @@ public class ModifyView
 
     /** The value of background color of "unfocused" tabSet **/
     private static final String bgColorUnfocused = "white";
-
-    /** Hot-keys operations **/
-    {
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-                if (topTabSet1 != null && event.getTypeInt() == Event.ONKEYDOWN) {
-                    if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_ESC) {
-                        escShortCut();
-
-                    } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
-                        //                        System.out.println("key code of pressed key in modify: "
-                        //                                + event.getNativeEvent().getKeyCode());
-
-                        if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_NUM_5
-                                && topTabSet2 != null) {
-                            isSecondFocused = !isSecondFocused;
-                            changeFocus();
-                        } else {
-
-                            TabSet focusedTabSet = null;
-                            if (!isSecondFocused || topTabSet2 == null) {
-                                focusedTabSet = topTabSet1;
-                            } else if (isSecondFocused && topTabSet2 != null) {
-                                focusedTabSet = topTabSet2;
-                            }
-
-                            switch (event.getNativeEvent().getKeyCode()) {
-
-                                case Constants.CODE_KEY_PAGE_DOWN:
-                                    shiftRight(focusedTabSet);
-                                    break;
-                                case Constants.CODE_KEY_PAGE_UP:
-                                    shiftLeft(focusedTabSet);
-                                    break;
-                                case Constants.CODE_KEY_R:
-                                    refresh(focusedTabSet);
-                                    break;
-                                case Constants.CODE_KEY_P:
-                                    publishShortCut(focusedTabSet);
-                                    break;
-                                case Constants.CODE_KEY_C:
-                                    getUiHandlers().close(openedObjectsUuids.get(focusedTabSet));
-                                    close(focusedTabSet);
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
 
     /**
      * Instantiates a new modify view.
@@ -1355,6 +1299,40 @@ public class ModifyView
             itemGrids.put(topTabSet, new HashMap<DigitalObjectModel, TileGrid>());
         }
         itemGrids.get(topTabSet).put(model, grid);
+    }
+
+    /** Hot-keys operations **/
+    @Override
+    public void shortcutPressed(int code) {
+        if (topTabSet1 != null) {
+            if (code == Constants.CODE_KEY_ESC) {
+                escShortCut();
+
+            } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_NUM_5.getCode()
+                    && topTabSet2 != null) {
+                isSecondFocused = !isSecondFocused;
+                changeFocus();
+            } else {
+                TabSet focusedTabSet = null;
+                if (!isSecondFocused || topTabSet2 == null) {
+                    focusedTabSet = topTabSet1;
+                } else if (isSecondFocused && topTabSet2 != null) {
+                    focusedTabSet = topTabSet2;
+                }
+                if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_PAGE_DOWN.getCode()) {
+                    shiftRight(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_PAGE_UP.getCode()) {
+                    shiftLeft(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_R.getCode()) {
+                    refresh(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_P.getCode()) {
+                    publishShortCut(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_C.getCode()) {
+                    getUiHandlers().close(openedObjectsUuids.get(focusedTabSet));
+                    close(focusedTabSet);
+                }
+            }
+        }
     }
 
 }

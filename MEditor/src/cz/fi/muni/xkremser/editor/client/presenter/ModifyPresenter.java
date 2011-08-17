@@ -78,6 +78,7 @@ import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
@@ -117,6 +118,8 @@ public class ModifyPresenter
          * @return the name
          */
         public HasValue<String> getName();
+
+        void shortcutPressed(int code);
 
         /**
          * From clipboard.
@@ -255,6 +258,15 @@ public class ModifyPresenter
                 }
             }
         });
+
+        addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
+
+            @Override
+            public void onKeyPressed(KeyPressedEvent event) {
+                getView().shortcutPressed(event.getCode());
+            }
+
+        });
     }
 
     /*
@@ -268,6 +280,7 @@ public class ModifyPresenter
         super.prepareFromRequest(request);
         uuid = request.getParameter(Constants.URL_PARAM_UUID, null);
         forcedRefresh = ClientUtils.toBoolean(request.getParameter(Constants.URL_PARAM_REFRESH, "no"));
+
     }
 
     /*

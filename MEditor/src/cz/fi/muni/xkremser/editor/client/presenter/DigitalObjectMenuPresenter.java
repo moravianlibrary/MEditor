@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
@@ -81,6 +78,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
+import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -193,7 +191,6 @@ public class DigitalObjectMenuPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
-    // @Inject
     /** The config. */
     private final EditorClientConfiguration config;
 
@@ -206,61 +203,6 @@ public class DigitalObjectMenuPresenter
 
     private final Map<String, List<? extends List<String>>> openedObjectsUuidAndRelated =
             new HashMap<String, List<? extends List<String>>>();
-
-    /** Hot-keys operations **/
-    {
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-                if (event.getTypeInt() == Event.ONKEYDOWN) {
-                    if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_ESC) {
-                        escShortCut();
-
-                    } else if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
-
-                        switch (event.getNativeEvent().getKeyCode()) {
-
-                            case Constants.CODE_KEY_M:
-                                Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
-                                if (items2.length > 0) {
-                                    items2[0].focus();
-                                    isRefByFocused = false;
-                                }
-                                break;
-
-                            case Constants.CODE_KEY_D:
-                                Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
-                                if (items1.length > 0) {
-                                    items1[0].focus();
-                                    isRefByFocused = true;
-                                }
-                                break;
-                            case Constants.CODE_KEY_U:
-                                displayEnterPIDWindow();
-                                break;
-                        }
-
-                    } else if (event.getNativeEvent().getKeyCode() == Constants.CODE_KEY_ENTER) {
-
-                        if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
-
-                            ListGridRecord[] listGridRecords =
-                                    getView().getRecentlyModifiedGrid().getSelection();
-                            revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
-
-                        } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
-
-                            ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
-                            revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
-                        }
-                    }
-                }
-            }
-
-        });
-    }
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -360,7 +302,7 @@ public class DigitalObjectMenuPresenter
         uuidWindow.centerInPage();
         uuidWindow.addItem(form);
         uuidWindow.show();
-        uuidWindow.focus();
+        uuidField.focusInItem();
     }
 
     /**
@@ -444,7 +386,15 @@ public class DigitalObjectMenuPresenter
                 openedObjectsUuidAndRelated.remove(event.getUuid());
             }
         });
-    };
+
+        addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
+
+            @Override
+            public void onKeyPressed(KeyPressedEvent event) {
+                shortcutPressed(event.getCode());
+            }
+        });
+    }
 
     private void evaluateUuid(TextItem uuidField) {
         if (uuidField.validate()) {
@@ -567,4 +517,39 @@ public class DigitalObjectMenuPresenter
         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
                                                                                   uuid));
     }
+
+    private void shortcutPressed(final int code) {
+        if (code == Constants.CODE_KEY_ESC) {
+            escShortCut();
+
+        } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_M.getCode()) {
+            Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
+            if (items2.length > 0) {
+                items2[0].focus();
+                isRefByFocused = false;
+            }
+        } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_D.getCode()) {
+            Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
+            if (items1.length > 0) {
+                items1[0].focus();
+                isRefByFocused = true;
+            }
+        } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
+            displayEnterPIDWindow();
+
+        } else if (code == Constants.CODE_KEY_ENTER) {
+
+            if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
+
+                ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
+                revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+
+            } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
+
+                ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
+                revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+            }
+        }
+    }
+
 }

@@ -29,6 +29,9 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
@@ -48,8 +51,10 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
 
+import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
@@ -115,6 +120,8 @@ public class AppPresenter
          * @return the edits the users
          */
         HTMLFlow getEditUsers();
+
+        void escShortCut();
     }
 
     /** The left presenter. */
@@ -169,6 +176,50 @@ public class AppPresenter
     protected void onBind() {
         super.onBind();
 
+        /** Hot-keys operations **/
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            private boolean isKnownCtrlAltHotkey(NativePreviewEvent event) {
+                if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
+                    int code = event.getNativeEvent().getKeyCode();
+                    for (Constants.HOT_KEYS_WITH_CTRL_ALT key : Constants.HOT_KEYS_WITH_CTRL_ALT.values()) {
+                        if (code == key.getCode()) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+                //                System.out.println("ctrl " + event.getNativeEvent().getCtrlKey());
+                //                System.out.println("alt " + event.getNativeEvent().getAltKey());
+                //                System.out.println("keycode " + event.getNativeEvent().getKeyCode());
+
+                if (event.getTypeInt() != Event.ONKEYDOWN) {
+                    return;
+                }
+                int keyCode = event.getNativeEvent().getKeyCode();
+
+                if (keyCode != Constants.CODE_KEY_ESC && keyCode != Constants.CODE_KEY_ENTER
+                        && !isKnownCtrlAltHotkey(event)) {
+                    return;
+                }
+                KeyPressedEvent.fire(AppPresenter.this, keyCode);
+            }
+
+        });
+
+        addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
+
+            @Override
+            public void onKeyPressed(KeyPressedEvent event) {
+                if (event.getCode() == Constants.CODE_KEY_ESC) {
+                    getView().escShortCut();
+                }
+            }
+        });
     }
 
     /*

@@ -181,7 +181,7 @@ public class DigitalObjectHandlerImpl
      *        the only title and uuid
      * @return the dublin core
      */
-    protected DublinCore handleDc(String uuid, boolean onlyTitleAndUuid) {
+    private DublinCore handleDc(String uuid, boolean onlyTitleAndUuid) {
         DublinCore dc = null;
         Document dcDocument = null;
         try {
@@ -206,7 +206,7 @@ public class DigitalObjectHandlerImpl
      *        the uuid
      * @return the string
      */
-    protected String handleOCR(String uuid) {
+    private String handleOCR(String uuid) {
         return getFedoraAccess().getOcr(uuid);
     }
 
@@ -217,7 +217,7 @@ public class DigitalObjectHandlerImpl
      *        the uuid
      * @return the mods collection client
      */
-    protected ModsCollectionClient handleMods(String uuid) {
+    private ModsCollectionClient handleMods(String uuid) {
         ModsCollectionClient modsClient = null;
         ModsCollection mods = null;
         Document modsDocument = null;

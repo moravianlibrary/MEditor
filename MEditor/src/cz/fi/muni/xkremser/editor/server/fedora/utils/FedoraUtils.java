@@ -96,7 +96,7 @@ public class FedoraUtils {
 
             String command = configuration.getFedoraHost() + "/get/" + pid + "/" + RELS_EXT_STREAM;
             InputStream is =
-                    RESTHelper.inputStream(command,
+                    RESTHelper.get(command,
                                            configuration.getFedoraLogin(),
                                            configuration.getFedoraPassword(),
                                            true);
@@ -137,7 +137,7 @@ public class FedoraUtils {
         InputStream stream = null;
         try {
             stream =
-                    RESTHelper.inputStream(command,
+                    RESTHelper.get(command,
                                            configuration.getFedoraLogin(),
                                            configuration.getFedoraPassword(),
                                            true);
@@ -183,7 +183,7 @@ public class FedoraUtils {
         try {
             String command = configuration.getFedoraHost() + "/get/" + pid + "/RELS-EXT";
             InputStream is =
-                    RESTHelper.inputStream(command,
+                    RESTHelper.get(command,
                                            configuration.getFedoraLogin(),
                                            configuration.getFedoraPassword(),
                                            true);

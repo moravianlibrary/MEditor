@@ -109,7 +109,7 @@ public class FullImgServiceImpl
                     sb.append(config.getFedoraHost()).append("/objects/").append(uuid)
                             .append("/datastreams/IMG_FULL/content");
                     InputStream is =
-                            RESTHelper.inputStream(sb.toString(),
+                            RESTHelper.get(sb.toString(),
                                                    config.getFedoraLogin(),
                                                    config.getFedoraPassword(),
                                                    false);

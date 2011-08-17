@@ -198,16 +198,75 @@ public class Constants {
     public static final String SYSNO = "SYSNO";
 
     /**
-     * The value of nativeEvent-keyCode of button M - used for focus on
-     * Recently-modified-Tab
-     **/
-    public static final int CODE_KEY_M = 77;
+     * The Hotkeys enum (pressed with Ctrl+Alt together)
+     */
+    public static enum HOT_KEYS_WITH_CTRL_ALT {
 
-    /**
-     * The value of nativeEvent-keyCode of button D - used for focus on
-     * Referenced-by-Tab
-     **/
-    public static final int CODE_KEY_D = 68;
+        /**
+         * The value of nativeEvent-keyCode of button M - used for focus on
+         * Recently-modified-Tab
+         **/
+        CODE_KEY_M(77),
+
+        /**
+         * The value of nativeEvent-keyCode of button D - used for focus on
+         * Referenced-by-Tab
+         **/
+        CODE_KEY_D(68),
+
+        /**
+         * The value of nativeEvent-keyCode of button Esc - used for close
+         * pop-up windows
+         **/
+        CODE_KEY_U(85),
+
+        /**
+         * The value of nativeEvent-keyCode of button num5 - used for change
+         * focused tabSet
+         **/
+        CODE_KEY_NUM_5(101),
+
+        /**
+         * The value of nativeEvent-keyCode of button Page Up - used for shift
+         * left in tabs
+         **/
+        CODE_KEY_PAGE_UP(33),
+
+        /**
+         * The value of nativeEvent-keyCode of button Page Down - used for shift
+         * right in tabs
+         **/
+        CODE_KEY_PAGE_DOWN(34),
+
+        /**
+         * The value of nativeEvent-keyCode of button C - used for close focused
+         * tabSet
+         **/
+        CODE_KEY_C(67),
+
+        /**
+         * The value of nativeEvent-keyCode of button P - used for display
+         * publish-window of focused tabSet
+         **/
+        CODE_KEY_P(80),
+
+        /**
+         * The value of nativeEvent-keyCode of button R - used for refresh
+         * focused tabSet
+         **/
+        CODE_KEY_R(82);
+
+        private final int code;
+
+        private HOT_KEYS_WITH_CTRL_ALT(final int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+    }
 
     /**
      * The value of nativeEvent-keyCode of button Enter - used for confirmation
@@ -216,50 +275,8 @@ public class Constants {
     public static final int CODE_KEY_ENTER = 13;
 
     /**
-     * The value of nativeEvent-keyCode of button U - used for display window
-     * for entering new object's PID
-     **/
-    public static final int CODE_KEY_U = 85;
-
-    /**
      * The value of nativeEvent-keyCode of button Esc - used for close pop-up
      * windows
      **/
     public static final int CODE_KEY_ESC = 27;
-
-    /**
-     * The value of nativeEvent-keyCode of button num5 - used for change focused
-     * tabSet
-     **/
-    public static final int CODE_KEY_NUM_5 = 101;
-
-    /**
-     * The value of nativeEvent-keyCode of button Page Up - used for shift left
-     * in tabs
-     **/
-    public static final int CODE_KEY_PAGE_UP = 33;
-
-    /**
-     * The value of nativeEvent-keyCode of button Page Down - used for shift
-     * right in tabs
-     **/
-    public static final int CODE_KEY_PAGE_DOWN = 34;
-
-    /**
-     * The value of nativeEvent-keyCode of button C - used for close focused
-     * tabSet
-     **/
-    public static final int CODE_KEY_C = 67;
-
-    /**
-     * The value of nativeEvent-keyCode of button P - used for display
-     * publish-window of focused tabSet
-     **/
-    public static final int CODE_KEY_P = 80;
-
-    /**
-     * The value of nativeEvent-keyCode of button R - used for refresh focused
-     * tabSet
-     **/
-    public static final int CODE_KEY_R = 82;
 }

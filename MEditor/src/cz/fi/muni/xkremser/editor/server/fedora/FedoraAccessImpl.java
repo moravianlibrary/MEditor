@@ -146,7 +146,7 @@ public class FedoraAccessImpl
         String relsExtUrl = relsExtUrl(uuid);
         LOGGER.debug("Reading rels ext +" + relsExtUrl);
         InputStream docStream =
-                RESTHelper.inputStream(relsExtUrl,
+                RESTHelper.get(relsExtUrl,
                                        configuration.getFedoraLogin(),
                                        configuration.getFedoraPassword(),
                                        true);
@@ -218,7 +218,7 @@ public class FedoraAccessImpl
         String biblioModsUrl = biblioMods(uuid);
         LOGGER.debug("Reading bibliomods +" + biblioModsUrl);
         InputStream docStream =
-                RESTHelper.inputStream(biblioModsUrl,
+                RESTHelper.get(biblioModsUrl,
                                        configuration.getFedoraLogin(),
                                        configuration.getFedoraPassword(),
                                        true);
@@ -247,7 +247,7 @@ public class FedoraAccessImpl
         String dcUrl = dc(uuid);
         LOGGER.debug("Reading dc +" + dcUrl);
         InputStream docStream =
-                RESTHelper.inputStream(dcUrl,
+                RESTHelper.get(dcUrl,
                                        configuration.getFedoraLogin(),
                                        configuration.getFedoraPassword(),
                                        false);
@@ -278,7 +278,7 @@ public class FedoraAccessImpl
         InputStream docStream = null;
         try {
             docStream =
-                    RESTHelper.inputStream(ocrUrl,
+                    RESTHelper.get(ocrUrl,
                                            configuration.getFedoraLogin(),
                                            configuration.getFedoraPassword(),
                                            true);
@@ -1194,7 +1194,7 @@ public class FedoraAccessImpl
         InputStream docStream = null;
         try {
             docStream =
-                    RESTHelper.inputStream(objUrl,
+                    RESTHelper.get(objUrl,
                                            configuration.getFedoraLogin(),
                                            configuration.getFedoraPassword(),
                                            true);
