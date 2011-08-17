@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/x211800/eclipse-workspace/MEditor/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -232,15 +232,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String cartographicMARC();
 
   /**
-   * Translated "Changes focused set of tabs.".
-   * 
-   * @return translated "Changes focused set of tabs."
-   */
-  @DefaultStringValue("Changes focused set of tabs.")
-  @Key("changeTabSet")
-  String changeTabSet();
-
-  /**
    * Translated "Check availability".
    * 
    * @return translated "Check availability"
@@ -284,24 +275,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Close this digital object.")
   @Key("closeHoover")
   String closeHoover();
-
-  /**
-   * Translated "Closes focused set of tabs.".
-   * 
-   * @return translated "Closes focused set of tabs."
-   */
-  @DefaultStringValue("Closes focused set of tabs.")
-  @Key("closeTabSet")
-  String closeTabSet();
-
-  /**
-   * Translated "Closes opened pop-up window (e.g. Window for entering PID).".
-   * 
-   * @return translated "Closes opened pop-up window (e.g. Window for entering PID)."
-   */
-  @DefaultStringValue("Closes opened pop-up window (e.g. Window for entering PID).")
-  @Key("closeWindow")
-  String closeWindow();
 
   /**
    * Translated "This attribute is used as collection='yes' when the resource is a collection. (Leader/07 code 'c')".
@@ -1060,15 +1033,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String endValue();
 
   /**
-   * Translated "Used for confirmation of any choice.".
-   * 
-   * @return translated "Used for confirmation of any choice."
-   */
-  @DefaultStringValue("Used for confirmation of any choice.")
-  @Key("enter")
-  String enter();
-
-  /**
    * Translated "Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>.".
    * 
    * @return translated "Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>."
@@ -1283,15 +1247,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema.")
   @Key("holdExt")
   String holdExt();
-
-  /**
-   * Translated "Hot-key".
-   * 
-   * @return translated "Hot-key"
-   */
-  @DefaultStringValue("Hot-key")
-  @Key("hotKeys")
-  String hotKeys();
 
   /**
    * Translated "This attribute is used to link internally and to reference an element from outside the instance.".
@@ -2131,15 +2086,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String physicalType();
 
   /**
-   * Translated "Displays window for entering the new object's PID.".
-   * 
-   * @return translated "Displays window for entering the new object's PID."
-   */
-  @DefaultStringValue("Displays window for entering the new object's PID.")
-  @Key("pidWindow")
-  String pidWindow();
-
-  /**
    * Translated "Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>.".
    * 
    * @return translated "Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>."
@@ -2210,15 +2156,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Publish digital object")
   @Key("publishName")
   String publishName();
-
-  /**
-   * Translated "Displays window for publishing.".
-   * 
-   * @return translated "Displays window for publishing."
-   */
-  @DefaultStringValue("Displays window for publishing.")
-  @Key("publishWindow")
-  String publishWindow();
 
   /**
    * Translated "It is equivalent to MARC 21 field 260 subfield $b.".
@@ -2293,15 +2230,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String recIdMARC();
 
   /**
-   * Translated "Focus on recently modified tab.".
-   * 
-   * @return translated "Focus on recently modified tab."
-   */
-  @DefaultStringValue("Focus on recently modified tab.")
-  @Key("recMod")
-  String recMod();
-
-  /**
    * Translated "Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>.".
    * 
    * @return translated "Intended to show the origin, or provenance of the MODS record. There is no MARC equivalent to <recordOrigin>."
@@ -2320,15 +2248,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String recentlyModified();
 
   /**
-   * Translated "Focuses on Referenced by tab.".
-   * 
-   * @return translated "Focuses on Referenced by tab."
-   */
-  @DefaultStringValue("Focuses on Referenced by tab.")
-  @Key("refBy")
-  String refBy();
-
-  /**
    * Translated "Referenced by".
    * 
    * @return translated "Referenced by"
@@ -2345,15 +2264,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Refresh")
   @Key("refreshItem")
   String refreshItem();
-
-  /**
-   * Translated "Refreshes focused set of tabs.".
-   * 
-   * @return translated "Refreshes focused set of tabs."
-   */
-  @DefaultStringValue("Refreshes focused set of tabs.")
-  @Key("refreshTabSet")
-  String refreshTabSet();
 
   /**
    * Translated "Includes regions that have status as a jurisdiction, usually incorporating more than one first level jurisdiction.".
@@ -2534,24 +2444,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number).")
   @Key("shelfLocator")
   String shelfLocator();
-
-  /**
-   * Translated "Shifts left focused tab in the set of tabs.".
-   * 
-   * @return translated "Shifts left focused tab in the set of tabs."
-   */
-  @DefaultStringValue("Shifts left focused tab in the set of tabs.")
-  @Key("shiftTabLeft")
-  String shiftTabLeft();
-
-  /**
-   * Translated "Shifts right focused tab in the set of tabs.".
-   * 
-   * @return translated "Shifts right focused tab in the set of tabs."
-   */
-  @DefaultStringValue("Shifts right focused tab in the set of tabs.")
-  @Key("shiftTabRight")
-  String shiftTabRight();
 
   /**
    * Translated "Show".
