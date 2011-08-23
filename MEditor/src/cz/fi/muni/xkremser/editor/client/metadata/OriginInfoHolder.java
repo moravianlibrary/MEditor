@@ -28,6 +28,7 @@
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.DateOtherTypeClient;
@@ -114,7 +115,16 @@ public class OriginInfoHolder
         }
         originInfoTypeClient.setPublisher(publishers.getValues());
         originInfoTypeClient.setEdition(editions.getValues());
-        originInfoTypeClient.setIssuance(issuances.getValues());
+
+        String value = null;
+        if (issuances.getAttributeForm() != null) {
+            value = issuances.getAttributeForm().getValueAsString(ModsConstants.ISSUANCE);
+            if (value == null || "".equals(value.trim())) {
+                value = null;
+            }
+        }
+        originInfoTypeClient.setIssuance(value == null ? null : Arrays.asList(value));
+
         originInfoTypeClient.setDateIssued(getDatesFromHolders(datesIssued));
         originInfoTypeClient.setDateCreated(getDatesFromHolders(datesCreated));
         originInfoTypeClient.setDateCaptured(getDatesFromHolders(datesCaptured));
