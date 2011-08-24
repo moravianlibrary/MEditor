@@ -1103,7 +1103,27 @@ public final class BiblioModsUtils {
                 if (modsTypeClient.getOriginInfo() == null) {
                     modsTypeClient.setOriginInfo(new ArrayList<OriginInfoTypeClient>());
                 }
-                modsTypeClient.getOriginInfo().add(toModsClient((OriginInfoType) modsElement));
+                OriginInfoTypeClient newOriginInfo = toModsClient((OriginInfoType) modsElement);
+
+                if (modsTypeClient.getOriginInfo().size() > 0) {
+                    int lastIndex = modsTypeClient.getOriginInfo().size() - 1;
+                    if (isOnlyIssuance(newOriginInfo)
+                            && !isOnlyIssuance(modsTypeClient.getOriginInfo().get(lastIndex))) {
+                        modsTypeClient.getOriginInfo().get(lastIndex)
+                                .setIssuance(newOriginInfo.getIssuance());
+
+                    } else if (!isOnlyIssuance(newOriginInfo)
+                            && isOnlyIssuance(modsTypeClient.getOriginInfo().get(lastIndex))) {
+                        newOriginInfo
+                                .setIssuance(modsTypeClient.getOriginInfo().get(lastIndex).getIssuance());
+                        modsTypeClient.getOriginInfo().remove(lastIndex);
+                        modsTypeClient.getOriginInfo().add(newOriginInfo);
+                    }
+
+                } else {
+                    //                    System.err.println("new record: " + newOriginInfo.toString());
+                    modsTypeClient.getOriginInfo().add(newOriginInfo);
+                }
 
                 // LANGUAGE ELEMENT
             } else if (modsElement instanceof LanguageType) {
@@ -1220,6 +1240,17 @@ public final class BiblioModsUtils {
                 modsTypeClient.getRecordInfo().add(toModsClient((RecordInfoType) modsElement));
             }
         }
+    }
+
+    private static boolean isOnlyIssuance(OriginInfoTypeClient originInfoToTest) {
+        return (originInfoToTest.getIssuance() != null && originInfoToTest.getPlace() == null
+                && originInfoToTest.getPublisher() == null && originInfoToTest.getDateIssued() == null
+                && originInfoToTest.getDateCreated() == null && originInfoToTest.getDateCaptured() == null
+                && originInfoToTest.getDateValid() == null && originInfoToTest.getDateModified() == null
+                && originInfoToTest.getCopyrightDate() == null && originInfoToTest.getDateOther() == null
+                && originInfoToTest.getEdition() == null && originInfoToTest.getFrequency() == null
+                && originInfoToTest.getXmlLang() == null && originInfoToTest.getLang() == null
+                && originInfoToTest.getScript() == null && originInfoToTest.getTransliteration() == null);
     }
 
     /**
