@@ -2426,8 +2426,8 @@ public final class TabUtils {
         tooltips = new HashMap<String, String>();
         tooltips.put("", lang.attributeOmitted());
         tooltips.put("date", lang.dateParse());
-        tooltips.put("family", lang.surname());
-        tooltips.put("given ", lang.firstName());
+        tooltips.put(ModsConstants.FAMILY, lang.surname());
+        tooltips.put(ModsConstants.GIVEN, lang.firstName());
         tooltips.put("termsOfAddress ", lang.addressMARC());
 
         List<List<String>> vals = null;

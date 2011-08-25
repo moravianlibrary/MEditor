@@ -254,7 +254,13 @@ public class Constants {
          * The value of nativeEvent-keyCode of button R - used for refresh
          * focused tabSet
          **/
-        CODE_KEY_R(82);
+        CODE_KEY_R(82),
+
+        /**
+         * The value of nativeEvent-keyCode of button B - used for display
+         * basic-mods-window
+         */
+        CODE_KEY_B(66);
 
         private final int code;
 

@@ -204,4 +204,10 @@ public class ModsConstants {
     /** The Constant SOURCE. */
     public static final String SOURCE = "source";
 
+    /** The Constant FAMILY */
+    public static final String FAMILY = "family";
+
+    /** The Constant GIVEN */
+    public static final String GIVEN = "given";
+
 }
