@@ -106,6 +106,7 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -214,6 +215,9 @@ public class ModifyView
     /** The info tab. */
     private final Map<TabSet, InfoTab> infoTabs = new HashMap<TabSet, InfoTab>();
 
+    /** The DCs. */
+    private final Map<TabSet, DublinCore> dcMap = new HashMap<TabSet, DublinCore>();
+
     /** The Map of ModsCollectionClients **/
     private final Map<TabSet, ModsCollectionClient> modsCollections =
             new HashMap<TabSet, ModsCollectionClient>();
@@ -255,6 +259,8 @@ public class ModifyView
     /** The value of background color of "unfocused" tabSet **/
     private static final String bgColorUnfocused = "white";
 
+    private ModsWindow modsWindow = null;
+
     /**
      * Instantiates a new modify view.
      */
@@ -268,6 +274,37 @@ public class ModifyView
         imagePopup = new PopupPanel(true);
         imagePopup.setGlassEnabled(true);
         imagePopup.setAnimationEnabled(true);
+    }
+
+    public void showBasicModsWindow(TabSet focusedTabSet) {
+        modsWindow = new MyModsWindow(modsCollections.get(focusedTabSet), lang, focusedTabSet);
+    }
+
+    class MyModsWindow
+            extends ModsWindow {
+
+        public MyModsWindow(ModsCollectionClient modsCollection,
+                            LangConstants lang,
+                            final TabSet focusedTabSet) {
+            super(modsCollection, lang);
+            show();
+            focus();
+            getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                @Override
+                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                    publishShortCut(focusedTabSet);
+                }
+            });
+            getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                @Override
+                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                    destroy();
+                    modsWindow = null;
+                }
+            });
+        }
     }
 
     /**
@@ -345,7 +382,10 @@ public class ModifyView
      * Method for close currently displayed window
      */
     private void escShortCut() {
-        if (winModal != null) {
+        if (winModal == null && modsWindow != null) {
+            modsWindow.destroy();
+            modsWindow = null;
+        } else if (winModal != null) {
             winModal.destroy();
             winModal = null;
         }
@@ -450,6 +490,7 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         modsCollections.put(topTabSet, mods);
+        dcMap.put(topTabSet, dc);
         final Tab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
                         .getValue()), model, previewPID);
@@ -1168,11 +1209,55 @@ public class ModifyView
             @Override
             public void onClick(ClickEvent event2) {
 
+                DublinCore changedDC = null;
+                ModsCollectionClient changedMods = null;
                 DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+
+                if (modsWindow != null) {
+
+                    changedMods = modsWindow.publishWindow();
+                    object.setModsChanged(true);
+                    changedDC = dcMap.get(ts);
+                    object.setDcChanged(false);
+
+                    if (modsWindow.getReflectInDC()) {
+                        changedDC = modsWindow.reflectInDC(changedDC);
+                        object.setDcChanged(true);
+                    }
+
+                    if (modsWindow != null) {
+                        modsWindow.destroy();
+                        modsWindow = null;
+                    }
+
+                } else {
+                    Tab dcT = dcTab.get(ts);
+                    Tab modsT = modsTab.get(ts);
+                    if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+                        DCTab dcT_ = (DCTab) dcT;
+                        changedDC = dcT_.getDc();
+                        object.setDcChanged(true);
+                    } else {
+                        changedDC = dc;
+                        object.setDcChanged(false);
+                    }
+
+                    if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+                        ModsTab modsT_ = (ModsTab) modsT;
+                        changedMods = new ModsCollectionClient();
+                        changedMods.setMods(Arrays.asList(modsT_.getMods()));
+                        object.setModsChanged(true);
+                    } else {
+                        changedMods = mods;
+                        object.setModsChanged(false);
+                    }
+
+                }
+
+                object.setDc(changedDC);
+                object.setMods(changedMods);
                 //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
                 InfoTab infoT = infoTabs.get(ts);
-                Tab dcT = dcTab.get(ts);
-                Tab modsT = modsTab.get(ts);
 
                 if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
                     object.setLabel("");
@@ -1194,27 +1279,6 @@ public class ModifyView
                 }
                 object.setUuid(openedObjectsUuids.get(ts));
 
-                DublinCore changedDC = null;
-                if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-                    DCTab dcT_ = (DCTab) dcT;
-                    changedDC = dcT_.getDc();
-                    object.setDcChanged(true);
-                } else {
-                    changedDC = dc;
-                    object.setDcChanged(false);
-                }
-                object.setDc(changedDC);
-                ModsCollectionClient changedMods = null;
-                if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-                    ModsTab modsT_ = (ModsTab) modsT;
-                    changedMods = new ModsCollectionClient();
-                    changedMods.setMods(Arrays.asList(modsT_.getMods()));
-                    object.setModsChanged(true);
-                } else {
-                    changedMods = mods;
-                    object.setModsChanged(false);
-                }
-                object.setMods(changedMods);
                 Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
                 if (tilegrids != null) { // structure has been changed, or at
                                          // least opened
@@ -1260,6 +1324,7 @@ public class ModifyView
 
         winModal.centerInPage();
         winModal.show();
+        publish.focus();
     }
 
     /**
@@ -1330,6 +1395,8 @@ public class ModifyView
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_C.getCode()) {
                     getUiHandlers().close(openedObjectsUuids.get(focusedTabSet));
                     close(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_B.getCode()) {
+                    showBasicModsWindow(focusedTabSet);
                 }
             }
         }
