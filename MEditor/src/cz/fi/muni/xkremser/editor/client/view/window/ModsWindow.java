@@ -68,8 +68,8 @@ public class ModsWindow
     /** The TextItem with place term value */
     private final TextItem placeItem = new MyTextItem("Place term");
 
-    /** The TextItem with extend value */
-    private final TextItem extendItem = new MyTextItem("Extend");
+    /** The TextItem with extent value */
+    private final TextItem extentItem = new MyTextItem("Extent");
 
     /** The IButton to publish the content of the window */
     private final IButton publish = new IButton();
@@ -354,13 +354,13 @@ public class ModsWindow
 
         if (isNotNullEmpty(modsTypeClient.getPhysicalDescription())) {
 
-            List<String> extendList = modsTypeClient.getPhysicalDescription().get(0).getExtent();
-            extendItem.setDefaultValue(isNotNullEmpty(extendList) ? extendList.get(0) : "");
+            List<String> extentList = modsTypeClient.getPhysicalDescription().get(0).getExtent();
+            extentItem.setDefaultValue(isNotNullEmpty(extentList) ? extentList.get(0) : "");
         }
 
         reflectInDC.setTitle("Reflect changes in DC ?");
         reflectInDC.setDefaultValue(true);
-        modsForm.setItems(dateItem, publisherItem, placeItem, shelfLocatorItem, extendItem, reflectInDC);
+        modsForm.setItems(dateItem, publisherItem, placeItem, shelfLocatorItem, extentItem, reflectInDC);
         return modsForm;
     }
 
@@ -617,7 +617,7 @@ public class ModsWindow
     }
 
     private List<PhysicalDescriptionTypeClient> createNewPhysDescrList(ModsTypeClient newModsTypeClient) {
-        /** Extend part */
+        /** Extent part */
         List<PhysicalDescriptionTypeClient> newPhysDescrList;
         if (!isNotNullEmpty(modsTypeClient.getPhysicalDescription())) {
             newPhysDescrList = new ArrayList<PhysicalDescriptionTypeClient>();
@@ -626,7 +626,7 @@ public class ModsWindow
             newPhysDescrList = modsTypeClient.getPhysicalDescription();
         }
 
-        if (extendItem.getEnteredValue() == null || extendItem.getEnteredValue().trim().equals("")) {
+        if (extentItem.getEnteredValue() == null || extentItem.getEnteredValue().trim().equals("")) {
             if (isNotNullEmpty(newPhysDescrList.get(0).getExtent())) {
                 newPhysDescrList.get(0).getExtent().remove(0);
             }
@@ -636,7 +636,7 @@ public class ModsWindow
             } else {
                 newPhysDescrList.get(0).setExtent(new ArrayList<String>());
             }
-            newPhysDescrList.get(0).getExtent().add(0, extendItem.getEnteredValue().trim());
+            newPhysDescrList.get(0).getExtent().add(0, extentItem.getEnteredValue().trim());
         }
         return newPhysDescrList;
     }
