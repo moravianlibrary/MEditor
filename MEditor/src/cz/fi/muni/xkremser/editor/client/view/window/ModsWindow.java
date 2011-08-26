@@ -564,8 +564,6 @@ public class ModsWindow
         List<NameTypeClient> newNameList;
         if (!isNotNullEmpty(newModsTypeClient.getName())) {
             newNameList = new ArrayList<NameTypeClient>();
-            newNameList.add(new NameTypeClient());
-
         } else {
             newNameList = newModsTypeClient.getName();
         }
@@ -586,8 +584,7 @@ public class ModsWindow
                 }
             }
 
-            if ((newNameList.size() <= index || ((i == 0 ? author1Item : author2Item).getTitle()
-                    .equals((i == 0 ? AUTHOR1 : AUTHOR2)))) && (!allIsEmpty)) {
+            if (newNameList.size() <= index && (!allIsEmpty)) {
                 newNameList.add(index, new NameTypeClient());
                 newNameList.get(index).setRole(new ArrayList<RoleTypeClient>());
                 newNameList.get(index).getRole().add(new RoleTypeClient());
