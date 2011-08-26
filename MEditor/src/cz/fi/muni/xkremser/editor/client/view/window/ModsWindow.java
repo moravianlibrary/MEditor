@@ -589,8 +589,6 @@ public abstract class ModsWindow
             if (newNameList.size() <= index && (!allIsEmpty)) {
                 newNameList.add(index, new NameTypeClient());
                 newNameList.get(index).setRole(new ArrayList<RoleTypeClient>());
-                newNameList.add(index, new NameTypeClient());
-                newNameList.get(index).setRole(new ArrayList<RoleTypeClient>());
                 newNameList.get(index).getRole().add(new RoleTypeClient());
                 newNameList.get(index).getRole().get(0)
                         .setRoleTerm(new ArrayList<RoleTypeClient.RoleTermClient>());
