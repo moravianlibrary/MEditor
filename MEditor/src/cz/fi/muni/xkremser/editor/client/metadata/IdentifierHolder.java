@@ -73,6 +73,8 @@ public class IdentifierHolder
     public List<IdentifierTypeClient> getIdentifier() {
         List<IdentifierTypeClient> list = null;
         List<List<String>> listOfValues = getListOfList();
+        boolean isNull = true;
+
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<IdentifierTypeClient>();
             for (List<String> values : listOfValues) {
@@ -87,10 +89,11 @@ public class IdentifierHolder
                     val.setScript(values.get(6));
                     if (ClientUtils.toBoolean(values.get(7))) val.setInvalid(YesClient.YES);
                     list.add(val);
+                    isNull = false;
                 }
             }
         }
-        return list;
+        return isNull ? null : list;
     }
 
     /*

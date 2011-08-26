@@ -28,7 +28,6 @@
 package cz.fi.muni.xkremser.editor.client.metadata;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.DateOtherTypeClient;
@@ -36,6 +35,8 @@ import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
+
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -115,16 +116,7 @@ public class OriginInfoHolder
         }
         originInfoTypeClient.setPublisher(publishers.getValues());
         originInfoTypeClient.setEdition(editions.getValues());
-
-        String value = null;
-        if (issuances.getAttributeForm() != null) {
-            value = issuances.getAttributeForm().getValueAsString(ModsConstants.ISSUANCE);
-            if (value == null || "".equals(value.trim())) {
-                value = null;
-            }
-        }
-        originInfoTypeClient.setIssuance(value == null ? null : Arrays.asList(value));
-
+        originInfoTypeClient.setIssuance(issuances.getValues());
         originInfoTypeClient.setDateIssued(getDatesFromHolders(datesIssued));
         originInfoTypeClient.setDateCreated(getDatesFromHolders(datesCreated));
         originInfoTypeClient.setDateCaptured(getDatesFromHolders(datesCaptured));
@@ -146,18 +138,25 @@ public class OriginInfoHolder
 
         List<StringPlusAuthorityClient> list = null;
         List<List<String>> listOfValues = frequencies.getListOfList();
+        boolean isNull = true;
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<StringPlusAuthorityClient>();
             for (List<String> values : listOfValues) {
-                StringPlusAuthorityClient val = new StringPlusAuthorityClient();
-                val.setValue(values.get(0));
-                val.setAuthority(values.get(1));
-                list.add(val);
+                if (values != null) {
+                    StringPlusAuthorityClient val = new StringPlusAuthorityClient();
+                    val.setValue(values.get(0));
+                    val.setAuthority(values.get(1));
+                    list.add(val);
+                    isNull = false;
+                }
             }
         }
-        originInfoTypeClient.setFrequency(list);
+        originInfoTypeClient.setFrequency(isNull ? null : list);
 
-        return originInfoTypeClient;
+        if (BiblioModsUtils.hasOnlyNullFields(originInfoTypeClient)) {
+            return null;
+        } else
+            return originInfoTypeClient;
     }
 
     /*
@@ -318,11 +317,18 @@ public class OriginInfoHolder
      * @return the dates from holders
      */
     private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
+        if (holders.isEmpty()) {
+            return null;
+        }
+        boolean isNull = true;
         List<DateTypeClient> dates = new ArrayList<DateTypeClient>();
         for (DateHolder holder : holders) {
-            dates.add(holder.getDate());
+            if (holder != null) {
+                isNull = false;
+                dates.add(holder.getDate());
+            }
         }
-        return dates;
+        return isNull ? null : dates;
     }
 
 }

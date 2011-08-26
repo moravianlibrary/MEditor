@@ -37,6 +37,8 @@ import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient.RecordIdentif
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusLanguageClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecordInfoHolder.
@@ -105,16 +107,20 @@ public class RecordInfoHolder
 
         List<RecordIdentifierClient> list = null;
         List<List<String>> listOfValues = recordIdentifier.getListOfList();
+        boolean isNull = true;
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<RecordIdentifierClient>();
             for (List<String> values : listOfValues) {
-                RecordIdentifierClient val = new RecordIdentifierClient();
-                val.setValue(values.get(0));
-                val.setSource(values.get(1));
-                list.add(val);
+                if (values != null) {
+                    RecordIdentifierClient val = new RecordIdentifierClient();
+                    val.setValue(values.get(0));
+                    val.setSource(values.get(1));
+                    list.add(val);
+                    isNull = false;
+                }
             }
         }
-        recordInfoTypeClient.setRecordIdentifier(list);
+        recordInfoTypeClient.setRecordIdentifier(isNull ? null : list);
 
         recordInfoTypeClient.setRecordChangeDate(getDatesFromHolders(changeDate));
         recordInfoTypeClient.setRecordCreationDate(getDatesFromHolders(creationDate));
@@ -129,34 +135,46 @@ public class RecordInfoHolder
 
         List<StringPlusAuthorityClient> list1 = null;
         List<List<String>> listOfValues1 = descriptionStandard.getListOfList();
+        isNull = true;
         if (listOfValues1 != null && listOfValues1.size() != 0) {
             list1 = new ArrayList<StringPlusAuthorityClient>();
             for (List<String> values : listOfValues1) {
-                StringPlusAuthorityClient val = new StringPlusAuthorityClient();
-                val.setValue(values.get(0));
-                val.setAuthority(values.get(1));
-                list1.add(val);
+                if (values != null) {
+                    StringPlusAuthorityClient val = new StringPlusAuthorityClient();
+                    val.setValue(values.get(0));
+                    val.setAuthority(values.get(1));
+                    list1.add(val);
+                    isNull = false;
+                }
             }
         }
-        recordInfoTypeClient.setDescriptionStandard(list1);
+        recordInfoTypeClient.setDescriptionStandard(isNull ? null : list1);
 
         List<StringPlusAuthorityPlusLanguageClient> list2 = null;
         List<List<String>> listOfValues2 = recordContentSource.getListOfList();
+        isNull = true;
         if (listOfValues2 != null && listOfValues2.size() != 0) {
             list2 = new ArrayList<StringPlusAuthorityPlusLanguageClient>();
             for (List<String> values : listOfValues2) {
-                StringPlusAuthorityPlusLanguageClient val = new StringPlusAuthorityPlusLanguageClient();
-                val.setValue(values.get(0));
-                val.setAuthority(values.get(1));
-                val.setLang(values.get(2));
-                val.setXmlLang(values.get(3));
-                val.setScript(values.get(4));
-                val.setTransliteration(values.get(5));
-                list2.add(val);
+                if (values != null) {
+                    StringPlusAuthorityPlusLanguageClient val = new StringPlusAuthorityPlusLanguageClient();
+                    val.setValue(values.get(0));
+                    val.setAuthority(values.get(1));
+                    val.setLang(values.get(2));
+                    val.setXmlLang(values.get(3));
+                    val.setScript(values.get(4));
+                    val.setTransliteration(values.get(5));
+                    list2.add(val);
+                    isNull = false;
+                }
             }
         }
-        recordInfoTypeClient.setRecordContentSource(list2);
-        return recordInfoTypeClient;
+        recordInfoTypeClient.setRecordContentSource(isNull ? null : list2);
+
+        if (BiblioModsUtils.hasOnlyNullFields(recordInfoTypeClient)) {
+            return null;
+        } else
+            return recordInfoTypeClient;
     }
 
     /*
@@ -272,10 +290,17 @@ public class RecordInfoHolder
      * @return the dates from holders
      */
     private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
+        if (holders.isEmpty()) {
+            return null;
+        }
+        boolean isNull = true;
         List<DateTypeClient> dates = new ArrayList<DateTypeClient>();
         for (DateHolder holder : holders) {
-            dates.add(holder.getDate());
+            if (holder != null) {
+                isNull = false;
+                dates.add(holder.getDate());
+            }
         }
-        return dates;
+        return isNull ? null : dates;
     }
 }

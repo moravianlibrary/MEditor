@@ -66,25 +66,32 @@ public class AudienceHolder
      * 
      * @return the audience
      */
+
     public List<TargetAudienceTypeClient> getAudience() {
         List<TargetAudienceTypeClient> list = null;
         List<List<String>> listOfValues = getListOfList();
+        boolean isNull = true;
+
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<TargetAudienceTypeClient>();
             for (List<String> values : listOfValues) {
                 if (values != null) {
-                    TargetAudienceTypeClient val = new TargetAudienceTypeClient();
-                    val.setValue(values.get(0));
-                    val.setAuthority(values.get(1));
-                    val.setLang(values.get(2));
-                    val.setXmlLang(values.get(3));
-                    val.setTransliteration(values.get(4));
-                    val.setScript(values.get(5));
-                    list.add(val);
+                    if (values != null) {
+                        TargetAudienceTypeClient val = new TargetAudienceTypeClient();
+                        val.setValue(values.get(0));
+                        val.setAuthority(values.get(1));
+                        val.setLang(values.get(2));
+                        val.setXmlLang(values.get(3));
+                        val.setTransliteration(values.get(4));
+                        val.setScript(values.get(5));
+                        list.add(val);
+                        isNull = false;
+                    }
+
                 }
             }
         }
-        return list;
+        return isNull ? null : list;
     }
 
     /*

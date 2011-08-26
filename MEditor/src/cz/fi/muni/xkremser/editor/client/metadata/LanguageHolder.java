@@ -36,6 +36,8 @@ import cz.fi.muni.xkremser.editor.client.mods.CodeOrTextClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient.LanguageTermClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class LanguageHolder.
@@ -69,20 +71,29 @@ public class LanguageHolder
         if (getAttributeForm() != null) {
             languageTypeClient.setObjectPart(getAttributeForm().getValueAsString(ModsConstants.OBJECT_PART));
         }
+
         List<LanguageTermClient> list = null;
         List<List<String>> listOfValues = langTerms.getListOfList();
+        boolean isNull = true;
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<LanguageTermClient>();
             for (List<String> values : listOfValues) {
-                LanguageTermClient languageTermClient = new LanguageTermClient();
-                languageTermClient.setValue(values.get(0));
-                languageTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
-                languageTermClient.setAuthority(values.get(2));
-                list.add(languageTermClient);
+                if (values != null) {
+                    LanguageTermClient languageTermClient = new LanguageTermClient();
+                    languageTermClient.setValue(values.get(0));
+                    languageTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+                    languageTermClient.setAuthority(values.get(2));
+                    list.add(languageTermClient);
+                    isNull = false;
+                }
             }
         }
-        languageTypeClient.setLanguageTerm(list);
-        return languageTypeClient;
+        languageTypeClient.setLanguageTerm(isNull ? null : list);
+
+        if (BiblioModsUtils.hasOnlyNullFields(languageTypeClient)) {
+            return null;
+        } else
+            return languageTypeClient;
     }
 
     /*

@@ -67,20 +67,37 @@ public class DateHolder
      */
     public DateTypeClient getDate() {
         DateTypeClient dateTypeClient = otherDate ? new DateOtherTypeClient() : new DateTypeClient();
+        boolean isNull = true;
         if (getAttributeForm() != null) {
             dateTypeClient.setEncoding(getAttributeForm().getValueAsString(ModsConstants.ENCODING));
             String val = getAttributeForm().getValueAsString(ModsConstants.KEY_DATE);
             if (val != null && ClientUtils.toBoolean(val)) {
                 dateTypeClient.setKeyDate(YesClient.YES);
+                isNull = false;
             }
             dateTypeClient.setPoint(getAttributeForm().getValueAsString(ModsConstants.POINT));
+            if (!"".equals(dateTypeClient.getPoint().trim())) {
+                isNull = false;
+            }
             dateTypeClient.setQualifier(getAttributeForm().getValueAsString(ModsConstants.QUALIFIER));
+            if (!"".equals(dateTypeClient.getQualifier().trim())) {
+                isNull = false;
+            }
             dateTypeClient.setValue(getAttributeForm().getValueAsString(dateName));
-            if (otherDate)
+            if (!"".equals(dateTypeClient.getValue().trim())) {
+                isNull = false;
+            }
+            if (otherDate) {
                 ((DateOtherTypeClient) dateTypeClient).setType(getAttributeForm()
                         .getValueAsString(ModsConstants.TYPE));
+                if (!"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
+                    isNull = false;
+                }
+            }
+        } else {
+            return null;
         }
-        return dateTypeClient;
+        return isNull ? null : dateTypeClient;
     }
 
     /*

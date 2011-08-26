@@ -29,7 +29,10 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
 import java.io.StringWriter;
 
+import java.lang.reflect.Field;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -2870,4 +2873,109 @@ public final class BiblioModsUtils {
             }
         }
     }
+
+    public static boolean hasOnlyNullFields(Object object) {
+        if (object == null) {
+            return true;
+        }
+        boolean isNull = true;
+        List<Field> fields = new ArrayList<Field>();
+        fields.addAll(Arrays.asList(object.getClass().getDeclaredFields()));
+        if (object.getClass().getSuperclass() != null) {
+            fields.addAll(Arrays.asList(object.getClass().getSuperclass().getDeclaredFields()));
+            if (object.getClass().getSuperclass().getSuperclass() != null) {
+                fields.addAll(Arrays.asList(object.getClass().getSuperclass().getSuperclass()
+                        .getDeclaredFields()));
+                if (object.getClass().getSuperclass().getSuperclass().getSuperclass() != null) {
+                    fields.addAll(Arrays.asList(object.getClass().getSuperclass().getSuperclass()
+                            .getSuperclass().getDeclaredFields()));
+                    if (object.getClass().getSuperclass().getSuperclass().getSuperclass().getSuperclass() != null) {
+                        fields.addAll(Arrays.asList(object.getClass().getSuperclass().getSuperclass()
+                                .getSuperclass().getSuperclass().getDeclaredFields()));
+                        if (object.getClass().getSuperclass().getSuperclass().getSuperclass().getSuperclass()
+                                .getSuperclass() != null) {
+                            fields.addAll(Arrays.asList(object.getClass().getSuperclass().getSuperclass()
+                                    .getSuperclass().getSuperclass().getSuperclass().getDeclaredFields()));
+                        }
+                    }
+                }
+            }
+        }
+        try {
+            for (Field field : fields) {
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+                if (field.get(object) != null) {
+                    if (field.getType().getName().contains("List")
+                            && !((List<?>) field.get(object)).isEmpty()) {
+                        isNull = false;
+                    } else if (field.getType().getName().contains("String")
+                            && !"".equals(((String) field.get(object)).trim())) {
+                        isNull = false;
+                    } else if (field.getType().getName().contains("Client")) {
+                        isNull = false;
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Unable to inspect the structure via reflection", e);
+        } catch (IllegalAccessException e) {
+            LOGGER.error("Unable to inspect the structure via reflection", e);
+        }
+        return isNull;
+    }
+
+    //    public static void main(String... args) {
+    //        C c1 = new C();
+    //        c1.a = "a";
+    //        B c2 = new B();
+    //        c2.a = "a";
+    //        c2.b = "b";
+    //        A c3 = new A();
+    //        c3.a = "a";
+    //        C c4 = new C();
+    //        B c5 = new B();
+    //        c5.a = "";
+    //        c5.b = "   ";
+    //        A c6 = new A();
+    //        c6.a = "  d  ";
+    //
+    //        System.out.println(hasOnlyNullFields(c1));
+    //        System.out.println(hasOnlyNullFields(c2));
+    //        System.out.println(hasOnlyNullFields(c3));
+    //        System.out.println(hasOnlyNullFields(c4));
+    //        System.out.println(hasOnlyNullFields(c5));
+    //        System.out.println(hasOnlyNullFields(c6));
+    //
+    //    }
+    //
+    //    interface I {
+    //
+    //        public String i();
+    //    }
+    //
+    //    static class A
+    //            implements I {
+    //
+    //        public String a;
+    //
+    //        @Override
+    //        public String i() {
+    //            return null;
+    //        }
+    //    }
+    //
+    //    static class B
+    //            extends A {
+    //
+    //        public String b;
+    //    }
+    //
+    //    static class C
+    //            extends B {
+    //
+    //        public String c;
+    //    }
+
 }

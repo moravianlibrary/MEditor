@@ -35,6 +35,8 @@ import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class PhysicalDescriptionHolder.
@@ -113,40 +115,53 @@ public class PhysicalDescriptionHolder
                 value = null;
             }
         }
+
         physicalDescriptionTypeClient.setDigitalOrigin(value == null ? null : Arrays.asList(value));
         List<NoteTypeClient> list = null;
         List<List<String>> listOfValues = notes.getListOfList();
+        boolean isNull = true;
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<NoteTypeClient>();
             for (List<String> values : listOfValues) {
-                NoteTypeClient noteTypeClient = new NoteTypeClient();
-                noteTypeClient.setValue(values.get(0));
-                noteTypeClient.setAtType(values.get(1));
-                noteTypeClient.setDisplayLabel(values.get(2));
-                noteTypeClient.setXlink(values.get(3));
-                noteTypeClient.setLang(values.get(4));
-                noteTypeClient.setXmlLang(values.get(5));
-                noteTypeClient.setScript(values.get(6));
-                noteTypeClient.setTransliteration(values.get(7));
-                list.add(noteTypeClient);
+                if (values != null) {
+                    NoteTypeClient noteTypeClient = new NoteTypeClient();
+                    noteTypeClient.setValue(values.get(0));
+                    noteTypeClient.setAtType(values.get(1));
+                    noteTypeClient.setDisplayLabel(values.get(2));
+                    noteTypeClient.setXlink(values.get(3));
+                    noteTypeClient.setLang(values.get(4));
+                    noteTypeClient.setXmlLang(values.get(5));
+                    noteTypeClient.setScript(values.get(6));
+                    noteTypeClient.setTransliteration(values.get(7));
+                    list.add(noteTypeClient);
+                    isNull = false;
+                }
             }
         }
-        physicalDescriptionTypeClient.setNote(list);
+        physicalDescriptionTypeClient.setNote(isNull ? null : list);
 
         List<StringPlusAuthorityPlusTypeClient> list2 = null;
         List<List<String>> listOfValues2 = forms.getListOfList();
+        isNull = true;
         if (listOfValues2 != null && listOfValues2.size() != 0) {
             list2 = new ArrayList<StringPlusAuthorityPlusTypeClient>();
             for (List<String> values : listOfValues2) {
-                StringPlusAuthorityPlusTypeClient val = new StringPlusAuthorityPlusTypeClient();
-                val.setValue(values.get(0));
-                val.setType(values.get(1));
-                val.setAuthority(values.get(2));
-                list2.add(val);
+                if (values != null) {
+                    StringPlusAuthorityPlusTypeClient val = new StringPlusAuthorityPlusTypeClient();
+                    val.setValue(values.get(0));
+                    val.setType(values.get(1));
+                    val.setAuthority(values.get(2));
+                    list2.add(val);
+                    isNull = false;
+                }
             }
         }
-        physicalDescriptionTypeClient.setForm(list2);
-        return physicalDescriptionTypeClient;
+        physicalDescriptionTypeClient.setForm(isNull ? null : list2);
+
+        if (BiblioModsUtils.hasOnlyNullFields(physicalDescriptionTypeClient)) {
+            return null;
+        } else
+            return physicalDescriptionTypeClient;
     }
 
     /*

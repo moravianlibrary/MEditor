@@ -85,16 +85,28 @@ public class ListOfListOfSimpleValuesHolder
         Canvas[] canvases = this.layout.getMembers();
         List<List<String>> values = new ArrayList<List<String>>(canvases.length);
         int i = 0;
+        boolean isOuterListNull = true;
         for (Canvas canvas : canvases) {
             values.add(new ArrayList<String>());
             DynamicForm form = (DynamicForm) canvas;
+            boolean isInnerListNull = true;
             for (String key : keys) {
                 String value = form.getValueAsString(key);
-                values.get(i).add(value == null ? null : value.trim());
+                if (value != null) {
+                    isInnerListNull = false;
+                    values.get(i).add(value.trim());
+                } else {
+                    values.get(i).add(null);
+                }
+            }
+            if (isInnerListNull) {
+                values.set(i, null);
+            } else {
+                isOuterListNull = false;
             }
             i++;
         }
-        return values;
+        return isOuterListNull ? null : values;
     }
 
     /*

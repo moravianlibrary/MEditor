@@ -31,6 +31,8 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.AccessConditionTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class AccessConditionHolder.
@@ -58,7 +60,10 @@ public class AccessConditionHolder
                 && getAttributeForm2().getValueAsString(ModsConstants.ACCESS_CONDITION) != null
                 && !"".equals(getAttributeForm2().getValueAsString(ModsConstants.ACCESS_CONDITION)))
             value.setContent(getAttributeForm2().getValueAsString(ModsConstants.ACCESS_CONDITION));
-        return value;
+        if (BiblioModsUtils.hasOnlyNullFields(value)) {
+            return null;
+        } else
+            return value;
     }
 
     /*

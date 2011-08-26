@@ -39,6 +39,8 @@ import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.CartographicsCli
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.GeographicCodeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class SubjectHolder.
@@ -132,16 +134,20 @@ public class SubjectHolder
         // geoCodes
         List<GeographicCodeClient> list = null;
         List<List<String>> listOfValues = geoCodes.getListOfList();
+        boolean isNull = true;
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<GeographicCodeClient>();
             for (List<String> values : listOfValues) {
-                GeographicCodeClient val = new GeographicCodeClient();
-                val.setValue(values.get(0));
-                val.setAuthority(PlaceAuthorityClient.fromValue(values.get(1)));
-                list.add(val);
+                if (values != null) {
+                    GeographicCodeClient val = new GeographicCodeClient();
+                    val.setValue(values.get(0));
+                    val.setAuthority(PlaceAuthorityClient.fromValue(values.get(1)));
+                    list.add(val);
+                    isNull = false;
+                }
             }
         }
-        subjectTypeClient.setGeographicCode(list);
+        subjectTypeClient.setGeographicCode(isNull ? null : list);
 
         // hieararchicalGeo
         List<HierarchicalGeographicTypeClient> list2 = null;
@@ -164,7 +170,10 @@ public class SubjectHolder
         }
         subjectTypeClient.setCartographics(list3);
 
-        return subjectTypeClient;
+        if (BiblioModsUtils.hasOnlyNullFields(subjectTypeClient)) {
+            return null;
+        } else
+            return subjectTypeClient;
     }
 
     /*
@@ -217,11 +226,18 @@ public class SubjectHolder
      * @return the dates from holders
      */
     private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
+        if (holders.isEmpty()) {
+            return null;
+        }
+        boolean isNull = true;
         List<DateTypeClient> dates = new ArrayList<DateTypeClient>();
         for (DateHolder holder : holders) {
-            dates.add(holder.getDate());
+            if (holder != null) {
+                isNull = false;
+                dates.add(holder.getDate());
+            }
         }
-        return dates;
+        return isNull ? null : dates;
     }
 
     /**

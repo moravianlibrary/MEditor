@@ -31,12 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.CopyInformationTypeClient;
-import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ExtensionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.HoldingSimpleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalLocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.UrlTypeClient;
+
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -109,41 +110,50 @@ public class LocationHolder
         // physical locations
         List<PhysicalLocationTypeClient> list = null;
         List<List<String>> listOfValues = physicalLocations.getListOfList();
+        boolean isNull = true;
+
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<PhysicalLocationTypeClient>();
             for (List<String> values : listOfValues) {
-                PhysicalLocationTypeClient val = new PhysicalLocationTypeClient();
-                val.setValue(values.get(0));
-                val.setDisplayLabel(values.get(1));
-                val.setType(values.get(2));
-                val.setAuthority(values.get(3));
-                val.setXlink(values.get(4));
-                val.setLang(values.get(5));
-                val.setXmlLang(values.get(5));
-                val.setTransliteration(values.get(6));
-                val.setScript(values.get(7));
-                list.add(val);
+                if (values != null) {
+                    PhysicalLocationTypeClient val = new PhysicalLocationTypeClient();
+                    val.setValue(values.get(0));
+                    val.setDisplayLabel(values.get(1));
+                    val.setType(values.get(2));
+                    val.setAuthority(values.get(3));
+                    val.setXlink(values.get(4));
+                    val.setLang(values.get(5));
+                    val.setXmlLang(values.get(5));
+                    val.setTransliteration(values.get(6));
+                    val.setScript(values.get(7));
+                    list.add(val);
+                    isNull = false;
+                }
             }
         }
-        locationTypeClient.setPhysicalLocation(list);
+        locationTypeClient.setPhysicalLocation(isNull ? null : list);
 
         // urls
         List<UrlTypeClient> list2 = null;
         List<List<String>> listOfValues2 = urls.getListOfList();
+        isNull = true;
         if (listOfValues2 != null && listOfValues2.size() != 0) {
             list2 = new ArrayList<UrlTypeClient>();
             for (List<String> values : listOfValues2) {
-                UrlTypeClient val = new UrlTypeClient();
-                val.setValue(values.get(0));
-                val.setDisplayLabel(values.get(1));
-                val.setDateLastAccessed(values.get(2));
-                val.setNote(values.get(3));
-                val.setAccess(values.get(4));
-                val.setUsage(values.get(5));
-                list2.add(val);
+                if (values != null) {
+                    UrlTypeClient val = new UrlTypeClient();
+                    val.setValue(values.get(0));
+                    val.setDisplayLabel(values.get(1));
+                    val.setDateLastAccessed(values.get(2));
+                    val.setNote(values.get(3));
+                    val.setAccess(values.get(4));
+                    val.setUsage(values.get(5));
+                    list2.add(val);
+                    isNull = false;
+                }
             }
         }
-        locationTypeClient.setUrl(list2);
+        locationTypeClient.setUrl(isNull ? null : list2);
 
         // holding simple
         HoldingSimpleTypeClient holding = null;
@@ -158,7 +168,10 @@ public class LocationHolder
         }
         locationTypeClient.setHoldingSimple(holding);
 
-        return locationTypeClient;
+        if (BiblioModsUtils.hasOnlyNullFields(locationTypeClient)) {
+            return null;
+        } else
+            return locationTypeClient;
     }
 
     /*
@@ -199,21 +212,6 @@ public class LocationHolder
     @Override
     public List<String> getAttributes() {
         throw new UnsupportedOperationException("Mods");
-    }
-
-    /**
-     * Gets the dates from holders.
-     * 
-     * @param holders
-     *        the holders
-     * @return the dates from holders
-     */
-    private static List<DateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
-        List<DateTypeClient> dates = new ArrayList<DateTypeClient>();
-        for (DateHolder holder : holders) {
-            dates.add(holder.getDate());
-        }
-        return dates;
     }
 
     /**

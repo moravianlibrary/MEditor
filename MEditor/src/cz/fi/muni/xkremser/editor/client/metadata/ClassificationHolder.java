@@ -70,6 +70,7 @@ public class ClassificationHolder
      */
     public List<ClassificationTypeClient> getClassification() {
         List<ClassificationTypeClient> list = null;
+        boolean isNull = true;
         List<List<String>> listOfValues = getListOfList();
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<ClassificationTypeClient>();
@@ -85,10 +86,11 @@ public class ClassificationHolder
                     val.setTransliteration(values.get(6));
                     val.setScript(values.get(7));
                     list.add(val);
+                    isNull = false;
                 }
             }
         }
-        return list;
+        return isNull ? null : list;
     }
 
     /*

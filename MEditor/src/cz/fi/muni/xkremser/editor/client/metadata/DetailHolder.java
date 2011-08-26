@@ -31,6 +31,8 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class DetailHolder.
@@ -71,7 +73,10 @@ public class DetailHolder
         detailTypeClient.setCaption(captions.getValues());
         detailTypeClient.setTitle(titles.getValues());
 
-        return detailTypeClient;
+        if (BiblioModsUtils.hasOnlyNullFields(detailTypeClient)) {
+            return null;
+        } else
+            return detailTypeClient;
     }
 
     /*

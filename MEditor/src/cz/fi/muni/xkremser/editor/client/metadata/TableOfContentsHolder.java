@@ -31,6 +31,8 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class TableOfContentsHolder.
@@ -44,20 +46,22 @@ public class TableOfContentsHolder
      * @return the table of contents
      */
     public TableOfContentsTypeClient getTableOfContents() {
-        TableOfContentsTypeClient abstractTypeClient = new TableOfContentsTypeClient();
+        TableOfContentsTypeClient tocClient = new TableOfContentsTypeClient();
         if (getAttributeForm() != null) {
-            abstractTypeClient.setAtType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
-            abstractTypeClient.setLang(getAttributeForm().getValueAsString(ModsConstants.LANG));
-            abstractTypeClient.setXmlLang(getAttributeForm().getValueAsString(ModsConstants.XML_LANG));
-            abstractTypeClient.setXlink(getAttributeForm().getValueAsString(ModsConstants.XLINK));
-            abstractTypeClient.setTransliteration(getAttributeForm()
-                    .getValueAsString(ModsConstants.TRANSLITERATION));
-            abstractTypeClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
-            abstractTypeClient.setDisplayLabel(getAttributeForm()
-                    .getValueAsString(ModsConstants.DISPLAY_LABEL));
+            tocClient.setAtType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
+            tocClient.setLang(getAttributeForm().getValueAsString(ModsConstants.LANG));
+            tocClient.setXmlLang(getAttributeForm().getValueAsString(ModsConstants.XML_LANG));
+            tocClient.setXlink(getAttributeForm().getValueAsString(ModsConstants.XLINK));
+            tocClient.setTransliteration(getAttributeForm().getValueAsString(ModsConstants.TRANSLITERATION));
+            tocClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
+            tocClient.setDisplayLabel(getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
         }
-        abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TOC));
-        return abstractTypeClient;
+        tocClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TOC));
+
+        if (BiblioModsUtils.hasOnlyNullFields(tocClient)) {
+            return null;
+        } else
+            return tocClient;
     }
 
     /*

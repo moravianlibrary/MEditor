@@ -35,6 +35,8 @@ import cz.fi.muni.xkremser.editor.client.mods.PlaceAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTermTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class PlaceHolder.
@@ -55,21 +57,30 @@ public class PlaceHolder
      * @return the place
      */
     public PlaceTypeClient getPlace() {
+
         List<List<String>> listOfValues = getListOfList();
         if (listOfValues == null || listOfValues.size() == 0) {
             return null;
         }
         PlaceTypeClient placeTypeClient = new PlaceTypeClient();
         List<PlaceTermTypeClient> list = new ArrayList<PlaceTermTypeClient>();
+        boolean isNull = true;
         for (List<String> values : listOfValues) {
-            PlaceTermTypeClient placeTermClient = new PlaceTermTypeClient();
-            placeTermClient.setValue(values.get(0));
-            placeTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
-            placeTermClient.setAuthority(PlaceAuthorityClient.fromValue(values.get(2)));
-            list.add(placeTermClient);
+            if (values != null) {
+                PlaceTermTypeClient placeTermClient = new PlaceTermTypeClient();
+                placeTermClient.setValue(values.get(0));
+                placeTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+                placeTermClient.setAuthority(PlaceAuthorityClient.fromValue(values.get(2)));
+                list.add(placeTermClient);
+                isNull = false;
+            }
         }
-        placeTypeClient.setPlaceTerm(list);
-        return placeTypeClient;
+        placeTypeClient.setPlaceTerm(isNull ? null : list);
+
+        if (BiblioModsUtils.hasOnlyNullFields(placeTypeClient)) {
+            return null;
+        } else
+            return placeTypeClient;
     }
 
     /*

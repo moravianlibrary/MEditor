@@ -31,6 +31,8 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.ExtensionTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ExtensionHolder.
@@ -52,7 +54,11 @@ public class ExtensionHolder
                 && getAttributeForm2().getValueAsString(ModsConstants.EXTENSION) != null
                 && !"".equals(getAttributeForm2().getValueAsString(ModsConstants.EXTENSION)))
             value.setContent(getAttributeForm2().getValueAsString(ModsConstants.EXTENSION));
-        return value;
+
+        if (BiblioModsUtils.hasOnlyNullFields(value)) {
+            return null;
+        } else
+            return value;
     }
 
     /*

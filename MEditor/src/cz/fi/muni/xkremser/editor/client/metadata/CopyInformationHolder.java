@@ -35,6 +35,8 @@ import cz.fi.muni.xkremser.editor.client.mods.EnumerationAndChronologyTypeClient
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelPlusTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class CopyInformationHolder.
@@ -91,17 +93,22 @@ public class CopyInformationHolder
             copyInformationTypeClient.setForm(val);
         }
         List<EnumerationAndChronologyTypeClient> list = null;
+
+        boolean isNull = true;
         List<List<String>> listOfValues = enumChrono.getListOfList();
         if (listOfValues != null && listOfValues.size() != 0) {
             list = new ArrayList<EnumerationAndChronologyTypeClient>();
             for (List<String> values : listOfValues) {
-                EnumerationAndChronologyTypeClient val = new EnumerationAndChronologyTypeClient();
-                val.setValue(values.get(0));
-                val.setUnitType(values.get(1));
-                list.add(val);
+                if (values != null) {
+                    EnumerationAndChronologyTypeClient val = new EnumerationAndChronologyTypeClient();
+                    val.setValue(values.get(0));
+                    val.setUnitType(values.get(1));
+                    list.add(val);
+                    isNull = false;
+                }
             }
         }
-        copyInformationTypeClient.setEnumerationAndChronology(list);
+        copyInformationTypeClient.setEnumerationAndChronology(isNull ? null : list);
 
         // notes
         List<StringPlusDisplayLabelPlusTypeClient> noteList =
@@ -122,7 +129,10 @@ public class CopyInformationHolder
         }
         copyInformationTypeClient.setNote(noteList);
 
-        return copyInformationTypeClient;
+        if (BiblioModsUtils.hasOnlyNullFields(copyInformationTypeClient)) {
+            return null;
+        } else
+            return copyInformationTypeClient;
     }
 
     /*

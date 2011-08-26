@@ -78,8 +78,12 @@ public class ListOfSimpleValuesHolder
     @Override
     public List<String> getValues() {
         if (layout == null) return null;
-        List<String> values = new ArrayList<String>();
         Canvas[] canvases = this.layout.getMembers();
+        if (canvases.length == 0) {
+            return null;
+        }
+        boolean isNull = true;
+        List<String> values = new ArrayList<String>();
         for (Canvas canvas : canvases) {
             DynamicForm form = (DynamicForm) canvas;
             Object o = form.getFields()[0].getValue();
@@ -92,10 +96,11 @@ public class ListOfSimpleValuesHolder
                 }
                 if (!"".equals(value.trim())) {
                     values.add(value);
+                    isNull = false;
                 }
             }
         }
-        return values;
+        return isNull ? null : values;
     }
 
     /*

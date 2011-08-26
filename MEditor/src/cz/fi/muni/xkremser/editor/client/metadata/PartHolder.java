@@ -35,6 +35,8 @@ import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class PartHolder.
@@ -96,7 +98,10 @@ public class PartHolder
         }
         partTypeClient.setDetail(detail);
 
-        return partTypeClient;
+        if (BiblioModsUtils.hasOnlyNullFields(partTypeClient)) {
+            return null;
+        } else
+            return partTypeClient;
     }
 
     /*
@@ -203,11 +208,18 @@ public class PartHolder
      * @return the dates from holders
      */
     private static List<BaseDateTypeClient> getDatesFromHolders(List<DateHolder> holders) {
+        if (holders.isEmpty()) {
+            return null;
+        }
+        boolean isNull = true;
         List<BaseDateTypeClient> dates = new ArrayList<BaseDateTypeClient>();
         for (DateHolder holder : holders) {
-            dates.add(holder.getDate());
+            if (holder != null) {
+                isNull = false;
+                dates.add(holder.getDate());
+            }
         }
-        return dates;
+        return isNull ? null : dates;
     }
 
 }

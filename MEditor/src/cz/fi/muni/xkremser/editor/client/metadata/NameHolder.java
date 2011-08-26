@@ -37,6 +37,8 @@ import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class NameHolder.
@@ -97,28 +99,40 @@ public class NameHolder
         nameTypeClient.setDescription(affiliations.getValues());
 
         List<NamePartTypeClient> list1 = new ArrayList<NamePartTypeClient>();
+        boolean isNull = true;
         for (List<String> values : nameParts.getListOfList()) {
-            NamePartTypeClient namePartTypeClient = new NamePartTypeClient();
-            namePartTypeClient.setValue(values.get(0));
-            namePartTypeClient.setType(values.get(1));
-            list1.add(namePartTypeClient);
+            if (values != null) {
+                NamePartTypeClient namePartTypeClient = new NamePartTypeClient();
+                namePartTypeClient.setValue(values.get(0));
+                namePartTypeClient.setType(values.get(1));
+                list1.add(namePartTypeClient);
+                isNull = false;
+            }
         }
-        nameTypeClient.setNamePart(list1);
+        nameTypeClient.setNamePart(isNull ? null : list1);
 
         List<RoleTypeClient> list2 = new ArrayList<RoleTypeClient>();
         List<RoleTermClient> list3 = new ArrayList<RoleTermClient>();
+        isNull = true;
         for (List<String> values : roles.getListOfList()) {
-            RoleTermClient roleTermClient = new RoleTermClient();
-            roleTermClient.setValue(values.get(0));
-            roleTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
-            roleTermClient.setAuthority(values.get(2));
-            list3.add(roleTermClient);
+            if (values != null) {
+                RoleTermClient roleTermClient = new RoleTermClient();
+                roleTermClient.setValue(values.get(0));
+                roleTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+                roleTermClient.setAuthority(values.get(2));
+                list3.add(roleTermClient);
+                isNull = false;
+            }
         }
         RoleTypeClient client = new RoleTypeClient();
         client.setRoleTerm(list3);
         list2.add(client);
-        nameTypeClient.setRole(list2);
-        return nameTypeClient;
+        nameTypeClient.setRole(isNull ? null : list2);
+
+        if (BiblioModsUtils.hasOnlyNullFields(nameTypeClient)) {
+            return null;
+        } else
+            return nameTypeClient;
     }
 
     /*

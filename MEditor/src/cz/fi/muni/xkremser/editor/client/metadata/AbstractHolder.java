@@ -31,6 +31,8 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractHolder.
@@ -44,8 +46,9 @@ public class AbstractHolder
      * @return the abstract
      */
     public AbstractTypeClient getAbstract() {
-        AbstractTypeClient abstractTypeClient = new AbstractTypeClient();
+        AbstractTypeClient abstractTypeClient = null;
         if (getAttributeForm() != null) {
+            abstractTypeClient = new AbstractTypeClient();
             abstractTypeClient.setAtType(getAttributeForm().getValueAsString(ModsConstants.TYPE));
             abstractTypeClient.setLang(getAttributeForm().getValueAsString(ModsConstants.LANG));
             abstractTypeClient.setXmlLang(getAttributeForm().getValueAsString(ModsConstants.XML_LANG));
@@ -56,8 +59,16 @@ public class AbstractHolder
             abstractTypeClient.setDisplayLabel(getAttributeForm()
                     .getValueAsString(ModsConstants.DISPLAY_LABEL));
         }
-        abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.ABSTRACT));
-        return abstractTypeClient;
+        if (getAttributeForm2() != null) {
+            if (abstractTypeClient == null) {
+                abstractTypeClient = new AbstractTypeClient();
+            }
+            abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.ABSTRACT));
+        }
+        if (BiblioModsUtils.hasOnlyNullFields(abstractTypeClient)) {
+            return null;
+        } else
+            return abstractTypeClient;
     }
 
     /*
