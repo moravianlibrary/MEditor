@@ -42,34 +42,34 @@ public class ModsWindow
     private final LangConstants lang;
 
     /** The TextItem with title value */
-    private final TextItem titleItem = new MyTextItem("Title");
+    private final TextItem titleItem = new MyTextItem();
 
     /** The TextItem with subtitle value */
-    private final TextItem subtitleItem = new MyTextItem("Subtitle");
+    private final TextItem subtitleItem = new MyTextItem();
 
     /** The Constant AUTHOR1 */
-    private static final String AUTHOR1 = "Author 1";
+    private static String AUTHOR1;
 
     /** The Constant AUTHOR2 */
-    private static final String AUTHOR2 = "Author 2";
+    private static String AUTHOR2;
 
     /** The StaticTextItem with Author1 */
-    private final StaticTextItem author1Item = new MyStaticTextItem(AUTHOR1);
+    private final StaticTextItem author1Item = new MyStaticTextItem();
 
     /** The StaticTextItem with Author2 */
-    private final StaticTextItem author2Item = new MyStaticTextItem(AUTHOR2);
+    private final StaticTextItem author2Item = new MyStaticTextItem();
 
     /** The TextItem with publisher value */
-    private final TextItem publisherItem = new MyTextItem("Publisher");
+    private final TextItem publisherItem = new MyTextItem();
 
     /** The TextItem with signature value */
-    private final TextItem shelfLocatorItem = new MyTextItem("Signature");
+    private final TextItem shelfLocatorItem = new MyTextItem();
 
     /** The TextItem with place term value */
-    private final TextItem placeItem = new MyTextItem("Place term");
+    private final TextItem placeItem = new MyTextItem();
 
     /** The TextItem with extent value */
-    private final TextItem extentItem = new MyTextItem("Extent");
+    private final TextItem extentItem = new MyTextItem();
 
     /** The IButton to publish the content of the window */
     private final IButton publish = new IButton();
@@ -90,9 +90,11 @@ public class ModsWindow
     private final DateTimeItem dateItem = new DateTimeItem() {
 
         {
-            setTitle("Issued date (DDMMYYYY)");
             setDateFormatter(DateDisplayFormat.TOEUROPEANSHORTDATE);
             setInputFormat(DateDisplayFormat.TOEUROPEANSHORTDATE.toString());
+            setHoverOpacity(75);
+            setHoverWidth(330);
+            setHoverStyle("interactImageHover");
         }
     };
 
@@ -116,28 +118,24 @@ public class ModsWindow
      * The TextItem with width=180, wrapTitle=false, selectOnFocus=true,
      * cellHeight=40. Automatically sets the default value of title.
      */
-    class MyTextItem
+    private static class MyTextItem
             extends TextItem {
 
-        String myDefaultValue;
+        private String myDefaultValue;
 
-        /**
-         * Title is used for set default value of title.
-         * 
-         * @param title
-         */
-        public MyTextItem(String title) {
+        public MyTextItem() {
             setWidth(180);
             setWrapTitle(false);
             setSelectOnFocus(true);
             setCellHeight(40);
-            setTitle(title);
+            setHoverOpacity(75);
+            setHoverWidth(330);
+            setHoverStyle("interactImageHover");
         }
 
         @Override
         public void setDefaultValue(String defaultValue) {
             this.myDefaultValue = defaultValue;
-            System.err.println(myDefaultValue);
             setAttribute("defaultValue", defaultValue);
         }
 
@@ -152,7 +150,7 @@ public class ModsWindow
     /**
      * The DynamicForm which sets automatically items.
      */
-    class MyDynamicForm
+    private static class MyDynamicForm
             extends DynamicForm {
 
         /**
@@ -166,23 +164,22 @@ public class ModsWindow
     }
 
     /**
-     * The StaticTextItem with wrapTitle=false. Automatically sets the deafult
-     * value of title.
+     * The StaticTextItem with wrapTitle=false. Automatically sets the value of
+     * deafultTitle in method setTitle.
      */
-    class MyStaticTextItem
+    private static class MyStaticTextItem
             extends StaticTextItem {
 
-        String defaultTitle;
+        private String defaultTitle;
 
-        /**
-         * Title is used for set default value of title.
-         * 
-         * @param title
-         */
-        public MyStaticTextItem(String title) {
-            defaultTitle = title;
-            setTitle(title);
+        public MyStaticTextItem() {
             setWrapTitle(false);
+        }
+
+        @Override
+        public void setTitle(String title) {
+            defaultTitle = title;
+            setAttribute("title", title);
         }
 
         /**
@@ -210,6 +207,7 @@ public class ModsWindow
         this.lang = lang;
         this.modsCollection = modsCollection;
         modsTypeClient = modsCollection.getMods().get(0);
+        setVariables();
 
         VStack mainLayout = new VStack();
         HStack itemsLayout = new HStack();
@@ -236,6 +234,38 @@ public class ModsWindow
         addItem(mainLayout);
     }
 
+    private void setVariables() {
+
+        titleItem.setTitle(lang.title());
+
+        titleItem.setTooltip(lang.titleMARC());
+
+        subtitleItem.setTitle(lang.subtitle());
+        subtitleItem.setTooltip(lang.subTitleMARC());
+
+        AUTHOR1 = lang.author1();
+        author1Item.setTitle(AUTHOR1);
+
+        AUTHOR2 = lang.author2();
+        author2Item.setTitle(AUTHOR2);
+
+        publisherItem.setTitle(lang.publisher());
+        publisherItem.setTooltip(lang.publisherMARC());
+
+        shelfLocatorItem.setTitle(lang.signature());
+        shelfLocatorItem.setTooltip(lang.shelfLocator());
+
+        placeItem.setTitle(lang.place());
+        placeItem.setTooltip(lang.placeTerm());
+
+        extentItem.setTitle(lang.extent());
+        extentItem.setTooltip(lang.extentMARC());
+
+        dateItem.setTitle(lang.issuedDateItem());
+        dateItem.setTooltip(lang.issuedDate());
+
+    }
+
     private DynamicForm createTitleSubtitle() {
 
         DynamicForm modsForm = new DynamicForm();
@@ -256,7 +286,7 @@ public class ModsWindow
     private VStack createNames() {
 
         VStack nameLayout = new VStack();
-        nameLayout.setMembersMargin(4);
+        nameLayout.setMembersMargin(6);
 
         for (int i = 0; i < 2; i++) {
 
@@ -273,7 +303,17 @@ public class ModsWindow
                                 part.setType("");
                             }
 
-                            TextItem newItem = new MyTextItem(part.getType());
+                            TextItem newItem = new MyTextItem();
+                            newItem.setTitle(part.getType());
+                            if (part.getType().equals("date")) newItem.setTooltip(lang.dateParse());
+                            if (part.getType().equals("family")) newItem.setTooltip(lang.surname());
+                            if (part.getType().equals("termsOfAddress")) {
+                                newItem.setTitle("termsOf Address");
+                                newItem.setWrapTitle(true);
+                                newItem.setTooltip(lang.addressMARC());
+                            }
+                            if (part.getType().equals("given")) newItem.setTooltip(lang.firstName());
+                            if (part.getType().equals("")) newItem.setTooltip(lang.attributeOmitted());
 
                             setAuthorRole(modsTypeClient.getName().get(i).getRole(), (i == 0 ? author1Item
                                     : author2Item));
@@ -290,10 +330,20 @@ public class ModsWindow
                 }
             }
 
-            if (!isFamily)
-                (i == 0 ? authorPartsOfName1 : authorPartsOfName2).add(new MyTextItem(ModsConstants.FAMILY));
-            if (!isGiven)
-                (i == 0 ? authorPartsOfName1 : authorPartsOfName2).add(new MyTextItem(ModsConstants.GIVEN));
+            if (!isFamily) {
+                final TextItem newItem = new MyTextItem();
+                newItem.setTitle(ModsConstants.FAMILY);
+                newItem.setTooltip(lang.surname());
+                (i == 0 ? authorPartsOfName1 : authorPartsOfName2).add(newItem);
+            }
+
+            if (!isGiven) {
+                final TextItem newItem = new MyTextItem();
+                newItem.setTitle(ModsConstants.GIVEN);
+                newItem.setTooltip(lang.firstName());
+                (i == 0 ? authorPartsOfName1 : authorPartsOfName2).add(newItem);
+            }
+
         }
 
         nameLayout.addMember(new MyDynamicForm(authorPartsOfName1.toArray(new FormItem[] {})));
@@ -303,20 +353,26 @@ public class ModsWindow
     }
 
     private void setAuthorRole(List<RoleTypeClient> roleList, StaticTextItem roleItem) {
-        boolean isfound = false;
         if (isNotNullEmpty(roleList)) {
+            boolean stop = false;
             for (RoleTypeClient roleType : roleList) {
-                if (isNotNullEmpty(roleType.getRoleTerm()) && !isfound) {
+                if (isNotNullEmpty(roleType.getRoleTerm()) && !stop) {
                     for (RoleTermClient roleTerm : roleType.getRoleTerm()) {
-                        if (roleTerm.getValue().trim().equals("cre")
-                                || roleTerm.getValue().trim().equals("Author")
+
+                        if (roleTerm.getValue().trim().equals("Author")
                                 || roleTerm.getValue().trim().equals("author")
                                 || roleTerm.getValue().trim().equals("Autor")
-                                || roleTerm.getValue().trim().equals("autor")) {
+                                || roleTerm.getValue().trim().equals("autor")
+                                || roleTerm.getValue().trim().equals("cre")) {
+
+                            System.err.println("role value: " + roleTerm.getValue());
                             roleItem.setTitle(roleTerm.getValue());
                             ((MyStaticTextItem) roleItem).setDefaultTitle();
-                            isfound = true;
-                            break;
+
+                            if (roleTerm.getType().equals(CodeOrTextClient.TEXT)) {
+                                stop = true;
+                                break;
+                            }
                         } else {
                             roleItem.setTitle(roleTerm.getValue());
                         }
@@ -358,7 +414,7 @@ public class ModsWindow
             extentItem.setDefaultValue(isNotNullEmpty(extentList) ? extentList.get(0) : "");
         }
 
-        reflectInDC.setTitle("Reflect changes in DC ?");
+        reflectInDC.setTitle(lang.changesInDC());
         reflectInDC.setDefaultValue(true);
         modsForm.setItems(dateItem, publisherItem, placeItem, shelfLocatorItem, extentItem, reflectInDC);
         return modsForm;
@@ -372,7 +428,7 @@ public class ModsWindow
         buttonsLayout.setAlign(Alignment.RIGHT);
 
         publish.setTitle(lang.publishItem());
-        close.setTitle("Close");
+        close.setTitle(lang.close());
 
         buttonsLayout.addMember(publish);
         buttonsLayout.addMember(close);
@@ -517,7 +573,7 @@ public class ModsWindow
         int index = 0;
         for (int i = 0; i < 2; i++) {
 
-            List<NamePartTypeClient> namePart = new ArrayList<NamePartTypeClient>();
+            List<NamePartTypeClient> nameParts = new ArrayList<NamePartTypeClient>();
             boolean allIsEmpty = true;
             for (FormItem item : (i == 0 ? authorPartsOfName1 : authorPartsOfName2)) {
 
@@ -525,7 +581,7 @@ public class ModsWindow
                     NamePartTypeClient part = new NamePartTypeClient();
                     part.setValue(item.getValue().toString());
                     part.setType(item.getTitle().toString());
-                    namePart.add(part);
+                    nameParts.add(part);
                     allIsEmpty = false;
                 }
             }
@@ -557,12 +613,11 @@ public class ModsWindow
             }
 
             if (allIsEmpty) {
-
                 if (newNameList.size() > index) newNameList.remove(index);
 
             } else {
 
-                newNameList.get(index).setNamePart(namePart);
+                newNameList.get(index).setNamePart(nameParts);
                 if (newNameList.get(index).getType() == null) {
                     newNameList.get(index).setType(NameTypeAttributeClient.PERSONAL);
                 }
@@ -667,12 +722,13 @@ public class ModsWindow
 
             for (FormItem item : (i == 0 ? authorPartsOfName1 : authorPartsOfName2)) {
                 if (item instanceof MyTextItem) {
-                    if (((MyTextItem) item).getMyDefaultValue() != null) {
+                    if (((MyTextItem) item).getMyDefaultValue() != null && !item.getTitle().trim().equals("")) {
                         originalAuthor.append(((MyTextItem) item).getMyDefaultValue());
                         originalAuthor.append(" ");
                     }
                 }
-                if (item.getValue() != null && !item.getValue().toString().trim().equals("")) {
+                if (item.getValue() != null && !item.getValue().toString().trim().equals("")
+                        && !item.getTitle().trim().equals("")) {
                     bufferedAuthor.append(item.getValue().toString().trim());
                     bufferedAuthor.append(" ");
                 }

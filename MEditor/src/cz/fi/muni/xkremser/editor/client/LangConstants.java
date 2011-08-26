@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/x211800/eclipse-workspace/MEditor/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -178,6 +178,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String attributeOmitted();
 
   /**
+   * Translated "Author 1".
+   * 
+   * @return translated "Author 1"
+   */
+  @DefaultStringValue("Author 1")
+  @Key("author1")
+  String author1();
+
+  /**
+   * Translated "Author 2".
+   * 
+   * @return translated "Author 2"
+   */
+  @DefaultStringValue("Author 2")
+  @Key("author2")
+  String author2();
+
+  /**
    * Translated "The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file.".
    * 
    * @return translated "The name of the authoritative list for a controlled value is recorded here. An authority attribute may be used to indicate that a title is controlled by a record in an authority file."
@@ -232,6 +250,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String cartographicMARC();
 
   /**
+   * Translated "Reflect changes in Dublin Core.".
+   * 
+   * @return translated "Reflect changes in Dublin Core."
+   */
+  @DefaultStringValue("Reflect changes in Dublin Core.")
+  @Key("changesInDC")
+  String changesInDC();
+
+  /**
    * Translated "Check availability".
    * 
    * @return translated "Check availability"
@@ -266,6 +293,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Equivalent to MARC fields 050-08X, subfields $a and $b.")
   @Key("classAndTypeMARC")
   String classAndTypeMARC();
+
+  /**
+   * Translated "Close".
+   * 
+   * @return translated "Close"
+   */
+  @DefaultStringValue("Close")
+  @Key("close")
+  String close();
 
   /**
    * Translated "Close this digital object.".
@@ -1096,6 +1132,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String extension();
 
   /**
+   * Translated "Extent".
+   * 
+   * @return translated "Extent"
+   */
+  @DefaultStringValue("Extent")
+  @Key("extent")
+  String extent();
+
+  /**
    * Translated "Roughly equivalent to MARC 21 fields 300 subfields $a, $b, $c, and $e and 306 subfield $a.".
    * 
    * @return translated "Roughly equivalent to MARC 21 fields 300 subfields $a, $b, $c, and $e and 306 subfield $a."
@@ -1436,6 +1481,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Equivalent to dates in MARC 21 field 260 subfield $c. It may be in textual or structured form. <dateIssued> may be recorded according to the MARC 21 rules for field 008/07-14 with encoding='marc.'")
   @Key("issuedDate")
   String issuedDate();
+
+  /**
+   * Translated "Issued date (DDMMYYYY)".
+   * 
+   * @return translated "Issued date (DDMMYYYY)"
+   */
+  @DefaultStringValue("Issued date (DDMMYYYY)")
+  @Key("issuedDateItem")
+  String issuedDateItem();
 
   /**
    * Translated "This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.".
@@ -2095,6 +2149,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String physicalType();
 
   /**
+   * Translated "Place term".
+   * 
+   * @return translated "Place term"
+   */
+  @DefaultStringValue("Place term")
+  @Key("place")
+  String place();
+
+  /**
    * Translated "Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>.".
    * 
    * @return translated "Used to express place in a textual or coded form. If both a code and a term are given that represent the same place, use one <place> and multiple occurrences of <placeTerm>. If different places, repeat <place><placeTerm>."
@@ -2165,6 +2228,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Publish digital object")
   @Key("publishName")
   String publishName();
+
+  /**
+   * Translated "Publisher".
+   * 
+   * @return translated "Publisher"
+   */
+  @DefaultStringValue("Publisher")
+  @Key("publisher")
+  String publisher();
 
   /**
    * Translated "It is equivalent to MARC 21 field 260 subfield $b.".
@@ -2473,6 +2545,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String showModifiedHint();
 
   /**
+   * Translated "Signature".
+   * 
+   * @return translated "Signature"
+   */
+  @DefaultStringValue("Signature")
+  @Key("signature")
+  String signature();
+
+  /**
    * Translated "Roughly equivalent to MARC 21 field 003.".
    * 
    * @return translated "Roughly equivalent to MARC 21 field 003."
@@ -2516,6 +2597,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string.")
   @Key("sublocation")
   String sublocation();
+
+  /**
+   * Translated "Subtitle".
+   * 
+   * @return translated "Subtitle"
+   */
+  @DefaultStringValue("Subtitle")
+  @Key("subtitle")
+  String subtitle();
 
   /**
    * Translated "part of a personal name (surname)".
