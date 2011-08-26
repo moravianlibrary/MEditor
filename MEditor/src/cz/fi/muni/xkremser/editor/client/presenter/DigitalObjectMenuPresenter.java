@@ -44,15 +44,10 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -69,6 +64,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
+import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
@@ -197,7 +193,7 @@ public class DigitalObjectMenuPresenter
     private boolean isRefByFocused = false;
 
     /** The uuid-window **/
-    private Window uuidWindow = null;
+    private UuidWindow uuidWindow = null;
 
     private final LangConstants lang;
 
@@ -242,67 +238,14 @@ public class DigitalObjectMenuPresenter
      * Method for handle enter-new-object's-PID short-cut
      */
     private void displayEnterPIDWindow() {
-        uuidWindow = new Window();
-        RegExpValidator regExpValidator = new RegExpValidator();
-        regExpValidator
-                .setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
-
-        final TextItem uuidField = new TextItem();
-        final ButtonItem open = new ButtonItem();
-
-        uuidField.setTitle("PID");
-        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
-        uuidField.setValidators(regExpValidator);
-        uuidField.addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {
+        uuidWindow = new UuidWindow(lang) {
 
             @Override
-            public void onKeyPress(com.smartgwt.client.widgets.form.fields.events.KeyPressEvent event) {
-                if (event.getKeyName().equals("Enter") && !open.getDisabled()) {
-                    evaluateUuid(uuidField);
-                }
+            protected void doActiton(TextItem uuidField) {
+                evaluateUuid(uuidWindow.getUuidField());
             }
-        });
-        uuidField.addChangedHandler(new com.smartgwt.client.widgets.form.fields.events.ChangedHandler() {
 
-            @Override
-            public void onChanged(ChangedEvent event) {
-                String text = (String) event.getValue();
-                if (text != null && !"".equals(text)) {
-                    open.setDisabled(false);
-                } else {
-                    open.setDisabled(true);
-                }
-            }
-        });
-        open.setTitle(lang.open());
-        open.setDisabled(true);
-        open.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-            @Override
-            public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-                evaluateUuid(uuidField);
-            }
-        });
-
-        DynamicForm form = new DynamicForm();
-        form.setMargin(30);
-        form.setWidth(100);
-        form.setHeight(15);
-        form.setFields(uuidField, open);
-
-        uuidWindow.setHeight(150);
-        uuidWindow.setWidth(370);
-        uuidWindow.setEdgeOffset(15);
-        uuidWindow.setCanDragResize(true);
-        uuidWindow.setShowEdges(true);
-        uuidWindow.setTitle("PID");
-        uuidWindow.setShowMinimizeButton(false);
-        uuidWindow.setIsModal(true);
-        uuidWindow.setShowModalMask(true);
-        uuidWindow.centerInPage();
-        uuidWindow.addItem(form);
-        uuidWindow.show();
-        uuidField.focusInItem();
+        };
     }
 
     /**

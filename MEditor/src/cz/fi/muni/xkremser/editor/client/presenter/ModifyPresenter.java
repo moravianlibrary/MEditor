@@ -69,9 +69,9 @@ import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
-import cz.fi.muni.xkremser.editor.client.view.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;

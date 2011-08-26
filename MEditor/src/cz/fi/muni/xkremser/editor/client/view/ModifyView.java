@@ -106,6 +106,7 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
@@ -276,35 +277,31 @@ public class ModifyView
         imagePopup.setAnimationEnabled(true);
     }
 
-    public void showBasicModsWindow(TabSet focusedTabSet) {
-        modsWindow = new MyModsWindow(modsCollections.get(focusedTabSet), lang, focusedTabSet);
-    }
+    public void showBasicModsWindow(final TabSet focusedTabSet) {
+        modsWindow = new ModsWindow(modsCollections.get(focusedTabSet), lang) {
 
-    class MyModsWindow
-            extends ModsWindow {
+            @Override
+            protected void init() {
+                show();
+                focus();
+                getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-        public MyModsWindow(ModsCollectionClient modsCollection,
-                            LangConstants lang,
-                            final TabSet focusedTabSet) {
-            super(modsCollection, lang);
-            show();
-            focus();
-            getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                        publishShortCut(focusedTabSet);
+                    }
+                });
+                getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                @Override
-                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                    publishShortCut(focusedTabSet);
-                }
-            });
-            getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                        destroy();
+                        modsWindow = null;
+                    }
+                });
+            }
 
-                @Override
-                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                    destroy();
-                    modsWindow = null;
-                }
-            });
-        }
+        };
     }
 
     /**

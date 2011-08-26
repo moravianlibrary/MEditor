@@ -36,7 +36,7 @@ import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
-public class ModsWindow
+public abstract class ModsWindow
         extends Window {
 
     private final LangConstants lang;
@@ -204,6 +204,7 @@ public class ModsWindow
      *        the lang
      */
     public ModsWindow(ModsCollectionClient modsCollection, LangConstants lang) {
+        super();
         this.lang = lang;
         this.modsCollection = modsCollection;
         modsTypeClient = modsCollection.getMods().get(0);
@@ -232,6 +233,7 @@ public class ModsWindow
         setShowModalMask(true);
         centerInPage();
         addItem(mainLayout);
+        init();
     }
 
     private void setVariables() {
@@ -587,6 +589,8 @@ public class ModsWindow
             if (newNameList.size() <= index && (!allIsEmpty)) {
                 newNameList.add(index, new NameTypeClient());
                 newNameList.get(index).setRole(new ArrayList<RoleTypeClient>());
+                newNameList.add(index, new NameTypeClient());
+                newNameList.get(index).setRole(new ArrayList<RoleTypeClient>());
                 newNameList.get(index).getRole().add(new RoleTypeClient());
                 newNameList.get(index).getRole().get(0)
                         .setRoleTerm(new ArrayList<RoleTypeClient.RoleTermClient>());
@@ -791,4 +795,6 @@ public class ModsWindow
         List<Object> objectList = (List<Object>) o;
         return objectList != null && !objectList.isEmpty();
     }
+
+    protected abstract void init();
 }
