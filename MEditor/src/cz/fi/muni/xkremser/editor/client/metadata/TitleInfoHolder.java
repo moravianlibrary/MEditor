@@ -31,8 +31,6 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class TitleInfoHolder.
@@ -91,11 +89,7 @@ public class TitleInfoHolder
         titleInfoTypeClient.setPartNumber(partNumbers.getValues());
         titleInfoTypeClient.setPartName(partNames.getValues());
         titleInfoTypeClient.setNonSort(nonSorts.getValues());
-
-        if (BiblioModsUtils.hasOnlyNullFields(titleInfoTypeClient)) {
-            return null;
-        } else
-            return titleInfoTypeClient;
+        return titleInfoTypeClient;
     }
 
     /*

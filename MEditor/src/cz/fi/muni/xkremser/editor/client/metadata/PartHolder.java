@@ -35,8 +35,6 @@ import cz.fi.muni.xkremser.editor.client.mods.DetailTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PartTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class PartHolder.
@@ -97,11 +95,7 @@ public class PartHolder
             detail.add(holder.getDetail());
         }
         partTypeClient.setDetail(detail);
-
-        if (BiblioModsUtils.hasOnlyNullFields(partTypeClient)) {
-            return null;
-        } else
-            return partTypeClient;
+        return partTypeClient;
     }
 
     /*

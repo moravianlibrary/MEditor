@@ -35,8 +35,6 @@ import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalDescriptionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class PhysicalDescriptionHolder.
@@ -157,11 +155,7 @@ public class PhysicalDescriptionHolder
             }
         }
         physicalDescriptionTypeClient.setForm(isNull ? null : list2);
-
-        if (BiblioModsUtils.hasOnlyNullFields(physicalDescriptionTypeClient)) {
-            return null;
-        } else
-            return physicalDescriptionTypeClient;
+        return physicalDescriptionTypeClient;
     }
 
     /*

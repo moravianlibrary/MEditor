@@ -39,8 +39,6 @@ import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.CartographicsCli
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.GeographicCodeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class SubjectHolder.
@@ -169,11 +167,7 @@ public class SubjectHolder
             }
         }
         subjectTypeClient.setCartographics(list3);
-
-        if (BiblioModsUtils.hasOnlyNullFields(subjectTypeClient)) {
-            return null;
-        } else
-            return subjectTypeClient;
+        return subjectTypeClient;
     }
 
     /*

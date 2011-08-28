@@ -31,8 +31,6 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class TableOfContentsHolder.
@@ -57,11 +55,7 @@ public class TableOfContentsHolder
             tocClient.setDisplayLabel(getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
         }
         tocClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TOC));
-
-        if (BiblioModsUtils.hasOnlyNullFields(tocClient)) {
-            return null;
-        } else
-            return tocClient;
+        return tocClient;
     }
 
     /*

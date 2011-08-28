@@ -37,8 +37,6 @@ import cz.fi.muni.xkremser.editor.client.mods.RecordInfoTypeClient.RecordIdentif
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusLanguageClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecordInfoHolder.
@@ -170,11 +168,7 @@ public class RecordInfoHolder
             }
         }
         recordInfoTypeClient.setRecordContentSource(isNull ? null : list2);
-
-        if (BiblioModsUtils.hasOnlyNullFields(recordInfoTypeClient)) {
-            return null;
-        } else
-            return recordInfoTypeClient;
+        return recordInfoTypeClient;
     }
 
     /*

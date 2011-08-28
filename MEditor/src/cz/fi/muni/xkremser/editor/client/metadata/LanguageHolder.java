@@ -36,8 +36,6 @@ import cz.fi.muni.xkremser.editor.client.mods.CodeOrTextClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient.LanguageTermClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class LanguageHolder.
@@ -89,11 +87,7 @@ public class LanguageHolder
             }
         }
         languageTypeClient.setLanguageTerm(isNull ? null : list);
-
-        if (BiblioModsUtils.hasOnlyNullFields(languageTypeClient)) {
-            return null;
-        } else
-            return languageTypeClient;
+        return languageTypeClient;
     }
 
     /*

@@ -31,8 +31,6 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.HierarchicalGeographicTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class HierarchicalGeographicHolder.
@@ -114,10 +112,7 @@ public class HierarchicalGeographicHolder
         hierarchicalGeographicTypeClient.setIsland(islands.getValues());
         hierarchicalGeographicTypeClient.setArea(areas.getValues());
         hierarchicalGeographicTypeClient.setExtraterrestrialArea(extraterrestrialAreas.getValues());
-        if (BiblioModsUtils.hasOnlyNullFields(hierarchicalGeographicTypeClient)) {
-            return null;
-        } else
-            return hierarchicalGeographicTypeClient;
+        return hierarchicalGeographicTypeClient;
     }
 
     /*

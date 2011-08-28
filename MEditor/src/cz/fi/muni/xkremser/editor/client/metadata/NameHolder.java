@@ -37,8 +37,6 @@ import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class NameHolder.
@@ -128,11 +126,7 @@ public class NameHolder
         client.setRoleTerm(list3);
         list2.add(client);
         nameTypeClient.setRole(isNull ? null : list2);
-
-        if (BiblioModsUtils.hasOnlyNullFields(nameTypeClient)) {
-            return null;
-        } else
-            return nameTypeClient;
+        return nameTypeClient;
     }
 
     /*

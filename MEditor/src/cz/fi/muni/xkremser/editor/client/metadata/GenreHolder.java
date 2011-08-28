@@ -33,8 +33,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class GenreHolder.
@@ -62,11 +60,7 @@ public class GenreHolder
             genreTypeClient.setScript(getAttributeForm().getValueAsString(ModsConstants.SCRIPT));
         }
         genreTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.GENRE));
-
-        if (BiblioModsUtils.hasOnlyNullFields(genreTypeClient)) {
-            return null;
-        } else
-            return genreTypeClient;
+        return genreTypeClient;
     }
 
     /*

@@ -80,6 +80,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
+import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
@@ -480,7 +481,9 @@ public class PutDigitalObjectDetailHandler
                             + "/datastreams/BIBLIO_MODS?versionable=" + (versionable ? "true" : "false");
             String usr = configuration.getFedoraLogin();
             String pass = configuration.getFedoraPassword();
-            String content = BiblioModsUtils.toXML(BiblioModsUtils.toMods(modsCollection));
+            ModsCollection mods = BiblioModsUtils.toMods(modsCollection);
+            ModsCollection collapsedMods = ServerUtils.collapseStructure(mods);
+            String content = BiblioModsUtils.toXML(collapsedMods);
 
             RESTHelper.put(url, content, usr, pass, false);
         }

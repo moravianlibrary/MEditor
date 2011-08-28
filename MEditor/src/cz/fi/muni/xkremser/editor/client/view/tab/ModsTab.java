@@ -89,8 +89,6 @@ import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ModsTab.
@@ -894,13 +892,9 @@ public class ModsTab
         if (tabsInitialized[MODS_TITLE]) {
             List<TitleInfoTypeClient> titleInfo = new ArrayList<TitleInfoTypeClient>(titleInfoHolders.size());
             for (TitleInfoHolder holder : titleInfoHolders) {
-                if (holder != null) titleInfo.add(holder.getTitleInfo());
+                titleInfo.add(holder.getTitleInfo());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(titleInfo)) {
-                modsTypeClient.setTitleInfo(null);
-            } else {
-                modsTypeClient.setTitleInfo(titleInfo);
-            }
+            modsTypeClient.setTitleInfo(titleInfo);
         } else {
             modsTypeClient.setTitleInfo(modsTypeClient_ == null ? null : modsTypeClient_.getTitleInfo());
         }
@@ -909,14 +903,9 @@ public class ModsTab
         if (tabsInitialized[MODS_NAME]) {
             List<NameTypeClient> names = new ArrayList<NameTypeClient>(nameHolders.size());
             for (NameHolder holder : nameHolders) {
-                if (holder != null) names.add(holder.getName());
+                names.add(holder.getName());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(names)) {
-                modsTypeClient.setName(null);
-            } else {
-                modsTypeClient.setName(names);
-            }
-
+            modsTypeClient.setName(names);
         } else {
             modsTypeClient.setName(modsTypeClient_ == null ? null : modsTypeClient_.getName());
         }
@@ -926,13 +915,9 @@ public class ModsTab
             List<TypeOfResourceTypeClient> typesOfResource =
                     new ArrayList<TypeOfResourceTypeClient>(typeOfResourceHolders.size());
             for (TypeOfResourceHolder holder : typeOfResourceHolders) {
-                if (holder != null) typesOfResource.add(holder.getType());
+                typesOfResource.add(holder.getType());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(typesOfResource)) {
-                modsTypeClient.setTypeOfResource(null);
-            } else {
-                modsTypeClient.setTypeOfResource(typesOfResource);
-            }
+            modsTypeClient.setTypeOfResource(typesOfResource);
         } else {
             modsTypeClient.setTypeOfResource(modsTypeClient_ == null ? null : modsTypeClient_
                     .getTypeOfResource());
@@ -942,13 +927,9 @@ public class ModsTab
         if (tabsInitialized[MODS_GENRE]) {
             List<GenreTypeClient> genre = new ArrayList<GenreTypeClient>(genreHolders.size());
             for (GenreHolder holder : genreHolders) {
-                if (holder != null) genre.add(holder.getGenre());
+                genre.add(holder.getGenre());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(genre)) {
-                modsTypeClient.setGenre(null);
-            } else {
-                modsTypeClient.setGenre(genre);
-            }
+            modsTypeClient.setGenre(genre);
         } else {
             modsTypeClient.setGenre(modsTypeClient_ == null ? null : modsTypeClient_.getGenre());
         }
@@ -957,13 +938,9 @@ public class ModsTab
         if (tabsInitialized[MODS_ORIGIN]) {
             List<OriginInfoTypeClient> origin = new ArrayList<OriginInfoTypeClient>(originInfoHolders.size());
             for (OriginInfoHolder holder : originInfoHolders) {
-                if (holder != null) origin.add(holder.getOriginInfo());
+                origin.add(holder.getOriginInfo());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(origin)) {
-                modsTypeClient.setOriginInfo(null);
-            } else {
-                modsTypeClient.setOriginInfo(origin);
-            }
+            modsTypeClient.setOriginInfo(origin);
         } else {
             modsTypeClient.setOriginInfo(modsTypeClient_ == null ? null : modsTypeClient_.getOriginInfo());
         }
@@ -972,13 +949,9 @@ public class ModsTab
         if (tabsInitialized[MODS_LANG]) {
             List<LanguageTypeClient> language = new ArrayList<LanguageTypeClient>(languageHolders.size());
             for (LanguageHolder holder : languageHolders) {
-                if (holder != null) language.add(holder.getLanguage());
+                language.add(holder.getLanguage());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(language)) {
-                modsTypeClient.setLanguage(null);
-            } else {
-                modsTypeClient.setLanguage(language);
-            }
+            modsTypeClient.setLanguage(language);
         } else {
             modsTypeClient.setLanguage(modsTypeClient_ == null ? null : modsTypeClient_.getLanguage());
         }
@@ -988,13 +961,9 @@ public class ModsTab
             List<PhysicalDescriptionTypeClient> physicalDescription =
                     new ArrayList<PhysicalDescriptionTypeClient>(physicalDescriptionHolders.size());
             for (PhysicalDescriptionHolder holder : physicalDescriptionHolders) {
-                if (holder != null) physicalDescription.add(holder.getPhysicalDescription());
+                physicalDescription.add(holder.getPhysicalDescription());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(physicalDescription)) {
-                modsTypeClient.setPhysicalDescription(null);
-            } else {
-                modsTypeClient.setPhysicalDescription(physicalDescription);
-            }
+            modsTypeClient.setPhysicalDescription(physicalDescription);
         } else {
             modsTypeClient.setPhysicalDescription(modsTypeClient_ == null ? null : modsTypeClient_
                     .getPhysicalDescription());
@@ -1004,13 +973,9 @@ public class ModsTab
         if (tabsInitialized[MODS_ABSTRACT]) {
             List<AbstractTypeClient> abstractt = new ArrayList<AbstractTypeClient>(abstractHolders.size());
             for (AbstractHolder holder : abstractHolders) {
-                if (holder != null) abstractt.add(holder.getAbstract());
+                abstractt.add(holder.getAbstract());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(abstractt)) {
-                modsTypeClient.setAbstrac(null);
-            } else {
-                modsTypeClient.setAbstrac(abstractt);
-            }
+            modsTypeClient.setAbstrac(abstractt);
         } else {
             modsTypeClient.setAbstrac(modsTypeClient_ == null ? null : modsTypeClient_.getAbstrac());
         }
@@ -1020,13 +985,9 @@ public class ModsTab
             List<TableOfContentsTypeClient> toc =
                     new ArrayList<TableOfContentsTypeClient>(tableOfContentsHolders.size());
             for (TableOfContentsHolder holder : tableOfContentsHolders) {
-                if (holder != null) toc.add(holder.getTableOfContents());
+                toc.add(holder.getTableOfContents());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(toc)) {
-                modsTypeClient.setTableOfContents(null);
-            } else {
-                modsTypeClient.setTableOfContents(toc);
-            }
+            modsTypeClient.setTableOfContents(toc);
         } else {
             modsTypeClient.setTableOfContents(modsTypeClient_ == null ? null : modsTypeClient_
                     .getTableOfContents());
@@ -1034,11 +995,7 @@ public class ModsTab
 
         // audience
         if (tabsInitialized[MODS_TARGET]) {
-            if (audienceHolder == null || BiblioModsUtils.hasOnlyNullFields(audienceHolder.getAudience())) {
-                modsTypeClient.setTargetAudience(null);
-            } else {
-                modsTypeClient.setTargetAudience(audienceHolder.getAudience());
-            }
+            modsTypeClient.setTargetAudience(audienceHolder.getAudience());
         } else {
             modsTypeClient.setTargetAudience(modsTypeClient_ == null ? null : modsTypeClient_
                     .getTargetAudience());
@@ -1048,13 +1005,9 @@ public class ModsTab
         if (tabsInitialized[MODS_NOTE]) {
             List<NoteTypeClient> note = new ArrayList<NoteTypeClient>(noteHolders.size());
             for (NoteHolder holder : noteHolders) {
-                if (holder != null) note.add(holder.getNote());
+                note.add(holder.getNote());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(note)) {
-                modsTypeClient.setNote(null);
-            } else {
-                modsTypeClient.setNote(note);
-            }
+            modsTypeClient.setNote(note);
         } else {
             modsTypeClient.setNote(modsTypeClient_ == null ? null : modsTypeClient_.getNote());
         }
@@ -1063,25 +1016,16 @@ public class ModsTab
         if (tabsInitialized[MODS_SUBJECT]) {
             List<SubjectTypeClient> subject = new ArrayList<SubjectTypeClient>(subjectHolders.size());
             for (SubjectHolder holder : subjectHolders) {
-                if (holder != null) subject.add(holder.getSubject());
+                subject.add(holder.getSubject());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(subject)) {
-                modsTypeClient.setSubject(null);
-            } else {
-                modsTypeClient.setSubject(subject);
-            }
+            modsTypeClient.setSubject(subject);
         } else {
             modsTypeClient.setSubject(modsTypeClient_ == null ? null : modsTypeClient_.getSubject());
         }
 
         // classification
         if (tabsInitialized[MODS_CLASS]) {
-            if (classificationHolder == null
-                    || BiblioModsUtils.hasOnlyNullFields(classificationHolder.getClassification())) {
-                modsTypeClient.setClassification(null);
-            } else {
-                modsTypeClient.setClassification(classificationHolder.getClassification());
-            }
+            modsTypeClient.setClassification(classificationHolder.getClassification());
         } else {
             modsTypeClient.setClassification(modsTypeClient_ == null ? null : modsTypeClient_
                     .getClassification());
@@ -1092,8 +1036,8 @@ public class ModsTab
             List<RelatedItemTypeClient> items =
                     new ArrayList<RelatedItemTypeClient>(relatedItemHolders.size());
             for (RelatedItemHolder item : relatedItemHolders) {
+                RelatedItemTypeClient relatedItemTypeClient = new RelatedItemTypeClient();
                 if (item != null) {
-                    RelatedItemTypeClient relatedItemTypeClient = new RelatedItemTypeClient();
                     if (item.getRelatedItemAttributeHolder().getAttributeForm() != null) {
                         relatedItemTypeClient.setDisplayLabel(item.getRelatedItemAttributeHolder()
                                 .getAttributeForm().getValueAsString(ModsConstants.DISPLAY_LABEL));
@@ -1105,8 +1049,8 @@ public class ModsTab
                                 .getAttributeForm().getValueAsString(ModsConstants.XLINK));
                     }
                     relatedItemTypeClient.setMods(item.getMods());
-                    items.add(relatedItemTypeClient);
                 }
+                items.add(relatedItemTypeClient);
             }
             modsTypeClient.setRelatedItem(items);
         } else {
@@ -1115,12 +1059,7 @@ public class ModsTab
 
         // identifier
         if (tabsInitialized[MODS_IDENTIFIER]) {
-            if (identifierHolder == null
-                    || BiblioModsUtils.hasOnlyNullFields(identifierHolder.getIdentifier())) {
-                modsTypeClient.setTargetAudience(null);
-            } else {
-                modsTypeClient.setIdentifier(identifierHolder.getIdentifier());
-            }
+            modsTypeClient.setIdentifier(identifierHolder.getIdentifier());
         } else {
             modsTypeClient.setIdentifier(modsTypeClient_ == null ? null : modsTypeClient_.getIdentifier());
         }
@@ -1131,11 +1070,7 @@ public class ModsTab
             for (LocationHolder holder : locationHolders) {
                 location.add(holder.getLocation());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(location)) {
-                modsTypeClient.setLocation(null);
-            } else {
-                modsTypeClient.setLocation(location);
-            }
+            modsTypeClient.setLocation(location);
         } else {
             modsTypeClient.setLocation(modsTypeClient_ == null ? null : modsTypeClient_.getLocation());
         }
@@ -1145,13 +1080,9 @@ public class ModsTab
             List<AccessConditionTypeClient> acc =
                     new ArrayList<AccessConditionTypeClient>(accessConditionHolders.size());
             for (AccessConditionHolder holder : accessConditionHolders) {
-                if (holder != null) acc.add(holder.getAccessCondition());
+                acc.add(holder.getAccessCondition());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(acc)) {
-                modsTypeClient.setAccessCondition(null);
-            } else {
-                modsTypeClient.setAccessCondition(acc);
-            }
+            modsTypeClient.setAccessCondition(acc);
         } else {
             modsTypeClient.setAccessCondition(modsTypeClient_ == null ? null : modsTypeClient_
                     .getAccessCondition());
@@ -1161,13 +1092,9 @@ public class ModsTab
         if (tabsInitialized[MODS_PART]) {
             List<PartTypeClient> part = new ArrayList<PartTypeClient>(partHolders.size());
             for (PartHolder holder : partHolders) {
-                if (holder != null) part.add(holder.getPart());
+                part.add(holder.getPart());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(part)) {
-                modsTypeClient.setPart(null);
-            } else {
-                modsTypeClient.setPart(part);
-            }
+            modsTypeClient.setPart(part);
         } else {
             modsTypeClient.setPart(modsTypeClient_ == null ? null : modsTypeClient_.getPart());
         }
@@ -1176,13 +1103,9 @@ public class ModsTab
         if (tabsInitialized[MODS_EXTENSION]) {
             List<ExtensionTypeClient> extension = new ArrayList<ExtensionTypeClient>(extensionHolders.size());
             for (ExtensionHolder holder : extensionHolders) {
-                if (holder != null) extension.add(holder.getExtension());
+                extension.add(holder.getExtension());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(extension)) {
-                modsTypeClient.setExtension(null);
-            } else {
-                modsTypeClient.setExtension(extension);
-            }
+            modsTypeClient.setExtension(extension);
         } else {
             modsTypeClient.setExtension(modsTypeClient_ == null ? null : modsTypeClient_.getExtension());
         }
@@ -1191,14 +1114,9 @@ public class ModsTab
         if (tabsInitialized[MODS_RECORD]) {
             List<RecordInfoTypeClient> record = new ArrayList<RecordInfoTypeClient>(recordInfoHolders.size());
             for (RecordInfoHolder holder : recordInfoHolders) {
-                if (holder != null) record.add(holder.getRecordInfo());
+                record.add(holder.getRecordInfo());
             }
-            if (BiblioModsUtils.hasOnlyNullFields(record)) {
-                modsTypeClient.setRecordInfo(null);
-            } else {
-                modsTypeClient.setRecordInfo(record);
-            }
-
+            modsTypeClient.setRecordInfo(record);
         } else {
             modsTypeClient.setRecordInfo(modsTypeClient_ == null ? null : modsTypeClient_.getRecordInfo());
         }

@@ -31,8 +31,6 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.ExtentTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ExtentHolder.
@@ -76,11 +74,7 @@ public class ExtentHolder
         extentTypeClient.setEnd(safeGet(end, ModsConstants.END));
         extentTypeClient.setTotal(safeGet(total, ModsConstants.TOTAL));
         extentTypeClient.setList(safeGet(list, ModsConstants.LIST));
-
-        if (BiblioModsUtils.hasOnlyNullFields(extentTypeClient)) {
-            return null;
-        } else
-            return extentTypeClient;
+        return extentTypeClient;
     }
 
     /*

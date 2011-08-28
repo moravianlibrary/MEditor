@@ -31,8 +31,6 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class NoteHolder.
@@ -60,11 +58,7 @@ public class NoteHolder
         }
         if (getAttributeForm2() != null)
             abstractTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.NOTE));
-
-        if (BiblioModsUtils.hasOnlyNullFields(abstractTypeClient)) {
-            return null;
-        } else
-            return abstractTypeClient;
+        return abstractTypeClient;
     }
 
     /*

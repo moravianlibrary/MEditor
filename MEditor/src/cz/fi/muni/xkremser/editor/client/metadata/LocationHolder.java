@@ -37,8 +37,6 @@ import cz.fi.muni.xkremser.editor.client.mods.LocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PhysicalLocationTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.UrlTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class LocationHolder.
@@ -167,11 +165,7 @@ public class LocationHolder
             holding.setCopyInformation(info);
         }
         locationTypeClient.setHoldingSimple(holding);
-
-        if (BiblioModsUtils.hasOnlyNullFields(locationTypeClient)) {
-            return null;
-        } else
-            return locationTypeClient;
+        return locationTypeClient;
     }
 
     /*

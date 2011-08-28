@@ -35,8 +35,6 @@ import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.YesClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class TypeOfResourceHolder.
@@ -65,11 +63,7 @@ public class TypeOfResourceHolder
             }
         }
         typeOfResourceTypeClient.setValue(getAttributeForm2().getValueAsString(ModsConstants.TYPE));
-
-        if (BiblioModsUtils.hasOnlyNullFields(typeOfResourceTypeClient)) {
-            return null;
-        } else
-            return typeOfResourceTypeClient;
+        return typeOfResourceTypeClient;
     }
 
     /*

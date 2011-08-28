@@ -36,8 +36,6 @@ import cz.fi.muni.xkremser.editor.client.mods.OriginInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.PlaceTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class OriginInfoHolder.
@@ -152,11 +150,7 @@ public class OriginInfoHolder
             }
         }
         originInfoTypeClient.setFrequency(isNull ? null : list);
-
-        if (BiblioModsUtils.hasOnlyNullFields(originInfoTypeClient)) {
-            return null;
-        } else
-            return originInfoTypeClient;
+        return originInfoTypeClient;
     }
 
     /*

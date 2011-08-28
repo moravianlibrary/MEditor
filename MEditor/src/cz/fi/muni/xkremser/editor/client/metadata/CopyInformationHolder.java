@@ -35,8 +35,6 @@ import cz.fi.muni.xkremser.editor.client.mods.EnumerationAndChronologyTypeClient
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusDisplayLabelPlusTypeClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class CopyInformationHolder.
@@ -128,11 +126,7 @@ public class CopyInformationHolder
 
         }
         copyInformationTypeClient.setNote(noteList);
-
-        if (BiblioModsUtils.hasOnlyNullFields(copyInformationTypeClient)) {
-            return null;
-        } else
-            return copyInformationTypeClient;
+        return copyInformationTypeClient;
     }
 
     /*

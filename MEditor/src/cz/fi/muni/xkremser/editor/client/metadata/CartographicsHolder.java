@@ -31,8 +31,6 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient.CartographicsClient;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class CartographicsHolder.
@@ -69,10 +67,7 @@ public class CartographicsHolder
         cartographicsClient.setScale(scales.getValues().size() > 0 ? scales.getValues().get(0) : null);
         cartographicsClient.setProjection(projections.getValues().size() > 0 ? projections.getValues().get(0)
                 : null);
-        if (BiblioModsUtils.hasOnlyNullFields(cartographicsClient)) {
-            return null;
-        } else
-            return cartographicsClient;
+        return cartographicsClient;
     }
 
     /*
