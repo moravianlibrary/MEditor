@@ -1036,6 +1036,7 @@ public final class BiblioModsUtils {
         classificationTypeClient.setLang(classificationType.getLang());
         classificationTypeClient.setScript(classificationType.getScript());
         classificationTypeClient.setTransliteration(classificationType.getTransliteration());
+        classificationTypeClient.setAuthority(classificationType.getAuthority());
         return classificationTypeClient;
     }
 
@@ -1084,7 +1085,7 @@ public final class BiblioModsUtils {
                 modsTypeClient.getName().add(toModsClient((NameType) modsElement));
 
                 // TYPE OF RESOURCE ELEMENT
-            } else if (modsElement instanceof TypeOfResourceTypeClient) {
+            } else if (modsElement instanceof TypeOfResourceType) {
                 if (modsTypeClient.getTypeOfResource() == null) {
                     modsTypeClient.setTypeOfResource(new ArrayList<TypeOfResourceTypeClient>());
                 }
