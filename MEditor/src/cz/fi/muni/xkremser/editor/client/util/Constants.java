@@ -34,7 +34,7 @@ package cz.fi.muni.xkremser.editor.client.util;
 public class Constants {
 
     /** The Constant SERVLET_IMAGES_PREFIX. */
-    private static final String SERVLET_IMAGES_PREFIX = "images/";
+    public static final String SERVLET_IMAGES_PREFIX = "images/";
     // must be the same as in web.xml
     /** The Constant SERVLET_THUMBNAIL_PREFIX. */
     public static final String SERVLET_THUMBNAIL_PREFIX = "thumbnail";

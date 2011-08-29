@@ -541,8 +541,13 @@ public class ModifyView
 
             thumbTab = new Tab(lang.thumbnail(), "pieces/16/pawn_yellow.png");
             thumbTab.setWidth((lang.thumbnail().length() * 6) + 30);
-            final Image full2 = new Image("images/thumbnail/" + uuid);
-            final Img image = new Img("thumbnail/" + uuid, full2.getWidth(), full2.getHeight());
+            final Image full2 =
+                    new Image(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_THUMBNAIL_PREFIX + "/"
+                            + uuid);
+            final Img image =
+                    new Img(Constants.SERVLET_THUMBNAIL_PREFIX + "/" + uuid,
+                            full2.getWidth(),
+                            full2.getHeight());
             image.setAnimateTime(500);
             image.addClickHandler(new ClickHandler() {
 
@@ -650,50 +655,45 @@ public class ModifyView
                     final ModalWindow mw = new ModalWindow(topTabSet);
                     mw.setLoadingIcon("loadingAnimation.gif");
                     mw.show(true);
-                    ImagePreloader
-                            .load("images/full/" + uuid + "?" + Constants.URL_PARAM_NOT_SCALE + "=true",
-                                  new ImageLoadHandler() {
+                    ImagePreloader.load(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX
+                            + uuid + "?" + Constants.URL_PARAM_NOT_SCALE + "=true", new ImageLoadHandler() {
 
-                                      @Override
-                                      public void imageLoaded(final ImageLoadEvent event1) {
-                                          if (!event1.isLoadFailed()) {
-                                              final int width = event1.getDimensions().getWidth();
-                                              final int height = event1.getDimensions().getHeight();
-                                              Timer timer = new Timer() {
+                        @Override
+                        public void imageLoaded(final ImageLoadEvent event1) {
+                            if (!event1.isLoadFailed()) {
+                                final int width = event1.getDimensions().getWidth();
+                                final int height = event1.getDimensions().getHeight();
+                                Timer timer = new Timer() {
 
-                                                  @Override
-                                                  public void run() {
-                                                      final Img full =
-                                                              new Img("full/" + uuid + "?"
-                                                                      + Constants.URL_PARAM_NOT_SCALE
-                                                                      + "=true", width, height);
-                                                      full.draw();
-                                                      full.addClickHandler(new ClickHandler() {
+                                    @Override
+                                    public void run() {
+                                        final Img full =
+                                                new Img("full/" + uuid + "?" + Constants.URL_PARAM_NOT_SCALE
+                                                        + "=true", width, height);
+                                        full.draw();
+                                        full.addClickHandler(new ClickHandler() {
 
-                                                          private boolean turn = true;
+                                            private boolean turn = true;
 
-                                                          @Override
-                                                          public void onClick(final ClickEvent event2) {
-                                                              if (turn) {
-                                                                  full.animateRect(5,
-                                                                                   5,
-                                                                                   width / 2,
-                                                                                   height / 2);
-                                                              } else {
-                                                                  full.animateRect(5, 5, width, height);
-                                                              }
-                                                              turn = !turn;
-                                                          }
-                                                      });
-                                                      TabSet ts = event.getTab().getTabSet();
-                                                      ts.setTabPane(event.getTab().getID(), full);
-                                                      mw.hide();
-                                                  }
-                                              };
-                                              timer.schedule(20);
-                                          }
-                                      }
-                                  });
+                                            @Override
+                                            public void onClick(final ClickEvent event2) {
+                                                if (turn) {
+                                                    full.animateRect(5, 5, width / 2, height / 2);
+                                                } else {
+                                                    full.animateRect(5, 5, width, height);
+                                                }
+                                                turn = !turn;
+                                            }
+                                        });
+                                        TabSet ts = event.getTab().getTabSet();
+                                        ts.setTabPane(event.getTab().getID(), full);
+                                        mw.hide();
+                                    }
+                                };
+                                timer.schedule(20);
+                            }
+                        }
+                    });
 
                 } else if (ID_DESC.equals(event.getTab().getAttribute(ID_TAB))
                         && event.getTab().getPane() == null) {
@@ -900,13 +900,26 @@ public class ModifyView
             @Override
             public void onDragMove(DragMoveEvent event) {
 
+                String name = tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_NAME);
+                DigitalObjectModel mod = DigitalObjectModel.parseString(model);
+                String icon = null;
+                if (DigitalObjectModel.PAGE.equals(mod)) {
+                    icon =
+                            Canvas.imgHTML(Constants.SERVLET_THUMBNAIL_PREFIX + "/"
+                                    + tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_UUID), 25, 35);
+                } else {
+                    icon = Canvas.imgHTML(mod.getIcon(), 25, 25);
+                }
+
                 if (event.isCtrlKeyDown()) {
                     tileGrid.setDragDataAction(DragDataAction.COPY);
-                    String html = Canvas.imgHTML("pieces/24/copy.png", 24, 24);
-                    EventHandler.setDragTracker(html);
+                    String copySymbol = Canvas.imgHTML("icons/16/copy.png", 16, 16);
+
+                    EventHandler.setDragTracker(name + icon + copySymbol);
 
                 } else {
                     tileGrid.setDragDataAction(DragDataAction.MOVE);
+                    EventHandler.setDragTracker(name + icon);
                 }
             }
         });
@@ -923,7 +936,7 @@ public class ModifyView
                         mw.show(true);
                         try {
                             final Image full =
-                                    new Image("images/full/"
+                                    new Image(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX
                                             + event.getRecord().getAttribute(Constants.ATTR_UUID));
                             full.setHeight("700px");
                             full.addLoadHandler(new LoadHandler() {
