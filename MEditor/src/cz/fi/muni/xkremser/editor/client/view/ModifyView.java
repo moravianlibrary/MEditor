@@ -68,8 +68,8 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
-import com.smartgwt.client.widgets.events.DropEvent;
-import com.smartgwt.client.widgets.events.DropHandler;
+import com.smartgwt.client.widgets.events.DragMoveEvent;
+import com.smartgwt.client.widgets.events.DragMoveHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -895,46 +895,21 @@ public class ModifyView
         tileGrid.setDragType(model);
         tileGrid.setDragAppearance(DragAppearance.TRACKER);
 
-        // tileGrid.addDropOverHandler(new DropOverHandler() {
-        // @Override
-        // public void onDropOver(DropOverEvent event) {
-        // // event.get
-        // // System.out.println("piip");
-        // // String html = Canvas.imgHTML("pieces/24/pawn_blue.png", 24, 24);
-        // Object draggable = EventHandler.getDragTarget();
-        // Canvas droppable = EventHandler.getDragTarget();
-        // System.out.println("onDropOver START on " + droppable.getID());
-        // System.out.println("drag object : " + draggable.getClass());
-        // System.out.println("onDropOver STOP on " + droppable.getID());
-        //
-        // }
-        // });
-        tileGrid.addDropHandler(new DropHandler() {
+        tileGrid.addDragMoveHandler(new DragMoveHandler() {
 
             @Override
-            public void onDrop(DropEvent event) {
+            public void onDragMove(DragMoveEvent event) {
+
                 if (event.isCtrlKeyDown()) {
-                    Canvas droppable = EventHandler.getDragTarget();
-                    droppable.getID();
                     tileGrid.setDragDataAction(DragDataAction.COPY);
+                    String html = Canvas.imgHTML("pieces/24/copy.png", 24, 24);
+                    EventHandler.setDragTracker(html);
+
                 } else {
                     tileGrid.setDragDataAction(DragDataAction.MOVE);
                 }
             }
         });
-
-        // tileGrid.addDragRepositionMoveHandler(new DragRepositionMoveHandler() {
-        // @Override
-        // public void onDragRepositionMove(DragRepositionMoveEvent event) {
-        // if (event.isCtrlKeyDown()) {
-        // System.out.println("FUnguju");
-        // String html = Canvas.imgHTML("pieces/24/pawn_blue.png", 24, 24);
-        // EventHandler.setDragTracker(html);
-        // } else {
-        // EventHandler.setDragTracker("ee");
-        // }
-        // }
-        // });
 
         if (pages) {
             getPopupPanel();
@@ -1359,6 +1334,7 @@ public class ModifyView
         if (toAdd == null) throw new RuntimeException("There is no tab with model " + model);
 
         final TileGrid grid = getTileGrid(model.equals(DigitalObjectModel.PAGE), model.getValue());
+        System.err.println("model: " + model.getValue());
         topTabSet.setTabPane(topTabSet.getSelectedTab().getID(), grid);
         if (items != null) {
             grid.setData(items);
