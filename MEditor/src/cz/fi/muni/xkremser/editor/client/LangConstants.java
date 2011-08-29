@@ -2257,6 +2257,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String questionableValue();
 
   /**
+   * Translated "Quick edit".
+   * 
+   * @return translated "Quick edit"
+   */
+  @DefaultStringValue("Quick edit")
+  @Key("quickEdit")
+  String quickEdit();
+
+  /**
    * Translated "A resource was created by digitization of the original non-digital form. (MARC 007/11 value 'a')".
    * 
    * @return translated "A resource was created by digitization of the original non-digital form. (MARC 007/11 value 'a')"

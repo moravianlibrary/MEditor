@@ -2,6 +2,7 @@
 package cz.fi.muni.xkremser.editor.client.view.tab;
 
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VStack;
@@ -18,6 +19,7 @@ public class InfoTab
     private final TextItem labelItem;
     private final String originalLabel;
     private final DigitalObjectModel model;
+    private final IButton quickEdit = new IButton();
 
     public InfoTab(String title,
                    String icon,
@@ -67,7 +69,10 @@ public class InfoTab
         HTMLFlow img =
                 new HTMLFlow("<img style='border: 3px solid;max-height: 300px;max-width: 300px;' src='./images/full/"
                         + (isPage ? "" : "uuid:") + firstPageURL + "' />");
-        layout.setMembers(info, pid, tit, typ, form, prev, img);
+
+        quickEdit.setTitle(lang.quickEdit());
+
+        layout.setMembers(info, pid, tit, typ, form, prev, img, quickEdit);
 
         setPane(layout);
     }
@@ -82,5 +87,9 @@ public class InfoTab
 
     public DigitalObjectModel getModel() {
         return model;
+    }
+
+    public IButton getQuickEdit() {
+        return quickEdit;
     }
 }

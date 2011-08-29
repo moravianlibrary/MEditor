@@ -278,30 +278,33 @@ public class ModifyView
     }
 
     public void showBasicModsWindow(final TabSet focusedTabSet) {
-        modsWindow = new ModsWindow(modsCollections.get(focusedTabSet), lang) {
-
-            @Override
-            protected void init() {
-                show();
-                focus();
-                getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+        modsWindow =
+                new ModsWindow(modsCollections.get(focusedTabSet),
+                               openedObjectsUuids.get(focusedTabSet),
+                               lang) {
 
                     @Override
-                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                        publishShortCut(focusedTabSet);
-                    }
-                });
-                getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+                    protected void init() {
+                        show();
+                        focus();
+                        getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                    @Override
-                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                        destroy();
-                        modsWindow = null;
-                    }
-                });
-            }
+                            @Override
+                            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                publishShortCut(focusedTabSet);
+                            }
+                        });
+                        getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-        };
+                            @Override
+                            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                destroy();
+                                modsWindow = null;
+                            }
+                        });
+                    }
+
+                };
     }
 
     /**
@@ -492,6 +495,13 @@ public class ModifyView
                 new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
                         .getValue()), model, previewPID);
         infoTabs.put(topTabSet, (InfoTab) infoTab);
+        ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                showBasicModsWindow(topTabSet);
+            }
+        });
 
         final Tab dublinTab = new DCTab("DC", "pieces/16/piece_green.png");
         dublinTab.setAttribute(TAB_INITIALIZED, false);

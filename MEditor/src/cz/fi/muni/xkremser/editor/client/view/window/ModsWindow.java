@@ -203,7 +203,7 @@ public abstract class ModsWindow
      * @param lang
      *        the lang
      */
-    public ModsWindow(ModsCollectionClient modsCollection, LangConstants lang) {
+    public ModsWindow(ModsCollectionClient modsCollection, String uuid, LangConstants lang) {
         super();
         this.lang = lang;
         this.modsCollection = modsCollection;
@@ -227,7 +227,7 @@ public abstract class ModsWindow
         setEdgeOffset(20);
         setCanDragResize(true);
         setShowEdges(true);
-        setTitle("Basic MODS");
+        setTitle(lang.quickEdit() + ": " + uuid);
         setShowMinimizeButton(false);
         setIsModal(true);
         setShowModalMask(true);
