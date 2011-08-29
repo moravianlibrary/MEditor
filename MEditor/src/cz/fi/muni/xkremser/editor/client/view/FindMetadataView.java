@@ -59,6 +59,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.Z3950ResultDS;
 import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc
 /**

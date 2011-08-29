@@ -39,6 +39,8 @@ public class Constants {
     /** The Constant SERVLET_THUMBNAIL_PREFIX. */
     public static final String SERVLET_THUMBNAIL_PREFIX = "thumbnail";
 
+    public static final String SERVLET_SCANS_PREFIX = "scan";
+
     /** The Constant SERVLET_FULL_PREFIX. */
     public static final String SERVLET_FULL_PREFIX = "full";
 
@@ -285,4 +287,6 @@ public class Constants {
      * windows
      **/
     public static final int CODE_KEY_ESC = 27;
+    public static final int PAGE_THUMBNAIL_WIDTH = 90;
+    public static final int PAGE_THUMBNAIL_HEIGHT = 135;
 }

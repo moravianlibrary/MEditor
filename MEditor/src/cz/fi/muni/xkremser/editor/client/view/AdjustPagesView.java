@@ -31,9 +31,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.TransferImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -48,6 +51,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.HStack;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -59,6 +63,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.Z3950ResultDS;
 import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -104,6 +109,37 @@ public class AdjustPagesView
         layout = new VStack();
         layout.setHeight100();
         layout.setPadding(15);
+
+        final ListGrid availablePages = new ListGrid();
+        availablePages.setWidth(150);
+        availablePages.setHeight(650);
+        //        availablePages.setDataSource(null);
+        availablePages.setCanDragRecordsOut(true);
+        availablePages.setDragDataAction(DragDataAction.COPY);
+        availablePages.setAutoFetchData(false);
+
+        final ListGrid orderedPages = new ListGrid();
+        orderedPages.setWidth(150);
+        orderedPages.setHeight(650);
+        //        orderedPages.setDataSource(null);
+        orderedPages.setCanAcceptDroppedRecords(true);
+        orderedPages.setCanRemoveRecords(true);
+        orderedPages.setAutoFetchData(false);
+        orderedPages.setPreventDuplicates(true);
+
+        final TransferImgButton arrowImg = new TransferImgButton(TransferImgButton.RIGHT);
+        arrowImg.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                orderedPages.transferSelectedData(availablePages);
+            }
+        });
+
+        HStack hStack = new HStack(10);
+        hStack.addMember(availablePages);
+        hStack.addMember(arrowImg);
+        hStack.addMember(orderedPages);
 
         findButton = new ButtonItem(lang.find());
         findButton.setAutoFit(true);
@@ -208,6 +244,7 @@ public class AdjustPagesView
         buttons.setMembers(nextButton, withoutButton);
 
         layout.addMember(html1);
+        layout.addMember(hStack);
         // layout.addMember(hLayout);
         // layout.addMember(printContainer);
         // layout.addMember(buttons);

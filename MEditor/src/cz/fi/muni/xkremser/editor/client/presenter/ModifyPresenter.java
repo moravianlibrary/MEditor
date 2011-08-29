@@ -31,7 +31,6 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
@@ -71,8 +70,8 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
-import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
@@ -112,59 +111,19 @@ public class ModifyPresenter
     public interface MyView
             extends View, HasUiHandlers<MyUiHandlers> {
 
-        /**
-         * Gets the name.
-         * 
-         * @return the name
-         */
-        public HasValue<String> getName();
-
         void shortcutPressed(int code);
 
-        /**
-         * From clipboard.
-         * 
-         * @return the record[]
-         */
         public Record[] fromClipboard();
 
-        /**
-         * To clipboard.
-         * 
-         * @param data
-         *        the data
-         */
         public void toClipboard(final Record[] data);
 
-        /**
-         * Gets the popup panel.
-         * 
-         * @return the popup panel
-         */
         public PopupPanel getPopupPanel();
 
-        /**
-         * Gets the editor.
-         * 
-         * @param text
-         *        the text
-         * @param uuid
-         *        the uuid
-         * @param common
-         *        the common
-         * @return the editor
-         */
         public Canvas getEditor(String text, String uuid, boolean common);
 
         void addDigitalObject(String uuid, DigitalObjectDetail detail, boolean refresh);
 
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
-
-        // void addDigitalObject(final Record[] pageData, final List<Record[]>
-        // containerDataList, final List<DigitalObjectModel> containerModelList,
-        // final Streams dc,
-        // final String uuid, final boolean picture, String foxml, final String ocr,
-        // final boolean refresh, final DigitalObjectModel krameriusModel);
     }
 
     /**

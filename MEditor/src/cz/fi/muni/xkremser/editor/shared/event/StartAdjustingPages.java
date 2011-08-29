@@ -40,9 +40,6 @@ import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 @GenEvent
 public class StartAdjustingPages {
 
-    // @Order(1)
-    // HasEventBus source;
-
     /** The status ok. */
     @Order(1)
     String path;

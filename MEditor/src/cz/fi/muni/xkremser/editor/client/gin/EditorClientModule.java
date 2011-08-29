@@ -46,7 +46,7 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
-import cz.fi.muni.xkremser.editor.client.presenter.CreatePresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
@@ -54,7 +54,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 import cz.fi.muni.xkremser.editor.client.view.AdjustPagesView;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
-import cz.fi.muni.xkremser.editor.client.view.CreateView;
+import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.FindMetadataView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
@@ -103,10 +103,10 @@ public class EditorClientModule
                       ModifyPresenter.MyView.class,
                       ModifyView.class,
                       ModifyPresenter.MyProxy.class);
-        bindPresenter(CreatePresenter.class,
-                      CreatePresenter.MyView.class,
-                      CreateView.class,
-                      CreatePresenter.MyProxy.class);
+        bindPresenter(CreateStructurePresenter.class,
+                      CreateStructurePresenter.MyView.class,
+                      CreateStructureView.class,
+                      CreateStructurePresenter.MyProxy.class);
         bindPresenter(FindMetadataPresenter.class,
                       FindMetadataPresenter.MyView.class,
                       FindMetadataView.class,

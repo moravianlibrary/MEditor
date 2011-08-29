@@ -27,21 +27,27 @@
 
 package cz.fi.muni.xkremser.editor.shared.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.gwtplatform.dispatch.annotation.GenEvent;
+import com.gwtplatform.dispatch.annotation.Optional;
+import com.gwtplatform.dispatch.annotation.Order;
+
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface GreetingSentEventHandler.
+ * The Class ConfigReceived.
  */
-public interface GreetingSentEventHandler
-        extends EventHandler {
+@GenEvent
+public class CreateStructure {
 
-    /**
-     * On greeting sent.
-     * 
-     * @param event
-     *        the event
-     */
-    void onGreetingSent(GreetingSentEvent event);
+    @Order(1)
+    String model;
+
+    @Order(2)
+    String code;
+
+    @Order(3)
+    @Optional
+    DublinCore dc;
 
 }

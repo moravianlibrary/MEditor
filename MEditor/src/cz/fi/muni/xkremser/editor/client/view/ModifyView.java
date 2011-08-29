@@ -40,7 +40,6 @@ import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -326,17 +325,6 @@ public class ModifyView
             topTabSet1.setBackgroundColor(bgColorUnfocused);
             getUiHandlers().onChangeFocusedTabSet(openedObjectsUuids.get(topTabSet2));
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView#getName
-     * ()
-     */
-    @Override
-    public HasValue<String> getName() {
-        return null;
     }
 
     /*

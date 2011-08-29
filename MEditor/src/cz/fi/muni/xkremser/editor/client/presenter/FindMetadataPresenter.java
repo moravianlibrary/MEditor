@@ -59,7 +59,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.shared.event.StartAdjustingPagesEvent;
+import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -116,6 +116,8 @@ public class FindMetadataPresenter
     private final LangConstants lang;
 
     private String code = null;
+
+    private String model = null;
 
     private final Map<Integer, DublinCore> results = new HashMap<Integer, DublinCore>();
 
@@ -183,14 +185,10 @@ public class FindMetadataPresenter
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                System.out.println("click");
                 int id =
                         getView().getResults().getSelectedRecord()
                                 .getAttributeAsInt(Constants.ATTR_GENERIC_ID);
-                StartAdjustingPagesEvent.fire(getEventBus(), code, results.get(id));
-                // placeManager.revealRelativePlace(new
-                // PlaceRequest(NameTokens.ADJUST_PAGES).with(Constants.URL_PARAM_METADATA,
-                // Constants.URL_PARAM_METADATA_FOUND));
+                CreateStructureEvent.fire(getEventBus(), model, code, results.get(id));
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -234,6 +232,7 @@ public class FindMetadataPresenter
         super.prepareFromRequest(request);
         results.clear();
         code = request.getParameter(Constants.URL_PARAM_CODE, null);
+        model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getCode().setValue(code);
         findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
     }

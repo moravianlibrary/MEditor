@@ -50,11 +50,17 @@ public abstract class EditorConfiguration {
         /** The Constant INPUT_QUEUE. */
         public static final String INPUT_QUEUE = "inputQueue";
 
+        /** The Constant IMAGE_EXTENSIONS. */
+        public static final String IMAGE_EXTENSIONS = "imageExtension";
+
+        /** The Constant IMAGE_EXTENSIONS. */
+        public static final String[] IMAGE_EXTENSIONS_DEFAULT = {"jpg", "png", "tiff"};
+
         /** The Constant DOCUMENT_TYPES. */
         public static final String DOCUMENT_TYPES = EditorClientConfiguration.Constants.DOCUMENT_TYPES;
 
         /** The Constant DOCUMENT_DEFAULT_TYPES. */
-        public static final String[] DOCUMENT_DEFAULT_TYPES = {"periodical", "monograph"};
+        public static final String[] DOCUMENT_TYPES_DEFAULT = {"periodical", "monograph"};
 
         // GUI
         /** The Constant GUI_CONFIGURATION_PPREFIX. */
@@ -347,7 +353,24 @@ public abstract class EditorConfiguration {
      * @return the document types
      */
     public String[] getDocumentTypes() {
-        return getConfiguration().getStringArray(ServerConstants.DOCUMENT_TYPES);
+        String[] foo = getConfiguration().getStringArray(ServerConstants.DOCUMENT_TYPES);
+        if (foo == null || foo.length == 0) {
+            return ServerConstants.DOCUMENT_TYPES_DEFAULT;
+        } else
+            return foo;
+    }
+
+    /**
+     * Gets the image extensions.
+     * 
+     * @return the image extensions
+     */
+    public String[] getImageExtensions() {
+        String[] foo = getConfiguration().getStringArray(ServerConstants.IMAGE_EXTENSIONS);
+        if (foo == null || foo.length == 0) {
+            return ServerConstants.IMAGE_EXTENSIONS_DEFAULT;
+        } else
+            return foo;
     }
 
     /**

@@ -76,6 +76,7 @@ import cz.fi.muni.xkremser.editor.server.handler.RemoveRequestItemHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
+import cz.fi.muni.xkremser.editor.server.handler.ScanFolderHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
@@ -102,6 +103,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 
 // TODO: Auto-generated Javadoc
@@ -118,8 +120,8 @@ public class ServerModule
      */
     @Override
     protected void configureHandlers() {
-        // bindHandler(SendGreeting.class, SendGreetingHandler.class);
         bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
+        bindHandler(ScanFolderAction.class, ScanFolderHandler.class);
         bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
         bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
         bindHandler(PutDigitalObjectDetailAction.class, PutDigitalObjectDetailHandler.class);

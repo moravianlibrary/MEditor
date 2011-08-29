@@ -45,20 +45,6 @@ import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-import cz.fi.muni.xkremser.editor.server.mods.AbstractType;
-import cz.fi.muni.xkremser.editor.server.mods.DetailType;
-import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
-import cz.fi.muni.xkremser.editor.server.mods.ModsType;
-import cz.fi.muni.xkremser.editor.server.mods.NamePartType;
-import cz.fi.muni.xkremser.editor.server.mods.NameType;
-import cz.fi.muni.xkremser.editor.server.mods.NoteType;
-import cz.fi.muni.xkremser.editor.server.mods.ObjectFactory;
-import cz.fi.muni.xkremser.editor.server.mods.PartType;
-import cz.fi.muni.xkremser.editor.server.mods.SubjectType;
-import cz.fi.muni.xkremser.editor.server.mods.SubjectType.Cartographics;
-import cz.fi.muni.xkremser.editor.server.mods.TitleInfoType;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ServerUtils.
@@ -229,102 +215,5 @@ public class ServerUtils {
             return null;
         }
         return object;
-    }
-
-    public static void main(String... args) {
-        ModsCollection modsC = new ModsCollection();
-        ModsType mods = new ModsType();
-        ModsType mods2 = new ModsType();
-        TitleInfoType titleInfo1 = new TitleInfoType();
-        titleInfo1.setActuate("actuate bla");
-        titleInfo1.setTitle("Capek");
-        TitleInfoType titleInfo2 = new TitleInfoType();
-        titleInfo2.setType("type");
-        TitleInfoType titleInfo3 = new TitleInfoType();
-
-        AbstractType abs1 = new AbstractType();
-        AbstractType abs2 = new AbstractType();
-        AbstractType abs3 = new AbstractType();
-
-        NoteType not1 = new NoteType();
-        not1.setValue("poznamka");
-        NoteType not2 = new NoteType();
-        not1.setValue("taky poznamka");
-        NoteType not3 = new NoteType();
-        not1.setValue("dalsi poznamka");
-        NoteType not4 = new NoteType();
-
-        ObjectFactory factory = new ObjectFactory();
-        NameType name1 = new NameType();
-        NameType name2 = new NameType();
-        NameType name3 = new NameType();
-        NamePartType part = new NamePartType();
-        part.setValue("Pepik");
-        name3.getNamePartOrDisplayFormOrAffiliation().add(factory.createNameTypeNamePart(part));
-
-        SubjectType subject1 = new SubjectType();
-        subject1.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeName(name1));
-        subject1.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeName(name2));
-        subject1.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeName(name3));
-
-        SubjectType subject2 = new SubjectType();
-        Cartographics cart = new Cartographics();
-        cart.getCoordinates().add("      6    ");
-        subject2.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeCartographics(cart));
-
-        SubjectType subject3 = new SubjectType();
-        Cartographics cart2 = new Cartographics();
-        cart.getCoordinates().add("  ");
-        cart.getCoordinates().add(" ");
-        cart.getCoordinates().add("");
-        subject2.getTopicOrGeographicOrTemporal().add(factory.createSubjectTypeCartographics(cart2));
-
-        DetailType detail1 = new DetailType();
-        detail1.getNumberOrCaptionOrTitle().add(factory.createDetailTypeNumber("42"));
-        PartType part1 = new PartType();
-        part1.getDetailOrExtentOrDate().add(detail1);
-
-        DetailType detail2 = new DetailType();
-        detail2.getNumberOrCaptionOrTitle().add(factory.createDetailTypeNumber("  "));
-        PartType part2 = new PartType();
-        part2.getDetailOrExtentOrDate().add(detail2);
-
-        DetailType detail3 = new DetailType();
-        detail3.getNumberOrCaptionOrTitle().add(factory.createDetailTypeTitle(" "));
-        detail3.setType(" ");
-        PartType part3 = new PartType();
-        part3.getDetailOrExtentOrDate().add(detail3);
-
-        mods.getModsGroup().add(titleInfo1);
-        mods.getModsGroup().add(titleInfo2);
-        mods.getModsGroup().add(titleInfo3);
-        mods.getModsGroup().add(name1);
-        mods.getModsGroup().add(name2);
-        mods.getModsGroup().add(abs1);
-        mods.getModsGroup().add(abs2);
-        mods.getModsGroup().add(abs3);
-        mods.getModsGroup().add(not1);
-        mods.getModsGroup().add(not2);
-        mods.getModsGroup().add(not3);
-        mods.getModsGroup().add(not4);
-        mods.getModsGroup().add(subject1);
-        mods.getModsGroup().add(subject2);
-        mods.getModsGroup().add(subject3);
-        mods.getModsGroup().add(part1);
-        mods.getModsGroup().add(part2);
-        mods.getModsGroup().add(part3);
-
-        mods2.getModsGroup().add(subject3);
-        mods2.getModsGroup().add(titleInfo3);
-        modsC.getMods().add(mods);
-        modsC.getMods().add(mods2);
-        System.out.println(BiblioModsUtils.toXML(modsC));
-        System.out.println("**********************\n\n\n\n********************\n collapsed:");
-
-        long start = System.currentTimeMillis();
-        ModsCollection modsC2 = collapseStructure(modsC);
-        System.out.println("time in millis taken to collapse = " + (System.currentTimeMillis() - start)
-                + "ms");
-        if (modsC2 != null) System.out.println(BiblioModsUtils.toXML(modsC2));
     }
 }

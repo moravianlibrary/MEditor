@@ -84,6 +84,16 @@
 		<url-pattern>/images/full/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- Servlet for images of scans -->
+	<servlet>
+		<servlet-name>ScanImgService</servlet-name>
+		<servlet-class>cz.fi.muni.xkremser.editor.server.ScanImgServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ScanImgService</servlet-name>
+		<url-pattern>/images/scan/*</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>45</session-timeout>
 	</session-config>
@@ -96,12 +106,12 @@
 		<error-code>404</error-code>
 		<location>/404.html</location>
 	</error-page>
-	
-	 
-  <resource-ref>
-     <res-ref-name>jdbc/editor</res-ref-name>
-     <res-type>javax.sql.DataSource</res-type>
-     <res-auth>Container</res-auth>
-  </resource-ref>
+
+
+	<resource-ref>
+		<res-ref-name>jdbc/editor</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
 
 </web-app>
