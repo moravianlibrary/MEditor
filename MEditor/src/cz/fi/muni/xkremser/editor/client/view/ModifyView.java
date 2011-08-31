@@ -1335,8 +1335,7 @@ public class ModifyView
         if (toAdd == null) throw new RuntimeException("There is no tab with model " + model);
 
         final TileGrid grid = getTileGrid(model.equals(DigitalObjectModel.PAGE), model.getValue());
-        System.err.println("model: " + model.getValue());
-        topTabSet.setTabPane(topTabSet.getSelectedTab().getID(), grid);
+        topTabSet.setTabPane(toAdd.getID(), grid);
         if (items != null) {
             grid.setData(items);
         } else {
