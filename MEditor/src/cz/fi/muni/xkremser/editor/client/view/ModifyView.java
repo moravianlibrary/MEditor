@@ -51,11 +51,9 @@ import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
 import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.DragAppearance;
-import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
-import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -67,8 +65,8 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
-import com.smartgwt.client.widgets.events.DragMoveEvent;
-import com.smartgwt.client.widgets.events.DragMoveHandler;
+import com.smartgwt.client.widgets.events.DragStartEvent;
+import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -643,7 +641,7 @@ public class ModifyView
                     final ModalWindow mw = new ModalWindow(topTabSet);
                     mw.setLoadingIcon("loadingAnimation.gif");
                     mw.show(true);
-                    ImagePreloader.load(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX
+                    ImagePreloader.load(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX + '/'
                             + uuid + "?" + Constants.URL_PARAM_NOT_SCALE + "=true", new ImageLoadHandler() {
 
                         @Override
@@ -656,8 +654,10 @@ public class ModifyView
                                     @Override
                                     public void run() {
                                         final Img full =
-                                                new Img("full/" + uuid + "?" + Constants.URL_PARAM_NOT_SCALE
-                                                        + "=true", width, height);
+                                                new Img(Constants.SERVLET_FULL_PREFIX + '/' + uuid + "?"
+                                                                + Constants.URL_PARAM_NOT_SCALE + "=true",
+                                                        width,
+                                                        height);
                                         full.draw();
                                         full.addClickHandler(new ClickHandler() {
 
@@ -882,32 +882,34 @@ public class ModifyView
         tileGrid.setDropTypes(model);
         tileGrid.setDragType(model);
         tileGrid.setDragAppearance(DragAppearance.TRACKER);
+        final EditorDragMoveHandler dragHandler =
+                new EditorDragMoveHandler(tileGrid, DigitalObjectModel.parseString(model));
+        final DigitalObjectModel mod = DigitalObjectModel.parseString(model);
+        final boolean isPage = DigitalObjectModel.PAGE.equals(mod);
+        final String modelIcon = Canvas.imgHTML(mod.getIcon(), 25, 25);
+        tileGrid.addDragMoveHandler(dragHandler);
 
-        tileGrid.addDragMoveHandler(new DragMoveHandler() {
+        tileGrid.addDragStartHandler(new DragStartHandler() {
 
             @Override
-            public void onDragMove(DragMoveEvent event) {
+            public void onDragStart(DragStartEvent event) {
+                if (tileGrid.getDragData().length != 0) {
+                    tileGrid.setDragAppearance(DragAppearance.TRACKER);
+                    String name = tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_NAME);
+                    String pageIcon = null;
 
-                String name = tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_NAME);
-                DigitalObjectModel mod = DigitalObjectModel.parseString(model);
-                String icon = null;
-                if (DigitalObjectModel.PAGE.equals(mod)) {
-                    icon =
-                            Canvas.imgHTML(Constants.SERVLET_THUMBNAIL_PREFIX + "/"
-                                    + tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_UUID), 25, 35);
+                    if (isPage) {
+                        pageIcon =
+                                Canvas.imgHTML(Constants.SERVLET_THUMBNAIL_PREFIX
+                                                       + "/"
+                                                       + tileGrid.getSelectedRecord()
+                                                               .getAttribute(Constants.ATTR_UUID),
+                                               25,
+                                               35);
+                    }
+                    dragHandler.setMoveTracker(name + (isPage ? pageIcon : modelIcon));
                 } else {
-                    icon = Canvas.imgHTML(mod.getIcon(), 25, 25);
-                }
-
-                if (event.isCtrlKeyDown()) {
-                    tileGrid.setDragDataAction(DragDataAction.COPY);
-                    String copySymbol = Canvas.imgHTML("icons/16/copy.png", 16, 16);
-
-                    EventHandler.setDragTracker(name + icon + copySymbol);
-
-                } else {
-                    tileGrid.setDragDataAction(DragDataAction.MOVE);
-                    EventHandler.setDragTracker(name + icon);
+                    tileGrid.setDragAppearance(DragAppearance.NONE);
                 }
             }
         });
@@ -925,7 +927,7 @@ public class ModifyView
                         try {
                             final Image full =
                                     new Image(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX
-                                            + event.getRecord().getAttribute(Constants.ATTR_UUID));
+                                            + '/' + event.getRecord().getAttribute(Constants.ATTR_UUID));
                             full.setHeight("700px");
                             full.addLoadHandler(new LoadHandler() {
 
@@ -960,7 +962,7 @@ public class ModifyView
                             imagePopup.setVisible(false);
 
                         } catch (Throwable t) {
-                            System.out.println("iii");
+                            t.printStackTrace();
                             mw.hide();
                         }
                     }
