@@ -37,6 +37,8 @@ import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
 import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.Z3950ClientImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
@@ -151,6 +153,7 @@ public class ServerModule
 
         // DAO
         bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
+        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class).asEagerSingleton();
         bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
         bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
         bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
