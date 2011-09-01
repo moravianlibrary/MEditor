@@ -71,6 +71,9 @@ public class Constants {
     /** The Constant TABLE_INPUT_QUEUE_NAME. */
     public static final String TABLE_INPUT_QUEUE_NAME = "input_queue_item";
 
+    /** The Constant TABLE_IMAGE_NAME. */
+    public static final String TABLE_IMAGE_NAME = "image";
+
     /** The Constant TABLE_RECENTLY_MODIFIED_NAME. */
     public static final String TABLE_RECENTLY_MODIFIED_NAME = "recently_modified_item";
 

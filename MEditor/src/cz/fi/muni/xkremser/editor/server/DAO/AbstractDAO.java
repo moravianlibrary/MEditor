@@ -157,6 +157,7 @@ public class AbstractDAO {
     protected void closeConnection() {
         try {
             if (conn != null) {
+                conn.setAutoCommit(true);
                 conn.close();
             }
         } catch (SQLException ex) {
