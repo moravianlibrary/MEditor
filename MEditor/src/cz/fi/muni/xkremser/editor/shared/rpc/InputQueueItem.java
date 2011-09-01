@@ -39,8 +39,8 @@ public class InputQueueItem
     /** The path. */
     private String path;
 
-    /** The issn. */
-    private String issn;
+    /** The barcode. */
+    private String barcode;
 
     /**
      * Instantiates a new input queue item.
@@ -55,15 +55,15 @@ public class InputQueueItem
      * 
      * @param path
      *        the path
-     * @param issn
-     *        the issn
+     * @param barcode
+     *        the barcode
      * @param name
      *        the name
      */
-    public InputQueueItem(String path, String issn) {
+    public InputQueueItem(String path, String barcode) {
         super();
         this.path = path;
-        this.issn = issn;
+        this.barcode = barcode;
     }
 
     /**
@@ -86,22 +86,22 @@ public class InputQueueItem
     }
 
     /**
-     * Gets the issn.
+     * Gets the barcode.
      * 
-     * @return the issn
+     * @return the barcode
      */
-    public String getIssn() {
-        return issn;
+    public String getBarcode() {
+        return barcode;
     }
 
     /**
-     * Sets the issn.
+     * Sets the barcode.
      * 
-     * @param issn
-     *        the new issn
+     * @param barcode
+     *        the new barcode
      */
-    public void setIssn(String issn) {
-        this.issn = issn;
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     /*
@@ -110,7 +110,7 @@ public class InputQueueItem
      */
     @Override
     public String toString() {
-        return "(" + this.path + ", " + this.issn + ")";
+        return "(" + this.path + ", " + this.barcode + ")";
     }
 
 }

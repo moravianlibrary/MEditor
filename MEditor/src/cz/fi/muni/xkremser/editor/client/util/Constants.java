@@ -27,6 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.client.util;
 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ServerConstants.
@@ -131,8 +132,8 @@ public class Constants {
     /** The Constant ATTR_PICTURE. */
     public static final String ATTR_PICTURE = "picture";
 
-    /** The Constant ATTR_ISSN. */
-    public static final String ATTR_ISSN = "issn";
+    /** The Constant ATTR_BARCODE. */
+    public static final String ATTR_BARCODE = "barcode";
 
     /** The Constant DIR_MAX_DEPTH. */
     public static final int DIR_MAX_DEPTH = 5;
@@ -180,6 +181,9 @@ public class Constants {
 
     /** The Constant PERIODICAL_ITEM_ICON. */
     public static final String PERIODICAL_ITEM_ICON = "icons/128/periodical_item.png";
+
+    /** The Constant JPEG_2000_EXTENSION. */
+    public static final String JPEG_2000_EXTENSION = ".jp2";
 
     // foxml
     /** The Constant RELS_EXT_LAST_ELEMENT. */

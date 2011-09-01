@@ -50,6 +50,9 @@ public abstract class EditorConfiguration {
         /** The Constant INPUT_QUEUE. */
         public static final String INPUT_QUEUE = "inputQueue";
 
+        /** The Constant DJATOKA_HOME. */
+        public static final String DJATOKA_HOME = "djatoka.home";
+
         /** The Constant IMAGE_EXTENSIONS. */
         public static final String IMAGE_EXTENSIONS = "imageExtension";
 
@@ -244,6 +247,15 @@ public abstract class EditorConfiguration {
      */
     public String getScanInputQueuePath() {
         return getConfiguration().getString(ServerConstants.INPUT_QUEUE);
+    }
+
+    /**
+     * Gets the scan Djatoka home path.
+     * 
+     * @return the scan Djatoka home path
+     */
+    public String getDjatokaHome() {
+        return getConfiguration().getString(ServerConstants.DJATOKA_HOME);
     }
 
     /**

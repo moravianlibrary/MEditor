@@ -32,29 +32,32 @@ import java.io.FileFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.Z3950Client;
-import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderResult;
+
+import gov.lanl.adore.djatoka.DjatokaEncodeParam;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -69,18 +72,9 @@ public class ScanFolderHandler
     /** The configuration. */
     private final EditorConfiguration configuration;
 
-    /** The client. */
-    @Inject
-    private Z3950Client client;
-
-    /** The fedora access. */
-    @Inject
-    @Named("securedFedoraAccess")
-    private FedoraAccess fedoraAccess;
-
     /** The input queue dao. */
     @Inject
-    private InputQueueItemDAO inputQueueDAO;
+    private ImageResolverDAO imageResolverDAO;
 
     /** The http session provider. */
     @Inject
@@ -109,7 +103,6 @@ public class ScanFolderHandler
             throws ActionException {
         // parse input
         final String model = action.getModel();
-        checkDocumentType(model);
         final String code = action.getCode();
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Processing input queue: (model = " + model + ", code = " + code + ")");
@@ -122,31 +115,45 @@ public class ScanFolderHandler
                     + EditorConfiguration.ServerConstants.INPUT_QUEUE + " is not set.");
         }
         String[] imageTypes = configuration.getImageExtensions();
+        String prefix = base + File.separator + model + File.separator + code + File.separator;
+        List<String> imgFileNames = scanDirectoryStructure(prefix, imageTypes);
+        Collections.sort(imgFileNames);
         // due to gwt performance issues, more
         // concrete interface is used
-        ArrayList<String> result =
-                scanDirectoryStructure(base + File.separator + model + File.separator + code + File.separator,
-                                       imageTypes);
-        Collections.sort(result);
-        return new ScanFolderResult(result);
-    }
+        ArrayList<ImageItem> result = new ArrayList<ImageItem>(imgFileNames.size());
+        ArrayList<ImageItem> toAdd = new ArrayList<ImageItem>();
+        ArrayList<String> resolvedIdentifiers;
 
-    /**
-     * Check document types.
-     * 
-     * @param types
-     *        the types
-     * @throws ActionException
-     *         the action exception
-     */
-    private void checkDocumentType(String model) throws ActionException {
-        if (model == null
-                || !fedoraAccess.isDigitalObjectPresent(Constants.FEDORA_MODEL_PREFIX
-                        + DigitalObjectModel.toString(DigitalObjectModel.parseString(model)))) {
-            LOGGER.error("Model " + model + " is not present in repository.");
-            throw new ActionException(Constants.FEDORA_MODEL_PREFIX + model);
+        try {
+            resolvedIdentifiers = imageResolverDAO.resolveItems(imgFileNames);
+            for (int i = 0; i < resolvedIdentifiers.size(); i++) {
+                String newIdentifier = null;
+                String resolvedIdentifier = resolvedIdentifiers.get(i);
+                if (resolvedIdentifier == null) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(model).append('#').append(code).append('#').append(i);
+                    newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
+                    sb = new StringBuffer();
+                    sb.append(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION).append(newIdentifier)
+                            .append(Constants.JPEG_2000_EXTENSION);
+                    resolvedIdentifier = sb.toString();
+                    toAdd.add(new ImageItem(newIdentifier, resolvedIdentifier, imgFileNames.get(i)));
+                }
+                String uuid =
+                        newIdentifier != null ? newIdentifier : resolvedIdentifier
+                                .substring(resolvedIdentifier.lastIndexOf('/') + 1,
+                                           resolvedIdentifier.lastIndexOf('.'));
+                result.add(new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i)));
+            }
+            DjatokaEncodeParam params = new DjatokaEncodeParam();
+            if (!toAdd.isEmpty()) {
+                imageResolverDAO.insertItems(toAdd);
+            }
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
         }
 
+        return new ScanFolderResult(result, toAdd);
     }
 
     /**
@@ -162,7 +169,7 @@ public class ScanFolderHandler
      *        the level
      * @return the list
      */
-    private ArrayList<String> scanDirectoryStructure(String path, final String[] imageTypes) {
+    private List<String> scanDirectoryStructure(String path, final String[] imageTypes) {
         File dir = new File(path);
         FileFilter filter = new FileFilter() {
 
@@ -180,7 +187,7 @@ public class ScanFolderHandler
         File[] imgs = dir.listFiles(filter);
         ArrayList<String> list = new ArrayList<String>(imgs != null ? imgs.length : 0);
         for (int i = 0; i < imgs.length; i++) {
-            list.add(imgs[i].getName());
+            list.add(path + imgs[i].getName());
         }
         return list;
     }
@@ -210,4 +217,5 @@ public class ScanFolderHandler
         // TODO Auto-generated method stub
 
     }
+
 }

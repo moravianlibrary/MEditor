@@ -60,7 +60,7 @@ public class ImageResolverDAOImpl
 
     /** The Constant SELECT_ITEM_STATEMENT. */
     public static final String SELECT_ITEM_STATEMENT = "SELECT id, fs_path FROM "
-            + Constants.TABLE_IMAGE_NAME + "WHERE identifier = ((?))";
+            + Constants.TABLE_IMAGE_NAME + " WHERE old_fs_path = ((?))";
 
     /** The Constant UPDATE_ITEM_STATEMENT. */
     public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_IMAGE_NAME
@@ -68,19 +68,9 @@ public class ImageResolverDAOImpl
 
     /** The Constant INSERT_ITEM_STATEMENT. */
     public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_IMAGE_NAME
-            + " (identifier, fs_path, shown) VALUES ((?),(?),(CURRENT_TIMESTAMP))";
+            + " (identifier, fs_path, old_fs_path, shown) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP))";
 
     private static final Logger LOGGER = Logger.getLogger(ImageResolverDAOImpl.class);
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO#updateItems(java
-     * .util.List)
-     */
-    public void updateItems2(List<ImageItem> toUpdate) throws DatabaseException {
-
-    }
 
     /**
      * Gets the item insert statement.
@@ -95,7 +85,8 @@ public class ImageResolverDAOImpl
         try {
             itemStmt = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
             itemStmt.setString(1, item.getIdentifier());
-            itemStmt.setString(2, item.getFsPath());
+            itemStmt.setString(2, item.getJpeg2000FsPath());
+            itemStmt.setString(3, item.getJpgFsPath());
         } catch (SQLException ex) {
             LOGGER.error("Could not get insert item statement " + itemStmt, ex);
         }
@@ -107,8 +98,8 @@ public class ImageResolverDAOImpl
      */
 
     @Override
-    public void updateItems(List<ImageItem> toUpdate) throws DatabaseException {
-        if (toUpdate == null) throw new NullPointerException("toUpdate");
+    public void insertItems(List<ImageItem> toInsert) throws DatabaseException {
+        if (toInsert == null) throw new NullPointerException("toInsert");
 
         try {
             getConnection().setAutoCommit(false);
@@ -118,10 +109,10 @@ public class ImageResolverDAOImpl
         try {
             // TX start
             int updated = 0;
-            for (ImageItem item : toUpdate) {
+            for (ImageItem item : toInsert) {
                 updated += getItemInsertStatement(item).executeUpdate();
             }
-            if (updated == toUpdate.size()) {
+            if (updated == toInsert.size()) {
                 getConnection().commit();
                 LOGGER.debug("DB has been updated.");
             } else {
@@ -141,11 +132,11 @@ public class ImageResolverDAOImpl
      */
 
     @Override
-    public ArrayList<String> resolveItems(List<String> identifiers) throws DatabaseException {
-        if (identifiers == null) throw new NullPointerException("identifier");
-        ArrayList<String> ret = new ArrayList<String>(identifiers.size());
-        for (String identifier : identifiers) {
-            ret.add(resolveItem(identifier));
+    public ArrayList<String> resolveItems(List<String> oldJpgFsPaths) throws DatabaseException {
+        if (oldJpgFsPaths == null) throw new NullPointerException("oldJpgFsPaths");
+        ArrayList<String> ret = new ArrayList<String>(oldJpgFsPaths.size());
+        for (String oldJpgFsPath : oldJpgFsPaths) {
+            ret.add(resolveItem(oldJpgFsPath));
         }
         return ret;
     }
@@ -155,8 +146,8 @@ public class ImageResolverDAOImpl
      */
 
     @Override
-    public String resolveItem(String identifier) throws DatabaseException {
-        if (identifier == null || "".equals(identifier)) throw new NullPointerException("identifier");
+    public String resolveItem(String oldJpgFsPath) throws DatabaseException {
+        if (oldJpgFsPath == null || "".equals(oldJpgFsPath)) throw new NullPointerException("oldJpgFsPath");
         try {
             getConnection().setAutoCommit(false);
         } catch (SQLException e) {
@@ -167,7 +158,7 @@ public class ImageResolverDAOImpl
         try {
             // TX start
             statement = getConnection().prepareStatement(SELECT_ITEM_STATEMENT);
-            statement.setString(1, identifier);
+            statement.setString(1, oldJpgFsPath);
             ResultSet rs = statement.executeQuery();
             int i = 0;
             int id = -1;
@@ -181,8 +172,10 @@ public class ImageResolverDAOImpl
                 statement = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
                 statement.setInt(1, id);
                 rowsAffected = statement.executeUpdate();
+            } else {
+                return null;
             }
-            if (i == 1 && rowsAffected == 1) {
+            if (rowsAffected == 1) {
                 getConnection().commit();
                 LOGGER.debug("DB has been updated.");
             } else {

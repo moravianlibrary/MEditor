@@ -216,4 +216,39 @@ public class ServerUtils {
         }
         return object;
     }
+
+    public static boolean isWindows() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return (os.indexOf("win") >= 0);
+    }
+
+    public static boolean isMac() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return (os.indexOf("mac") >= 0);
+    }
+
+    public static boolean isUnix() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+    }
+
+    public static boolean is64bit() {
+        String os = System.getProperty("os.arch").toLowerCase();
+        return (os.indexOf("64") >= 0);
+    }
+
+    public static String getPlatform() {
+        if (ServerUtils.isUnix()) {
+            if (ServerUtils.is64bit()) {
+                return "Linux-x86-64";
+            } else {
+                return "Linux-x86-32";
+            }
+        } else if (ServerUtils.isWindows()) {
+            return "Win32";
+        } else if (ServerUtils.isMac()) {
+            return "Mac-x86";
+        } else
+            return "Solaris-x86";
+    }
 }

@@ -81,7 +81,7 @@ public class InputTreeGwtRPCDS
         field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
         field.setRequired(true);
         addField(field);
-        field = new DataSourceTextField(Constants.ATTR_ISSN, "ID");
+        field = new DataSourceTextField(Constants.ATTR_BARCODE, "ID");
         field.setAttribute("width", "60%");
         field.setRequired(true);
         addField(field);
@@ -244,7 +244,7 @@ public class InputTreeGwtRPCDS
      */
     private static void copyValues(ListGridRecord from, InputQueueItem to) {
         to.setPath(from.getAttributeAsString(Constants.ATTR_ID));
-        to.setIssn(from.getAttributeAsString(Constants.ATTR_ISSN));
+        to.setBarcode(from.getAttributeAsString(Constants.ATTR_BARCODE));
     }
 
     /**
@@ -257,7 +257,7 @@ public class InputTreeGwtRPCDS
      */
     private static void copyValues(InputQueueItem from, ListGridRecord to) {
         to.setAttribute(Constants.ATTR_ID, from.getPath());
-        to.setAttribute(Constants.ATTR_ISSN, from.getIssn());
+        to.setAttribute(Constants.ATTR_BARCODE, from.getBarcode());
     }
 
     /**

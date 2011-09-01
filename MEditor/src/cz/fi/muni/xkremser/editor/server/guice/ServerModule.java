@@ -57,6 +57,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
+import cz.fi.muni.xkremser.editor.server.handler.ConvertToJPEG2000Handler;
 import cz.fi.muni.xkremser.editor.server.handler.FindMetadataHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRequestItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRolesHandler;
@@ -84,6 +85,7 @@ import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
@@ -145,6 +147,7 @@ public class ServerModule
         bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
         bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
         bindHandler(FindMetadataAction.class, FindMetadataHandler.class);
+        bindHandler(ConvertToJPEG2000Action.class, ConvertToJPEG2000Handler.class);
 
         bindHandler(LogoutAction.class, LogoutHandler.class);
 

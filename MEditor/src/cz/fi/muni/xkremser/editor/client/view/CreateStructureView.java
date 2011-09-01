@@ -114,6 +114,8 @@ public class CreateStructureView
     /** The image popup. */
     private PopupPanel imagePopup;
 
+    private TileGrid tileGrid;
+
     /**
      * Instantiates a new create view.
      */
@@ -179,7 +181,10 @@ public class CreateStructureView
 
     @Override
     public void onAddImages(String model, String code, ScanRecord[] items) {
-        final TileGrid tileGrid = new TileGrid();
+        if (layout.getMembers().length != 0) {
+            layout.removeMember(tileGrid);
+        }
+        tileGrid = new TileGrid();
         tileGrid.setTileWidth(Constants.PAGE_THUMBNAIL_WIDTH);
         tileGrid.setTileHeight(Constants.PAGE_THUMBNAIL_HEIGHT);
         tileGrid.setHeight100();
@@ -294,7 +299,7 @@ public class CreateStructureView
         pictureField.setImageWidth(80);
         pictureField.setImageHeight(110);
 
-        DetailViewerField nameField = new DetailViewerField(Constants.ATTR_ISSN);
+        DetailViewerField nameField = new DetailViewerField(Constants.ATTR_PICTURE);
         nameField.setDetailFormatter(new DetailFormatter() {
 
             @Override

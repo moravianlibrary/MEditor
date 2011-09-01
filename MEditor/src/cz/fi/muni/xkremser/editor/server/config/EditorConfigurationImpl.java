@@ -58,6 +58,10 @@ public class EditorConfigurationImpl
     /** The Constant DEFAULT_CONF_LOCATION. */
     public static final String DEFAULT_CONF_LOCATION = "configuration.properties";
 
+    /** The Constant DEFAULT_IMAGES_LOCATION. */
+    public static final String DEFAULT_IMAGES_LOCATION = WORKING_DIR + File.separator + "images"
+            + File.separator;
+
     /** The Constant CONFIGURATION. */
     public static final String CONFIGURATION = WORKING_DIR + File.separator + DEFAULT_CONF_LOCATION;
 
@@ -112,6 +116,15 @@ public class EditorConfigurationImpl
                 }
             }
         }
+        File imagesDir = new File(DEFAULT_IMAGES_LOCATION);
+        if (!imagesDir.exists()) {
+            boolean mkdirs = imagesDir.mkdirs();
+            if (!mkdirs) {
+                LOGGER.error("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
+                throw new RuntimeException("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
+            }
+        }
+
         CompositeConfiguration constconf = new CompositeConfiguration();
         PropertiesConfiguration file = null;
         try {

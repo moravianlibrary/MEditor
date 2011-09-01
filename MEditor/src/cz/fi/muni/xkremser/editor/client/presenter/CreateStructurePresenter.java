@@ -66,6 +66,9 @@ import cz.fi.muni.xkremser.editor.client.view.ScanRecord;
 
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
+import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
@@ -202,7 +205,6 @@ public class CreateStructurePresenter
         super.onReset();
         processImages();
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
-
     }
 
     /**
@@ -213,23 +215,68 @@ public class CreateStructurePresenter
         final ScanFolderAction action = new ScanFolderAction(model, code);
         final DispatchCallback<ScanFolderResult> callback = new DispatchCallback<ScanFolderResult>() {
 
+            private int done = 0;
+            private int total = 0;
+
             @Override
             public void callback(ScanFolderResult result) {
-                List<String> itemList = result.getItems();
+                List<ImageItem> itemList = result.getItems();
+                List<ImageItem> toAdd = result.getToAdd();
+                if (toAdd != null && !toAdd.isEmpty()) {
+                    int lastItem = toAdd.size();
+                    boolean progressbar = lastItem > 5;
+                    final Progressbar hBar1 = progressbar ? new Progressbar() : null;
+                    if (progressbar) {
+                        done = 0;
+                        total = lastItem;
+                        hBar1.setHeight(24);
+                        hBar1.setVertical(false);
+                        hBar1.setPercentDone(0);
+                        getView().getPopupPanel().setWidget(hBar1);
+                        getView().getPopupPanel().setVisible(true);
+                        getView().getPopupPanel().center();
+                    }
+                    for (ImageItem item : toAdd) {
+                        convertItem(item, hBar1, itemList);
+                    }
+                }
 
+            }
+
+            private void doTheRest(List<ImageItem> itemList) {
                 ScanRecord[] items = null;
                 if (itemList.size() > 0) {
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
-                                new ScanRecord(String.valueOf(i), itemList.get(i), model + '/' + code + '/'
-                                        + itemList.get(i));
+                                new ScanRecord(String.valueOf(i), model, code, itemList.get(i)
+                                        .getIdentifier(), itemList.get(i).getJpgFsPath());
                     }
 
                     getView().onAddImages(model, code, items);
                 }
                 getView().getPopupPanel().setVisible(false);
                 getView().getPopupPanel().hide();
+            }
+
+            private void convertItem(ImageItem item, final Progressbar hBar1, final List<ImageItem> itemList) {
+                ConvertToJPEG2000Action action = new ConvertToJPEG2000Action(item);
+                final DispatchCallback<ConvertToJPEG2000Result> callback =
+                        new DispatchCallback<ConvertToJPEG2000Result>() {
+
+                            @Override
+                            public void callback(ConvertToJPEG2000Result result) {
+                                if (hBar1 != null) {
+                                    done++;
+                                    hBar1.setPercentDone(((100 * (done + 1)) / total));
+                                    if (done == total) {
+                                        doTheRest(itemList);
+                                    }
+                                }
+                            }
+                        };
+                dispatcher.execute(action, callback);
+
             }
 
             @Override

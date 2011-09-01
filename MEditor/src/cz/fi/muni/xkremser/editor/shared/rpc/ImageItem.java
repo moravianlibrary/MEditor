@@ -31,16 +31,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class InputQueueItem.
+ * The Class ImageItem.
  */
 public class ImageItem
         implements IsSerializable {
 
-    /** The path. */
+    /** The identifier. */
     private String identifier;
 
-    /** The name. */
-    private String fsPath;
+    /** The jpeg2000FsPath. */
+    private String jpeg2000FsPath;
+
+    /** The jpgFsPath. */
+    private String jpgFsPath;
 
     /**
      * Instantiates a new input queue item.
@@ -54,16 +57,17 @@ public class ImageItem
      * Instantiates a new input queue item.
      * 
      * @param path
-     *        the path
+     *        the identifier
      * @param issn
-     *        the issn
-     * @param name
-     *        the name
+     *        the jpeg2000FsPath
+     * @param jpgFsPath
+     *        the jpgFsPath
      */
-    public ImageItem(String identifier, String fsPath) {
+    public ImageItem(String identifier, String jpeg2000FsPath, String jpgFsPath) {
         super();
         this.identifier = identifier;
-        this.fsPath = fsPath;
+        this.jpeg2000FsPath = jpeg2000FsPath;
+        this.jpgFsPath = jpgFsPath;
     }
 
     /**
@@ -86,22 +90,41 @@ public class ImageItem
     }
 
     /**
-     * Gets the fsPath.
+     * Gets the jpeg2000FsPath.
      * 
-     * @return the fsPath
+     * @return the jpeg2000FsPath
      */
-    public String getFsPath() {
-        return fsPath;
+    public String getJpeg2000FsPath() {
+        return jpeg2000FsPath;
     }
 
     /**
-     * Sets the path.
+     * Sets the jpeg2000FsPath.
      * 
-     * @param path
-     *        the new path
+     * @param jpeg2000FsPath
+     *        the new jpeg2000FsPath
      */
-    public void setFsPath(String fsPath) {
-        this.fsPath = fsPath;
+    public void setJpeg2000FsPath(String jpeg2000FsPath) {
+        this.jpeg2000FsPath = jpeg2000FsPath;
+    }
+
+    /**
+     * Gets the jpgFsPath.
+     * 
+     * @return the jpgFsPath
+     */
+    public String getJpgFsPath() {
+        return jpgFsPath;
+    }
+
+    /**
+     * Sets the jpgFsPath.
+     * 
+     * @param jpgFsPath
+     *        the new jpgFsPath
+     */
+    public void setJpgFsPath(String jpgFsPath) {
+        this.jpgFsPath = jpgFsPath;
     }
 
     /*
@@ -110,7 +133,7 @@ public class ImageItem
      */
     @Override
     public String toString() {
-        return "(" + this.identifier + ", " + this.fsPath + ")";
+        return "(" + this.identifier + ", " + this.jpeg2000FsPath + ", " + this.jpgFsPath + ")";
     }
 
 }

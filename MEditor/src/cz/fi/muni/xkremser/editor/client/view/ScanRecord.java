@@ -49,13 +49,13 @@ public class ScanRecord
      * 
      * @param name
      *        the name
-     * @param issn
-     *        the issn
+     * @param barcode
+     *        the barcode
      * @param picture
      *        the picture
      */
-    public ScanRecord(String name, String issn, String picture) {
-        this(name, issn, picture, null);
+    public ScanRecord(String name, String model, String barcode, String picture) {
+        this(name, model, barcode, picture, null);
     }
 
     /**
@@ -70,9 +70,10 @@ public class ScanRecord
      * @param description
      *        the description
      */
-    public ScanRecord(String name, String issn, String picture, String description) {
+    public ScanRecord(String name, String model, String barcode, String picture, String description) {
         setName(name);
-        setIssn(issn);
+        setModel(model);
+        setBarcode(barcode);
         setPicture(picture);
         setDescription(description);
     }
@@ -97,22 +98,41 @@ public class ScanRecord
     }
 
     /**
-     * Set the issn.
+     * Set the model.
      * 
-     * @param uuid
-     *        the issn
+     * @param model
+     *        the model
      */
-    public void setIssn(String issn) {
-        setAttribute(Constants.ATTR_ISSN, issn);
+    public void setModel(String model) {
+        setAttribute(Constants.ATTR_MODEL, model);
     }
 
     /**
-     * Return the issn.
+     * Return the model.
      * 
-     * @return the issn
+     * @return the model
      */
-    public String getIssn() {
-        return getAttribute(Constants.ATTR_ISSN);
+    public String getModel() {
+        return getAttribute(Constants.ATTR_MODEL);
+    }
+
+    /**
+     * Set the barcode.
+     * 
+     * @param barcode
+     *        the barcode
+     */
+    public void setBarcode(String barcode) {
+        setAttribute(Constants.ATTR_BARCODE, barcode);
+    }
+
+    /**
+     * Return the barcode.
+     * 
+     * @return the barcode
+     */
+    public String getBarcode() {
+        return getAttribute(Constants.ATTR_BARCODE);
     }
 
     /**
@@ -159,7 +179,7 @@ public class ScanRecord
      * @return the page record
      */
     public ScanRecord deepCopy() {
-        return new ScanRecord(getName(), getIssn(), getPicture(), getDescription());
+        return new ScanRecord(getName(), getBarcode(), getPicture(), getDescription());
     }
 
     /*
@@ -168,8 +188,9 @@ public class ScanRecord
      */
     @Override
     public String toString() {
-        return "PageRecord [getName()=" + getName() + ", getIssn()=" + getIssn() + ", getPicture()="
-                + getPicture() + ", getDescription()=" + getDescription() + "]";
+        return "PageRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getBarcode()="
+                + getBarcode() + ", getPicture()=" + getPicture() + ", getDescription()=" + getDescription()
+                + "]";
     }
 
 }

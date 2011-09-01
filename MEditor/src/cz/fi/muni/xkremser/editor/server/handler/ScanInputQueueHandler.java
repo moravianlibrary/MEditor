@@ -48,7 +48,6 @@ import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -71,10 +70,6 @@ public class ScanInputQueueHandler
 
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    /** The client. */
-    @Inject
-    private Z3950Client client;
 
     /** The fedora access. */
     @Inject

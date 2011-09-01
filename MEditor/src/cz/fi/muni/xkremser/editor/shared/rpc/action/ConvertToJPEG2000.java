@@ -25,27 +25,22 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.server.DAO;
+package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface ImageResolverDAO.
+ * The Class ScanInputQueue.
  */
-public interface ImageResolverDAO {
+@GenDispatch(isSecure = false)
+public class ConvertToJPEG2000
+        extends UnsecuredActionImpl<ScanInputQueueResult> {
 
-    void insertItems(List<ImageItem> toInsert) throws DatabaseException;
-
-    ArrayList<String> resolveItems(List<String> identifiers) throws DatabaseException;
-
-    String resolveItem(String identifier) throws DatabaseException;
-
-    ArrayList<String> cacheAgeingProcess(int monthsOld) throws DatabaseException;
-
+    @In(1)
+    private ImageItem item;
 }
