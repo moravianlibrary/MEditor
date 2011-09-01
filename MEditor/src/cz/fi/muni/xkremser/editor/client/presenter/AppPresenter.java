@@ -202,8 +202,10 @@ public class AppPresenter
                 }
                 int keyCode = event.getNativeEvent().getKeyCode();
 
+                //                System.err.println("pressed key code: " + event.getNativeEvent().getKeyCode());
+
                 if (keyCode != Constants.CODE_KEY_ESC && keyCode != Constants.CODE_KEY_ENTER
-                        && !isKnownCtrlAltHotkey(event)) {
+                        && keyCode != Constants.CODE_KEY_DELETE && !isKnownCtrlAltHotkey(event)) {
                     return;
                 }
                 KeyPressedEvent.fire(AppPresenter.this, keyCode);

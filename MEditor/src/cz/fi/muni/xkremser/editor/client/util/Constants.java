@@ -290,6 +290,13 @@ public class Constants {
      * windows
      **/
     public static final int CODE_KEY_ESC = 27;
+
+    /**
+     * The value of nativeEvent-keyCode of button Delete - used for deleting
+     * selected objects
+     */
+    public static final int CODE_KEY_DELETE = 46;
+
     public static final int PAGE_THUMBNAIL_WIDTH = 90;
     public static final int PAGE_THUMBNAIL_HEIGHT = 135;
 }

@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/x211800/eclipse-workspace/MEditor/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -149,6 +149,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Name of a non-jurisdictional geographic entity.")
   @Key("area")
   String area();
+
+  /**
+   * Translated "Do you really want to delete?".
+   * 
+   * @return translated "Do you really want to delete?"
+   */
+  @DefaultStringValue("Do you really want to delete?")
+  @Key("askDelete")
+  String askDelete();
 
   /**
    * Translated "This value is used to express attribute in a coded form. The authority attribute may be used to indicate the source of the code.".

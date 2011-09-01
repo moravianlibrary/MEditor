@@ -54,6 +54,8 @@ import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabBarControls;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -198,38 +200,11 @@ public class ModifyView
     /** The Constant TAB_INITIALIZED. */
     public static final String TAB_INITIALIZED = "initialized";
 
-    /** The ocr content. */
-    private final Map<TabSet, TextAreaItem> ocrContent = new HashMap<TabSet, TextAreaItem>();
-
     /** The ocr text content. */
     private final Map<TextAreaItem, String> ocrTextContent = new HashMap<TextAreaItem, String>();
 
-    /** The dc tab. */
-    private final Map<TabSet, DCTab> dcTab = new HashMap<TabSet, DCTab>();
-
-    /** The mods tab. */
-    private final Map<TabSet, Tab> modsTab = new HashMap<TabSet, Tab>();
-
-    /** The info tab. */
-    private final Map<TabSet, InfoTab> infoTabs = new HashMap<TabSet, InfoTab>();
-
-    /** The DCs. */
-    private final Map<TabSet, DublinCore> dcMap = new HashMap<TabSet, DublinCore>();
-
-    /** The Map of ModsCollectionClients **/
-    private final Map<TabSet, ModsCollectionClient> modsCollections =
-            new HashMap<TabSet, ModsCollectionClient>();
-
-    private final Map<TabSet, List<Tab>> itemTabs = new HashMap<TabSet, List<Tab>>();
-
-    private final HashMap<TabSet, Map<DigitalObjectModel, TileGrid>> itemGrids =
-            new HashMap<TabSet, Map<DigitalObjectModel, TileGrid>>();
-
     /** The opened objects tabsets. */
-    private final Map<String, TabSet> openedObjectsTabsets = new HashMap<String, TabSet>();
-
-    /** The opened objects uuids. */
-    private final Map<TabSet, String> openedObjectsUuids = new HashMap<TabSet, String>();
+    private final Map<String, EditorTabSet> openedObjectsTabsets = new HashMap<String, EditorTabSet>();
 
     /** The clipboard. */
     private Record[] clipboard;
@@ -238,10 +213,11 @@ public class ModifyView
     private final VLayout layout;
 
     /** The top tab set1. */
-    private TabSet topTabSet1;
+    private EditorTabSet topTabSet1;
 
     /** The top tab set2. */
-    private TabSet topTabSet2;
+    private EditorTabSet topTabSet2;
+
     /** The image popup. */
     private PopupPanel imagePopup;
 
@@ -274,34 +250,31 @@ public class ModifyView
         imagePopup.setAnimationEnabled(true);
     }
 
-    public void showBasicModsWindow(final TabSet focusedTabSet) {
-        modsWindow =
-                new ModsWindow(modsCollections.get(focusedTabSet),
-                               openedObjectsUuids.get(focusedTabSet),
-                               lang) {
+    public void showBasicModsWindow(final EditorTabSet focusedTabSet) {
+        modsWindow = new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang) {
+
+            @Override
+            protected void init() {
+                show();
+                focus();
+                getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
                     @Override
-                    protected void init() {
-                        show();
-                        focus();
-                        getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-
-                            @Override
-                            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                publishShortCut(focusedTabSet);
-                            }
-                        });
-                        getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-
-                            @Override
-                            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                destroy();
-                                modsWindow = null;
-                            }
-                        });
+                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                        publishShortCut(focusedTabSet);
                     }
+                });
+                getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                };
+                    @Override
+                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                        destroy();
+                        modsWindow = null;
+                    }
+                });
+            }
+
+        };
     }
 
     /**
@@ -311,7 +284,7 @@ public class ModifyView
         if (!isSecondFocused || topTabSet2 == null) {
             if (topTabSet1 != null) {
                 topTabSet1.setBackgroundColor(bgColorFocused);
-                getUiHandlers().onChangeFocusedTabSet(openedObjectsUuids.get(topTabSet1));
+                getUiHandlers().onChangeFocusedTabSet(topTabSet1.getUuid());
             } else {
                 getUiHandlers().onChangeFocusedTabSet(null);
             }
@@ -321,7 +294,7 @@ public class ModifyView
         } else if (isSecondFocused && topTabSet2 != null) {
             topTabSet2.setBackgroundColor(bgColorFocused);
             topTabSet1.setBackgroundColor(bgColorUnfocused);
-            getUiHandlers().onChangeFocusedTabSet(openedObjectsUuids.get(topTabSet2));
+            getUiHandlers().onChangeFocusedTabSet(topTabSet2.getUuid());
         }
     }
 
@@ -350,17 +323,17 @@ public class ModifyView
      * 
      * @param focusedTabSet
      */
-    private void publishShortCut(TabSet focusedTabSet) {
+    private void publishShortCut(EditorTabSet focusedTabSet) {
         if (winModal != null) {
             winModal.destroy();
             winModal = null;
         }
-        InfoTab infoT = infoTabs.get(focusedTabSet);
-        DCTab dcT = dcTab.get(focusedTabSet);
+        InfoTab infoT = focusedTabSet.getInfoTab();
+        DCTab dcT = focusedTabSet.getDcTab();
         publish(focusedTabSet,
                 infoT.getModel(),
                 dcT.getDc(),
-                modsCollections.get(focusedTabSet),
+                focusedTabSet.getModsCollection(),
                 focusedTabSet);
     }
 
@@ -418,7 +391,7 @@ public class ModifyView
         String ocr = detail.getOcr();
         DigitalObjectModel model = detail.getModel();
 
-        final TabSet topTabSet = new TabSet();
+        final EditorTabSet topTabSet = new EditorTabSet();
         topTabSet.setTabBarPosition(Side.TOP);
         topTabSet.setWidth100();
         topTabSet.setHeight100();
@@ -427,7 +400,7 @@ public class ModifyView
         topTabSet.setShowPaneContainerEdges(false);
         int insertPosition = -1;
         if (refresh) {
-            TabSet toDelete = openedObjectsTabsets.get(uuid);
+            EditorTabSet toDelete = openedObjectsTabsets.get(uuid);
             if (toDelete != null) {
                 insertPosition = layout.getMemberNumber(toDelete);
                 layout.removeMember(toDelete);
@@ -464,7 +437,7 @@ public class ModifyView
                 containerTabs.add(containerTab);
                 i++;
             }
-            itemTabs.put(topTabSet, containerTabs);
+            topTabSet.setItemTab(containerTabs);
         }
         Map<String, String> labelsSingular = new HashMap<String, String>();
         labelsSingular.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
@@ -475,12 +448,12 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
-        modsCollections.put(topTabSet, mods);
-        dcMap.put(topTabSet, dc);
+        topTabSet.setModsCollection(mods);
+        topTabSet.setDc(dc);
         final Tab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
                         .getValue()), model, previewPID);
-        infoTabs.put(topTabSet, (InfoTab) infoTab);
+        topTabSet.setInfoTab((InfoTab) infoTab);
         ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
 
             @Override
@@ -492,12 +465,12 @@ public class ModifyView
         final Tab dublinTab = new DCTab("DC", "pieces/16/piece_green.png");
         dublinTab.setAttribute(TAB_INITIALIZED, false);
         dublinTab.setAttribute(ID_TAB, ID_DC);
-        dcTab.put(topTabSet, (DCTab) dublinTab);
+        topTabSet.setDcTab((DCTab) dublinTab);
 
         final Tab moTab = new Tab("MODS", "pieces/16/piece_blue.png");
         moTab.setAttribute(TAB_INITIALIZED, false);
         moTab.setAttribute(ID_TAB, ID_MODS);
-        modsTab.put(topTabSet, moTab);
+        topTabSet.setModsTab(moTab);
 
         final Tab descriptionTab = new Tab(lang.description(), "pieces/16/pieces.png");
         descriptionTab.setAttribute(TAB_INITIALIZED, false);
@@ -523,7 +496,7 @@ public class ModifyView
             }
             form.setItems(ocrItem);
             ocTab.setPane(form);
-            ocrContent.put(topTabSet, ocrItem);
+            topTabSet.setOcrContent(ocrItem);
 
             thumbTab = new Tab(lang.thumbnail(), "pieces/16/pawn_yellow.png");
             thumbTab.setWidth((lang.thumbnail().length() * 6) + 30);
@@ -594,7 +567,7 @@ public class ModifyView
                         public void run() {
                             ModsTab t = new ModsTab(1, false);
                             VLayout modsLayout = t.getModsLayout(mods.getMods().get(0), false, null, 0);
-                            modsTab.put(topTabSet, t);
+                            topTabSet.setModsTab(t);
                             TabSet ts = event.getTab().getTabSet();
                             ts.setTabPane(event.getTab().getID(), modsLayout);
                             t.setAttribute(TAB_INITIALIZED, true);
@@ -612,7 +585,7 @@ public class ModifyView
                         @Override
                         public void run() {
                             DCTab t = new DCTab(dc);
-                            dcTab.put(topTabSet, t);
+                            topTabSet.setDcTab(t);
                             TabSet ts = event.getTab().getTabSet();
                             ts.setTabPane(event.getTab().getID(), t.getPane());
                             t.setAttribute(TAB_INITIALIZED, true);
@@ -733,7 +706,7 @@ public class ModifyView
             if (isSecondFocused || topTabSet1 == null) {
 
                 if (topTabSet1 != null) {
-                    TabSet toDelete = topTabSet1;
+                    EditorTabSet toDelete = topTabSet1;
                     layout.removeMember(toDelete);
                     removeTuple(toDelete);
                     toDelete.destroy();
@@ -742,7 +715,7 @@ public class ModifyView
                 layout.addMember(topTabSet1, 0);
             } else {
                 if (topTabSet2 != null) {
-                    TabSet toDelete = topTabSet2;
+                    EditorTabSet toDelete = topTabSet2;
                     layout.removeMember(toDelete);
                     removeTuple(toDelete);
                     toDelete.destroy();
@@ -1076,9 +1049,9 @@ public class ModifyView
      * @param tabSet
      *        the tab set
      */
-    private void makeTuple(String uuid, TabSet tabSet) {
+    private void makeTuple(String uuid, EditorTabSet tabSet) {
         openedObjectsTabsets.put(uuid, tabSet);
-        openedObjectsUuids.put(tabSet, uuid);
+        tabSet.setUuid(uuid);
     }
 
     /**
@@ -1087,18 +1060,12 @@ public class ModifyView
      * @param tabSet
      *        the tab set
      */
-    private void removeTuple(TabSet tabSet) {
-        String u = openedObjectsUuids.get(tabSet);
+    private void removeTuple(EditorTabSet tabSet) {
+        String u = tabSet.getUuid();
         openedObjectsTabsets.remove(u);
-        openedObjectsUuids.remove(tabSet);
-        infoTabs.remove(tabSet);
-        dcTab.remove(tabSet);
-        modsTab.remove(tabSet);
-        itemTabs.remove(tabSet);
-        itemGrids.remove(tabSet);
     }
 
-    private Menu getMenu(final TabSet topTabSet,
+    private Menu getMenu(final EditorTabSet topTabSet,
                          final DigitalObjectModel model,
                          final DublinCore dc,
                          final ModsCollectionClient mods) {
@@ -1120,7 +1087,7 @@ public class ModifyView
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
-                refresh((TabSet) event.getItem().getAttributeAsObject(ID_TABSET));
+                refresh((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
@@ -1129,7 +1096,11 @@ public class ModifyView
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
-                publish(topTabSet, model, dc, mods, (TabSet) event.getItem().getAttributeAsObject(ID_TABSET));
+                publish(topTabSet,
+                        model,
+                        dc,
+                        mods,
+                        (EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
@@ -1155,11 +1126,11 @@ public class ModifyView
      * @param mods
      * @param ts
      */
-    private void publish(final TabSet topTabSet,
+    private void publish(final EditorTabSet topTabSet,
                          final DigitalObjectModel model,
                          final DublinCore dc,
                          final ModsCollectionClient mods,
-                         final TabSet ts) {
+                         final EditorTabSet ts) {
         winModal = new Window();
         winModal.setHeight(160);
         winModal.setWidth(350);
@@ -1202,7 +1173,7 @@ public class ModifyView
 
                     changedMods = modsWindow.publishWindow();
                     object.setModsChanged(true);
-                    changedDC = dcMap.get(ts);
+                    changedDC = ts.getDc();
                     object.setDcChanged(false);
 
                     if (modsWindow.getReflectInDC()) {
@@ -1216,8 +1187,8 @@ public class ModifyView
                     }
 
                 } else {
-                    Tab dcT = dcTab.get(ts);
-                    Tab modsT = modsTab.get(ts);
+                    Tab dcT = ts.getDcTab();
+                    Tab modsT = ts.getModsTab();
                     if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
                         DCTab dcT_ = (DCTab) dcT;
                         changedDC = dcT_.getDc();
@@ -1242,7 +1213,7 @@ public class ModifyView
                 object.setDc(changedDC);
                 object.setMods(changedMods);
                 //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-                InfoTab infoT = infoTabs.get(ts);
+                InfoTab infoT = ts.getInfoTab();
 
                 if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
                     object.setLabel("");
@@ -1253,7 +1224,7 @@ public class ModifyView
                 }
 
                 TextAreaItem ocrTextItem = null;
-                if ((ocrTextItem = ocrContent.get(ts)) != null && ocrTextContent.get(ocrTextItem) != null) {
+                if ((ocrTextItem = ts.getOcrContent()) != null && ocrTextContent.get(ocrTextItem) != null) {
                     String val = (String) ocrTextItem.getValue();
                     if (!ocrTextContent.get(ocrTextItem).equals(val)) {
                         object.setOcr(val);
@@ -1262,9 +1233,9 @@ public class ModifyView
                 } else {
                     object.setOcrChanged(false);
                 }
-                object.setUuid(openedObjectsUuids.get(ts));
+                object.setUuid(ts.getUuid());
 
-                Map<DigitalObjectModel, TileGrid> tilegrids = itemGrids.get(topTabSet);
+                Map<DigitalObjectModel, TileGrid> tilegrids = topTabSet.getItemGrid();
                 if (tilegrids != null) { // structure has been changed, or at
                                          // least opened
                     List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
@@ -1317,16 +1288,16 @@ public class ModifyView
      * 
      * @param focusedTabSet
      */
-    private void refresh(final TabSet focusedTabSet) {
-        TabSet ts = focusedTabSet;
-        String uuid = openedObjectsUuids.get(ts);
+    private void refresh(final EditorTabSet focusedTabSet) {
+        EditorTabSet ts = focusedTabSet;
+        String uuid = ts.getUuid();
         getUiHandlers().onRefresh(uuid);
     }
 
     @Override
     public void addStream(Record[] items, String uuid, DigitalObjectModel model) {
-        TabSet topTabSet = openedObjectsTabsets.get(uuid);
-        List<Tab> containers = itemTabs.get(topTabSet);
+        EditorTabSet topTabSet = openedObjectsTabsets.get(uuid);
+        List<Tab> containers = topTabSet.getItemTab();
         Tab toAdd = null;
         for (Tab tab : containers) {
             if (tab.getAttribute(ID_MODEL).equals(model.getValue())) {
@@ -1337,6 +1308,7 @@ public class ModifyView
         if (toAdd == null) throw new RuntimeException("There is no tab with model " + model);
 
         final TileGrid grid = getTileGrid(model.equals(DigitalObjectModel.PAGE), model.getValue());
+        topTabSet.setTileGrid(grid);
         topTabSet.setTabPane(toAdd.getID(), grid);
         if (items != null) {
             grid.setData(items);
@@ -1345,10 +1317,24 @@ public class ModifyView
         }
         toAdd.setPane(grid);
         toAdd.setAttribute(TAB_INITIALIZED, true);
-        if (itemGrids.get(topTabSet) == null) {
-            itemGrids.put(topTabSet, new HashMap<DigitalObjectModel, TileGrid>());
+        if (topTabSet.getItemGrid() == null) {
+            topTabSet.setItemGrid(new HashMap<DigitalObjectModel, TileGrid>());
         }
-        itemGrids.get(topTabSet).put(model, grid);
+        topTabSet.getItemGrid().put(model, grid);
+    }
+
+    private void deleteSelectedData(final EditorTabSet focusedTabSet) {
+        if (focusedTabSet.getTileGrid().getSelection().length > 0) {
+            SC.confirm(lang.askDelete(), new BooleanCallback() {
+
+                @Override
+                public void execute(Boolean value) {
+                    if (value == true) {
+                        focusedTabSet.getTileGrid().removeSelectedData();
+                    }
+                }
+            });
+        }
     }
 
     /** Hot-keys operations **/
@@ -1363,13 +1349,16 @@ public class ModifyView
                 isSecondFocused = !isSecondFocused;
                 changeFocus();
             } else {
-                TabSet focusedTabSet = null;
+                EditorTabSet focusedTabSet = null;
                 if (!isSecondFocused || topTabSet2 == null) {
                     focusedTabSet = topTabSet1;
                 } else if (isSecondFocused && topTabSet2 != null) {
                     focusedTabSet = topTabSet2;
                 }
-                if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_PAGE_DOWN.getCode()) {
+
+                if (code == Constants.CODE_KEY_DELETE) {
+                    deleteSelectedData(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_PAGE_DOWN.getCode()) {
                     shiftRight(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_PAGE_UP.getCode()) {
                     shiftLeft(focusedTabSet);
@@ -1378,7 +1367,7 @@ public class ModifyView
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_P.getCode()) {
                     publishShortCut(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_C.getCode()) {
-                    getUiHandlers().close(openedObjectsUuids.get(focusedTabSet));
+                    getUiHandlers().close(focusedTabSet.getUuid());
                     close(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_B.getCode()) {
                     showBasicModsWindow(focusedTabSet);
