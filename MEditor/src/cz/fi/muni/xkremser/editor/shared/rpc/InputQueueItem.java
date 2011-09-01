@@ -39,9 +39,6 @@ public class InputQueueItem
     /** The path. */
     private String path;
 
-    /** The name. */
-    private String name;
-
     /** The issn. */
     private String issn;
 
@@ -63,30 +60,10 @@ public class InputQueueItem
      * @param name
      *        the name
      */
-    public InputQueueItem(String path, String issn, String name) {
+    public InputQueueItem(String path, String issn) {
         super();
         this.path = path;
-        this.name = name;
         this.issn = issn;
-    }
-
-    /**
-     * Gets the name.
-     * 
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name.
-     * 
-     * @param name
-     *        the new name
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -133,7 +110,7 @@ public class InputQueueItem
      */
     @Override
     public String toString() {
-        return "(" + this.path + ", " + this.name + ", " + this.issn + ")";
+        return "(" + this.path + ", " + this.issn + ")";
     }
 
 }

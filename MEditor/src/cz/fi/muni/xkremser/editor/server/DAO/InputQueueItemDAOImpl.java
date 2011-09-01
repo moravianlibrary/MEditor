@@ -61,10 +61,10 @@ public class InputQueueItemDAOImpl
 
     /** The Constant INSERT_ITEM_STATEMENT. */
     public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_NAME
-            + " (path, issn, name) VALUES ((?),(?),(?))";
+            + " (path, issn) VALUES ((?),(?))";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT. */
-    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, issn, name FROM "
+    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, issn FROM "
             + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('" + File.separator
             + "' IN trim(leading ((?)) FROM path)) = 0";
 
@@ -135,7 +135,6 @@ public class InputQueueItemDAOImpl
             itemStmt = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
             itemStmt.setString(1, item.getPath());
             itemStmt.setString(2, item.getIssn());
-            itemStmt.setString(3, item.getName());
         } catch (SQLException ex) {
             LOGGER.error("Could not get insert item statement " + itemStmt, ex);
         }
@@ -168,8 +167,7 @@ public class InputQueueItemDAOImpl
 
             ResultSet rs = findSt.executeQuery();
             while (rs.next()) {
-                retList.add(new InputQueueItem(rs.getString("path"), rs.getString("issn"), rs
-                        .getString("name")));
+                retList.add(new InputQueueItem(rs.getString("path"), rs.getString("issn")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + findSt, e);

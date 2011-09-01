@@ -244,7 +244,6 @@ public class InputTreeGwtRPCDS
      */
     private static void copyValues(ListGridRecord from, InputQueueItem to) {
         to.setPath(from.getAttributeAsString(Constants.ATTR_ID));
-        to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
         to.setIssn(from.getAttributeAsString(Constants.ATTR_ISSN));
     }
 
@@ -258,7 +257,6 @@ public class InputTreeGwtRPCDS
      */
     private static void copyValues(InputQueueItem from, ListGridRecord to) {
         to.setAttribute(Constants.ATTR_ID, from.getPath());
-        to.setAttribute(Constants.ATTR_NAME, from.getName());
         to.setAttribute(Constants.ATTR_ISSN, from.getIssn());
     }
 

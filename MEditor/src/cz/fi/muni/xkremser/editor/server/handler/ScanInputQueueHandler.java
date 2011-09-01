@@ -194,8 +194,8 @@ public class ScanInputQueueHandler
             if (!test.exists()) {
                 test.mkdir(); // create if not exists
             }
-            listTopLvl.add(new InputQueueItem(File.separator + types[i], types[i], ""));
-            list.add(new InputQueueItem(File.separator + types[i], types[i], ""));
+            listTopLvl.add(new InputQueueItem(File.separator + types[i], types[i]));
+            list.add(new InputQueueItem(File.separator + types[i], types[i]));
             list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
         }
         inputQueueDAO.updateItems(list);
@@ -251,7 +251,7 @@ public class ScanInputQueueHandler
         File[] dirs = path.listFiles(filter);
         for (int i = 0; i < dirs.length; i++) {
             String rltvpth = relativePath + File.separator + dirs[i].getName();
-            list.add(new InputQueueItem(rltvpth, dirs[i].getName(), ""));
+            list.add(new InputQueueItem(rltvpth, dirs[i].getName()));
             scanDirectoryStructure(pathPrefix, rltvpth, list, level - 1);
         }
         return list;
