@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/x211800/eclipse-workspace/MEditor/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   

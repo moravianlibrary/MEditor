@@ -1324,16 +1324,23 @@ public class ModifyView
     }
 
     private void deleteSelectedData(final EditorTabSet focusedTabSet) {
-        if (focusedTabSet.getTileGrid().getSelection().length > 0) {
-            SC.confirm(lang.askDelete(), new BooleanCallback() {
+        String modelString = focusedTabSet.getSelectedTab().getAttributeAsString(ID_MODEL);
+        if (modelString != null && !"".equals(modelString)) {
+            final TileGrid focusedTileGrid =
+                    focusedTabSet.getItemGrid().get(DigitalObjectModel.parseString(modelString));
+            if (focusedTileGrid != null) {
+                if (focusedTileGrid.getSelection().length > 0) {
+                    SC.confirm(lang.askDelete(), new BooleanCallback() {
 
-                @Override
-                public void execute(Boolean value) {
-                    if (value == true) {
-                        focusedTabSet.getTileGrid().removeSelectedData();
-                    }
+                        @Override
+                        public void execute(Boolean value) {
+                            if (value == true) {
+                                focusedTileGrid.removeSelectedData();
+                            }
+                        }
+                    });
                 }
-            });
+            }
         }
     }
 

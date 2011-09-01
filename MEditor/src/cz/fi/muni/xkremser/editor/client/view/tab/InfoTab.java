@@ -73,7 +73,7 @@ public class InfoTab
         quickEdit.setTitle(lang.quickEdit());
         quickEdit.setExtraSpace(5);
 
-        layout.setMembers(info, pid, tit, typ, form, prev, quickEdit, img);
+        layout.setMembers(info, pid, tit, typ, form, quickEdit, prev, img);
 
         setPane(layout);
     }
