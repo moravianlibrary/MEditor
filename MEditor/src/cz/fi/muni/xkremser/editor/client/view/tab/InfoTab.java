@@ -71,8 +71,9 @@ public class InfoTab
                         + (isPage ? "" : "uuid:") + firstPageURL + "' />");
 
         quickEdit.setTitle(lang.quickEdit());
+        quickEdit.setExtraSpace(5);
 
-        layout.setMembers(info, pid, tit, typ, form, prev, img, quickEdit);
+        layout.setMembers(info, pid, tit, typ, form, prev, quickEdit, img);
 
         setPane(layout);
     }
