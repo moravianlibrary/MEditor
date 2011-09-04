@@ -94,7 +94,7 @@ public class ScanImgServiceImpl
         if (req.getProtocol().toLowerCase().contains("https")) {
             sb.append('s');
         }
-        sb.append("://").append(req.getServerName()).append(full ? DJATOKA_URL : DJATOKA_URL_FULL_IMG)
+        sb.append("://").append(req.getServerName()).append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL)
                 .append(uuid);
         resp.setContentType("image/jpeg");
         resp.sendRedirect(resp.encodeRedirectURL(sb.toString()));
