@@ -135,13 +135,16 @@ public class ConvertToJPEG2000Handler
         sb = new StringBuffer();
         sb.append(djatokaHome).append(File.separator).append("bin").append(File.separator)
                 .append("compress.").append(((ServerUtils.isUnix() || ServerUtils.isMac()) ? "sh " : "bat "))
-                .append(djatokaHome).append(" -i ");
+                .append(djatokaHome).append(" ");
 
         StringBuffer command = new StringBuffer();
-        command.append(sb.toString()).append(item.getJpgFsPath()).append(" -o ")
+        command.append(sb.toString()).append(item.getJpgFsPath()).append(" ")
                 .append(item.getJpeg2000FsPath());
         Process p;
         try {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath());
+            }
             p = Runtime.getRuntime().exec(command.toString());
             p.waitFor();
         } catch (IOException e) {

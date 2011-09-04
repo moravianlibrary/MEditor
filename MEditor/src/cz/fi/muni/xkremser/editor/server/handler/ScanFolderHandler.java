@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -57,8 +57,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderResult;
 
-import gov.lanl.adore.djatoka.DjatokaEncodeParam;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ScanFolderHandler.
@@ -76,9 +74,8 @@ public class ScanFolderHandler
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
-    /** The http session provider. */
     @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    private Provider<HttpServletRequest> requestProvider;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -106,7 +103,8 @@ public class ScanFolderHandler
         final String code = action.getCode();
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Processing input queue: (model = " + model + ", code = " + code + ")");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        HttpServletRequest req = requestProvider.get();
+        ServerUtils.checkExpiredSession(req.getSession());
 
         if (base == null || "".equals(base)) {
             LOGGER.error("Scanning folder: Action failed because attribut "
@@ -145,7 +143,6 @@ public class ScanFolderHandler
                                            resolvedIdentifier.lastIndexOf('.'));
                 result.add(new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i)));
             }
-            DjatokaEncodeParam params = new DjatokaEncodeParam();
             if (!toAdd.isEmpty()) {
                 imageResolverDAO.insertItems(toAdd);
             }

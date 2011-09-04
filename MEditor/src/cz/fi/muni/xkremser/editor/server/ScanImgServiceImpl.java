@@ -27,16 +27,10 @@
 
 package cz.fi.muni.xkremser.editor.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import java.net.HttpURLConnection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,11 +40,10 @@ import com.google.inject.Injector;
 
 import org.apache.log4j.Logger;
 
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.server.fedora.ImageMimeType;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.IOUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -62,7 +55,13 @@ public class ScanImgServiceImpl
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(ScanImgServiceImpl.class);
 
-    private static final Class<ScanImgServiceImpl> LOCK = ScanImgServiceImpl.class;
+    private static final String DJATOKA_URL =
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=3&svc.scale="
+                    + Constants.IMAGE_THUMBNAIL_WIDTH + "&rft_id=";
+
+    private static final String DJATOKA_URL_FULL_IMG =
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.scale="
+                    + Constants.IMAGE_FULL_WIDTH + "&rft_id=";
 
     /** The config. */
     @Inject
@@ -81,56 +80,24 @@ public class ScanImgServiceImpl
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
+
         resp.setDateHeader("Last Fetched", System.currentTimeMillis());
         //         resp.setDateHeader("Expires", instance.getTime().getTime());
+        boolean full = ClientUtils.toBoolean(req.getParameter("full"));
 
-        String filename =
+        String uuid =
                 req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_SCANS_PREFIX)
                         + Constants.SERVLET_SCANS_PREFIX.length() + 1);
-        ServletOutputStream os = resp.getOutputStream();
-        if (filename != null && !"".equals(filename) && baseOk) {
 
-            try {
-                synchronized (LOCK) {
-                    FileInputStream is = new FileInputStream(base + File.separator + filename);
-                    try {
-                        IOUtils.copyStreams(is, os);
-                    } catch (IOException e) {
-                        resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-                        LOGGER.error("Unable to open full image.", e);
-                    } finally {
-                        os.flush();
-                        if (is != null) {
-                            try {
-                                is.close();
-                            } catch (IOException e) {
-                                resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-                                LOGGER.error("Unable to close stream.", e);
-                            } finally {
-                                is = null;
-                            }
-                        }
-                    }
-                }
-                resp.setContentType(ImageMimeType.JPEG.getValue());
-                resp.setStatus(HttpURLConnection.HTTP_OK);
-
-            } catch (FileNotFoundException e) {
-                resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-                LOGGER.error("Unable to open image of a scan. File (" + base + File.separator + filename
-                        + ") not found.", e);
-            } catch (SecurityException e) {
-                resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-                LOGGER.error("Unable to open image of a scan because of the access rights on the file system.",
-                             e);
-            } catch (IOException e) {
-                resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
-                LOGGER.error("Unable to open image of a scan.", e);
-            } finally {
-                os.flush();
-            }
-
+        StringBuffer sb = new StringBuffer();
+        sb.append("http");
+        if (req.getProtocol().toLowerCase().contains("https")) {
+            sb.append('s');
         }
+        sb.append("://").append(req.getServerName()).append(full ? DJATOKA_URL : DJATOKA_URL_FULL_IMG)
+                .append(uuid);
+        resp.setContentType("image/jpeg");
+        resp.sendRedirect(resp.encodeRedirectURL(sb.toString()));
     }
 
     /*

@@ -55,11 +55,11 @@ public class ImageResolverDAOImpl
             + " WHERE shown > (NOW() - INTERVAL '(?) month')";
 
     /** The Constant SELECT_ITEMS_FOR_DELETION_STATEMENT. */
-    public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT fs_path FROM "
+    public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT imageFile FROM "
             + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE shown > (NOW() - INTERVAL '(?) month')";
 
     /** The Constant SELECT_ITEM_STATEMENT. */
-    public static final String SELECT_ITEM_STATEMENT = "SELECT id, fs_path FROM "
+    public static final String SELECT_ITEM_STATEMENT = "SELECT id, imageFile FROM "
             + Constants.TABLE_IMAGE_NAME + " WHERE old_fs_path = ((?))";
 
     /** The Constant UPDATE_ITEM_STATEMENT. */
@@ -68,7 +68,7 @@ public class ImageResolverDAOImpl
 
     /** The Constant INSERT_ITEM_STATEMENT. */
     public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_IMAGE_NAME
-            + " (identifier, fs_path, old_fs_path, shown) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP))";
+            + " (identifier, imageFile, old_fs_path, shown) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP))";
 
     private static final Logger LOGGER = Logger.getLogger(ImageResolverDAOImpl.class);
 
@@ -165,7 +165,7 @@ public class ImageResolverDAOImpl
             int rowsAffected = 0;
             while (rs.next()) {
                 id = rs.getInt("id");
-                ret = rs.getString("fs_path");
+                ret = rs.getString("imageFile");
                 i++;
             }
             if (id != -1) {
@@ -209,7 +209,7 @@ public class ImageResolverDAOImpl
             int i = 0;
             int rowsAffected = 0;
             while (rs.next()) {
-                ret.add(rs.getString("fs_path"));
+                ret.add(rs.getString("imageFile"));
                 i++;
             }
             if (i > 0) {

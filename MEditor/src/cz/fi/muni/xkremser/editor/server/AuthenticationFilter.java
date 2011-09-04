@@ -68,7 +68,7 @@ public class AuthenticationFilter
         final HttpServletRequest request = (HttpServletRequest) req;
         final String path = request.getServletPath();
         final HttpSession session = request.getSession(true);
-        final Map parameters = req.getParameterMap();
+        final Map<?, ?> parameters = req.getParameterMap();
         final String sessionId = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         final boolean sessionIdBool = sessionId != null;
         final boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;

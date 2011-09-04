@@ -185,8 +185,8 @@ public class CreateStructureView
             layout.removeMember(tileGrid);
         }
         tileGrid = new TileGrid();
-        tileGrid.setTileWidth(Constants.PAGE_THUMBNAIL_WIDTH);
-        tileGrid.setTileHeight(Constants.PAGE_THUMBNAIL_HEIGHT);
+        tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH);
+        tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT);
         tileGrid.setHeight100();
         tileGrid.setWidth100();
         tileGrid.setCanDrag(true);
@@ -260,10 +260,12 @@ public class CreateStructureView
                         final ModalWindow mw = new ModalWindow(layout);
                         mw.setLoadingIcon("loadingAnimation.gif");
                         mw.show(true);
-                        final Image full =
-                                new Image(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_SCANS_PREFIX
-                                        + '/' + event.getRecord().getAttribute(Constants.ATTR_PICTURE));
-                        full.setHeight("700px");
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
+                                .append('/').append(event.getRecord().getAttribute(Constants.ATTR_PICTURE))
+                                .append("?full=yes");
+                        final Image full = new Image(sb.toString());
+                        full.setHeight(Constants.IMAGE_FULL_WIDTH + "px");
                         full.addLoadHandler(new LoadHandler() {
 
                             @Override
@@ -296,10 +298,10 @@ public class CreateStructureView
         DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
         pictureField.setType("image");
         pictureField.setImageURLPrefix(Constants.SERVLET_SCANS_PREFIX + '/');
-        pictureField.setImageWidth(80);
-        pictureField.setImageHeight(110);
+        pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
+        pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT);
 
-        DetailViewerField nameField = new DetailViewerField(Constants.ATTR_PICTURE);
+        DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
         nameField.setDetailFormatter(new DetailFormatter() {
 
             @Override

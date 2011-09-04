@@ -775,8 +775,8 @@ public class ModifyView
 
         final TileGrid tileGrid = new TileGrid();
         if (pages) {
-            tileGrid.setTileWidth(90);
-            tileGrid.setTileHeight(135);
+            tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH);
+            tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT);
         } else {
             tileGrid.setTileWidth(105);
             tileGrid.setTileHeight(115);
@@ -901,7 +901,7 @@ public class ModifyView
                             final Image full =
                                     new Image(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX
                                             + '/' + event.getRecord().getAttribute(Constants.ATTR_UUID));
-                            full.setHeight("700px");
+                            full.setHeight(Constants.IMAGE_FULL_WIDTH + "px");
                             full.addLoadHandler(new LoadHandler() {
 
                                 @Override
@@ -947,8 +947,8 @@ public class ModifyView
         pictureField.setType("image");
         if (pages) {
             pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');
-            pictureField.setImageWidth(80);
-            pictureField.setImageHeight(110);
+            pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
+            pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT);
         } else {
             pictureField.setImageWidth(95);
             pictureField.setImageHeight(95);

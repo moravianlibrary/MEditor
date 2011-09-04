@@ -83,6 +83,8 @@ public class CreateStructurePresenter
 
     private LangConstants lang;
 
+    private static final Class<CreateStructurePresenter> LOCK = CreateStructurePresenter.class;
+
     @Inject
     public void setLang(LangConstants lang) {
         this.lang = lang;
@@ -115,7 +117,7 @@ public class CreateStructurePresenter
     }
 
     /** The done. */
-    private int done = 0;
+    private int alreadyDone = 0;
 
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
@@ -215,13 +217,14 @@ public class CreateStructurePresenter
         final ScanFolderAction action = new ScanFolderAction(model, code);
         final DispatchCallback<ScanFolderResult> callback = new DispatchCallback<ScanFolderResult>() {
 
-            private int done = 0;
+            private volatile int done = 0;
             private int total = 0;
+            private volatile boolean isDone = false;
 
             @Override
             public void callback(ScanFolderResult result) {
-                List<ImageItem> itemList = result.getItems();
-                List<ImageItem> toAdd = result.getToAdd();
+                final List<ImageItem> itemList = result.getItems();
+                final List<ImageItem> toAdd = result.getToAdd();
                 if (toAdd != null && !toAdd.isEmpty()) {
                     int lastItem = toAdd.size();
                     boolean progressbar = lastItem > 5;
@@ -235,10 +238,23 @@ public class CreateStructurePresenter
                         getView().getPopupPanel().setWidget(hBar1);
                         getView().getPopupPanel().setVisible(true);
                         getView().getPopupPanel().center();
+                        Timer timer = new Timer() {
+
+                            @Override
+                            public void run() {
+                                for (ImageItem item : toAdd) {
+                                    convertItem(item, hBar1, itemList);
+                                }
+                            }
+                        };
+                        timer.schedule(40);
+                    } else {
+                        for (ImageItem item : toAdd) {
+                            convertItem(item, hBar1, itemList);
+                        }
                     }
-                    for (ImageItem item : toAdd) {
-                        convertItem(item, hBar1, itemList);
-                    }
+                } else {
+                    doTheRest(itemList);
                 }
 
             }
@@ -255,6 +271,7 @@ public class CreateStructurePresenter
 
                     getView().onAddImages(model, code, items);
                 }
+                getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
                 getView().getPopupPanel().hide();
             }
@@ -266,11 +283,30 @@ public class CreateStructurePresenter
 
                             @Override
                             public void callback(ConvertToJPEG2000Result result) {
+                                done++;
                                 if (hBar1 != null) {
-                                    done++;
                                     hBar1.setPercentDone(((100 * (done + 1)) / total));
-                                    if (done == total) {
-                                        doTheRest(itemList);
+                                }
+                                if (done >= total && !isDone) {
+                                    synchronized (LOCK) {
+                                        if (done >= total && !isDone) {
+                                            doTheRest(itemList);
+                                            isDone = true;
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void callbackError(Throwable t) {
+                                // unable to convert images to JPEG 2000 install the libraries bitch!
+                                if (!isDone) {
+                                    synchronized (LOCK) {
+                                        if (!isDone) {
+                                            doTheRest(itemList);
+                                            isDone = true;
+                                        }
                                     }
                                 }
                             }
@@ -386,14 +422,14 @@ public class CreateStructurePresenter
                     getView().getPopupPanel().setWidget(hBar1);
                     getView().getPopupPanel().setVisible(true);
                     getView().getPopupPanel().center();
-                    done = 0;
+                    alreadyDone = 0;
                     Timer timer = new Timer() {
 
                         @Override
                         public void run() {
-                            hBar1.setPercentDone(((100 * (done + 1)) / data.length));
-                            tileGrid.addData(((PageRecord) data[done]).deepCopy());
-                            if (++done != data.length) {
+                            hBar1.setPercentDone(((100 * (alreadyDone + 1)) / data.length));
+                            tileGrid.addData(((PageRecord) data[alreadyDone]).deepCopy());
+                            if (++alreadyDone != data.length) {
                                 schedule(15);
                             } else {
                                 getView().getPopupPanel().setVisible(false);
