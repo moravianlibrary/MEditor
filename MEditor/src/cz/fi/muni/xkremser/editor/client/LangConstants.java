@@ -1708,6 +1708,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String menuSelectAll();
 
   /**
+   * Translated "View (IIPMooViewer)".
+   * 
+   * @return translated "View (IIPMooViewer)"
+   */
+  @DefaultStringValue("View (IIPMooViewer)")
+  @Key("menuView")
+  String menuView();
+
+  /**
    * Translated "Your account can not publish.".
    * 
    * @return translated "Your account can not publish."

@@ -66,6 +66,7 @@ import cz.fi.muni.xkremser.editor.client.view.ScanRecord;
 
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
+import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
@@ -96,14 +97,15 @@ public class CreateStructurePresenter
     public interface MyView
             extends View, HasUiHandlers<MyUiHandlers> {
 
-        public Record[] fromClipboard();
+        Record[] fromClipboard();
 
-        public void toClipboard(final Record[] data);
+        void toClipboard(final Record[] data);
 
-        public PopupPanel getPopupPanel();
+        PopupPanel getPopupPanel();
 
-        public void onAddImages(String model, String code, ScanRecord[] items);
+        void onAddImages(String model, String code, ScanRecord[] items);
 
+        void escShortCut();
     }
 
     /**
@@ -174,7 +176,16 @@ public class CreateStructurePresenter
     @Override
     protected void onBind() {
         super.onBind();
+        addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
 
+            @Override
+            public void onKeyPressed(KeyPressedEvent event) {
+                if (event.getCode() == Constants.CODE_KEY_ESC) {
+                    getView().escShortCut();
+                }
+            }
+
+        });
     };
 
     /*
@@ -256,7 +267,35 @@ public class CreateStructurePresenter
                 } else {
                     doTheRest(itemList);
                 }
+            }
 
+            @Override
+            public void callbackError(final Throwable t) {
+                if (t.getMessage() != null && t.getMessage().length() > 0
+                        && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+                    SC.confirm("Session has expired. Do you want to be redirected to login page?",
+                               new BooleanCallback() {
+
+                                   @Override
+                                   public void execute(Boolean value) {
+                                       if (value != null && value) {
+                                           MEditor.redirect(t.getMessage().substring(1));
+                                       }
+                                   }
+                               });
+                } else {
+                    SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
+
+                        @Override
+                        public void execute(Boolean value) {
+                            if (value != null && value) {
+                                processImages();
+                            }
+                        }
+                    });
+                }
+                getView().getPopupPanel().setVisible(false);
+                getView().getPopupPanel().hide();
             }
 
             private void doTheRest(List<ImageItem> itemList) {
@@ -295,7 +334,6 @@ public class CreateStructurePresenter
                                         }
                                     }
                                 }
-
                             }
 
                             @Override
@@ -312,36 +350,6 @@ public class CreateStructurePresenter
                             }
                         };
                 dispatcher.execute(action, callback);
-
-            }
-
-            @Override
-            public void callbackError(final Throwable t) {
-                if (t.getMessage() != null && t.getMessage().length() > 0
-                        && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                    SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                               new BooleanCallback() {
-
-                                   @Override
-                                   public void execute(Boolean value) {
-                                       if (value != null && value) {
-                                           MEditor.redirect(t.getMessage().substring(1));
-                                       }
-                                   }
-                               });
-                } else {
-                    SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
-
-                        @Override
-                        public void execute(Boolean value) {
-                            if (value != null && value) {
-                                processImages();
-                            }
-                        }
-                    });
-                }
-                getView().getPopupPanel().setVisible(false);
-                getView().getPopupPanel().hide();
             }
         };
         Image loader = new Image("images/loadingAnimation3.gif");
@@ -361,21 +369,21 @@ public class CreateStructurePresenter
     public void onAddImages(final TileGrid tileGrid, final Menu menu) {
         MenuItem[] items = menu.getItems();
         if (!CreateStructureView.ID_SEL_ALL
-                .equals(items[0].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+                .equals(items[2].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[0].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[2].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
                 tileGrid.selectAllRecords();
             }
         });
-        if (!CreateStructureView.ID_SEL_NONE.equals(items[1]
+        if (!CreateStructureView.ID_SEL_NONE.equals(items[3]
                 .getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[1].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[3].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -383,10 +391,10 @@ public class CreateStructurePresenter
             }
         });
         if (!CreateStructureView.ID_SEL_INV
-                .equals(items[2].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+                .equals(items[4].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[2].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[4].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -395,20 +403,20 @@ public class CreateStructurePresenter
                 tileGrid.deselectRecords(selected);
             }
         });
-        if (!CreateStructureView.ID_COPY.equals(items[4].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+        if (!CreateStructureView.ID_COPY.equals(items[6].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[4].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[6].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
                 getView().toClipboard(tileGrid.getSelection());
             }
         });
-        if (!CreateStructureView.ID_PASTE.equals(items[5].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+        if (!CreateStructureView.ID_PASTE.equals(items[7].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[5].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[7].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -445,11 +453,11 @@ public class CreateStructurePresenter
                 }
             }
         });
-        if (!CreateStructureView.ID_DELETE.equals(items[6].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+        if (!CreateStructureView.ID_DELETE.equals(items[8].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
 
-        items[6].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[8].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {

@@ -56,8 +56,8 @@ public class ScanImgServiceImpl
     private static final Logger LOGGER = Logger.getLogger(ScanImgServiceImpl.class);
 
     private static final String DJATOKA_URL =
-            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=3&svc.scale="
-                    + Constants.IMAGE_THUMBNAIL_WIDTH + "&rft_id=";
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=2&svc.scale="
+                    + Constants.IMAGE_THUMBNAIL_HEIGHT + "&rft_id=";
 
     private static final String DJATOKA_URL_FULL_IMG =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.scale="
@@ -94,8 +94,8 @@ public class ScanImgServiceImpl
         if (req.getProtocol().toLowerCase().contains("https")) {
             sb.append('s');
         }
-        sb.append("://").append(req.getServerName()).append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL)
-                .append(uuid);
+        sb.append("://").append(URLS.LOCALHOST() ? "editor.mzk.cz" : req.getServerName())
+                .append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL).append(uuid);
         resp.setContentType("image/jpeg");
         resp.sendRedirect(resp.encodeRedirectURL(sb.toString()));
     }

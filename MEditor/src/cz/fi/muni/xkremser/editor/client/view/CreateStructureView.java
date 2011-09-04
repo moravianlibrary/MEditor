@@ -38,14 +38,20 @@ import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.HTMLPane;
+import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.MenuItemSeparator;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
@@ -88,6 +94,9 @@ public class CreateStructureView
     public static final String ID_SEPARATOR = "separator";
 
     /** The Constant ID_SEL_ALL. */
+    public static final String ID_VIEW = "view";
+
+    /** The Constant ID_SEL_ALL. */
     public static final String ID_SEL_ALL = "all";
 
     /** The Constant ID_SEL_NONE. */
@@ -115,6 +124,8 @@ public class CreateStructureView
     private PopupPanel imagePopup;
 
     private TileGrid tileGrid;
+
+    private Window winModal;
 
     /**
      * Instantiates a new create view.
@@ -196,6 +207,49 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
 
+        MenuItem viewItem = new MenuItem(lang.menuView(), "icons/16/eye.png");
+        viewItem.setAttribute(ID_NAME, ID_VIEW);
+        viewItem.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return tileGrid.getSelection() != null && tileGrid.getSelection().length == 1;
+            }
+        });
+        viewItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE);
+                winModal = new Window();
+                //                winModal.setWidth(1024);
+                //                winModal.setHeight(768);
+                winModal.setWidth("85%");
+                winModal.setHeight("85%");
+                StringBuffer sb = new StringBuffer();
+                sb.append(lang.scan()).append(": ")
+                        .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
+                winModal.setTitle(sb.toString());
+                winModal.setShowMinimizeButton(false);
+                winModal.setIsModal(true);
+                winModal.setShowModalMask(true);
+                winModal.centerInPage();
+                winModal.addCloseClickHandler(new CloseClickHandler() {
+
+                    @Override
+                    public void onCloseClick(CloseClientEvent event) {
+                        escShortCut();
+                    }
+                });
+                HTMLPane helpPane = new HTMLPane();
+                helpPane.setPadding(15);
+                helpPane.setContentsURL("viewer/viewer.html?rft_id=" + uuid);
+                helpPane.setContentsType(ContentsType.FRAGMENT);
+                winModal.addItem(helpPane);
+                winModal.show();
+            }
+        });
+
         MenuItem selectAllItem = new MenuItem(lang.menuSelectAll(), "icons/16/document_plain_new.png");
         selectAllItem.setAttribute(ID_NAME, ID_SEL_ALL);
 
@@ -240,7 +294,9 @@ public class CreateStructureView
             }
         });
 
-        menu.setItems(selectAllItem,
+        menu.setItems(viewItem,
+                      separator,
+                      selectAllItem,
                       deselectAllItem,
                       invertSelectionItem,
                       separator,
@@ -306,7 +362,9 @@ public class CreateStructureView
 
             @Override
             public String format(Object value, Record record, DetailViewerField field) {
-                return lang.scan() + ": " + value;
+                StringBuffer sb = new StringBuffer();
+                sb.append(lang.scan()).append(": ").append(value);
+                return sb.toString();
             }
         });
 
@@ -314,5 +372,16 @@ public class CreateStructureView
         tileGrid.setData(items);
         getUiHandlers().onAddImages(tileGrid, menu);
         layout.addMember(tileGrid);
+    }
+
+    /**
+     * Method for close currently displayed window
+     */
+    @Override
+    public void escShortCut() {
+        if (winModal != null) {
+            winModal.destroy();
+            winModal = null;
+        }
     }
 }

@@ -144,6 +144,8 @@ public class ModifyView
         void close(final String uuid);
 
         void onChangeFocusedTabSet(final String focusedUuid);
+
+        void openAnotherObject(final String uuid);
     }
 
     /** The Constant ID_DC. */
@@ -941,6 +943,9 @@ public class ModifyView
                     }
                 }
             });
+        } else {
+            String uuidToEdit = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID);
+            getUiHandlers().openAnotherObject(uuidToEdit);
         }
 
         DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
@@ -959,7 +964,9 @@ public class ModifyView
 
             @Override
             public String format(Object value, Record record, DetailViewerField field) {
-                return lang.title() + ": " + value;
+                StringBuffer sb = new StringBuffer();
+                sb.append(lang.title()).append(": ").append(value);
+                return sb.toString();
             }
         });
         DetailViewerField descField = new DetailViewerField(Constants.ATTR_DESC);

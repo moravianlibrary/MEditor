@@ -641,4 +641,14 @@ public class ModifyPresenter
 
         dispatcher.execute(action, callback);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void openAnotherObject(String uuid) {
+        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
+                                                                                  uuid));
+    }
 }
