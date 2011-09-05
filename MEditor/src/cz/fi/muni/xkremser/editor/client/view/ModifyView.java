@@ -889,12 +889,13 @@ public class ModifyView
             }
         });
 
-        if (pages) {
-            getPopupPanel();
-            tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+        tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
-                @Override
-                public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
+            @Override
+            public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+                if (pages) {
+                    getPopupPanel();
+
                     if (event.getRecord() != null) {
                         final ModalWindow mw = new ModalWindow(layout);
                         mw.setLoadingIcon("loadingAnimation.gif");
@@ -941,12 +942,13 @@ public class ModifyView
                             mw.hide();
                         }
                     }
+                } else {
+
+                    String uuidToEdit = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID);
+                    getUiHandlers().openAnotherObject(uuidToEdit);
                 }
-            });
-        } else {
-            String uuidToEdit = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID);
-            getUiHandlers().openAnotherObject(uuidToEdit);
-        }
+            }
+        });
 
         DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
         pictureField.setType("image");
