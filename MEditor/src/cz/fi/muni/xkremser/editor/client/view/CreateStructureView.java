@@ -224,8 +224,8 @@ public class CreateStructureView
                 winModal = new Window();
                 //                winModal.setWidth(1024);
                 //                winModal.setHeight(768);
-                winModal.setWidth("85%");
-                winModal.setHeight("85%");
+                winModal.setWidth("95%");
+                winModal.setHeight("90%");
                 StringBuffer sb = new StringBuffer();
                 sb.append(lang.scan()).append(": ")
                         .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
