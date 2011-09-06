@@ -36,6 +36,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
@@ -43,10 +44,15 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.data.Criteria;
+import com.smartgwt.client.data.DSCallback;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -59,6 +65,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
@@ -75,6 +82,8 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalO
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RecentlyTreeCallbackSuccessEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RecentlyTreeCallbackSuccessEvent.RecentlyTreeCallbackSuccessHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -85,7 +94,13 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
  */
 public class DigitalObjectMenuPresenter
         extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy>
-        implements MyUiHandlers {
+        implements MyUiHandlers, cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS.MyUiHandlers {
+
+    public interface MyRecentlyTreeGwtRPCDS
+            extends
+            HasUiHandlers<cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS.MyUiHandlers> {
+
+    }
 
     /**
      * The Interface MyView.
@@ -167,6 +182,9 @@ public class DigitalObjectMenuPresenter
          * @return the section stack
          */
         SectionStack getSectionStack();
+
+        SelectItem getSelectItem();
+
     }
 
     /**
@@ -267,6 +285,9 @@ public class DigitalObjectMenuPresenter
         super.onBind();
 
         getView().setDS(dispatcher);
+        if (getView().getRecentlyModifiedGrid().getDataSource() instanceof RecentlyTreeGwtRPCDS) {
+            ((RecentlyTreeGwtRPCDS) getView().getRecentlyModifiedGrid().getDataSource()).setUiHandlers(this);
+        }
         getView().getRecentlyModifiedGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
@@ -335,6 +356,30 @@ public class DigitalObjectMenuPresenter
             @Override
             public void onKeyPressed(KeyPressedEvent event) {
                 shortcutPressed(event.getCode());
+            }
+        });
+
+        addRegisteredHandler(RecentlyTreeCallbackSuccessEvent.getType(),
+                             new RecentlyTreeCallbackSuccessHandler() {
+
+                                 @Override
+                                 public void onRecentlyTreeCallbackSuccess(RecentlyTreeCallbackSuccessEvent event) {
+                                     refreshRecentlyModifiedGrid();
+                                 }
+                             });
+
+    }
+
+    private void refreshRecentlyModifiedGrid() {
+
+        Criteria criteria = new Criteria();
+        boolean all = lang.all().equals(getView().getSelectItem().getValue());
+        criteria.addCriteria(Constants.ATTR_ALL, all);
+        getView().getRecentlyModifiedGrid().getDataSource().fetchData(criteria, new DSCallback() {
+
+            @Override
+            public void execute(DSResponse response, Object rawData, DSRequest request) {
+                getView().getRecentlyModifiedGrid().setData(response.getData());
             }
         });
     }
@@ -493,6 +538,11 @@ public class DigitalObjectMenuPresenter
                 revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
             }
         }
+    }
+
+    @Override
+    public void onRecentlyTreeCallbackSuccess() {
+        RecentlyTreeCallbackSuccessEvent.fire(DigitalObjectMenuPresenter.this);
     }
 
 }

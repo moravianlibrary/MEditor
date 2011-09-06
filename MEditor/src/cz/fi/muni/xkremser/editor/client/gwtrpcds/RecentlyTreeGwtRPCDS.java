@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.mvp.client.UiHandlers;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
@@ -46,6 +47,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyRecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
@@ -59,12 +61,23 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
  * The Class RecentlyTreeGwtRPCDS.
  */
 public class RecentlyTreeGwtRPCDS
-        extends AbstractGwtRPCDS {
+        extends
+        AbstractGwtRPCDSWithUiHandlers<cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS.MyUiHandlers>
+        implements MyRecentlyTreeGwtRPCDS {
 
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
     private final LangConstants lang;
+
+    /**
+     * The Interface MyUiHandlers.
+     */
+    public interface MyUiHandlers
+            extends UiHandlers {
+
+        void onRecentlyTreeCallbackSuccess();
+    }
 
     /**
      * Instantiates a new recently tree gwt rpcds.
@@ -167,6 +180,7 @@ public class RecentlyTreeGwtRPCDS
                                        response.setData(list);
                                    }
                                    processResponse(requestId, response);
+                                   getUiHandlers().onRecentlyTreeCallbackSuccess();
                                }
                            });
 
@@ -205,6 +219,7 @@ public class RecentlyTreeGwtRPCDS
                                        processResponse(requestId, response);
                                    }
                                    processResponse(requestId, response);
+                                   getUiHandlers().onRecentlyTreeCallbackSuccess();
                                }
                            });
     }

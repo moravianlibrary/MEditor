@@ -153,6 +153,8 @@ public class DigitalObjectMenuView
     /** The layout. */
     private final VLayout layout;
 
+    private final SelectItem selectItem = new SelectItem();
+
     /**
      * Instantiates a new digital object menu view.
      */
@@ -192,7 +194,6 @@ public class DigitalObjectMenuView
         form.setWidth(60);
         form.setNumCols(1);
 
-        final SelectItem selectItem = new SelectItem();
         selectItem.setWidth(60);
         selectItem.setShowTitle(false);
         selectItem.setValueMap(lang.me(), lang.all());
@@ -395,5 +396,11 @@ public class DigitalObjectMenuView
     @Override
     public SectionStack getSectionStack() {
         return sectionStack;
+    }
+
+    @Override
+    public SelectItem getSelectItem() {
+        return selectItem;
+
     }
 }
