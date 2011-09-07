@@ -371,17 +371,24 @@ public class DigitalObjectMenuPresenter
     }
 
     private void refreshRecentlyModifiedGrid() {
-
-        Criteria criteria = new Criteria();
-        boolean all = lang.all().equals(getView().getSelectItem().getValue());
-        criteria.addCriteria(Constants.ATTR_ALL, all);
-        getView().getRecentlyModifiedGrid().getDataSource().fetchData(criteria, new DSCallback() {
+        Timer timer = new Timer() {
 
             @Override
-            public void execute(DSResponse response, Object rawData, DSRequest request) {
-                getView().getRecentlyModifiedGrid().setData(response.getData());
+            public void run() {
+                Criteria criteria = new Criteria();
+                boolean all = lang.all().equals(getView().getSelectItem().getValue());
+                criteria.addCriteria(Constants.ATTR_ALL, all);
+                getView().getRecentlyModifiedGrid().getDataSource().fetchData(criteria, new DSCallback() {
+
+                    @Override
+                    public void execute(DSResponse response, Object rawData, DSRequest request) {
+                        getView().getRecentlyModifiedGrid().setData(response.getData());
+                    }
+
+                });
             }
-        });
+        };
+        timer.schedule(100);
     }
 
     private void evaluateUuid(TextItem uuidField) {

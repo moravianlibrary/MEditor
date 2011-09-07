@@ -78,6 +78,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RecentlyTreeCallbackSuccessEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
@@ -530,6 +531,7 @@ public class ModifyPresenter
 
                                @Override
                                public void callback(PutDescriptionResult result) {
+                                   RecentlyTreeCallbackSuccessEvent.fire(ModifyPresenter.this);
                                }
                            });
     }
