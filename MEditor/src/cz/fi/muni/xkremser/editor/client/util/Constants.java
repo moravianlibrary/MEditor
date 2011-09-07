@@ -156,6 +156,9 @@ public class Constants {
     /** The Constant ATTR_MODEL. */
     public static final String ATTR_MODEL = "model";
 
+    /** The Constant ATTR_MODIFIED. */
+    public static final String ATTR_MODIFIED = "modified";
+
     /** The Constant ATTR_ALL. */
     public static final String ATTR_ALL = "all";
 

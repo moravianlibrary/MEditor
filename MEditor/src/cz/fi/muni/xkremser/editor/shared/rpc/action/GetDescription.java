@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
+import java.util.Date;
+
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
@@ -51,4 +53,8 @@ public class GetDescription
     /** The user description. */
     @Out(2)
     String userDescription;
+
+    /** The modified. */
+    @Out(3)
+    Date modified;
 }

@@ -30,9 +30,12 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -45,6 +48,8 @@ import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
@@ -60,8 +65,11 @@ public class GetDigitalObjectDetailHandler
     private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
-    /** The handler. */
-    private final DigitalObjectHandler handler;
+    /** The DigitalObject handler. */
+    private final DigitalObjectHandler objectHandler;
+
+    /** The GetDescriptionHandler handler. */
+    private final GetDescriptionHandler descritptionHandler;
 
     /** The http session provider. */
     @Inject
@@ -74,8 +82,9 @@ public class GetDigitalObjectDetailHandler
      *        the handler
      */
     @Inject
-    public GetDigitalObjectDetailHandler(final DigitalObjectHandler handler) {
-        this.handler = handler;
+    public GetDigitalObjectDetailHandler(final DigitalObjectHandler objectHandler) {
+        this.objectHandler = objectHandler;
+        this.descritptionHandler = new GetDescriptionHandler();
     }
 
     /*
@@ -93,14 +102,24 @@ public class GetDigitalObjectDetailHandler
         LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
 
         try {
-            ServerUtils.checkExpiredSession(httpSessionProvider);
+            HttpSession ses = httpSessionProvider.get();
+            Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
+            injector.injectMembers(descritptionHandler);
+            ServerUtils.checkExpiredSession(ses);
             DigitalObjectDetail obj = null;
-            if (action.getModel() == null) {
-                obj = handler.getDigitalObject(uuid);
-            } else {
-                obj = handler.getDigitalObjectItems(uuid, action.getModel());
+            if (action.getModel() == null) { // lazy
+                obj = objectHandler.getDigitalObject(uuid);
+            } else { // fetch uuids
+                obj = objectHandler.getDigitalObjectItems(uuid, action.getModel());
             }
-            return new GetDigitalObjectDetailResult(obj, action.isRefreshIn());
+            GetDescriptionResult result =
+                    descritptionHandler.execute(new GetDescriptionAction(uuid), context);
+
+            String description = result.getUserDescription();
+            Date modified = result.getModified();
+            return new GetDigitalObjectDetailResult(obj,
+                                                    description == null ? "" : description,
+                                                    modified == null ? new Date() : modified);
         } catch (IOException e) {
             String msg = null;
             if (ServerUtils.isCausedByException(e, FileNotFoundException.class)) {

@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
@@ -36,7 +38,7 @@ import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
  * The Class RecentlyModifiedItem.
  */
 public class RecentlyModifiedItem
-        implements IsSerializable {
+        implements IsSerializable, Comparable<RecentlyModifiedItem> {
 
     /** The uuid. */
     private String uuid;
@@ -49,6 +51,8 @@ public class RecentlyModifiedItem
 
     /** The model. */
     private DigitalObjectModel model;
+
+    private Date modified;
 
     // @SuppressWarnings("unused")
     /**
@@ -70,12 +74,17 @@ public class RecentlyModifiedItem
      * @param model
      *        the model
      */
-    public RecentlyModifiedItem(String uuid, String name, String description, DigitalObjectModel model) {
+    public RecentlyModifiedItem(String uuid,
+                                String name,
+                                String description,
+                                DigitalObjectModel model,
+                                Date modifed) {
         super();
         this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.model = model;
+        this.modified = modifed;
     }
 
     /**
@@ -154,6 +163,25 @@ public class RecentlyModifiedItem
         this.model = model;
     }
 
+    /**
+     * Gets the modified.
+     * 
+     * @return the modified
+     */
+    public Date getModified() {
+        return modified;
+    }
+
+    /**
+     * Sets the modified.
+     * 
+     * @param modified
+     *        the new modified
+     */
+    public void setModified(Date modified) {
+        this.modified = modified;
+    }
+
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -161,7 +189,7 @@ public class RecentlyModifiedItem
     @Override
     public String toString() {
         return "RecentlyModifiedRecord [uuid=" + uuid + ", name=" + name + ", description=" + description
-                + ", model=" + model + "]";
+                + ", model=" + model + ", modified=" + modified + "]";
     }
 
     /*
@@ -190,6 +218,15 @@ public class RecentlyModifiedItem
             if (other.uuid != null) return false;
         } else if (!uuid.equals(other.uuid)) return false;
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public int compareTo(RecentlyModifiedItem o) {
+        return o.getModified().getTime() < this.getModified().getTime() ? -1 : 1;
     }
 
 }

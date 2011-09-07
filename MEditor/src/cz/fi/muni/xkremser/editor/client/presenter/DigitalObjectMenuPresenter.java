@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -48,6 +47,7 @@ import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -65,7 +65,6 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
@@ -82,8 +81,8 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalO
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RecentlyTreeCallbackSuccessEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RecentlyTreeCallbackSuccessEvent.RecentlyTreeCallbackSuccessHandler;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent.RefreshRecentlyTreeHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -94,19 +93,13 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
  */
 public class DigitalObjectMenuPresenter
         extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy>
-        implements MyUiHandlers, cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS.MyUiHandlers {
-
-    public interface MyRecentlyTreeGwtRPCDS
-            extends
-            HasUiHandlers<cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS.MyUiHandlers> {
-
-    }
+        implements MyUiHandlers {
 
     /**
      * The Interface MyView.
      */
     public interface MyView
-            extends View/* , HasUiHandlers<MyUiHandlers> */{
+            extends View, HasUiHandlers<MyUiHandlers> {
 
         /**
          * Gets the selected.
@@ -166,7 +159,7 @@ public class DigitalObjectMenuPresenter
          * @param dispatcher
          *        the new dS
          */
-        void setDS(DispatchAsync dispatcher);
+        void setDS(DispatchAsync dispatcher, EventBus bus);
 
         /**
          * Sets the related documents.
@@ -248,8 +241,9 @@ public class DigitalObjectMenuPresenter
         this.dispatcher = dispatcher;
         this.config = config;
         this.placeManager = placeManager;
-        bind();
         this.lang = lang;
+        bind();
+        getView().setUiHandlers(this);
     }
 
     /**
@@ -284,10 +278,7 @@ public class DigitalObjectMenuPresenter
     protected void onBind() {
         super.onBind();
 
-        getView().setDS(dispatcher);
-        if (getView().getRecentlyModifiedGrid().getDataSource() instanceof RecentlyTreeGwtRPCDS) {
-            ((RecentlyTreeGwtRPCDS) getView().getRecentlyModifiedGrid().getDataSource()).setUiHandlers(this);
-        }
+        getView().setDS(dispatcher, getEventBus());
         getView().getRecentlyModifiedGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
@@ -359,36 +350,32 @@ public class DigitalObjectMenuPresenter
             }
         });
 
-        addRegisteredHandler(RecentlyTreeCallbackSuccessEvent.getType(),
-                             new RecentlyTreeCallbackSuccessHandler() {
+        addRegisteredHandler(RefreshRecentlyTreeEvent.getType(), new RefreshRecentlyTreeHandler() {
 
-                                 @Override
-                                 public void onRecentlyTreeCallbackSuccess(RecentlyTreeCallbackSuccessEvent event) {
-                                     refreshRecentlyModifiedGrid();
-                                 }
-                             });
+            @Override
+            public void onRefreshRecentlyTree(RefreshRecentlyTreeEvent event) {
+                refreshRecentlyModified();
+            }
+        });
 
     }
 
-    private void refreshRecentlyModifiedGrid() {
-        Timer timer = new Timer() {
+    @Override
+    public void refreshRecentlyModified() {
+
+        Criteria criteria = new Criteria();
+        boolean all = lang.all().equals(getView().getSelectItem().getValue());
+        criteria.addCriteria(Constants.ATTR_ALL, all);
+        getView().getRecentlyModifiedGrid().getDataSource().fetchData(criteria, new DSCallback() {
 
             @Override
-            public void run() {
-                Criteria criteria = new Criteria();
-                boolean all = lang.all().equals(getView().getSelectItem().getValue());
-                criteria.addCriteria(Constants.ATTR_ALL, all);
-                getView().getRecentlyModifiedGrid().getDataSource().fetchData(criteria, new DSCallback() {
-
-                    @Override
-                    public void execute(DSResponse response, Object rawData, DSRequest request) {
-                        getView().getRecentlyModifiedGrid().setData(response.getData());
-                    }
-
-                });
+            public void execute(DSResponse response, Object rawData, DSRequest request) {
+                getView().getRecentlyModifiedGrid().setData(response.getData());
+                getView().getRecentlyModifiedGrid().sort(Constants.ATTR_MODIFIED, SortDirection.ASCENDING);
+                getView().getRecentlyModifiedGrid().selectRecord(0);
+                getView().getRecentlyModifiedGrid().scrollToRow(0);
             }
-        };
-        timer.schedule(100);
+        });
     }
 
     private void evaluateUuid(TextItem uuidField) {
@@ -485,20 +472,12 @@ public class DigitalObjectMenuPresenter
     public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
         openedObjectsUuidAndRelated.put(item.getUuid(), related);
         getView().setRelatedDocuments(related);
-        Timer timer = new Timer() {
-
-            @Override
-            public void run() {
-                RecentlyModifiedRecord record = ClientUtils.toRecord(item);
-                if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
-                    getView().getRecentlyModifiedGrid().updateData(record);
-                } else {
-                    getView().getRecentlyModifiedGrid().addData(record);
-                }
-            }
-        };
-        timer.schedule(500);
-
+        RecentlyModifiedRecord record = ClientUtils.toRecord(item);
+        if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
+            getView().getRecentlyModifiedGrid().updateData(record);
+        } else {
+            getView().getRecentlyModifiedGrid().addData(record);
+        }
     }
 
     /*
@@ -545,11 +524,6 @@ public class DigitalObjectMenuPresenter
                 revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
             }
         }
-    }
-
-    @Override
-    public void onRecentlyTreeCallbackSuccess() {
-        RecentlyTreeCallbackSuccessEvent.fire(DigitalObjectMenuPresenter.this);
     }
 
 }

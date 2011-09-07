@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -36,10 +37,6 @@ import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.smartgwt.client.data.Criteria;
-import com.smartgwt.client.data.DSCallback;
-import com.smartgwt.client.data.DSRequest;
-import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
@@ -64,7 +61,6 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyGrid;
 
@@ -93,6 +89,8 @@ public class DigitalObjectMenuView
          * On refresh.
          */
         void onRefresh();
+
+        void refreshRecentlyModified();
 
         /**
          * On show input queue.
@@ -213,16 +211,7 @@ public class DigitalObjectMenuView
 
             @Override
             public void onChanged(ChangedEvent event) {
-                Criteria criteria = new Criteria();
-                boolean all = DigitalObjectMenuView.this.lang.all().equals(event.getValue());
-                criteria.addCriteria(Constants.ATTR_ALL, all);
-                sideNavGrid.getDataSource().fetchData(criteria, new DSCallback() {
-
-                    @Override
-                    public void execute(DSResponse response, Object rawData, DSRequest request) {
-                        sideNavGrid.setData(response.getData());
-                    }
-                });
+                getUiHandlers().refreshRecentlyModified();
             }
         });
 
@@ -275,8 +264,10 @@ public class DigitalObjectMenuView
      * MyView#setDS(com.gwtplatform.dispatch.client.DispatchAsync)
      */
     @Override
-    public void setDS(DispatchAsync dispatcher) {
-        this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang));
+    public void setDS(DispatchAsync dispatcher, EventBus bus) {
+        this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
+        //        sideNavGrid.setSortDirection(SortDirection.DESCENDING);
+        //        sideNavGrid.setSortField(Constants.ATTR_MODIFIED);
     }
 
     /*

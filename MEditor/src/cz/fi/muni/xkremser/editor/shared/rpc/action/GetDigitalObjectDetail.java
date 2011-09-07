@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
+import java.util.Date;
+
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
@@ -48,19 +50,18 @@ public class GetDigitalObjectDetail
     @In(1)
     private String uuid;
 
-    /** The refresh in. */
     @In(2)
-    private boolean refreshIn;
-
-    @In(3)
     private DigitalObjectModel model;
 
     /** The detail. */
     @Out(1)
     private DigitalObjectDetail detail;
 
-    /** The refresh. */
+    /** The description. */
     @Out(2)
-    private boolean refresh;
+    private String description;
+
+    @Out(3)
+    private Date modified;
 
 }

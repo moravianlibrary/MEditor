@@ -31,11 +31,12 @@ import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.client.DispatchAsync;
-import com.gwtplatform.mvp.client.UiHandlers;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
+import com.smartgwt.client.data.fields.DataSourceDateField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.types.FieldType;
@@ -47,9 +48,9 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.MyRecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
+import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
@@ -61,23 +62,14 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedResult;
  * The Class RecentlyTreeGwtRPCDS.
  */
 public class RecentlyTreeGwtRPCDS
-        extends
-        AbstractGwtRPCDSWithUiHandlers<cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS.MyUiHandlers>
-        implements MyRecentlyTreeGwtRPCDS {
+        extends AbstractGwtRPCDS {
 
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
+    private final EventBus bus;
+
     private final LangConstants lang;
-
-    /**
-     * The Interface MyUiHandlers.
-     */
-    public interface MyUiHandlers
-            extends UiHandlers {
-
-        void onRecentlyTreeCallbackSuccess();
-    }
 
     /**
      * Instantiates a new recently tree gwt rpcds.
@@ -85,9 +77,10 @@ public class RecentlyTreeGwtRPCDS
      * @param dispatcher
      *        the dispatcher
      */
-    public RecentlyTreeGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
+    public RecentlyTreeGwtRPCDS(DispatchAsync dispatcher, LangConstants lang, EventBus bus) {
         this.dispatcher = dispatcher;
         this.lang = lang;
+        this.bus = bus;
         DataSourceField field;
         field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
         field.setRequired(true);
@@ -106,7 +99,10 @@ public class RecentlyTreeGwtRPCDS
         field.setRequired(true);
         field.setHidden(true);
         addField(field);
-
+        field = new DataSourceDateField(Constants.ATTR_MODIFIED, "modified");
+        field.setRequired(true);
+        field.setHidden(true);
+        addField(field);
     }
 
     /*
@@ -180,7 +176,7 @@ public class RecentlyTreeGwtRPCDS
                                        response.setData(list);
                                    }
                                    processResponse(requestId, response);
-                                   getUiHandlers().onRecentlyTreeCallbackSuccess();
+                                   RefreshRecentlyTreeEvent.fire(bus);
                                }
                            });
 
@@ -210,7 +206,7 @@ public class RecentlyTreeGwtRPCDS
 
                                @Override
                                public void callback(PutRecentlyModifiedResult result) {
-                                   if (!result.isFound()) {
+                                   if (result.isFound()) {
                                        ListGridRecord[] list = new ListGridRecord[1];
                                        ListGridRecord updRec = new ListGridRecord();
                                        copyValues(testRec, updRec);
@@ -219,7 +215,7 @@ public class RecentlyTreeGwtRPCDS
                                        processResponse(requestId, response);
                                    }
                                    processResponse(requestId, response);
-                                   getUiHandlers().onRecentlyTreeCallbackSuccess();
+                                   RefreshRecentlyTreeEvent.fire(bus);
                                }
                            });
     }
@@ -273,6 +269,7 @@ public class RecentlyTreeGwtRPCDS
         to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
         to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
         to.setModel((DigitalObjectModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
+        to.setModified(from.getAttributeAsDate(Constants.ATTR_MODIFIED));
     }
 
     /**
@@ -288,6 +285,7 @@ public class RecentlyTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_NAME, from.getName());
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
         to.setAttribute(Constants.ATTR_MODEL, from.getModel());
+        to.setAttribute(Constants.ATTR_MODIFIED, from.getModified());
     }
 
     /**

@@ -78,7 +78,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RecentlyTreeCallbackSuccessEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
@@ -437,7 +437,7 @@ public class ModifyPresenter
      * @return the object
      */
     private void getObject(final boolean refresh) {
-        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, refresh, null);
+        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, null);
         final DispatchCallback<GetDigitalObjectDetailResult> callback =
                 new DispatchCallback<GetDigitalObjectDetailResult>() {
 
@@ -451,8 +451,9 @@ public class ModifyPresenter
                                         : detail.getDc().getTitle().get(0);
                         DigitalObjectOpenedEvent.fire(ModifyPresenter.this,
                                                       true,
-                                                      new RecentlyModifiedItem(uuid, title, "", detail
-                                                              .getModel()),
+                                                      new RecentlyModifiedItem(uuid, title, result
+                                                              .getDescription(), detail.getModel(), result
+                                                              .getModified()),
                                                       result.getDetail().getRelated());
                         getView().getPopupPanel().setVisible(false);
                         getView().getPopupPanel().hide();
@@ -525,13 +526,15 @@ public class ModifyPresenter
      * (java.lang.String, java.lang.String, boolean)
      */
     @Override
-    public void putDescription(String uuid, String description, boolean common) {
+    public void putDescription(String uuid, String description, final boolean common) {
         dispatcher.execute(new PutDescriptionAction(uuid, description, common),
                            new DispatchCallback<PutDescriptionResult>() {
 
                                @Override
                                public void callback(PutDescriptionResult result) {
-                                   RecentlyTreeCallbackSuccessEvent.fire(ModifyPresenter.this);
+                                   if (!common) {
+                                       RefreshRecentlyTreeEvent.fire(ModifyPresenter.this);
+                                   }
                                }
                            });
     }
@@ -583,7 +586,7 @@ public class ModifyPresenter
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
 
-        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, false, model);
+        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, model);
         final DispatchCallback<GetDigitalObjectDetailResult> callback =
                 new DispatchCallback<GetDigitalObjectDetailResult>() {
 

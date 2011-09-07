@@ -52,12 +52,13 @@ public class RecentlyModifiedItemDAOImpl
 
     /** The Constant SELECT_LAST_N_STATEMENT. */
     public static final String SELECT_LAST_N_STATEMENT =
-            "SELECT * FROM ( SELECT DISTINCT ON (uuid) uuid, name, description, model, modified FROM "
-                    + Constants.TABLE_RECENTLY_MODIFIED_NAME + " LIMIT (?)) foo ORDER by modified DESC";
+            "SELECT uuid, name, MAX(description) AS description, model, MAX(modified) AS modified FROM "
+                    + Constants.TABLE_RECENTLY_MODIFIED_NAME
+                    + " GROUP BY uuid, name, model ORDER by modified DESC LIMIT(?)";
 
     /** The Constant SELECT_LAST_N_STATEMENT_FOR_USER. */
     public static final String SELECT_LAST_N_STATEMENT_FOR_USER =
-            "SELECT uuid, name, description, model FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+            "SELECT uuid, name, description, model, modified FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
                     + " WHERE user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
                     + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";
 
@@ -93,7 +94,7 @@ public class RecentlyModifiedItemDAOImpl
             + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
 
     /** The Constant SELECT_USER_DESCRIPTION_STATEMENT. */
-    public static final String SELECT_USER_DESCRIPTION_STATEMENT = "SELECT description FROM "
+    public static final String SELECT_USER_DESCRIPTION_STATEMENT = "SELECT description, modified FROM "
             + Constants.TABLE_RECENTLY_MODIFIED_NAME
             + " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
             + " WHERE identity = (?))";
@@ -196,7 +197,8 @@ public class RecentlyModifiedItemDAOImpl
                 retList.add(new RecentlyModifiedItem(rs.getString("uuid"),
                                                      rs.getString("name"),
                                                      openID != null ? rs.getString("description") : "",
-                                                     DigitalObjectModel.values()[modelId]));
+                                                     DigitalObjectModel.values()[modelId],
+                                                     rs.getDate("modified")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -339,9 +341,10 @@ public class RecentlyModifiedItemDAOImpl
      * getUserDescription(java.lang.String, java.lang.String)
      */
     @Override
-    public String getUserDescription(String openID, String uuid) throws DatabaseException {
+    public RecentlyModifiedItem getUserDescriptionAndDate(String openID, String uuid)
+            throws DatabaseException {
         if (uuid == null) throw new NullPointerException("uuid");
-        String description = null;
+        RecentlyModifiedItem ret = null;
         PreparedStatement findSt = null;
         try {
             getConnection().setAutoCommit(false);
@@ -355,13 +358,15 @@ public class RecentlyModifiedItemDAOImpl
             ResultSet rs = findSt.executeQuery();
 
             while (rs.next()) {
-                description = rs.getString("description");
+                ret = new RecentlyModifiedItem();
+                ret.setDescription(rs.getString("description"));
+                ret.setModified(rs.getDate("modified"));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + findSt, e);
         } finally {
             closeConnection();
         }
-        return description;
+        return ret;
     }
 }

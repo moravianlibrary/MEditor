@@ -90,9 +90,9 @@ public interface RecentlyModifiedItemDAO {
      *        the open id
      * @param uuid
      *        the uuid
-     * @return the user description
+     * @return the RecentlyModifiedItem
      */
-    String getUserDescription(String openID, String uuid) throws DatabaseException;
+    RecentlyModifiedItem getUserDescriptionAndDate(String openID, String uuid) throws DatabaseException;
 
     /**
      * Gets the items.

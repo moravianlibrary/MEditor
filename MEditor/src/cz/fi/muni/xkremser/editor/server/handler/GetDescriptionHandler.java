@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
@@ -42,6 +44,7 @@ import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 
@@ -83,19 +86,25 @@ public class GetDescriptionHandler
             throws ActionException {
         if (action.getUuid() == null || "".equals(action.getUuid()))
             throw new NullPointerException("getUuid()");
-        LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
+        }
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         String commonDescription;
         String userDescription;
+        Date modified;
         try {
+            RecentlyModifiedItem item =
+                    recentlyModifiedDAO.getUserDescriptionAndDate(openID, action.getUuid());
+            userDescription = item.getDescription();
             commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
-            userDescription = recentlyModifiedDAO.getUserDescription(openID, action.getUuid());
+            modified = item.getModified();
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
-        return new GetDescriptionResult(commonDescription, userDescription);
+        return new GetDescriptionResult(commonDescription, userDescription, modified);
     }
 
     /*
