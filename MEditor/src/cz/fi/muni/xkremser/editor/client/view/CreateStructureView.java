@@ -220,12 +220,12 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE);
+                final String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE);
                 winModal = new Window();
                 //                winModal.setWidth(1024);
                 //                winModal.setHeight(768);
                 winModal.setWidth("95%");
-                winModal.setHeight("90%");
+                winModal.setHeight("95%");
                 StringBuffer sb = new StringBuffer();
                 sb.append(lang.scan()).append(": ")
                         .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
@@ -241,11 +241,18 @@ public class CreateStructureView
                         escShortCut();
                     }
                 });
-                HTMLPane helpPane = new HTMLPane();
-                helpPane.setPadding(15);
-                helpPane.setContentsURL("viewer/viewer.html?rft_id=" + uuid);
-                helpPane.setContentsType(ContentsType.FRAGMENT);
-                winModal.addItem(helpPane);
+                HTMLPane viewerPane = new HTMLPane();
+                viewerPane.setPadding(15);
+                //                viewerPane.setContentsURL("http://editor.mzk.cz/meditor/viewer/viewer.html?rft_id=" + uuid);
+                viewerPane.setContentsURL("http://editor.mzk.cz/meditor/viewer/viewer.html");
+                viewerPane.setContentsURLParams(new java.util.HashMap<String, String>() {
+
+                    {
+                        put("rft_id", uuid);
+                    }
+                });
+                viewerPane.setContentsType(ContentsType.PAGE);
+                winModal.addItem(viewerPane);
                 winModal.show();
             }
         });
