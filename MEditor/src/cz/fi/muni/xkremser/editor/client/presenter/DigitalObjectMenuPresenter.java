@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
@@ -100,13 +99,6 @@ public class DigitalObjectMenuPresenter
      */
     public interface MyView
             extends View, HasUiHandlers<MyUiHandlers> {
-
-        /**
-         * Gets the selected.
-         * 
-         * @return the selected
-         */
-        HasValue<String> getSelected();
 
         /**
          * Expand node.

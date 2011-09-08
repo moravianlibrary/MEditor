@@ -30,7 +30,6 @@ package cz.fi.muni.xkremser.editor.client.view;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
@@ -250,24 +249,11 @@ public class DigitalObjectMenuView
      * (non-Javadoc)
      * @see
      * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getSelected()
-     */
-    @Override
-    public HasValue<String> getSelected() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
      * MyView#setDS(com.gwtplatform.dispatch.client.DispatchAsync)
      */
     @Override
     public void setDS(DispatchAsync dispatcher, EventBus bus) {
         this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
-        //        sideNavGrid.setSortDirection(SortDirection.DESCENDING);
-        //        sideNavGrid.setSortField(Constants.ATTR_MODIFIED);
     }
 
     /*
