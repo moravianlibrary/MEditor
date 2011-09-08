@@ -349,6 +349,8 @@ public class ModifyView
         } else if (winModal != null) {
             winModal.destroy();
             winModal = null;
+        } else if (imagePopup.isVisible()) {
+            imagePopup.setVisible(false);
         }
     }
 

@@ -389,6 +389,8 @@ public class CreateStructureView
         if (winModal != null) {
             winModal.destroy();
             winModal = null;
+        } else if (imagePopup.isVisible()) {
+            imagePopup.setVisible(false);
         }
     }
 }
