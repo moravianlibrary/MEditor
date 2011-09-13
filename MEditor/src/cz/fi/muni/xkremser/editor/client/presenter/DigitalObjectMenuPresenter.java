@@ -101,14 +101,6 @@ public class DigitalObjectMenuPresenter
             extends View, HasUiHandlers<MyUiHandlers> {
 
         /**
-         * Expand node.
-         * 
-         * @param id
-         *        the id
-         */
-        void expandNode(String id);
-
-        /**
          * Gets the refresh widget.
          * 
          * @return the refresh widget

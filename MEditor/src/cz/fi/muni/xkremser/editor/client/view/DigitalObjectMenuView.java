@@ -328,18 +328,6 @@ public class DigitalObjectMenuView
      * (non-Javadoc)
      * @see
      * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#expandNode(java.lang.String)
-     */
-    @Override
-    public void expandNode(String id) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
      * MyView#getRefreshWidget()
      */
     @Override

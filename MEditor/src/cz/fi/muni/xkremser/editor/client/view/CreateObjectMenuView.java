@@ -287,6 +287,5 @@ public class CreateObjectMenuView
         section1.setExpanded(true);
         sectionStack.addSection(section1, 0);
         section1.setAttribute(SECTION_INPUT_ID, "yes");
-        layout.redraw();
     }
 }
