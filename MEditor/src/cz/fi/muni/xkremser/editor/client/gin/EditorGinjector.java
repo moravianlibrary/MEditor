@@ -38,6 +38,7 @@ import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
@@ -94,5 +95,7 @@ public interface EditorGinjector
     AsyncProvider<CreateStructurePresenter> getCreatePresenterPresenter();
 
     Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
+
+    Provider<CreateObjectMenuPresenter> getCreateObjectMenuPresenterPresenter();
 
 }

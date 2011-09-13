@@ -31,6 +31,8 @@ import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Order;
 
+import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
+
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -47,6 +49,9 @@ public class CreateStructure {
     String code;
 
     @Order(3)
+    SideNavInputTree tree;
+
+    @Order(4)
     @Optional
     DublinCore dc;
 

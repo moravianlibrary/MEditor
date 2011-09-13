@@ -49,6 +49,8 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter.MyView;
+import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
 
 // TODO: Auto-generated Javadoc
@@ -69,6 +71,11 @@ public class AppView
          * Logout.
          */
         void logout();
+
+        DigitalObjectMenuPresenter getDoPresenter();
+
+        CreateObjectMenuPresenter getCreatePresenter();
+
     }
 
     /** The left container. */
@@ -94,6 +101,8 @@ public class AppView
     private final LangConstants lang;
 
     private Window winModal;
+
+    private Widget leftWidget;
 
     // private HasWidgets mainContainer;
 
@@ -258,11 +267,22 @@ public class AppView
      * 
      * @param content
      *        the new left content
+     * @param slot
      */
     private void setLeftContent(Widget content) {
-        // leftContainer.clear();
         if (content != null) {
+            if (leftWidget != null) {
+                if (leftWidget != content) {
+                    if (getUiHandlers().getDoPresenter().getView().asWidget() == content) {
+                        getUiHandlers().getDoPresenter().onShowInputQueue(getUiHandlers()
+                                .getCreatePresenter().getView().getInputTree());
+                    }
+                    leftContainer.removeMember(leftContainer.getMember(0));
+
+                }
+            }
             leftContainer.addMember(content);
+            leftWidget = content;
         }
     }
 

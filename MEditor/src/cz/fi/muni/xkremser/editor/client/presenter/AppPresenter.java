@@ -125,7 +125,9 @@ public class AppPresenter
     }
 
     /** The left presenter. */
-    DigitalObjectMenuPresenter leftPresenter;
+    private final DigitalObjectMenuPresenter doPresenter;
+
+    private final CreateObjectMenuPresenter createPresenter;
 
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
@@ -157,12 +159,14 @@ public class AppPresenter
     public AppPresenter(final EventBus eventBus,
                         final MyView view,
                         final MyProxy proxy,
-                        final DigitalObjectMenuPresenter leftPresenter,
+                        final DigitalObjectMenuPresenter doPresenter,
+                        final CreateObjectMenuPresenter leftPresenter,
                         final DispatchAsync dispatcher,
                         final PlaceManager placeManager) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
-        this.leftPresenter = leftPresenter;
+        this.doPresenter = doPresenter;
+        this.createPresenter = leftPresenter;
         this.placeManager = placeManager;
         getView().setUiHandlers(this);
         bind();
@@ -281,6 +285,24 @@ public class AppPresenter
                 MEditor.redirect(result.getUrl());
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public DigitalObjectMenuPresenter getDoPresenter() {
+        return doPresenter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public CreateObjectMenuPresenter getCreatePresenter() {
+        return createPresenter;
     }
 
 }

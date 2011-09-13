@@ -231,7 +231,7 @@ public class Z3950ClientImpl
 
         // Observer[] all_observers = new Observer[] { fragment_count_observer };
 
-        LOGGER.info("Z39.50: Connecting to " + host + " on port " + port);
+        //        LOGGER.info("Z39.50: Connecting to " + host + " on port " + port);
         Searchable s = new Z3950Origin();
         s.init(props);
 
@@ -265,15 +265,13 @@ public class Z3950ClientImpl
             SearchTask st = s.createTask(e, null, null/* all_observers */);
             int status = st.evaluate(150000);
 
-            LOGGER.info("Private task status: " + st.lookupPrivateStatusCode(st.getPrivateTaskStatusCode()));
+            //            LOGGER.info("Private task status: " + st.lookupPrivateStatusCode(st.getPrivateTaskStatusCode()));
             Enumeration rs_enum = st.getTaskResultSet().elements();
 
             while (rs_enum.hasMoreElements()) {
                 InformationFragment f = (InformationFragment) rs_enum.nextElement();
-                System.out.println("Length of Next search element: " + f.toString()); // to
-                                                                                      // something
                 returnList.add(DCUtils.getDC(f.toString()));
-                LOGGER.info(f.toString());
+                //                LOGGER.info(f.toString());
             }
 
             st.destroyTask();

@@ -43,13 +43,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Criteria;
-import com.smartgwt.client.data.DSCallback;
-import com.smartgwt.client.data.DSRequest;
-import com.smartgwt.client.data.DSResponse;
-import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -64,17 +58,11 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
-import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
+import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
-import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
-import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
-import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
@@ -88,10 +76,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class DigitalObjectMenuPresenter.
+ * The Class CreateObjectMenuPresenter.
  */
-public class DigitalObjectMenuPresenter
-        extends Presenter<DigitalObjectMenuPresenter.MyView, DigitalObjectMenuPresenter.MyProxy>
+public class CreateObjectMenuPresenter
+        extends Presenter<CreateObjectMenuPresenter.MyView, CreateObjectMenuPresenter.MyProxy>
         implements MyUiHandlers {
 
     /**
@@ -100,72 +88,18 @@ public class DigitalObjectMenuPresenter
     public interface MyView
             extends View, HasUiHandlers<MyUiHandlers> {
 
-        /**
-         * Expand node.
-         * 
-         * @param id
-         *        the id
-         */
         void expandNode(String id);
 
-        /**
-         * Gets the refresh widget.
-         * 
-         * @return the refresh widget
-         */
         HasClickHandlers getRefreshWidget();
 
-        /**
-         * Show input queue.
-         * 
-         * @param dispatcher
-         *        the dispatcher
-         */
-        void showInputQueue(SideNavInputTree tree, DispatchAsync dispatcher, PlaceManager placeManager);
-
-        /**
-         * Gets the input tree.
-         * 
-         * @return the input tree
-         */
         SideNavInputTree getInputTree();
 
-        // TODO: ListGrid -> na nejake rozhrani
-        /**
-         * Gets the recently modified tree.
-         * 
-         * @return the recently modified tree
-         */
-        ListGrid getRecentlyModifiedGrid();
+        void setInputTree(SideNavInputTree tree);
 
-        /**
-         * Gets the related grid.
-         * 
-         * @return the related grid
-         */
-        ListGrid getRelatedGrid();
+        ListGrid getSubelementsGrid();
 
-        /**
-         * Sets the dS.
-         * 
-         * @param dispatcher
-         *        the new dS
-         */
         void setDS(DispatchAsync dispatcher, EventBus bus);
 
-        /**
-         * Sets the related documents.
-         * 
-         * @param data
-         *        the new related documents
-         */
-        void setRelatedDocuments(List<? extends List<String>> data);
-
-        /**
-         * Gets the section stack
-         * 
-         * @return the section stack
-         */
         SectionStack getSectionStack();
 
         SelectItem getSelectItem();
@@ -177,7 +111,7 @@ public class DigitalObjectMenuPresenter
      */
     @ProxyStandard
     public interface MyProxy
-            extends Proxy<DigitalObjectMenuPresenter> {
+            extends Proxy<CreateObjectMenuPresenter> {
 
     }
 
@@ -185,7 +119,7 @@ public class DigitalObjectMenuPresenter
     private final DispatchAsync dispatcher;
 
     /** The input queue shown. */
-    private boolean inputQueueCanShow = false;
+    private boolean inputQueueShown = false;
 
     /** The place manager. */
     private final PlaceManager placeManager;
@@ -222,13 +156,13 @@ public class DigitalObjectMenuPresenter
      *        the lang constants
      */
     @Inject
-    public DigitalObjectMenuPresenter(final MyView view,
-                                      final EventBus eventBus,
-                                      final MyProxy proxy,
-                                      final DispatchAsync dispatcher,
-                                      final EditorClientConfiguration config,
-                                      PlaceManager placeManager,
-                                      LangConstants lang) {
+    public CreateObjectMenuPresenter(final MyView view,
+                                     final EventBus eventBus,
+                                     final MyProxy proxy,
+                                     final DispatchAsync dispatcher,
+                                     final EditorClientConfiguration config,
+                                     PlaceManager placeManager,
+                                     LangConstants lang) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
         this.config = config;
@@ -269,41 +203,20 @@ public class DigitalObjectMenuPresenter
     @Override
     protected void onBind() {
         super.onBind();
+
         getView().setDS(dispatcher, getEventBus());
-        getView().getRecentlyModifiedGrid().setHoverCustomizer(new HoverCustomizer() {
+        getView().getSubelementsGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
             public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
                 return record.getAttribute(Constants.ATTR_DESC);
             }
         });
-        getView().getRecentlyModifiedGrid().addCellClickHandler(new CellClickHandler() {
+        getView().getSubelementsGrid().addCellClickHandler(new CellClickHandler() {
 
             @Override
             public void onCellClick(CellClickEvent event) {
                 revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
-            }
-        });
-        getView().getRelatedGrid().addCellClickHandler(new CellClickHandler() {
-
-            @Override
-            public void onCellClick(CellClickEvent event) {
-                revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
-            }
-        });
-
-        addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
-
-            @Override
-            public void onConfigReceived(ConfigReceivedEvent event) {
-                if (event.isStatusOK()) {
-                    setInputQueueCanShow(config.getShowInputQueue());
-                } else {
-                    setInputQueueCanShow(EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
-                }
-                if (getInputQueueCanShow()) {
-                    onShowInputQueue(null);
-                }
             }
         });
 
@@ -312,16 +225,8 @@ public class DigitalObjectMenuPresenter
             @Override
             public void onDigitalObjectOpened(DigitalObjectOpenedEvent event) {
                 if (event.isStatusOK()) {
-                    onAddDigitalObject(event.getItem(), event.getRelated());
+                    onAddSubelement(event.getItem(), event.getRelated());
                 }
-            }
-        });
-
-        addRegisteredHandler(ChangeFocusedTabSetEvent.getType(), new ChangeFocusedTabSetHandler() {
-
-            @Override
-            public void onChangeFocusedTabSet(ChangeFocusedTabSetEvent event) {
-                getView().setRelatedDocuments(openedObjectsUuidAndRelated.get(event.getFocusedUuid()));
             }
         });
 
@@ -348,6 +253,7 @@ public class DigitalObjectMenuPresenter
                 refreshRecentlyModified();
             }
         });
+
     }
 
     @Override
@@ -356,22 +262,17 @@ public class DigitalObjectMenuPresenter
         Criteria criteria = new Criteria();
         boolean all = lang.all().equals(getView().getSelectItem().getValue());
         criteria.addCriteria(Constants.ATTR_ALL, all);
-        getView().getRecentlyModifiedGrid().getDataSource().fetchData(criteria, new DSCallback() {
-
-            @Override
-            public void execute(DSResponse response, Object rawData, DSRequest request) {
-                getView().getRecentlyModifiedGrid().setData(response.getData());
-                getView().getRecentlyModifiedGrid().sort(Constants.ATTR_MODIFIED, SortDirection.ASCENDING);
-                getView().getRecentlyModifiedGrid().selectRecord(0);
-                getView().getRecentlyModifiedGrid().scrollToRow(0);
-            }
-        });
+        //        getView().getSubelementGrid().getDataSource().fetchData(criteria, new DSCallback() {
+        //
+        //            @Override
+        //            public void execute(DSResponse response, Object rawData, DSRequest request) {
+        //                getView().getSubelementGrid().setData(response.getData());
+        //                getView().getSubelementGrid().sort(Constants.ATTR_MODIFIED, SortDirection.ASCENDING);
+        //                getView().getSubelementGrid().selectRecord(0);
+        //                getView().getSubelementGrid().scrollToRow(0);
+        //            }
+        //        });
     }
-
-    @Override
-    protected void onReset() {
-
-    };
 
     private void evaluateUuid(TextItem uuidField) {
         if (uuidField.validate()) {
@@ -389,7 +290,7 @@ public class DigitalObjectMenuPresenter
     @Override
     protected void onUnbind() {
         super.onUnbind();
-        getView().getRecentlyModifiedGrid().setHoverCustomizer(null);
+        //        getView().getSubelementGrid().setHoverCustomizer(null);
     }
 
     /**
@@ -397,8 +298,8 @@ public class DigitalObjectMenuPresenter
      * 
      * @return true, if is input queue shown
      */
-    public boolean getInputQueueCanShow() {
-        return inputQueueCanShow;
+    public boolean isInputQueueShown() {
+        return inputQueueShown;
     }
 
     /**
@@ -407,8 +308,8 @@ public class DigitalObjectMenuPresenter
      * @param inputQueueShown
      *        the new input queue shown
      */
-    public void setInputQueueCanShow(boolean inputQueueCanShow) {
-        this.inputQueueCanShow = inputQueueCanShow;
+    public void setInputQueueShown(boolean inputQueueShown) {
+        this.inputQueueShown = inputQueueShown;
     }
 
     /*
@@ -442,37 +343,19 @@ public class DigitalObjectMenuPresenter
      * (non-Javadoc)
      * @see
      * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-     * #onShowInputQueue()
-     */
-    @Override
-    public void onShowInputQueue(SideNavInputTree tree) {
-        getView().showInputQueue(tree, dispatcher, placeManager);
-        registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                onRefresh();
-            }
-        }));
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
      * #onAddDigitalObject
      * (cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
      */
     @Override
-    public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
-        openedObjectsUuidAndRelated.put(item.getUuid(), related);
-        getView().setRelatedDocuments(related);
-        RecentlyModifiedRecord record = ClientUtils.toRecord(item);
-        if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
-            getView().getRecentlyModifiedGrid().updateData(record);
-        } else {
-            getView().getRecentlyModifiedGrid().addData(record);
-        }
+    public void onAddSubelement(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
+        //        openedObjectsUuidAndRelated.put(item.getUuid(), related);
+        //        getView().setRelatedDocuments(related);
+        //        RecentlyModifiedRecord record = ClientUtils.toRecord(item);
+        //        if (getView().getSubelementGrid().getDataAsRecordList().contains(record)) {
+        //            getView().getSubelementGrid().updateData(record);
+        //        } else {
+        //            getView().getSubelementGrid().addData(record);
+        //        }
     }
 
     /*
@@ -508,15 +391,11 @@ public class DigitalObjectMenuPresenter
 
         } else if (code == Constants.CODE_KEY_ENTER) {
 
-            if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
+            if (getView().getSubelementsGrid().getSelection().length > 0 && !isRefByFocused) {
 
-                ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
+                ListGridRecord[] listGridRecords = getView().getSubelementsGrid().getSelection();
                 revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
 
-            } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
-
-                ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
-                revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
             }
         }
     }

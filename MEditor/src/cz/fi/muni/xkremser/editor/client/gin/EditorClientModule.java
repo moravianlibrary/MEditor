@@ -46,6 +46,7 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
+import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
@@ -54,6 +55,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 import cz.fi.muni.xkremser.editor.client.view.AdjustPagesView;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
+import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.FindMetadataView;
@@ -119,6 +121,10 @@ public class EditorClientModule
                       DigitalObjectMenuPresenter.MyView.class,
                       DigitalObjectMenuView.class,
                       DigitalObjectMenuPresenter.MyProxy.class);
+        bindPresenter(CreateObjectMenuPresenter.class,
+                      CreateObjectMenuPresenter.MyView.class,
+                      CreateObjectMenuView.class,
+                      CreateObjectMenuPresenter.MyProxy.class);
 
         bind(CachingDispatchAsync.class);
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);

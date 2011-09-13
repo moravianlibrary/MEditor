@@ -35,11 +35,7 @@ import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.PlaceRequest;
-import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
@@ -52,18 +48,13 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.grid.ListGridField;
-import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
-import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyGrid;
 
@@ -71,11 +62,11 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class DigitalObjectMenuView.
+ * The Class CreateObjectMenuView.
  */
-public class DigitalObjectMenuView
-        extends ViewWithUiHandlers<DigitalObjectMenuView.MyUiHandlers>
-        implements DigitalObjectMenuPresenter.MyView {
+public class CreateObjectMenuView
+        extends ViewWithUiHandlers<CreateObjectMenuView.MyUiHandlers>
+        implements CreateObjectMenuPresenter.MyView {
 
     /** The Constant SECTION_RELATED_ID. */
     private static final String SECTION_RELATED_ID = "related";
@@ -84,55 +75,20 @@ public class DigitalObjectMenuView
 
     private final LangConstants lang;
 
-    private final boolean inputQueueShown = false;
-
     /**
      * The Interface MyUiHandlers.
      */
     public interface MyUiHandlers
             extends UiHandlers {
 
-        /**
-         * On refresh.
-         */
         void onRefresh();
 
         void refreshRecentlyModified();
 
-        /**
-         * On show input queue.
-         */
-        void onShowInputQueue(SideNavInputTree tree);
+        void onAddSubelement(final RecentlyModifiedItem item, final List<? extends List<String>> related);
 
-        /**
-         * On add digital object.
-         * 
-         * @param item
-         *        the item
-         * @param related
-         *        the related
-         */
-        void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related);
-
-        /**
-         * Reveal modified item.
-         * 
-         * @param uuid
-         *        the uuid
-         */
         void revealItem(String uuid);
 
-    }
-
-    /**
-     * The Interface Refreshable.
-     */
-    public interface Refreshable {
-
-        /**
-         * Refresh tree.
-         */
-        void refreshTree();
     }
 
     /** The input tree. */
@@ -147,11 +103,6 @@ public class DigitalObjectMenuView
     /** The section recently modified. */
     private final SectionStackSection sectionRecentlyModified;
 
-    /** The section related. */
-    private final SectionStackSection sectionRelated;
-    /** The section related. */
-    private final ListGrid relatedGrid;
-
     /** The refresh button. */
     private ImgButton refreshButton;
 
@@ -164,33 +115,13 @@ public class DigitalObjectMenuView
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public DigitalObjectMenuView(LangConstants lang) {
+    public CreateObjectMenuView(LangConstants lang) {
         this.lang = lang;
         layout = new VLayout();
 
         layout.setHeight100();
         layout.setWidth100();
         layout.setOverflow(Overflow.AUTO);
-
-        relatedGrid = new ListGrid();
-        relatedGrid.setWidth100();
-        relatedGrid.setHeight100();
-        relatedGrid.setShowSortArrow(SortArrow.CORNER);
-        relatedGrid.setShowAllRecords(true);
-        relatedGrid.setAutoFetchData(false);
-        relatedGrid.setCanHover(true);
-        relatedGrid.setCanSort(false);
-        ListGridField field1 = new ListGridField("relation", lang.relation());
-        field1.setWidth("40%");
-        ListGridField field2 = new ListGridField("uuid", "PID");
-        field2.setWidth("*");
-        relatedGrid.setFields(field1, field2);
-        sectionRelated = new SectionStackSection();
-        sectionRelated.setID(SECTION_RELATED_ID);
-        sectionRelated.setTitle(lang.referencedBy());
-        sectionRelated.setResizeable(true);
-        sectionRelated.setItems(relatedGrid);
-        sectionRelated.setExpanded(false);
 
         sideNavGrid = new SideNavRecentlyGrid();
 
@@ -209,7 +140,7 @@ public class DigitalObjectMenuView
 
             @Override
             public void onItemHover(ItemHoverEvent event) {
-                selectItem.setPrompt(DigitalObjectMenuView.this.lang.showModifiedHint()
+                selectItem.setPrompt(CreateObjectMenuView.this.lang.showModifiedHint()
                         + selectItem.getValue());
 
             }
@@ -233,7 +164,6 @@ public class DigitalObjectMenuView
         sectionRecentlyModified.setExpanded(true);
 
         sectionStack = new SectionStack();
-        sectionStack.addSection(sectionRelated);
         sectionStack.addSection(sectionRecentlyModified);
         sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
         sectionStack.setAnimateSections(true);
@@ -262,66 +192,6 @@ public class DigitalObjectMenuView
     @Override
     public void setDS(DispatchAsync dispatcher, EventBus bus) {
         this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#showInputQueue(com.gwtplatform.dispatch.client.DispatchAsync)
-     */
-    @Override
-    public void showInputQueue(SideNavInputTree tree,
-                               DispatchAsync dispatcher,
-                               final PlaceManager placeManager) {
-        SectionStackSection section1 = new SectionStackSection();
-        section1.setTitle(lang.inputQueue());
-        if (tree == null) {
-            inputTree = new SideNavInputTree(dispatcher, lang);
-            inputTree.getCreateMenuItem()
-                    .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-
-                        @Override
-                        public void onClick(final MenuItemClickEvent event) {
-                            String msg = event.getMenu().getEmptyMessage();
-                            String model = msg.substring(0, msg.indexOf("/"));
-                            String id = msg.substring(msg.indexOf("/") + 1);
-
-                            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
-                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, id));
-                        }
-                    });
-        } else {
-            String isInputSection = sectionStack.getSection(0).getAttribute(SECTION_INPUT_ID);
-            if (isInputSection != null && "yes".equals(isInputSection)) {
-                sectionStack.removeSection(0);
-            }
-            inputTree = tree;
-        }
-        section1.setItems(inputTree);
-        refreshButton = new ImgButton();
-        refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
-        refreshButton.setSize(16);
-        refreshButton.setShowRollOver(true);
-        refreshButton.setCanHover(true);
-        refreshButton.setShowDownIcon(false);
-        refreshButton.setShowDown(false);
-        refreshButton.setHoverOpacity(75);
-        refreshButton.setHoverStyle("interactImageHover");
-        refreshButton.setHoverOpacity(75);
-        refreshButton.addHoverHandler(new HoverHandler() {
-
-            @Override
-            public void onHover(HoverEvent event) {
-                refreshButton.setPrompt("Rescan directory structure.");
-            }
-        });
-
-        section1.setControls(refreshButton);
-        section1.setResizeable(true);
-        section1.setExpanded(true);
-        sectionStack.addSection(section1, 0);
-        section1.setAttribute(SECTION_INPUT_ID, "yes");
     }
 
     /*
@@ -365,41 +235,8 @@ public class DigitalObjectMenuView
      * MyView#getRecentlyModifiedTree()
      */
     @Override
-    public ListGrid getRecentlyModifiedGrid() {
+    public ListGrid getSubelementsGrid() {
         return sideNavGrid;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#setRelatedDocuments(java.util.List)
-     */
-    @Override
-    public void setRelatedDocuments(List<? extends List<String>> data) {
-        if (data != null && data.size() != 0) {
-            sectionStack.getSection(SECTION_RELATED_ID).setExpanded(true);
-            // sectionRelated.setExpanded(true);
-            Record[] records = new Record[data.size()];
-            for (int i = 0; i < data.size(); i++) {
-                records[i] = new ListGridRecord();
-                records[i].setAttribute("uuid", data.get(i).get(0));
-                records[i].setAttribute("relation", data.get(i).get(1));
-            }
-            relatedGrid.setData(records);
-        } else
-            sectionStack.getSection(SECTION_RELATED_ID).setExpanded(false);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getRelatedGrid()
-     */
-    @Override
-    public ListGrid getRelatedGrid() {
-        return relatedGrid;
     }
 
     @Override
@@ -411,5 +248,45 @@ public class DigitalObjectMenuView
     public SelectItem getSelectItem() {
         return selectItem;
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void setInputTree(SideNavInputTree tree) {
+        String isInputSection = sectionStack.getSection(0).getAttribute(SECTION_INPUT_ID);
+        if (isInputSection != null && "yes".equals(isInputSection)) {
+            return;
+        }
+        inputTree = tree;
+        SectionStackSection section1 = new SectionStackSection();
+        section1.setTitle(lang.inputQueue());
+        section1.setItems(inputTree);
+        refreshButton = new ImgButton();
+        refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
+        refreshButton.setSize(16);
+        refreshButton.setShowRollOver(true);
+        refreshButton.setCanHover(true);
+        refreshButton.setShowDownIcon(false);
+        refreshButton.setShowDown(false);
+        refreshButton.setHoverOpacity(75);
+        refreshButton.setHoverStyle("interactImageHover");
+        refreshButton.setHoverOpacity(75);
+        refreshButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                refreshButton.setPrompt("Rescan directory structure.");
+            }
+        });
+
+        section1.setControls(refreshButton);
+        section1.setResizeable(true);
+        section1.setExpanded(true);
+        sectionStack.addSection(section1, 0);
+        section1.setAttribute(SECTION_INPUT_ID, "yes");
+        layout.redraw();
     }
 }

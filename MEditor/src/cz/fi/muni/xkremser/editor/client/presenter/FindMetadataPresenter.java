@@ -108,7 +108,10 @@ public class FindMetadataPresenter
     private final DispatchAsync dispatcher;
 
     /** The left presenter. */
-    private final DigitalObjectMenuPresenter leftPresenter;
+    private final CreateObjectMenuPresenter leftPresenter;
+
+    /** The doMenuPresenter presenter. */
+    private final DigitalObjectMenuPresenter doMenuPresenter;
 
     /** The place manager. */
     private final PlaceManager placeManager;
@@ -141,12 +144,14 @@ public class FindMetadataPresenter
     public FindMetadataPresenter(final EventBus eventBus,
                                  final MyView view,
                                  final MyProxy proxy,
-                                 final DigitalObjectMenuPresenter leftPresenter,
+                                 final CreateObjectMenuPresenter leftPresenter,
+                                 final DigitalObjectMenuPresenter doMenuPresenter,
                                  final DispatchAsync dispatcher,
                                  final PlaceManager placeManager,
                                  final LangConstants lang) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
+        this.doMenuPresenter = doMenuPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         this.lang = lang;
@@ -188,16 +193,24 @@ public class FindMetadataPresenter
                 int id =
                         getView().getResults().getSelectedRecord()
                                 .getAttributeAsInt(Constants.ATTR_GENERIC_ID);
-                CreateStructureEvent.fire(getEventBus(), model, code, results.get(id));
+                CreateStructureEvent.fire(getEventBus(),
+                                          model,
+                                          code,
+                                          leftPresenter.getView().getInputTree(),
+                                          results.get(id));
+                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE));
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                // placeManager.revealRelativePlace(new
-                // PlaceRequest(NameTokens.ADJUST_PAGES).with(Constants.URL_PARAM_METADATA,
-                // Constants.URL_PARAM_METADATA_NOT_FOUND));
+                CreateStructureEvent.fire(getEventBus(),
+                                          model,
+                                          code,
+                                          leftPresenter.getView().getInputTree(),
+                                          null);
+                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE));
             }
         });
         getView().getResults().addCellClickHandler(new CellClickHandler() {
@@ -216,6 +229,7 @@ public class FindMetadataPresenter
     @Override
     protected void onReset() {
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+        leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
     }
 
     /*

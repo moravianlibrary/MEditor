@@ -393,4 +393,8 @@ public class CreateStructureView
             imagePopup.setVisible(false);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
 }

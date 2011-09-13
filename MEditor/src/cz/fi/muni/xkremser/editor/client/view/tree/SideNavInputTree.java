@@ -28,38 +28,29 @@
 package cz.fi.muni.xkremser.editor.client.view.tree;
 
 import com.gwtplatform.dispatch.client.DispatchAsync;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.events.CellClickEvent;
-import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
-import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class SideNavInputTree.
  */
 public class SideNavInputTree
-        extends TreeGrid
-        implements Refreshable {
+        extends TreeGrid {
 
-    /** The id suffix. */
-    private final String idSuffix = "";
+    private final MenuItem createItem;
 
     /**
      * Instantiates a new side nav input tree.
@@ -68,7 +59,7 @@ public class SideNavInputTree
      *        the dispatcher
      * @param lang
      */
-    public SideNavInputTree(DispatchAsync dispatcher, final PlaceManager placeManager, LangConstants lang) {
+    public SideNavInputTree(DispatchAsync dispatcher, LangConstants lang) {
         setWidth100();
         setHeight100();
         setCustomIconProperty("icon");
@@ -79,7 +70,6 @@ public class SideNavInputTree
         setFolderIcon("silk/folder.png");
         setShowOpenIcons(true);
         setShowDropIcons(false);
-        // setLoadingDataMessage("loading ...");
         setShowSortArrow(SortArrow.CORNER);
         setShowConnectors(true);
         setShowAllRecords(true);
@@ -87,53 +77,14 @@ public class SideNavInputTree
         setCanSort(true);
         setAutoFetchData(true);
         setShowRoot(false);
-        // addRowContextClickHandler(new RowContextClickHandler() {
-        // @Override
-        // public void onRowContextClick(RowContextClickEvent event) {
-        // SideNavInputTree.this.getContextMenu().showContextMenu();
-        // }
-        // });
-        // addClickHandler(new ClickHandler() {
-        //
-        // @Override
-        // public void onClick(ClickEvent event) {
-        // event.cancel();
-        //
-        // }
-        // });
-        // addCellContextClickHandler(new CellContextClickHandler() {
-        // @Override
-        // public void onCellContextClick(CellContextClickEvent event) {
-        // event.cancel();
-        // }
-        // });
+
         MenuItem showItem = new MenuItem(lang.show(), "icons/16/structure.png");
-        // editItem.setAttribute(ID_NAME, ID_EDIT);
-        // editItem.setEnableIfCondition(new MenuItemIfFunction() {
-        // @Override
-        // public boolean execute(Canvas target, Menu menu, MenuItem item) {
-        // return true;
-        // }
-        // });
         final Menu showMenu = new Menu();
         showMenu.setShowShadow(true);
         showMenu.setShadowDepth(10);
         showMenu.setItems(showItem);
-        // setContextMenu(editMenu);
 
-        MenuItem createItem = new MenuItem(lang.create(), "icons/16/create2.png");
-        createItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-
-            @Override
-            public void onClick(final MenuItemClickEvent event) {
-                String msg = event.getMenu().getEmptyMessage();
-                String model = msg.substring(0, msg.indexOf("/"));
-                String id = msg.substring(msg.indexOf("/") + 1);
-
-                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
-                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, id));
-            }
-        });
+        createItem = new MenuItem(lang.create(), "icons/16/create2.png");
 
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
@@ -145,9 +96,6 @@ public class SideNavInputTree
 
             @Override
             public void onCellContextClick(CellContextClickEvent event) {
-                // to.setPath(from.getAttributeAsString(ServerConstants.ATTR_ID));
-                // to.setName(from.getAttributeAsString(ServerConstants.ATTR_NAME));
-                // to.setIssn(from.getAttributeAsString(ServerConstants.ATTR_ISSN));
 
                 ListGridRecord record = event.getRecord();
                 String path = record.getAttribute(Constants.ATTR_ID);
@@ -164,18 +112,6 @@ public class SideNavInputTree
                     showMenu.showContextMenu();
                 }
 
-                // getContextMenu().showContextMenu();
-            }
-        });
-
-        addCellClickHandler(new CellClickHandler() {
-
-            @Override
-            public void onCellClick(CellClickEvent event) {
-                // show the menu if the click happened on the first column
-                // if (event.getColNum() == 0) {
-                // // getContextMenu().showContextMenu();
-                // }
             }
         });
         addShowContextMenuHandler(new ShowContextMenuHandler() {
@@ -190,25 +126,16 @@ public class SideNavInputTree
         field1.setCanFilter(true);
         field1.setName(Constants.ATTR_BARCODE);
         field1.setTitle("ID");
-
-        //        TreeGridField field2 = new TreeGridField();
-        //        field2.setCanFilter(true);
-        //        field2.setName(Constants.ATTR_NAME);
-        //        field2.setTitle(lang.name());
-
-        setFields(field1/* , field2 */);
+        setFields(field1);
         setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.Refreshable
-     * #refreshTree()
-     */
-    @Override
     public void refreshTree() {
         fetchData();
+    }
+
+    public MenuItem getCreateMenuItem() {
+        return createItem;
     }
 
 }

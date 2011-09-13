@@ -125,7 +125,10 @@ public class CreateStructurePresenter
     private final DispatchAsync dispatcher;
 
     /** The left presenter. */
-    private final DigitalObjectMenuPresenter leftPresenter;
+    private final CreateObjectMenuPresenter leftPresenter;
+
+    /** The doMenuPresenter presenter. */
+    private final DigitalObjectMenuPresenter doMenuPresenter;
 
     /** The code. */
     private String code;
@@ -159,11 +162,13 @@ public class CreateStructurePresenter
     public CreateStructurePresenter(final EventBus eventBus,
                                     final MyView view,
                                     final MyProxy proxy,
-                                    final DigitalObjectMenuPresenter leftPresenter,
+                                    final CreateObjectMenuPresenter leftPresenter,
+                                    final DigitalObjectMenuPresenter doMenuPresenter,
                                     final DispatchAsync dispatcher,
                                     final PlaceManager placeManager) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
+        this.doMenuPresenter = doMenuPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         getView().setUiHandlers(this);
@@ -218,6 +223,7 @@ public class CreateStructurePresenter
         super.onReset();
         processImages();
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+        leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
     }
 
     /**
@@ -481,7 +487,8 @@ public class CreateStructurePresenter
         this.model = event.getModel();
         this.code = event.getCode();
         this.dc = event.getDc();
-        forceReveal();
+        //        forceReveal();
+        //        leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
+        //        leftPresenter.getView().setInputTree(event.getTree());
     }
-
 }
