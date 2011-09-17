@@ -173,10 +173,10 @@ public class RESTHelper {
 
             int resp = ((HttpURLConnection) uc).getResponseCode();
             if (resp != 200) {
-                LOGGER.error("Unable to open connection on " + urlString + "  response code: " + resp);
                 if (robustMode) {
                     return null;
                 } else {
+                    LOGGER.error("Unable to open connection on " + urlString + "  response code: " + resp);
                     throw new ConnectionException("connection cannot be established");
                 }
             }

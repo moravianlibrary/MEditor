@@ -92,15 +92,18 @@ public class GetDescriptionHandler
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-        String commonDescription;
-        String userDescription;
-        Date modified;
+        String commonDescription = null;
+        String userDescription = null;
+        Date modified = null;
         try {
             RecentlyModifiedItem item =
                     recentlyModifiedDAO.getUserDescriptionAndDate(openID, action.getUuid());
-            userDescription = item.getDescription();
+            if (item != null) {
+                userDescription = item.getDescription();
+                modified = item.getModified();
+            }
             commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
-            modified = item.getModified();
+
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
