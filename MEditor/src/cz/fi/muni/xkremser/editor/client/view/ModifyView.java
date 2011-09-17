@@ -1009,7 +1009,9 @@ public class ModifyView
         richTextEditor.setHeight100();
         richTextEditor.setWidth100();
         richTextEditor.setOverflow(Overflow.HIDDEN);
-        richTextEditor.setValue(text);
+        if (text != null) {
+            richTextEditor.setValue(text);
+        }
         layout.addMember(titleHTML);
         layout.addMember(richTextEditor);
         DynamicForm form = new DynamicForm();
