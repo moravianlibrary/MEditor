@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.client.view.tab;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -457,7 +457,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -483,7 +483,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -508,7 +508,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -533,7 +533,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -558,7 +558,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -583,7 +583,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -652,7 +652,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -721,7 +721,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -739,7 +739,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -764,7 +764,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -789,7 +789,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -814,7 +814,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -839,7 +839,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -864,7 +864,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -889,7 +889,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -914,7 +914,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -939,7 +939,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -1079,7 +1079,7 @@ public final class TabUtils {
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override

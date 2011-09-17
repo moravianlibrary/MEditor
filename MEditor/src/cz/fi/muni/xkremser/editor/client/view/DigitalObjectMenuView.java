@@ -64,8 +64,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
-import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyGrid;
+import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -139,7 +138,7 @@ public class DigitalObjectMenuView
     private SideNavInputTree inputTree;
 
     /** The side nav grid. */
-    private final SideNavRecentlyGrid sideNavGrid;
+    private final ListGrid sideNavGrid;
 
     /** The section stack. */
     private final SectionStack sectionStack;
@@ -192,7 +191,15 @@ public class DigitalObjectMenuView
         sectionRelated.setItems(relatedGrid);
         sectionRelated.setExpanded(false);
 
-        sideNavGrid = new SideNavRecentlyGrid();
+        sideNavGrid = new ListGrid();
+        sideNavGrid.setWidth100();
+        sideNavGrid.setHeight100();
+        sideNavGrid.setShowSortArrow(SortArrow.CORNER);
+        sideNavGrid.setShowAllRecords(true);
+        sideNavGrid.setAutoFetchData(true);
+        sideNavGrid.setCanHover(true);
+        sideNavGrid.setHoverOpacity(75);
+        sideNavGrid.setHoverStyle("interactImageHover");
 
         final DynamicForm form = new DynamicForm();
         form.setHeight(1);

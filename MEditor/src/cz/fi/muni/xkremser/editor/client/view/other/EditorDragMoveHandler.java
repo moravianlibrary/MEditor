@@ -22,7 +22,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.client.view;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.util.EventHandler;

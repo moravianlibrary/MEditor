@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.client.view.tab;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,7 +86,7 @@ import cz.fi.muni.xkremser.editor.client.mods.SubjectTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TableOfContentsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.TypeOfResourceTypeClient;
-import cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation;
+import cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc
@@ -265,7 +265,7 @@ public class ModsTab
         /*
          * (non-Javadoc)
          * @see
-         * cz.fi.muni.xkremser.editor.client.view.tab.TabUtils.GetLayoutOperation
+         * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override

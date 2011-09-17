@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.client.view.tab;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import java.util.Arrays;
 import java.util.Map;

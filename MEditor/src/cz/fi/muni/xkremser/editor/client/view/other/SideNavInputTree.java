@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.client.view.tree;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.types.SortArrow;

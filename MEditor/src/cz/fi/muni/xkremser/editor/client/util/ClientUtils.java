@@ -35,7 +35,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
-import cz.fi.muni.xkremser.editor.client.view.RecentlyModifiedRecord;
+import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 

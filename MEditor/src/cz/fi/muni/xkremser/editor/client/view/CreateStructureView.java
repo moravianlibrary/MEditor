@@ -62,6 +62,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc

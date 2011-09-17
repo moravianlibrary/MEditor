@@ -62,7 +62,7 @@ import cz.fi.muni.xkremser.editor.client.view.FindMetadataView;
 import cz.fi.muni.xkremser.editor.client.view.HomeView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.UserView;
-import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
+import cz.fi.muni.xkremser.editor.client.view.other.DCTab;
 
 // TODO: Auto-generated Javadoc
 /**

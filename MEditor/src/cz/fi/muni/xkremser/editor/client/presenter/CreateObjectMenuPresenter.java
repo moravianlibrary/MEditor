@@ -60,7 +60,7 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
-import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;

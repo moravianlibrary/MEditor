@@ -36,12 +36,12 @@ import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
@@ -55,8 +55,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
-import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
-import cz.fi.muni.xkremser.editor.client.view.tree.SideNavRecentlyGrid;
+import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -94,14 +93,13 @@ public class CreateObjectMenuView
     /** The input tree. */
     private SideNavInputTree inputTree;
 
-    /** The side nav grid. */
-    private final SideNavRecentlyGrid sideNavGrid;
+    private final ListGrid structureGrid;
 
     /** The section stack. */
     private final SectionStack sectionStack;
 
     /** The section recently modified. */
-    private final SectionStackSection sectionRecentlyModified;
+    private final SectionStackSection structure;
 
     /** The refresh button. */
     private ImgButton refreshButton;
@@ -123,12 +121,15 @@ public class CreateObjectMenuView
         layout.setWidth100();
         layout.setOverflow(Overflow.AUTO);
 
-        sideNavGrid = new SideNavRecentlyGrid();
-
-        final DynamicForm form = new DynamicForm();
-        form.setHeight(1);
-        form.setWidth(60);
-        form.setNumCols(1);
+        structureGrid = new ListGrid();
+        structureGrid.setWidth100();
+        structureGrid.setHeight100();
+        structureGrid.setShowSortArrow(SortArrow.CORNER);
+        structureGrid.setShowAllRecords(true);
+        structureGrid.setAutoFetchData(true);
+        structureGrid.setCanHover(true);
+        structureGrid.setHoverOpacity(75);
+        structureGrid.setHoverStyle("interactImageHover");
 
         selectItem.setWidth(60);
         selectItem.setShowTitle(false);
@@ -153,18 +154,14 @@ public class CreateObjectMenuView
             }
         });
 
-        form.setFields(selectItem);
-        form.setTitle("by:");
-
-        sectionRecentlyModified = new SectionStackSection();
-        sectionRecentlyModified.setTitle(lang.recentlyModified());
-        sectionRecentlyModified.setResizeable(true);
-        sectionRecentlyModified.setItems(sideNavGrid);
-        sectionRecentlyModified.setControls(form);
-        sectionRecentlyModified.setExpanded(true);
+        structure = new SectionStackSection();
+        structure.setTitle(lang.recentlyModified());
+        structure.setResizeable(true);
+        structure.setItems(structureGrid);
+        structure.setExpanded(true);
 
         sectionStack = new SectionStack();
-        sectionStack.addSection(sectionRecentlyModified);
+        sectionStack.addSection(structure);
         sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
         sectionStack.setAnimateSections(true);
         sectionStack.setWidth100();
@@ -191,7 +188,7 @@ public class CreateObjectMenuView
      */
     @Override
     public void setDS(DispatchAsync dispatcher, EventBus bus) {
-        this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
+        this.structureGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
     }
 
     /*
@@ -236,7 +233,7 @@ public class CreateObjectMenuView
      */
     @Override
     public ListGrid getSubelementsGrid() {
-        return sideNavGrid;
+        return structureGrid;
     }
 
     @Override

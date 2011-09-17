@@ -31,7 +31,7 @@ import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Order;
 
-import cz.fi.muni.xkremser.editor.client.view.tree.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 

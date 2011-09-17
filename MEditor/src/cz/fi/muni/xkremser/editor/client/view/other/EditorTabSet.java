@@ -1,5 +1,5 @@
 
-package cz.fi.muni.xkremser.editor.client.view;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import java.util.List;
 import java.util.Map;
@@ -11,8 +11,6 @@ import com.smartgwt.client.widgets.tile.TileGrid;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
-import cz.fi.muni.xkremser.editor.client.view.tab.InfoTab;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 

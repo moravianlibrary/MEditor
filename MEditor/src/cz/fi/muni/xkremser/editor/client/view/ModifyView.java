@@ -102,9 +102,12 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
-import cz.fi.muni.xkremser.editor.client.view.tab.DCTab;
-import cz.fi.muni.xkremser.editor.client.view.tab.InfoTab;
-import cz.fi.muni.xkremser.editor.client.view.tab.ModsTab;
+import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
+import cz.fi.muni.xkremser.editor.client.view.other.DCTab;
+import cz.fi.muni.xkremser.editor.client.view.other.EditorDragMoveHandler;
+import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
+import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 

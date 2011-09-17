@@ -61,8 +61,8 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.PageRecord;
-import cz.fi.muni.xkremser.editor.client.view.ScanRecord;
 
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;

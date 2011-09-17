@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.client.view;
+package cz.fi.muni.xkremser.editor.client.view.other;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
