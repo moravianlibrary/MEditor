@@ -448,6 +448,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String create();
 
   /**
+   * Translated "Create substructure".
+   * 
+   * @return translated "Create substructure"
+   */
+  @DefaultStringValue("Create substructure")
+  @Key("createSubStructure")
+  String createSubStructure();
+
+  /**
    * Translated "This type of date is recorded in various places in MARC 21: field 260 subfield $g, for some types of material in field 260 subfield $c, date of original in field 534 subfield $c and date of reproduction in field 533 subfield $d.".
    * 
    * @return translated "This type of date is recorded in various places in MARC 21: field 260 subfield $g, for some types of material in field 260 subfield $c, date of original in field 534 subfield $c and date of reproduction in field 533 subfield $d."
@@ -2293,6 +2302,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String rDigital();
 
   /**
+   * Translated "Range".
+   * 
+   * @return translated "Range"
+   */
+  @DefaultStringValue("Range")
+  @Key("range")
+  String range();
+
+  /**
    * Translated "Indicates a direct link to the object described (e.g. a jpg or pdf document). Used only when the object is represented by a single file.".
    * 
    * @return translated "Indicates a direct link to the object described (e.g. a jpg or pdf document). Used only when the object is represented by a single file."
@@ -2633,6 +2651,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Equivalent to MARC 852 $b (Sublocation or collection), $c (Shelving location), $e (Address), which are expressed together as a string.")
   @Key("sublocation")
   String sublocation();
+
+  /**
+   * Translated "Substructures".
+   * 
+   * @return translated "Substructures"
+   */
+  @DefaultStringValue("Substructures")
+  @Key("substructures")
+  String substructures();
 
   /**
    * Translated "Subtitle".

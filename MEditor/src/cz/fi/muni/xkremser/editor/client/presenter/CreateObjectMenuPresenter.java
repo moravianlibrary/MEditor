@@ -42,10 +42,8 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
-import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -68,8 +66,6 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalO
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent.RefreshRecentlyTreeHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -98,12 +94,7 @@ public class CreateObjectMenuPresenter
 
         ListGrid getSubelementsGrid();
 
-        void setDS(DispatchAsync dispatcher, EventBus bus);
-
         SectionStack getSectionStack();
-
-        SelectItem getSelectItem();
-
     }
 
     /**
@@ -204,7 +195,6 @@ public class CreateObjectMenuPresenter
     protected void onBind() {
         super.onBind();
 
-        getView().setDS(dispatcher, getEventBus());
         getView().getSubelementsGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
@@ -246,32 +236,6 @@ public class CreateObjectMenuPresenter
             }
         });
 
-        addRegisteredHandler(RefreshRecentlyTreeEvent.getType(), new RefreshRecentlyTreeHandler() {
-
-            @Override
-            public void onRefreshRecentlyTree(RefreshRecentlyTreeEvent event) {
-                refreshRecentlyModified();
-            }
-        });
-
-    }
-
-    @Override
-    public void refreshRecentlyModified() {
-
-        Criteria criteria = new Criteria();
-        boolean all = lang.all().equals(getView().getSelectItem().getValue());
-        criteria.addCriteria(Constants.ATTR_ALL, all);
-        //        getView().getSubelementGrid().getDataSource().fetchData(criteria, new DSCallback() {
-        //
-        //            @Override
-        //            public void execute(DSResponse response, Object rawData, DSRequest request) {
-        //                getView().getSubelementGrid().setData(response.getData());
-        //                getView().getSubelementGrid().sort(Constants.ATTR_MODIFIED, SortDirection.ASCENDING);
-        //                getView().getSubelementGrid().selectRecord(0);
-        //                getView().getSubelementGrid().scrollToRow(0);
-        //            }
-        //        });
     }
 
     private void evaluateUuid(TextItem uuidField) {

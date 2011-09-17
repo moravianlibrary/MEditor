@@ -308,4 +308,5 @@ public class Constants {
     public static final int IMAGE_THUMBNAIL_WIDTH = 80;
     public static final int IMAGE_THUMBNAIL_HEIGHT = 110;
     public static final int IMAGE_FULL_WIDTH = 750;
+    public static final String RANGE = "range";
 }

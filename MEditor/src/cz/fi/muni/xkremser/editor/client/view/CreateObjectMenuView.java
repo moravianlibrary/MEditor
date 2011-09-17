@@ -29,32 +29,28 @@ package cz.fi.muni.xkremser.editor.client.view;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
-import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
@@ -82,8 +78,6 @@ public class CreateObjectMenuView
 
         void onRefresh();
 
-        void refreshRecentlyModified();
-
         void onAddSubelement(final RecentlyModifiedItem item, final List<? extends List<String>> related);
 
         void revealItem(String uuid);
@@ -98,7 +92,8 @@ public class CreateObjectMenuView
     /** The section stack. */
     private final SectionStack sectionStack;
 
-    /** The section recently modified. */
+    private final SectionStackSection createStructure;
+
     private final SectionStackSection structure;
 
     /** The refresh button. */
@@ -126,41 +121,33 @@ public class CreateObjectMenuView
         structureGrid.setHeight100();
         structureGrid.setShowSortArrow(SortArrow.CORNER);
         structureGrid.setShowAllRecords(true);
-        structureGrid.setAutoFetchData(true);
         structureGrid.setCanHover(true);
         structureGrid.setHoverOpacity(75);
         structureGrid.setHoverStyle("interactImageHover");
+        ListGridField rangeField = new ListGridField();
+        rangeField.setCanFilter(true);
+        rangeField.setName(Constants.RANGE);
+        rangeField.setTitle(lang.range());
+        ListGridField typeField = new ListGridField();
+        typeField.setCanFilter(true);
+        typeField.setName(Constants.RANGE);
+        typeField.setTitle(lang.dcType());
+        structureGrid.setFields(rangeField, typeField);
 
-        selectItem.setWidth(60);
-        selectItem.setShowTitle(false);
-        selectItem.setValueMap(lang.me(), lang.all());
-        selectItem.setDefaultValue(lang.me());
-        selectItem.setHoverOpacity(75);
-        selectItem.setHoverStyle("interactImageHover");
-        selectItem.addItemHoverHandler(new ItemHoverHandler() {
-
-            @Override
-            public void onItemHover(ItemHoverEvent event) {
-                selectItem.setPrompt(CreateObjectMenuView.this.lang.showModifiedHint()
-                        + selectItem.getValue());
-
-            }
-        });
-        selectItem.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                getUiHandlers().refreshRecentlyModified();
-            }
-        });
+        createStructure = new SectionStackSection();
+        createStructure.setTitle(lang.createSubStructure());
+        createStructure.setResizeable(true);
+        createStructure.setItems(new Label("Create"));
+        createStructure.setExpanded(true);
 
         structure = new SectionStackSection();
-        structure.setTitle(lang.recentlyModified());
+        structure.setTitle(lang.substructures());
         structure.setResizeable(true);
         structure.setItems(structureGrid);
         structure.setExpanded(true);
 
         sectionStack = new SectionStack();
+        sectionStack.addSection(createStructure);
         sectionStack.addSection(structure);
         sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
         sectionStack.setAnimateSections(true);
@@ -178,17 +165,6 @@ public class CreateObjectMenuView
     @Override
     public Widget asWidget() {
         return layout;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#setDS(com.gwtplatform.dispatch.client.DispatchAsync)
-     */
-    @Override
-    public void setDS(DispatchAsync dispatcher, EventBus bus) {
-        this.structureGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
     }
 
     /*
@@ -239,12 +215,6 @@ public class CreateObjectMenuView
     @Override
     public SectionStack getSectionStack() {
         return sectionStack;
-    }
-
-    @Override
-    public SelectItem getSelectItem() {
-        return selectItem;
-
     }
 
     /**
