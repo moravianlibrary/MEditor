@@ -42,8 +42,14 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
+import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -93,6 +99,12 @@ public class CreateObjectMenuPresenter
         ListGrid getSubelementsGrid();
 
         SectionStack getSectionStack();
+
+        ButtonItem getCreateButton();
+
+        CheckboxItem getKeepCheckbox();
+
+        SelectItem getSelectModel();
     }
 
     /**
@@ -178,6 +190,14 @@ public class CreateObjectMenuPresenter
             @Override
             public void onCellClick(CellClickEvent event) {
                 revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+            }
+        });
+        getView().getCreateButton().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                SC.say("I am working!");
+                // TODO: implement it
             }
         });
 

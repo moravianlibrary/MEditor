@@ -27,20 +27,25 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -49,6 +54,7 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
@@ -99,10 +105,14 @@ public class CreateObjectMenuView
     /** The refresh button. */
     private ImgButton refreshButton;
 
+    private final ButtonItem createButton;
+
+    private final CheckboxItem keepCheckbox;
+
+    private final SelectItem selectModel;
+
     /** The layout. */
     private final VLayout layout;
-
-    private final SelectItem selectItem = new SelectItem();
 
     /**
      * Instantiates a new digital object menu view.
@@ -137,7 +147,36 @@ public class CreateObjectMenuView
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
         createStructure.setResizeable(true);
-        createStructure.setItems(new Label("Create"));
+        selectModel = new SelectItem();
+        selectModel.setTitle(lang.dcType());
+
+        Map<String, String> labelsSingular = new HashMap<String, String>();
+        labelsSingular.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
+        labelsSingular.put(DigitalObjectModel.MONOGRAPH.getValue(), lang.monograph());
+        labelsSingular.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
+        labelsSingular.put(DigitalObjectModel.PAGE.getValue(), lang.page());
+        labelsSingular.put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
+        labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
+        labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
+        DigitalObjectModel[] models = DigitalObjectModel.values();
+        String[] values = new String[models.length];
+        for (int i = 0; i < models.length; i++) {
+            values[i] = labelsSingular.get(models[i].getValue());
+        }
+        selectModel.setValueMap(values);
+        keepCheckbox = new CheckboxItem();
+        keepCheckbox.setTitle(lang.keepOnRight());
+        createButton = new ButtonItem();
+        createButton.setTitle(lang.create());
+        createButton.setAlign(Alignment.CENTER);
+        createButton.setColSpan(2);
+        final DynamicForm form = new DynamicForm();
+        form.setNumCols(2);
+        form.setWidth100();
+
+        form.setFields(selectModel, keepCheckbox, createButton);
+
+        createStructure.setItems(form);
         createStructure.setExpanded(true);
 
         structure = new SectionStackSection();
@@ -254,5 +293,20 @@ public class CreateObjectMenuView
         section1.setExpanded(true);
         sectionStack.addSection(section1, 0);
         section1.setAttribute(SECTION_INPUT_ID, "yes");
+    }
+
+    @Override
+    public ButtonItem getCreateButton() {
+        return createButton;
+    }
+
+    @Override
+    public CheckboxItem getKeepCheckbox() {
+        return keepCheckbox;
+    }
+
+    @Override
+    public SelectItem getSelectModel() {
+        return selectModel;
     }
 }

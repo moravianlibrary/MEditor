@@ -439,11 +439,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String county();
 
   /**
-   * Translated "Create a new object".
+   * Translated "Create".
    * 
-   * @return translated "Create a new object"
+   * @return translated "Create"
    */
-  @DefaultStringValue("Create a new object")
+  @DefaultStringValue("Create")
   @Key("create")
   String create();
 
@@ -1508,6 +1508,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Issued date (DDMMYYYY)")
   @Key("issuedDateItem")
   String issuedDateItem();
+
+  /**
+   * Translated "Keep it on the right".
+   * 
+   * @return translated "Keep it on the right"
+   */
+  @DefaultStringValue("Keep it on the right")
+  @Key("keepOnRight")
+  String keepOnRight();
 
   /**
    * Translated "This value is used so that a particular date may be distinguished among several dates. Thus for example, when sorting MODS records by date, a date with keyDate='yes' would be the date to sort on.".
