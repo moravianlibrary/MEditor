@@ -61,8 +61,8 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
-import cz.fi.muni.xkremser.editor.client.view.PageRecord;
 
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
@@ -442,7 +442,7 @@ public class CreateStructurePresenter
                         @Override
                         public void run() {
                             hBar1.setPercentDone(((100 * (alreadyDone + 1)) / data.length));
-                            tileGrid.addData(((PageRecord) data[alreadyDone]).deepCopy());
+                            tileGrid.addData(((ContainerRecord) data[alreadyDone]).deepCopy());
                             if (++alreadyDone != data.length) {
                                 schedule(15);
                             } else {
@@ -454,7 +454,7 @@ public class CreateStructurePresenter
                     timer.schedule(40);
                 } else {
                     for (int i = 0; i < data.length; i++) {
-                        tileGrid.addData(((PageRecord) data[i]).deepCopy());
+                        tileGrid.addData(((ContainerRecord) data[i]).deepCopy());
                     }
                 }
             }

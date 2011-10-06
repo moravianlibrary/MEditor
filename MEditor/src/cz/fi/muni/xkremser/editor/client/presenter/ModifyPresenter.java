@@ -69,7 +69,6 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
-import cz.fi.muni.xkremser.editor.client.view.PageRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
@@ -362,7 +361,7 @@ public class ModifyPresenter
                         @Override
                         public void run() {
                             hBar1.setPercentDone(((100 * (done + 1)) / data.length));
-                            tileGrid.addData(((PageRecord) data[done]).deepCopy());
+                            tileGrid.addData(((ContainerRecord) data[done]).deepCopy());
                             if (++done != data.length) {
                                 schedule(15);
                             } else {
@@ -374,7 +373,7 @@ public class ModifyPresenter
                     timer.schedule(40);
                 } else {
                     for (int i = 0; i < data.length; i++) {
-                        tileGrid.addData(((PageRecord) data[i]).deepCopy());
+                        tileGrid.addData(((ContainerRecord) data[i]).deepCopy());
                     }
                 }
             }
