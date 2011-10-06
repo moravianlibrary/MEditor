@@ -68,7 +68,6 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
-import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
@@ -444,30 +443,32 @@ public class DigitalObjectMenuPresenter
     }
 
     private void shortcutPressed(final int code) {
-        if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_M.getCode()) {
-            Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
-            if (items2.length > 0) {
-                items2[0].focus();
-                isRefByFocused = false;
-            }
-        } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_D.getCode()) {
-            Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
-            if (items1.length > 0) {
-                items1[0].focus();
-                isRefByFocused = true;
-            }
+        if (isVisible()) {
+            if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_M.getCode()) {
+                Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
+                if (items2.length > 0) {
+                    items2[0].focus();
+                    isRefByFocused = false;
+                }
+            } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_D.getCode()) {
+                Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
+                if (items1.length > 0) {
+                    items1[0].focus();
+                    isRefByFocused = true;
+                }
 
-        } else if (code == Constants.CODE_KEY_ENTER) {
+            } else if (code == Constants.CODE_KEY_ENTER) {
 
-            if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
+                if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
 
-                ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
-                revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+                    ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
+                    revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
 
-            } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
+                } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
 
-                ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
-                revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+                    ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
+                    revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+                }
             }
         }
     }
