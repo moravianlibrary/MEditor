@@ -46,6 +46,7 @@ import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
@@ -53,6 +54,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
@@ -70,6 +72,9 @@ public class AppPresenter
 
     private LangConstants lang;
     private volatile boolean unknown = true;
+
+    /** The uuid-window **/
+    private UuidWindow uuidWindow = null;
 
     @Inject
     public void setLang(LangConstants lang) {
@@ -212,6 +217,13 @@ public class AppPresenter
                         && keyCode != Constants.CODE_KEY_DELETE && !isKnownCtrlAltHotkey(event)) {
                     return;
                 }
+                if (keyCode == Constants.CODE_KEY_ESC) {
+                    escShortCut();
+
+                } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
+                    displayEnterPIDWindow();
+                    return;
+                }
                 KeyPressedEvent.fire(AppPresenter.this, keyCode);
             }
 
@@ -260,6 +272,39 @@ public class AppPresenter
                 }
             });
         }
+    }
+
+    /**
+     * Method for handle enter-new-object's-PID short-cut
+     */
+    private void displayEnterPIDWindow() {
+        uuidWindow = new UuidWindow(lang) {
+
+            @Override
+            protected void doActiton(TextItem uuidField) {
+                evaluateUuid(uuidWindow.getUuidField());
+            }
+
+        };
+    }
+
+    /**
+     * Method for close currently displayed window
+     */
+    private void escShortCut() {
+        if (uuidWindow != null) {
+            uuidWindow.destroy();
+            //            uuidWindow = null;
+        }
+    }
+
+    private void evaluateUuid(TextItem uuidField) {
+        if (uuidField.validate()) {
+            uuidWindow.destroy();
+            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));
+        }
+
     }
 
     /*

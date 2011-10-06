@@ -52,7 +52,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -187,8 +186,6 @@ public class DigitalObjectMenuPresenter
 
     private boolean isRefByFocused = false;
 
-    /** The uuid-window **/
-    private UuidWindow uuidWindow = null;
 
     private final LangConstants lang;
 
@@ -228,30 +225,6 @@ public class DigitalObjectMenuPresenter
         this.lang = lang;
         bind();
         getView().setUiHandlers(this);
-    }
-
-    /**
-     * Method for handle enter-new-object's-PID short-cut
-     */
-    private void displayEnterPIDWindow() {
-        uuidWindow = new UuidWindow(lang) {
-
-            @Override
-            protected void doActiton(TextItem uuidField) {
-                evaluateUuid(uuidWindow.getUuidField());
-            }
-
-        };
-    }
-
-    /**
-     * Method for close currently displayed window
-     */
-    private void escShortCut() {
-        if (uuidWindow != null) {
-            uuidWindow.destroy();
-            //            uuidWindow = null;
-        }
     }
 
     /*
@@ -365,15 +338,6 @@ public class DigitalObjectMenuPresenter
 
     };
 
-    private void evaluateUuid(TextItem uuidField) {
-        if (uuidField.validate()) {
-            uuidWindow.destroy();
-            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                    .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));
-        }
-
-    }
-
     /*
      * (non-Javadoc)
      * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onUnbind()
@@ -480,10 +444,7 @@ public class DigitalObjectMenuPresenter
     }
 
     private void shortcutPressed(final int code) {
-        if (code == Constants.CODE_KEY_ESC) {
-            escShortCut();
-
-        } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_M.getCode()) {
+        if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_M.getCode()) {
             Canvas[] items2 = getView().getSectionStack().getSection(2).getItems();
             if (items2.length > 0) {
                 items2[0].focus();
@@ -495,8 +456,6 @@ public class DigitalObjectMenuPresenter
                 items1[0].focus();
                 isRefByFocused = true;
             }
-        } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
-            displayEnterPIDWindow();
 
         } else if (code == Constants.CODE_KEY_ENTER) {
 
