@@ -27,6 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 
@@ -64,21 +67,17 @@ public class NameTokens {
     /** The Constant USERS. */
     public static final String USERS = "users";
 
-    /**
-     * Gets the home.
-     * 
-     * @return the home
-     */
-    public static String getHome() {
-        return HOME;
-    }
+    public static List<String> getAllNameTokens() {
+        return new ArrayList<String>() {
 
-    /**
-     * Gets the modify.
-     * 
-     * @return the modify
-     */
-    public static String getModify() {
-        return MODIFY;
+            {
+                add(HOME);
+                add(MODIFY);
+                add(CREATE);
+                add(FIND_METADATA);
+                add(ADJUST_PAGES);
+                add(USERS);
+            }
+        };
     }
 }

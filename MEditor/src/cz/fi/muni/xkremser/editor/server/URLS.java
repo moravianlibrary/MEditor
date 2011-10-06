@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.client.NameTokens;
-import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
@@ -123,17 +122,29 @@ public class URLS {
     public static String convertToAJAXURL(Map parameters) {
         StringBuilder sufix = new StringBuilder();
         sufix.append('#');
-        if (parameters.containsKey(Constants.URL_PARAM_UUID)) {
-            sufix.append(NameTokens.MODIFY + ";");
-        }
+
+        String foundAction = null;
+
         for (Object keyObj : parameters.keySet()) {
-            sufix.append(keyObj);
-            String[] values = (String[]) parameters.get(keyObj);
-            if (values.length > 0 && !"".equals(values[0])) {
-                sufix.append('=').append(values[0]);
+            if (NameTokens.getAllNameTokens().contains(keyObj.toString())) {
+                foundAction = (String) keyObj;
+                sufix.append(foundAction + ";");
             }
-            sufix.append(';');
         }
-        return sufix.toString();
+
+        if (foundAction != null) {
+            for (Object keyObj : parameters.keySet()) {
+                if (!((String) keyObj).equals(foundAction)) {
+                    sufix.append(keyObj);
+                    String[] values = (String[]) parameters.get(keyObj);
+                    if (values.length > 0 && !"".equals(values[0])) {
+                        sufix.append('=').append(values[0]);
+                    }
+                    sufix.append(';');
+                }
+            }
+            return sufix.toString();
+        }
+        return "";
     }
 }
