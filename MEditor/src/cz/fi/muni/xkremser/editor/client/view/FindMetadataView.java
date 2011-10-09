@@ -199,7 +199,7 @@ public class FindMetadataView
 
         final VLayout printContainer = new VLayout(10);
         printContainer.addMember(printStack);
-        printContainer.setExtraSpace(5);
+        printContainer.setExtraSpace(25);
 
         nextButton = new IButton(lang.next());
         nextButton.setWidth(80);

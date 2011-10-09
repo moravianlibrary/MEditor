@@ -38,6 +38,7 @@ import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
+import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
@@ -48,10 +49,13 @@ import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.tree.Tree;
+import com.smartgwt.client.widgets.tree.TreeGrid;
+import com.smartgwt.client.widgets.tree.TreeGridField;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
@@ -68,9 +72,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 public class CreateObjectMenuView
         extends ViewWithUiHandlers<CreateObjectMenuView.MyUiHandlers>
         implements CreateObjectMenuPresenter.MyView {
-
-    /** The Constant SECTION_RELATED_ID. */
-    private static final String SECTION_RELATED_ID = "related";
 
     private static final String SECTION_INPUT_ID = "input";
 
@@ -93,7 +94,9 @@ public class CreateObjectMenuView
     /** The input tree. */
     private SideNavInputTree inputTree;
 
-    private final ListGrid structureGrid;
+    private final TreeGrid structureTreeGrid;
+
+    private final Tree structureTree;
 
     /** The section stack. */
     private final SectionStack sectionStack;
@@ -126,23 +129,57 @@ public class CreateObjectMenuView
         layout.setWidth100();
         layout.setOverflow(Overflow.AUTO);
 
-        structureGrid = new ListGrid();
-        structureGrid.setWidth100();
-        structureGrid.setHeight100();
-        structureGrid.setShowSortArrow(SortArrow.CORNER);
-        structureGrid.setShowAllRecords(true);
-        structureGrid.setCanHover(true);
-        structureGrid.setHoverOpacity(75);
-        structureGrid.setHoverStyle("interactImageHover");
-        ListGridField rangeField = new ListGridField();
+        structureTreeGrid = new TreeGrid();
+        structureTreeGrid.setWidth100();
+        structureTreeGrid.setHeight100();
+        structureTreeGrid.setShowSortArrow(SortArrow.CORNER);
+        structureTreeGrid.setShowAllRecords(true);
+        structureTreeGrid.setCanHover(true);
+        structureTreeGrid.setHoverOpacity(75);
+        structureTreeGrid.setCanEdit(true);
+        structureTreeGrid.setCanReparentNodes(true);
+        structureTreeGrid.setHoverStyle("interactImageHover");
+        structureTreeGrid.setCanReorderRecords(true);
+        structureTreeGrid.setCanAcceptDroppedRecords(true);
+        structureTreeGrid.setShowOpenIcons(false);
+        structureTreeGrid.setDropIconSuffix("into");
+        //        setFolderIcon("silk/folder.png");
+
+        structureTree = new Tree();
+        structureTree.setModelType(TreeModelType.PARENT);
+        structureTree.setRootValue(1);
+        structureTree.setNameProperty(Constants.ATTR_NAME);
+        structureTree.setIdField(Constants.ATTR_ID);
+        structureTree.setParentIdField(Constants.ATTR_PARENT);
+        structureTree.setOpenProperty("isOpen");
+        //        structureTree.setData(new TreeNode[] {new SubstructureTreeNode("2", "3", "jmeno1", "typ1", true),
+        //                new SubstructureTreeNode("99", "2", "jmeno2", "typ2", true),
+        //                new SubstructureTreeNode("100", "2", "jmeno3", "typ3", true)});
+
+        TreeGridField rangeField = new TreeGridField();
         rangeField.setCanFilter(true);
-        rangeField.setName(Constants.RANGE);
-        rangeField.setTitle(lang.range());
-        ListGridField typeField = new ListGridField();
+        rangeField.setName(Constants.ATTR_NAME);
+        rangeField.setTitle(lang.name());
+
+        TreeGridField typeField = new TreeGridField();
         typeField.setCanFilter(true);
-        typeField.setName(Constants.RANGE);
+        typeField.setName(Constants.ATTR_TYPE);
         typeField.setTitle(lang.dcType());
-        structureGrid.setFields(rangeField, typeField);
+
+        structureTreeGrid.setFields(rangeField, typeField);
+        //        structureTree.setData(new Record[] {new Record() {
+        //
+        //            {
+        //                setAttribute(Constants.RANGE, "jmeno1");
+        //                setAttribute("type", "typ1");
+        //            }
+        //        }, new Record() {
+        //
+        //            {
+        //                setAttribute("name", "jmeno2");
+        //                setAttribute("type", "typ2");
+        //            }
+        //        }});
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
@@ -172,18 +209,20 @@ public class CreateObjectMenuView
         createButton.setColSpan(2);
         final DynamicForm form = new DynamicForm();
         form.setNumCols(2);
+        form.setPadding(5);
         form.setWidth100();
+        form.setExtraSpace(10);
 
         form.setFields(selectModel, keepCheckbox, createButton);
 
         createStructure.setItems(form);
-        createStructure.setExpanded(true);
+        createStructure.setExpanded(false);
 
         structure = new SectionStackSection();
         structure.setTitle(lang.substructures());
         structure.setResizeable(true);
-        structure.setItems(structureGrid);
-        structure.setExpanded(true);
+        structure.setItems(structureTreeGrid);
+        structure.setExpanded(false);
 
         sectionStack = new SectionStack();
         sectionStack.addSection(createStructure);
@@ -248,7 +287,7 @@ public class CreateObjectMenuView
      */
     @Override
     public ListGrid getSubelementsGrid() {
-        return structureGrid;
+        return structureTreeGrid;
     }
 
     @Override
@@ -308,5 +347,45 @@ public class CreateObjectMenuView
     @Override
     public SelectItem getSelectModel() {
         return selectModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void enableCheckbox(boolean isEnabled) {
+        if (isEnabled) {
+            keepCheckbox.enable();
+        } else {
+            keepCheckbox.disable();
+        }
+    }
+
+    public static class SubstructureTreeNode
+            extends TreeNode {
+
+        public SubstructureTreeNode(String id, String parent, String name, String type, boolean isOpen) {
+            setAttribute(Constants.ATTR_ID, id);
+            setAttribute(Constants.ATTR_PARENT, parent);
+            setAttribute(Constants.ATTR_NAME, name);
+            setAttribute(Constants.ATTR_TYPE, type);
+            setAttribute("isOpen", isOpen);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void addSubstructure(int id, String name, String type, String parent, boolean isOpen) {
+        structureTreeGrid.addData(new SubstructureTreeNode(String.valueOf(id), parent, name, type, isOpen));
+    }
+
+    @Override
+    public void setRoot(String name, String type) {
+        //        structureTree.setRoot(new SubstructureTreeNode("0", "-1", name, type, true));
+        //        structureTreeGrid.setData(structureTree);
     }
 }

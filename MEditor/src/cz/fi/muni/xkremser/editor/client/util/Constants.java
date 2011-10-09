@@ -114,6 +114,8 @@ public class Constants {
     /** The Constant ATTR_SURNAME. */
     public static final String ATTR_SURNAME = "surname";
 
+    public static final String ATTR_TYPE = "type";
+
     /** The Constant ATTR_IDENTITY. */
     public static final String ATTR_IDENTITY = "identity";
 
@@ -309,4 +311,5 @@ public class Constants {
     public static final int IMAGE_THUMBNAIL_HEIGHT = 110;
     public static final int IMAGE_FULL_WIDTH = 750;
     public static final String RANGE = "range";
+
 }

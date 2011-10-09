@@ -224,6 +224,19 @@ public class CreateStructurePresenter
         processImages();
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
         leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
+        leftPresenter.getView().getSectionStack().expandSection(1);
+        leftPresenter.getView().getSectionStack().expandSection(2);
+        String name = null;
+        if (dc != null && dc.getTitle() != null && dc.getTitle().size() != 0 && dc.getTitle().get(0) != null
+                && !"".equals(dc.getTitle().get(0).trim())) {
+            name = dc.getTitle().get(0).trim();
+        } else {
+            name = code;
+        }
+        leftPresenter.getView().addSubstructure(0, name, model, "1", true);
+        //        leftPresenter.getView().setRoot(name, model);
+        leftPresenter.doIt();
+        leftPresenter.getView().getSubelementsGrid().selectRecord(0);
     }
 
     /**

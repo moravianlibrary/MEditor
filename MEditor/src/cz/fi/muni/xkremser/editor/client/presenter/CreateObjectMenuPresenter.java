@@ -42,12 +42,13 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
@@ -105,6 +106,12 @@ public class CreateObjectMenuPresenter
         CheckboxItem getKeepCheckbox();
 
         SelectItem getSelectModel();
+
+        void enableCheckbox(boolean isEnabled);
+
+        void addSubstructure(int id, String name, String type, String parent, boolean isOpen);
+
+        void setRoot(String name, String type);
     }
 
     /**
@@ -134,6 +141,8 @@ public class CreateObjectMenuPresenter
 
     private final Map<String, List<? extends List<String>>> openedObjectsUuidAndRelated =
             new HashMap<String, List<? extends List<String>>>();
+
+    private int lastId = 1;
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -192,12 +201,28 @@ public class CreateObjectMenuPresenter
                 revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
             }
         });
+        getView().enableCheckbox(false);
+        getView().getCreateButton().disable();
+        getView().getSelectModel().addChangeHandler(new ChangeHandler() {
+
+            @Override
+            public void onChange(ChangeEvent event) {
+                String val = (String) event.getValue();
+                if (!"".equals(val.trim())) {
+                    getView().getCreateButton().enable();
+                } else {
+                    getView().getCreateButton().disable();
+                }
+            }
+        });
         getView().getCreateButton().addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-                SC.say("I am working!");
-                // TODO: implement it
+                String parent =
+                        getView().getSubelementsGrid().getSelectedRecord().getAttribute(Constants.ATTR_ID);
+                String type = getView().getSelectModel().getValueAsString();
+                getView().addSubstructure(++lastId, "foo todo", type, parent, true);
             }
         });
 
@@ -226,6 +251,12 @@ public class CreateObjectMenuPresenter
                 shortcutPressed(event.getCode());
             }
         });
+    }
+
+    public void doIt() {
+        getView().addSubstructure(10, "few todo", "typ56", "0", true);
+        getView().addSubstructure(11, "few todo", "typ57", "0", true);
+        getView().addSubstructure(12, "few todo", "typ58", "0", true);
     }
 
     /*
