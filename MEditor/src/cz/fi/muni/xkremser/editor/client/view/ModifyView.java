@@ -149,6 +149,8 @@ public class ModifyView
         void onChangeFocusedTabSet(final String focusedUuid);
 
         void openAnotherObject(final String uuid);
+
+        void lockDigitalObject(final EditorTabSet ts, String description);
     }
 
     /** The Constant ID_DC. */
@@ -230,7 +232,7 @@ public class ModifyView
     private boolean isSecondFocused = false;
 
     /** The publish-window **/
-    private Window winModal = null;
+    private Window universalWindow = null;
 
     /** The value of background color of focused tabSet **/
     private static final String bgColorFocused = "#ededed";
@@ -239,6 +241,29 @@ public class ModifyView
     private static final String bgColorUnfocused = "white";
 
     private ModsWindow modsWindow = null;
+
+    private static class UniversalWindow
+            extends Window {
+
+        public UniversalWindow(int height, int width, String title) {
+            setHeight(height);
+            setWidth(width);
+            setCanDragResize(true);
+            setShowEdges(true);
+            setTitle(title);
+            setShowMinimizeButton(false);
+            setIsModal(true);
+            setShowModalMask(true);
+            addCloseClickHandler(new CloseClickHandler() {
+
+                @Override
+                public void onCloseClick(CloseClientEvent event) {
+                    destroy();
+                }
+            });
+        }
+
+    }
 
     /**
      * Instantiates a new modify view.
@@ -329,9 +354,9 @@ public class ModifyView
      * @param focusedTabSet
      */
     private void publishShortCut(EditorTabSet focusedTabSet) {
-        if (winModal != null) {
-            winModal.destroy();
-            winModal = null;
+        if (universalWindow != null) {
+            universalWindow.destroy();
+            universalWindow = null;
         }
         InfoTab infoT = focusedTabSet.getInfoTab();
         DCTab dcT = focusedTabSet.getDcTab();
@@ -346,12 +371,12 @@ public class ModifyView
      * Method for close currently displayed window
      */
     private void escShortCut() {
-        if (winModal == null && modsWindow != null) {
+        if (universalWindow == null && modsWindow != null) {
             modsWindow.destroy();
             modsWindow = null;
-        } else if (winModal != null) {
-            winModal.destroy();
-            winModal = null;
+        } else if (universalWindow != null) {
+            universalWindow.destroy();
+            universalWindow = null;
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);
         }
@@ -1098,6 +1123,15 @@ public class ModifyView
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
 
+        lockItem.setAttribute(ID_TABSET, topTabSet);
+        lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                lockDigitalObject(((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET)));
+            }
+        });
+
         refreshItem.setAttribute(ID_TABSET, topTabSet);
         refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -1133,6 +1167,53 @@ public class ModifyView
         return menu;
     }
 
+    private void lockDigitalObject(final EditorTabSet ts) {
+
+        universalWindow = new UniversalWindow(300, 480, "locker");
+
+        final RichTextEditor textEditor = new RichTextEditor();
+        textEditor.setHeight(200);
+        textEditor.setWidth(470);
+        textEditor.setOverflow(Overflow.HIDDEN);
+        textEditor.setEdgeSize(2);
+        textEditor.setExtraSpace(5);
+        textEditor.setShowEdges(true);
+
+        HLayout layout = new HLayout();
+        Button lock = new Button();
+        lock.setTitle("Lock!");
+        Button close = new Button();
+        close.setTitle("Close");
+        layout.addMember(lock);
+        layout.addMember(close);
+
+        lock.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                getUiHandlers().lockDigitalObject(ts,
+                                                  (textEditor.getValue().equals("<br>") ? null : textEditor
+                                                          .getValue()));
+                universalWindow.destroy();
+                universalWindow = null;
+            }
+        });
+
+        close.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                universalWindow.destroy();
+                universalWindow = null;
+            }
+        });
+
+        universalWindow.addItem(textEditor);
+        universalWindow.addItem(layout);
+        universalWindow.centerInPage();
+        universalWindow.show();
+    }
+
     /**
      * Method for publish focused tabSet
      * 
@@ -1147,22 +1228,7 @@ public class ModifyView
                          final DublinCore dc,
                          final ModsCollectionClient mods,
                          final EditorTabSet ts) {
-        winModal = new Window();
-        winModal.setHeight(160);
-        winModal.setWidth(350);
-        winModal.setCanDragResize(true);
-        winModal.setShowEdges(true);
-        winModal.setTitle(lang.publishName());
-        winModal.setShowMinimizeButton(false);
-        winModal.setIsModal(true);
-        winModal.setShowModalMask(true);
-        winModal.addCloseClickHandler(new CloseClickHandler() {
-
-            @Override
-            public void onCloseClick(CloseClientEvent event) {
-                winModal.destroy();
-            }
-        });
+        universalWindow = new UniversalWindow(160, 350, lang.publishName());
 
         HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
         label.setMargin(5);
@@ -1272,7 +1338,8 @@ public class ModifyView
                     object.setAllItems(structure);
                 }
                 getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
-                winModal.destroy();
+                universalWindow.destroy();
+                universalWindow = null;
             }
         });
         Button cancel = new Button();
@@ -1281,7 +1348,8 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event2) {
-                winModal.destroy();
+                universalWindow.destroy();
+                universalWindow = null;
             }
         });
         HLayout hLayout = new HLayout();
@@ -1290,12 +1358,12 @@ public class ModifyView
         hLayout.addMember(cancel);
         hLayout.setMargin(5);
         form.setFields(versionable);
-        winModal.addItem(label);
-        winModal.addItem(form);
-        winModal.addItem(hLayout);
+        universalWindow.addItem(label);
+        universalWindow.addItem(form);
+        universalWindow.addItem(hLayout);
 
-        winModal.centerInPage();
-        winModal.show();
+        universalWindow.centerInPage();
+        universalWindow.show();
         publish.focus();
     }
 

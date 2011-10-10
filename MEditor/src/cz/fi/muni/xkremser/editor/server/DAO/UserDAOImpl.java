@@ -140,6 +140,10 @@ public class UserDAOImpl
     public static final String UPDATE_USER_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_USER
             + " SET name = (?), surname = (?) WHERE id = (?)";
 
+    /** The Constant SELECT_NAME_BY_OPENID. */
+    public static final String SELECT_NAME_BY_ID = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
+            + " WHERE id = (?)";
+
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
     /*
@@ -151,6 +155,21 @@ public class UserDAOImpl
     @Override
     public int isSupported(String identifier) throws DatabaseException {
 
+        long userId = getUsersId(identifier);
+
+        if (userId != -1) {
+            if (hasRole(UserDAO.ADMIN_STRING, userId)) {
+                return UserDAO.ADMIN;
+            } else {
+                return UserDAO.USER;
+            }
+        } else {
+            return UserDAO.NOT_PRESENT;
+        }
+    }
+
+    @Override
+    public long getUsersId(String identifier) throws DatabaseException {
         PreparedStatement selectSt = null;
         long userId = -1;
         try {
@@ -169,15 +188,7 @@ public class UserDAOImpl
         } finally {
             closeConnection();
         }
-        if (userId != -1) {
-            if (hasRole(UserDAO.ADMIN_STRING, userId)) {
-                return UserDAO.ADMIN;
-            } else {
-                return UserDAO.USER;
-            }
-        } else {
-            return UserDAO.NOT_PRESENT;
-        }
+        return userId;
     }
 
     /*
@@ -554,12 +565,18 @@ public class UserDAOImpl
      * cz.fi.muni.xkremser.editor.server.DAO.UserDAO#getName(java.lang.String)
      */
     @Override
-    public String getName(String openID) throws DatabaseException {
+    public String getName(String key, boolean openIdUsed) throws DatabaseException {
         PreparedStatement selectSt = null;
         String name = "unknown";
         try {
-            selectSt = getConnection().prepareStatement(SELECT_NAME_BY_OPENID);
-            selectSt.setString(1, openID);
+
+            if (openIdUsed) {
+                selectSt = getConnection().prepareStatement(SELECT_NAME_BY_OPENID);
+                selectSt.setString(1, key);
+            } else {
+                selectSt = getConnection().prepareStatement(SELECT_NAME_BY_ID);
+                selectSt.setLong(1, Long.valueOf(key));
+            }
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement", e);
         }

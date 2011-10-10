@@ -95,7 +95,7 @@ public class GetLoggedUserHandler
             editUsers =
                     HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN))
                             || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
-            return new GetLoggedUserResult(userDAO.getName(openID), editUsers);
+            return new GetLoggedUserResult(userDAO.getName(openID, true), editUsers);
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

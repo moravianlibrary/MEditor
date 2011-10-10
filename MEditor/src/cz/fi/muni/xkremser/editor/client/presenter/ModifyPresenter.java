@@ -70,6 +70,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
+import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
@@ -83,6 +84,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -654,5 +657,81 @@ public class ModifyPresenter
     public void openAnotherObject(String uuid) {
         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
                                                                                   uuid));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void lockDigitalObject(final EditorTabSet ts, final String description) {
+
+        final ModalWindow mw = new ModalWindow(ts);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+
+        final LockDigitalObjectAction lockAction = new LockDigitalObjectAction(ts.getUuid(), description);
+        final DispatchCallback<LockDigitalObjectResult> lockCallBack =
+                new DispatchCallback<LockDigitalObjectResult>() {
+
+                    @Override
+                    public void callback(LockDigitalObjectResult result) {
+                        if ("".equals(result.getLockOwner())) {
+                            if (result.getReturnedDescription() == null) {
+                                SC.say("The object has been locked.");
+                            } else {
+                                SC.say("The lock has been updated."
+                                        + "<br>"
+                                        + "You have already locked the digital object with description: "
+                                        + "<br>"
+                                        + ("".equals(result.getReturnedDescription()) ? "No description"
+                                                : result.getReturnedDescription()));
+                            }
+                        } else {
+                            if (null == result.getLockOwner()) {
+                                SC.say("The operation has failed." + "<br>" + "Try again or see the log");
+
+                            } else {
+                                SC.say("This digital object has been already locked by: "
+                                        + result.getLockOwner()
+                                        + "<br>"
+                                        + " with description: "
+                                        + "<br>"
+                                        + ("".equals(result.getReturnedDescription()) ? "No description"
+                                                : result.getReturnedDescription()));
+                            }
+                        }
+                        mw.hide();
+                    }
+
+                    @Override
+                    public void callbackError(final Throwable t) {
+                        if (t.getMessage() != null && t.getMessage().length() > 0
+                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
+                                       new BooleanCallback() {
+
+                                           @Override
+                                           public void execute(Boolean value) {
+                                               if (value != null && value) {
+                                                   MEditor.redirect(t.getMessage().substring(1));
+                                               }
+                                           }
+                                       });
+                        } else {
+                            SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
+
+                                @Override
+                                public void execute(Boolean value) {
+                                    if (value != null && value) {
+                                        lockDigitalObject(ts, description);
+                                    }
+                                }
+                            });
+                        }
+                        mw.hide();
+                    }
+                };
+        dispatcher.execute(lockAction, lockCallBack);
     }
 }

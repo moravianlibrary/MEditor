@@ -71,6 +71,15 @@ public interface UserDAO {
     int isSupported(String identifier) throws DatabaseException;
 
     /**
+     * Gets the users id
+     * 
+     * @param identifier
+     *        the identifier
+     * @return the long
+     */
+    long getUsersId(String identifier) throws DatabaseException;
+
+    /**
      * Checks for role.
      * 
      * @param role
@@ -95,11 +104,14 @@ public interface UserDAO {
     /**
      * Gets the name.
      * 
-     * @param openID
-     *        the open id
+     * @param key
+     *        the key
+     * @param openIdUsed
+     *        <code>openIdUsed == false<code> if the id is used as the key
+     *          <code>openIdUsed == true<code> if the openId is used as the key
      * @return the name
      */
-    String getName(String openID) throws DatabaseException;
+    String getName(String key, boolean openIdUsed) throws DatabaseException;
 
     /**
      * Adds the user identity.

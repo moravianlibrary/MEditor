@@ -83,6 +83,9 @@ public class Constants {
     /** The Constant TABLE_EDITOR_USER. */
     public static final String TABLE_EDITOR_USER = "editor_user";
 
+    /** The Constant TABLE_LOCK. */
+    public static final String TABLE_LOCK = "lock";
+
     /** The Constant SEQUENCE_EDITOR_USER. */
     public static final String SEQUENCE_EDITOR_USER = "seq_user";
 

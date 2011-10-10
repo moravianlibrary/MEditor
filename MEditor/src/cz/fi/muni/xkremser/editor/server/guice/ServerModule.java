@@ -41,6 +41,8 @@ import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAOImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.LocksDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
@@ -68,6 +70,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetLoggedUserHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetUserRolesAndIdentitiesHandler;
+import cz.fi.muni.xkremser.editor.server.handler.LockDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.handler.LogoutHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutDigitalObjectDetailHandler;
@@ -81,6 +84,7 @@ import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanFolderHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
+import cz.fi.muni.xkremser.editor.server.handler.UnlockDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
 
@@ -96,6 +100,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -109,6 +114,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -148,6 +154,8 @@ public class ServerModule
         bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
         bindHandler(FindMetadataAction.class, FindMetadataHandler.class);
         bindHandler(ConvertToJPEG2000Action.class, ConvertToJPEG2000Handler.class);
+        bindHandler(LockDigitalObjectAction.class, LockDigitalObjectHandler.class);
+        bindHandler(UnlockDigitalObjectAction.class, UnlockDigitalObjectHandler.class);
 
         bindHandler(LogoutAction.class, LogoutHandler.class);
 
@@ -160,6 +168,7 @@ public class ServerModule
         bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
         bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
         bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
+        bind(LocksDAO.class).to(LocksDAOImpl.class).asEagerSingleton();
         // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
         // Fedora

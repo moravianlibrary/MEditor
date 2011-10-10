@@ -28,10 +28,10 @@ public class SessionListener
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession session = se.getSession();
         if (session.getAttribute(HttpCookies.SESSION_ID_KEY) != null) {
-            session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
             ACCESS_LOGGER.info("LOG OUT: User " + session.getAttribute(HttpCookies.NAME_KEY)
                     + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY) + " at "
                     + FORMATTER.format(new Date()));
+            session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
         }
         // LOGGER.debug("Session expired.");
     }
