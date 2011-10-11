@@ -48,7 +48,7 @@ public interface LocksDAO {
      */
     boolean lockDigitalObject(String uuid, Long id, String description) throws DatabaseException;
 
-    boolean unlockDigitalObjectWithUuid(String uuid) throws DatabaseException;
+    boolean unlockDigitalObject(String uuid) throws DatabaseException;
 
     /**
      * Gets the id of owner of lock
@@ -64,7 +64,5 @@ public interface LocksDAO {
     long getLockOwnersID(String uuid) throws DatabaseException;
 
     String getDescription(String uuid) throws DatabaseException;
-
-    //    boolean unlockDigitalObjectsWithOpenId(String openId) throws DatabaseException;
 
 }

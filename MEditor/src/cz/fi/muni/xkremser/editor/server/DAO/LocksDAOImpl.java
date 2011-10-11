@@ -60,8 +60,9 @@ public class LocksDAOImpl
     private static final String INSERT_NEW_DIGITAL_OBJECTS_LOCK = "INSERT INTO " + Constants.TABLE_LOCK
             + " (uuid, description, modified, user_id) VALUES ((?),(?),(CURRENT_TIMESTAMP),(?))";
 
-    private static final String UPDATE_DIGITAL_OBJECTS_TIMESTAMP = "UPDATE " + Constants.TABLE_LOCK
-            + " SET modified = (CURRENT_TIMESTAMP) WHERE uuid = (?)";
+    private static final String UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION = "UPDATE "
+            + Constants.TABLE_LOCK
+            + " SET description = (?), modified = (CURRENT_TIMESTAMP) WHERE uuid = (?)";
 
     private static final String SELECT_LOCK_DESCRIPTION = "SELECT description FROM  " + Constants.TABLE_LOCK
             + " WHERE uuid = (?)";
@@ -91,8 +92,9 @@ public class LocksDAOImpl
                 updateSt.setString(2, description);
                 updateSt.setLong(3, id);
             } else {
-                updateSt = getConnection().prepareStatement(UPDATE_DIGITAL_OBJECTS_TIMESTAMP);
-                updateSt.setString(1, uuid);
+                updateSt = getConnection().prepareStatement(UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION);
+                updateSt.setString(1, description);
+                updateSt.setString(2, uuid);
             }
         } catch (SQLException e) {
             LOGGER.error("Could not get insert statement", e);
@@ -150,7 +152,7 @@ public class LocksDAOImpl
      */
 
     @Override
-    public boolean unlockDigitalObjectWithUuid(String uuid) throws DatabaseException {
+    public boolean unlockDigitalObject(String uuid) throws DatabaseException {
 
         PreparedStatement deleteSt = null;
         boolean successful = false;

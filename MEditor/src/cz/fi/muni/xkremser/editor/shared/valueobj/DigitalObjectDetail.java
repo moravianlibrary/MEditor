@@ -87,6 +87,32 @@ public class DigitalObjectDetail
 
     private DigitalObjectModel model;
 
+    /**
+     * The digital object is locked by the <code>lockOwner<code>, 
+     * <code>lockOwner = ""<code> if the lockOwner is user
+     * <code>lockOwner = null<code> if there is no lockOwner
+     */
+    private String lockOwner;
+
+    /** The returned description of the lockOwner */
+    private String lockDescription;
+
+    public String getLockOwner() {
+        return lockOwner;
+    }
+
+    public void setLockOwner(String lockOwner) {
+        this.lockOwner = lockOwner;
+    }
+
+    public String getLockDescription() {
+        return lockDescription;
+    }
+
+    public void setLockDescription(String lockDescription) {
+        this.lockDescription = lockDescription;
+    }
+
     public DigitalObjectDetail() {
 
     }

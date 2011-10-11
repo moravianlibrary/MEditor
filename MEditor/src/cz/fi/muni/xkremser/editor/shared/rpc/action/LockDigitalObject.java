@@ -45,12 +45,13 @@ public class LockDigitalObject
     @In(2)
     private String description;
 
-    /** The digital object is locked by the <code>lockOwner<code> */
+    /**
+     * Returns the code of the process result
+     * <code>processResult &lt 0<code> if the process failed
+     * <code>processResult &gt 0<code> if the lock has been created
+     * <code>processResult == 0<code> if the lock has been updated
+     */
     @Out(1)
-    private String lockOwner;
-
-    /** The returned description of the locker */
-    @Out(2)
-    private String returnedDescription;
+    private int processResult;
 
 }

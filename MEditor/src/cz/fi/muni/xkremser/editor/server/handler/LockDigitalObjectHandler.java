@@ -96,36 +96,22 @@ public class LockDigitalObjectHandler
         }
 
         long lockOwnerId = 0;
-        String returnedDescription = null;
         try {
+
             lockOwnerId = locksDAO.getLockOwnersID(uuid);
             if (lockOwnerId == 0) {
                 locksDAO.lockDigitalObject(uuid, usersId, description);
-            } else if (lockOwnerId == usersId) {
+                return new LockDigitalObjectResult(Integer.MAX_VALUE);
+
+            } else if (usersId == lockOwnerId) {
                 locksDAO.lockDigitalObject(uuid, null, description);
-                description = locksDAO.getDescription(uuid);
-            } else if (lockOwnerId > 0) {
-                description = locksDAO.getDescription(uuid);
+                return new LockDigitalObjectResult(0);
             }
+
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
-        if (lockOwnerId == 0) {
-            return new LockDigitalObjectResult("", null);
-        } else if (lockOwnerId > 0) {
-            if (usersId == lockOwnerId) {
-                return new LockDigitalObjectResult("", description);
-            } else {
-                try {
-                    return new LockDigitalObjectResult(userDAO.getName(String.valueOf(lockOwnerId), false),
-                                                       description);
-                } catch (DatabaseException e) {
-                    throw new ActionException(e);
-                }
-            }
-        } else {
-            return new LockDigitalObjectResult(null, null);
-        }
+        return new LockDigitalObjectResult(Integer.MIN_VALUE);
     }
 
     /**

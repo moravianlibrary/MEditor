@@ -447,6 +447,24 @@ public class ModifyPresenter
                     public void callback(GetDigitalObjectDetailResult result) {
                         DigitalObjectDetail detail = result.getDetail();
 
+                        if (null != detail.getLockOwner()) {
+                            if ("".equals(detail.getLockOwner())) {
+                                SC.say("You have locked the digital object with description: "
+                                        + "<br>"
+                                        + ("".equals(detail.getLockDescription()) ? "No description" : detail
+                                                .getLockDescription()));
+
+                            } else {
+                                SC.say("This digital object has been already locked by: "
+                                        + detail.getLockOwner()
+                                        + "<br>"
+                                        + " with description: "
+                                        + "<br>"
+                                        + ("".equals(detail.getLockDescription()) ? "No description" : detail
+                                                .getLockDescription()));
+                            }
+                        }
+
                         getView().addDigitalObject(uuid, detail, refresh);
                         String title =
                                 (detail.getDc().getTitle() == null || detail.getDc().getTitle().size() == 0) ? "no title"
@@ -676,30 +694,14 @@ public class ModifyPresenter
 
                     @Override
                     public void callback(LockDigitalObjectResult result) {
-                        if ("".equals(result.getLockOwner())) {
-                            if (result.getReturnedDescription() == null) {
-                                SC.say("The object has been locked.");
-                            } else {
-                                SC.say("The lock has been updated."
-                                        + "<br>"
-                                        + "You have already locked the digital object with description: "
-                                        + "<br>"
-                                        + ("".equals(result.getReturnedDescription()) ? "No description"
-                                                : result.getReturnedDescription()));
-                            }
-                        } else {
-                            if (null == result.getLockOwner()) {
-                                SC.say("The operation has failed." + "<br>" + "Try again or see the log");
+                        if (result.getProcessResult() > 0) {
+                            SC.say("The object has been locked.");
 
-                            } else {
-                                SC.say("This digital object has been already locked by: "
-                                        + result.getLockOwner()
-                                        + "<br>"
-                                        + " with description: "
-                                        + "<br>"
-                                        + ("".equals(result.getReturnedDescription()) ? "No description"
-                                                : result.getReturnedDescription()));
-                            }
+                        } else if (result.getProcessResult() == 0) {
+                            SC.say("The lock has been updated.");
+
+                        } else if (result.getProcessResult() < 0) {
+                            SC.say("The operation has failed." + "<br>" + "Try again or see the log");
                         }
                         mw.hide();
                     }

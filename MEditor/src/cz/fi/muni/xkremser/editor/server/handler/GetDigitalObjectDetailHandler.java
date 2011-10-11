@@ -45,7 +45,11 @@ import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
 
+import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
+import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
@@ -74,6 +78,14 @@ public class GetDigitalObjectDetailHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    /** The locks DAO **/
+    @Inject
+    private LocksDAO locksDAO;
+
+    /** The user DAO **/
+    @Inject
+    private UserDAO userDAO;
 
     /**
      * Instantiates a new gets the digital object detail handler.
@@ -117,6 +129,32 @@ public class GetDigitalObjectDetailHandler
 
             String description = result.getUserDescription();
             Date modified = result.getModified();
+
+            long usersId = 0;
+            try {
+                usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            } catch (DatabaseException e) {
+                throw new ActionException(e);
+            }
+
+            long lockOwnerId = 0;
+            lockOwnerId = locksDAO.getLockOwnersID(uuid);
+            String lockDescription = "";
+
+            if (lockOwnerId > 0) {
+                lockDescription = locksDAO.getDescription(uuid);
+                if (usersId == lockOwnerId) {
+                    lockDescription = locksDAO.getDescription(uuid);
+                    obj.setLockOwner("");
+                    obj.setLockDescription(lockDescription);
+
+                } else {
+                    obj.setLockOwner(userDAO.getName(String.valueOf(lockOwnerId), false));
+                    obj.setLockDescription(lockDescription);
+
+                }
+            }
+
             return new GetDigitalObjectDetailResult(obj,
                                                     description == null ? "" : description,
                                                     modified == null ? new Date() : modified);
@@ -131,6 +169,8 @@ public class GetDigitalObjectDetailHandler
             }
             LOGGER.error(msg, e);
             throw new ActionException(msg, e);
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
         }
     }
 

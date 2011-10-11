@@ -697,7 +697,7 @@ public class ModifyView
         });
 
         // MENU
-        Menu menu = getMenu(topTabSet, model, dc, mods);
+        Menu menu = getMenu(topTabSet, model, dc, mods, detail.getLockOwner(), detail.getLockDescription());
         IMenuButton menuButton = new IMenuButton("Menu", menu);
         menuButton.setWidth(60);
         menuButton.setHeight(16);
@@ -1109,7 +1109,9 @@ public class ModifyView
     private Menu getMenu(final EditorTabSet topTabSet,
                          final DigitalObjectModel model,
                          final DublinCore dc,
-                         final ModsCollectionClient mods) {
+                         final ModsCollectionClient mods,
+                         final String lockOwner,
+                         final String lockDescription) {
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
@@ -1123,12 +1125,24 @@ public class ModifyView
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
 
+        if (lockOwner != null) {
+            if ("".equals(lockOwner)) {
+                lockItem.setTitle("Update lock");
+            } else {
+                lockItem.setEnabled(false);
+                lockTabItem.setEnabled(false);
+                publishItem.setEnabled(false);
+                removeItem.setEnabled(false);
+            }
+        }
+
         lockItem.setAttribute(ID_TABSET, topTabSet);
         lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                lockDigitalObject(((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET)));
+                lockDigitalObject(((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET)),
+                                  lockDescription);
             }
         });
 
@@ -1167,9 +1181,13 @@ public class ModifyView
         return menu;
     }
 
-    private void lockDigitalObject(final EditorTabSet ts) {
+    private void unlockDigitalObject(final EditorTabSet ts) {
 
-        universalWindow = new UniversalWindow(300, 480, "locker");
+    }
+
+    private void lockDigitalObject(final EditorTabSet ts, String oldDescription) {
+
+        universalWindow = new UniversalWindow(300, 490, "locker");
 
         final RichTextEditor textEditor = new RichTextEditor();
         textEditor.setHeight(200);
@@ -1178,7 +1196,9 @@ public class ModifyView
         textEditor.setEdgeSize(2);
         textEditor.setExtraSpace(5);
         textEditor.setShowEdges(true);
-
+        if (oldDescription != null) {
+            textEditor.setValue(oldDescription);
+        }
         HLayout layout = new HLayout();
         Button lock = new Button();
         lock.setTitle("Lock!");

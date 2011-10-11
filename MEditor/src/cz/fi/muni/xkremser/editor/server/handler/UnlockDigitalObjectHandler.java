@@ -81,7 +81,7 @@ public class UnlockDigitalObjectHandler
         ServerUtils.checkExpiredSession(ses);
 
         try {
-            return new UnlockDigitalObjectResult(locksDAO.unlockDigitalObjectWithUuid(uuid));
+            return new UnlockDigitalObjectResult(locksDAO.unlockDigitalObject(uuid));
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
