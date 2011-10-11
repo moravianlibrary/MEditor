@@ -449,19 +449,22 @@ public class ModifyPresenter
 
                         if (null != detail.getLockOwner()) {
                             if ("".equals(detail.getLockOwner())) {
-                                SC.say("You have locked the digital object with description: "
+                                SC.say(lang.lockedByUser()
+                                        + ": "
                                         + "<br>"
-                                        + ("".equals(detail.getLockDescription()) ? "No description" : detail
-                                                .getLockDescription()));
+                                        + ("".equals(detail.getLockDescription()) ? lang.noDescription()
+                                                : detail.getLockDescription()));
 
                             } else {
-                                SC.say("This digital object has been already locked by: "
+                                SC.say(lang.objectLockedBy()
+                                        + ": "
                                         + detail.getLockOwner()
                                         + "<br>"
-                                        + " with description: "
+                                        + lang.withDescription()
+                                        + ": "
                                         + "<br>"
-                                        + ("".equals(detail.getLockDescription()) ? "No description" : detail
-                                                .getLockDescription()));
+                                        + ("".equals(detail.getLockDescription()) ? lang.noDescription()
+                                                : detail.getLockDescription()));
                             }
                         }
 
@@ -695,13 +698,13 @@ public class ModifyPresenter
                     @Override
                     public void callback(LockDigitalObjectResult result) {
                         if (result.getProcessResult() > 0) {
-                            SC.say("The object has been locked.");
+                            SC.say(lang.objectLocked());
 
                         } else if (result.getProcessResult() == 0) {
-                            SC.say("The lock has been updated.");
+                            SC.say(lang.lockUpdated());
 
                         } else if (result.getProcessResult() < 0) {
-                            SC.say("The operation has failed." + "<br>" + "Try again or see the log");
+                            SC.say(lang.operationFailed() + "<br>" + lang.tryOrLog());
                         }
                         mw.hide();
                     }

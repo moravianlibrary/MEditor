@@ -37,6 +37,26 @@ public class EditorTabSet
 
     private TileGrid tileGrid;
 
+    private String lockOwner;
+
+    private String lockDescription;
+
+    public String getLockOwner() {
+        return lockOwner;
+    }
+
+    public void setLockOwner(String lockOwner) {
+        this.lockOwner = lockOwner;
+    }
+
+    public String getLockDescription() {
+        return lockDescription;
+    }
+
+    public void setLockDescription(String lockDescription) {
+        this.lockDescription = lockDescription;
+    }
+
     public TileGrid getTileGrid() {
         return tileGrid;
     }

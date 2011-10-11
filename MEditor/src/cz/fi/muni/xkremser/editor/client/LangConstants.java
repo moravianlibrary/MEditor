@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1618,6 +1618,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lockTabItem();
 
   /**
+   * Translated "The lock has been updated.".
+   * 
+   * @return translated "The lock has been updated."
+   */
+  @DefaultStringValue("The lock has been updated.")
+  @Key("lockUpdated")
+  String lockUpdated();
+
+  /**
+   * Translated "You have locked this digital object with description".
+   * 
+   * @return translated "You have locked this digital object with description"
+   */
+  @DefaultStringValue("You have locked this digital object with description")
+  @Key("lockedByUser")
+  String lockedByUser();
+
+  /**
    * Translated "logout".
    * 
    * @return translated "logout"
@@ -1897,6 +1915,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String next();
 
   /**
+   * Translated "No description".
+   * 
+   * @return translated "No description"
+   */
+  @DefaultStringValue("No description")
+  @Key("noDescription")
+  String noDescription();
+
+  /**
    * Translated "missing".
    * 
    * @return translated "missing"
@@ -1949,6 +1976,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)")
   @Key("objContext")
   String objContext();
+
+  /**
+   * Translated "The digital object has been locked.".
+   * 
+   * @return translated "The digital object has been locked."
+   */
+  @DefaultStringValue("The digital object has been locked.")
+  @Key("objectLocked")
+  String objectLocked();
+
+  /**
+   * Translated "This digital object has been locked by".
+   * 
+   * @return translated "This digital object has been locked by"
+   */
+  @DefaultStringValue("This digital object has been locked by")
+  @Key("objectLockedBy")
+  String objectLockedBy();
 
   /**
    * Translated "Designates which part of the resource is in the language supplied, e.g. <language objectPart='summary'><languageTerm authority='iso639-2b'>spa</languageTerm></language> indicates that only the summary is in Spanish.".
@@ -2012,6 +2057,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("OpenID identities")
   @Key("openIds")
   String openIds();
+
+  /**
+   * Translated "The operation has failed.".
+   * 
+   * @return translated "The operation has failed."
+   */
+  @DefaultStringValue("The operation has failed.")
+  @Key("operationFailed")
+  String operationFailed();
 
   /**
    * Translated "An integer that designates the sequence of parts.".
@@ -2833,6 +2887,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String transliterationAttr();
 
   /**
+   * Translated "Try again or see the log.".
+   * 
+   * @return translated "Try again or see the log."
+   */
+  @DefaultStringValue("Try again or see the log.")
+  @Key("tryOrLog")
+  String tryOrLog();
+
+  /**
    * Translated "This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style.".
    * 
    * @return translated "This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style."
@@ -2930,6 +2993,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("keep also the previous versions")
   @Key("versionable")
   String versionable();
+
+  /**
+   * Translated "with description".
+   * 
+   * @return translated "with description"
+   */
+  @DefaultStringValue("with description")
+  @Key("withDescription")
+  String withDescription();
 
   /**
    * Translated "With \"uuid:\" prefix".

@@ -3,6 +3,9 @@ package cz.fi.muni.xkremser.editor.client.view.other;
 
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VStack;
@@ -28,12 +31,34 @@ public class InfoTab
                    LangConstants lang,
                    String type,
                    DigitalObjectModel model,
-                   String firstPageURL) {
+                   String firstPageURL,
+                   String lockOwner) {
         super(title, icon);
         this.model = model;
         this.originalLabel = label;
         VStack layout = new VStack();
         layout.setPadding(15);
+
+        ImgButton lockImgButton = null;
+        if (lockOwner != null) {
+            lockImgButton = new ImgButton();
+            lockImgButton.setSize(16);
+            if ("".equals(lockOwner)) {
+                lockImgButton.setSrc("icons/16/lock_lock_all.png");
+            } else {
+                lockImgButton.setSrc("icons/16/lock_lock_all_red.png");
+            }
+
+            lockImgButton.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+
+                }
+            });
+
+        }
+
         HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
         info.setExtraSpace(25);
         HTMLFlow pid =
@@ -73,7 +98,15 @@ public class InfoTab
         quickEdit.setTitle(lang.quickEdit());
         quickEdit.setExtraSpace(5);
 
-        layout.setMembers(info, pid, tit, typ, form, quickEdit, prev, img);
+        layout.setMembers(lockImgButton != null ? lockImgButton : new HTMLFlow(),
+                          info,
+                          pid,
+                          tit,
+                          typ,
+                          form,
+                          quickEdit,
+                          prev,
+                          img);
 
         setPane(layout);
     }

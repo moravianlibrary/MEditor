@@ -287,13 +287,20 @@ public class ModifyView
             protected void init() {
                 show();
                 focus();
-                getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                    @Override
-                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                        publishShortCut(focusedTabSet);
-                    }
-                });
+                if (focusedTabSet.getLockOwner() == null || "".equals(focusedTabSet.getLockOwner())) {
+
+                    getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                        @Override
+                        public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                            publishShortCut(focusedTabSet);
+                        }
+                    });
+                } else {
+                    getPublish().setDisabled(true);
+                }
+
                 getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
                     @Override
@@ -303,7 +310,6 @@ public class ModifyView
                     }
                 });
             }
-
         };
     }
 
@@ -444,6 +450,9 @@ public class ModifyView
         }
         makeTuple(uuid, topTabSet);
 
+        topTabSet.setLockOwner(detail.getLockOwner());
+        topTabSet.setLockDescription(detail.getLockDescription());
+
         List<DigitalObjectModel> models = NamedGraphModel.getChildren(model);
         List<Tab> containerTabs = new ArrayList<Tab>();
         if (models != null) { // has any containers (if not, it is a page)
@@ -484,7 +493,7 @@ public class ModifyView
         topTabSet.setDc(dc);
         final Tab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
-                        .getValue()), model, previewPID);
+                        .getValue()), model, previewPID, detail.getLockOwner());
         topTabSet.setInfoTab((InfoTab) infoTab);
         ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
 
@@ -697,7 +706,7 @@ public class ModifyView
         });
 
         // MENU
-        Menu menu = getMenu(topTabSet, model, dc, mods, detail.getLockOwner(), detail.getLockDescription());
+        Menu menu = getMenu(topTabSet, model, dc, mods);
         IMenuButton menuButton = new IMenuButton("Menu", menu);
         menuButton.setWidth(60);
         menuButton.setHeight(16);
@@ -1109,9 +1118,7 @@ public class ModifyView
     private Menu getMenu(final EditorTabSet topTabSet,
                          final DigitalObjectModel model,
                          final DublinCore dc,
-                         final ModsCollectionClient mods,
-                         final String lockOwner,
-                         final String lockDescription) {
+                         final ModsCollectionClient mods) {
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
@@ -1125,8 +1132,8 @@ public class ModifyView
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
 
-        if (lockOwner != null) {
-            if ("".equals(lockOwner)) {
+        if (topTabSet.getLockOwner() != null) {
+            if ("".equals(topTabSet.getLockOwner())) {
                 lockItem.setTitle("Update lock");
             } else {
                 lockItem.setEnabled(false);
@@ -1142,7 +1149,7 @@ public class ModifyView
             @Override
             public void onClick(MenuItemClickEvent event) {
                 lockDigitalObject(((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET)),
-                                  lockDescription);
+                                  topTabSet.getLockDescription());
             }
         });
 
