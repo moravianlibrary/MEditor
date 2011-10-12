@@ -1,9 +1,10 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -28,35 +29,57 @@ public class InfoTab
                    String icon,
                    String label,
                    DublinCore dc,
-                   LangConstants lang,
+                   final LangConstants lang,
                    String type,
                    DigitalObjectModel model,
                    String firstPageURL,
-                   String lockOwner) {
+                   final String lockOwner,
+                   final String lockDescription) {
         super(title, icon);
         this.model = model;
         this.originalLabel = label;
         VStack layout = new VStack();
         layout.setPadding(15);
 
-        ImgButton lockImgButton = null;
+        Button lockInfoButton = null;
         if (lockOwner != null) {
-            lockImgButton = new ImgButton();
-            lockImgButton.setSize(16);
+            lockInfoButton = new Button();
+            lockInfoButton.setTitle(lang.lockInfoButton());
+            lockInfoButton.setShowEdges(false);
+            lockInfoButton.setWidth(160);
+            lockInfoButton.setBackgroundColor("white");
+
             if ("".equals(lockOwner)) {
-                lockImgButton.setSrc("icons/16/lock_lock_all.png");
+                lockInfoButton.setIcon("icons/16/lock_lock_all.png");
             } else {
-                lockImgButton.setSrc("icons/16/lock_lock_all_red.png");
+                lockInfoButton.setIcon("icons/16/lock_lock_all_red.png");
             }
 
-            lockImgButton.addClickHandler(new ClickHandler() {
+            lockInfoButton.addClickHandler(new ClickHandler() {
 
                 @Override
                 public void onClick(ClickEvent event) {
+                    if (null != lockOwner) {
+                        StringBuffer objectLockedBuffer = new StringBuffer();
 
+                        if ("".equals(lockOwner)) {
+                            objectLockedBuffer.append(lang.lockedByUser());
+                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                            objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription()
+                                    : lockDescription);
+                            System.err.println(lang.noDescription());
+                        } else {
+                            objectLockedBuffer.append(lang.objectLockedBy());
+                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                            objectLockedBuffer.append(lockOwner);
+                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                            objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription()
+                                    : lockDescription);
+                        }
+                        SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
+                    }
                 }
             });
-
         }
 
         HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
@@ -98,7 +121,7 @@ public class InfoTab
         quickEdit.setTitle(lang.quickEdit());
         quickEdit.setExtraSpace(5);
 
-        layout.setMembers(lockImgButton != null ? lockImgButton : new HTMLFlow(),
+        layout.setMembers(lockInfoButton != null ? lockInfoButton : new HTMLFlow(),
                           info,
                           pid,
                           tit,

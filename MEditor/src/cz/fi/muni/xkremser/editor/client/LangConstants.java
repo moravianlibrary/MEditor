@@ -1600,6 +1600,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String locationType();
 
   /**
+   * Translated "Information about the lock".
+   * 
+   * @return translated "Information about the lock"
+   */
+  @DefaultStringValue("Information about the lock")
+  @Key("lockInfoButton")
+  String lockInfoButton();
+
+  /**
    * Translated "Lock digital object".
    * 
    * @return translated "Lock digital object"
@@ -1976,6 +1985,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)")
   @Key("objContext")
   String objContext();
+
+  /**
+   * Translated "This digital object is locked".
+   * 
+   * @return translated "This digital object is locked"
+   */
+  @DefaultStringValue("This digital object is locked")
+  @Key("objectIsLocked")
+  String objectIsLocked();
 
   /**
    * Translated "The digital object has been locked.".
@@ -2957,6 +2975,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("equivalent to MARC 21 fields 130, 240, 730")
   @Key("uniformMARC")
   String uniformMARC();
+
+  /**
+   * Translated "Update lock".
+   * 
+   * @return translated "Update lock"
+   */
+  @DefaultStringValue("Update lock")
+  @Key("updateLock")
+  String updateLock();
 
   /**
    * Translated "\"url\" is for a networked location. Note that <identifier> is used for persistent identifiers that may or may not be resolvable.".

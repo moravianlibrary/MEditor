@@ -448,24 +448,26 @@ public class ModifyPresenter
                         DigitalObjectDetail detail = result.getDetail();
 
                         if (null != detail.getLockOwner()) {
-                            if ("".equals(detail.getLockOwner())) {
-                                SC.say(lang.lockedByUser()
-                                        + ": "
-                                        + "<br>"
-                                        + ("".equals(detail.getLockDescription()) ? lang.noDescription()
-                                                : detail.getLockDescription()));
 
+                            StringBuffer objectLockedBuffer = new StringBuffer();
+
+                            if ("".equals(detail.getLockOwner())) {
+                                objectLockedBuffer.append(lang.lockedByUser());
+                                objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                                objectLockedBuffer
+                                        .append("".equals(detail.getLockDescription().trim()) ? lang
+                                                .noDescription() : detail.getLockDescription());
+                                System.err.println(lang.noDescription());
                             } else {
-                                SC.say(lang.objectLockedBy()
-                                        + ": "
-                                        + detail.getLockOwner()
-                                        + "<br>"
-                                        + lang.withDescription()
-                                        + ": "
-                                        + "<br>"
-                                        + ("".equals(detail.getLockDescription()) ? lang.noDescription()
-                                                : detail.getLockDescription()));
+                                objectLockedBuffer.append(lang.objectLockedBy());
+                                objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                                objectLockedBuffer.append(detail.getLockOwner());
+                                objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                                objectLockedBuffer
+                                        .append("".equals(detail.getLockDescription().trim()) ? lang
+                                                .noDescription() : detail.getLockDescription());
                             }
+                            SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
                         }
 
                         getView().addDigitalObject(uuid, detail, refresh);

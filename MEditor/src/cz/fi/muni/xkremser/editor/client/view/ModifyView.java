@@ -235,10 +235,13 @@ public class ModifyView
     private Window universalWindow = null;
 
     /** The value of background color of focused tabSet **/
-    private static final String bgColorFocused = "#ededed";
+    private static final String BG_COLOR_FOCUSED = "#ededed";
+
+    /** The value of background color of focused tabSet **/
+    private static final String BG_COLOR_FOCUSED_LOCK = "#ff0000";
 
     /** The value of background color of "unfocused" tabSet **/
-    private static final String bgColorUnfocused = "white";
+    private static final String BG_COLOR_UNFOCUSED = "white";
 
     private ModsWindow modsWindow = null;
 
@@ -319,17 +322,21 @@ public class ModifyView
     private void changeFocus() {
         if (!isSecondFocused || topTabSet2 == null) {
             if (topTabSet1 != null) {
-                topTabSet1.setBackgroundColor(bgColorFocused);
+                topTabSet1.setBackgroundColor(topTabSet1.getLockOwner() != null
+                        && !"".equals(topTabSet1.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK
+                        : BG_COLOR_FOCUSED);
                 getUiHandlers().onChangeFocusedTabSet(topTabSet1.getUuid());
             } else {
                 getUiHandlers().onChangeFocusedTabSet(null);
             }
             if (topTabSet2 != null) {
-                topTabSet2.setBackgroundColor(bgColorUnfocused);
+                topTabSet2.setBackgroundColor(BG_COLOR_UNFOCUSED);
             }
         } else if (isSecondFocused && topTabSet2 != null) {
-            topTabSet2.setBackgroundColor(bgColorFocused);
-            topTabSet1.setBackgroundColor(bgColorUnfocused);
+            topTabSet2.setBackgroundColor(topTabSet2.getLockOwner() != null
+                    && !"".equals(topTabSet2.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK
+                    : BG_COLOR_FOCUSED);
+            topTabSet1.setBackgroundColor(BG_COLOR_UNFOCUSED);
             getUiHandlers().onChangeFocusedTabSet(topTabSet2.getUuid());
         }
     }
@@ -437,6 +444,16 @@ public class ModifyView
         topTabSet.setAnimateTabScrolling(true);
         topTabSet.setShowPaneContainerEdges(false);
         int insertPosition = -1;
+
+        topTabSet.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                isSecondFocused = (topTabSet == topTabSet2);
+                changeFocus();
+            }
+        });
+
         if (refresh) {
             EditorTabSet toDelete = openedObjectsTabsets.get(uuid);
             if (toDelete != null) {
@@ -493,7 +510,7 @@ public class ModifyView
         topTabSet.setDc(dc);
         final Tab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
-                        .getValue()), model, previewPID, detail.getLockOwner());
+                        .getValue()), model, previewPID, detail.getLockOwner(), detail.getLockDescription());
         topTabSet.setInfoTab((InfoTab) infoTab);
         ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
 
@@ -1134,7 +1151,7 @@ public class ModifyView
 
         if (topTabSet.getLockOwner() != null) {
             if ("".equals(topTabSet.getLockOwner())) {
-                lockItem.setTitle("Update lock");
+                lockItem.setTitle(lang.updateLock());
             } else {
                 lockItem.setEnabled(false);
                 lockTabItem.setEnabled(false);
