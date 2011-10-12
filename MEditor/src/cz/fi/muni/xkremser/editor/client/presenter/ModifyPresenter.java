@@ -90,6 +90,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectResult;
 import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
@@ -687,13 +689,14 @@ public class ModifyPresenter
      */
 
     @Override
-    public void lockDigitalObject(final EditorTabSet ts, final String description) {
+    public void lockDigitalObject(final EditorTabSet ts) {
 
         final ModalWindow mw = new ModalWindow(ts);
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
 
-        final LockDigitalObjectAction lockAction = new LockDigitalObjectAction(ts.getUuid(), description);
+        final LockDigitalObjectAction lockAction =
+                new LockDigitalObjectAction(ts.getUuid(), ts.getLockDescription());
         final DispatchCallback<LockDigitalObjectResult> lockCallBack =
                 new DispatchCallback<LockDigitalObjectResult>() {
 
@@ -726,12 +729,12 @@ public class ModifyPresenter
                                            }
                                        });
                         } else {
-                            SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
+                            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
 
                                 @Override
                                 public void execute(Boolean value) {
                                     if (value != null && value) {
-                                        lockDigitalObject(ts, description);
+                                        lockDigitalObject(ts);
                                     }
                                 }
                             });
@@ -740,5 +743,60 @@ public class ModifyPresenter
                     }
                 };
         dispatcher.execute(lockAction, lockCallBack);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void unLockDigitalObject(final EditorTabSet ts) {
+        final ModalWindow mw = new ModalWindow(ts);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+
+        final UnlockDigitalObjectAction unlockAction = new UnlockDigitalObjectAction(ts.getUuid());
+        final DispatchCallback<UnlockDigitalObjectResult> unlockCallBack =
+                new DispatchCallback<UnlockDigitalObjectResult>() {
+
+                    @Override
+                    public void callback(UnlockDigitalObjectResult result) {
+                        if (result.isSuccessful()) {
+                            SC.say(lang.objectUnlocked());
+                        } else {
+                            SC.say(lang.operationFailed() + "<br>" + lang.tryOrLog());
+                        }
+                        mw.hide();
+                    }
+
+                    @Override
+                    public void callbackError(final Throwable t) {
+                        if (t.getMessage() != null && t.getMessage().length() > 0
+                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
+                                       new BooleanCallback() {
+
+                                           @Override
+                                           public void execute(Boolean value) {
+                                               if (value != null && value) {
+                                                   MEditor.redirect(t.getMessage().substring(1));
+                                               }
+                                           }
+                                       });
+                        } else {
+                            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
+
+                                @Override
+                                public void execute(Boolean value) {
+                                    if (value != null && value) {
+                                        lockDigitalObject(ts);
+                                    }
+                                }
+                            });
+                        }
+                        mw.hide();
+                    }
+                };
+        dispatcher.execute(unlockAction, unlockCallBack);
     }
 }

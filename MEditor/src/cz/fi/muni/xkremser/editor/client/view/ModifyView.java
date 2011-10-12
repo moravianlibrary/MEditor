@@ -150,7 +150,9 @@ public class ModifyView
 
         void openAnotherObject(final String uuid);
 
-        void lockDigitalObject(final EditorTabSet ts, String description);
+        void lockDigitalObject(final EditorTabSet ts);
+
+        void unLockDigitalObject(final EditorTabSet ts);
     }
 
     /** The Constant ID_DC. */
@@ -373,11 +375,7 @@ public class ModifyView
         }
         InfoTab infoT = focusedTabSet.getInfoTab();
         DCTab dcT = focusedTabSet.getDcTab();
-        publish(focusedTabSet,
-                infoT.getModel(),
-                dcT.getDc(),
-                focusedTabSet.getModsCollection(),
-                focusedTabSet);
+        publish(focusedTabSet, infoT.getModel(), dcT.getDc(), focusedTabSet.getModsCollection());
     }
 
     /**
@@ -1142,16 +1140,19 @@ public class ModifyView
 
         MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
         MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png");
+        MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png");
         MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
-
+        
+        unlockItem.setEnabled(false);
         if (topTabSet.getLockOwner() != null) {
             if ("".equals(topTabSet.getLockOwner())) {
                 lockItem.setTitle(lang.updateLock());
+                unlockItem.setEnabled(true);
             } else {
                 lockItem.setEnabled(false);
                 lockTabItem.setEnabled(false);
@@ -1170,6 +1171,16 @@ public class ModifyView
             }
         });
 
+        unlockItem.setAttribute(ID_TABSET, topTabSet);
+        unlockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(final MenuItemClickEvent event) {
+                unlockDigitalObject(((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET)),
+                                    lang.reallyUnlock());
+            }
+        });
+
         refreshItem.setAttribute(ID_TABSET, topTabSet);
         refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -1184,16 +1195,13 @@ public class ModifyView
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
-                publish(topTabSet,
-                        model,
-                        dc,
-                        mods,
-                        (EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
+                publish((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET), model, dc, mods);
             }
         });
 
         menu.setItems(newItem/* , descItem , loadItem */,
                       lockItem,
+                      unlockItem,
                       lockTabItem/*
                                   * , openItem
                                   */,
@@ -1205,8 +1213,16 @@ public class ModifyView
         return menu;
     }
 
-    private void unlockDigitalObject(final EditorTabSet ts) {
+    private void unlockDigitalObject(final EditorTabSet ts, String message) {
+        SC.ask(message, new BooleanCallback() {
 
+            @Override
+            public void execute(Boolean value) {
+                if (value == true) {
+                    getUiHandlers().unLockDigitalObject(ts);
+                }
+            }
+        });
     }
 
     private void lockDigitalObject(final EditorTabSet ts, String oldDescription) {
@@ -1235,9 +1251,8 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event) {
-                getUiHandlers().lockDigitalObject(ts,
-                                                  (textEditor.getValue().equals("<br>") ? null : textEditor
-                                                          .getValue()));
+                ts.setLockDescription(textEditor.getValue().equals("<br>") ? null : textEditor.getValue());
+                getUiHandlers().lockDigitalObject(ts);
                 universalWindow.destroy();
                 universalWindow = null;
             }
@@ -1267,11 +1282,10 @@ public class ModifyView
      * @param mods
      * @param ts
      */
-    private void publish(final EditorTabSet topTabSet,
+    private void publish(final EditorTabSet ts,
                          final DigitalObjectModel model,
                          final DublinCore dc,
-                         final ModsCollectionClient mods,
-                         final EditorTabSet ts) {
+                         final ModsCollectionClient mods) {
         universalWindow = new UniversalWindow(160, 350, lang.publishName());
 
         HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
@@ -1361,7 +1375,7 @@ public class ModifyView
                 }
                 object.setUuid(ts.getUuid());
 
-                Map<DigitalObjectModel, TileGrid> tilegrids = topTabSet.getItemGrid();
+                Map<DigitalObjectModel, TileGrid> tilegrids = ts.getItemGrid();
                 if (tilegrids != null) { // structure has been changed, or at
                                          // least opened
                     List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
@@ -1384,6 +1398,9 @@ public class ModifyView
                 getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
                 universalWindow.destroy();
                 universalWindow = null;
+                if (ts.getLockOwner() != null && "".equals(ts.getLockOwner())) {
+                    unlockDigitalObject(ts, lang.publishUnlock());
+                }
             }
         });
         Button cancel = new Button();

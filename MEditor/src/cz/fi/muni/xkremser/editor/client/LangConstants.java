@@ -2023,6 +2023,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String objectPart();
 
   /**
+   * Translated "The digital object was unlocked.".
+   * 
+   * @return translated "The digital object was unlocked."
+   */
+  @DefaultStringValue("The digital object was unlocked.")
+  @Key("objectUnlocked")
+  String objectUnlocked();
+
+  /**
    * Translated "Roughtly equivalent to MARC 21 field 656.".
    * 
    * @return translated "Roughtly equivalent to MARC 21 field 656."
@@ -2338,6 +2347,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String publishName();
 
   /**
+   * Translated "Do you want to unlock this digital object?".
+   * 
+   * @return translated "Do you want to unlock this digital object?"
+   */
+  @DefaultStringValue("Do you want to unlock this digital object?")
+  @Key("publishUnlock")
+  String publishUnlock();
+
+  /**
    * Translated "Publisher".
    * 
    * @return translated "Publisher"
@@ -2399,6 +2417,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Indicates a direct link to the object described (e.g. a jpg or pdf document). Used only when the object is represented by a single file.")
   @Key("rawObject")
   String rawObject();
+
+  /**
+   * Translated "Are you sure you want to unlock this digital object?".
+   * 
+   * @return translated "Are you sure you want to unlock this digital object?"
+   */
+  @DefaultStringValue("Are you sure you want to unlock this digital object?")
+  @Key("reallyUnlock")
+  String reallyUnlock();
 
   /**
    * Translated "Roughly equivalent to MARC 21 field 040.".
@@ -2975,6 +3002,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("equivalent to MARC 21 fields 130, 240, 730")
   @Key("uniformMARC")
   String uniformMARC();
+
+  /**
+   * Translated "Unlock digital object".
+   * 
+   * @return translated "Unlock digital object"
+   */
+  @DefaultStringValue("Unlock digital object")
+  @Key("unlockItem")
+  String unlockItem();
 
   /**
    * Translated "Update lock".

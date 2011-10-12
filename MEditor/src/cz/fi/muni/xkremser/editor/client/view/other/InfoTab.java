@@ -45,9 +45,7 @@ public class InfoTab
         if (lockOwner != null) {
             lockInfoButton = new Button();
             lockInfoButton.setTitle(lang.lockInfoButton());
-            lockInfoButton.setShowEdges(false);
             lockInfoButton.setWidth(160);
-            lockInfoButton.setBackgroundColor("white");
 
             if ("".equals(lockOwner)) {
                 lockInfoButton.setIcon("icons/16/lock_lock_all.png");
