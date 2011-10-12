@@ -1618,6 +1618,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lockItem();
 
   /**
+   * Translated "If you do not update the lock during the next week the digital object will be automatically unlocked. ".
+   * 
+   * @return translated "If you do not update the lock during the next week the digital object will be automatically unlocked. "
+   */
+  @DefaultStringValue("If you do not update the lock during the next week the digital object will be automatically unlocked. ")
+  @Key("lockNote")
+  String lockNote();
+
+  /**
+   * Translated "The lock of the digital object".
+   * 
+   * @return translated "The lock of the digital object"
+   */
+  @DefaultStringValue("The lock of the digital object")
+  @Key("lockObjectWindow")
+  String lockObjectWindow();
+
+  /**
    * Translated "Lock opened tab".
    * 
    * @return translated "Lock opened tab"
@@ -1996,11 +2014,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String objectIsLocked();
 
   /**
-   * Translated "The digital object has been locked.".
+   * Translated "The digital object has been locked. ".
    * 
-   * @return translated "The digital object has been locked."
+   * @return translated "The digital object has been locked. "
    */
-  @DefaultStringValue("The digital object has been locked.")
+  @DefaultStringValue("The digital object has been locked. ")
   @Key("objectLocked")
   String objectLocked();
 
@@ -3011,6 +3029,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Unlock digital object")
   @Key("unlockItem")
   String unlockItem();
+
+  /**
+   * Translated "Unlock the digital object".
+   * 
+   * @return translated "Unlock the digital object"
+   */
+  @DefaultStringValue("Unlock the digital object")
+  @Key("unlockObjectWindow")
+  String unlockObjectWindow();
 
   /**
    * Translated "Update lock".

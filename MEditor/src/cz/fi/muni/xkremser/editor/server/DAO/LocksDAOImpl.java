@@ -24,9 +24,14 @@
 
 package cz.fi.muni.xkremser.editor.server.DAO;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.text.SimpleDateFormat;
+
+import java.util.Calendar;
 
 import com.google.inject.Inject;
 
@@ -53,9 +58,10 @@ public class LocksDAOImpl
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
             .toString());
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    private static final String SELECT_LOCK_OWNERS_ID = "SELECT user_id FROM  " + Constants.TABLE_LOCK
-            + " WHERE uuid = (?)";
+    private static final String SELECT_LOCK_USER_ID_MODIFIED = "SELECT user_id, modified FROM  "
+            + Constants.TABLE_LOCK + " WHERE uuid = (?)";
 
     private static final String INSERT_NEW_DIGITAL_OBJECTS_LOCK = "INSERT INTO " + Constants.TABLE_LOCK
             + " (uuid, description, modified, user_id) VALUES ((?),(?),(CURRENT_TIMESTAMP),(?))";
@@ -126,7 +132,7 @@ public class LocksDAOImpl
         long lockOwnersId = 0;
 
         try {
-            selectSt = getConnection().prepareStatement(SELECT_LOCK_OWNERS_ID);
+            selectSt = getConnection().prepareStatement(SELECT_LOCK_USER_ID_MODIFIED);
             selectSt.setString(1, uuid);
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement", e);
@@ -136,6 +142,20 @@ public class LocksDAOImpl
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
                 lockOwnersId = rs.getInt("user_id");
+                if (lockOwnersId > 0) {
+                    Date timestamp = rs.getDate("modified");
+                    if (timestamp.getTime() < (Calendar.getInstance().getTimeInMillis() - 604800000)) {
+                        if (unlockDigitalObject(uuid)) {
+                            LOGGER.debug("The digital object: " + uuid
+                                    + " which had been locked by user with ID: " + lockOwnersId
+                                    + " has been unlock at " + FORMATTER.format(new java.util.Date())
+                                    + " because the lock was older than one week");
+                            lockOwnersId = 0;
+                        } else {
+                            lockOwnersId = Long.MIN_VALUE;
+                        }
+                    }
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -214,34 +234,34 @@ public class LocksDAOImpl
         }
         return description;
     }
-
+    //
     //    /**
     //     * {@inheritDoc}
-    //     * @throws DatabaseException 
+    //     * 
+    //     * @throws DatabaseException
     //     */
     //
     //    @Override
-    //    public boolean unlockDigitalObjectsWithOpenId(String openId) throws DatabaseException {
-    //        int userId = userDAO.isSupported(openId);
-    //        
-    //        PreparedStatement deleteSt  = null;
-    //        
+    //    public int unlockDigitalObjectsWithOpenId(String openId) throws DatabaseException {
+    //        long userId = userDAO.getUsersId(openId);
+    //
+    //        PreparedStatement deleteSt = null;
+    //
     //        try {
     //            deleteSt = getConnection().prepareStatement(DELETE_DIGITAL_OBJETCS_LOCK_BY_ID);
     //        } catch (SQLException e) {
-    //            LOGGER.error("Could not get delete statement", e);                
+    //            LOGGER.error("Could not get delete statement", e);
     //        }
-    //        
+    //
+    //        int modified = 0;
     //        try {
-    //            deleteSt.executeUpdate();
-    //            
-    //            
+    //            modified = deleteSt.executeUpdate();
+    //
     //        } catch (SQLException e) {
-    //                            
+    //
     //        }
-    //        
-    //        
-    //        return false;
+    //
+    //        return modified;
     //    }
 
 }

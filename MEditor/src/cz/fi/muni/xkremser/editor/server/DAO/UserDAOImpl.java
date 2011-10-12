@@ -144,6 +144,9 @@ public class UserDAOImpl
     public static final String SELECT_NAME_BY_ID = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
             + " WHERE id = (?)";
 
+    private static final String DELETE_DIGITAL_OBJETCS_LOCK = "DELETE FROM " + Constants.TABLE_LOCK
+            + " WHERE user_id = (?)";
+
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
     /*
@@ -233,6 +236,9 @@ public class UserDAOImpl
             deleteSt.setLong(1, id);
             deleteSt.executeUpdate();
             deleteSt = getConnection().prepareStatement(DELETE_USER);
+            deleteSt.setLong(1, id);
+            deleteSt.executeUpdate();
+            deleteSt = getConnection().prepareStatement(DELETE_DIGITAL_OBJETCS_LOCK);
             deleteSt.setLong(1, id);
             deleteSt.executeUpdate();
         } catch (SQLException e) {

@@ -276,7 +276,19 @@ public class Constants {
          * The value of nativeEvent-keyCode of button B - used for display
          * basic-mods-window
          */
-        CODE_KEY_B(66);
+        CODE_KEY_B(66),
+
+        /**
+         * The value of nativeEvent-keyCode of button O (not zero) - used for
+         * unlock digital object
+         */
+        CODE_KEY_O(79),
+
+        /**
+         * The value of nativeEvent-keyCode of button Z - used for lock digital
+         * object
+         */
+        CODE_KEY_Z(90);
 
         private final int code;
 

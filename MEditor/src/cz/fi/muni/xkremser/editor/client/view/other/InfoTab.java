@@ -70,9 +70,11 @@ public class InfoTab
                             objectLockedBuffer.append(lang.objectLockedBy());
                             objectLockedBuffer.append(": ").append("<br>").append("<br>");
                             objectLockedBuffer.append(lockOwner);
+                            objectLockedBuffer.append("<br>").append("<br>");
+                            objectLockedBuffer.append(lang.withDescription());
                             objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                            objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription()
-                                    : lockDescription);
+                            objectLockedBuffer.append("".equals(lockDescription.trim()) ? lang
+                                    .noDescription() : lockDescription);
                         }
                         SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
                     }

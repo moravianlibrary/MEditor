@@ -459,11 +459,12 @@ public class ModifyPresenter
                                 objectLockedBuffer
                                         .append("".equals(detail.getLockDescription().trim()) ? lang
                                                 .noDescription() : detail.getLockDescription());
-                                System.err.println(lang.noDescription());
                             } else {
                                 objectLockedBuffer.append(lang.objectLockedBy());
                                 objectLockedBuffer.append(": ").append("<br>").append("<br>");
                                 objectLockedBuffer.append(detail.getLockOwner());
+                                objectLockedBuffer.append("<br>").append("<br>");
+                                objectLockedBuffer.append(lang.withDescription());
                                 objectLockedBuffer.append(": ").append("<br>").append("<br>");
                                 objectLockedBuffer
                                         .append("".equals(detail.getLockDescription().trim()) ? lang
@@ -703,13 +704,13 @@ public class ModifyPresenter
                     @Override
                     public void callback(LockDigitalObjectResult result) {
                         if (result.getProcessResult() > 0) {
-                            SC.say(lang.objectLocked());
+                            SC.say(lang.objectLocked(), lang.objectLocked() + "<br>" + lang.lockNote());
 
                         } else if (result.getProcessResult() == 0) {
-                            SC.say(lang.lockUpdated());
+                            SC.say(lang.lockUpdated(), lang.lockUpdated());
 
                         } else if (result.getProcessResult() < 0) {
-                            SC.say(lang.operationFailed() + "<br>" + lang.tryOrLog());
+                            SC.say(lang.operationFailed(), lang.operationFailed() + "<br>" + lang.tryOrLog());
                         }
                         mw.hide();
                     }
@@ -750,7 +751,7 @@ public class ModifyPresenter
      */
 
     @Override
-    public void unLockDigitalObject(final EditorTabSet ts) {
+    public void unlockDigitalObject(final EditorTabSet ts) {
         final ModalWindow mw = new ModalWindow(ts);
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
@@ -762,9 +763,9 @@ public class ModifyPresenter
                     @Override
                     public void callback(UnlockDigitalObjectResult result) {
                         if (result.isSuccessful()) {
-                            SC.say(lang.objectUnlocked());
+                            SC.say(lang.objectUnlocked(), lang.objectUnlocked());
                         } else {
-                            SC.say(lang.operationFailed() + "<br>" + lang.tryOrLog());
+                            SC.say(lang.operationFailed(), lang.operationFailed() + "<br>" + lang.tryOrLog());
                         }
                         mw.hide();
                     }
@@ -789,7 +790,7 @@ public class ModifyPresenter
                                 @Override
                                 public void execute(Boolean value) {
                                     if (value != null && value) {
-                                        lockDigitalObject(ts);
+                                        unlockDigitalObject(ts);
                                     }
                                 }
                             });

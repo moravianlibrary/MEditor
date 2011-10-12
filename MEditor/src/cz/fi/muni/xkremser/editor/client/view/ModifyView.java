@@ -152,7 +152,7 @@ public class ModifyView
 
         void lockDigitalObject(final EditorTabSet ts);
 
-        void unLockDigitalObject(final EditorTabSet ts);
+        void unlockDigitalObject(final EditorTabSet ts);
     }
 
     /** The Constant ID_DC. */
@@ -1139,15 +1139,15 @@ public class ModifyView
         menu.setShadowDepth(10);
 
         MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
-        MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png");
-        MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png");
+        MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
+        MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
         MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
-        
+
         unlockItem.setEnabled(false);
         if (topTabSet.getLockOwner() != null) {
             if ("".equals(topTabSet.getLockOwner())) {
@@ -1166,8 +1166,7 @@ public class ModifyView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                lockDigitalObject(((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET)),
-                                  topTabSet.getLockDescription());
+                lockDigitalObject((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
@@ -1214,20 +1213,20 @@ public class ModifyView
     }
 
     private void unlockDigitalObject(final EditorTabSet ts, String message) {
-        SC.ask(message, new BooleanCallback() {
+        SC.ask(lang.unlockObjectWindow() + ": " + ts.getUuid(), message, new BooleanCallback() {
 
             @Override
             public void execute(Boolean value) {
                 if (value == true) {
-                    getUiHandlers().unLockDigitalObject(ts);
+                    getUiHandlers().unlockDigitalObject(ts);
                 }
             }
         });
     }
 
-    private void lockDigitalObject(final EditorTabSet ts, String oldDescription) {
+    private void lockDigitalObject(final EditorTabSet ts) {
 
-        universalWindow = new UniversalWindow(300, 490, "locker");
+        universalWindow = new UniversalWindow(300, 490, lang.lockObjectWindow() + ": " + ts.getUuid());
 
         final RichTextEditor textEditor = new RichTextEditor();
         textEditor.setHeight(200);
@@ -1236,8 +1235,8 @@ public class ModifyView
         textEditor.setEdgeSize(2);
         textEditor.setExtraSpace(5);
         textEditor.setShowEdges(true);
-        if (oldDescription != null) {
-            textEditor.setValue(oldDescription);
+        if (ts.getLockDescription() != null) {
+            textEditor.setValue(ts.getLockDescription());
         }
         HLayout layout = new HLayout();
         Button lock = new Button();
@@ -1271,6 +1270,7 @@ public class ModifyView
         universalWindow.addItem(layout);
         universalWindow.centerInPage();
         universalWindow.show();
+        lock.focus();
     }
 
     /**
@@ -1523,9 +1523,16 @@ public class ModifyView
                     close(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_B.getCode()) {
                     showBasicModsWindow(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_O.getCode()) {
+                    if (focusedTabSet.getLockOwner() != null && "".equals(focusedTabSet.getLockOwner())) {
+                        unlockDigitalObject(focusedTabSet, lang.reallyUnlock());
+                    }
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_Z.getCode()) {
+                    if (focusedTabSet.getLockOwner() == null || "".equals(focusedTabSet.getLockOwner())) {
+                        lockDigitalObject(focusedTabSet);
+                    }
                 }
             }
         }
     }
-
 }
