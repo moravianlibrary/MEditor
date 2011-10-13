@@ -239,8 +239,11 @@ public class ModifyView
     /** The value of background color of focused tabSet **/
     private static final String BG_COLOR_FOCUSED = "#ededed";
 
-    /** The value of background color of focused tabSet **/
-    private static final String BG_COLOR_FOCUSED_LOCK = "#ff0000";
+    /** The value of background color of focused tabSet which is locked **/
+    private static final String BG_COLOR_FOCUSED_LOCK = "#ffbdbd";
+
+    /** The value of background color of focused tabSet which is locked by user **/
+    private static final String BG_COLOR_FOCUSED_LOCK_BY_USER = "#bae6e7";
 
     /** The value of background color of "unfocused" tabSet **/
     private static final String BG_COLOR_UNFOCUSED = "white";
@@ -324,9 +327,13 @@ public class ModifyView
     private void changeFocus() {
         if (!isSecondFocused || topTabSet2 == null) {
             if (topTabSet1 != null) {
-                topTabSet1.setBackgroundColor(topTabSet1.getLockOwner() != null
-                        && !"".equals(topTabSet1.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK
-                        : BG_COLOR_FOCUSED);
+                if (topTabSet1.getLockOwner() != null) {
+                    topTabSet1
+                            .setBackgroundColor("".equals(topTabSet1.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK_BY_USER
+                                    : BG_COLOR_FOCUSED_LOCK);
+                } else {
+                    topTabSet1.setBackgroundColor(BG_COLOR_FOCUSED);
+                }
                 getUiHandlers().onChangeFocusedTabSet(topTabSet1.getUuid());
             } else {
                 getUiHandlers().onChangeFocusedTabSet(null);
@@ -335,9 +342,17 @@ public class ModifyView
                 topTabSet2.setBackgroundColor(BG_COLOR_UNFOCUSED);
             }
         } else if (isSecondFocused && topTabSet2 != null) {
-            topTabSet2.setBackgroundColor(topTabSet2.getLockOwner() != null
-                    && !"".equals(topTabSet2.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK
-                    : BG_COLOR_FOCUSED);
+
+            if (topTabSet2 != null) {
+                if (topTabSet2.getLockOwner() != null) {
+                    topTabSet2
+                            .setBackgroundColor("".equals(topTabSet2.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK_BY_USER
+                                    : BG_COLOR_FOCUSED_LOCK);
+                } else {
+                    topTabSet2.setBackgroundColor(BG_COLOR_FOCUSED);
+                }
+            }
+
             topTabSet1.setBackgroundColor(BG_COLOR_UNFOCUSED);
             getUiHandlers().onChangeFocusedTabSet(topTabSet2.getUuid());
         }

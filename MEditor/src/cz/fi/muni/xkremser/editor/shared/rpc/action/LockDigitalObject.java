@@ -46,12 +46,16 @@ public class LockDigitalObject
     private String description;
 
     /**
-     * Returns the code of the process result
-     * <code>processResult &lt 0<code> if the process failed
-     * <code>processResult &gt 0<code> if the lock has been created
-     * <code>processResult == 0<code> if the lock has been updated
+     * The name of the lock-owner
+     * <code>lockOwner<code> is not empty when the digital object has already been locked by somebody else
+     * <code>lockOwner == null<code> if the lock has been created
+     * <code>"".equals(lockOwner)<code> if the lock has been updated
      */
     @Out(1)
-    private int processResult;
+    private String lockOwner;
+
+    /** The description of the lock */
+    @Out(2)
+    private String lockDescription;
 
 }

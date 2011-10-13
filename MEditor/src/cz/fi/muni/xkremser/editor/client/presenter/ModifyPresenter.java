@@ -703,14 +703,24 @@ public class ModifyPresenter
 
                     @Override
                     public void callback(LockDigitalObjectResult result) {
-                        if (result.getProcessResult() > 0) {
+                        if (result.getLockOwner() == null) {
                             SC.say(lang.objectLocked(), lang.objectLocked() + "<br>" + lang.lockNote());
 
-                        } else if (result.getProcessResult() == 0) {
+                        } else if ("".equals(result.getLockOwner())) {
                             SC.say(lang.lockUpdated(), lang.lockUpdated());
 
-                        } else if (result.getProcessResult() < 0) {
-                            SC.say(lang.operationFailed(), lang.operationFailed() + "<br>" + lang.tryOrLog());
+                        } else {
+                            StringBuffer objectLockedBuffer = new StringBuffer();
+                            objectLockedBuffer.append(lang.objectLockedBy());
+                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                            objectLockedBuffer.append(result.getLockOwner());
+                            objectLockedBuffer.append("<br>").append("<br>");
+                            objectLockedBuffer.append(lang.withDescription());
+                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+                            objectLockedBuffer.append("".equals(result.getLockDescription().trim()) ? lang
+                                    .noDescription() : result.getLockDescription());
+                            SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
+
                         }
                         mw.hide();
                     }

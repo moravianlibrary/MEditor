@@ -59,12 +59,12 @@ public interface LocksDAO {
     boolean unlockDigitalObject(String uuid) throws DatabaseException;
 
     /**
-     * Gets the id of owner of lock
+     * Gets the id of a owner of the lock
      * 
      * @param uuid
      *        the uuid of digital object
      * @return id the id of owner of lock, <code>id == 0<code> when there is no
-     *         lock (no owner) and the locking was successful, <code> id &lt 0
+     *         lock (no owner), <code> id &lt 0
      *         <code> when there has occurred any other problem and the DB has
      *         not been updated
      * @throws DatabaseException
