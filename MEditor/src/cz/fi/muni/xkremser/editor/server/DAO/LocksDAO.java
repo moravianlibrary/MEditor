@@ -81,6 +81,4 @@ public interface LocksDAO {
      */
     String getDescription(String uuid) throws DatabaseException;
 
-    //    int unlockDigitalObjectsWithOpenId(String openId) throws DatabaseException;
-
 }

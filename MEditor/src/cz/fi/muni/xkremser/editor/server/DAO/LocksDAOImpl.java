@@ -24,14 +24,11 @@
 
 package cz.fi.muni.xkremser.editor.server.DAO;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.text.SimpleDateFormat;
-
-import java.util.Calendar;
 
 import com.google.inject.Inject;
 
@@ -60,8 +57,8 @@ public class LocksDAOImpl
             .toString());
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    private static final String SELECT_LOCK_USER_ID_MODIFIED = "SELECT user_id, modified FROM  "
-            + Constants.TABLE_LOCK + " WHERE uuid = (?)";
+    private static final String SELECT_LOCK_USER_ID = "SELECT user_id FROM  " + Constants.TABLE_LOCK
+            + " WHERE uuid = (?)";
 
     private static final String INSERT_NEW_DIGITAL_OBJECTS_LOCK = "INSERT INTO " + Constants.TABLE_LOCK
             + " (uuid, description, modified, user_id) VALUES ((?),(?),(CURRENT_TIMESTAMP),(?))";
@@ -73,8 +70,8 @@ public class LocksDAOImpl
     private static final String SELECT_LOCK_DESCRIPTION = "SELECT description FROM  " + Constants.TABLE_LOCK
             + " WHERE uuid = (?)";
 
-    //    private static final String DELETE_DIGITAL_OBJETCS_LOCK_BY_ID = "DELETE FROM " + Constants.TABLE_LOCK
-    //            + " WHERE user_id = (?)";
+    private static final String DELETE_OLD_DIIGITAL_OBJECT = "DELETE FROM " + Constants.TABLE_LOCK
+            + " WHERE modified < (NOW() - INTERVAL '1 week')";
 
     private static final String DELETE_DIGITAL_OBJETCS_LOCK_BY_UUID = "DELETE FROM " + Constants.TABLE_LOCK
             + " WHERE uuid = (?)";
@@ -128,37 +125,26 @@ public class LocksDAOImpl
 
     @Override
     public long getLockOwnersID(String uuid) throws DatabaseException {
-        PreparedStatement selectSt = null;
+        PreparedStatement statement = null;
         long lockOwnersId = 0;
 
         try {
-            selectSt = getConnection().prepareStatement(SELECT_LOCK_USER_ID_MODIFIED);
-            selectSt.setString(1, uuid);
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select statement", e);
-        }
-
-        try {
-            ResultSet rs = selectSt.executeQuery();
+            statement = getConnection().prepareStatement(DELETE_OLD_DIIGITAL_OBJECT);
+            int modified = statement.executeUpdate();
+            if (modified > 0) {
+                LOGGER.debug(modified + " digital objects have been unlock at "
+                        + FORMATTER.format(new java.util.Date())
+                        + " because the lock was older than one week");
+            }
+            statement = getConnection().prepareStatement(SELECT_LOCK_USER_ID);
+            statement.setString(1, uuid);
+            ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 lockOwnersId = rs.getInt("user_id");
-                if (lockOwnersId > 0) {
-                    Date timestamp = rs.getDate("modified");
-                    if (timestamp.getTime() < (Calendar.getInstance().getTimeInMillis() - 604800000)) {
-                        if (unlockDigitalObject(uuid)) {
-                            LOGGER.debug("The digital object: " + uuid
-                                    + " which had been locked by user with ID: " + lockOwnersId
-                                    + " has been unlock at " + FORMATTER.format(new java.util.Date())
-                                    + " because the lock was older than one week");
-                            lockOwnersId = 0;
-                        } else {
-                            lockOwnersId = Long.MIN_VALUE;
-                        }
-                    }
-                }
             }
+
         } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
+            LOGGER.error("Could not get select statement: " + statement, e);
         } finally {
             closeConnection();
         }
@@ -234,34 +220,4 @@ public class LocksDAOImpl
         }
         return description;
     }
-    //
-    //    /**
-    //     * {@inheritDoc}
-    //     * 
-    //     * @throws DatabaseException
-    //     */
-    //
-    //    @Override
-    //    public int unlockDigitalObjectsWithOpenId(String openId) throws DatabaseException {
-    //        long userId = userDAO.getUsersId(openId);
-    //
-    //        PreparedStatement deleteSt = null;
-    //
-    //        try {
-    //            deleteSt = getConnection().prepareStatement(DELETE_DIGITAL_OBJETCS_LOCK_BY_ID);
-    //        } catch (SQLException e) {
-    //            LOGGER.error("Could not get delete statement", e);
-    //        }
-    //
-    //        int modified = 0;
-    //        try {
-    //            modified = deleteSt.executeUpdate();
-    //
-    //        } catch (SQLException e) {
-    //
-    //        }
-    //
-    //        return modified;
-    //    }
-
 }
