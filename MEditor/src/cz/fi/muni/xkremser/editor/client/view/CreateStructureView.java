@@ -398,4 +398,8 @@ public class CreateStructureView
     /**
      * {@inheritDoc}
      */
+    @Override
+    public TileGrid getTileGrid() {
+        return tileGrid;
+    }
 }

@@ -119,6 +119,8 @@ public class Constants {
 
     public static final String ATTR_TYPE = "type";
 
+    public static final String ATTR_TYPE_ID = Constants.ATTR_TYPE + Constants.ATTR_ID;
+
     /** The Constant ATTR_IDENTITY. */
     public static final String ATTR_IDENTITY = "identity";
 

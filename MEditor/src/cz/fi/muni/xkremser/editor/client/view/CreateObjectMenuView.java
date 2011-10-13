@@ -27,8 +27,6 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -63,8 +61,6 @@ import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class CreateObjectMenuView.
@@ -85,9 +81,11 @@ public class CreateObjectMenuView
 
         void onRefresh();
 
-        void onAddSubelement(final RecentlyModifiedItem item, final List<? extends List<String>> related);
-
         void revealItem(String uuid);
+
+        Map<String, DigitalObjectModel> getModelFromLabel();
+
+        Map<String, String> getLabelFromModel();
 
     }
 
@@ -143,18 +141,16 @@ public class CreateObjectMenuView
         structureTreeGrid.setCanAcceptDroppedRecords(true);
         structureTreeGrid.setShowOpenIcons(false);
         structureTreeGrid.setDropIconSuffix("into");
-        //        setFolderIcon("silk/folder.png");
+        structureTreeGrid.setTreeRootValue("1");
+        structureTreeGrid.setFolderIcon("icons/16/structure.png");
 
         structureTree = new Tree();
         structureTree.setModelType(TreeModelType.PARENT);
-        structureTree.setRootValue(1);
+        structureTree.setRootValue("1");
         structureTree.setNameProperty(Constants.ATTR_NAME);
         structureTree.setIdField(Constants.ATTR_ID);
         structureTree.setParentIdField(Constants.ATTR_PARENT);
         structureTree.setOpenProperty("isOpen");
-        //        structureTree.setData(new TreeNode[] {new SubstructureTreeNode("2", "3", "jmeno1", "typ1", true),
-        //                new SubstructureTreeNode("99", "2", "jmeno2", "typ2", true),
-        //                new SubstructureTreeNode("100", "2", "jmeno3", "typ3", true)});
 
         TreeGridField rangeField = new TreeGridField();
         rangeField.setCanFilter(true);
@@ -167,19 +163,6 @@ public class CreateObjectMenuView
         typeField.setTitle(lang.dcType());
 
         structureTreeGrid.setFields(rangeField, typeField);
-        //        structureTree.setData(new Record[] {new Record() {
-        //
-        //            {
-        //                setAttribute(Constants.RANGE, "jmeno1");
-        //                setAttribute("type", "typ1");
-        //            }
-        //        }, new Record() {
-        //
-        //            {
-        //                setAttribute("name", "jmeno2");
-        //                setAttribute("type", "typ2");
-        //            }
-        //        }});
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
@@ -187,20 +170,6 @@ public class CreateObjectMenuView
         selectModel = new SelectItem();
         selectModel.setTitle(lang.dcType());
 
-        Map<String, String> labelsSingular = new HashMap<String, String>();
-        labelsSingular.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
-        labelsSingular.put(DigitalObjectModel.MONOGRAPH.getValue(), lang.monograph());
-        labelsSingular.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
-        labelsSingular.put(DigitalObjectModel.PAGE.getValue(), lang.page());
-        labelsSingular.put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
-        labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
-        labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
-        DigitalObjectModel[] models = DigitalObjectModel.values();
-        String[] values = new String[models.length];
-        for (int i = 0; i < models.length; i++) {
-            values[i] = labelsSingular.get(models[i].getValue());
-        }
-        selectModel.setValueMap(values);
         keepCheckbox = new CheckboxItem();
         keepCheckbox.setTitle(lang.keepOnRight());
         createButton = new ButtonItem();
@@ -318,7 +287,6 @@ public class CreateObjectMenuView
         refreshButton.setShowDown(false);
         refreshButton.setHoverOpacity(75);
         refreshButton.setHoverStyle("interactImageHover");
-        refreshButton.setHoverOpacity(75);
         refreshButton.addHoverHandler(new HoverHandler() {
 
             @Override
@@ -365,11 +333,17 @@ public class CreateObjectMenuView
     public static class SubstructureTreeNode
             extends TreeNode {
 
-        public SubstructureTreeNode(String id, String parent, String name, String type, boolean isOpen) {
+        public SubstructureTreeNode(String id,
+                                    String parent,
+                                    String name,
+                                    String type,
+                                    String typeId,
+                                    boolean isOpen) {
             setAttribute(Constants.ATTR_ID, id);
             setAttribute(Constants.ATTR_PARENT, parent);
             setAttribute(Constants.ATTR_NAME, name);
             setAttribute(Constants.ATTR_TYPE, type);
+            setAttribute(Constants.ATTR_TYPE_ID, typeId);
             setAttribute("isOpen", isOpen);
         }
     }
@@ -377,15 +351,11 @@ public class CreateObjectMenuView
     /**
      * {@inheritDoc}
      */
-
     @Override
-    public void addSubstructure(int id, String name, String type, String parent, boolean isOpen) {
-        structureTreeGrid.addData(new SubstructureTreeNode(String.valueOf(id), parent, name, type, isOpen));
-    }
-
-    @Override
-    public void setRoot(String name, String type) {
-        //        structureTree.setRoot(new SubstructureTreeNode("0", "-1", name, type, true));
-        //        structureTreeGrid.setData(structureTree);
+    public void addSubstructure(int id, String name, String type, String typeId, String parent, boolean isOpen) {
+        TreeNode parentNode = structureTree.findById(parent);
+        structureTree.add(new SubstructureTreeNode(String.valueOf(id), parent, name, type, typeId, isOpen),
+                          parentNode);
+        structureTreeGrid.setData(structureTree);
     }
 }

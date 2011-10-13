@@ -54,24 +54,21 @@ import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.events.CellClickEvent;
-import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
-import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
-import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
@@ -109,9 +106,7 @@ public class CreateObjectMenuPresenter
 
         void enableCheckbox(boolean isEnabled);
 
-        void addSubstructure(int id, String name, String type, String parent, boolean isOpen);
-
-        void setRoot(String name, String type);
+        void addSubstructure(int id, String name, String type, String typeId, String parent, boolean isOpen);
     }
 
     /**
@@ -139,10 +134,12 @@ public class CreateObjectMenuPresenter
 
     private final LangConstants lang;
 
-    private final Map<String, List<? extends List<String>>> openedObjectsUuidAndRelated =
-            new HashMap<String, List<? extends List<String>>>();
-
     private int lastId = 1;
+
+    private final Map<String, DigitalObjectModel> modelsFromLabels =
+            new HashMap<String, DigitalObjectModel>();
+
+    private final Map<String, String> labelsFromModels = new HashMap<String, String>();
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -194,15 +191,24 @@ public class CreateObjectMenuPresenter
                 return record.getAttribute(Constants.ATTR_DESC);
             }
         });
-        getView().getSubelementsGrid().addCellClickHandler(new CellClickHandler() {
+        //        getView().getSubelementsGrid().addCellClickHandler(new CellClickHandler() {
+        //
+        //            @Override
+        //            public void onCellClick(CellClickEvent event) {
+        //                revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+        //            }
+        //        });
+        getView().enableCheckbox(false);
+        //        getView().getCreateButton().disable();
+        getView().getSubelementsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
             @Override
-            public void onCellClick(CellClickEvent event) {
-                revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
+            public void onSelectionChanged(SelectionEvent event) {
+                String modelString = event.getSelectedRecord().getAttribute(Constants.ATTR_TYPE_ID);
+                refreshSelectModel(modelString);
             }
         });
-        getView().enableCheckbox(false);
-        getView().getCreateButton().disable();
+
         getView().getSelectModel().addChangeHandler(new ChangeHandler() {
 
             @Override
@@ -222,25 +228,10 @@ public class CreateObjectMenuPresenter
                 String parent =
                         getView().getSubelementsGrid().getSelectedRecord().getAttribute(Constants.ATTR_ID);
                 String type = getView().getSelectModel().getValueAsString();
-                getView().addSubstructure(++lastId, "foo todo", type, parent, true);
-            }
-        });
-
-        addRegisteredHandler(DigitalObjectOpenedEvent.getType(), new DigitalObjectOpenedHandler() {
-
-            @Override
-            public void onDigitalObjectOpened(DigitalObjectOpenedEvent event) {
-                if (event.isStatusOK()) {
-                    onAddSubelement(event.getItem(), event.getRelated());
+                DigitalObjectModel model = getModelFromLabel().get(type);
+                if (model != null) {
+                    getView().addSubstructure(++lastId, "foo todo", type, model.getValue(), parent, true);
                 }
-            }
-        });
-
-        addRegisteredHandler(DigitalObjectClosedEvent.getType(), new DigitalObjectClosedHandler() {
-
-            @Override
-            public void onDigitalObjectClosed(DigitalObjectClosedEvent event) {
-                openedObjectsUuidAndRelated.remove(event.getUuid());
             }
         });
 
@@ -251,12 +242,22 @@ public class CreateObjectMenuPresenter
                 shortcutPressed(event.getCode());
             }
         });
-    }
 
-    public void doIt() {
-        getView().addSubstructure(10, "few todo", "typ56", "0", true);
-        getView().addSubstructure(11, "few todo", "typ57", "0", true);
-        getView().addSubstructure(12, "few todo", "typ58", "0", true);
+        // label to model 2 way mapping
+        getLabelFromModel().put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
+        getModelFromLabel().put(lang.internalpart(), DigitalObjectModel.INTERNALPART);
+        getLabelFromModel().put(DigitalObjectModel.MONOGRAPH.getValue(), lang.monograph());
+        getModelFromLabel().put(lang.monograph(), DigitalObjectModel.MONOGRAPH);
+        getLabelFromModel().put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
+        getModelFromLabel().put(lang.monographunit(), DigitalObjectModel.MONOGRAPHUNIT);
+        getLabelFromModel().put(DigitalObjectModel.PAGE.getValue(), lang.page());
+        getModelFromLabel().put(lang.page(), DigitalObjectModel.PAGE);
+        getLabelFromModel().put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
+        getModelFromLabel().put(lang.periodical(), DigitalObjectModel.PERIODICAL);
+        getLabelFromModel().put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
+        getModelFromLabel().put(lang.periodicalitem(), DigitalObjectModel.PERIODICALITEM);
+        getLabelFromModel().put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
+        getModelFromLabel().put(lang.periodicalvolume(), DigitalObjectModel.PERIODICALVOLUME);
     }
 
     /*
@@ -319,25 +320,6 @@ public class CreateObjectMenuPresenter
      * (non-Javadoc)
      * @see
      * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-     * #onAddDigitalObject
-     * (cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
-     */
-    @Override
-    public void onAddSubelement(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
-        //        openedObjectsUuidAndRelated.put(item.getUuid(), related);
-        //        getView().setRelatedDocuments(related);
-        //        RecentlyModifiedRecord record = ClientUtils.toRecord(item);
-        //        if (getView().getSubelementGrid().getDataAsRecordList().contains(record)) {
-        //            getView().getSubelementGrid().updateData(record);
-        //        } else {
-        //            getView().getSubelementGrid().addData(record);
-        //        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers
      * #revealModifiedItem(java.lang.String)
      */
     @Override
@@ -371,6 +353,33 @@ public class CreateObjectMenuPresenter
                 }
             }
         }
+    }
+
+    public void refreshSelectModel(String modelString) {
+        if (modelString != null) {
+            DigitalObjectModel model = DigitalObjectModel.parseString(modelString);
+            List<DigitalObjectModel> childrenModels = NamedGraphModel.getChildren(model);
+            if (childrenModels != null && childrenModels.size() > 0) {
+                String[] values = new String[childrenModels.size()];
+                for (int i = 0; i < childrenModels.size(); i++) {
+                    values[i] = getLabelFromModel().get(childrenModels.get(i).getValue());
+                }
+                getView().getSelectModel().setValueMap(values);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, DigitalObjectModel> getModelFromLabel() {
+        return modelsFromLabels;
+    }
+
+    @Override
+    public Map<String, String> getLabelFromModel() {
+        return labelsFromModels;
     }
 
 }

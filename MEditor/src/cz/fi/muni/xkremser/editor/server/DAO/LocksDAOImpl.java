@@ -70,7 +70,7 @@ public class LocksDAOImpl
     private static final String SELECT_LOCK_DESCRIPTION = "SELECT description FROM  " + Constants.TABLE_LOCK
             + " WHERE uuid = (?)";
 
-    private static final String DELETE_OLD_DIIGITAL_OBJECT = "DELETE FROM " + Constants.TABLE_LOCK
+    private static final String DELETE_OLD_DIGITAL_OBJECT = "DELETE FROM " + Constants.TABLE_LOCK
             + " WHERE modified < (NOW() - INTERVAL '1 week')";
 
     private static final String DELETE_DIGITAL_OBJETCS_LOCK_BY_UUID = "DELETE FROM " + Constants.TABLE_LOCK
@@ -129,7 +129,7 @@ public class LocksDAOImpl
         long lockOwnersId = 0;
 
         try {
-            statement = getConnection().prepareStatement(DELETE_OLD_DIIGITAL_OBJECT);
+            statement = getConnection().prepareStatement(DELETE_OLD_DIGITAL_OBJECT);
             int modified = statement.executeUpdate();
             if (modified > 0) {
                 LOGGER.debug(modified + " digital objects have been unlock at "

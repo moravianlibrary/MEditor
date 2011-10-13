@@ -53,6 +53,8 @@ import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
+import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
+import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
@@ -106,6 +108,8 @@ public class CreateStructurePresenter
         void onAddImages(String model, String code, ScanRecord[] items);
 
         void escShortCut();
+
+        TileGrid getTileGrid();
     }
 
     /**
@@ -233,9 +237,7 @@ public class CreateStructurePresenter
         } else {
             name = code;
         }
-        leftPresenter.getView().addSubstructure(0, name, model, "1", true);
-        //        leftPresenter.getView().setRoot(name, model);
-        leftPresenter.doIt();
+        leftPresenter.getView().addSubstructure(0, name, model, model, "1", true);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
     }
 
@@ -481,6 +483,19 @@ public class CreateStructurePresenter
             @Override
             public void onClick(MenuItemClickEvent event) {
                 tileGrid.removeSelectedData();
+            }
+        });
+
+        getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent event) {
+                Record[] selection = getView().getTileGrid().getSelection();
+                if (selection != null && selection.length > 0) {
+                    leftPresenter.getView().getKeepCheckbox().enable();
+                } else {
+                    leftPresenter.getView().getKeepCheckbox().disable();
+                }
             }
         });
     }

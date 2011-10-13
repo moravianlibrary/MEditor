@@ -84,7 +84,7 @@ public class SideNavInputTree
         showMenu.setShadowDepth(10);
         showMenu.setItems(showItem);
 
-        createItem = new MenuItem(lang.create(), "icons/16/create2.png");
+        createItem = new MenuItem(lang.create(), "icons/16/structure_into.png");
 
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
