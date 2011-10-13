@@ -103,6 +103,10 @@ public class RecentlyTreeGwtRPCDS
         field.setRequired(true);
         field.setHidden(true);
         addField(field);
+        field = new DataSourceDateField(Constants.ATTR_LOCK, "lock");
+        field.setRequired(true);
+        field.setHidden(true);
+        addField(field);
     }
 
     /*
@@ -286,6 +290,7 @@ public class RecentlyTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
         to.setAttribute(Constants.ATTR_MODEL, from.getModel());
         to.setAttribute(Constants.ATTR_MODIFIED, from.getModified());
+        to.setAttribute(Constants.ATTR_LOCK, from.getLockCode());
     }
 
     /**

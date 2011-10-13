@@ -54,6 +54,28 @@ public class RecentlyModifiedItem
 
     private Date modified;
 
+    /** The lock code */
+    private int lockCode;
+
+    /**
+     * Gets the lock code <code>lockCode == 0<code> when there is no lock
+     * <code>lockCode &gt 0<code> when the lock has been created by user
+     * <code>lockCode &lt 0<code> when the lock has been created by somebody else
+     */
+    public int getLockCode() {
+        return lockCode;
+    }
+
+    /**
+     * Sets the lock code.
+     * 
+     * @param uuid
+     *        the new lock code
+     */
+    public void setLockCode(int lockCode) {
+        this.lockCode = lockCode;
+    }
+
     // @SuppressWarnings("unused")
     /**
      * Instantiates a new recently modified item.

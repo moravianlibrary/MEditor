@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
@@ -39,10 +41,13 @@ import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
+import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
 
@@ -66,6 +71,14 @@ public class GetRecentlyModifiedHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    /** The locks DAO **/
+    @Inject
+    private LocksDAO locksDAO;
+
+    /** The user DAO **/
+    @Inject
+    private UserDAO userDAO;
 
     /**
      * Instantiates a new gets the recently modified handler.
@@ -101,8 +114,23 @@ public class GetRecentlyModifiedHandler
             openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         }
         try {
-            return new GetRecentlyModifiedResult(recentlyModifiedDAO.getItems(configuration
-                    .getRecentlyModifiedNumber(), openID));
+
+            ArrayList<RecentlyModifiedItem> recItems =
+                    recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID);
+            long userId = userDAO.getUsersId(openID);
+
+            for (RecentlyModifiedItem item : recItems) {
+                long lockOwnersId = locksDAO.getLockOwnersID(item.getUuid());
+
+                if (lockOwnersId == 0) {
+                    item.setLockCode(0);
+                } else if (lockOwnersId == userId) {
+                    item.setLockCode(Integer.MAX_VALUE);
+                } else if (lockOwnersId > 0) {
+                    item.setLockCode(Integer.MIN_VALUE);
+                }
+            }
+            return new GetRecentlyModifiedResult(recItems);
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

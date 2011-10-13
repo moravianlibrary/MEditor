@@ -325,6 +325,15 @@ public class DigitalObjectMenuPresenter
             @Override
             public void execute(DSResponse response, Object rawData, DSRequest request) {
                 getView().getRecentlyModifiedGrid().setData(response.getData());
+
+                for (ListGridRecord rec : getView().getRecentlyModifiedGrid().getRecords()) {
+                    if (rec.getAttributeAsInt(Constants.ATTR_LOCK) > 0) {
+                        rec.setCustomStyle("listGridRecordLockByUser");
+                    } else if (rec.getAttributeAsInt(Constants.ATTR_LOCK) < 0) {
+                        rec.setCustomStyle("listGridRecordLock");
+                    }
+                }
+
                 getView().getRecentlyModifiedGrid().sort(Constants.ATTR_MODIFIED, SortDirection.ASCENDING);
                 getView().getRecentlyModifiedGrid().selectRecord(0);
                 getView().getRecentlyModifiedGrid().scrollToRow(0);

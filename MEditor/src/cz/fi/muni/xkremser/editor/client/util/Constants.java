@@ -164,6 +164,13 @@ public class Constants {
     /** The Constant ATTR_MODIFIED. */
     public static final String ATTR_MODIFIED = "modified";
 
+    /**
+     * The Constant ATTR_LOCK. <code>value == 0<code> when there is no lock
+     * <code>value &gt 0<code> when the lock has been created by user
+     * <code>value &lt 0<code> when the lock has been created by somebody else
+     */
+    public static final String ATTR_LOCK = "lock";
+
     /** The Constant ATTR_ALL. */
     public static final String ATTR_ALL = "all";
 
