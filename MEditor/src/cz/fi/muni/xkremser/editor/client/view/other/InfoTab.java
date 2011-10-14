@@ -1,7 +1,6 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
@@ -14,6 +13,7 @@ import com.smartgwt.client.widgets.tab.Tab;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
@@ -59,24 +59,7 @@ public class InfoTab
                 public void onClick(ClickEvent event) {
                     if (null != lockOwner) {
                         StringBuffer objectLockedBuffer = new StringBuffer();
-
-                        if ("".equals(lockOwner)) {
-                            objectLockedBuffer.append(lang.lockedByUser());
-                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                            objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription()
-                                    : lockDescription);
-                            System.err.println(lang.noDescription());
-                        } else {
-                            objectLockedBuffer.append(lang.objectLockedBy());
-                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                            objectLockedBuffer.append(lockOwner);
-                            objectLockedBuffer.append("<br>").append("<br>");
-                            objectLockedBuffer.append(lang.withDescription());
-                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                            objectLockedBuffer.append("".equals(lockDescription.trim()) ? lang
-                                    .noDescription() : lockDescription);
-                        }
-                        SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
+                        EditorSC.objectIsLock(lang, lockOwner, lockDescription);
                     }
                 }
             });

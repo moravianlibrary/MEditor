@@ -38,9 +38,11 @@ import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.VisibilityMode;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
@@ -54,6 +56,7 @@ import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -65,6 +68,7 @@ import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -148,6 +152,10 @@ public class DigitalObjectMenuView
 
     /** The section related. */
     private final SectionStackSection sectionRelated;
+
+    /** The roll over canvas */
+    private HLayout rollOverCanvas;
+
     /** The section related. */
     private final ListGrid relatedGrid;
 
@@ -163,7 +171,7 @@ public class DigitalObjectMenuView
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public DigitalObjectMenuView(LangConstants lang) {
+    public DigitalObjectMenuView(final LangConstants lang) {
         this.lang = lang;
         layout = new VLayout();
 
@@ -191,7 +199,52 @@ public class DigitalObjectMenuView
         sectionRelated.setItems(relatedGrid);
         sectionRelated.setExpanded(false);
 
-        sideNavGrid = new ListGrid();
+        sideNavGrid = new ListGrid() {
+
+            @Override
+            protected Canvas getRollOverCanvas(Integer rowNum, Integer colNum) {
+                final ListGridRecord rollOverRecord = this.getRecord(rowNum);
+                if (rollOverCanvas == null) {
+                    rollOverCanvas = new HLayout();
+                    rollOverCanvas.setSnapTo("TR");
+                    rollOverCanvas.setWidth(50);
+                    rollOverCanvas.setHeight(22);
+                }
+
+                if (rollOverCanvas.getChildren().length > 0) {
+                    rollOverCanvas.removeChild(rollOverCanvas.getChildren()[0]);
+                }
+                final String lockOwner = rollOverRecord.getAttributeAsString(Constants.ATTR_LOCK_OWNER);
+                if (lockOwner != null) {
+                    ImgButton lockImg = new ImgButton();
+                    lockImg.setShowDown(false);
+                    lockImg.setShowRollOver(false);
+                    lockImg.setLayoutAlign(Alignment.CENTER);
+
+                    if ("".equals(lockOwner)) {
+                        lockImg.setSrc("icons/16/lock_lock_all.png");
+                    } else if (lockOwner.length() > 0) {
+                        lockImg.setSrc("icons/16/lock_lock_all_red.png");
+                    }
+
+                    lockImg.setPrompt(lang.lockInfoButton());
+                    lockImg.setHeight(16);
+                    lockImg.setWidth(16);
+                    lockImg.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                        @Override
+                        public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                            EditorSC.objectIsLock(lang, lockOwner, rollOverRecord
+                                    .getAttributeAsString(Constants.ATTR_LOCK_DESCRIPTION));
+                        }
+                    });
+                    rollOverCanvas.addChild(lockImg);
+                }
+                return rollOverCanvas;
+            }
+        };
+        sideNavGrid.setShowSelectionCanvas(false);
+
         sideNavGrid.setWidth100();
         sideNavGrid.setHeight100();
         sideNavGrid.setShowSortArrow(SortArrow.CORNER);
@@ -200,6 +253,7 @@ public class DigitalObjectMenuView
         sideNavGrid.setCanHover(true);
         sideNavGrid.setHoverOpacity(75);
         sideNavGrid.setHoverStyle("interactImageHover");
+        sideNavGrid.setShowRollOverCanvas(true);
 
         final DynamicForm form = new DynamicForm();
         form.setHeight(1);

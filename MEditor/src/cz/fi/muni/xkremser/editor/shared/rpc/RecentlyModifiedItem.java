@@ -54,26 +54,50 @@ public class RecentlyModifiedItem
 
     private Date modified;
 
-    /** The lock code */
-    private int lockCode;
+    /** The lock owner */
+    private String lockOwner;
+
+    /** The lock description */
+    private String lockDescription;
 
     /**
-     * Gets the lock code <code>lockCode == 0<code> when there is no lock
-     * <code>lockCode &gt 0<code> when the lock has been created by user
-     * <code>lockCode &lt 0<code> when the lock has been created by somebody else
+     * Gets the lock description
+     * 
+     * @return lockDescription the lock description
      */
-    public int getLockCode() {
-        return lockCode;
+    public String getLockDescription() {
+        return lockDescription;
     }
 
     /**
-     * Sets the lock code.
+     * Sets the lock description
      * 
-     * @param uuid
-     *        the new lock code
+     * @param lockDescription
+     *        the lock description
      */
-    public void setLockCode(int lockCode) {
-        this.lockCode = lockCode;
+    public void setLockDescription(String lockDescription) {
+        this.lockDescription = lockDescription;
+    }
+
+    /**
+     * Gets the lock owner
+     * 
+     * @return lockOwner <code>lockOwner == null<code> when there is no lock
+     * <code>"".equals(lockOwner)<code> when the lock has been created by user
+     * <code>lockOwner.length() &gt 0<code> when the lock has been created by somebody else
+     */
+    public String getLockOwner() {
+        return lockOwner;
+    }
+
+    /**
+     * Sets the lock owner.
+     * 
+     * @param lockOwner
+     *        the new lock owner
+     */
+    public void setLockOwner(String lockOwner) {
+        this.lockOwner = lockOwner;
     }
 
     // @SuppressWarnings("unused")

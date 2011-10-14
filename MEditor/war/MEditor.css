@@ -38,14 +38,6 @@ color: rgb(0,0,0); font-weight: bold; font-style: italic;
 }
 
 
-.listGridRecordLock {
-    background-color:#ffe7a3;
-}
-
-.listGridRecordLockByUser {
-    background-color:#c6e1ff;
-}
-
 .interactImageHover {
     font-family:Verdana,Bitstream Vera Sans,sans-serif;
     font-size:11px;

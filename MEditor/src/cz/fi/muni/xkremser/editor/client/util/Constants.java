@@ -150,6 +150,10 @@ public class Constants {
     /** The Constant FILE_SEPARATOR. */
     public static final String FILE_SEPARATOR = "/";
 
+
+    /** The Constant ATTR_UUID_TO_DISPLAY. */
+    public static final String ATTR_UUID_TO_DISPLAY = "uuidToDisplay";
+
     // recently modified tree
     /** The Constant ATTR_UUID. */
     public static final String ATTR_UUID = "uuid";
@@ -167,11 +171,15 @@ public class Constants {
     public static final String ATTR_MODIFIED = "modified";
 
     /**
-     * The Constant ATTR_LOCK. <code>value == 0<code> when there is no lock
-     * <code>value &gt 0<code> when the lock has been created by user
-     * <code>value &lt 0<code> when the lock has been created by somebody else
+     * The Constant ATTR_LOCK_OWNER.
+     * <code>value == null<code> when there is no lock
+     * <code>"".equals(value)<code> when the lock has been created by user
+     * <code>value.length() &gt 0<code> when the lock has been created by somebody else
      */
-    public static final String ATTR_LOCK = "lock";
+    public static final String ATTR_LOCK_OWNER = "lockOwner";
+
+    /** The Constant ATTR_LOCK_DESCRIPTION. */
+    public static final String ATTR_LOCK_DESCRIPTION = "lockDescription";
 
     /** The Constant ATTR_ALL. */
     public static final String ATTR_ALL = "all";

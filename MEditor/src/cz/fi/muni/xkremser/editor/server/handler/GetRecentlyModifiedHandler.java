@@ -123,11 +123,14 @@ public class GetRecentlyModifiedHandler
                 long lockOwnersId = locksDAO.getLockOwnersID(item.getUuid());
 
                 if (lockOwnersId == 0) {
-                    item.setLockCode(0);
-                } else if (lockOwnersId == userId) {
-                    item.setLockCode(Integer.MAX_VALUE);
-                } else if (lockOwnersId > 0) {
-                    item.setLockCode(Integer.MIN_VALUE);
+                    item.setLockOwner(null);
+                } else {
+                    item.setLockDescription(locksDAO.getDescription(item.getUuid()));
+                    if (lockOwnersId == userId) {
+                        item.setLockOwner("");
+                    } else if (lockOwnersId > 0) {
+                        item.setLockOwner(userDAO.getName(String.valueOf(lockOwnersId), false));
+                    }
                 }
             }
             return new GetRecentlyModifiedResult(recItems);

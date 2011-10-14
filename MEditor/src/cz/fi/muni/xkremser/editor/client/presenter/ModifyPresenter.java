@@ -71,6 +71,7 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
@@ -450,27 +451,7 @@ public class ModifyPresenter
                         DigitalObjectDetail detail = result.getDetail();
 
                         if (null != detail.getLockOwner()) {
-
-                            StringBuffer objectLockedBuffer = new StringBuffer();
-
-                            if ("".equals(detail.getLockOwner())) {
-                                objectLockedBuffer.append(lang.lockedByUser());
-                                objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                                objectLockedBuffer
-                                        .append("".equals(detail.getLockDescription().trim()) ? lang
-                                                .noDescription() : detail.getLockDescription());
-                            } else {
-                                objectLockedBuffer.append(lang.objectLockedBy());
-                                objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                                objectLockedBuffer.append(detail.getLockOwner());
-                                objectLockedBuffer.append("<br>").append("<br>");
-                                objectLockedBuffer.append(lang.withDescription());
-                                objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                                objectLockedBuffer
-                                        .append("".equals(detail.getLockDescription().trim()) ? lang
-                                                .noDescription() : detail.getLockDescription());
-                            }
-                            SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
+                            EditorSC.objectIsLock(lang, detail.getLockOwner(), detail.getLockDescription());
                         }
 
                         getView().addDigitalObject(uuid, detail, refresh);
@@ -710,17 +691,7 @@ public class ModifyPresenter
                             SC.say(lang.lockUpdated(), lang.lockUpdated());
 
                         } else {
-                            StringBuffer objectLockedBuffer = new StringBuffer();
-                            objectLockedBuffer.append(lang.objectLockedBy());
-                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                            objectLockedBuffer.append(result.getLockOwner());
-                            objectLockedBuffer.append("<br>").append("<br>");
-                            objectLockedBuffer.append(lang.withDescription());
-                            objectLockedBuffer.append(": ").append("<br>").append("<br>");
-                            objectLockedBuffer.append("".equals(result.getLockDescription().trim()) ? lang
-                                    .noDescription() : result.getLockDescription());
-                            SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
-
+                            EditorSC.objectIsLock(lang, result.getLockOwner(), result.getLockDescription());
                         }
                         mw.hide();
                     }

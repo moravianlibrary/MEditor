@@ -243,7 +243,7 @@ public class ModifyView
     private static final String BG_COLOR_FOCUSED_LOCK = "#ffe7a3";
 
     /** The value of background color of focused tabSet which is locked by user **/
-    private static final String BG_COLOR_FOCUSED_LOCK_BY_USER = "#c6e1ff";
+    private static final String BG_COLOR_FOCUSED_LOCK_BY_USER = "#daffce";
 
     /** The value of background color of "unfocused" tabSet **/
     private static final String BG_COLOR_UNFOCUSED = "white";
