@@ -71,6 +71,9 @@ public class URLS {
     public static final String LOGIN_PAGE = "/login.html";
     public static final String LOGIN_LOCAL_PAGE = "/loginLocal.html";
 
+    /** The Constant VERSION_PAGE. */
+    public static final String VERSION_PAGE = "/version.html";
+
     /** The Constant INFO_PAGE. */
     public static final String INFO_PAGE = "/info.html";
 
@@ -95,6 +98,7 @@ public class URLS {
             add(CSS);
             add(ICON);
             add(FLAGS);
+            add(VERSION_PAGE);
         }
     };
 
