@@ -49,6 +49,8 @@ import com.smartgwt.client.data.Record;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Progressbar;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
+import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
@@ -60,6 +62,8 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
@@ -206,6 +210,8 @@ public class CreateStructurePresenter
     @Override
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
+        code = request.getParameter(Constants.URL_PARAM_CODE, null);
+        model = request.getParameter(Constants.ATTR_MODEL, null);
     }
 
     /*
@@ -237,7 +243,7 @@ public class CreateStructurePresenter
         } else {
             name = code;
         }
-        leftPresenter.getView().addSubstructure(0, name, model, model, "1", true);
+        leftPresenter.getView().addSubstructure("0", name, model, model, "1", true);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
     }
 
@@ -255,8 +261,8 @@ public class CreateStructurePresenter
 
             @Override
             public void callback(ScanFolderResult result) {
-                final List<ImageItem> itemList = result.getItems();
-                final List<ImageItem> toAdd = result.getToAdd();
+                final List<ImageItem> itemList = result == null ? null : result.getItems();
+                final List<ImageItem> toAdd = result == null ? null : result.getToAdd();
                 if (toAdd != null && !toAdd.isEmpty()) {
                     int lastItem = toAdd.size();
                     boolean progressbar = lastItem > 5;
@@ -285,9 +291,11 @@ public class CreateStructurePresenter
                             convertItem(item, hBar1, itemList);
                         }
                     }
+
                 } else {
                     doTheRest(itemList);
                 }
+
             }
 
             @Override
@@ -321,7 +329,7 @@ public class CreateStructurePresenter
 
             private void doTheRest(List<ImageItem> itemList) {
                 ScanRecord[] items = null;
-                if (itemList.size() > 0) {
+                if (itemList != null && itemList.size() > 0) {
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
@@ -498,6 +506,54 @@ public class CreateStructurePresenter
                 }
             }
         });
+
+        leftPresenter.getView().getCreateButton().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                addNewStructure();
+            }
+        });
+    }
+
+    private void addNewStructure() {
+        String parent =
+                leftPresenter.getView().getSubelementsGrid().getSelectedRecord()
+                        .getAttribute(Constants.ATTR_ID);
+        String type = leftPresenter.getView().getSelectModel().getValueAsString();
+        DigitalObjectModel model = leftPresenter.getModelFromLabel().get(type);
+        List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
+        if (model != null) {
+            String possibleParent = "-1";
+            if (canContain != null) { //adding selected pages
+                possibleParent = String.valueOf(leftPresenter.newId());
+                leftPresenter.getView().addSubstructure(possibleParent,
+                                                        "foo todo",
+                                                        type,
+                                                        model.getValue(),
+                                                        parent,
+                                                        true);
+            } else { // adding something and enrich it with selected pages
+                possibleParent = parent;
+            }
+
+            Record[] selection = getView().getTileGrid().getSelection();
+            if (selection != null && selection.length > 0
+                    && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
+                for (int i = 0; i < selection.length; i++) {
+                    leftPresenter.getView().addSubstructure(String.valueOf(leftPresenter.newId()),
+                                                            selection[i].getAttribute(Constants.ATTR_NAME),
+                                                            leftPresenter.getLabelFromModel()
+                                                                    .get(DigitalObjectModel.PAGE.getValue()),
+                                                            DigitalObjectModel.PAGE.getValue(),
+                                                            possibleParent,
+                                                            true);
+                    if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
+                        getView().getTileGrid().removeSelectedData();
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -515,8 +571,5 @@ public class CreateStructurePresenter
         this.model = event.getModel();
         this.code = event.getCode();
         this.dc = event.getDc();
-        //        forceReveal();
-        //        leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
-        //        leftPresenter.getView().setInputTree(event.getTree());
     }
 }

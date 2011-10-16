@@ -198,7 +198,8 @@ public class FindMetadataPresenter
                                           code,
                                           leftPresenter.getView().getInputTree(),
                                           results.get(id));
-                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE));
+                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
+                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -210,7 +211,8 @@ public class FindMetadataPresenter
                                           code,
                                           leftPresenter.getView().getInputTree(),
                                           null);
-                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE));
+                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
+                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
             }
         });
         getView().getResults().addCellClickHandler(new CellClickHandler() {

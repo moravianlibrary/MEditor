@@ -49,8 +49,6 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
-import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
-import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -106,7 +104,7 @@ public class CreateObjectMenuPresenter
 
         void enableCheckbox(boolean isEnabled);
 
-        void addSubstructure(int id, String name, String type, String typeId, String parent, boolean isOpen);
+        void addSubstructure(String id, String name, String type, String typeId, String parent, boolean isOpen);
     }
 
     /**
@@ -199,13 +197,16 @@ public class CreateObjectMenuPresenter
         //            }
         //        });
         getView().enableCheckbox(false);
-        //        getView().getCreateButton().disable();
+        getView().getCreateButton().disable();
         getView().getSubelementsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
             @Override
             public void onSelectionChanged(SelectionEvent event) {
-                String modelString = event.getSelectedRecord().getAttribute(Constants.ATTR_TYPE_ID);
-                refreshSelectModel(modelString);
+                ListGridRecord rec = event.getSelectedRecord();
+                if (rec != null) {
+                    String modelString = rec.getAttribute(Constants.ATTR_TYPE_ID);
+                    refreshSelectModel(modelString);
+                }
             }
         });
 
@@ -218,19 +219,6 @@ public class CreateObjectMenuPresenter
                     getView().getCreateButton().enable();
                 } else {
                     getView().getCreateButton().disable();
-                }
-            }
-        });
-        getView().getCreateButton().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                String parent =
-                        getView().getSubelementsGrid().getSelectedRecord().getAttribute(Constants.ATTR_ID);
-                String type = getView().getSelectModel().getValueAsString();
-                DigitalObjectModel model = getModelFromLabel().get(type);
-                if (model != null) {
-                    getView().addSubstructure(++lastId, "foo todo", type, model.getValue(), parent, true);
                 }
             }
         });
@@ -359,12 +347,15 @@ public class CreateObjectMenuPresenter
         if (modelString != null) {
             DigitalObjectModel model = DigitalObjectModel.parseString(modelString);
             List<DigitalObjectModel> childrenModels = NamedGraphModel.getChildren(model);
+            String[] values = new String[childrenModels == null ? 0 : childrenModels.size()];
             if (childrenModels != null && childrenModels.size() > 0) {
-                String[] values = new String[childrenModels.size()];
                 for (int i = 0; i < childrenModels.size(); i++) {
                     values[i] = getLabelFromModel().get(childrenModels.get(i).getValue());
                 }
-                getView().getSelectModel().setValueMap(values);
+            }
+            getView().getSelectModel().setValueMap(values);
+            if (childrenModels == null) {
+                getView().getSelectModel().setValue("");
             }
         }
     }
@@ -380,6 +371,10 @@ public class CreateObjectMenuPresenter
     @Override
     public Map<String, String> getLabelFromModel() {
         return labelsFromModels;
+    }
+
+    public int newId() {
+        return ++lastId;
     }
 
 }

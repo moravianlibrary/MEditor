@@ -101,6 +101,9 @@ public class ScanFolderHandler
         // parse input
         final String model = action.getModel();
         final String code = action.getCode();
+        if (model == null || code == null) {
+            return null;
+        }
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Processing input queue: (model = " + model + ", code = " + code + ")");
         HttpServletRequest req = requestProvider.get();

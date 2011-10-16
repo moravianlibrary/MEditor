@@ -46,6 +46,7 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
@@ -112,6 +113,8 @@ public class CreateObjectMenuView
 
     private final SelectItem selectModel;
 
+    private final TextItem name;
+
     /** The layout. */
     private final VLayout layout;
 
@@ -141,6 +144,8 @@ public class CreateObjectMenuView
         structureTreeGrid.setCanAcceptDroppedRecords(true);
         structureTreeGrid.setShowOpenIcons(false);
         structureTreeGrid.setDropIconSuffix("into");
+        structureTreeGrid.setClosedIconSuffix("");
+        structureTreeGrid.setOpenIconSuffix("");
         structureTreeGrid.setTreeRootValue("1");
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
 
@@ -152,21 +157,24 @@ public class CreateObjectMenuView
         structureTree.setParentIdField(Constants.ATTR_PARENT);
         structureTree.setOpenProperty("isOpen");
 
-        TreeGridField rangeField = new TreeGridField();
-        rangeField.setCanFilter(true);
-        rangeField.setName(Constants.ATTR_NAME);
-        rangeField.setTitle(lang.name());
+        TreeGridField nameField = new TreeGridField();
+        nameField.setCanFilter(true);
+        nameField.setCanEdit(true);
+        nameField.setName(Constants.ATTR_NAME);
+        nameField.setTitle(lang.name());
 
         TreeGridField typeField = new TreeGridField();
         typeField.setCanFilter(true);
         typeField.setName(Constants.ATTR_TYPE);
         typeField.setTitle(lang.dcType());
 
-        structureTreeGrid.setFields(rangeField, typeField);
+        structureTreeGrid.setFields(nameField, typeField);
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
         createStructure.setResizeable(true);
+        name = new TextItem();
+        name.setTitle(lang.name());
         selectModel = new SelectItem();
         selectModel.setTitle(lang.dcType());
 
@@ -181,8 +189,9 @@ public class CreateObjectMenuView
         form.setPadding(5);
         form.setWidth100();
         form.setExtraSpace(10);
+        form.setTitleWidth("45");
 
-        form.setFields(selectModel, keepCheckbox, createButton);
+        form.setFields(name, selectModel, keepCheckbox, createButton);
 
         createStructure.setItems(form);
         createStructure.setExpanded(false);
@@ -352,10 +361,14 @@ public class CreateObjectMenuView
      * {@inheritDoc}
      */
     @Override
-    public void addSubstructure(int id, String name, String type, String typeId, String parent, boolean isOpen) {
+    public void addSubstructure(String id,
+                                String name,
+                                String type,
+                                String typeId,
+                                String parent,
+                                boolean isOpen) {
         TreeNode parentNode = structureTree.findById(parent);
-        structureTree.add(new SubstructureTreeNode(String.valueOf(id), parent, name, type, typeId, isOpen),
-                          parentNode);
+        structureTree.add(new SubstructureTreeNode(id, parent, name, type, typeId, isOpen), parentNode);
         structureTreeGrid.setData(structureTree);
     }
 }
