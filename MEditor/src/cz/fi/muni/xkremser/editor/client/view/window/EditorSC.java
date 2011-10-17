@@ -33,9 +33,9 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
  * @version $Id$
  */
 
-public class EditorSC {
+public final class EditorSC {
 
-    public static void objectIsLock(LangConstants lang, String lockOwner, String lockDescription) {
+    public static final void objectIsLock(LangConstants lang, String lockOwner, String lockDescription) {
         StringBuffer objectLockedBuffer = new StringBuffer();
 
         if ("".equals(lockOwner)) {
@@ -57,4 +57,7 @@ public class EditorSC {
         SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
     }
 
+    public static final void serverRecentlyMofifiedError(LangConstants lang) {
+        SC.say(lang.attemptingError());
+    }
 }

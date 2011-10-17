@@ -160,6 +160,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String askDelete();
 
   /**
+   * Translated "An error occurred while attempting to contact the server. Please check your network connection and try again. Are the compulsory attributes set in the configuration file?".
+   * 
+   * @return translated "An error occurred while attempting to contact the server. Please check your network connection and try again. Are the compulsory attributes set in the configuration file?"
+   */
+  @DefaultStringValue("An error occurred while attempting to contact the server. Please check your network connection and try again. Are the compulsory attributes set in the configuration file?")
+  @Key("attemptingError")
+  String attemptingError();
+
+  /**
    * Translated "This value is used to express attribute in a coded form. The authority attribute may be used to indicate the source of the code.".
    * 
    * @return translated "This value is used to express attribute in a coded form. The authority attribute may be used to indicate the source of the code."
@@ -2948,15 +2957,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ")
   @Key("transliterationAttr")
   String transliterationAttr();
-
-  /**
-   * Translated "Try again or see the log.".
-   * 
-   * @return translated "Try again or see the log."
-   */
-  @DefaultStringValue("Try again or see the log.")
-  @Key("tryOrLog")
-  String tryOrLog();
 
   /**
    * Translated "This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style.".

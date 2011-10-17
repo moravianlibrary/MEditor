@@ -746,7 +746,7 @@ public class ModifyPresenter
                         if (result.isSuccessful()) {
                             SC.say(lang.objectUnlocked(), lang.objectUnlocked());
                         } else {
-                            SC.say(lang.operationFailed(), lang.operationFailed() + "<br>" + lang.tryOrLog());
+                            SC.say(lang.operationFailed(), lang.operationFailed());
                         }
                         mw.hide();
                     }

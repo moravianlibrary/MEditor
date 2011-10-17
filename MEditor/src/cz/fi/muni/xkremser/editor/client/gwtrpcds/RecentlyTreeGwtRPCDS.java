@@ -41,14 +41,13 @@ import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.util.JSOHelper;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.Messages;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
@@ -139,7 +138,7 @@ public class RecentlyTreeGwtRPCDS
                                public void callbackError(final Throwable cause) {
                                    Log.error("Handle Failure:", cause);
                                    response.setStatus(RPCResponse.STATUS_FAILURE);
-                                   SC.say(Messages.SERVER_RECENTLYMODIFIED_ERROR);
+                                   EditorSC.serverRecentlyMofifiedError(lang);
                                }
 
                                @Override
