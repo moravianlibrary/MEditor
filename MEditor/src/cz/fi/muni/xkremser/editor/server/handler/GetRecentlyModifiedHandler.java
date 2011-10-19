@@ -106,17 +106,21 @@ public class GetRecentlyModifiedHandler
     public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action,
                                              final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetRecentlyModified");
-        String openID = null;
-        if (!action.isForAllUsers()) {
-            HttpSession session = httpSessionProvider.get();
-            ServerUtils.checkExpiredSession(session);
 
-            openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
-        }
+        HttpSession session = httpSessionProvider.get();
+        ServerUtils.checkExpiredSession(session);
+
+        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+
         try {
 
-            ArrayList<RecentlyModifiedItem> recItems =
-                    recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID);
+            ArrayList<RecentlyModifiedItem> recItems = null;
+            if (action.isForAllUsers()) {
+                recItems = recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), null);
+            } else {
+                recItems = recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID);
+            }
+
             long userId = userDAO.getUsersId(openID);
 
             for (RecentlyModifiedItem item : recItems) {

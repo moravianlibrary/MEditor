@@ -1157,7 +1157,6 @@ public class ModifyView
         MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
         MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
         MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
-        MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png", "Ctrl+Alt+F");
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
@@ -1171,7 +1170,6 @@ public class ModifyView
                 unlockItem.setEnabled(true);
             } else {
                 lockItem.setEnabled(false);
-                lockTabItem.setEnabled(false);
                 publishItem.setEnabled(false);
                 removeItem.setEnabled(false);
             }
@@ -1223,12 +1221,9 @@ public class ModifyView
             }
         });
 
-        menu.setItems(newItem/* , descItem , loadItem */,
+        menu.setItems(newItem,
                       lockItem,
                       unlockItem,
-                      lockTabItem/*
-                                  * , openItem
-                                  */,
                       saveItem,
                       refreshItem,
                       downloadItem,
