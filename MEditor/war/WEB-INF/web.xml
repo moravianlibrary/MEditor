@@ -73,6 +73,16 @@
 		<servlet-name>ThumbnailService</servlet-name>
 		<url-pattern>/images/thumbnail/*</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Servlet for downloading foxml and datastreams -->
+	<servlet>
+		<servlet-name>DownloadFoxmlServlet</servlet-name>
+		<servlet-class>cz.fi.muni.xkremser.editor.server.DownloadFoxmlServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DownloadFoxmlServlet</servlet-name>
+		<url-pattern>/download/*</url-pattern>
+	</servlet-mapping>
 
 	<!-- Servlet for generating full images -->
 	<servlet>

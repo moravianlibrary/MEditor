@@ -1042,6 +1042,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String doInfo();
 
   /**
+   * Translated "Download the full Foxml".
+   * 
+   * @return translated "Download the full Foxml"
+   */
+  @DefaultStringValue("Download the full Foxml")
+  @Key("downloadFoxml")
+  String downloadFoxml();
+
+  /**
    * Translated "Download FOXML".
    * 
    * @return translated "Download FOXML"
@@ -1049,6 +1058,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Download FOXML")
   @Key("downloadItem")
   String downloadItem();
+
+  /**
+   * Translated "Download some of these datastreams".
+   * 
+   * @return translated "Download some of these datastreams"
+   */
+  @DefaultStringValue("Download some of these datastreams")
+  @Key("downloadStream")
+  String downloadStream();
 
   /**
    * Translated "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC).".
@@ -1265,6 +1283,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("title")
   @Key("ftitle")
   String ftitle();
+
+  /**
+   * Translated "Full Foxml".
+   * 
+   * @return translated "Full Foxml"
+   */
+  @DefaultStringValue("Full Foxml")
+  @Key("fullFoxml")
+  String fullFoxml();
 
   /**
    * Translated "Full Image".

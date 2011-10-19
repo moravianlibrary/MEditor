@@ -44,6 +44,12 @@ public class Constants {
     /** The Constant SERVLET_FULL_PREFIX. */
     public static final String SERVLET_FULL_PREFIX = "full";
 
+    /** The Constant SERVLET_DOWNLOAD_FOXML_PREFIX. */
+    public static final String SERVLET_DOWNLOAD_FOXML_PREFIX = "download/foxml";
+
+    /** The Constant SERVLET_DOWNLOAD_DATASTREAMS_PREFIX. */
+    public static final String SERVLET_DOWNLOAD_DATASTREAMS_PREFIX = "download/datastreams";
+
     /** The Constant URL_PARAM_NOT_SCALE. */
     public static final String URL_PARAM_NOT_SCALE = "not_scale";
 
@@ -149,7 +155,6 @@ public class Constants {
 
     /** The Constant FILE_SEPARATOR. */
     public static final String FILE_SEPARATOR = "/";
-
 
     /** The Constant ATTR_UUID_TO_DISPLAY. */
     public static final String ATTR_UUID_TO_DISPLAY = "uuidToDisplay";
@@ -305,7 +310,13 @@ public class Constants {
          * The value of nativeEvent-keyCode of button Z - used for lock digital
          * object
          */
-        CODE_KEY_Z(90);
+        CODE_KEY_Z(90),
+
+        /**
+         * The value of nativeEvent-keyCode of button F - used for download
+         * foxml and datastreams
+         */
+        CODE_KEY_F(70);
 
         private final int code;
 

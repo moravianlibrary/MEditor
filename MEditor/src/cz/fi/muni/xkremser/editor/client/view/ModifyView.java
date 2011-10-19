@@ -78,6 +78,7 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -1158,7 +1159,7 @@ public class ModifyView
         MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
         MenuItem lockTabItem = new MenuItem(lang.lockTabItem(), "icons/16/lock_lock.png");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
-        MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png");
+        MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png", "Ctrl+Alt+F");
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
@@ -1175,6 +1176,15 @@ public class ModifyView
                 removeItem.setEnabled(false);
             }
         }
+
+        downloadItem.setAttribute(ID_TABSET, topTabSet);
+        downloadItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                showDownloadingWindow((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
+            }
+        });
 
         lockItem.setAttribute(ID_TABSET, topTabSet);
         lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -1225,6 +1235,43 @@ public class ModifyView
                       removeItem,
                       publishItem);
         return menu;
+    }
+
+    private void showDownloadingWindow(EditorTabSet ts) {
+        universalWindow = new UniversalWindow(280, 250, lang.downloadItem());
+        HTMLFlow foxmlLabel = new HTMLFlow("<big>" + lang.downloadFoxml() + ":" + "<big>");
+        HTMLFlow foxmlFlow = new HTMLFlow();
+        HTMLFlow streamsLabel = new HTMLFlow("<big>" + lang.downloadStream() + ":" + "<big>");
+        HTMLFlow streamsFlow = new HTMLFlow();
+
+        foxmlFlow.setContents("<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
+                + Constants.SERVLET_DOWNLOAD_FOXML_PREFIX + "/" + ts.getUuid() + "\'\">" + lang.fullFoxml()
+                + "</button></form>");
+        foxmlFlow.setExtraSpace(25);
+
+        streamsFlow.setContents("<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
+                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/DC/" + ts.getUuid()
+                + "\'\">DC datastream</button></form>"
+                + "<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
+                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/BIBLIO_MODS/" + ts.getUuid()
+                + "\'\">MODS datastream</button></form>"
+                + "<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
+                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/RELS-EXT/" + ts.getUuid()
+                + "\'\">RELS-EXT datastream</button></form>");
+        streamsFlow.setExtraSpace(5);
+
+        Layout foxmlLayout = new VLayout(4);
+        foxmlLayout.setMargin(20);
+        foxmlLayout.addMember(foxmlLabel);
+        foxmlLayout.addMember(foxmlFlow);
+        foxmlLayout.addMember(streamsLabel);
+        foxmlLayout.addMember(streamsFlow);
+
+        universalWindow.setEdgeOffset(10);
+        universalWindow.addItem(foxmlLayout);
+
+        universalWindow.show();
+        universalWindow.centerInPage();
     }
 
     private void unlockDigitalObject(final EditorTabSet ts, String message) {
@@ -1546,6 +1593,8 @@ public class ModifyView
                     if (focusedTabSet.getLockOwner() == null || "".equals(focusedTabSet.getLockOwner())) {
                         lockDigitalObject(focusedTabSet);
                     }
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_F.getCode()) {
+                    showDownloadingWindow(focusedTabSet);
                 }
             }
         }

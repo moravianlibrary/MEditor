@@ -42,7 +42,6 @@ public final class EditorSC {
             objectLockedBuffer.append(lang.lockedByUser());
             objectLockedBuffer.append(": ").append("<br>").append("<br>");
             objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription() : lockDescription);
-            System.err.println(lang.noDescription());
 
         } else {
             objectLockedBuffer.append(lang.objectLockedBy());
