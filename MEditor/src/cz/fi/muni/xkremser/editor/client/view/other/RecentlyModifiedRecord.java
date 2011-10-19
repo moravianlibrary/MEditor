@@ -51,6 +51,10 @@ public class RecentlyModifiedRecord
     /** The model. */
     private DigitalObjectModel model;
 
+    private String lockOwner;
+
+    private String lockDescription;
+
     // @SuppressWarnings("unused")
     /**
      * Instantiates a new recently modified record.
@@ -155,6 +159,22 @@ public class RecentlyModifiedRecord
         setAttribute(Constants.ATTR_MODEL, model);
     }
 
+    public String getLockOwner() {
+        return getAttribute(Constants.ATTR_LOCK_OWNER);
+    }
+
+    public void setLockOwner(String lockOwner) {
+        setAttribute(Constants.ATTR_LOCK_OWNER, lockOwner);
+    }
+
+    public String getLockDescription() {
+        return getAttribute(lockDescription);
+    }
+
+    public void setLockDescription(String lockDescription) {
+        setAttribute(Constants.ATTR_LOCK_DESCRIPTION, lockDescription);
+    }
+
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -162,35 +182,8 @@ public class RecentlyModifiedRecord
     @Override
     public String toString() {
         return "RecentlyModifiedRecord [uuid=" + uuid + ", name=" + name + ", description=" + description
-                + ", model=" + model + "]";
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getUuid() == null) ? 0 : getUuid().hashCode());
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        RecentlyModifiedRecord other = (RecentlyModifiedRecord) obj;
-        if (getUuid() == null) {
-            if (other.getUuid() != null) return false;
-        } else if (!getUuid().equals(other.getUuid())) return false;
-        return true;
+                + ", model=" + model + ", lockOwner=" + lockOwner + ", lockDescription=" + lockDescription
+                + "]";
     }
 
 }

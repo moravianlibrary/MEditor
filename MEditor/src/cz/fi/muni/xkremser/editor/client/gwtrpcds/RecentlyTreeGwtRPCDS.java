@@ -70,9 +70,9 @@ public class RecentlyTreeGwtRPCDS
 
     private final LangConstants lang;
 
-    private static final String FIRST_PART_OF_COLOR_LOCK_BY_USER = "<font color=\'#006800\'>";
-    private static final String FIRST_PART_OF_COLOR_LOCK = "<font color=\'#c60000\'>";
-    private static final String SECOND_PART_OF_COLOR_LOCK = "</font>";
+    public static final String FIRST_PART_OF_COLOR_LOCK_BY_USER = "<font color=\'#006800\'>";
+    public static final String FIRST_PART_OF_COLOR_LOCK = "<font color=\'#c60000\'>";
+    public static final String SECOND_PART_OF_COLOR_LOCK = "</font>";
 
     /**
      * Instantiates a new recently tree gwt rpcds.
@@ -87,16 +87,10 @@ public class RecentlyTreeGwtRPCDS
         DataSourceField field;
         field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
         field.setRequired(true);
-        field.setAttribute("width", "40%");
         addField(field);
         field = new DataSourceTextField(Constants.ATTR_UUID, "PID");
         field.setPrimaryKey(true);
         field.setRequired(true);
-        field.setHidden(true);
-        addField(field);
-        field = new DataSourceTextField(Constants.ATTR_UUID_TO_DISPLAY, "PIDToDisplay");
-        field.setRequired(true);
-        field.setAttribute("width", "*");
         addField(field);
         field = new DataSourceTextField(Constants.ATTR_DESC, "description");
         field.setHidden(true);
@@ -285,6 +279,8 @@ public class RecentlyTreeGwtRPCDS
         to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
         to.setModel((DigitalObjectModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
         to.setModified(from.getAttributeAsDate(Constants.ATTR_MODIFIED));
+        to.setLockDescription(from.getAttribute(Constants.ATTR_LOCK_DESCRIPTION));
+        to.setLockOwner(from.getAttribute(Constants.ATTR_LOCK_OWNER));
     }
 
     /**
@@ -297,24 +293,24 @@ public class RecentlyTreeGwtRPCDS
      */
     private static void copyValues(RecentlyModifiedItem from, ListGridRecord to) {
 
-        if (from.getLockOwner() != null) {
-            if ("".equals(from.getLockOwner())) {
-                to.setAttribute(Constants.ATTR_UUID_TO_DISPLAY,
-                                FIRST_PART_OF_COLOR_LOCK_BY_USER + from.getUuid() + SECOND_PART_OF_COLOR_LOCK);
-                to.setAttribute(Constants.ATTR_NAME, FIRST_PART_OF_COLOR_LOCK_BY_USER + from.getName()
-                        + SECOND_PART_OF_COLOR_LOCK);
-
-            } else if (from.getLockOwner().length() > 0) {
-                to.setAttribute(Constants.ATTR_UUID_TO_DISPLAY, FIRST_PART_OF_COLOR_LOCK + from.getUuid()
-                        + SECOND_PART_OF_COLOR_LOCK);
-                to.setAttribute(Constants.ATTR_NAME, FIRST_PART_OF_COLOR_LOCK + from.getName()
-                        + SECOND_PART_OF_COLOR_LOCK);
-            }
-        } else {
-            to.setAttribute(Constants.ATTR_UUID_TO_DISPLAY, from.getUuid());
-            to.setAttribute(Constants.ATTR_NAME, from.getName());
-        }
-
+        //        if (from.getLockOwner() != null) {
+        //            if ("".equals(from.getLockOwner())) {
+        //                to.setAttribute(Constants.ATTR_UUID_TO_DISPLAY,
+        //                                FIRST_PART_OF_COLOR_LOCK_BY_USER + from.getUuid() + SECOND_PART_OF_COLOR_LOCK);
+        //                to.setAttribute(Constants.ATTR_NAME, FIRST_PART_OF_COLOR_LOCK_BY_USER + from.getName()
+        //                        + SECOND_PART_OF_COLOR_LOCK);
+        //
+        //            } else if (from.getLockOwner().length() > 0) {
+        //                to.setAttribute(Constants.ATTR_UUID_TO_DISPLAY, FIRST_PART_OF_COLOR_LOCK + from.getUuid()
+        //                        + SECOND_PART_OF_COLOR_LOCK);
+        //                to.setAttribute(Constants.ATTR_NAME, FIRST_PART_OF_COLOR_LOCK + from.getName()
+        //                        + SECOND_PART_OF_COLOR_LOCK);
+        //            }
+        //        } else {
+        //            to.setAttribute(Constants.ATTR_UUID_TO_DISPLAY, from.getUuid());
+        //            to.setAttribute(Constants.ATTR_NAME, from.getName());
+        //        }
+        to.setAttribute(Constants.ATTR_NAME, from.getName());
         to.setAttribute(Constants.ATTR_UUID, from.getUuid());
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
         to.setAttribute(Constants.ATTR_MODEL, from.getModel());

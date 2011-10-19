@@ -156,9 +156,6 @@ public class Constants {
     /** The Constant FILE_SEPARATOR. */
     public static final String FILE_SEPARATOR = "/";
 
-    /** The Constant ATTR_UUID_TO_DISPLAY. */
-    public static final String ATTR_UUID_TO_DISPLAY = "uuidToDisplay";
-
     // recently modified tree
     /** The Constant ATTR_UUID. */
     public static final String ATTR_UUID = "uuid";

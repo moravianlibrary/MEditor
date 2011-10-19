@@ -53,6 +53,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
+import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -323,6 +324,43 @@ public class DigitalObjectMenuView
     @Override
     public void setDS(DispatchAsync dispatcher, EventBus bus) {
         this.sideNavGrid.setDataSource(new RecentlyTreeGwtRPCDS(dispatcher, lang, bus));
+        ListGridField nameField = new ListGridField(Constants.ATTR_NAME, lang.name());
+        nameField.setRequired(true);
+        nameField.setWidth("40%");
+        nameField.setCellFormatter(new CellFormatter() {
+
+            @Override
+            public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+                String owner = record.getAttribute(Constants.ATTR_LOCK_OWNER);
+                if (owner != null) {
+                    return ("".equals(owner) ? RecentlyTreeGwtRPCDS.FIRST_PART_OF_COLOR_LOCK_BY_USER
+                            : RecentlyTreeGwtRPCDS.FIRST_PART_OF_COLOR_LOCK)
+                            + record.getAttribute(Constants.ATTR_NAME)
+                            + RecentlyTreeGwtRPCDS.SECOND_PART_OF_COLOR_LOCK;
+                } else {
+                    return record.getAttribute(Constants.ATTR_NAME);
+                }
+            }
+        });
+        ListGridField uuidField = new ListGridField(Constants.ATTR_UUID, "PID");
+        uuidField.setRequired(true);
+        uuidField.setWidth("*");
+        uuidField.setCellFormatter(new CellFormatter() {
+
+            @Override
+            public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+                String owner = record.getAttribute(Constants.ATTR_LOCK_OWNER);
+                if (owner != null) {
+                    return ("".equals(owner) ? RecentlyTreeGwtRPCDS.FIRST_PART_OF_COLOR_LOCK_BY_USER
+                            : RecentlyTreeGwtRPCDS.FIRST_PART_OF_COLOR_LOCK)
+                            + record.getAttribute(Constants.ATTR_UUID)
+                            + RecentlyTreeGwtRPCDS.SECOND_PART_OF_COLOR_LOCK;
+                } else {
+                    return record.getAttribute(Constants.ATTR_UUID);
+                }
+            }
+        });
+        sideNavGrid.setFields(nameField, uuidField);
     }
 
     /*
