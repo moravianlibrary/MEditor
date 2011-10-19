@@ -52,7 +52,7 @@ public class LockDigitalObjectHandler
         implements ActionHandler<LockDigitalObjectAction, LockDigitalObjectResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
+    private static final Logger LOGGER = Logger.getLogger(LockDigitalObjectHandler.class.getPackage()
             .toString());
 
     /** The locks DAO **/

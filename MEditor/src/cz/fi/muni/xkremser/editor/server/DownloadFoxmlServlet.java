@@ -56,7 +56,7 @@ public class DownloadFoxmlServlet
         extends HttpServlet {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(DownloadFoxmlServlet.class);
+    private static final Logger LOGGER = Logger.getLogger(DownloadFoxmlServlet.class.getPackage().toString());
 
     /** The configuration. */
     @Inject

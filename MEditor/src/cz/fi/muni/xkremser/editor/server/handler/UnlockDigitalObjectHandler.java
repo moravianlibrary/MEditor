@@ -50,7 +50,7 @@ public class UnlockDigitalObjectHandler
         implements ActionHandler<UnlockDigitalObjectAction, UnlockDigitalObjectResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
+    private static final Logger LOGGER = Logger.getLogger(UnlockDigitalObjectHandler.class.getPackage()
             .toString());
 
     /** The http session provider. */

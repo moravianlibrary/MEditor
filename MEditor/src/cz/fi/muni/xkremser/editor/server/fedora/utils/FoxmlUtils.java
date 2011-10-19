@@ -59,7 +59,7 @@ public class FoxmlUtils {
     private static final String VALUE_ATRIBUTE = "VALUE";
     private static final String NAME_ATRIBUTE = "NAME";
     private static final String LABEL_VALUE = "info:fedora/fedora-system:def/model#label";
-    private static final Logger LOGGER = Logger.getLogger(FoxmlUtils.class);
+    private static final Logger LOGGER = Logger.getLogger(FoxmlUtils.class.getPackage().toString());
 
     /**
      * Title from Foxml.

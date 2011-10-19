@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
-import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
 
 /**
  * @author Jiri Kremser
@@ -53,8 +52,7 @@ public class LocksDAOImpl
     private UserDAO userDAO;
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
-            .toString());
+    private static final Logger LOGGER = Logger.getLogger(LocksDAOImpl.class.getPackage().toString());
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     private static final String SELECT_LOCK_USER_ID = "SELECT user_id FROM  " + Constants.TABLE_LOCK
