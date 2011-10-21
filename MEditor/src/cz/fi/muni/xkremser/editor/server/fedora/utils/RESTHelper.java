@@ -49,11 +49,6 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
 
 // TODO: Auto-generated Javadoc
-/**
- * Umoznuje se dotazovat na fedoru, ktera potrebuje autentizaci.
- * 
- * @author pavels
- */
 public class RESTHelper {
 
     /** The Constant GET. */
@@ -140,6 +135,7 @@ public class RESTHelper {
         String userPassword = user + ":" + pass;
         String encoded = Base64Utils.toBase64(userPassword.getBytes());
         URLConnection uc = null;
+        OutputStreamWriter out = null;
         try {
             uc = url.openConnection();
             uc.setRequestProperty("Authorization", "Basic " + encoded);
@@ -149,7 +145,6 @@ public class RESTHelper {
                 case PUT:
                     uc.setDoOutput(true);
                     ((HttpURLConnection) uc).setRequestMethod("PUT");
-                    OutputStreamWriter out = null;
                     try {
                         out = new OutputStreamWriter(uc.getOutputStream());
                     } catch (IOException e) {
@@ -163,6 +158,19 @@ public class RESTHelper {
                     out.flush();
                     break;
                 case POST:
+                    uc.setDoOutput(true);
+                    ((HttpURLConnection) uc).setRequestMethod("POST");
+                    try {
+                        out = new OutputStreamWriter(uc.getOutputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        out.write(content);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    out.flush();
                     break;
                 case DELETE:
                     uc.setDoOutput(true);
@@ -188,7 +196,7 @@ public class RESTHelper {
     }
 
     /**
-     * Put.
+     * Put or post method.
      * 
      * @param urlString
      *        the url string
@@ -200,10 +208,15 @@ public class RESTHelper {
      *        the pass
      * @return true, if successful
      */
-    public static boolean put(String urlString, String content, String user, String pass, boolean robustMode) {
+    private static boolean putOrPost(String urlString,
+                                     String content,
+                                     String user,
+                                     String pass,
+                                     boolean robustMode,
+                                     boolean isPut) {
         URLConnection conn = null;
         try {
-            conn = openConnection(urlString, user, pass, PUT, content, robustMode);
+            conn = openConnection(urlString, user, pass, isPut ? PUT : POST, content, robustMode);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
@@ -218,6 +231,40 @@ public class RESTHelper {
             e1.printStackTrace();
         }
         return true;
+    }
+
+    /**
+     * Put.
+     * 
+     * @param urlString
+     *        the url string
+     * @param content
+     *        the content
+     * @param user
+     *        the user
+     * @param pass
+     *        the pass
+     * @return true, if successful
+     */
+    public static boolean put(String urlString, String content, String user, String pass, boolean robustMode) {
+        return putOrPost(urlString, content, user, pass, robustMode, true);
+    }
+
+    /**
+     * Post.
+     * 
+     * @param urlString
+     *        the url string
+     * @param content
+     *        the content
+     * @param user
+     *        the user
+     * @param pass
+     *        the pass
+     * @return true, if successful
+     */
+    public static boolean post(String urlString, String content, String user, String pass, boolean robustMode) {
+        return putOrPost(urlString, content, user, pass, robustMode, false);
     }
 
     /**
