@@ -147,9 +147,9 @@ public class FedoraAccessImpl
         LOGGER.debug("Reading rels ext +" + relsExtUrl);
         InputStream docStream =
                 RESTHelper.get(relsExtUrl,
-                                       configuration.getFedoraLogin(),
-                                       configuration.getFedoraPassword(),
-                                       true);
+                               configuration.getFedoraLogin(),
+                               configuration.getFedoraPassword(),
+                               true);
         if (docStream == null) {
             throw new ConnectionException("Cannot get RELS EXT stream.");
         }
@@ -219,9 +219,9 @@ public class FedoraAccessImpl
         LOGGER.debug("Reading bibliomods +" + biblioModsUrl);
         InputStream docStream =
                 RESTHelper.get(biblioModsUrl,
-                                       configuration.getFedoraLogin(),
-                                       configuration.getFedoraPassword(),
-                                       true);
+                               configuration.getFedoraLogin(),
+                               configuration.getFedoraPassword(),
+                               true);
         if (docStream == null) return null;
         try {
             return XMLUtils.parseDocument(docStream, true);
@@ -248,9 +248,9 @@ public class FedoraAccessImpl
         LOGGER.debug("Reading dc +" + dcUrl);
         InputStream docStream =
                 RESTHelper.get(dcUrl,
-                                       configuration.getFedoraLogin(),
-                                       configuration.getFedoraPassword(),
-                                       false);
+                               configuration.getFedoraLogin(),
+                               configuration.getFedoraPassword(),
+                               false);
         if (docStream == null) return null;
         try {
             return XMLUtils.parseDocument(docStream, true);
@@ -279,9 +279,9 @@ public class FedoraAccessImpl
         try {
             docStream =
                     RESTHelper.get(ocrUrl,
-                                           configuration.getFedoraLogin(),
-                                           configuration.getFedoraPassword(),
-                                           true);
+                                   configuration.getFedoraLogin(),
+                                   configuration.getFedoraPassword(),
+                                   true);
             if (docStream == null) return null;
         } catch (IOException e) {
             // ocr is not available
@@ -1189,26 +1189,8 @@ public class FedoraAccessImpl
      */
     @Override
     public String getFOXML(String uuid) {
-        String objUrl = objFoxml(uuid);
-        LOGGER.debug("Reading foxml +" + objUrl);
-        InputStream docStream = null;
-        try {
-            docStream =
-                    RESTHelper.get(objUrl,
-                                           configuration.getFedoraLogin(),
-                                           configuration.getFedoraPassword(),
-                                           true);
-            if (docStream == null) return null;
-        } catch (IOException e1) {
-            try {
-                if (docStream != null) docStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                docStream = null;
-            }
-            LOGGER.error("Reading foxml +" + objUrl, e1);
-            e1.printStackTrace();
+        InputStream docStream = getFOXMLInputStream(uuid);
+        if (docStream == null) {
             return null;
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(docStream));
@@ -1220,13 +1202,13 @@ public class FedoraAccessImpl
             }
         } catch (IOException e) {
             e.printStackTrace();
-            LOGGER.error("Reading foxml +" + objUrl);
+            LOGGER.error("Reading foxml +" + objFoxml(uuid));
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    LOGGER.error("Closing stream +" + objUrl);
+                    LOGGER.error("Closing stream +" + objFoxml(uuid));
                     e.printStackTrace();
                 } finally {
                     br = null;
@@ -1243,4 +1225,30 @@ public class FedoraAccessImpl
         return sb.toString();
     }
 
+    @Override
+    public InputStream getFOXMLInputStream(String uuid) {
+        String objUrl = objFoxml(uuid);
+        LOGGER.debug("Reading foxml +" + objUrl);
+        InputStream docStream = null;
+        try {
+            docStream =
+                    RESTHelper.get(objUrl,
+                                   configuration.getFedoraLogin(),
+                                   configuration.getFedoraPassword(),
+                                   true);
+            if (docStream == null) return null;
+        } catch (IOException e1) {
+            try {
+                if (docStream != null) docStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                docStream = null;
+            }
+            LOGGER.error("Reading foxml +" + objUrl, e1);
+            e1.printStackTrace();
+            return null;
+        }
+        return docStream;
+    }
 }

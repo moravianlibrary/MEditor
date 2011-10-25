@@ -58,7 +58,10 @@ public class FoxmlUtils {
     private static final String PROP_ELEMENT_NAME = "objectProperties";
     private static final String VALUE_ATRIBUTE = "VALUE";
     private static final String NAME_ATRIBUTE = "NAME";
-    private static final String LABEL_VALUE = "info:fedora/fedora-system:def/model#label";
+
+    /** The constant of Label value **/
+    public static final String LABEL_VALUE = "info:fedora/fedora-system:def/model#label";
+
     private static final Logger LOGGER = Logger.getLogger(FoxmlUtils.class.getPackage().toString());
 
     /**
@@ -108,7 +111,7 @@ public class FoxmlUtils {
         return foxml;
     }
 
-    private static Document getFoxmlDocument(InputStream docStream) throws IOException {
+    public static Document getFoxmlDocument(InputStream docStream) throws IOException {
         try {
             return XMLUtils.parseDocument(docStream, true);
         } catch (ParserConfigurationException e) {
@@ -145,7 +148,7 @@ public class FoxmlUtils {
         return highlighted.substring(highlighted.indexOf('\n'));
     }
 
-    private static InputStream getInputStreamFromString(String stringFoxml, String uuid) {
+    public static InputStream getInputStreamFromString(String stringFoxml, String uuid) {
         try {
             return new ByteArrayInputStream(stringFoxml.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {

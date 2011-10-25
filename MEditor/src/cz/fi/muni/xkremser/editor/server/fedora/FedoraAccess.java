@@ -413,4 +413,13 @@ public interface FedoraAccess {
      */
     public String getOcr(String uuid);
 
+    /**
+     * Gets the input stream of the foxml
+     * 
+     * @param uuid
+     *        the uuid of the needed digital object
+     * @return the input stream
+     */
+    public InputStream getFOXMLInputStream(String uuid);
+
 }

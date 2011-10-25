@@ -483,6 +483,17 @@ public class SecuredFedoraAccessImpl
     /*
      * (non-Javadoc)
      * @see
+     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getFOXMLInputStream
+     * (java.lang.String)
+     */
+    @Override
+    public InputStream getFOXMLInputStream(String uuid) {
+        return rawAccess.getFOXMLInputStream(uuid);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
      * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid
      * (java.lang.String)
      */
@@ -519,5 +530,4 @@ public class SecuredFedoraAccessImpl
                                         DigitalObjectModel childModel) throws IOException {
         return rawAccess.getChildrenUuid(uuid, parentModel, childModel);
     }
-        
 }

@@ -38,7 +38,9 @@ import javax.xml.namespace.NamespaceContext;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.BIBILO_MODS_URI;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.FEDORA_MODELS_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.FOXML_NAMESPACE_URI;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.KRAMERIUS_URI;
+import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_NAMESPACE_URI;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.RDF_NAMESPACE_URI;
 
@@ -62,6 +64,8 @@ public class FedoraNamespaceContext
         MAP_PREFIX2URI.put("kramerius", KRAMERIUS_URI);
         MAP_PREFIX2URI.put("rdf", RDF_NAMESPACE_URI);
         MAP_PREFIX2URI.put("oai", OAI_NAMESPACE_URI);
+        MAP_PREFIX2URI.put("oai_dc", OAI_DC_NAMESPACE_URI);
+        MAP_PREFIX2URI.put("foxml", FOXML_NAMESPACE_URI);
 
         for (Map.Entry<String, String> entry : MAP_PREFIX2URI.entrySet()) {
             MAP_URI2PREFIX.put(entry.getValue(), entry.getKey());

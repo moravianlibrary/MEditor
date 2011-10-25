@@ -1735,6 +1735,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String marcDate();
 
   /**
+   * Translated "Master copy".
+   * 
+   * @return translated "Master copy"
+   */
+  @DefaultStringValue("Master copy")
+  @Key("masterCopy")
+  String masterCopy();
+
+  /**
    * Translated "me".
    * 
    * @return translated "me"
@@ -3128,6 +3137,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("With \"uuid:\" prefix")
   @Key("withoutPrefix")
   String withoutPrefix();
+
+  /**
+   * Translated "Working copy".
+   * 
+   * @return translated "Working copy"
+   */
+  @DefaultStringValue("Working copy")
+  @Key("workingCopy")
+  String workingCopy();
 
   /**
    * Translated "This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.".

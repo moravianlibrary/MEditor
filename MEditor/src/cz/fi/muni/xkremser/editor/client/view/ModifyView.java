@@ -78,7 +78,6 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -109,6 +108,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorDragMoveHandler;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
+import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 
@@ -136,6 +136,8 @@ public class ModifyView
         void onAddDigitalObject(final String uuid, final ImgButton closeButton);
 
         void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable);
+
+        void onDownloadDigitalObject(final DigitalObjectDetail digitalObject, final String datastream);
 
         void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
@@ -250,6 +252,8 @@ public class ModifyView
     private static final String BG_COLOR_UNFOCUSED = "white";
 
     private ModsWindow modsWindow = null;
+
+    private DownloadingWindow downloadingWindow = null;
 
     private static class UniversalWindow
             extends Window {
@@ -406,6 +410,9 @@ public class ModifyView
             universalWindow = null;
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);
+        } else if (downloadingWindow != null) {
+            downloadingWindow.destroy();
+            downloadingWindow = null;
         }
     }
 
@@ -1232,41 +1239,25 @@ public class ModifyView
         return menu;
     }
 
-    private void showDownloadingWindow(EditorTabSet ts) {
-        universalWindow = new UniversalWindow(280, 250, lang.downloadItem());
-        HTMLFlow foxmlLabel = new HTMLFlow("<big>" + lang.downloadFoxml() + ":" + "<big>");
-        HTMLFlow foxmlFlow = new HTMLFlow();
-        HTMLFlow streamsLabel = new HTMLFlow("<big>" + lang.downloadStream() + ":" + "<big>");
-        HTMLFlow streamsFlow = new HTMLFlow();
+    private void showDownloadingWindow(final EditorTabSet ts) {
+        downloadingWindow = new DownloadingWindow(lang, ts) {
 
-        foxmlFlow.setContents("<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_FOXML_PREFIX + "/" + ts.getUuid() + "\'\">" + lang.fullFoxml()
-                + "</button></form>");
-        foxmlFlow.setExtraSpace(25);
+            @Override
+            protected void init() {
+                show();
+                centerInPage();
+                focus();
+            }
 
-        streamsFlow.setContents("<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/DC/" + ts.getUuid()
-                + "\'\">DC datastream</button></form>"
-                + "<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/BIBLIO_MODS/" + ts.getUuid()
-                + "\'\">MODS datastream</button></form>"
-                + "<form> <button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/RELS-EXT/" + ts.getUuid()
-                + "\'\">RELS-EXT datastream</button></form>");
-        streamsFlow.setExtraSpace(5);
-
-        Layout foxmlLayout = new VLayout(4);
-        foxmlLayout.setMargin(20);
-        foxmlLayout.addMember(foxmlLabel);
-        foxmlLayout.addMember(foxmlFlow);
-        foxmlLayout.addMember(streamsLabel);
-        foxmlLayout.addMember(streamsFlow);
-
-        universalWindow.setEdgeOffset(10);
-        universalWindow.addItem(foxmlLayout);
-
-        universalWindow.show();
-        universalWindow.centerInPage();
+            @Override
+            protected void download(String stream) {
+                InfoTab infoT = ts.getInfoTab();
+                DCTab dcT = ts.getDcTab();
+                DigitalObjectDetail detail =
+                        createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
+                getUiHandlers().onDownloadDigitalObject(detail, stream);
+            }
+        };
     }
 
     private void unlockDigitalObject(final EditorTabSet ts, String message) {
@@ -1362,97 +1353,8 @@ public class ModifyView
             @Override
             public void onClick(ClickEvent event2) {
 
-                DublinCore changedDC = null;
-                ModsCollectionClient changedMods = null;
-                DigitalObjectDetail object = new DigitalObjectDetail(model, null);
-
-                if (modsWindow != null) {
-
-                    changedMods = modsWindow.publishWindow();
-                    object.setModsChanged(true);
-                    changedDC = ts.getDc();
-                    object.setDcChanged(false);
-
-                    if (modsWindow.getReflectInDC()) {
-                        changedDC = modsWindow.reflectInDC(changedDC);
-                        object.setDcChanged(true);
-                    }
-
-                    if (modsWindow != null) {
-                        modsWindow.destroy();
-                        modsWindow = null;
-                    }
-
-                } else {
-                    Tab dcT = ts.getDcTab();
-                    Tab modsT = ts.getModsTab();
-                    if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-                        DCTab dcT_ = (DCTab) dcT;
-                        changedDC = dcT_.getDc();
-                        object.setDcChanged(true);
-                    } else {
-                        changedDC = dc;
-                        object.setDcChanged(false);
-                    }
-
-                    if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
-                        ModsTab modsT_ = (ModsTab) modsT;
-                        changedMods = new ModsCollectionClient();
-                        changedMods.setMods(Arrays.asList(modsT_.getMods()));
-                        object.setModsChanged(true);
-                    } else {
-                        changedMods = mods;
-                        object.setModsChanged(false);
-                    }
-
-                }
-
-                object.setDc(changedDC);
-                object.setMods(changedMods);
-                //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-                InfoTab infoT = ts.getInfoTab();
-
-                if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
-                    object.setLabel("");
-                    object.setLabelChanged(true);
-                } else {
-                    object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
-                    object.setLabel(infoT.getLabelItem());
-                }
-
-                TextAreaItem ocrTextItem = null;
-                if ((ocrTextItem = ts.getOcrContent()) != null && ocrTextContent.get(ocrTextItem) != null) {
-                    String val = (String) ocrTextItem.getValue();
-                    if (!ocrTextContent.get(ocrTextItem).equals(val)) {
-                        object.setOcr(val);
-                        object.setOcrChanged(true);
-                    }
-                } else {
-                    object.setOcrChanged(false);
-                }
-                object.setUuid(ts.getUuid());
-
-                Map<DigitalObjectModel, TileGrid> tilegrids = ts.getItemGrid();
-                if (tilegrids != null) { // structure has been changed, or at
-                                         // least opened
-                    List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
-                    List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
-                    for (DigitalObjectModel md : children) {
-                        List<DigitalObjectDetail> data = null;
-                        TileGrid tg = tilegrids.get(md);
-                        if (tg != null && tg.getData() != null) {
-                            data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
-                            for (Record rec : tg.getData()) {
-                                DigitalObjectDetail child = new DigitalObjectDetail();
-                                child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
-                                data.add(child);
-                            }
-                        }
-                        structure.add(data);
-                    }
-                    object.setAllItems(structure);
-                }
-                getUiHandlers().onSaveDigitalObject(object, versionable.getValueAsBoolean());
+                getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts, model, dc, mods),
+                                                    versionable.getValueAsBoolean());
                 universalWindow.destroy();
                 universalWindow = null;
                 if (ts.getLockOwner() != null && "".equals(ts.getLockOwner())) {
@@ -1483,6 +1385,103 @@ public class ModifyView
         universalWindow.centerInPage();
         universalWindow.show();
         publish.focus();
+    }
+
+    private DigitalObjectDetail createDigitalObjectDetail(final EditorTabSet ts,
+                                                          final DigitalObjectModel model,
+                                                          final DublinCore dc,
+                                                          final ModsCollectionClient mods) {
+        DublinCore changedDC = null;
+        ModsCollectionClient changedMods = null;
+        DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+
+        if (modsWindow != null) {
+
+            changedMods = modsWindow.publishWindow();
+            object.setModsChanged(true);
+            changedDC = ts.getDc();
+            object.setDcChanged(false);
+
+            if (modsWindow.getReflectInDC()) {
+                changedDC = modsWindow.reflectInDC(changedDC);
+                object.setDcChanged(true);
+            }
+
+            if (modsWindow != null) {
+                modsWindow.destroy();
+                modsWindow = null;
+            }
+
+        } else {
+            Tab dcT = ts.getDcTab();
+            Tab modsT = ts.getModsTab();
+            if (dcT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+                DCTab dcT_ = (DCTab) dcT;
+                changedDC = dcT_.getDc();
+                object.setDcChanged(true);
+            } else {
+                changedDC = dc;
+                object.setDcChanged(false);
+            }
+
+            if (modsT.getAttributeAsBoolean(TAB_INITIALIZED)) {
+                ModsTab modsT_ = (ModsTab) modsT;
+                changedMods = new ModsCollectionClient();
+                changedMods.setMods(Arrays.asList(modsT_.getMods()));
+                object.setModsChanged(true);
+            } else {
+                changedMods = mods;
+                object.setModsChanged(false);
+            }
+
+        }
+
+        object.setDc(changedDC);
+        object.setMods(changedMods);
+        //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
+        InfoTab infoT = ts.getInfoTab();
+
+        if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
+            object.setLabel("");
+            object.setLabelChanged(true);
+        } else {
+            object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
+            object.setLabel(infoT.getLabelItem());
+        }
+
+        TextAreaItem ocrTextItem = null;
+        if ((ocrTextItem = ts.getOcrContent()) != null && ocrTextContent.get(ocrTextItem) != null) {
+            String val = (String) ocrTextItem.getValue();
+            if (!ocrTextContent.get(ocrTextItem).equals(val)) {
+                object.setOcr(val);
+                object.setOcrChanged(true);
+            }
+        } else {
+            object.setOcrChanged(false);
+        }
+        object.setUuid(ts.getUuid());
+
+        Map<DigitalObjectModel, TileGrid> tilegrids = ts.getItemGrid();
+        if (tilegrids != null) { // structure has been changed, or at
+                                 // least opened
+            List<List<DigitalObjectDetail>> structure = new ArrayList<List<DigitalObjectDetail>>(4);
+            List<DigitalObjectModel> children = NamedGraphModel.getChildren(model);
+            for (DigitalObjectModel md : children) {
+                List<DigitalObjectDetail> data = null;
+                TileGrid tg = tilegrids.get(md);
+                if (tg != null && tg.getData() != null) {
+                    data = new ArrayList<DigitalObjectDetail>(tg.getData().length);
+                    for (Record rec : tg.getData()) {
+                        DigitalObjectDetail child = new DigitalObjectDetail();
+                        child.setUuid(rec.getAttributeAsString(Constants.ATTR_UUID));
+                        data.add(child);
+                    }
+                }
+                structure.add(data);
+            }
+            object.setAllItems(structure);
+        }
+        return object;
     }
 
     /**

@@ -352,4 +352,9 @@ public class Constants {
     public static final int IMAGE_FULL_WIDTH = 750;
     public static final String RANGE = "range";
 
+    public static final String BIBLIO_MODS = "BIBLIO_MODS";
+
+    public static final String DC = "DC";
+
+    public static final String RELS_EXT = "RELS-EXT";
 }

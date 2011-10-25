@@ -63,6 +63,14 @@ public class DownloadFoxmlServlet
     private EditorConfiguration config;
 
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        ServletOutputStream os = resp.getOutputStream();
+        IOUtils.copyStreams(req.getInputStream(), os);
+        os.flush();
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
 

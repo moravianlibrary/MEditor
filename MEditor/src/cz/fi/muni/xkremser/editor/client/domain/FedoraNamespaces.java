@@ -58,4 +58,9 @@ public interface FedoraNamespaces {
 
     /** OAI namespace. */
     public static final String OAI_NAMESPACE_URI = "http://www.openarchives.org/OAI/2.0/";
+
+    /** OAI Dublin core namespace. */
+    public static final String OAI_DC_NAMESPACE_URI = "http://www.openarchives.org/OAI/2.0/oai_dc/";
+
+    public static final String RELS_EXT_NAMESPACE_URI = "info:fedora/fedora-system:FedoraRELSExt-1.0";
 }

@@ -81,6 +81,8 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
@@ -566,6 +568,29 @@ public class ModifyPresenter
                                    } else {
                                        // SC.say("Done.");
                                    }
+                               }
+
+                               @Override
+                               public void callbackError(Throwable t) {
+                                   super.callbackError(t);
+                               }
+                           });
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers#
+     * onDownloadDigitalObject
+     * (cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail)
+     */
+    @Override
+    public void onDownloadDigitalObject(DigitalObjectDetail digitalObject, String datastream) {
+        dispatcher.execute(new DownloadDigitalObjectDetailAction(digitalObject, datastream),
+                           new DispatchCallback<DownloadDigitalObjectDetailResult>() {
+
+                               @Override
+                               public void callback(DownloadDigitalObjectDetailResult result) {
+                                   // TODO Auto-generated method stub
                                }
 
                                @Override
