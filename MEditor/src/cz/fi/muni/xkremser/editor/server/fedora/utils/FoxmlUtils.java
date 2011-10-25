@@ -32,32 +32,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
+import com.gwtplatform.dispatch.shared.ActionException;
 import com.uwyn.jhighlight.renderer.XhtmlRendererFactory;
 
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.valueobj.metadata.Foxml;
 
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.FOXML_NAMESPACE_URI;
-
 /**
  * The Class FoxmlUtils.
  */
 public class FoxmlUtils {
 
-    private static final String PROP_ELEMENT_NAME = "objectProperties";
     private static final String VALUE_ATRIBUTE = "VALUE";
-    private static final String NAME_ATRIBUTE = "NAME";
 
     /** The constant of Label value **/
     public static final String LABEL_VALUE = "info:fedora/fedora-system:def/model#label";
@@ -72,16 +71,21 @@ public class FoxmlUtils {
      * @return the string
      */
     public static String getLabel(org.w3c.dom.Document foxml) {
-        Element elm =
-                XMLUtils.findElement(foxml.getDocumentElement(), PROP_ELEMENT_NAME, FOXML_NAMESPACE_URI);
-        List<Element> elements = XMLUtils.getElements(elm);
-        for (Element el : elements) {
-            if (el.getAttribute(NAME_ATRIBUTE).equals(LABEL_VALUE)) {
-                String nameValueTitle = el.getAttribute(VALUE_ATRIBUTE);
-                return nameValueTitle;
+        String propertyLabelXPath = "//foxml:objectProperties/foxml:property[@NAME=\'" + LABEL_VALUE + "\']";
+
+        try {
+            XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(propertyLabelXPath);
+            NodeList listOfstream = (NodeList) all.evaluate(foxml, XPathConstants.NODESET);
+            Element propertyLabelElement = null;
+            if (listOfstream.getLength() != 0) {
+                propertyLabelElement = (Element) listOfstream.item(0);
             }
+            return propertyLabelElement.getAttribute(VALUE_ATRIBUTE);
+
+        } catch (XPathExpressionException e) {
+            LOGGER.error("XPath failure", e);
+            return null;
         }
-        return null;
     }
 
     /**
