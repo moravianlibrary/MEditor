@@ -89,10 +89,7 @@ public class FullImgServiceImpl
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        // TODO: sekuryta :]
-        // resp.setDateHeader("Last Modified", lastModifiedDate.getTime());
-        // resp.setDateHeader("Last Fetched", System.currentTimeMillis());
-        // resp.setDateHeader("Expires", instance.getTime().getTime());
+        resp.addHeader("Cache-Control", "max-age=7200");
 
         String uuid =
                 req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_FULL_PREFIX)
@@ -110,9 +107,9 @@ public class FullImgServiceImpl
                             .append("/datastreams/IMG_FULL/content");
                     InputStream is =
                             RESTHelper.get(sb.toString(),
-                                                   config.getFedoraLogin(),
-                                                   config.getFedoraPassword(),
-                                                   false);
+                                           config.getFedoraLogin(),
+                                           config.getFedoraPassword(),
+                                           false);
                     if (is == null) {
                         return;
                     }

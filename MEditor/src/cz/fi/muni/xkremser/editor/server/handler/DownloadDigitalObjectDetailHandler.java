@@ -60,6 +60,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
@@ -165,11 +166,11 @@ public class DownloadDigitalObjectDetailHandler
         }
         //        System.out.println("new fowml: " + newContent);
 
-        //            RESTHelper.post(InetAddress.getLocalHost().getHostAddress() + "/download/",
-        //                            newContent,
-        //                            config.getFedoraLogin(),
-        //                            config.getFedoraPassword(),
-        //                            true);
+        RESTHelper.post("http://127.0.0.1:8888/download/?gwt.codesvr=127.0.0.1:9997",
+                        newContent,
+                        null,
+                        null,
+                        true);
 
         return new DownloadDigitalObjectDetailResult();
     }
@@ -332,6 +333,11 @@ public class DownloadDigitalObjectDetailHandler
                      DownloadDigitalObjectDetailResult arg1,
                      ExecutionContext arg2) throws ActionException {
         // TODO Auto-generated method stub
+    }
+
+    public static void main(String... args) {
+        RESTHelper
+                .post("http://127.0.0.1:8888/download/?gwt.codesvr=127.0.0.1:9997", "foo", null, null, true);
     }
 
 }

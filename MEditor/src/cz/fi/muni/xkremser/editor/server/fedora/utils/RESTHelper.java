@@ -151,6 +151,8 @@ public class RESTHelper {
                 case PUT:
                     uc.setDoOutput(true);
                     ((HttpURLConnection) uc).setRequestMethod("PUT");
+                    ((HttpURLConnection) uc).setRequestProperty("Content-type", "text/xml; charset="
+                            + "UTF-8");
                     try {
                         out = new OutputStreamWriter(uc.getOutputStream());
                     } catch (IOException e) {
@@ -165,7 +167,10 @@ public class RESTHelper {
                     break;
                 case POST:
                     uc.setDoOutput(true);
+                    uc.setDoInput(true);
                     ((HttpURLConnection) uc).setRequestMethod("POST");
+                    ((HttpURLConnection) uc).setRequestProperty("Content-type", "text/xml; charset="
+                            + "UTF-8");
                     try {
                         out = new OutputStreamWriter(uc.getOutputStream());
                     } catch (IOException e) {

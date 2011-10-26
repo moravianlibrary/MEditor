@@ -88,6 +88,8 @@ public class URLS {
     /** The Constant AUTH_SERVLET. */
     public static final String AUTH_SERVLET = "/auth";
 
+    public static final String DOWNLOAD_SERVLET = "/download";
+
     public static Set<String> nonRestricted = new HashSet<String>() {
 
         {
@@ -99,6 +101,7 @@ public class URLS {
             add(ICON);
             add(FLAGS);
             add(VERSION_PAGE);
+            add(DOWNLOAD_SERVLET);
         }
     };
 

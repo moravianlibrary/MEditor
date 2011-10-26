@@ -66,11 +66,7 @@ public class ThumbnailServiceImpl
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        // super.doGet(req, resp);
-        // TODO: sekuryta :]
-
-        // char '/' is twice present in "/thumbnail/XYZ"
-        // /meditor ==> nefunguje
+        resp.addHeader("Cache-Control", "max-age=7200");
         String uuid =
                 req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_THUMBNAIL_PREFIX)
                         + Constants.SERVLET_THUMBNAIL_PREFIX.length() + 1);
@@ -81,10 +77,7 @@ public class ThumbnailServiceImpl
             sb.append(config.getFedoraHost()).append("/objects/").append(uuid)
                     .append("/datastreams/IMG_THUMB/content");
             InputStream is =
-                    RESTHelper.get(sb.toString(),
-                                           config.getFedoraLogin(),
-                                           config.getFedoraPassword(),
-                                           true);
+                    RESTHelper.get(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword(), true);
             if (is == null) {
                 return;
             }
