@@ -65,8 +65,7 @@ public class DownloadFoxmlServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        resp.addHeader("Content-Disposition", "attachment");
-        resp.addHeader("ContentType", "text/XML");
+        resp.addHeader("Content-Disposition", "attachment; ContentType = \"text/XML\"");
         ServletOutputStream os = resp.getOutputStream();
         IOUtils.copyStreams(req.getInputStream(), os);
         os.flush();
@@ -91,7 +90,6 @@ public class DownloadFoxmlServlet
             uuid =
                     req.getRequestURI().substring(req.getRequestURI().indexOf(datastream)
                             + datastream.length() + 1);
-            resp.addHeader("filename", uuid + "_datastream_" + datastream + ".xml");
             resp.addHeader("Content-Disposition", "attachment; ContentType = \"text/XML\"; filename=\""
                     + uuid + "_datastream_" + datastream + ".xml\"");
         }
