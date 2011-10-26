@@ -402,17 +402,17 @@ public class ModifyView
      * Method for close currently displayed window
      */
     private void escShortCut() {
-        if (universalWindow == null && modsWindow != null) {
-            modsWindow.destroy();
-            modsWindow = null;
+        if (downloadingWindow != null) {
+            downloadingWindow.destroy();
+            downloadingWindow = null;
         } else if (universalWindow != null) {
             universalWindow.destroy();
             universalWindow = null;
+        } else if (modsWindow != null) {
+            modsWindow.destroy();
+            modsWindow = null;
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);
-        } else if (downloadingWindow != null) {
-            downloadingWindow.destroy();
-            downloadingWindow = null;
         }
     }
 
@@ -1407,7 +1407,7 @@ public class ModifyView
                 object.setDcChanged(true);
             }
 
-            if (modsWindow != null) {
+            if (modsWindow != null && downloadingWindow == null) {
                 modsWindow.destroy();
                 modsWindow = null;
             }
