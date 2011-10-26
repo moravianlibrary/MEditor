@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.server.DAO;
 
+import java.io.File;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -168,7 +170,7 @@ public class ImageResolverDAOImpl
                 ret = rs.getString("imageFile");
                 i++;
             }
-            if (id != -1) {
+            if (id != -1 && new File(ret).exists()) {
                 statement = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
                 statement.setInt(1, id);
                 rowsAffected = statement.executeUpdate();

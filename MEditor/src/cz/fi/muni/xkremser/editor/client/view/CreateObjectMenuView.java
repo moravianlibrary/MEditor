@@ -148,6 +148,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setOpenIconSuffix("");
         structureTreeGrid.setTreeRootValue("1");
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
+        structureTreeGrid.setShowConnectors(true);
 
         structureTree = new Tree();
         structureTree.setModelType(TreeModelType.PARENT);
@@ -324,6 +325,11 @@ public class CreateObjectMenuView
     @Override
     public SelectItem getSelectModel() {
         return selectModel;
+    }
+
+    @Override
+    public TextItem getNewName() {
+        return name;
     }
 
     /**

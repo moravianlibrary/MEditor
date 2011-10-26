@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.DOM;
+import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
@@ -38,6 +39,7 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
+import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -217,6 +219,10 @@ public class ClientUtils {
             if (add) list.add(record);
         }
         return list.toArray(new ListGridRecord[] {});
+    }
+
+    public static void insertTheStructure(DublinCore dc, ListGrid tree) {
+        // iterate the tree from bottom to top and add DO to fedora
     }
 
 }

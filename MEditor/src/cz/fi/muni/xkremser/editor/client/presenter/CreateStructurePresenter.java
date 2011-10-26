@@ -527,8 +527,10 @@ public class CreateStructurePresenter
             String possibleParent = "-1";
             if (canContain != null) { //adding selected pages
                 possibleParent = String.valueOf(leftPresenter.newId());
+                String name = leftPresenter.getView().getNewName().getValueAsString();
+                name = "".equals(name) ? possibleParent : name;
                 leftPresenter.getView().addSubstructure(possibleParent,
-                                                        "foo todo",
+                                                        name,
                                                         type,
                                                         model.getValue(),
                                                         parent,

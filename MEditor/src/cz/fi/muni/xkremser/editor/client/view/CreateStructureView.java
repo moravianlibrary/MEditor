@@ -50,6 +50,8 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -370,7 +372,7 @@ public class CreateStructureView
             }
         });
 
-        DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
+        final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
         pictureField.setType("image");
         pictureField.setImageURLPrefix(Constants.SERVLET_SCANS_PREFIX + '/');
         pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
@@ -395,13 +397,6 @@ public class CreateStructureView
         toolStrip.setWidth100();
         ToolStripMenuButton menuButton = getToolStripMenuButton();
         toolStrip.addMenuButton(menuButton);
-
-        toolStrip.addSeparator();
-
-        ToolStripButton iconButton = new ToolStripButton();
-        iconButton.setIcon("silk/printer.png");
-        iconButton.setTitle("Print");
-        toolStrip.addButton(iconButton);
 
         toolStrip.addResizer();
 
@@ -461,10 +456,49 @@ public class CreateStructureView
         zoomItems.setName("selectName");
         zoomItems.setShowTitle(false);
         zoomItems.setWidth(100);
-        zoomItems.setValueMap("50%", "75%", "100%", "200%", "Fit");
-        zoomItems.setDefaultValue("100%");
+        zoomItems.setValueMap("50%", "75%", "100%", "150%");
+        zoomItems.addChangedHandler(new ChangedHandler() {
 
+            @Override
+            public void onChanged(ChangedEvent event) {
+                String percent = (String) event.getValue();
+                if ("50%".equals(percent)) {
+                    //                    tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH / 2);
+                    //                    tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT / 2);
+                    pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH / 2);
+                    pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT / 2);
+                } else if ("75%".equals(percent)) {
+                    //                    tileGrid.setTileWidth((Constants.TILEGRID_ITEM_WIDTH / 3) * 2);
+                    //                    tileGrid.setTileHeight((Constants.TILEGRID_ITEM_HEIGHT / 3) * 2);
+                    pictureField.setImageWidth((Constants.IMAGE_THUMBNAIL_WIDTH / 3) * 2);
+                    pictureField.setImageHeight((Constants.IMAGE_THUMBNAIL_HEIGHT / 3) * 2);
+                } else if ("100%".equals(percent)) {
+                    Record[] data = tileGrid.getData();
+                    tileGrid.destroy();
+                    tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH);
+                    tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT);
+                    pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
+                    pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT);
+                    tileGrid.setData(data);
+                    tileGrid.markForRedraw();
+                } else if ("150%".equals(percent)) {
+                    for (Canvas tile : tileGrid.getChildren()) {
+                        tile.animateResize(Constants.TILEGRID_ITEM_WIDTH, Constants.TILEGRID_ITEM_HEIGHT);
+                    }
+                    pictureField.setImageWidth((Constants.IMAGE_THUMBNAIL_WIDTH / 2) * 3);
+                    pictureField.setImageHeight((Constants.IMAGE_THUMBNAIL_HEIGHT / 2) * 3);
+                    tileGrid.markForRedraw();
+                }
+            }
+        });
+        zoomItems.setDefaultValue("100%");
         toolStrip.addFormItem(zoomItems);
+
+        toolStrip.addSeparator();
+        ToolStripButton nextButton = new ToolStripButton();
+        nextButton.setIcon("silk/forward_green.png");
+        nextButton.setTitle("Next step");
+        toolStrip.addButton(nextButton);
 
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);

@@ -47,6 +47,7 @@ import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
@@ -105,6 +106,8 @@ public class CreateObjectMenuPresenter
         void enableCheckbox(boolean isEnabled);
 
         void addSubstructure(String id, String name, String type, String typeId, String parent, boolean isOpen);
+
+        TextItem getNewName();
     }
 
     /**
