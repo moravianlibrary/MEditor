@@ -132,13 +132,19 @@ public class RESTHelper {
                                                String content,
                                                boolean robustMode) throws MalformedURLException, IOException {
         URL url = new URL(urlString);
-        String userPassword = user + ":" + pass;
-        String encoded = Base64Utils.toBase64(userPassword.getBytes());
+        boolean auth = false;
+        String encoded = null;
+        if (auth = (user == null || pass == null)) {
+            String userPassword = user + ":" + pass;
+            encoded = Base64Utils.toBase64(userPassword.getBytes());
+        }
         URLConnection uc = null;
         OutputStreamWriter out = null;
         try {
             uc = url.openConnection();
-            uc.setRequestProperty("Authorization", "Basic " + encoded);
+            if (auth) {
+                uc.setRequestProperty("Authorization", "Basic " + encoded);
+            }
             switch (method) {
                 case GET:
                     break;
