@@ -29,6 +29,9 @@ package cz.fi.muni.xkremser.editor.server;
 
 import java.lang.reflect.Field;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -250,5 +253,16 @@ public class ServerUtils {
             return "Mac-x86";
         } else
             return "Solaris-x86";
+    }
+
+    public static String getHostname() {
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            LOGGER.error("Unable to obtain the hostname", e);
+            return null;
+        }
+        return addr.getHostName();
     }
 }
