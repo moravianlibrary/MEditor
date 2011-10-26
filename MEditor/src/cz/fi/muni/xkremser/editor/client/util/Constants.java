@@ -183,6 +183,9 @@ public class Constants {
     /** The Constant ATTR_LOCK_DESCRIPTION. */
     public static final String ATTR_LOCK_DESCRIPTION = "lockDescription";
 
+    /** The Constant ATTR_TIME_TO_EXP_LOCK. */
+    public static final String ATTR_TIME_TO_EXP_LOCK = "timeToExpirationLock";
+
     /** The Constant ATTR_ALL. */
     public static final String ATTR_ALL = "all";
 
@@ -313,7 +316,13 @@ public class Constants {
          * The value of nativeEvent-keyCode of button F - used for download
          * foxml and datastreams
          */
-        CODE_KEY_F(70);
+        CODE_KEY_F(70),
+
+        /**
+         * The value of nativeEvent-keyCode of button S - used for save a
+         * working copy on the server
+         */
+        CODE_KEY_S(83);
 
         private final int code;
 

@@ -58,4 +58,8 @@ public class LockDigitalObject
     @Out(2)
     private String lockDescription;
 
+    /** The time to expiration of the lock */
+    @Out(3)
+    private String timeToExpiration;
+
 }

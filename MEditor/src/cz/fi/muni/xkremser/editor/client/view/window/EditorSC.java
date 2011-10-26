@@ -35,7 +35,10 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 
 public final class EditorSC {
 
-    public static final void objectIsLock(LangConstants lang, String lockOwner, String lockDescription) {
+    public static final void objectIsLock(LangConstants lang,
+                                          String lockOwner,
+                                          String lockDescription,
+                                          String timeToExpirationLock) {
         StringBuffer objectLockedBuffer = new StringBuffer();
 
         if ("".equals(lockOwner)) {
@@ -53,6 +56,8 @@ public final class EditorSC {
             objectLockedBuffer.append("".equals(lockDescription.trim()) ? lang.noDescription()
                     : lockDescription);
         }
+        objectLockedBuffer.append("<br>").append("<br>");
+        objectLockedBuffer.append(lang.lockExpires() + ": " + timeToExpirationLock).append("<br>");
         SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
     }
 

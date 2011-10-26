@@ -1636,6 +1636,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String locationType();
 
   /**
+   * Translated "The lock expires in".
+   * 
+   * @return translated "The lock expires in"
+   */
+  @DefaultStringValue("The lock expires in")
+  @Key("lockExpires")
+  String lockExpires();
+
+  /**
    * Translated "Information about the lock".
    * 
    * @return translated "Information about the lock"

@@ -75,6 +75,7 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -402,13 +403,13 @@ public class ModifyView
      * Method for close currently displayed window
      */
     private void escShortCut() {
-        if (downloadingWindow != null) {
+        if (downloadingWindow != null && downloadingWindow.isCreated()) {
             downloadingWindow.destroy();
             downloadingWindow = null;
-        } else if (universalWindow != null) {
+        } else if (universalWindow != null && universalWindow.isCreated()) {
             universalWindow.destroy();
             universalWindow = null;
-        } else if (modsWindow != null) {
+        } else if (modsWindow != null && modsWindow.isCreated()) {
             modsWindow.destroy();
             modsWindow = null;
         } else if (imagePopup.isVisible()) {
@@ -530,8 +531,8 @@ public class ModifyView
         topTabSet.setModsCollection(mods);
         topTabSet.setDc(dc);
         final Tab infoTab =
-                new InfoTab("Info", "pieces/16/cubes_all.png", label, dc, lang, labelsSingular.get(model
-                        .getValue()), model, previewPID, detail.getLockOwner(), detail.getLockDescription());
+                new InfoTab("Info", "pieces/16/cubes_all.png", lang, detail, labelsSingular.get(model
+                        .getValue()), previewPID);
         topTabSet.setInfoTab((InfoTab) infoTab);
         ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
 
@@ -1164,7 +1165,7 @@ public class ModifyView
         MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
         MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
         MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
-        MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+S");
+        MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+Alt+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png", "Ctrl+Alt+F");
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
@@ -1181,6 +1182,15 @@ public class ModifyView
                 removeItem.setEnabled(false);
             }
         }
+
+        saveItem.setAttribute(ID_TABSET, topTabSet);
+        saveItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                saveWork((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
+            }
+        });
 
         downloadItem.setAttribute(ID_TABSET, topTabSet);
         downloadItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -1237,6 +1247,32 @@ public class ModifyView
                       removeItem,
                       publishItem);
         return menu;
+    }
+
+    private void saveWork(EditorTabSet ts) {
+        universalWindow = new UniversalWindow(300, 500, "Save");
+
+        //        Label fileNameLabel = new Label("Please input the name of the file");
+        HTMLFlow fileNameLabel = new HTMLFlow();
+        fileNameLabel.setContents("<h3>Please input the name of the file:</h3>");
+        fileNameLabel.setAutoHeight();
+        fileNameLabel.setMargin(10);
+
+        TextItem fileName = new TextItem();
+        fileName.setTitle("File name");
+        fileName.setWidth(350);
+        //        fileName.setDefaultValue(ts.getUuid() + "_"
+        //                + DateTimeFormat.getFormat("yyyy.MM.dd'_'hh:mm").format(new Date()));
+
+        fileName.setDefaultValue(ts.getUuid());
+
+        DynamicForm saveForm = new DynamicForm();
+        saveForm.setItems(fileName);
+
+        universalWindow.addItem(fileNameLabel);
+        universalWindow.addItem(saveForm);
+        universalWindow.centerInPage();
+        universalWindow.show();
     }
 
     private void showDownloadingWindow(final EditorTabSet ts) {
@@ -1589,6 +1625,8 @@ public class ModifyView
                     }
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_F.getCode()) {
                     showDownloadingWindow(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
+                    saveWork(focusedTabSet);
                 }
             }
         }

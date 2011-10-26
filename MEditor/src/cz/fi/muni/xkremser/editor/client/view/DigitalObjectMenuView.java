@@ -236,7 +236,8 @@ public class DigitalObjectMenuView
                         @Override
                         public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                             EditorSC.objectIsLock(lang, lockOwner, rollOverRecord
-                                    .getAttributeAsString(Constants.ATTR_LOCK_DESCRIPTION));
+                                    .getAttributeAsString(Constants.ATTR_LOCK_DESCRIPTION), rollOverRecord
+                                    .getAttribute(Constants.ATTR_TIME_TO_EXP_LOCK));
                         }
                     });
                     rollOverCanvas.addChild(lockImg);

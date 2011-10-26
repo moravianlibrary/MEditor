@@ -143,6 +143,7 @@ public class GetDigitalObjectDetailHandler
 
             if (lockOwnerId > 0) {
                 lockDescription = locksDAO.getDescription(uuid);
+                obj.setTimeToExpirationLock(locksDAO.getTimeToExpirationLock(uuid));
                 if (usersId == lockOwnerId) {
                     lockDescription = locksDAO.getDescription(uuid);
                     obj.setLockOwner("");

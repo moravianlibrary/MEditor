@@ -97,6 +97,9 @@ public class DigitalObjectDetail
     /** The returned description of the lockOwner */
     private String lockDescription;
 
+    /** The time to expiration of the lock */
+    private String timeToExpirationLock;
+
     public String getLockOwner() {
         return lockOwner;
     }
@@ -399,4 +402,26 @@ public class DigitalObjectDetail
         this.firstPageURL = firstPageURL;
     }
 
+    /**
+     * Sets the time to expiration of the lock
+     * 
+     * @param timeToExpirationLock
+     *        the timeToExpirationLock to set
+     */
+
+    public void setTimeToExpirationLock(String timeToExpirationLock) {
+        this.timeToExpirationLock = timeToExpirationLock;
+
+    }
+
+    /**
+     * Gets the time to expiration of the lock
+     * 
+     * @return the timeToExpirationLock
+     */
+
+    public String getTimeToExpirationLock() {
+        return timeToExpirationLock;
+
+    }
 }

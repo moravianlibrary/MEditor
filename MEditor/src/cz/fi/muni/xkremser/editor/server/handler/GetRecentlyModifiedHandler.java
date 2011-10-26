@@ -130,6 +130,7 @@ public class GetRecentlyModifiedHandler
                     item.setLockOwner(null);
                 } else {
                     item.setLockDescription(locksDAO.getDescription(item.getUuid()));
+                    item.setTimeToExpirationLock(locksDAO.getTimeToExpirationLock(item.getUuid()));
                     if (lockOwnersId == userId) {
                         item.setLockOwner("");
                     } else if (lockOwnersId > 0) {

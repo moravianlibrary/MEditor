@@ -109,7 +109,11 @@ public class RecentlyTreeGwtRPCDS
         field.setHidden(true);
         addField(field);
         field = new DataSourceDateField(Constants.ATTR_LOCK_DESCRIPTION, "lockDescription");
-        field.setRequired(true);
+        field.setRequired(false);
+        field.setHidden(true);
+        addField(field);
+        field = new DataSourceDateField(Constants.ATTR_TIME_TO_EXP_LOCK, "timeToExpirationLock");
+        field.setRequired(false);
         field.setHidden(true);
         addField(field);
     }
@@ -281,6 +285,7 @@ public class RecentlyTreeGwtRPCDS
         to.setModified(from.getAttributeAsDate(Constants.ATTR_MODIFIED));
         to.setLockDescription(from.getAttribute(Constants.ATTR_LOCK_DESCRIPTION));
         to.setLockOwner(from.getAttribute(Constants.ATTR_LOCK_OWNER));
+        to.setTimeToExpirationLock(from.getAttribute(Constants.ATTR_TIME_TO_EXP_LOCK));
     }
 
     /**
@@ -317,6 +322,7 @@ public class RecentlyTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_MODIFIED, from.getModified());
         to.setAttribute(Constants.ATTR_LOCK_OWNER, from.getLockOwner());
         to.setAttribute(Constants.ATTR_LOCK_DESCRIPTION, from.getLockDescription());
+        to.setAttribute(Constants.ATTR_TIME_TO_EXP_LOCK, from.getTimeToExpirationLock());
     }
 
     /**

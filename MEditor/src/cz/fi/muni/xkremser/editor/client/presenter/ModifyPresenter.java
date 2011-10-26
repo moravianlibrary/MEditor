@@ -453,7 +453,10 @@ public class ModifyPresenter
                         DigitalObjectDetail detail = result.getDetail();
 
                         if (null != detail.getLockOwner()) {
-                            EditorSC.objectIsLock(lang, detail.getLockOwner(), detail.getLockDescription());
+                            EditorSC.objectIsLock(lang,
+                                                  detail.getLockOwner(),
+                                                  detail.getLockDescription(),
+                                                  detail.getTimeToExpirationLock());
                         }
 
                         getView().addDigitalObject(uuid, detail, refresh);
@@ -716,7 +719,10 @@ public class ModifyPresenter
                             SC.say(lang.lockUpdated(), lang.lockUpdated());
 
                         } else {
-                            EditorSC.objectIsLock(lang, result.getLockOwner(), result.getLockDescription());
+                            EditorSC.objectIsLock(lang,
+                                                  result.getLockOwner(),
+                                                  result.getLockDescription(),
+                                                  result.getTimeToExpiration());
                         }
                         mw.hide();
                     }

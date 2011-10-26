@@ -101,15 +101,19 @@ public class LockDigitalObjectHandler
             lockOwnerId = locksDAO.getLockOwnersID(uuid);
             if (lockOwnerId == 0) {
                 locksDAO.lockDigitalObject(uuid, usersId, description);
-                return new LockDigitalObjectResult(null, null);
-
-            } else if (usersId == lockOwnerId) {
-                locksDAO.lockDigitalObject(uuid, null, description);
-                return new LockDigitalObjectResult("", null);
+                return new LockDigitalObjectResult(null, null, null);
 
             } else {
-                return new LockDigitalObjectResult(userDAO.getName(String.valueOf(lockOwnerId), false),
-                                                   locksDAO.getDescription(uuid));
+                String timeToExpiration = locksDAO.getTimeToExpirationLock(uuid);
+                if (usersId == lockOwnerId) {
+                    locksDAO.lockDigitalObject(uuid, null, description);
+                    return new LockDigitalObjectResult("", null, timeToExpiration);
+
+                } else {
+                    return new LockDigitalObjectResult(userDAO.getName(String.valueOf(lockOwnerId), false),
+                                                       locksDAO.getDescription(uuid),
+                                                       timeToExpiration);
+                }
             }
         } catch (DatabaseException e) {
             throw new ActionException(e);

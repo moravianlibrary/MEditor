@@ -55,6 +55,8 @@ public class LocksDAOImpl
     private static final Logger LOGGER = Logger.getLogger(LocksDAOImpl.class.getPackage().toString());
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    private static final String DURATION_LOCK = "1 week";
+
     private static final String SELECT_LOCK_USER_ID = "SELECT user_id FROM  " + Constants.TABLE_LOCK
             + " WHERE uuid = (?)";
 
@@ -69,9 +71,13 @@ public class LocksDAOImpl
             + " WHERE uuid = (?)";
 
     private static final String DELETE_OLD_DIGITAL_OBJECT = "DELETE FROM " + Constants.TABLE_LOCK
-            + " WHERE modified < (NOW() - INTERVAL '1 week')";
+            + " WHERE modified < (NOW() - INTERVAL '" + DURATION_LOCK + "')";
 
     private static final String DELETE_DIGITAL_OBJETCS_LOCK_BY_UUID = "DELETE FROM " + Constants.TABLE_LOCK
+            + " WHERE uuid = (?)";
+
+    private static final String SELECT_TIME_TO_EXPIRATION_LOCK = "SELECT ((modified + INTERVAL '"
+            + DURATION_LOCK + "') - (CURRENT_TIMESTAMP)) AS timeToExpLock FROM " + Constants.TABLE_LOCK
             + " WHERE uuid = (?)";
 
     /**
@@ -217,5 +223,34 @@ public class LocksDAOImpl
             closeConnection();
         }
         return description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public String getTimeToExpirationLock(String uuid) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        String timeToExpirationLock = null;
+
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_TIME_TO_EXPIRATION_LOCK);
+            selectSt.setString(1, uuid);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                timeToExpirationLock = rs.getString("timeToExpLock");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return timeToExpirationLock;
     }
 }

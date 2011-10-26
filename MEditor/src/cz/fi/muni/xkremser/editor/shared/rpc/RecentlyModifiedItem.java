@@ -60,6 +60,9 @@ public class RecentlyModifiedItem
     /** The lock description */
     private String lockDescription;
 
+    /** The time to expiration of the lock */
+    private String timeToExpirationLock;
+
     /**
      * Gets the lock description
      * 
@@ -273,6 +276,29 @@ public class RecentlyModifiedItem
     @Override
     public int compareTo(RecentlyModifiedItem o) {
         return o.getModified().getTime() < this.getModified().getTime() ? -1 : 1;
+    }
+
+    /**
+     * Sets the time to expiration of the lock
+     * 
+     * @param timeToExpirationLock
+     *        the timeToExpirationLock to set
+     */
+
+    public void setTimeToExpirationLock(String timeToExpirationLock) {
+        this.timeToExpirationLock = timeToExpirationLock;
+
+    }
+
+    /**
+     * Gets the time to expiration of the lock
+     * 
+     * @return the timeToExpirationLock
+     */
+
+    public String getTimeToExpirationLock() {
+        return timeToExpirationLock;
+
     }
 
 }

@@ -15,6 +15,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
+import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 public class InfoTab
@@ -27,19 +28,19 @@ public class InfoTab
 
     public InfoTab(String title,
                    String icon,
-                   String label,
-                   DublinCore dc,
                    final LangConstants lang,
+                   final DigitalObjectDetail detail,
                    String type,
-                   DigitalObjectModel model,
-                   String firstPageURL,
-                   final String lockOwner,
-                   final String lockDescription) {
+                   String firstPageURL) {
         super(title, icon);
-        this.model = model;
+        String label = detail.getLabel();
+        this.model = detail.getModel();;
         this.originalLabel = label;
         VStack layout = new VStack();
         layout.setPadding(15);
+        DublinCore dc = detail.getDc();
+        final String lockOwner = detail.getLockOwner();
+        final String lockDescription = detail.getLockDescription();
 
         Button lockInfoButton = null;
         if (lockOwner != null) {
@@ -59,7 +60,10 @@ public class InfoTab
                 public void onClick(ClickEvent event) {
                     if (null != lockOwner) {
                         StringBuffer objectLockedBuffer = new StringBuffer();
-                        EditorSC.objectIsLock(lang, lockOwner, lockDescription);
+                        EditorSC.objectIsLock(lang,
+                                              lockOwner,
+                                              lockDescription,
+                                              detail.getTimeToExpirationLock());
                     }
                 }
             });
