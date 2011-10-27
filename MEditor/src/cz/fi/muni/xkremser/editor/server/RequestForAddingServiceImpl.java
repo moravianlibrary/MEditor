@@ -16,6 +16,8 @@ public class RequestForAddingServiceImpl
         extends RemoteServiceServlet
         implements RequestForAddingService {
 
+    private static final long serialVersionUID = 1384030877613255514L;
+
     @Override
     public String ask() {
         HttpServletRequest request = this.getThreadLocalRequest();

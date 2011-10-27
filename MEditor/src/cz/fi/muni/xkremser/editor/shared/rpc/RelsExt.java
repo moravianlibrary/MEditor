@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.server.fedora.valueobj;
+package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Value objekt pro naplneni dat RELS-EXT.
  * 
- * @author xholcik
+ * @author xkremser
  */
 public class RelsExt {
 

@@ -58,6 +58,8 @@ public class NamedGraphModel
 
     private static final Map<List<DigitalObjectModel>, FedoraRelationship> relations =
             new HashMap<List<DigitalObjectModel>, FedoraRelationship>();
+    private static final Map<String, DigitalObjectModel> childrenByRelation =
+            new HashMap<String, DigitalObjectModel>();
     private static Map<DigitalObjectModel, List<DigitalObjectModel>> children =
             new HashMap<DigitalObjectModel, List<DigitalObjectModel>>();
 
@@ -83,6 +85,8 @@ public class NamedGraphModel
                                         FedoraRelationship relationship,
                                         DigitalObjectModel target) {
         NamedGraphModel.relations.put(Arrays.asList(target, source), relationship);
+        NamedGraphModel.childrenByRelation.put(relationship.getStringRepresentation(),
+                                               relationship.getTargetModel());
         putChild(source, target);
     }
 
@@ -99,6 +103,10 @@ public class NamedGraphModel
 
     public static List<DigitalObjectModel> getChildren(DigitalObjectModel parent) {
         return children.get(parent);
+    }
+
+    public static DigitalObjectModel getChildByRelation(String relation) {
+        return childrenByRelation.get(relation);
     }
 
 }

@@ -74,7 +74,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

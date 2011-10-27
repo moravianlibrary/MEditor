@@ -36,7 +36,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

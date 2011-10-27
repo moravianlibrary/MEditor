@@ -31,7 +31,7 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**

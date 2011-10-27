@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.server.valueobj.metadata;
+package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * Value object pro Dublin core stream.
  * 
- * @author xholcik
+ * @author xkremser
  */
 public class Foxml
         implements IsSerializable {

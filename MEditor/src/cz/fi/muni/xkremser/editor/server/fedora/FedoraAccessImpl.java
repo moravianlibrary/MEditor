@@ -39,10 +39,7 @@ import java.net.PasswordAuthentication;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -71,7 +68,6 @@ import org.fedora.api.FedoraAPIAService;
 import org.fedora.api.FedoraAPIM;
 import org.fedora.api.FedoraAPIMService;
 import org.fedora.api.ObjectFactory;
-import org.fedora.api.RelationshipTuple;
 
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
@@ -121,18 +117,6 @@ public class FedoraAccessImpl
         super();
         this.configuration = configuration;
         this.nsContext = nsContext;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPages(java.lang
-     * .String, boolean)
-     */
-    @Override
-    public List<Element> getPages(String uuid, boolean deep) throws IOException {
-        Document relsExt = getRelsExt(uuid);
-        return getPages(uuid, relsExt.getDocumentElement());
     }
 
     /*
@@ -321,133 +305,6 @@ public class FedoraAccessImpl
     }
 
     /**
-     * Process rels ext internal.
-     * 
-     * @param topElem
-     *        the top elem
-     * @param handler
-     *        the handler
-     * @param level
-     *        the level
-     * @return true, if successful
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     * @throws LexerException
-     *         the lexer exception
-     */
-    boolean processRelsExtInternal(Element topElem, RelsExtHandler handler, int level) throws IOException,
-            LexerException {
-        boolean breakProcess = false;
-        String namespaceURI = topElem.getNamespaceURI();
-        if (namespaceURI.equals(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI)) {
-            String nodeName = topElem.getLocalName();
-            FedoraRelationship relation = FedoraRelationship.findRelation(nodeName);
-            if (relation != null) {
-                if (handler.accept(relation)) {
-                    handler.handle(topElem, relation, level);
-                    if (handler.breakProcess()) return true;
-
-                    // deep
-                    String attVal = topElem.getAttributeNS(FedoraNamespaces.RDF_NAMESPACE_URI, "resource");
-                    PIDParser pidParser = new PIDParser(attVal);
-                    pidParser.disseminationURI();
-                    String objectId = pidParser.getNamespaceId() + ":" + pidParser.getObjectId();
-                    // LOGGER.debug("processing uuid =" +objectId);
-                    Document relsExt = getRelsExt(objectId);
-                    breakProcess = processRelsExtInternal(relsExt.getDocumentElement(), handler, level + 1);
-                }
-            } else {
-                LOGGER.error("Unsupported type of relation '" + nodeName + "'");
-            }
-
-            if (breakProcess) {
-                LOGGER.info("Process has been broken");
-                return breakProcess;
-            }
-            NodeList childNodes = topElem.getChildNodes();
-            for (int i = 0, ll = childNodes.getLength(); i < ll; i++) {
-                Node item = childNodes.item(i);
-                if (item.getNodeType() == Node.ELEMENT_NODE) {
-                    breakProcess = processRelsExtInternal((Element) item, handler, level);
-                    if (breakProcess) break;
-                }
-            }
-        } else if (namespaceURI.equals(FedoraNamespaces.RDF_NAMESPACE_URI)) {
-            NodeList childNodes = topElem.getChildNodes();
-            for (int i = 0, ll = childNodes.getLength(); i < ll; i++) {
-                Node item = childNodes.item(i);
-                if (item.getNodeType() == Node.ELEMENT_NODE) {
-                    breakProcess = processRelsExtInternal((Element) item, handler, level);
-                    if (breakProcess) break;
-                }
-            }
-        }
-        return breakProcess;
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#processRelsExt(org
-     * .w3c.dom.Document,
-     * cz.fi.muni.xkremser.editor.server.fedora.RelsExtHandler)
-     */
-    @Override
-    public void processRelsExt(Document relsExtDocument, RelsExtHandler handler) throws IOException {
-        try {
-            processRelsExtInternal(relsExtDocument.getDocumentElement(), handler, 1);
-        } catch (DOMException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        } catch (LexerException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#processRelsExt(java
-     * .lang.String, cz.fi.muni.xkremser.editor.server.fedora.RelsExtHandler)
-     */
-    @Override
-    public void processRelsExt(String uuid, RelsExtHandler handler) throws IOException {
-        LOGGER.debug("processing uuid =" + uuid);
-        processRelsExt(getRelsExt(uuid), handler);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPages(java.lang
-     * .String, org.w3c.dom.Element)
-     */
-    @Override
-    public List<Element> getPages(String uuid, Element rootElementOfRelsExt) throws IOException {
-        try {
-            ArrayList<Element> elms = new ArrayList<Element>();
-            String xPathStr = "/RDF/Description/hasPage";
-            XPathFactory xpfactory = XPathFactory.newInstance();
-            XPath xpath = xpfactory.newXPath();
-            XPathExpression expr = xpath.compile(xPathStr);
-            NodeList nodes = (NodeList) expr.evaluate(rootElementOfRelsExt, XPathConstants.NODESET);
-            for (int i = 0, lastIndex = nodes.getLength() - 1; i <= lastIndex; i++) {
-                Element elm = (Element) nodes.item(i);
-                elms.add(elm);
-            }
-            return elms;
-        } catch (XPathExpressionException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        }
-    }
-
-    /**
      * Gets the uuids.
      * 
      * @param uuid
@@ -620,43 +477,6 @@ public class FedoraAccessImpl
     /*
      * (non-Javadoc)
      * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getThumbnailProfile
-     * (java.lang.String)
-     */
-    @Override
-    public Document getThumbnailProfile(String uuid) throws IOException {
-        HttpURLConnection con =
-                (HttpURLConnection) RESTHelper.openConnection(thumbImageProfile(uuid),
-                                                              configuration.getFedoraLogin(),
-                                                              configuration.getFedoraPassword(),
-                                                              true);
-        InputStream stream = con.getInputStream();
-        try {
-            return XMLUtils.parseDocument(stream, true);
-        } catch (ParserConfigurationException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        } catch (SAXException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getThumbnailMimeType
-     * (java.lang.String)
-     */
-    @Override
-    public String getThumbnailMimeType(String uuid) throws IOException, XPathExpressionException {
-        Document profileDoc = getThumbnailProfile(uuid);
-        return mimetypeFromProfile(profileDoc);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
      * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getImageFULL(java
      * .lang.String)
      */
@@ -717,18 +537,6 @@ public class FedoraAccessImpl
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getImageFULLMimeType
-     * (java.lang.String)
-     */
-    @Override
-    public String getImageFULLMimeType(String uuid) throws IOException, XPathExpressionException {
-        Document profileDoc = getImageFULLProfile(uuid);
-        return mimetypeFromProfile(profileDoc);
-    }
-
     /**
      * Datastream in list of datastreams.
      * 
@@ -773,31 +581,6 @@ public class FedoraAccessImpl
             }
         }
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getImageFULLProfile
-     * (java.lang.String)
-     */
-    @Override
-    public Document getImageFULLProfile(String uuid) throws IOException {
-        HttpURLConnection con =
-                (HttpURLConnection) RESTHelper.openConnection(fullImageProfile(uuid),
-                                                              configuration.getFedoraLogin(),
-                                                              configuration.getFedoraPassword(),
-                                                              true);
-        InputStream stream = con.getInputStream();
-        try {
-            return XMLUtils.parseDocument(stream, true);
-        } catch (ParserConfigurationException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        } catch (SAXException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException(e);
-        }
     }
 
     /**
@@ -1062,75 +845,6 @@ public class FedoraAccessImpl
 
     }
 
-    /** The Constant TREE_PREDICATES. */
-    private static final List<String> TREE_PREDICATES = Arrays.asList(new String[] {
-            "http://www.nsdl.org/ontologies/relationships#hasPage",
-            "http://www.nsdl.org/ontologies/relationships#hasPart",
-            "http://www.nsdl.org/ontologies/relationships#hasVolume",
-            "http://www.nsdl.org/ontologies/relationships#hasItem",
-            "http://www.nsdl.org/ontologies/relationships#hasUnit"});
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#processSubtree(java
-     * .lang.String, cz.fi.muni.xkremser.editor.server.fedora.TreeNodeProcessor)
-     */
-    @Override
-    public void processSubtree(String pid, TreeNodeProcessor processor) {
-        processor.process(pid);
-        for (RelationshipTuple rel : getAPIM().getRelationships(pid, null)) {
-            if (TREE_PREDICATES.contains(rel.getPredicate())) {
-                try {
-                    processSubtree(rel.getObject(), processor);
-                } catch (Exception ex) {
-                    LOGGER.warn("Error processing subtree, skipping:" + ex);
-                }
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPids(java.lang
-     * .String)
-     */
-    @Override
-    public Set<String> getPids(String pid) {
-        final Set<String> retval = new HashSet<String>();
-        processSubtree(pid, new TreeNodeProcessor() {
-
-            @Override
-            public void process(String pid) {
-                retval.add(pid);
-            }
-        });
-        return retval;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getDataStream(java
-     * .lang.String, java.lang.String)
-     */
-    @Override
-    public InputStream getDataStream(String pid, String datastreamName) throws IOException {
-        String datastream = configuration.getFedoraHost() + "/get/" + pid + "/" + datastreamName;
-        HttpURLConnection con =
-                (HttpURLConnection) RESTHelper.openConnection(datastream,
-                                                              configuration.getFedoraLogin(),
-                                                              configuration.getFedoraPassword(),
-                                                              true);
-        con.connect();
-        if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            InputStream thumbInputStream = con.getInputStream();
-            return thumbInputStream;
-        }
-        throw new IOException("404");
-    }
-
     /*
      * (non-Javadoc)
      * @see
@@ -1251,4 +965,5 @@ public class FedoraAccessImpl
         }
         return docStream;
     }
+
 }

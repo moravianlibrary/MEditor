@@ -67,9 +67,9 @@ public class ScanImgServiceImpl
     @Inject
     private EditorConfiguration config;
 
-    private boolean baseOk;
-
-    private String base;
+    //    private boolean baseOk;
+    //
+    //    private String base;
 
     /*
      * (non-Javadoc)
@@ -81,8 +81,7 @@ public class ScanImgServiceImpl
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
 
-        resp.setDateHeader("Last Fetched", System.currentTimeMillis());
-        //         resp.setDateHeader("Expires", instance.getTime().getTime());
+        resp.addHeader("Cache-Control", "max-age=" + Constants.HTTP_CACHE_SECONDS);
         boolean full = ClientUtils.toBoolean(req.getParameter("full"));
 
         String uuid =
@@ -109,8 +108,8 @@ public class ScanImgServiceImpl
         super.init();
         Injector injector = getInjector();
         injector.injectMembers(this);
-        base = config.getScanInputQueuePath();
-        baseOk = base != null && !"".equals(base);
+        //        base = config.getScanInputQueuePath();
+        //        baseOk = base != null && !"".equals(base);
     }
 
     /*

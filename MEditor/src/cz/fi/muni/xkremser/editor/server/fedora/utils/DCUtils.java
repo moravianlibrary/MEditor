@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
 

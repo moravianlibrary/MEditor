@@ -31,7 +31,7 @@ import java.io.IOException;
 
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**

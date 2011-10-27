@@ -89,7 +89,7 @@ public class FullImgServiceImpl
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        resp.addHeader("Cache-Control", "max-age=7200");
+        resp.addHeader("Cache-Control", "max-age=" + Constants.HTTP_CACHE_SECONDS);
 
         String uuid =
                 req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_FULL_PREFIX)

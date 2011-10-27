@@ -33,7 +33,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.Token.TokenType;
 /**
  * The Class Lexer.
  * 
- * @author pavels Window - Preferences - Java - Code Style - Code Templates
+ * @author pavels
  */
 public class Lexer {
 

@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.shared.valueobj;
+package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

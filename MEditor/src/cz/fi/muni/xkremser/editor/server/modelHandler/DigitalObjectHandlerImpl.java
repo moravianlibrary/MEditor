@@ -53,10 +53,10 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
-import cz.fi.muni.xkremser.editor.server.valueobj.metadata.Foxml;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
 
 /**
  * The Class IDigitalObjectHandler.

@@ -31,12 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
-import java.util.Set;
-
-import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import org.fedora.api.FedoraAPIA;
 import org.fedora.api.FedoraAPIM;
@@ -46,11 +42,11 @@ import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
- * This is main point to access to fedora through REST-API.
+ * This is main point to access to Fedora through REST-API.
  * 
  * @see FedoraAccessImpl
  * @see SecuredFedoraAccessImpl
- * @author pavels
+ * @author xkremser
  */
 public interface FedoraAccess {
 
@@ -87,30 +83,6 @@ public interface FedoraAccess {
     public DigitalObjectModel getDigitalObjectModel(String uuid) throws IOException;
 
     /**
-     * Recursive processing fedora objects.
-     * 
-     * @param uuid
-     *        UUID of top level object
-     * @param handler
-     *        handler fo handling events
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public void processRelsExt(String uuid, RelsExtHandler handler) throws IOException;
-
-    /**
-     * Recursive processing fedora objects.
-     * 
-     * @param relsExtDocument
-     *        Document of top level object
-     * @param handler
-     *        handler fo handling events
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public void processRelsExt(Document relsExtDocument, RelsExtHandler handler) throws IOException;
-
-    /**
      * Return parsed biblio mods stream.
      * 
      * @param uuid
@@ -133,32 +105,6 @@ public interface FedoraAccess {
     public Document getDC(String uuid) throws IOException;
 
     /**
-     * Parse, find and returns all pages.
-     * 
-     * @param uuid
-     *        UUID of object
-     * @param deep
-     *        the deep
-     * @return the pages
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public List<Element> getPages(String uuid, boolean deep) throws IOException;
-
-    /**
-     * Find and returns all pages.
-     * 
-     * @param uuid
-     *        UUID of object
-     * @param rootElementOfRelsExt
-     *        Root element of RelsExt
-     * @return the pages
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public List<Element> getPages(String uuid, Element rootElementOfRelsExt) throws IOException;
-
-    /**
      * Returns input stream of thumbnail.
      * 
      * @param uuid
@@ -168,30 +114,6 @@ public interface FedoraAccess {
      *         Signals that an I/O exception has occurred.
      */
     public InputStream getThumbnail(String uuid) throws IOException;
-
-    /**
-     * Gets the thumbnail profile.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the thumbnail profile
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    Document getThumbnailProfile(String uuid) throws IOException;
-
-    /**
-     * Gets the thumbnail mime type.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the thumbnail mime type
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     * @throws XPathExpressionException
-     *         the x path expression exception
-     */
-    public String getThumbnailMimeType(String uuid) throws IOException, XPathExpressionException;
 
     /**
      * Returns djvu image of the object.
@@ -205,30 +127,6 @@ public interface FedoraAccess {
     public InputStream getImageFULL(String uuid) throws IOException;
 
     /**
-     * REturns profile of full image stream.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the image full profile
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public Document getImageFULLProfile(String uuid) throws IOException;
-
-    /**
-     * Returns full image mime type.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the image full mime type
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     * @throws XPathExpressionException
-     *         the x path expression exception
-     */
-    public String getImageFULLMimeType(String uuid) throws IOException, XPathExpressionException;
-
-    /**
      * Check whether full image is available, is present and accessible.
      * 
      * @param uuid
@@ -240,7 +138,7 @@ public interface FedoraAccess {
     public boolean isImageFULLAvailable(String uuid) throws IOException;
 
     /**
-     * Checks whetere content is acessiable.
+     * Checks whether content is accessible.
      * 
      * @param uuid
      *        uuid of object which can be protected
@@ -251,7 +149,7 @@ public interface FedoraAccess {
     public boolean isContentAccessible(String uuid) throws IOException;
 
     /**
-     * Checks whetere content is present.
+     * Checks whether content is present.
      * 
      * @param uuid
      *        uuid of object which can be protected
@@ -281,49 +179,15 @@ public interface FedoraAccess {
     public ObjectFactory getObjectFactory();
 
     /**
-     * Process subtree.
+     * Gets the pages uuid.
      * 
-     * @param pid
-     *        the pid
-     * @param processor
-     *        the processor
-     */
-    public void processSubtree(String pid, TreeNodeProcessor processor);
-
-    /**
-     * Gets the pids.
-     * 
-     * @param pid
-     *        the pid
-     * @return the pids
-     */
-    public Set<String> getPids(String pid);
-
-    /**
-     * Gets the data stream.
-     * 
-     * @param pid
-     *        the pid
-     * @param datastreamName
-     *        the datastream name
-     * @return the data stream
+     * @param uuid
+     *        the uuid
+     * @return the pages uuid
      * @throws IOException
      *         Signals that an I/O exception has occurred.
      */
-    public InputStream getDataStream(String pid, String datastreamName) throws IOException;
-
-    /**
-     * Gets the mime type for stream.
-     * 
-     * @param pid
-     *        the pid
-     * @param datastreamName
-     *        the datastream name
-     * @return the mime type for stream
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public String getMimeTypeForStream(String pid, String datastreamName) throws IOException;
+    public List<String> getPagesUuid(String uuid) throws IOException;
 
     /**
      * Gets the checks if is on pages uuid.
@@ -335,17 +199,6 @@ public interface FedoraAccess {
      *         Signals that an I/O exception has occurred.
      */
     public List<String> getIsOnPagesUuid(String uuid) throws IOException;
-
-    /**
-     * Gets the pages uuid.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the pages uuid
-     * @throws IOException
-     *         Signals that an I/O exception has occurred.
-     */
-    public List<String> getPagesUuid(String uuid) throws IOException;
 
     /**
      * Gets the int comp parts uuid.
@@ -421,5 +274,12 @@ public interface FedoraAccess {
      * @return the input stream
      */
     public InputStream getFOXMLInputStream(String uuid);
+
+    /**
+     * @param pid
+     * @param datastreamName
+     * @return
+     */
+    public String getMimeTypeForStream(String pid, String datastreamName) throws IOException;
 
 }

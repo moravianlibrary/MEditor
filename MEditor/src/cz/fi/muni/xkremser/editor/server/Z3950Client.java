@@ -5,7 +5,7 @@ import java.util.List;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 public interface Z3950Client {
 

@@ -39,7 +39,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.metadata.ListOfSimpleValuesHolder;
 import cz.fi.muni.xkremser.editor.client.metadata.MetadataHolder;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

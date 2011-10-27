@@ -113,8 +113,8 @@ import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

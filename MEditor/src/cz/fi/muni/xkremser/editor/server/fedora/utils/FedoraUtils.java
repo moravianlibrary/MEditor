@@ -78,11 +78,10 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.fedora.RDFModels;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -425,7 +424,9 @@ public class FedoraUtils {
             int i = 0;
             for (List<DigitalObjectDetail> data : detail.getAllItems()) {
                 if (data != null) { // is changed
-                    String relation = RDFModels.convertToRdf(models.get(i));
+                    String relation =
+                            NamedGraphModel.getRelationship(detail.getModel(), models.get(i))
+                                    .getStringRepresentation();
                     for (DigitalObjectDetail obj : data) {
                         sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation)
                                 .append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21).append(obj.getUuid())

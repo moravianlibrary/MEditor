@@ -33,7 +33,7 @@ import com.gwtplatform.dispatch.annotation.Order;
 
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

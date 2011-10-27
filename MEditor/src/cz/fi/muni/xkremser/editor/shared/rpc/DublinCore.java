@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.shared.valueobj.metadata;
+package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import java.util.ArrayList;
 import java.util.List;

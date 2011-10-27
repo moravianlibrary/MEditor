@@ -366,4 +366,5 @@ public class Constants {
     public static final String DC = "DC";
 
     public static final String RELS_EXT = "RELS-EXT";
+    public static final String HTTP_CACHE_SECONDS = "7200";
 }

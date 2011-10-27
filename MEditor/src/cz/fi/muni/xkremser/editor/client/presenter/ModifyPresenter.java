@@ -80,6 +80,8 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalO
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
@@ -95,8 +97,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**

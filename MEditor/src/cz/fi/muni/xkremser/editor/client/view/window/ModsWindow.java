@@ -34,7 +34,7 @@ import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.RoleTypeClient.RoleTermClient;
 import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 
-import cz.fi.muni.xkremser.editor.shared.valueobj.metadata.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 public abstract class ModsWindow
         extends Window {

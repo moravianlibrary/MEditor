@@ -77,6 +77,10 @@ public class URLS {
     /** The Constant INFO_PAGE. */
     public static final String INFO_PAGE = "/info.html";
 
+    public static final String NOT_FOUND_PAGE = "/404.html";
+
+    public static final String NOT_FOUND_IMAGE = "/images/404.jpg";
+
     public static final String ICON = "/favicon.ico";
 
     public static final String FLAGS = "/flags.gif";
@@ -102,6 +106,8 @@ public class URLS {
             add(FLAGS);
             add(VERSION_PAGE);
             add(DOWNLOAD_SERVLET);
+            add(NOT_FOUND_PAGE);
+            add(NOT_FOUND_IMAGE);
         }
     };
 

@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -43,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import org.fedora.api.FedoraAPIA;
 import org.fedora.api.FedoraAPIM;
@@ -64,7 +62,7 @@ import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
  * @see FedoraAccess#getImageFULL(String)
  * @see FedoraAccess#isImageFULLAvailable(String)
  * @see FedoraAccess#getImageFULLMimeType(String)
- * @author pavels
+ * @author xkremser
  */
 public class SecuredFedoraAccessImpl
         implements FedoraAccess {
@@ -150,32 +148,6 @@ public class SecuredFedoraAccessImpl
     /*
      * (non-Javadoc)
      * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getImageFULLMimeType
-     * (java.lang.String)
-     */
-    @Override
-    public String getImageFULLMimeType(String uuid) throws IOException, XPathExpressionException {
-        if (!this.acceptor.privateVisitor()) {
-            Document relsExt = this.rawAccess.getRelsExt(uuid);
-            checkPolicyElement(relsExt);
-        }
-        return rawAccess.getImageFULLMimeType(uuid);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getImageFULLProfile
-     * (java.lang.String)
-     */
-    @Override
-    public Document getImageFULLProfile(String uuid) throws IOException {
-        return rawAccess.getImageFULLProfile(uuid);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
      * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getKrameriusModel
      * (org.w3c.dom.Document)
      */
@@ -198,28 +170,6 @@ public class SecuredFedoraAccessImpl
     /*
      * (non-Javadoc)
      * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPages(java.lang
-     * .String, boolean)
-     */
-    @Override
-    public List<Element> getPages(String uuid, boolean deep) throws IOException {
-        return rawAccess.getPages(uuid, deep);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPages(java.lang
-     * .String, org.w3c.dom.Element)
-     */
-    @Override
-    public List<Element> getPages(String uuid, Element rootElementOfRelsExt) throws IOException {
-        return rawAccess.getPages(uuid, rootElementOfRelsExt);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
      * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getRelsExt(java
      * .lang .String)
      */
@@ -237,28 +187,6 @@ public class SecuredFedoraAccessImpl
     @Override
     public InputStream getThumbnail(String uuid) throws IOException {
         return rawAccess.getThumbnail(uuid);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getThumbnailMimeType
-     * (java.lang.String)
-     */
-    @Override
-    public String getThumbnailMimeType(String uuid) throws IOException, XPathExpressionException {
-        return rawAccess.getThumbnailMimeType(uuid);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getThumbnailProfile
-     * (java.lang.String)
-     */
-    @Override
-    public Document getThumbnailProfile(String uuid) throws IOException {
-        return rawAccess.getThumbnailProfile(uuid);
     }
 
     /*
@@ -290,29 +218,6 @@ public class SecuredFedoraAccessImpl
             }
         }
         return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#processRelsExt(org
-     * .w3c.dom.Document,
-     * cz.fi.muni.xkremser.editor.server.fedora.RelsExtHandler)
-     */
-    @Override
-    public void processRelsExt(Document relsExtDocument, RelsExtHandler handler) throws IOException {
-        rawAccess.processRelsExt(relsExtDocument, handler);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#processRelsExt(java
-     * .lang.String, cz.fi.muni.xkremser.editor.server.fedora.RelsExtHandler)
-     */
-    @Override
-    public void processRelsExt(String uuid, RelsExtHandler handler) throws IOException {
-        rawAccess.processRelsExt(uuid, handler);
     }
 
     /**
@@ -361,79 +266,6 @@ public class SecuredFedoraAccessImpl
     @Override
     public ObjectFactory getObjectFactory() {
         return rawAccess.getObjectFactory();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#processSubtree(java
-     * .lang.String, cz.fi.muni.xkremser.editor.server.fedora.TreeNodeProcessor)
-     */
-    @Override
-    public void processSubtree(String pid, TreeNodeProcessor processor) {
-        rawAccess.processSubtree(pid, processor);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getPids(java.lang
-     * .String)
-     */
-    @Override
-    public Set<String> getPids(String pid) {
-        return rawAccess.getPids(pid);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getDataStream(java
-     * .lang.String, java.lang.String)
-     */
-    @Override
-    public InputStream getDataStream(String pid, String datastreamName) throws IOException {
-        if (pid.startsWith("uuid:")) {
-            String uuid = pid.substring("uuid:".length());
-            if (!this.acceptor.privateVisitor()) {
-                Document relsExt = this.rawAccess.getRelsExt(uuid);
-                checkPolicyElement(relsExt);
-            }
-        }
-        return rawAccess.getDataStream(pid, datastreamName);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getMimeTypeForStream
-     * (java.lang.String, java.lang.String)
-     */
-    @Override
-    public String getMimeTypeForStream(String pid, String datastreamName) throws IOException {
-        return rawAccess.getMimeTypeForStream(pid, datastreamName);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#isDigitalObjectPresent
-     * (java.lang.String)
-     */
-    @Override
-    public boolean isDigitalObjectPresent(String uuid) {
-        return rawAccess.isDigitalObjectPresent(uuid);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess#getIsOnPagesUuid(
-     * java.lang.String)
-     */
-    @Override
-    public List<String> getIsOnPagesUuid(String uuid) throws IOException {
-        return rawAccess.getIsOnPagesUuid(uuid);
     }
 
     /*
@@ -529,5 +361,29 @@ public class SecuredFedoraAccessImpl
                                         DigitalObjectModel parentModel,
                                         DigitalObjectModel childModel) throws IOException {
         return rawAccess.getChildrenUuid(uuid, parentModel, childModel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public boolean isDigitalObjectPresent(String uuid) {
+        return rawAccess.isDigitalObjectPresent(uuid);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public List<String> getIsOnPagesUuid(String uuid) throws IOException {
+        return rawAccess.getIntCompPartsUuid(uuid);
+    }
+
+    @Override
+    public String getMimeTypeForStream(String pid, String datastreamName) throws IOException {
+        return rawAccess.getMimeTypeForStream(pid, datastreamName);
+
     }
 }

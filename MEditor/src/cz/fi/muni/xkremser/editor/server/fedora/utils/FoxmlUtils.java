@@ -49,7 +49,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.valueobj.metadata.Foxml;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
 
 /**
  * The Class FoxmlUtils.

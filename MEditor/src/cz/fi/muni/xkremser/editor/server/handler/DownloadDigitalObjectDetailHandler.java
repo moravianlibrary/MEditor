@@ -62,9 +62,9 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.BIBILO_MODS_URI;
 import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;

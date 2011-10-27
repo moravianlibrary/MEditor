@@ -86,7 +86,6 @@ public class AuthenticationServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        // super.doPost(req, resp);
         HttpSession session = req.getSession(true);
         String url = (String) session.getAttribute(HttpCookies.TARGET_URL);
         session.setAttribute(HttpCookies.TARGET_URL, null);

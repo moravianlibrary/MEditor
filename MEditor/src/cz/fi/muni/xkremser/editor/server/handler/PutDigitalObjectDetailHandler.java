@@ -50,9 +50,9 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.valueobj.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**
