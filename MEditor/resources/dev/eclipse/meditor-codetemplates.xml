@@ -36,7 +36,7 @@
     </template><template autoinsert="false" context="typecomment_context" deleted="false" description="Comment for created types" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.typecomment" name="typecomment">
 /**
  * @author FirstName Surname
- * @version ${date}$
+ * @version ${date}
  */
     </template><template autoinsert="false" context="fieldcomment_context" deleted="false" description="Comment for fields" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.fieldcomment" name="fieldcomment">
 
@@ -53,8 +53,7 @@
  * ${tags}
  * ${see_to_target}
  */
-    </template><template autoinsert="true" context="newtype_context" deleted="false" description="Newly created files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.newtype" name="newtype">
-${filecomment}
+    </template><template autoinsert="true" context="newtype_context" deleted="false" description="Newly created files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.newtype" name="newtype">${filecomment}
 ${package_declaration}
 
 ${typecomment}
