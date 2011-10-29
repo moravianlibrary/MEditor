@@ -38,7 +38,7 @@ import org.fedora.api.FedoraAPIA;
 import org.fedora.api.FedoraAPIM;
 import org.fedora.api.ObjectFactory;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**

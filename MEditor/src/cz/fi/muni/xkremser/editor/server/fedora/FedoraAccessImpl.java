@@ -70,10 +70,6 @@ import org.fedora.api.FedoraAPIMService;
 import org.fedora.api.ObjectFactory;
 
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces;
-import cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship;
-import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
@@ -81,6 +77,11 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.LexerException;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.PIDParser;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
+
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
+import cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship;
+import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils.getDjVuImage;
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils.getFedoraDatastreamsList;

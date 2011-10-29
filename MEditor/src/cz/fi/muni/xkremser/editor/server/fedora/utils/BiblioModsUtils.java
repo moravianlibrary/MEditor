@@ -50,7 +50,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.AbstractTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.AccessConditionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.BaseDateTypeClient;
@@ -160,6 +159,8 @@ import cz.fi.muni.xkremser.editor.server.mods.TypeOfResourceType;
 import cz.fi.muni.xkremser.editor.server.mods.UnstructuredText;
 import cz.fi.muni.xkremser.editor.server.mods.UrlType;
 import cz.fi.muni.xkremser.editor.server.mods.Yes;
+
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**

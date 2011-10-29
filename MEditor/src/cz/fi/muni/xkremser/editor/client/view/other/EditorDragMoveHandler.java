@@ -31,7 +31,7 @@ import com.smartgwt.client.widgets.events.DragMoveEvent;
 import com.smartgwt.client.widgets.events.DragMoveHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 /**
  * @author Jiri Kremser

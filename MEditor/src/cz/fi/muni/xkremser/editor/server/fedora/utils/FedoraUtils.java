@@ -68,10 +68,6 @@ import org.w3c.dom.NodeList;
 import org.fedora.api.RelationshipTuple;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces;
-import cz.fi.muni.xkremser.editor.client.domain.FedoraRelationship;
-import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
@@ -80,6 +76,10 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
+import cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship;
+import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
@@ -470,13 +470,12 @@ public class FedoraUtils {
     /**
      * Create new dublin core part.
      * 
-     * @param detail
-     *        the detail
+     * @param dc
+     *        the dublin core
      * @return content the content of the new dublin core part.
      */
-    public static String createNewDublinCorePart(DigitalObjectDetail detail) {
-        DublinCore dc = null;
-        if ((dc = detail.getDc()) != null) {
+    public static String createNewDublinCorePart(DublinCore dc) {
+        if (dc != null) {
             StringBuilder contentBuilder = new StringBuilder();
             contentBuilder.append(DC_HEAD);
             appendDCElement(contentBuilder, dc.getContributor(), DublinCoreConstants.DC_CONTRIBUTOR);
@@ -505,15 +504,13 @@ public class FedoraUtils {
     /**
      * Create new mods part.
      * 
-     * @param detail
-     *        the detail
+     * @param modsClient
+     *        the modsClient
      * @return content the content of the new mods part
      */
-    public static String createNewModsPart(DigitalObjectDetail detail) {
-        if (detail.getMods() != null) {
-            ModsCollectionClient modsCollection = detail.getMods();
-
-            ModsCollection mods = BiblioModsUtils.toMods(modsCollection);
+    public static String createNewModsPart(ModsCollectionClient modsClient) {
+        if (modsClient != null) {
+            ModsCollection mods = BiblioModsUtils.toMods(modsClient);
             ModsCollection collapsedMods = ServerUtils.collapseStructure(mods);
             String content = BiblioModsUtils.toXML(collapsedMods);
 

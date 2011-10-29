@@ -29,8 +29,9 @@ package cz.fi.muni.xkremser.editor.client.view.other;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -57,10 +57,11 @@ import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**

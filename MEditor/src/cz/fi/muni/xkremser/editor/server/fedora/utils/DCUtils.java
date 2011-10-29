@@ -50,7 +50,7 @@ import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.DC_NAMESPACE_URI;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -12,9 +12,9 @@ import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 

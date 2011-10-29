@@ -66,13 +66,13 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
 
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.BIBILO_MODS_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.RELS_EXT_NAMESPACE_URI;
 import static cz.fi.muni.xkremser.editor.client.util.Constants.BIBLIO_MODS;
 import static cz.fi.muni.xkremser.editor.client.util.Constants.DC;
 import static cz.fi.muni.xkremser.editor.client.util.Constants.RELS_EXT;
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils.LABEL_VALUE;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.RELS_EXT_NAMESPACE_URI;
 
 /**
  * @author Matous Jobanek
@@ -120,7 +120,7 @@ public class DownloadDigitalObjectDetailHandler
 
         } else if (desiredDatastream.equals(DC)) {
             if (detail.isDcChanged()) {
-                newContent = FedoraUtils.createNewDublinCorePart(detail);
+                newContent = FedoraUtils.createNewDublinCorePart(detail.getDc());
             } else {
                 try {
                     newDocument = fedoraAccess.getDC(detail.getUuid());
@@ -131,7 +131,7 @@ public class DownloadDigitalObjectDetailHandler
 
         } else if (desiredDatastream.equals(BIBLIO_MODS)) {
             if (detail.isModsChanged()) {
-                newContent = FedoraUtils.createNewModsPart(detail);
+                newContent = FedoraUtils.createNewModsPart(detail.getMods());
             } else {
                 try {
                     newDocument = fedoraAccess.getBiblioMods(detail.getUuid());
@@ -253,12 +253,12 @@ public class DownloadDigitalObjectDetailHandler
                 if (streamToModify.equals(DC)) {
                     versionElement.setAttribute("LABEL", "Dublin Core Record for this object");
                     versionElement.setAttribute("FORMAT_URI", OAI_DC_NAMESPACE_URI);
-                    content = FedoraUtils.createNewDublinCorePart(detail);
+                    content = FedoraUtils.createNewDublinCorePart(detail.getDc());
 
                 } else {
                     versionElement.setAttribute("LABEL", "BIBLIO_MODS description of current object");
                     versionElement.setAttribute("FORMAT_URI", BIBILO_MODS_URI);
-                    content = FedoraUtils.createNewModsPart(detail);
+                    content = FedoraUtils.createNewModsPart(detail.getMods());
                 }
             }
 

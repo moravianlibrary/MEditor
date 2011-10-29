@@ -35,14 +35,14 @@ import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.BIBILO_MODS_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.DC_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.FEDORA_MODELS_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.FOXML_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.KRAMERIUS_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.OAI_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces.RDF_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.FEDORA_MODELS_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.FOXML_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.KRAMERIUS_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.RDF_NAMESPACE_URI;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -31,7 +31,7 @@ import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**

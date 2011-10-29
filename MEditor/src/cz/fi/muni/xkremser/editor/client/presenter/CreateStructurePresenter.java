@@ -62,14 +62,14 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;

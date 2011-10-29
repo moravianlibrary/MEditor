@@ -233,7 +233,7 @@ public class PutDigitalObjectDetailHandler
                         + "/datastreams/DC?versionable=" + (versionable ? "true" : "false");
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
-        String content = FedoraUtils.createNewDublinCorePart(detail);
+        String content = FedoraUtils.createNewDublinCorePart(detail.getDc());
         if (content != null) {
             RESTHelper.put(url, content, usr, pass, false);
         }
@@ -251,7 +251,7 @@ public class PutDigitalObjectDetailHandler
                         + "/datastreams/BIBLIO_MODS?versionable=" + (versionable ? "true" : "false");
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
-        String content = FedoraUtils.createNewModsPart(detail);
+        String content = FedoraUtils.createNewModsPart(detail.getMods());
         if (content != null) {
             RESTHelper.put(url, content, usr, pass, false);
         }

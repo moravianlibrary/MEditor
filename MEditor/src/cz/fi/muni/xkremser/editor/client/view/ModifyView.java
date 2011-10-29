@@ -97,8 +97,6 @@ import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -113,6 +111,8 @@ import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 

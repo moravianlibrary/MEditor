@@ -42,8 +42,6 @@ import org.w3c.dom.Document;
 import org.fedora.api.RelationshipTuple;
 
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.client.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
@@ -54,6 +52,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;

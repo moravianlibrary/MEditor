@@ -32,9 +32,9 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -49,7 +49,7 @@ public class DigitalObjectDetail
     /** The ocr. */
     private String ocr;
 
-    /** The ocr. */
+    /** The tei. */
     private String tei;
 
     /** The items. */

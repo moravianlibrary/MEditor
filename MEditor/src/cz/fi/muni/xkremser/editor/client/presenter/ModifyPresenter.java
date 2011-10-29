@@ -64,7 +64,6 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
@@ -74,6 +73,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
