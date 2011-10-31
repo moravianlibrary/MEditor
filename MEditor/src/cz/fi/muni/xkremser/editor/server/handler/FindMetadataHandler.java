@@ -27,7 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,6 +39,8 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
+
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
@@ -92,8 +95,9 @@ public class FindMetadataHandler
             LOGGER.debug("Processing action: FindMetadataAction: for code " + action.getCode());
         }
         ServerUtils.checkExpiredSession(httpSessionProvider);
-        List<DublinCore> documents = client.search(action.getSearchType(), action.getCode());
-        return new FindMetadataResult(documents);
+        Map<DublinCore, ModsCollectionClient> documents =
+                client.search(action.getSearchType(), action.getCode());
+        return new FindMetadataResult(new ArrayList(documents.keySet()));
     }
 
     /*

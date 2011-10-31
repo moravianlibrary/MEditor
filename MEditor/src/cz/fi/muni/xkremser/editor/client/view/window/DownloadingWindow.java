@@ -37,9 +37,9 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 
-import static cz.fi.muni.xkremser.editor.client.util.Constants.BIBLIO_MODS;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.DC;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.RELS_EXT;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.DC;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.RELS_EXT;
 
 /**
  * @author Matous Jobanek
@@ -111,14 +111,15 @@ public abstract class DownloadingWindow
 
         Layout streamLayout = new HLayout(2);
         Layout fedoraStreamsLayout = new VLayout(3);
-        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(DC, uuid, null));
-        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS, uuid, null));
-        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT, uuid, null));
+        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, null));
+        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, null));
+        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, null));
 
         Layout localStreamsLayout = new VLayout(3);
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC, uuid, stringsWithXml[1]));
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS, uuid, stringsWithXml[2]));
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT, uuid, stringsWithXml[3]));
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[1]));
+        localStreamsLayout
+                .addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[2]));
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[3]));
 
         streamLayout.addMember(fedoraStreamsLayout);
         streamLayout.addMember(localStreamsLayout);
@@ -164,11 +165,11 @@ public abstract class DownloadingWindow
         sb.append("<input type=\"submit\" value=\"");
         if (stream == null) {
             sb.append(lang.fullFoxml());
-        } else if (DC.equals(stream)) {
+        } else if (DC.getValue().equals(stream)) {
             sb.append("DC datastream");
-        } else if (BIBLIO_MODS.equals(stream)) {
+        } else if (BIBLIO_MODS.getValue().equals(stream)) {
             sb.append("MODS datastream");
-        } else if (RELS_EXT.equals(stream)) {
+        } else if (RELS_EXT.getValue().equals(stream)) {
             sb.append("RELS-EXT datastream");
         }
         sb.append("\" />");

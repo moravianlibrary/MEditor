@@ -32,15 +32,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import java.util.UUID;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
-import com.gwtplatform.dispatch.shared.ActionException;
 import com.uwyn.jhighlight.renderer.XhtmlRendererFactory;
 
 import org.apache.log4j.Logger;
+
+import org.dom4j.DocumentHelper;
+import org.dom4j.QName;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,6 +53,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.newObject.rehan.Namespaces;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
 
@@ -172,5 +177,18 @@ public class FoxmlUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static org.dom4j.Element createModsCollectionEl() {
+        org.dom4j.Element modsCollection =
+                DocumentHelper.createElement(new QName("modsCollection", Namespaces.mods));
+        modsCollection.add(Namespaces.mods);
+        String modsSchema = "http://www.loc.gov/standards/mods/v3/mods-3-3.xsd";
+        modsCollection.addAttribute("schemaLocation", Namespaces.mods.getURI() + " " + modsSchema);
+        return modsCollection;
+    }
+
+    public static String getRandomUuid() {
+        return UUID.randomUUID().toString();
     }
 }

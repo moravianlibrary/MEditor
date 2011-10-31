@@ -373,10 +373,27 @@ public class Constants {
     public static final int IMAGE_FULL_WIDTH = 750;
     public static final String RANGE = "range";
 
-    public static final String BIBLIO_MODS = "BIBLIO_MODS";
-
-    public static final String DC = "DC";
-
-    public static final String RELS_EXT = "RELS-EXT";
     public static final String HTTP_CACHE_SECONDS = "7200";
+
+    /**
+     * Fedora FOXML related constants
+     */
+    public static enum DATASTREAM_ID {
+        DC("DC"), RELS_EXT("RELS_EXT"), BIBLIO_MODS("BIBLIO_MODS"), POLICY("POLICY"), IMG_FULL("IMG_FULL"),
+        IMG_THUMB("IMG_THUMB"), TEI("TEI"), TEXT_OCR("TEXT_OCR");
+
+        private final String value;
+
+        private DATASTREAM_ID(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum DATASTREAM_CONTROLGROUP {
+        E, M, R, X
+    }
 }

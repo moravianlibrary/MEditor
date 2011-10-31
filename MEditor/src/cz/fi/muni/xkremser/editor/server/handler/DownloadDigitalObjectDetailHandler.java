@@ -66,9 +66,9 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
 
-import static cz.fi.muni.xkremser.editor.client.util.Constants.BIBLIO_MODS;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.DC;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.RELS_EXT;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.DC;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.RELS_EXT;
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils.LABEL_VALUE;
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
@@ -127,7 +127,7 @@ public class DownloadDigitalObjectDetailHandler
         }
         if (detail.isDcChanged()) {
             stringsWithXml[1] = FedoraUtils.createNewDublinCorePart(detail.getDc());
-            modifyStream(detail, documentsWithXml[0], DC, stringsWithXml[1]);
+            modifyStream(detail, documentsWithXml[0], DC.getValue(), stringsWithXml[1]);
             stringsWithXml[1] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[1];
         } else {
             try {
@@ -139,7 +139,7 @@ public class DownloadDigitalObjectDetailHandler
 
         if (detail.isModsChanged()) {
             stringsWithXml[2] = FedoraUtils.createNewModsPart(detail.getMods());
-            modifyStream(detail, documentsWithXml[0], BIBLIO_MODS, stringsWithXml[2]);
+            modifyStream(detail, documentsWithXml[0], BIBLIO_MODS.getValue(), stringsWithXml[2]);
             stringsWithXml[2] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[2];
         } else {
             try {
@@ -151,7 +151,7 @@ public class DownloadDigitalObjectDetailHandler
 
         if (detail.getAllItems() != null) {
             stringsWithXml[3] = FedoraUtils.createNewRealitonsPart(detail);
-            modifyStream(detail, documentsWithXml[0], RELS_EXT, stringsWithXml[3]);
+            modifyStream(detail, documentsWithXml[0], RELS_EXT.getValue(), stringsWithXml[3]);
             stringsWithXml[3] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[3];
         } else {
             try {
@@ -219,7 +219,7 @@ public class DownloadDigitalObjectDetailHandler
 
                 Element versionElement = foxmlDocument.createElement("foxml:datastreamVersion");
 
-                if (streamToModify.equals(RELS_EXT)) {
+                if (streamToModify.equals(RELS_EXT.getValue())) {
                     versionElement.setAttribute("LABEL", "RDF Statements about this object");
                     versionElement.setAttribute("FORMAT_URI", RELS_EXT_NAMESPACE_URI);
                     versionElement.setAttribute("MIMETYPE", "application/rdf+xml");
@@ -227,7 +227,7 @@ public class DownloadDigitalObjectDetailHandler
                 } else {
                     versionElement.setAttribute("MIMETYPE", "text/xml");
 
-                    if (streamToModify.equals(DC)) {
+                    if (streamToModify.equals(DC.getValue())) {
                         versionElement.setAttribute("LABEL", "Dublin Core Record for this object");
                         versionElement.setAttribute("FORMAT_URI", OAI_DC_NAMESPACE_URI);
 

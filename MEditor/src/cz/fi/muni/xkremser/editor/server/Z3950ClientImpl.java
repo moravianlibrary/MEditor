@@ -53,12 +53,11 @@ package cz.fi.muni.xkremser.editor.server;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.Map;
 import java.util.Properties;
 
+import com.google.gwt.dev.util.collect.HashMap;
 import com.google.inject.Inject;
-import com.k_int.IR.IREvent;
 import com.k_int.IR.IRQuery;
 import com.k_int.IR.InformationFragment;
 import com.k_int.IR.SearchException;
@@ -68,6 +67,7 @@ import com.k_int.z3950.IRClient.Z3950Origin;
 
 import org.apache.log4j.Logger;
 
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -114,7 +114,15 @@ public class Z3950ClientImpl
     public static final String NKP_NKC_PROFILE_ID = "nkp_nkc";
 
     /** The Constant RECORD_SYNTAX. */
-    public static final String RECORD_SYNTAX = "xml";
+    public static final String DC_RECORD_SYNTAX = "xml";
+
+    public static final String MARC_RECORD_SYNTAX = "usmarc";
+
+    private String profile = null;
+    private String host = null;
+    private String port = null;
+    private String base = null;
+    private int barLength = 0;
 
     /**
      * Instantiates a new z3950 client.
@@ -137,107 +145,54 @@ public class Z3950ClientImpl
      * @return the dublin core xml
      */
     @Override
-    public List<DublinCore> search(Constants.SEARCH_FIELD field, String what) {
+    public Map<DublinCore, ModsCollectionClient> search(Constants.SEARCH_FIELD field, String what) {
+        boolean isOk = init();
+        if (!isOk) {
+            return null;
+        }
+        List<String> dcStrings = search(field, what, false);
+        List<String> marcStrings = search(field, what, true);
+        Map<DublinCore, ModsCollectionClient> retMap = new HashMap<DublinCore, ModsCollectionClient>();
+        for (int i = 0; i < dcStrings.size(); i++) {
+            retMap.put(DCUtils.getDC(dcStrings.get(i)), null);
+        }
+        //        try {
+        //            String marc = marcStrings.get(0);
+        //            ByteArrayOutputStream out = new ByteArrayOutputStream();
+        //            NumberFormat nf = new DecimalFormat("00000");
+        //            ByteArrayInputStream in =
+        //                    new ByteArrayInputStream((nf.format((marc.length() - 7)) + marc.substring(12)).getBytes("UTF-8"));
+        //            MarcWriter writer = new MarcXmlWriter(out);
+        //            MarcReader reader = new MarcStreamReader(in);
+        //            while (reader.hasNext()) {
+        //                Record r = reader.next();
+        //                System.out.println(r.getLeader().getRecordLength());
+        //                writer.write(r);
+        //            }
+        //            String xml = new String(out.toByteArray(), "UTF-8");
+        //        } catch (UnsupportedEncodingException e) {
+        //            // TODO Auto-generated catch block
+        //            LOGGER.error(e.getMessage());
+        //            e.printStackTrace();
+        //        }
+        return retMap;
+    }
 
-        // OIDRegister reg = OIDRegister.getRegister();
-
-        String profile = null;
-        String host = null;
-        String port = null;
-        String base = null;
-        int barLength = 0;
-        int profileIndex = -1;
-        if ((profile = configuration.getZ3950Profile()) != null) {
-            if (MZK_PROFILE_ID.equals(profile)) {
-                profileIndex = MZK_PROFILE_INDEX;
-            } else if (MUNI_PROFILE_ID.equals(profile)) {
-                profileIndex = MUNI_PROFILE_INDEX;
-            } else if (NKP_SKC_PROFILE_ID.equals(profile)) {
-                profileIndex = NKP_SKC_PROFILE_INDEX;
-            } else if (NKP_NKC_PROFILE_ID.equals(profile)) {
-                profileIndex = NKP_NKC_PROFILE_INDEX;
-            } else {
-                LOGGER.warn("Invalid value (" + profile + ") for key "
-                        + EditorConfiguration.ServerConstants.Z3950_PROFILE + " in editor configuration.");
-            }
-        }
-        // host
-        if ((host = configuration.getZ3950Host()) == null) {
-            if (profileIndex == -1) {
-                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_HOST + " nor "
-                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
-                        + " is set in editor configuration!");
-                return null;
-            } else {
-                host = EditorConfiguration.ServerConstants.Z3950_DEFAULT_HOSTS[profileIndex];
-            }
-        }
-        // port
-        if ((port = configuration.getZ3950Port()) == null) {
-            if (profileIndex == -1) {
-                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_PORT + " nor "
-                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
-                        + " is set in editor configuration!");
-                return null;
-            } else {
-                port = EditorConfiguration.ServerConstants.Z3950_DEFAULT_PORTS[profileIndex];
-            }
-        }
-        // base
-        if ((base = configuration.getZ3950Base()) == null) {
-            if (profileIndex == -1) {
-                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_BASE + " nor "
-                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
-                        + " is set in editor configuration!");
-                return null;
-            } else {
-                base = EditorConfiguration.ServerConstants.Z3950_DEFAULT_BASES[profileIndex];
-            }
-        }
-        // barcode length
-        if ((barLength = configuration.getZ3950BarLength().intValue()) == ServerConstants.UNDEF.intValue()) {
-            if (profileIndex == -1) {
-                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_BAR_LENGTH + " nor "
-                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
-                        + " is set in editor configuration!");
-                return null;
-            } else {
-                barLength = EditorConfiguration.ServerConstants.Z3950_DEFAULT_BAR_LENGTH[profileIndex];
-            }
-        }
+    private List<String> search(Constants.SEARCH_FIELD field, String what, boolean marc) {
 
         Properties props = new Properties();
         props.put("ServiceHost", host);
         props.put("ServicePort", port);
         props.put("service_short_name", "meditor");
         props.put("service_long_name", "meditor");
-        props.put("default_record_syntax", RECORD_SYNTAX);
+        props.put("default_record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
         props.put("default_element_set_name", "F");
-
-        // Remember you don't really need to do this...
-        Observer fragment_count_observer = new Observer() {
-
-            @Override
-            public void update(Observable o, Object arg) {
-                IREvent e = (IREvent) arg;
-
-                if (e.event_type == IREvent.SOURCE_RESET) {
-                    System.err.println("TIME: Sub Fragment source reset");
-                } else if (e.event_type == IREvent.FRAGMENT_COUNT_CHANGE) {
-                    System.err.println("TIME: Number of fragments has changed to " + e.event_info);
-                }
-            }
-        };
-
-        // Observer[] all_observers = new Observer[] { fragment_count_observer };
-
-        //        LOGGER.info("Z39.50: Connecting to " + host + " on port " + port);
         Searchable s = new Z3950Origin();
         s.init(props);
 
         IRQuery e = new IRQuery();
         e.collections.add(base);
-        e.hints.put("record_syntax", RECORD_SYNTAX);
+        e.hints.put("record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
         String query = "@attrset bib-1 ";
         if (field != null) {
             switch (field) {
@@ -260,27 +215,23 @@ public class Z3950ClientImpl
         }
         e.setQueryModel(new com.k_int.IR.QueryModels.PrefixString(query + "\"" + what + "\""));
         LOGGER.debug("QUERY: " + e.getQueryModel().toString());
-        List<DublinCore> returnList = new ArrayList<DublinCore>();
+        List<String> returnList = new ArrayList<String>();
         try {
             SearchTask st = s.createTask(e, null, null/* all_observers */);
             int status = st.evaluate(150000);
-
-            //            LOGGER.info("Private task status: " + st.lookupPrivateStatusCode(st.getPrivateTaskStatusCode()));
             Enumeration rs_enum = st.getTaskResultSet().elements();
 
             while (rs_enum.hasMoreElements()) {
                 InformationFragment f = (InformationFragment) rs_enum.nextElement();
-                returnList.add(DCUtils.getDC(f.toString()));
-                //                LOGGER.info(f.toString());
+                returnList.add(f.toString());
+                LOGGER.info(f.toString());
             }
-
             st.destroyTask();
         } catch (SearchException se) {
             se.printStackTrace();
         } catch (com.k_int.IR.TimeoutExceededException tee) {
             tee.printStackTrace();
         }
-
         s.destroy();
         return returnList;
     }
@@ -293,5 +244,68 @@ public class Z3950ClientImpl
      */
     public static void main(String args[]) {
 
+    }
+
+    private boolean init() {
+        int profileIndex = -1;
+        if ((profile = configuration.getZ3950Profile()) != null) {
+            if (MZK_PROFILE_ID.equals(profile)) {
+                profileIndex = MZK_PROFILE_INDEX;
+            } else if (MUNI_PROFILE_ID.equals(profile)) {
+                profileIndex = MUNI_PROFILE_INDEX;
+            } else if (NKP_SKC_PROFILE_ID.equals(profile)) {
+                profileIndex = NKP_SKC_PROFILE_INDEX;
+            } else if (NKP_NKC_PROFILE_ID.equals(profile)) {
+                profileIndex = NKP_NKC_PROFILE_INDEX;
+            } else {
+                LOGGER.warn("Invalid value (" + profile + ") for key "
+                        + EditorConfiguration.ServerConstants.Z3950_PROFILE + " in editor configuration.");
+            }
+        }
+        // host
+        if ((host = configuration.getZ3950Host()) == null) {
+            if (profileIndex == -1) {
+                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_HOST + " nor "
+                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
+                        + " is set in editor configuration!");
+                return false;
+            } else {
+                host = EditorConfiguration.ServerConstants.Z3950_DEFAULT_HOSTS[profileIndex];
+            }
+        }
+        // port
+        if ((port = configuration.getZ3950Port()) == null) {
+            if (profileIndex == -1) {
+                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_PORT + " nor "
+                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
+                        + " is set in editor configuration!");
+                return false;
+            } else {
+                port = EditorConfiguration.ServerConstants.Z3950_DEFAULT_PORTS[profileIndex];
+            }
+        }
+        // base
+        if ((base = configuration.getZ3950Base()) == null) {
+            if (profileIndex == -1) {
+                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_BASE + " nor "
+                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
+                        + " is set in editor configuration!");
+                return false;
+            } else {
+                base = EditorConfiguration.ServerConstants.Z3950_DEFAULT_BASES[profileIndex];
+            }
+        }
+        // barcode length
+        if ((barLength = configuration.getZ3950BarLength().intValue()) == ServerConstants.UNDEF.intValue()) {
+            if (profileIndex == -1) {
+                LOGGER.error("Neither " + EditorConfiguration.ServerConstants.Z3950_BAR_LENGTH + " nor "
+                        + EditorConfiguration.ServerConstants.Z3950_PROFILE
+                        + " is set in editor configuration!");
+                return false;
+            } else {
+                barLength = EditorConfiguration.ServerConstants.Z3950_DEFAULT_BAR_LENGTH[profileIndex];
+            }
+        }
+        return true;
     }
 }
