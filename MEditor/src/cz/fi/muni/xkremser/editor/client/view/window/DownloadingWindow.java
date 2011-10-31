@@ -24,11 +24,9 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
-import com.smartgwt.client.widgets.Button;
+import com.google.gwt.http.client.URL;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -51,9 +49,16 @@ import static cz.fi.muni.xkremser.editor.client.util.Constants.RELS_EXT;
 public abstract class DownloadingWindow
         extends Window {
 
+    private final Layout mainLayout = new VLayout(5);
+
+    private final LangConstants lang;
+
+    private final ModalWindow modalWindow;
+
     public DownloadingWindow(LangConstants lang, final EditorTabSet ts) {
+        this.lang = lang;
         setHeight(350);
-        setWidth(420);
+        setWidth(450);
         setCanDragResize(true);
         setShowEdges(true);
         setTitle(lang.downloadItem());
@@ -68,82 +73,24 @@ public abstract class DownloadingWindow
             }
         });
 
+        mainLayout.setHeight100();
+        setEdgeOffset(10);
+        addItem(mainLayout);
+
+        modalWindow = new ModalWindow(mainLayout);
+        modalWindow.setLoadingIcon("loadingAnimation.gif");
+        modalWindow.show(true);
+        init();
+    }
+
+    protected abstract void init();
+
+    public void addButtons(String[] stringsWithXml, String uuid) {
+
         HTMLFlow foxmlLabel = new HTMLFlow("<big><center>" + lang.downloadFoxml() + ":" + "</center></big>");
         HTMLFlow streamsLabel =
                 new HTMLFlow("<big><center>" + lang.downloadStream() + ":" + "</center></big>");
-        final HTMLFlow fedoraFoxmlFlow = new HTMLFlow();
-        HTMLFlow fedoraDcFlow = new HTMLFlow();
-        HTMLFlow fedoraModsFlow = new HTMLFlow();
-        HTMLFlow fedoraRelsExtFlow = new HTMLFlow();
-        fedoraFoxmlFlow
-                .setContents("<form><center><button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                        + Constants.SERVLET_DOWNLOAD_FOXML_PREFIX + "/" + ts.getUuid() + "\'\">"
-                        + lang.fullFoxml() + "</button></center></form>");
 
-        fedoraDcFlow.setContents("<form><button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/DC/" + ts.getUuid()
-                + "\'\">DC datastream</button></form>");
-        fedoraDcFlow.setExtraSpace(8);
-
-        fedoraModsFlow.setContents("<form><button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/BIBLIO_MODS/" + ts.getUuid()
-                + "\'\">MODS datastream</button></form>");
-        fedoraModsFlow.setExtraSpace(8);
-
-        fedoraRelsExtFlow.setContents("<form><button TYPE=\"button\" onClick=\"window.location.href=\'/"
-                + Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX + "/RELS-EXT/" + ts.getUuid()
-                + "\'\">RELS-EXT datastream</button></form>");
-        fedoraRelsExtFlow.setExtraSpace(8);
-
-        final Button localFoxmlButton = new Button();
-        localFoxmlButton.setTitle(lang.fullFoxml());
-        localFoxmlButton.setHeight(24);
-        localFoxmlButton.setWidth(110);
-        localFoxmlButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                download(null);
-            }
-        });
-        Button localDcButton = new Button();
-        localDcButton.setTitle("DC datastream");
-        localDcButton.setHeight(25);
-        localDcButton.setWidth(130);
-        localDcButton.setExtraSpace(8);
-        localDcButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                download(DC);
-            }
-        });
-        Button localModsButton = new Button();
-        localModsButton.setTitle("MODS datastream");
-        localModsButton.setHeight(25);
-        localModsButton.setWidth(150);
-        localModsButton.setExtraSpace(8);
-        localModsButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                download(BIBLIO_MODS);
-            }
-        });
-        Button localRelsExtButton = new Button();
-        localRelsExtButton.setTitle("RELS-EXT datastream");
-        localRelsExtButton.setHeight(25);
-        localRelsExtButton.setWidth(160);
-        localRelsExtButton.setExtraSpace(8);
-        localRelsExtButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                download(RELS_EXT);
-            }
-        });
-
-        Layout mainLayout = new VLayout(5);
         Layout titleLayout = new HLayout(2);
         titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.masterCopy() + ":" + "</center></h2>"));
         titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.workingCopy() + ":" + "</center></h2>"));
@@ -153,9 +100,9 @@ public abstract class DownloadingWindow
         mainLayout.addMember(foxmlLabel);
 
         Layout foxmlLayout = new HLayout(2);
-        foxmlLayout.addMember(fedoraFoxmlFlow);
-        foxmlLayout.addMember(localFoxmlButton);
-        foxmlLayout.setMargin(12);
+        foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
+        foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, stringsWithXml[0]));
+        foxmlLayout.setMargin(7);
         foxmlLayout.setExtraSpace(10);
         foxmlLayout.setAutoHeight();
         mainLayout.addMember(foxmlLayout);
@@ -164,29 +111,72 @@ public abstract class DownloadingWindow
 
         Layout streamLayout = new HLayout(2);
         Layout fedoraStreamsLayout = new VLayout(3);
-        fedoraStreamsLayout.addMember(fedoraDcFlow);
-        fedoraStreamsLayout.addMember(fedoraModsFlow);
-        fedoraStreamsLayout.addMember(fedoraRelsExtFlow);
+        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(DC, uuid, null));
+        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS, uuid, null));
+        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT, uuid, null));
 
         Layout localStreamsLayout = new VLayout(3);
-        localStreamsLayout.addMember(localDcButton);
-        localStreamsLayout.addMember(localModsButton);
-        localStreamsLayout.addMember(localRelsExtButton);
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC, uuid, stringsWithXml[1]));
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS, uuid, stringsWithXml[2]));
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT, uuid, stringsWithXml[3]));
 
         streamLayout.addMember(fedoraStreamsLayout);
         streamLayout.addMember(localStreamsLayout);
         streamLayout.setMargin(12);
         streamLayout.setAutoHeight();
         mainLayout.addMember(streamLayout);
-        mainLayout.setAutoHeight();
-
-        setEdgeOffset(10);
-        addItem(mainLayout);
-        init();
+        modalWindow.hide();
     }
 
-    protected abstract void download(String stream);
+    private HTMLFlow htmlFlowFormLinkFactory(String stream, String uuid, String content) {
 
-    protected abstract void init();
+        StringBuffer sb = new StringBuffer();
+        sb.append("<center>");
+        sb.append("<form method=\"");
+        sb.append(content == null ? "get" : "post");
+        sb.append("\" action=\"/");
+        sb.append(stream == null ? Constants.SERVLET_DOWNLOAD_FOXML_PREFIX
+                : Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX);
+        sb.append("\">");
 
+        if (content != null) {
+            sb.append("<input type=\"hidden\" name=\"");
+            sb.append(Constants.PARAM_CONTENT);
+            sb.append("\" value=\"");
+            sb.append(URL.encode(content));
+            sb.append("\"/>");
+        }
+
+        if (stream != null) {
+            sb.append("<input type=\"hidden\" name=\"");
+            sb.append(Constants.PARAM_DATASTREAM);
+            sb.append("\" value=\"");
+            sb.append(stream);
+            sb.append("\"/>");
+        }
+
+        sb.append("<input type=\"hidden\" name=\"");
+        sb.append(Constants.PARAM_UUID);
+        sb.append("\" value=\"");
+        sb.append(uuid);
+        sb.append("\"/>");
+
+        sb.append("<input type=\"submit\" value=\"");
+        if (stream == null) {
+            sb.append(lang.fullFoxml());
+        } else if (DC.equals(stream)) {
+            sb.append("DC datastream");
+        } else if (BIBLIO_MODS.equals(stream)) {
+            sb.append("MODS datastream");
+        } else if (RELS_EXT.equals(stream)) {
+            sb.append("RELS-EXT datastream");
+        }
+        sb.append("\" />");
+        sb.append("</form>");
+        sb.append("</center>");
+        HTMLFlow newFormFlow = new HTMLFlow(sb.toString());
+        newFormFlow.setExtraSpace(8);
+
+        return newFormFlow;
+    }
 }

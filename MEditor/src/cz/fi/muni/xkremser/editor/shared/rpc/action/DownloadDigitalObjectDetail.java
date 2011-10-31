@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -29,26 +26,29 @@ package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GetDigitalObjectDetail.
+ * @author Matous Jobanek
+ * @version $Id$
  */
 @GenDispatch(isSecure = false)
 public class DownloadDigitalObjectDetail
-        extends UnsecuredActionImpl<PutDigitalObjectDetailResult> {
+        extends UnsecuredActionImpl<DownloadDigitalObjectDetailResult> {
 
-    /** The detail. */
+    /** The Digital object detail */
     @In(1)
     private DigitalObjectDetail detail;
 
     /**
-     * The desired datastream, datastream == null if the whole foxml is desired.
+     * The array of Strings which contains a working copy of FOXML and
+     * individual datastreams in this order: String[0] = FOXML, String[1] = DC
+     * datastream, String[2] = MODS datastream, String[3] = RELS-EXT datastream.
      */
-    @In(2)
-    private String datastream;
+    @Out(1)
+    private String[] stringsWithXml;
 
 }

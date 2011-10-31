@@ -31,7 +31,6 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpSession;
 
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -55,12 +54,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
@@ -111,95 +111,71 @@ public class DownloadDigitalObjectDetailHandler
         ServerUtils.checkExpiredSession(session);
 
         DigitalObjectDetail detail = action.getDetail();
-        String newContent = null;
-        Document newDocument = null;
 
-        String desiredDatastream = action.getDatastream();
-        if (desiredDatastream == null) {
-            newDocument = handleFoxml(detail);
+        String[] stringsWithXml = new String[] {null, null, null, null};
+        Document[] documentsWithXml = new Document[] {null, null, null, null};
 
-        } else if (desiredDatastream.equals(DC)) {
-            if (detail.isDcChanged()) {
-                newContent = FedoraUtils.createNewDublinCorePart(detail.getDc());
-            } else {
-                try {
-                    newDocument = fedoraAccess.getDC(detail.getUuid());
-                } catch (IOException e) {
-                    throw new ActionException();
-                }
-            }
-
-        } else if (desiredDatastream.equals(BIBLIO_MODS)) {
-            if (detail.isModsChanged()) {
-                newContent = FedoraUtils.createNewModsPart(detail.getMods());
-            } else {
-                try {
-                    newDocument = fedoraAccess.getBiblioMods(detail.getUuid());
-                } catch (IOException e) {
-                    throw new ActionException();
-                }
-            }
-
-        } else if (desiredDatastream.equals(RELS_EXT)) {
-            if (detail.getAllItems() != null) {
-                newContent = FedoraUtils.createNewRealitonsPart(detail);
-            } else {
-                try {
-                    newDocument = fedoraAccess.getRelsExt(detail.getUuid());
-                } catch (IOException e) {
-                    throw new ActionException();
-                }
-            }
-        }
-
-        if (newContent == null && newDocument != null) {
-            try {
-                TransformerFactory transFactory = TransformerFactory.newInstance();
-                Transformer transformer = transFactory.newTransformer();
-                StringWriter buffer = new StringWriter();
-                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                transformer.transform(new DOMSource(newDocument), new StreamResult(buffer));
-                newContent = buffer.toString();
-            } catch (TransformerException e) {
-                LOGGER.warn("Document transformer failure", e);
-            }
-        }
-        //        System.out.println("new fowml: " + newContent);
-
-        RESTHelper.post("http://127.0.0.1:8888/download/?gwt.codesvr=127.0.0.1:9997",
-                        newContent,
-                        null,
-                        null,
-                        true);
-
-        return new DownloadDigitalObjectDetailResult();
-    }
-
-    private Document handleFoxml(DigitalObjectDetail detail) throws ActionException {
-        Document foxmlDocument = null;
         try {
-            foxmlDocument = FoxmlUtils.getFoxmlDocument(fedoraAccess.getFOXMLInputStream(detail.getUuid()));
+            documentsWithXml[0] =
+                    FoxmlUtils.getFoxmlDocument(fedoraAccess.getFOXMLInputStream(detail.getUuid()));
         } catch (IOException e) {
             throw new ActionException();
         }
 
         if (detail.isLabelChanged()) {
-            modifyLabel(detail, foxmlDocument);
+            modifyLabel(detail, documentsWithXml[0]);
         }
         if (detail.isDcChanged()) {
-            modifyStream(detail, foxmlDocument, DC);
+            stringsWithXml[1] = FedoraUtils.createNewDublinCorePart(detail.getDc());
+            modifyStream(detail, documentsWithXml[0], DC, stringsWithXml[1]);
+            stringsWithXml[1] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[1];
+        } else {
+            try {
+                documentsWithXml[1] = fedoraAccess.getDC(detail.getUuid());
+            } catch (IOException e) {
+                throw new ActionException();
+            }
         }
+
         if (detail.isModsChanged()) {
-            modifyStream(detail, foxmlDocument, BIBLIO_MODS);
+            stringsWithXml[2] = FedoraUtils.createNewModsPart(detail.getMods());
+            modifyStream(detail, documentsWithXml[0], BIBLIO_MODS, stringsWithXml[2]);
+            stringsWithXml[2] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[2];
+        } else {
+            try {
+                documentsWithXml[2] = fedoraAccess.getBiblioMods(detail.getUuid());
+            } catch (IOException e) {
+                throw new ActionException();
+            }
         }
+
         if (detail.getAllItems() != null) {
-            modifyStream(detail, foxmlDocument, RELS_EXT);
+            stringsWithXml[3] = FedoraUtils.createNewRealitonsPart(detail);
+            modifyStream(detail, documentsWithXml[0], RELS_EXT, stringsWithXml[3]);
+            stringsWithXml[3] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[3];
+        } else {
+            try {
+                documentsWithXml[3] = fedoraAccess.getRelsExt(detail.getUuid());
+            } catch (IOException e) {
+                throw new ActionException();
+            }
         }
-        if (detail.isOcrChanged()) {
 
+        for (int i = 0; i < stringsWithXml.length; i++) {
+            if (stringsWithXml[i] == null && documentsWithXml[i] != null) {
+                try {
+                    TransformerFactory transFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transFactory.newTransformer();
+                    StringWriter buffer = new StringWriter();
+                    transformer.transform(new DOMSource(documentsWithXml[i]), new StreamResult(buffer));
+                    stringsWithXml[i] = buffer.toString();
+                } catch (TransformerException e) {
+                    LOGGER.warn("Document transformer failure", e);
+                }
+            }
         }
 
-        return foxmlDocument;
+        return new DownloadDigitalObjectDetailResult(stringsWithXml);
     }
 
     private int getNumberOfVersion(String id) {
@@ -212,57 +188,54 @@ public class DownloadDigitalObjectDetailHandler
      * @param foxmlDocument
      */
 
-    private void modifyStream(DigitalObjectDetail detail, Document foxmlDocument, String streamToModify) {
+    private void modifyStream(DigitalObjectDetail detail,
+                              Document foxmlDocument,
+                              String streamToModify,
+                              String newContent) {
 
-        try {
+        if (newContent != null) {
+            try {
 
-            String lastStreamXPath =
-                    "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
+                String lastStreamXPath =
+                        "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
 
-            XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(lastStreamXPath);
-            NodeList listOfstream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
-            Element elementOfVersion = null;
-            if (listOfstream.getLength() != 0) {
-                elementOfVersion = (Element) listOfstream.item(0);
-            }
-            //            System.err.println(elementOfVersion.getAttribute("ID"));
-            int versionNumber = getNumberOfVersion(elementOfVersion.getAttribute("ID"));
+                XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(lastStreamXPath);
+                NodeList listOfstream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
+                Element elementOfVersion = null;
+                if (listOfstream.getLength() != 0) {
+                    elementOfVersion = (Element) listOfstream.item(0);
+                }
+                int versionNumber = getNumberOfVersion(elementOfVersion.getAttribute("ID"));
 
-            all =
-                    FedoraUtils.makeNSAwareXpath().compile("//foxml:datastream[@ID=\'" + streamToModify
-                            + "\']");
+                all =
+                        FedoraUtils.makeNSAwareXpath().compile("//foxml:datastream[@ID=\'" + streamToModify
+                                + "\']");
 
-            NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
-            Element parentOfStream = null;
-            if (nodesOfStream.getLength() != 0) {
-                parentOfStream = (Element) nodesOfStream.item(0);
-            }
+                NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
+                Element parentOfStream = null;
+                if (nodesOfStream.getLength() != 0) {
+                    parentOfStream = (Element) nodesOfStream.item(0);
+                }
 
-            Element versionElement = foxmlDocument.createElement("foxml:datastreamVersion");
-            String content = null;
+                Element versionElement = foxmlDocument.createElement("foxml:datastreamVersion");
 
-            if (streamToModify.equals(RELS_EXT)) {
-                versionElement.setAttribute("LABEL", "RDF Statements about this object");
-                versionElement.setAttribute("FORMAT_URI", RELS_EXT_NAMESPACE_URI);
-                versionElement.setAttribute("MIMETYPE", "application/rdf+xml");
-                content = FedoraUtils.createNewRealitonsPart(detail);
-
-            } else {
-                versionElement.setAttribute("MIMETYPE", "text/xml");
-
-                if (streamToModify.equals(DC)) {
-                    versionElement.setAttribute("LABEL", "Dublin Core Record for this object");
-                    versionElement.setAttribute("FORMAT_URI", OAI_DC_NAMESPACE_URI);
-                    content = FedoraUtils.createNewDublinCorePart(detail.getDc());
+                if (streamToModify.equals(RELS_EXT)) {
+                    versionElement.setAttribute("LABEL", "RDF Statements about this object");
+                    versionElement.setAttribute("FORMAT_URI", RELS_EXT_NAMESPACE_URI);
+                    versionElement.setAttribute("MIMETYPE", "application/rdf+xml");
 
                 } else {
-                    versionElement.setAttribute("LABEL", "BIBLIO_MODS description of current object");
-                    versionElement.setAttribute("FORMAT_URI", BIBILO_MODS_URI);
-                    content = FedoraUtils.createNewModsPart(detail.getMods());
-                }
-            }
+                    versionElement.setAttribute("MIMETYPE", "text/xml");
 
-            if (content != null) {
+                    if (streamToModify.equals(DC)) {
+                        versionElement.setAttribute("LABEL", "Dublin Core Record for this object");
+                        versionElement.setAttribute("FORMAT_URI", OAI_DC_NAMESPACE_URI);
+
+                    } else {
+                        versionElement.setAttribute("LABEL", "BIBLIO_MODS description of current object");
+                        versionElement.setAttribute("FORMAT_URI", BIBILO_MODS_URI);
+                    }
+                }
 
                 FedoraUtils.removeElements(parentOfStream, foxmlDocument, FedoraUtils.makeNSAwareXpath()
                         .compile(lastStreamXPath));
@@ -274,7 +247,7 @@ public class DownloadDigitalObjectDetailHandler
                 Element contentElement = foxmlDocument.createElement("foxml:xmlContent");
 
                 try {
-                    InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
+                    InputStream is = new ByteArrayInputStream(newContent.getBytes("UTF-8"));
                     Document newStreamDocument = FoxmlUtils.getFoxmlDocument(is);
                     NodeList streamNodeList = newStreamDocument.getChildNodes();
                     for (int i = 0; i < streamNodeList.getLength(); i++) {
@@ -288,9 +261,10 @@ public class DownloadDigitalObjectDetailHandler
 
                 versionElement.appendChild(contentElement);
                 parentOfStream.appendChild(versionElement);
+
+            } catch (XPathExpressionException e) {
+                LOGGER.warn("XPath failure", e);
             }
-        } catch (XPathExpressionException e) {
-            LOGGER.warn("XPath failure", e);
         }
     }
 
@@ -334,10 +308,4 @@ public class DownloadDigitalObjectDetailHandler
                      ExecutionContext arg2) throws ActionException {
         // TODO Auto-generated method stub
     }
-
-    public static void main(String... args) {
-        RESTHelper
-                .post("http://127.0.0.1:8888/download/?gwt.codesvr=127.0.0.1:9997", "foo", null, null, true);
-    }
-
 }

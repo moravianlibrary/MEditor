@@ -138,7 +138,7 @@ public class ModifyView
 
         void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable);
 
-        void onDownloadDigitalObject(final DigitalObjectDetail digitalObject, final String datastream);
+        void onHandleWorkingCopyDigObj(final DigitalObjectDetail digitalObject);
 
         void getDescription(final String uuid, final TabSet tabSet, final String tabId);
 
@@ -1276,6 +1276,12 @@ public class ModifyView
     }
 
     private void showDownloadingWindow(final EditorTabSet ts) {
+
+        InfoTab infoT = ts.getInfoTab();
+        DCTab dcT = ts.getDcTab();
+        DigitalObjectDetail detail =
+                createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
+        getUiHandlers().onHandleWorkingCopyDigObj(detail);
         downloadingWindow = new DownloadingWindow(lang, ts) {
 
             @Override
@@ -1284,16 +1290,12 @@ public class ModifyView
                 centerInPage();
                 focus();
             }
-
-            @Override
-            protected void download(String stream) {
-                InfoTab infoT = ts.getInfoTab();
-                DCTab dcT = ts.getDcTab();
-                DigitalObjectDetail detail =
-                        createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
-                getUiHandlers().onDownloadDigitalObject(detail, stream);
-            }
         };
+    }
+
+    @Override
+    public DownloadingWindow getDownloadingWindow() {
+        return downloadingWindow;
     }
 
     private void unlockDigitalObject(final EditorTabSet ts, String message) {

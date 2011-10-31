@@ -70,6 +70,7 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
@@ -132,6 +133,8 @@ public class ModifyPresenter
         void addDigitalObject(String uuid, DigitalObjectDetail detail, boolean refresh);
 
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
+
+        DownloadingWindow getDownloadingWindow();
     }
 
     /**
@@ -587,13 +590,18 @@ public class ModifyPresenter
      * (cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail)
      */
     @Override
-    public void onDownloadDigitalObject(DigitalObjectDetail digitalObject, String datastream) {
-        dispatcher.execute(new DownloadDigitalObjectDetailAction(digitalObject, datastream),
+    public void onHandleWorkingCopyDigObj(final DigitalObjectDetail digitalObject) {
+        dispatcher.execute(new DownloadDigitalObjectDetailAction(digitalObject),
                            new DispatchCallback<DownloadDigitalObjectDetailResult>() {
 
                                @Override
                                public void callback(DownloadDigitalObjectDetailResult result) {
-                                   // TODO Auto-generated method stub
+                                   String[] stringsWithXml = new String[4];
+                                   for (int i = 0; i < result.getStringsWithXml().length; i++) {
+                                       stringsWithXml[i] = result.getStringsWithXml()[i];
+                                   }
+                                   getView().getDownloadingWindow().addButtons(stringsWithXml,
+                                                                               digitalObject.getUuid());
                                }
 
                                @Override

@@ -50,6 +50,18 @@ public class Constants {
     /** The Constant SERVLET_DOWNLOAD_DATASTREAMS_PREFIX. */
     public static final String SERVLET_DOWNLOAD_DATASTREAMS_PREFIX = "download/datastreams";
 
+    /** The Constant XML_HEADER_WITH_BACKSLASHES **/
+    public static final String XML_HEADER_WITH_BACKSLASHES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
+    /** The Constant PARAM_UUID. */
+    public static final String PARAM_UUID = "uuid";
+
+    /** The Constant PARAM_CONTENT. */
+    public static final String PARAM_CONTENT = "content";
+
+    /** The Constant PARAM_DATASTREAM. */
+    public static final String PARAM_DATASTREAM = "datastream";
+
     /** The Constant URL_PARAM_NOT_SCALE. */
     public static final String URL_PARAM_NOT_SCALE = "not_scale";
 
