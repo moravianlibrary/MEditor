@@ -69,6 +69,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailR
 import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
 import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.DC;
 import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.RELS_EXT;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.TEXT_OCR;
 import static cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils.LABEL_VALUE;
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
@@ -127,7 +128,7 @@ public class DownloadDigitalObjectDetailHandler
         }
         if (detail.isDcChanged()) {
             stringsWithXml[1] = FedoraUtils.createNewDublinCorePart(detail.getDc());
-            modifyStream(detail, documentsWithXml[0], DC.getValue(), stringsWithXml[1]);
+            modifyStream(documentsWithXml[0], DC.getValue(), stringsWithXml[1]);
             stringsWithXml[1] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[1];
         } else {
             try {
@@ -139,7 +140,7 @@ public class DownloadDigitalObjectDetailHandler
 
         if (detail.isModsChanged()) {
             stringsWithXml[2] = FedoraUtils.createNewModsPart(detail.getMods());
-            modifyStream(detail, documentsWithXml[0], BIBLIO_MODS.getValue(), stringsWithXml[2]);
+            modifyStream(documentsWithXml[0], BIBLIO_MODS.getValue(), stringsWithXml[2]);
             stringsWithXml[2] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[2];
         } else {
             try {
@@ -151,7 +152,7 @@ public class DownloadDigitalObjectDetailHandler
 
         if (detail.getAllItems() != null) {
             stringsWithXml[3] = FedoraUtils.createNewRealitonsPart(detail);
-            modifyStream(detail, documentsWithXml[0], RELS_EXT.getValue(), stringsWithXml[3]);
+            modifyStream(documentsWithXml[0], RELS_EXT.getValue(), stringsWithXml[3]);
             stringsWithXml[3] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[3];
         } else {
             try {
@@ -159,6 +160,14 @@ public class DownloadDigitalObjectDetailHandler
             } catch (IOException e) {
                 throw new ActionException();
             }
+        }
+
+        if (detail.isOcrChanged()) {
+            String newContent = detail.getOcr();
+            modifyStream(documentsWithXml[0], TEXT_OCR.getValue(), newContent);
+        } else if (detail.thereWasAnyOcr()) {
+            String oldContent = fedoraAccess.getOcr(detail.getUuid());
+            addOldOcr(documentsWithXml[0], oldContent);
         }
 
         for (int i = 0; i < stringsWithXml.length; i++) {
@@ -178,7 +187,34 @@ public class DownloadDigitalObjectDetailHandler
         return new DownloadDigitalObjectDetailResult(stringsWithXml);
     }
 
-    private int getNumberOfVersion(String id) {
+    /**
+     * @param oldContent
+     * @param document
+     */
+
+    private void addOldOcr(Document foxmlDocument, String oldContent) {
+        try {
+            String lastContLocXPath =
+                    "//foxml:datastream[@ID=\'" + TEXT_OCR.getValue()
+                            + "\']/foxml:datastreamVersion[last()]/foxml:contentLocation[last()]";
+
+            XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(lastContLocXPath);
+            NodeList listOfstream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
+            Element lastContLocElement = null;
+            if (listOfstream.getLength() != 0) {
+                lastContLocElement = (Element) listOfstream.item(0);
+            }
+            Element localContElement = foxmlDocument.createElement("foxml:content");
+
+            localContElement.setTextContent(oldContent);
+            lastContLocElement.appendChild(localContElement);
+
+        } catch (XPathExpressionException e) {
+            LOGGER.warn("XPath failure", e);
+        }
+    }
+
+    private int getVersionNumber(String id) {
         String[] splitedId = id.split("\\.");
         return Integer.parseInt(splitedId[1]);
     }
@@ -188,10 +224,7 @@ public class DownloadDigitalObjectDetailHandler
      * @param foxmlDocument
      */
 
-    private void modifyStream(DigitalObjectDetail detail,
-                              Document foxmlDocument,
-                              String streamToModify,
-                              String newContent) {
+    private void modifyStream(Document foxmlDocument, String streamToModify, String newContent) {
 
         if (newContent != null) {
             try {
@@ -205,7 +238,7 @@ public class DownloadDigitalObjectDetailHandler
                 if (listOfstream.getLength() != 0) {
                     elementOfVersion = (Element) listOfstream.item(0);
                 }
-                int versionNumber = getNumberOfVersion(elementOfVersion.getAttribute("ID"));
+                int versionNumber = getVersionNumber(elementOfVersion.getAttribute("ID"));
 
                 all =
                         FedoraUtils.makeNSAwareXpath().compile("//foxml:datastream[@ID=\'" + streamToModify
@@ -231,9 +264,19 @@ public class DownloadDigitalObjectDetailHandler
                         versionElement.setAttribute("LABEL", "Dublin Core Record for this object");
                         versionElement.setAttribute("FORMAT_URI", OAI_DC_NAMESPACE_URI);
 
-                    } else {
+                    } else if (streamToModify.equals(BIBLIO_MODS.getValue())) {
                         versionElement.setAttribute("LABEL", "BIBLIO_MODS description of current object");
                         versionElement.setAttribute("FORMAT_URI", BIBILO_MODS_URI);
+
+                    } else if (streamToModify.equals(TEXT_OCR.getValue())) {
+                        versionElement.setAttribute("LABEL", "");
+                        Element contLocElement = foxmlDocument.createElement("foxml:contentLocation");
+                        contLocElement.setAttribute("TYPE", "INTERNAL_ID");
+                        contLocElement.setAttribute("REF", "LOCAL");
+                        Element localContElement = foxmlDocument.createElement("foxml:content");
+                        localContElement.setTextContent(newContent);
+                        contLocElement.appendChild(localContElement);
+                        versionElement.appendChild(contLocElement);
                     }
                 }
 

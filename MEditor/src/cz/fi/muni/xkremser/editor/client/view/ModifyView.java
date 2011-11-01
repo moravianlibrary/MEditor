@@ -1488,12 +1488,12 @@ public class ModifyView
         if (ts.getOcrContent() != null && (ts.getOriginalOcrContent() != null)
                 || "".equals(ts.getOriginalOcrContent())) {
             String val = (String) ts.getOcrContent().getValue();
+            if ("".equals(ts.getOriginalOcrContent())) {
+                object.setThereWasAnyOcr(false);
+            } else if (ts.getOriginalOcrContent().length() > 0) {
+                object.setThereWasAnyOcr(true);
+            }
             if (!ts.getOriginalOcrContent().equals(val)) {
-                if ("".equals(ts.getOriginalOcrContent())) {
-                    object.setThereWasAnyOcr(false);
-                } else if (ts.getOriginalOcrContent().length() > 0) {
-                    object.setThereWasAnyOcr(true);
-                }
                 object.setOcr(val);
                 object.setOcrChanged(true);
             }
