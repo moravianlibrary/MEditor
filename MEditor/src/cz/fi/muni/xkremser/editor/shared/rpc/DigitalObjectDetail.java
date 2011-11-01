@@ -72,6 +72,9 @@ public class DigitalObjectDetail
     /** The ocr changed. */
     private boolean ocrChanged;
 
+    /** Whether there was any ocr before the change */
+    private boolean thereWasAnyOcr;
+
     private boolean itemsChanged;
 
     private String label;
@@ -98,6 +101,14 @@ public class DigitalObjectDetail
 
     /** The time to expiration of the lock */
     private String timeToExpirationLock;
+
+    public boolean thereWasAnyOcr() {
+        return thereWasAnyOcr;
+    }
+
+    public void setThereWasAnyOcr(boolean thereWasAnyOcr) {
+        this.thereWasAnyOcr = thereWasAnyOcr;
+    }
 
     public String getLockOwner() {
         return lockOwner;

@@ -19,6 +19,8 @@ public class EditorTabSet
 
     private TextAreaItem ocrContent;
 
+    private String originalOcrContent;
+
     private DCTab dcTab;
 
     private Tab modsTab;
@@ -40,6 +42,14 @@ public class EditorTabSet
     private String lockOwner;
 
     private String lockDescription;
+
+    public String getOriginalOcrContent() {
+        return originalOcrContent;
+    }
+
+    public void setOriginalOcrContent(String originalOcrContent) {
+        this.originalOcrContent = originalOcrContent;
+    }
 
     public String getLockOwner() {
         return lockOwner;

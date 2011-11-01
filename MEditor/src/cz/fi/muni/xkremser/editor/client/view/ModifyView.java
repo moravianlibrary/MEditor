@@ -570,10 +570,8 @@ public class ModifyView
             ocrItem.setWidth("600");
             ocrItem.setHeight("*");
             ocrItem.setShowTitle(false);
-            if (ocr != null) {
-                ocrItem.setValue(ocr);
-                ocrTextContent.put(ocrItem, ocr);
-            }
+            ocrItem.setValue(ocr != null ? ocr : "");
+            topTabSet.setOriginalOcrContent(ocr != null ? ocr : "");
             form.setItems(ocrItem);
             ocTab.setPane(form);
             topTabSet.setOcrContent(ocrItem);
@@ -1487,10 +1485,15 @@ public class ModifyView
             object.setLabel(infoT.getLabelItem());
         }
 
-        TextAreaItem ocrTextItem = null;
-        if ((ocrTextItem = ts.getOcrContent()) != null && ocrTextContent.get(ocrTextItem) != null) {
-            String val = (String) ocrTextItem.getValue();
-            if (!ocrTextContent.get(ocrTextItem).equals(val)) {
+        if (ts.getOcrContent() != null && (ts.getOriginalOcrContent() != null)
+                || "".equals(ts.getOriginalOcrContent())) {
+            String val = (String) ts.getOcrContent().getValue();
+            if (!ts.getOriginalOcrContent().equals(val)) {
+                if ("".equals(ts.getOriginalOcrContent())) {
+                    object.setThereWasAnyOcr(false);
+                } else if (ts.getOriginalOcrContent().length() > 0) {
+                    object.setThereWasAnyOcr(true);
+                }
                 object.setOcr(val);
                 object.setOcrChanged(true);
             }

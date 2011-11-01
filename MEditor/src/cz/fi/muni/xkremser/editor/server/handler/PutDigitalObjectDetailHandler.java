@@ -138,7 +138,12 @@ public class PutDigitalObjectDetailHandler
                 shouldReindex = true;
             }
             if (detail.isOcrChanged()) {
-                modifyOcr(detail, action.isVersioning());
+                if (detail.thereWasAnyOcr()) {
+                    modifyOcr(detail, action.isVersioning());
+                } else {
+                    putOcr(detail);
+                }
+
                 shouldReindex = true;
             }
             if (shouldReindex) {
@@ -272,6 +277,25 @@ public class PutDigitalObjectDetailHandler
             String usr = configuration.getFedoraLogin();
             String pass = configuration.getFedoraPassword();
             RESTHelper.put(url, detail.getOcr(), usr, pass, false);
+        }
+    }
+
+    /**
+     * Put ocr.
+     * 
+     * @param detail
+     *        the detail
+     */
+    private void putOcr(DigitalObjectDetail detail) {
+        if (detail.getOcr() != null) {
+            String url =
+                    configuration.getFedoraHost()
+                            + "/objects/"
+                            + detail.getUuid()
+                            + "/datastreams/TEXT_OCR?controlGroup=M&dsState=A&versionable=false&mimeType=text/plain";
+            String usr = configuration.getFedoraLogin();
+            String pass = configuration.getFedoraPassword();
+            RESTHelper.post(url, detail.getOcr(), usr, pass, false);
         }
     }
 
