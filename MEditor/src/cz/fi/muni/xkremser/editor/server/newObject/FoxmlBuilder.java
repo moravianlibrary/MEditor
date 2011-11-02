@@ -36,13 +36,17 @@ import org.dom4j.Element;
 import org.dom4j.QName;
 
 import cz.fi.muni.xkremser.editor.client.mods.BiblioModsClient;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 
+import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
+import cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 /**
@@ -51,7 +55,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
  */
 public abstract class FoxmlBuilder {
 
-    private static final String PID_PREFIX = "uuid:";
+    private static final String PID_PREFIX = Constants.FEDORA_UUID_PREFIX;
     private final String uuid;
     private final String pid;
     private final String label;
@@ -87,6 +91,7 @@ public abstract class FoxmlBuilder {
         decotateProperties();
         decorateDCStream();
         decorateMODSStream();
+        decorateRelsExtStream();
         //        addPolicyDatastream(policy);
         //dcXmlContent = createDcXmlContent();
         //        modsXmlContent = createModsXmlContent();
@@ -95,6 +100,7 @@ public abstract class FoxmlBuilder {
     }
 
     public String getDocument() {
+        Dom4jUtils.writeDocument(rootElement.getDocument(), System.out, PrintType.PRETTY);
         return rootElement.getDocument().asXML();
     }
 
@@ -248,6 +254,18 @@ public abstract class FoxmlBuilder {
         contentLocation.addAttribute("REF", reference);
     }
 
+    protected void decorateRelsExtStream() {
+        Document relsExt = FoxmlUtils.createRelsExtSkeleton(uuid, getModel().getValue(), policy);
+        for (RelsExtRelation child : children) {
+            FoxmlUtils.addRelationshipToRelsExt(relsExt, child);
+        }
+        appendDatastream(DATASTREAM_CONTROLGROUP.X,
+                         DATASTREAM_ID.RELS_EXT,
+                         relsExt.getRootElement(),
+                         null,
+                         null);
+    }
+
     protected abstract void decorateMODSStream();
 
     protected abstract DigitalObjectModel getModel();
@@ -290,8 +308,22 @@ public abstract class FoxmlBuilder {
 
     public static void main(String... args) {
         FoxmlBuilder test = new PageBuilder("FC");
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
         test.createDocument();
-        System.out.println(test.getDocument());
-
+        //        Dom4jUtils.writeDocument(doc, out, printType)
+        //        System.out.println(test.getDocument());
+        test.getDocument();
     }
 }
