@@ -596,8 +596,9 @@ public class ModifyPresenter
 
                                @Override
                                public void callback(DownloadDigitalObjectDetailResult result) {
-                                   String[] stringsWithXml = new String[4];
-                                   for (int i = 0; i < result.getStringsWithXml().length; i++) {
+                                   int length = result.getStringsWithXml().length;
+                                   String[] stringsWithXml = new String[length];
+                                   for (int i = 0; i < length; i++) {
                                        stringsWithXml[i] = result.getStringsWithXml()[i];
                                    }
                                    getView().getDownloadingWindow().addButtons(stringsWithXml,

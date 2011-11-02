@@ -29,6 +29,10 @@ import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -49,7 +53,8 @@ import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.REL
 public abstract class DownloadingWindow
         extends Window {
 
-    private final Layout mainLayout = new VLayout(5);
+    private final Layout mainLayout;
+    private HTMLFlow foxmlLocalFlow;
 
     private final LangConstants lang;
 
@@ -65,6 +70,12 @@ public abstract class DownloadingWindow
         setShowMinimizeButton(false);
         setIsModal(true);
         setShowModalMask(true);
+        setEdgeOffset(10);
+
+        mainLayout = new VLayout(5);
+        mainLayout.setHeight100();
+        addItem(mainLayout);
+
         addCloseClickHandler(new CloseClickHandler() {
 
             @Override
@@ -72,10 +83,6 @@ public abstract class DownloadingWindow
                 destroy();
             }
         });
-
-        mainLayout.setHeight100();
-        setEdgeOffset(10);
-        addItem(mainLayout);
 
         modalWindow = new ModalWindow(mainLayout);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
@@ -85,7 +92,7 @@ public abstract class DownloadingWindow
 
     protected abstract void init();
 
-    public void addButtons(String[] stringsWithXml, String uuid) {
+    public void addButtons(final String[] stringsWithXml, final String uuid) {
 
         HTMLFlow foxmlLabel = new HTMLFlow("<big><center>" + lang.downloadFoxml() + ":" + "</center></big>");
         HTMLFlow streamsLabel =
@@ -101,7 +108,21 @@ public abstract class DownloadingWindow
 
         Layout foxmlLayout = new HLayout(2);
         foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
-        foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, stringsWithXml[0]));
+        
+        Layout foxmlLocalLayout = new VLayout(2);        
+        foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
+        final Layout foxmlLocalFlowLayout = new VLayout(1);
+        foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
+        foxmlLocalLayout.addMember(foxmlLocalFlowLayout);
+
+        DynamicForm form = new DynamicForm();
+        final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
+        versionable.setDefaultValue(false);
+        form.setFields(versionable);
+        form.setWidth(200);
+        foxmlLocalLayout.addMember(form);
+        foxmlLayout.addMember(foxmlLocalLayout);
+
         foxmlLayout.setMargin(7);
         foxmlLayout.setExtraSpace(10);
         foxmlLayout.setAutoHeight();
@@ -127,6 +148,19 @@ public abstract class DownloadingWindow
         streamLayout.setAutoHeight();
         mainLayout.addMember(streamLayout);
         modalWindow.hide();
+
+        versionable.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                foxmlLocalFlowLayout.removeMember(foxmlLocalFlow);
+                foxmlLocalFlow =
+                        htmlFlowFormLinkFactory(null,
+                                                uuid,
+                                                stringsWithXml[versionable.getValueAsBoolean() ? 0 : 1]);
+                foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
+            }
+        });
     }
 
     private HTMLFlow htmlFlowFormLinkFactory(String stream, String uuid, String content) {

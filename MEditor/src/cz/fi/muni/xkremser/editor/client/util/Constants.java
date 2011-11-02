@@ -379,7 +379,7 @@ public class Constants {
      * Fedora FOXML related constants
      */
     public static enum DATASTREAM_ID {
-        DC("DC"), RELS_EXT("RELS_EXT"), BIBLIO_MODS("BIBLIO_MODS"), POLICY("POLICY"), IMG_FULL("IMG_FULL"),
+        DC("DC"), RELS_EXT("RELS-EXT"), BIBLIO_MODS("BIBLIO_MODS"), POLICY("POLICY"), IMG_FULL("IMG_FULL"),
         IMG_THUMB("IMG_THUMB"), TEI("TEI"), TEXT_OCR("TEXT_OCR");
 
         private final String value;

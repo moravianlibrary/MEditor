@@ -113,8 +113,8 @@ public class DownloadDigitalObjectDetailHandler
 
         DigitalObjectDetail detail = action.getDetail();
 
-        String[] stringsWithXml = new String[] {null, null, null, null};
-        Document[] documentsWithXml = new Document[] {null, null, null, null};
+        String[] stringsWithXml = new String[] {null, null, null, null, null};
+        Document[] documentsWithXml = new Document[] {null, null, null, null, null};
 
         try {
             documentsWithXml[0] =
@@ -127,39 +127,50 @@ public class DownloadDigitalObjectDetailHandler
             modifyLabel(detail, documentsWithXml[0]);
         }
         if (detail.isDcChanged()) {
-            stringsWithXml[1] = FedoraUtils.createNewDublinCorePart(detail.getDc());
-            modifyStream(documentsWithXml[0], DC.getValue(), stringsWithXml[1]);
-            stringsWithXml[1] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[1];
+            stringsWithXml[2] = FedoraUtils.createNewDublinCorePart(detail.getDc());
+            modifyStream(documentsWithXml[0], DC.getValue(), stringsWithXml[2]);
+            stringsWithXml[2] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[2];
         } else {
             try {
-                documentsWithXml[1] = fedoraAccess.getDC(detail.getUuid());
+                documentsWithXml[2] = fedoraAccess.getDC(detail.getUuid());
             } catch (IOException e) {
                 throw new ActionException();
             }
         }
 
         if (detail.isModsChanged()) {
-            stringsWithXml[2] = FedoraUtils.createNewModsPart(detail.getMods());
-            modifyStream(documentsWithXml[0], BIBLIO_MODS.getValue(), stringsWithXml[2]);
-            stringsWithXml[2] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[2];
+            stringsWithXml[3] = FedoraUtils.createNewModsPart(detail.getMods());
+            modifyStream(documentsWithXml[0], BIBLIO_MODS.getValue(), stringsWithXml[3]);
+            stringsWithXml[3] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[3];
         } else {
             try {
-                documentsWithXml[2] = fedoraAccess.getBiblioMods(detail.getUuid());
+                documentsWithXml[3] = fedoraAccess.getBiblioMods(detail.getUuid());
             } catch (IOException e) {
                 throw new ActionException();
             }
         }
 
         if (detail.getAllItems() != null) {
-            stringsWithXml[3] = FedoraUtils.createNewRealitonsPart(detail);
-            modifyStream(documentsWithXml[0], RELS_EXT.getValue(), stringsWithXml[3]);
-            stringsWithXml[3] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[3];
+            stringsWithXml[4] = FedoraUtils.createNewRealitonsPart(detail);
+            modifyStream(documentsWithXml[0], RELS_EXT.getValue(), stringsWithXml[4]);
+            stringsWithXml[4] = Constants.XML_HEADER_WITH_BACKSLASHES + stringsWithXml[4];
         } else {
             try {
-                documentsWithXml[3] = fedoraAccess.getRelsExt(detail.getUuid());
+                documentsWithXml[4] = fedoraAccess.getRelsExt(detail.getUuid());
             } catch (IOException e) {
                 throw new ActionException();
             }
+        }
+
+        documentsWithXml[1] = documentsWithXml[0];
+        if (detail.isDcChanged()) {
+            removeNextToLastVersion(documentsWithXml[1], DC.getValue());
+        }
+        if (detail.isModsChanged()) {
+            removeNextToLastVersion(documentsWithXml[1], BIBLIO_MODS.getValue());
+        }
+        if (detail.getAllItems() != null) {
+            removeNextToLastVersion(documentsWithXml[1], RELS_EXT.getValue());
         }
 
         if (detail.isOcrChanged()) {
@@ -280,9 +291,6 @@ public class DownloadDigitalObjectDetailHandler
                     }
                 }
 
-                FedoraUtils.removeElements(parentOfStream, foxmlDocument, FedoraUtils.makeNSAwareXpath()
-                        .compile(lastStreamXPath));
-
                 versionElement.setAttribute("ID", streamToModify + "." + (versionNumber + 1));
                 versionElement.setAttribute("CREATED", "NOT YET");
                 versionElement.setAttribute("SIZE", "0");
@@ -295,7 +303,6 @@ public class DownloadDigitalObjectDetailHandler
                     NodeList streamNodeList = newStreamDocument.getChildNodes();
                     for (int i = 0; i < streamNodeList.getLength(); i++) {
                         Node myNewNode = foxmlDocument.importNode(streamNodeList.item(i), true);
-                        System.err.println(myNewNode);
                         contentElement.appendChild(myNewNode);
                     }
                 } catch (IOException e) {
@@ -309,6 +316,19 @@ public class DownloadDigitalObjectDetailHandler
                 LOGGER.warn("XPath failure", e);
             }
         }
+    }
+
+    private void removeNextToLastVersion(Document foxmlDocument, String streamToModify) {
+        String nextToLastStreamXPath =
+                "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()-1]";
+
+        try {
+            FedoraUtils.removeElements(foxmlDocument.getDocumentElement(), foxmlDocument, FedoraUtils
+                    .makeNSAwareXpath().compile(nextToLastStreamXPath));
+        } catch (XPathExpressionException e) {
+            LOGGER.warn("XPath failure", e);
+        }
+
     }
 
     /**

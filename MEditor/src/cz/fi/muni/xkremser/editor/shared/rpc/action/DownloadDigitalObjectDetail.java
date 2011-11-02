@@ -45,8 +45,9 @@ public class DownloadDigitalObjectDetail
 
     /**
      * The array of Strings which contains a working copy of FOXML and
-     * individual datastreams in this order: String[0] = FOXML, String[1] = DC
-     * datastream, String[2] = MODS datastream, String[3] = RELS-EXT datastream.
+     * individual datastreams in this order: String[0] = FOXML, String[1] =
+     * FOXML without the last version of the changed datastreams, String[2] = DC
+     * datastream, String[3] = MODS datastream, String[4] = RELS-EXT datastream.
      */
     @Out(1)
     private String[] stringsWithXml;
