@@ -214,7 +214,8 @@ public class PutDigitalObjectDetailHandler
     private boolean modifyRelations(DigitalObjectDetail detail, boolean versionable) {
         String url =
                 configuration.getFedoraHost() + "/objects/" + detail.getUuid()
-                        + "/datastreams/RELS-EXT?versionable=" + (versionable ? "true" : "false");
+                        + "/datastreams/RELS-EXT?versionable=" + (versionable ? "true" : "false")
+                        + "&mimeType=application/rdf+xml";
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
         String content = FedoraUtils.createNewRealitonsPart(detail);
@@ -235,7 +236,8 @@ public class PutDigitalObjectDetailHandler
     private void modifyDublinCore(DigitalObjectDetail detail, boolean versionable) {
         String url =
                 configuration.getFedoraHost() + "/objects/" + detail.getUuid()
-                        + "/datastreams/DC?versionable=" + (versionable ? "true" : "false");
+                        + "/datastreams/DC?versionable=" + (versionable ? "true" : "false")
+                        + "&mimeType=text/xml";
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
         String content = FedoraUtils.createNewDublinCorePart(detail.getDc());
@@ -253,7 +255,8 @@ public class PutDigitalObjectDetailHandler
     private void modifyMods(DigitalObjectDetail detail, boolean versionable) {
         String url =
                 configuration.getFedoraHost() + "/objects/" + detail.getUuid()
-                        + "/datastreams/BIBLIO_MODS?versionable=" + (versionable ? "true" : "false");
+                        + "/datastreams/BIBLIO_MODS?versionable=" + (versionable ? "true" : "false")
+                        + "&mimeType=text/xml";
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
         String content = FedoraUtils.createNewModsPart(detail.getMods());
@@ -273,7 +276,8 @@ public class PutDigitalObjectDetailHandler
         if (detail.getOcr() != null) {
             String url =
                     configuration.getFedoraHost() + "/objects/" + detail.getUuid()
-                            + "/datastreams/TEXT_OCR?versionable=" + (versionable ? "true" : "false");
+                            + "/datastreams/TEXT_OCR?versionable=" + (versionable ? "true" : "false")
+                            + "&mimeType=text/plain";
             String usr = configuration.getFedoraLogin();
             String pass = configuration.getFedoraPassword();
             RESTHelper.put(url, detail.getOcr(), usr, pass, false);
