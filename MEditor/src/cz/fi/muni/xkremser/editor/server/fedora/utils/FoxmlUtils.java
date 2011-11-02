@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.newObject.rehan.Namespaces;
+import cz.fi.muni.xkremser.editor.server.newObject.Namespaces;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
 
