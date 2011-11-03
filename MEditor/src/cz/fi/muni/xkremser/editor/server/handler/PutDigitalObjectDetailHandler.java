@@ -215,7 +215,7 @@ public class PutDigitalObjectDetailHandler
         String url =
                 configuration.getFedoraHost() + "/objects/" + detail.getUuid()
                         + "/datastreams/RELS-EXT?versionable=" + (versionable ? "true" : "false")
-                        + "&mimeType=application/rdf+xml";
+                        + java.net.URLEncoder.encode("&mimeType=application/rdf+xml");
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
         String content = FedoraUtils.createNewRealitonsPart(detail);

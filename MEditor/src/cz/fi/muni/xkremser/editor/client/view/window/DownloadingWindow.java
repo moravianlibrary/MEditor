@@ -109,7 +109,7 @@ public abstract class DownloadingWindow
         Layout foxmlLayout = new HLayout(2);
         foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
         
-        Layout foxmlLocalLayout = new VLayout(2);        
+        Layout foxmlLocalLayout = new VLayout(2);       
         foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
         final Layout foxmlLocalFlowLayout = new VLayout(1);
         foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
@@ -137,10 +137,10 @@ public abstract class DownloadingWindow
         fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, null));
 
         Layout localStreamsLayout = new VLayout(3);
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[1]));
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[2]));
         localStreamsLayout
-                .addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[2]));
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[3]));
+                .addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[3]));
+        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[4]));
 
         streamLayout.addMember(fedoraStreamsLayout);
         streamLayout.addMember(localStreamsLayout);

@@ -162,17 +162,6 @@ public class DownloadDigitalObjectDetailHandler
             }
         }
 
-        documentsWithXml[1] = documentsWithXml[0];
-        if (detail.isDcChanged()) {
-            removeNextToLastVersion(documentsWithXml[1], DC.getValue());
-        }
-        if (detail.isModsChanged()) {
-            removeNextToLastVersion(documentsWithXml[1], BIBLIO_MODS.getValue());
-        }
-        if (detail.getAllItems() != null) {
-            removeNextToLastVersion(documentsWithXml[1], RELS_EXT.getValue());
-        }
-
         if (detail.isOcrChanged()) {
             String newContent = detail.getOcr();
             modifyStream(documentsWithXml[0], TEXT_OCR.getValue(), newContent);
@@ -189,6 +178,27 @@ public class DownloadDigitalObjectDetailHandler
                     StringWriter buffer = new StringWriter();
                     transformer.transform(new DOMSource(documentsWithXml[i]), new StreamResult(buffer));
                     stringsWithXml[i] = buffer.toString();
+                    if (i == 0) {
+                        try {
+                            documentsWithXml[1] =
+                                    FoxmlUtils.getFoxmlDocument(new ByteArrayInputStream(stringsWithXml[i]
+                                            .getBytes("UTF-8")));
+                        } catch (IOException e) {
+                            LOGGER.warn("IO failure", e);
+                        }
+                        if (detail.isDcChanged()) {
+                            removeNextToLastVersion(documentsWithXml[1], DC.getValue());
+                        }
+                        if (detail.isModsChanged()) {
+                            removeNextToLastVersion(documentsWithXml[1], BIBLIO_MODS.getValue());
+                        }
+                        if (detail.getAllItems() != null) {
+                            removeNextToLastVersion(documentsWithXml[1], RELS_EXT.getValue());
+                        }
+                        if (detail.isOcrChanged()) {
+                            removeNextToLastVersion(documentsWithXml[1], TEXT_OCR.getValue());
+                        }
+                    }
                 } catch (TransformerException e) {
                     LOGGER.warn("Document transformer failure", e);
                 }
@@ -239,27 +249,13 @@ public class DownloadDigitalObjectDetailHandler
 
         if (newContent != null) {
             try {
-
                 String lastStreamXPath =
                         "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
+                int versionNumber =
+                        getVersionNumber(getElement(foxmlDocument, lastStreamXPath).getAttribute("ID"));
 
-                XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(lastStreamXPath);
-                NodeList listOfstream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
-                Element elementOfVersion = null;
-                if (listOfstream.getLength() != 0) {
-                    elementOfVersion = (Element) listOfstream.item(0);
-                }
-                int versionNumber = getVersionNumber(elementOfVersion.getAttribute("ID"));
-
-                all =
-                        FedoraUtils.makeNSAwareXpath().compile("//foxml:datastream[@ID=\'" + streamToModify
-                                + "\']");
-
-                NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
-                Element parentOfStream = null;
-                if (nodesOfStream.getLength() != 0) {
-                    parentOfStream = (Element) nodesOfStream.item(0);
-                }
+                String streamXPath = "//foxml:datastream[@ID=\'" + streamToModify + "\']";
+                Element parentOfStream = getElement(foxmlDocument, streamXPath);
 
                 Element versionElement = foxmlDocument.createElement("foxml:datastreamVersion");
 
@@ -318,12 +314,28 @@ public class DownloadDigitalObjectDetailHandler
         }
     }
 
+    private Element getElement(Document foxmlDocument, String xPath) throws XPathExpressionException {
+        XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(xPath);
+
+        NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
+        Element parentOfStream = null;
+        if (nodesOfStream.getLength() != 0) {
+            parentOfStream = (Element) nodesOfStream.item(0);
+        }
+        return parentOfStream;
+    }
+
     private void removeNextToLastVersion(Document foxmlDocument, String streamToModify) {
+
         String nextToLastStreamXPath =
-                "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()-1]";
+                "/foxml:digitalObject//foxml:datastream[@ID=\'" + streamToModify
+                        + "\']/foxml:datastreamVersion[position()=last()-1]";
+
+        String streamXPath = "//foxml:datastream[@ID=\'" + streamToModify + "\']";
 
         try {
-            FedoraUtils.removeElements(foxmlDocument.getDocumentElement(), foxmlDocument, FedoraUtils
+
+            FedoraUtils.removeElements(getElement(foxmlDocument, streamXPath), foxmlDocument, FedoraUtils
                     .makeNSAwareXpath().compile(nextToLastStreamXPath));
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
@@ -339,14 +351,7 @@ public class DownloadDigitalObjectDetailHandler
         String propertyLabelXPath = "//foxml:objectProperties/foxml:property[@NAME=\'" + LABEL_VALUE + "\']";
 
         try {
-            XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(propertyLabelXPath);
-            NodeList listOfstream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
-            Element propertyLabelElement = null;
-            if (listOfstream.getLength() != 0) {
-                propertyLabelElement = (Element) listOfstream.item(0);
-            }
-            propertyLabelElement.setAttribute("VALUE", detail.getLabel());
-
+            getElement(foxmlDocument, propertyLabelXPath).setAttribute("VALUE", detail.getLabel());
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }
