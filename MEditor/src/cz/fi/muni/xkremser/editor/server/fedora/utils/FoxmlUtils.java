@@ -44,7 +44,9 @@ import com.uwyn.jhighlight.renderer.XhtmlRendererFactory;
 import org.apache.log4j.Logger;
 
 import org.dom4j.DocumentHelper;
+import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.dom4j.XPath;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,8 +54,12 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.newObject.Namespaces;
+import cz.fi.muni.xkremser.editor.server.newObject.Policy;
+import cz.fi.muni.xkremser.editor.server.newObject.RelsExtRelation;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
 
@@ -186,6 +192,39 @@ public class FoxmlUtils {
         String modsSchema = "http://www.loc.gov/standards/mods/v3/mods-3-3.xsd";
         modsCollection.addAttribute("schemaLocation", Namespaces.mods.getURI() + " " + modsSchema);
         return modsCollection;
+    }
+
+    public static void addRelationshipToRelsExt(org.dom4j.Document relsExtDoc, RelsExtRelation reference) {
+        org.dom4j.Element descriptionEl = findRelsExtDescriptionElement(relsExtDoc);
+        org.dom4j.Element referenceEl =
+                descriptionEl.addElement(new QName(reference.getRelationName().getStringRepresentation(),
+                                                   Namespaces.kramerius));
+        String resourceStr = "info:fedora/".concat(Constants.FEDORA_UUID_PREFIX + reference.getTargetUuid());
+        referenceEl.addAttribute(new QName("resource", Namespaces.rdf), resourceStr);
+    }
+
+    private static org.dom4j.Element findRelsExtDescriptionElement(org.dom4j.Document relsExt) {
+        XPath descriptionXPath = Dom4jUtils.createXPath("/rdf:RDF/rdf:Description");
+        return (org.dom4j.Element) descriptionXPath.selectSingleNode(relsExt);
+    }
+
+    public static org.dom4j.Document createRelsExtSkeleton(String uuid, String model, Policy policy) {
+        Namespace rdfNs = Namespaces.rdf;
+        Namespace krameriusNs = Namespaces.kramerius;
+        org.dom4j.Element rootElement = DocumentHelper.createElement(new QName("RDF", rdfNs));
+        rootElement.add(rdfNs);
+        rootElement.add(krameriusNs);
+        org.dom4j.Document doc = DocumentHelper.createDocument(rootElement);
+        org.dom4j.Element description = rootElement.addElement(new QName("Description", rdfNs));
+        description.addAttribute(new QName("about", rdfNs),
+                                 "info:fedora/".concat(Constants.FEDORA_UUID_PREFIX + uuid));
+        org.dom4j.Element hasModel = description.addElement(new QName("hasModel", Namespaces.fedora_model));
+        hasModel.addAttribute(new QName("resource", rdfNs), "info:fedora/model:".concat(model));
+        org.dom4j.Element itemId = description.addElement(new QName("itemID", Namespaces.oai));
+        itemId.addText(Constants.FEDORA_UUID_PREFIX + uuid);
+        org.dom4j.Element krameriusPolicy = description.addElement(new QName("policy", krameriusNs));
+        krameriusPolicy.addText("policy:".concat(policy.toString().toLowerCase()));
+        return doc;
     }
 
     public static String getRandomUuid() {
