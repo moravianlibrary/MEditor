@@ -104,7 +104,7 @@ public class LockDigitalObjectHandler
                 return new LockDigitalObjectResult(null, null, null);
 
             } else {
-                String timeToExpiration = locksDAO.getTimeToExpirationLock(uuid);
+                String[] timeToExpiration = locksDAO.getTimeToExpirationLock(uuid);
                 if (usersId == lockOwnerId) {
                     locksDAO.lockDigitalObject(uuid, null, description);
                     return new LockDigitalObjectResult("", null, timeToExpiration);

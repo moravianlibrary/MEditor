@@ -60,8 +60,8 @@ public class RecentlyModifiedItem
     /** The lock description */
     private String lockDescription;
 
-    /** The time to expiration of the lock */
-    private String timeToExpirationLock;
+    /** The parsed time to expiration of the lock String[days,hours,minutes] */
+    private String[] timeToExpirationLock;
 
     /**
      * Gets the lock description
@@ -279,26 +279,22 @@ public class RecentlyModifiedItem
     }
 
     /**
-     * Sets the time to expiration of the lock
+     * Gets the parsed time to expiration of the lock String[days,hours,minutes]
+     * 
+     * @return the timeToExpirationLock
+     */
+    public String[] getTimeToExpirationLock() {
+        return timeToExpirationLock;
+    }
+
+    /**
+     * Sets the parsed time to expiration of the lock String[days,hours,minutes]
      * 
      * @param timeToExpirationLock
      *        the timeToExpirationLock to set
      */
-
-    public void setTimeToExpirationLock(String timeToExpirationLock) {
+    public void setTimeToExpirationLock(String[] timeToExpirationLock) {
         this.timeToExpirationLock = timeToExpirationLock;
-
-    }
-
-    /**
-     * Gets the time to expiration of the lock
-     * 
-     * @return the timeToExpirationLock
-     */
-
-    public String getTimeToExpirationLock() {
-        return timeToExpirationLock;
-
     }
 
 }

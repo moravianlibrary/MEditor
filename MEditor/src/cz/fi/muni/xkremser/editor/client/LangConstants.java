@@ -529,6 +529,33 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String datesModifiedMARC();
 
   /**
+   * Translated "day".
+   * 
+   * @return translated "day"
+   */
+  @DefaultStringValue("day")
+  @Key("day")
+  String day();
+
+  /**
+   * Translated "days".
+   * 
+   * @return translated "days"
+   */
+  @DefaultStringValue("days")
+  @Key("days2_4")
+  String days2_4();
+
+  /**
+   * Translated "days".
+   * 
+   * @return translated "days"
+   */
+  @DefaultStringValue("days")
+  @Key("days5_")
+  String days5_();
+
+  /**
    * Translated "Contributor".
    * 
    * @return translated "Contributor"
@@ -1357,6 +1384,33 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String holdExt();
 
   /**
+   * Translated "hour".
+   * 
+   * @return translated "hour"
+   */
+  @DefaultStringValue("hour")
+  @Key("hour")
+  String hour();
+
+  /**
+   * Translated "hours".
+   * 
+   * @return translated "hours"
+   */
+  @DefaultStringValue("hours")
+  @Key("hours2_4")
+  String hours2_4();
+
+  /**
+   * Translated "hours".
+   * 
+   * @return translated "hours"
+   */
+  @DefaultStringValue("hours")
+  @Key("hours5_")
+  String hours5_();
+
+  /**
    * Translated "This attribute is used to link internally and to reference an element from outside the instance.".
    * 
    * @return translated "This attribute is used to link internally and to reference an element from outside the instance."
@@ -1859,6 +1913,33 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("A resource was created by digitizing a microform (MARC 007/11 value 'b')")
   @Key("microfilm")
   String microfilm();
+
+  /**
+   * Translated "minute".
+   * 
+   * @return translated "minute"
+   */
+  @DefaultStringValue("minute")
+  @Key("minute")
+  String minute();
+
+  /**
+   * Translated "minutes".
+   * 
+   * @return translated "minutes"
+   */
+  @DefaultStringValue("minutes")
+  @Key("minutes2_4")
+  String minutes2_4();
+
+  /**
+   * Translated "minute".
+   * 
+   * @return translated "minute"
+   */
+  @DefaultStringValue("minute")
+  @Key("minutes5_")
+  String minutes5_();
 
   /**
    * Translated "This is roughly equivalent to MARC 21 Leader/06 value 'p'.".

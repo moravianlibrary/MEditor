@@ -285,7 +285,7 @@ public class RecentlyTreeGwtRPCDS
         to.setModified(from.getAttributeAsDate(Constants.ATTR_MODIFIED));
         to.setLockDescription(from.getAttribute(Constants.ATTR_LOCK_DESCRIPTION));
         to.setLockOwner(from.getAttribute(Constants.ATTR_LOCK_OWNER));
-        to.setTimeToExpirationLock(from.getAttribute(Constants.ATTR_TIME_TO_EXP_LOCK));
+        to.setTimeToExpirationLock(from.getAttributeAsStringArray(Constants.ATTR_TIME_TO_EXP_LOCK));
     }
 
     /**

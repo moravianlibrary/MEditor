@@ -38,7 +38,7 @@ public final class EditorSC {
     public static final void objectIsLock(LangConstants lang,
                                           String lockOwner,
                                           String lockDescription,
-                                          String timeToExpirationLock) {
+                                          String[] timeToExpirationLock) {
         StringBuffer objectLockedBuffer = new StringBuffer();
 
         if ("".equals(lockOwner)) {
@@ -57,8 +57,34 @@ public final class EditorSC {
                     : lockDescription);
         }
         objectLockedBuffer.append("<br>").append("<br>");
-        objectLockedBuffer.append(lang.lockExpires() + ": " + timeToExpirationLock).append("<br>");
+        objectLockedBuffer
+                .append(lang.lockExpires() + ": " + createTimeToExpLock(lang, timeToExpirationLock))
+                .append("<br>");
         SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
+    }
+
+    private static String createTimeToExpLock(LangConstants lang, String[] parsedTimeString) {
+        StringBuffer sb = new StringBuffer();
+
+        int[] parsedTime =
+                new int[] {Integer.parseInt(parsedTimeString[0]), Integer.parseInt(parsedTimeString[1]),
+                        Integer.parseInt(parsedTimeString[2])};
+
+        if (parsedTime[0] > 0) {
+            sb.append(parsedTime[0]).append(" ");
+            sb.append(parsedTime[0] == 1 ? lang.day() : parsedTime[0] > 5 ? lang.days5_() : lang.days2_4());
+            sb.append(", ");
+        }
+        if (parsedTime[1] > 0) {
+            sb.append(parsedTime[1]).append(" ");;
+            sb.append(parsedTime[1] == 1 ? lang.hour() : parsedTime[1] > 5 ? lang.hours5_() : lang.hours2_4());
+            sb.append(", ");
+        }
+        sb.append(parsedTime[2]).append(" ");;
+        sb.append(parsedTime[2] == 1 ? lang.minute() : parsedTime[2] > 5 ? lang.minutes5_() : lang
+                .minutes2_4());
+
+        return sb.toString();
     }
 
     public static final void serverRecentlyMofifiedError(LangConstants lang) {

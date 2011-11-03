@@ -82,13 +82,13 @@ public interface LocksDAO {
     String getDescription(String uuid) throws DatabaseException;
 
     /**
-     * Returns the time to expiration of the lock
+     * Returns the parsed time to expiration of the lock
      * 
      * @param uuid
      *        the uuid of the digital object which is locked
-     * @return the time to expiration of the lock
+     * @return the parsed time to expiration of the lock
      * @throws DatabaseException
      */
-    String getTimeToExpirationLock(String uuid) throws DatabaseException;
+    String[] getTimeToExpirationLock(String uuid) throws DatabaseException;
 
 }

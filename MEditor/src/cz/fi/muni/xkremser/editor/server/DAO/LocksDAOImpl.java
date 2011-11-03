@@ -230,7 +230,7 @@ public class LocksDAOImpl
      */
 
     @Override
-    public String getTimeToExpirationLock(String uuid) throws DatabaseException {
+    public String[] getTimeToExpirationLock(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;
         String timeToExpirationLock = null;
 
@@ -251,6 +251,22 @@ public class LocksDAOImpl
         } finally {
             closeConnection();
         }
-        return timeToExpirationLock;
+
+        String[] parsedExpTime = new String[3];
+
+        if (timeToExpirationLock.contains(" day")) {
+            String[] splitedByDays =
+                    timeToExpirationLock.split(timeToExpirationLock.contains(" days ") ? " days " : " day ");
+            parsedExpTime[0] = splitedByDays[0];
+            parsedExpTime[1] = splitedByDays[1];
+        } else {
+            parsedExpTime[0] = "0";
+            parsedExpTime[1] = timeToExpirationLock;
+        }
+        String[] splitedByColon = parsedExpTime[1].split(":");
+        parsedExpTime[1] = splitedByColon[0];
+        parsedExpTime[2] = splitedByColon[1];
+
+        return parsedExpTime;
     }
 }
