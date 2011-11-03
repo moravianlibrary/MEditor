@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -356,6 +356,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("equivalent to MARC 21 fields 111, 711")
   @Key("conferenceMARC")
   String conferenceMARC();
+
+  /**
+   * Translated "Connect existing digital object to this object".
+   * 
+   * @return translated "Connect existing digital object to this object"
+   */
+  @DefaultStringValue("Connect existing digital object to this object")
+  @Key("connectExistingTo")
+  String connectExistingTo();
+
+  /**
+   * Translated "Connect this object to existing digital object".
+   * 
+   * @return translated "Connect this object to existing digital object"
+   */
+  @DefaultStringValue("Connect this object to existing digital object")
+  @Key("connectToExisting")
+  String connectToExisting();
 
   /**
    * Translated "Includes Asia, Africa, Europe, North America, South America.".

@@ -27,6 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -38,19 +39,28 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
+import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
+import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
@@ -62,6 +72,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -119,6 +130,9 @@ public class CreateObjectMenuView
     /** The layout. */
     private final VLayout layout;
 
+    private boolean connect2ExEnabled;
+    private boolean connectEx2Enabled;
+
     /**
      * Instantiates a new digital object menu view.
      */
@@ -151,10 +165,53 @@ public class CreateObjectMenuView
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
         structureTreeGrid.setShowConnectors(true);
 
+        final MenuItem connectToExisting = new MenuItem(lang.connectToExisting(), "icons/16/connect2Ex.png");
+        final MenuItem connectExistingTo = new MenuItem(lang.connectExistingTo(), "icons/16/ex2Connect.png");
+        connectToExisting.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return connect2ExEnabled;
+            }
+        });
+        connectExistingTo.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return connectEx2Enabled;
+            }
+        });
+        final Menu editMenu = new Menu();
+        editMenu.setShowShadow(true);
+        editMenu.setShadowDepth(10);
+        editMenu.setItems(connectToExisting, connectExistingTo);
+        structureTreeGrid.setContextMenu(editMenu);
+        structureTreeGrid.addCellContextClickHandler(new CellContextClickHandler() {
+
+            @Override
+            public void onCellContextClick(CellContextClickEvent event) {
+                ListGridRecord record = event.getRecord();
+                final String parrentId = record.getAttribute(Constants.ATTR_PARENT);
+                connect2ExEnabled = "1".equals(parrentId);
+                String modelStr = (record.getAttribute(Constants.ATTR_TYPE_ID));
+                List<DigitalObjectModel> possibleChildModels =
+                        NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelStr));
+                connectEx2Enabled = possibleChildModels != null;
+                editMenu.showContextMenu();
+            }
+        });
+        structureTreeGrid.addShowContextMenuHandler(new ShowContextMenuHandler() {
+
+            @Override
+            public void onShowContextMenu(ShowContextMenuEvent event) {
+                event.cancel();
+            }
+        });
+
         structureTree = new Tree();
         structureTree.setModelType(TreeModelType.PARENT);
         structureTree.setRootValue("1");
-        structureTree.setNameProperty(Constants.ATTR_NAME);
+        //        structureTree.setNameProperty(Constants.ATTR_NAME);
         structureTree.setIdField(Constants.ATTR_ID);
         structureTree.setParentIdField(Constants.ATTR_PARENT);
         structureTree.setOpenProperty("isOpen");
@@ -167,10 +224,11 @@ public class CreateObjectMenuView
 
         TreeGridField typeField = new TreeGridField();
         typeField.setCanFilter(true);
+        typeField.setCanEdit(false);
         typeField.setName(Constants.ATTR_TYPE);
         typeField.setTitle(lang.dcType());
 
-        structureTreeGrid.setFields(nameField, typeField);
+        structureTreeGrid.setFields(typeField, nameField);
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
