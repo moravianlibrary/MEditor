@@ -72,12 +72,12 @@ public final class EditorSC {
 
         if (parsedTime[0] > 0) {
             sb.append(parsedTime[0]).append(" ");
-            sb.append(parsedTime[0] == 1 ? lang.day() : parsedTime[0] > 5 ? lang.days5_() : lang.days2_4());
+            sb.append(parsedTime[0] == 1 ? lang.day() : parsedTime[0] > 4 ? lang.days5_() : lang.days2_4());
             sb.append(", ");
         }
         if (parsedTime[1] > 0) {
             sb.append(parsedTime[1]).append(" ");;
-            sb.append(parsedTime[1] == 1 ? lang.hour() : parsedTime[1] > 5 ? lang.hours5_() : lang.hours2_4());
+            sb.append(parsedTime[1] == 1 ? lang.hour() : parsedTime[1] > 4 ? lang.hours5_() : lang.hours2_4());
             sb.append(", ");
         }
         sb.append(parsedTime[2]).append(" ");;
