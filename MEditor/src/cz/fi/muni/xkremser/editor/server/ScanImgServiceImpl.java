@@ -44,6 +44,7 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -62,6 +63,14 @@ public class ScanImgServiceImpl
     private static final String DJATOKA_URL_FULL_IMG =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.scale="
                     + Constants.IMAGE_FULL_WIDTH + "&rft_id=";
+
+    private static final String DJATOKA_URL_FULL_PAGE_DETAIL =
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.format=image/jpeg&svc.scale=900,0&rft_id=";
+
+    private static final String DJATOKA_URL_REGION = "&svc.region=";
+
+    private static final String DJATOKA_URL_GET_METADATA =
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getMetadata&rft_id=";
 
     /** The config. */
     @Inject
@@ -82,19 +91,41 @@ public class ScanImgServiceImpl
             IOException {
 
         resp.addHeader("Cache-Control", "max-age=" + Constants.HTTP_CACHE_SECONDS);
-        boolean full = ClientUtils.toBoolean(req.getParameter("full"));
-
+        boolean full = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_FULL));
+        boolean top = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_TOP));
+        boolean bottom = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_BOTTOM));
+        String detailHeight = req.getParameter(Constants.URL_PARAM_HEIGHT);
         String uuid =
                 req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_SCANS_PREFIX)
                         + Constants.SERVLET_SCANS_PREFIX.length() + 1);
 
-        StringBuffer sb = new StringBuffer();
-        sb.append("http");
+        StringBuffer baseUrl = new StringBuffer();
+        baseUrl.append("http");
         if (req.getProtocol().toLowerCase().contains("https")) {
-            sb.append('s');
+            baseUrl.append('s');
         }
-        sb.append("://").append(URLS.LOCALHOST() ? "editor.mzk.cz" : req.getServerName())
-                .append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL).append(uuid);
+        baseUrl.append("://").append(URLS.LOCALHOST() ? "editor.mzk.cz" : req.getServerName());
+        StringBuffer sb = new StringBuffer();
+        if (top || bottom) {
+            String metadata =
+                    RESTHelper.convertStreamToString(RESTHelper
+                            .get(baseUrl + DJATOKA_URL_GET_METADATA + uuid, null, null, true));
+            String height = null;
+            if (bottom) {
+                height = metadata.substring(metadata.indexOf("ght\": \"") + 7, metadata.indexOf("\",\n\"dw"));
+            }
+            String width =
+                    metadata.substring(metadata.indexOf("dth\": \"") + 7, metadata.indexOf("\",\n\"he"));
+            String region =
+                    (bottom ? Integer.parseInt(height) - Integer.parseInt(detailHeight) : "1") + ",1,"
+                            + detailHeight + "," + width;
+
+            sb.append(baseUrl.toString()).append(DJATOKA_URL_FULL_PAGE_DETAIL).append(uuid)
+                    .append(DJATOKA_URL_REGION).append(region);
+
+        } else {
+            sb.append(baseUrl.toString()).append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL).append(uuid);
+        }
         resp.setContentType("image/jpeg");
         resp.sendRedirect(resp.encodeRedirectURL(sb.toString()));
     }

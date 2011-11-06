@@ -40,13 +40,20 @@ import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.types.DragAppearance;
+import com.smartgwt.client.types.ImageStyle;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionType;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
+import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -60,6 +67,9 @@ import com.smartgwt.client.widgets.menu.MenuItemSeparator;
 import com.smartgwt.client.widgets.menu.MenuItemStringFunction;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
+import com.smartgwt.client.widgets.tile.TileRecord;
+import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
+import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
@@ -133,12 +143,20 @@ public class CreateStructureView
 
     private VLayout tileGridLayout;
 
+    private VLayout detailPanel;
+
+    private boolean detailPanelShown = false;
+
+    private boolean detailPanelImageShown = false;
+
     /** The image popup. */
     private PopupPanel imagePopup;
 
     private TileGrid tileGrid;
 
     private Window winModal;
+
+    private int pageDetailHeight = Constants.PAGE_HEIGHT_NORMAL;
 
     /**
      * Instantiates a new create view.
@@ -340,7 +358,7 @@ public class CreateStructureView
                         StringBuffer sb = new StringBuffer();
                         sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
                                 .append('/').append(event.getRecord().getAttribute(Constants.ATTR_PICTURE))
-                                .append("?full=yes");
+                                .append("?" + Constants.URL_PARAM_FULL + "=yes");
                         final Image full = new Image(sb.toString());
                         full.setHeight(Constants.IMAGE_FULL_WIDTH + "px");
                         full.addLoadHandler(new LoadHandler() {
@@ -368,6 +386,16 @@ public class CreateStructureView
 
                         // TODO: handle
                     }
+                }
+            }
+        });
+
+        tileGrid.addRecordClickHandler(new RecordClickHandler() {
+
+            @Override
+            public void onRecordClick(RecordClickEvent event) {
+                if (detailPanelShown) {
+                    showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE), pageDetailHeight);
                 }
             }
         });
@@ -452,49 +480,57 @@ public class CreateStructureView
 
         toolStrip.addResizer();
 
-        SelectItem zoomItems = new SelectItem();
+        SelectItem zoomItems = new SelectItem("pageDetail", "Detail size");
         zoomItems.setName("selectName");
-        zoomItems.setShowTitle(false);
+        zoomItems.setShowTitle(true);
         zoomItems.setWidth(100);
-        zoomItems.setValueMap("50%", "75%", "100%", "150%");
+        zoomItems.setValueMap("75%", "100%", "125%", "150%");
         zoomItems.addChangedHandler(new ChangedHandler() {
 
             @Override
             public void onChanged(ChangedEvent event) {
                 String percent = (String) event.getValue();
-                if ("50%".equals(percent)) {
-                    //                    tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH / 2);
-                    //                    tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT / 2);
-                    pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH / 2);
-                    pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT / 2);
-                } else if ("75%".equals(percent)) {
-                    //                    tileGrid.setTileWidth((Constants.TILEGRID_ITEM_WIDTH / 3) * 2);
-                    //                    tileGrid.setTileHeight((Constants.TILEGRID_ITEM_HEIGHT / 3) * 2);
-                    pictureField.setImageWidth((Constants.IMAGE_THUMBNAIL_WIDTH / 3) * 2);
-                    pictureField.setImageHeight((Constants.IMAGE_THUMBNAIL_HEIGHT / 3) * 2);
+                if ("75".equals(percent)) {
+                    pageDetailHeight = Constants.PAGE_HEIGHT_SMALL;
                 } else if ("100%".equals(percent)) {
-                    Record[] data = tileGrid.getData();
-                    tileGrid.destroy();
-                    tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH);
-                    tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT);
-                    pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
-                    pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT);
-                    tileGrid.setData(data);
-                    tileGrid.markForRedraw();
+                    pageDetailHeight = Constants.PAGE_HEIGHT_NORMAL;
+                } else if ("125%".equals(percent)) {
+                    pageDetailHeight = Constants.PAGE_HEIGHT_LARGE;
                 } else if ("150%".equals(percent)) {
-                    for (Canvas tile : tileGrid.getChildren()) {
-                        tile.animateResize(Constants.TILEGRID_ITEM_WIDTH, Constants.TILEGRID_ITEM_HEIGHT);
-                    }
-                    pictureField.setImageWidth((Constants.IMAGE_THUMBNAIL_WIDTH / 2) * 3);
-                    pictureField.setImageHeight((Constants.IMAGE_THUMBNAIL_HEIGHT / 2) * 3);
-                    tileGrid.markForRedraw();
+                    pageDetailHeight = Constants.PAGE_HEIGHT_XLARGE;
                 }
             }
         });
         zoomItems.setDefaultValue("100%");
         toolStrip.addFormItem(zoomItems);
+        ToolStripButton zoomButton = new ToolStripButton();
+        zoomButton.setIcon("silk/zoom.png");
+        zoomButton.setTitle("Detail panel");
+        zoomButton.addClickHandler(new ClickHandler() {
 
-        toolStrip.addSeparator();
+            @Override
+            public void onClick(ClickEvent event) {
+                if (detailPanel == null) {
+                    detailPanel = new VLayout();
+                    detailPanel.setPadding(5);
+                    detailPanel.setHeight((pageDetailHeight * 2) + 30);
+                    detailPanel.setAnimateMembers(true);
+                    detailPanel.setAnimateHideTime(200);
+                    detailPanel.setAnimateShowTime(200);
+                    tileGridLayout.addMember(detailPanel);
+                    detailPanelShown = true;
+                    showDetail(pageDetailHeight);
+                } else if (detailPanelShown) {
+                    detailPanelShown = false;
+                    tileGridLayout.removeMember(detailPanel);
+                } else {
+                    tileGridLayout.addMember(detailPanel);
+
+                    detailPanelShown = true;
+                }
+            }
+        });
+        toolStrip.addButton(zoomButton);
         ToolStripButton nextButton = new ToolStripButton();
         nextButton.setIcon("silk/forward_green.png");
         nextButton.setTitle("Next step");
@@ -510,10 +546,12 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(3);
 
-        MenuItem newItem = new MenuItem("New", "icons/16/document_plain_new.png", "Ctrl+N");
-        MenuItem openItem = new MenuItem("Open", "icons/16/folder_out.png", "Ctrl+O");
-        MenuItem saveItem = new MenuItem("Save", "icons/16/disk_blue.png", "Ctrl+S");
-        MenuItem saveAsItem = new MenuItem("Save As", "icons/16/save_as.png");
+        MenuItem renumber = new MenuItem("Renumber", "icons/16/document_plain_new.png", "Ctrl+N");
+        MenuItem toRoman = new MenuItem("Convert selected to roman", "icons/16/folder_out.png", "Ctrl+O");
+        MenuItem surround = new MenuItem("1, 2, ... -> [1], [2], ...", "icons/16/disk_blue.png", "Ctrl+S");
+        MenuItem abc = new MenuItem("1, 2, ... -> 1a, 2b, ...", "icons/16/disk_blue.png", "Ctrl+S");
+        MenuItem toLeft = new MenuItem("Shift to left", "icons/16/save_as.png");
+        MenuItem toRight = new MenuItem("Shift to right", "icons/16/save_as.png");
 
         MenuItem recentDocItem = new MenuItem("Recent Documents", "icons/16/folder_document.png");
 
@@ -549,20 +587,9 @@ public class CreateStructureView
             }
         });
 
-        menu.setItems(activateMenu,
-                      newItem,
-                      openItem,
-                      separator,
-                      saveItem,
-                      saveAsItem,
-                      separator,
-                      recentDocItem,
-                      separator,
-                      exportItem,
-                      separator,
-                      printItem);
+        menu.setItems(activateMenu, renumber, toRoman, separator, surround, abc, separator, toLeft, toRight);
 
-        ToolStripMenuButton menuButton = new ToolStripMenuButton("File", menu);
+        ToolStripMenuButton menuButton = new ToolStripMenuButton("Page numbers", menu);
         menuButton.setWidth(100);
         return menuButton;
     }
@@ -577,6 +604,55 @@ public class CreateStructureView
             winModal = null;
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);
+        }
+    }
+
+    private void showDetail(int height) {
+        TileRecord record = tileGrid.getSelectedRecord();
+        showDetail(record == null ? null : record.getAttribute(Constants.ATTR_PICTURE), height);
+    }
+
+    private void showDetail(String pid, int height) {
+        if (detailPanelShown) {
+            if (detailPanelImageShown) {
+                detailPanel.removeMembers(detailPanel.getMembers());
+            }
+            if (pid != null) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(Constants.SERVLET_SCANS_PREFIX).append('/').append(pid).append("?")
+                        .append(Constants.URL_PARAM_HEIGHT).append('=').append(String.valueOf(height))
+                        .append("&").append(Constants.URL_PARAM_TOP).append("=yes");
+
+                Img top = new Img(sb.toString(), 900, height);
+                top.setAnimateTime(400);
+                top.setImageWidth(900);
+                top.setImageHeight(height);
+                top.setImageType(ImageStyle.NORMAL);
+                top.setBorder("1px solid gray");
+
+                sb = new StringBuffer();
+                sb.append(Constants.SERVLET_SCANS_PREFIX).append('/').append(pid).append("?")
+                        .append(Constants.URL_PARAM_HEIGHT).append('=').append(String.valueOf(height))
+                        .append("&").append(Constants.URL_PARAM_BOTTOM).append("=yes");
+
+                Img bottom = new Img(sb.toString(), 900, height);
+                bottom.setAnimateTime(400);
+                bottom.setImageWidth(900);
+                bottom.setImageHeight(height);
+                bottom.setImageType(ImageStyle.NORMAL);
+                bottom.setBorder("1px solid gray");
+                Label topL = new Label("Top");
+                topL.setHeight(12);
+                detailPanel.setAlign(Alignment.CENTER);
+                detailPanel.setAlign(VerticalAlignment.CENTER);
+                detailPanel.addMember(topL);
+                detailPanel.addMember(top);
+                Label botL = new Label("Bottom");
+                botL.setHeight(12);
+                detailPanel.addMember(botL);
+                detailPanel.addMember(bottom);
+                detailPanelImageShown = true;
+            }
         }
     }
 

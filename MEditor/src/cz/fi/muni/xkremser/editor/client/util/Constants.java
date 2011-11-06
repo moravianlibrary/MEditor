@@ -85,6 +85,14 @@ public class Constants {
 
     public static final String URL_PARAM_METADATA_NOT_FOUND = "notFound";
 
+    public static final String URL_PARAM_FULL = "full";
+
+    public static final String URL_PARAM_HEIGHT = "height";
+
+    public static final String URL_PARAM_TOP = "top";
+
+    public static final String URL_PARAM_BOTTOM = "bottom";
+
     // db
     /** The Constant TABLE_INPUT_QUEUE_NAME. */
     public static final String TABLE_INPUT_QUEUE_NAME = "input_queue_item";
@@ -374,6 +382,10 @@ public class Constants {
     public static final String RANGE = "range";
 
     public static final String HTTP_CACHE_SECONDS = "7200";
+    public static final int PAGE_HEIGHT_SMALL = 90;
+    public static final int PAGE_HEIGHT_NORMAL = 115;
+    public static final int PAGE_HEIGHT_LARGE = 130;
+    public static final int PAGE_HEIGHT_XLARGE = 150;
 
     /**
      * Fedora FOXML related constants

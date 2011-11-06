@@ -79,7 +79,9 @@ public class FindMetadataView
     private final IButton withoutButton;
 
     /** The form. */
-    private final DynamicForm form;
+    private final DynamicForm form1;
+
+    private final DynamicForm form2;
 
     /** The uuid field. */
     private final TextItem searchValue;
@@ -143,19 +145,31 @@ public class FindMetadataView
             }
         });
 
-        form = new DynamicForm();
-        form.setGroupTitle(lang.findMetadata());
-        form.setIsGroup(true);
-        form.setWidth(220);
-        form.setHeight(90);
-        form.setNumCols(2);
-        form.setColWidths(70, "*");
-        form.setPadding(5);
-        form.setFields(findBy, searchValue, findButton);
+        form1 = new DynamicForm();
+        form1.setGroupTitle(lang.findMetadata());
+        form1.setIsGroup(true);
+        form1.setWidth(220);
+        form1.setHeight(90);
+        form1.setNumCols(2);
+        form1.setColWidths(70, "*");
+        form1.setPadding(5);
+        form1.setFields(findBy, searchValue, findButton);
+        form1.setExtraSpace(25);
+
+        form2 = new DynamicForm();
+        form2.setGroupTitle("OAI-PMH");
+        form2.setIsGroup(true);
+        form2.setWidth(220);
+        form2.setHeight(90);
+        form2.setNumCols(2);
+        form2.setColWidths(70, "*");
+        form2.setPadding(5);
+        form2.setFields(new SelectItem(), new TextItem(), new ButtonItem(lang.find()));
 
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
-        hLayout.addMember(form);
+        hLayout.addMember(form1);
+        hLayout.addMember(form2);
         hLayout.setExtraSpace(10);
 
         printStack = new SectionStack();
@@ -203,8 +217,11 @@ public class FindMetadataView
 
         nextButton = new IButton(lang.next());
         nextButton.setWidth(80);
+        //        nextButton.setMargin(2);
+        nextButton.setExtraSpace(8);
         withoutButton = new IButton("Continue without metadata");
         withoutButton.setAutoFit(true);
+
         HLayout buttons = new HLayout();
         buttons.setMembers(nextButton, withoutButton);
 

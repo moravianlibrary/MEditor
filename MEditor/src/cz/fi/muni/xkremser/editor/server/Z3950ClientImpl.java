@@ -52,11 +52,11 @@ package cz.fi.muni.xkremser.editor.server;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.google.gwt.dev.util.collect.HashMap;
 import com.google.inject.Inject;
 import com.k_int.IR.IRQuery;
 import com.k_int.IR.InformationFragment;
