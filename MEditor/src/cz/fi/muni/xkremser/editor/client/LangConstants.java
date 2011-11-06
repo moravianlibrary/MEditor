@@ -232,6 +232,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String bornDigital();
 
   /**
+   * Translated "Bottom".
+   * 
+   * @return translated "Bottom"
+   */
+  @DefaultStringValue("Bottom")
+  @Key("bottom")
+  String bottom();
+
+  /**
    * Translated "Cancel".
    * 
    * @return translated "Cancel"
@@ -2302,6 +2311,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String page();
 
   /**
+   * Translated "Page detail".
+   * 
+   * @return translated "Page detail"
+   */
+  @DefaultStringValue("Page detail")
+  @Key("pageDetail")
+  String pageDetail();
+
+  /**
    * Translated "Pages".
    * 
    * @return translated "Pages"
@@ -2905,11 +2923,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String startValue();
 
   /**
-   * Translated "Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France d�partement.".
+   * Translated "Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département.".
    * 
-   * @return translated "Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France d�partement."
+   * @return translated "Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département."
    */
-  @DefaultStringValue("Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France d�partement.")
+  @DefaultStringValue("Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département.")
   @Key("state")
   String state();
 
@@ -3074,6 +3092,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("title without the <titleInfo> type attribute is roughly equivalent to MARC 21 field 245")
   @Key("titleMARC")
   String titleMARC();
+
+  /**
+   * Translated "Top".
+   * 
+   * @return translated "Top"
+   */
+  @DefaultStringValue("Top")
+  @Key("top")
+  String top();
 
   /**
    * Translated "Equivalent to MARC 21 fields 650 and 6XX subfields $x and $v (with authority attribute defined) and MARC 21 field 653 with no authority attribute.".
