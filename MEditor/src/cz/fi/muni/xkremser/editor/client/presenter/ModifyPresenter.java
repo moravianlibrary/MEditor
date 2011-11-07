@@ -828,7 +828,7 @@ public class ModifyPresenter
      */
 
     @Override
-    public void getStoredFiles(EditorTabSet ts) {
-        StoringWindow.setInstanceOf(ts, lang, dispatcher);
+    public void getStoredFiles(DigitalObjectDetail detail) {
+        StoringWindow.setInstanceOf(detail, lang, dispatcher);
     }
 }

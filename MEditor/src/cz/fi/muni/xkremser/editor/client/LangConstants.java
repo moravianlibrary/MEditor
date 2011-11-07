@@ -1267,13 +1267,31 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String fbarcode();
 
   /**
+   * Translated "A file with this name already exists. Do you want to overwrite it?".
+   * 
+   * @return translated "A file with this name already exists. Do you want to overwrite it?"
+   */
+  @DefaultStringValue("A file with this name already exists. Do you want to overwrite it?")
+  @Key("fileExists")
+  String fileExists();
+
+  /**
+   * Translated "File name".
+   * 
+   * @return translated "File name"
+   */
+  @DefaultStringValue("File name")
+  @Key("fileName")
+  String fileName();
+
+  /**
    * Translated "Please input the name of the file".
    * 
    * @return translated "Please input the name of the file"
    */
   @DefaultStringValue("Please input the name of the file")
-  @Key("fileName")
-  String fileName();
+  @Key("fileNameLabel")
+  String fileNameLabel();
 
   /**
    * Translated "Find".
@@ -2939,6 +2957,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département.")
   @Key("state")
   String state();
+
+  /**
+   * Translated "Stored".
+   * 
+   * @return translated "Stored"
+   */
+  @DefaultStringValue("Stored")
+  @Key("stored")
+  String stored();
 
   /**
    * Translated "Your stored files".

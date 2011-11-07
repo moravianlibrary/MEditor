@@ -158,7 +158,7 @@ public class ModifyView
 
         void unlockDigitalObject(final EditorTabSet ts);
 
-        void getStoredFiles(EditorTabSet ts);
+        void getStoredFiles(DigitalObjectDetail detail);
     }
 
     /** The Constant ID_DC. */
@@ -1254,7 +1254,12 @@ public class ModifyView
     }
 
     private void saveWork(EditorTabSet ts) {
-        getUiHandlers().getStoredFiles(ts);
+        InfoTab infoT = ts.getInfoTab();
+        DCTab dcT = ts.getDcTab();
+        DigitalObjectDetail detail =
+                createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
+
+        getUiHandlers().getStoredFiles(detail);
     }
 
     private void showDownloadingWindow(final EditorTabSet ts) {

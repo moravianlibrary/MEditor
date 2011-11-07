@@ -28,10 +28,16 @@ import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.SortDirection;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -46,7 +52,8 @@ import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
 /**
  * @author Matous Jobanek
@@ -57,15 +64,15 @@ public class StoringWindow
         extends Window {
 
     private final LangConstants lang;
-    private final ListGrid storedFilesGrid;
-    private final ModalWindow modalWindow;
     private static StoringWindow storingWindow = null;
 
-    public static void setInstanceOf(EditorTabSet ts, final LangConstants lang, DispatchAsync dispatcher) {
+    public static void setInstanceOf(DigitalObjectDetail detail,
+                                     final LangConstants lang,
+                                     DispatchAsync dispatcher) {
         if (storingWindow != null) {
             storingWindow = null;
         }
-        storingWindow = new StoringWindow(ts, lang, dispatcher);
+        storingWindow = new StoringWindow(detail, lang, dispatcher);
     }
 
     public static StoringWindow getInstanceOf() {
@@ -76,15 +83,13 @@ public class StoringWindow
         storingWindow = null;
     }
 
-    private StoringWindow(EditorTabSet ts, final LangConstants lang, DispatchAsync dispatcher) {
+    private StoringWindow(final DigitalObjectDetail detail, final LangConstants lang, DispatchAsync dispatcher) {
         this.lang = lang;
-        String defaultFileName = ts.getUuid() + "_" + ts.getLabel();
-
-        setHeight(400);
+        setHeight(450);
         setWidth(550);
         setCanDragResize(true);
         setShowEdges(true);
-        setTitle("Store: " + defaultFileName);
+        setTitle(lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel());
         setShowMinimizeButton(false);
         setIsModal(true);
         setShowModalMask(true);
@@ -96,9 +101,10 @@ public class StoringWindow
                 destroy();
             }
         });
-
+        final ListGrid storedFilesGrid;
+        storedFilesGrid = new ListGrid();
         HTMLFlow fileNameLabel = new HTMLFlow();
-        fileNameLabel.setContents("<h3>" + lang.fileName() + ": </h3>");
+        fileNameLabel.setContents("<h3>" + lang.fileNameLabel() + ": </h3>");
         fileNameLabel.setAutoHeight();
         fileNameLabel.setMargin(10);
         HTMLFlow storedLabel = new HTMLFlow();
@@ -107,15 +113,14 @@ public class StoringWindow
         storedLabel.setMargin(10);
 
         final TextItem fileName = new TextItem();
-        fileName.setTitle("File name");
+        fileName.setTitle(lang.fileName());
         fileName.setWidth(350);
 
-        fileName.setDefaultValue(defaultFileName);
+        fileName.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
         DynamicForm saveForm = new DynamicForm();
         saveForm.setItems(fileName);
         saveForm.setExtraSpace(5);
 
-        storedFilesGrid = new ListGrid();
         storedFilesGrid.setWidth(500);
         storedFilesGrid.setHeight(200);
         storedFilesGrid.setShowSortArrow(SortArrow.CORNER);
@@ -123,8 +128,9 @@ public class StoringWindow
         storedFilesGrid.setCanHover(true);
         storedFilesGrid.setHoverOpacity(75);
         storedFilesGrid.setHoverStyle("interactImageHover");
+        storedFilesGrid.setExtraSpace(20);
 
-        this.storedFilesGrid.setDataSource(new StoredTreeGwtRPCDS(dispatcher, lang));
+        storedFilesGrid.setDataSource(new StoredTreeGwtRPCDS(dispatcher, lang));
         storedFilesGrid.setAutoFetchData(true);
         storedFilesGrid.setHoverWidth(300);
         storedFilesGrid.setHoverCustomizer(new HoverCustomizer() {
@@ -147,26 +153,60 @@ public class StoringWindow
                 fileName.setValue(event.getRecord().getAttribute(Constants.ATTR_FILE_NAME));
             }
         });
+        ModalWindow modalWindow = new ModalWindow(storedFilesGrid);
+        modalWindow.setLoadingIcon("loadingAnimation.gif");
+        modalWindow.show(true);
+
+        Button storeButton = new Button(lang.save());
+        storeButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                Record[] records = storedFilesGrid.getRecords();
+                boolean isSame = false;
+
+                for (Record record : records) {
+                    if (record.getAttributeAsString(Constants.ATTR_FILE_NAME).equals(fileName.getValue())) {
+
+                        SC.ask(lang.fileExists(), new BooleanCallback() {
+
+                            @Override
+                            public void execute(Boolean value) {
+                                if (value) {
+                                    store(detail);
+                                }
+                            }
+                        });
+                        isSame = true;
+                        break;
+                    }
+                }
+
+                if (!isSame) {
+                    store(detail);
+                }
+            }
+        });
 
         addItem(fileNameLabel);
         addItem(saveForm);
         addItem(storedLabel);
         addItem(storedFilesGrid);
-        modalWindow = new ModalWindow(storedFilesGrid);
-        modalWindow.setLoadingIcon("loadingAnimation.gif");
-        modalWindow.show(true);
+        addItem(storeButton);
 
-        fetchStoredItems();
+        fetchStoredItems(storedFilesGrid);
         show();
         centerInPage();
         focus();
+        storeButton.setLeft(400);
+        modalWindow.destroy();
     }
 
-    private void fetchStoredItems() {
+    private void fetchStoredItems(final ListGrid storedFilesGrid) {
         ListGridField fileNameField = new ListGridField(Constants.ATTR_FILE_NAME, lang.name());
-        ListGridField storedField = new ListGridField(Constants.ATTR_STORED, "STORED");
+        ListGridField storedField = new ListGridField(Constants.ATTR_STORED, lang.stored());
         storedField.setWidth(120);
-        this.storedFilesGrid.setFields(fileNameField, storedField);
+        storedFilesGrid.setFields(fileNameField, storedField);
         storedFilesGrid.getDataSource().fetchData(null, new DSCallback() {
 
             @Override
@@ -177,6 +217,9 @@ public class StoringWindow
                 storedFilesGrid.scrollToRow(0);
             }
         });
-        modalWindow.destroy();
+    }
+
+    private void store(DigitalObjectDetail detail) {
+
     }
 }
