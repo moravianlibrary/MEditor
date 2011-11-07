@@ -75,7 +75,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -110,6 +109,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.StoringWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -157,6 +157,8 @@ public class ModifyView
         void lockDigitalObject(final EditorTabSet ts);
 
         void unlockDigitalObject(final EditorTabSet ts);
+
+        void getStoredFiles(EditorTabSet ts);
     }
 
     /** The Constant ID_DC. */
@@ -406,6 +408,9 @@ public class ModifyView
         if (downloadingWindow != null && downloadingWindow.isCreated()) {
             downloadingWindow.destroy();
             downloadingWindow = null;
+        } else if (StoringWindow.getInstanceOf() != null && StoringWindow.getInstanceOf().isCreated()) {
+            StoringWindow.getInstanceOf().destroy();
+            StoringWindow.setInstanceAsNull();
         } else if (universalWindow != null && universalWindow.isCreated()) {
             universalWindow.destroy();
             universalWindow = null;
@@ -491,6 +496,7 @@ public class ModifyView
 
         topTabSet.setLockOwner(detail.getLockOwner());
         topTabSet.setLockDescription(detail.getLockDescription());
+        topTabSet.setLabel(detail.getLabel());
 
         List<DigitalObjectModel> models = NamedGraphModel.getChildren(model);
         List<Tab> containerTabs = new ArrayList<Tab>();
@@ -1248,38 +1254,10 @@ public class ModifyView
     }
 
     private void saveWork(EditorTabSet ts) {
-        universalWindow = new UniversalWindow(300, 500, "Save");
-
-        //        Label fileNameLabel = new Label("Please input the name of the file");
-        HTMLFlow fileNameLabel = new HTMLFlow();
-        fileNameLabel.setContents("<h3>Please input the name of the file:</h3>");
-        fileNameLabel.setAutoHeight();
-        fileNameLabel.setMargin(10);
-
-        TextItem fileName = new TextItem();
-        fileName.setTitle("File name");
-        fileName.setWidth(350);
-        //        fileName.setDefaultValue(ts.getUuid() + "_"
-        //                + DateTimeFormat.getFormat("yyyy.MM.dd'_'hh:mm").format(new Date()));
-
-        fileName.setDefaultValue(ts.getUuid());
-
-        DynamicForm saveForm = new DynamicForm();
-        saveForm.setItems(fileName);
-
-        universalWindow.addItem(fileNameLabel);
-        universalWindow.addItem(saveForm);
-        universalWindow.centerInPage();
-        universalWindow.show();
+        getUiHandlers().getStoredFiles(ts);
     }
 
     private void showDownloadingWindow(final EditorTabSet ts) {
-
-        InfoTab infoT = ts.getInfoTab();
-        DCTab dcT = ts.getDcTab();
-        DigitalObjectDetail detail =
-                createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
-        getUiHandlers().onHandleWorkingCopyDigObj(detail);
         downloadingWindow = new DownloadingWindow(lang, ts) {
 
             @Override
@@ -1289,6 +1267,12 @@ public class ModifyView
                 focus();
             }
         };
+        InfoTab infoT = ts.getInfoTab();
+        DCTab dcT = ts.getDcTab();
+        DigitalObjectDetail detail =
+                createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
+        getUiHandlers().onHandleWorkingCopyDigObj(detail);
+
     }
 
     @Override

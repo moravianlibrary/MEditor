@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1265,6 +1265,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("barcode")
   @Key("fbarcode")
   String fbarcode();
+
+  /**
+   * Translated "Please input the name of the file".
+   * 
+   * @return translated "Please input the name of the file"
+   */
+  @DefaultStringValue("Please input the name of the file")
+  @Key("fileName")
+  String fileName();
 
   /**
    * Translated "Find".
@@ -2930,6 +2939,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département.")
   @Key("state")
   String state();
+
+  /**
+   * Translated "Your stored files".
+   * 
+   * @return translated "Your stored files"
+   */
+  @DefaultStringValue("Your stored files")
+  @Key("storedFiles")
+  String storedFiles();
 
   /**
    * Translated "Equivalent to MARC 21 fields 242, 245, 246 subfield $b.".

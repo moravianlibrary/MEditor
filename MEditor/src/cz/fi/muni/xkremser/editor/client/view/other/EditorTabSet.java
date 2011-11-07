@@ -43,6 +43,16 @@ public class EditorTabSet
 
     private String lockDescription;
 
+    private String label;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public String getOriginalOcrContent() {
         return originalOcrContent;
     }

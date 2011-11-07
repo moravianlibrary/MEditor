@@ -73,6 +73,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.StoringWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
@@ -716,7 +717,7 @@ public class ModifyPresenter
 
         final LockDigitalObjectAction lockAction =
                 new LockDigitalObjectAction(ts.getUuid(), ts.getLockDescription());
-        final DispatchCallback<LockDigitalObjectResult> lockCallBack =
+        final DispatchCallback<LockDigitalObjectResult> lockCallback =
                 new DispatchCallback<LockDigitalObjectResult>() {
 
                     @Override
@@ -764,7 +765,7 @@ public class ModifyPresenter
                         mw.hide();
                     }
                 };
-        dispatcher.execute(lockAction, lockCallBack);
+        dispatcher.execute(lockAction, lockCallback);
     }
 
     /**
@@ -778,7 +779,7 @@ public class ModifyPresenter
         mw.show(true);
 
         final UnlockDigitalObjectAction unlockAction = new UnlockDigitalObjectAction(ts.getUuid());
-        final DispatchCallback<UnlockDigitalObjectResult> unlockCallBack =
+        final DispatchCallback<UnlockDigitalObjectResult> unlockCallback =
                 new DispatchCallback<UnlockDigitalObjectResult>() {
 
                     @Override
@@ -819,6 +820,15 @@ public class ModifyPresenter
                         mw.hide();
                     }
                 };
-        dispatcher.execute(unlockAction, unlockCallBack);
+        dispatcher.execute(unlockAction, unlockCallback);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void getStoredFiles(EditorTabSet ts) {
+        StoringWindow.setInstanceOf(ts, lang, dispatcher);
     }
 }

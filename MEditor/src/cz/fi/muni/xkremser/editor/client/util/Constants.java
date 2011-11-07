@@ -112,6 +112,9 @@ public class Constants {
     /** The Constant TABLE_LOCK. */
     public static final String TABLE_LOCK = "lock";
 
+    /** The Constant TABLE_STORED_FILES. */
+    public static final String TABLE_STORED_FILES = "stored_files";
+
     /** The Constant SEQUENCE_EDITOR_USER. */
     public static final String SEQUENCE_EDITOR_USER = "seq_user";
 
@@ -191,6 +194,12 @@ public class Constants {
 
     /** The Constant ATTR_MODIFIED. */
     public static final String ATTR_MODIFIED = "modified";
+
+    /** The Constant ATTR_STORED. */
+    public static final String ATTR_STORED = "stored";
+
+    /** The Constant ATTR_FILE_NAME. */
+    public static final String ATTR_FILE_NAME = "fileName";
 
     /**
      * The Constant ATTR_LOCK_OWNER.

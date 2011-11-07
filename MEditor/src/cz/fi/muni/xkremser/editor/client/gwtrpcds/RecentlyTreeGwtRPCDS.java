@@ -136,7 +136,7 @@ public class RecentlyTreeGwtRPCDS
                                public void callbackError(final Throwable cause) {
                                    Log.error("Handle Failure:", cause);
                                    response.setStatus(RPCResponse.STATUS_FAILURE);
-                                   EditorSC.serverRecentlyMofifiedError(lang);
+                                   EditorSC.serverTreeError(lang);
                                }
 
                                @Override

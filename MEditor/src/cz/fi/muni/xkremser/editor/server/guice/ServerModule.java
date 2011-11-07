@@ -47,6 +47,8 @@ import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAOImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.StoreDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.StoreDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -85,6 +87,7 @@ import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanFolderHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
+import cz.fi.muni.xkremser.editor.server.handler.StoredFilesHandler;
 import cz.fi.muni.xkremser.editor.server.handler.UnlockDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
@@ -116,6 +119,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
 
 // TODO: Auto-generated Javadoc
@@ -159,6 +163,7 @@ public class ServerModule
         bindHandler(LockDigitalObjectAction.class, LockDigitalObjectHandler.class);
         bindHandler(UnlockDigitalObjectAction.class, UnlockDigitalObjectHandler.class);
         bindHandler(DownloadDigitalObjectDetailAction.class, DownloadDigitalObjectDetailHandler.class);
+        bindHandler(StoredFilesAction.class, StoredFilesHandler.class);
 
         bindHandler(LogoutAction.class, LogoutHandler.class);
 
@@ -172,6 +177,7 @@ public class ServerModule
         bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
         bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
         bind(LocksDAO.class).to(LocksDAOImpl.class).asEagerSingleton();
+        bind(StoreDAO.class).to(StoreDAOImpl.class).asEagerSingleton();
         // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
         // Fedora
