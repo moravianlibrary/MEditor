@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.StoreDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
@@ -69,7 +70,8 @@ public class StoredFilesHandler
      */
 
     @Override
-    public StoredFilesResult execute(StoredFilesAction arg0, ExecutionContext arg1) throws ActionException {
+    public StoredFilesResult execute(StoredFilesAction action, ExecutionContext context)
+            throws ActionException {
 
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
@@ -81,14 +83,23 @@ public class StoredFilesHandler
             throw new ActionException(e);
         }
 
-        List<StoredItem> storedItems;
-        try {
-            storedItems = storeDao.getStoredFiles(userId);
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
-        }
+        if (action.getDetail() == null) {
 
-        return new StoredFilesResult(storedItems);
+            List<StoredItem> storedItems;
+            try {
+                storedItems = storeDao.getStoredFiles(userId);
+            } catch (DatabaseException e) {
+                throw new ActionException(e);
+            }
+
+            return new StoredFilesResult(storedItems);
+
+        } else {
+
+            String workingCopyFoxml =
+                    FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
+            return new StoredFilesResult(null);
+        }
     }
 
     /**

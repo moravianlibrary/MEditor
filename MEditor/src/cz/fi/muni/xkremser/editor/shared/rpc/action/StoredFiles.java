@@ -27,9 +27,11 @@ package cz.fi.muni.xkremser.editor.shared.rpc.action;
 import java.util.List;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 
 /**
@@ -39,6 +41,9 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 @GenDispatch(isSecure = false)
 public class StoredFiles
         extends UnsecuredActionImpl<StoredFilesResult> {
+
+    @In(1)
+    private DigitalObjectDetail detail;
 
     /** The List of items stored by user */
     @Out(1)

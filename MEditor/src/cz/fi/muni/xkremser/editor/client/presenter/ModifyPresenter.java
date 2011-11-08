@@ -564,7 +564,7 @@ public class ModifyPresenter
      * (cz.fi.muni.xkremser.editor.shared.valueobj.AbstractDigitalObjectDetail)
      */
     @Override
-    public void onSaveDigitalObject(DigitalObjectDetail digitalObject, boolean versionable) {
+    public void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable) {
         dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject, versionable),
                            new DispatchCallback<PutDigitalObjectDetailResult>() {
 
@@ -573,7 +573,16 @@ public class ModifyPresenter
                                    if (!result.isSaved()) {
                                        SC.say(lang.mesCanNotPublish());
                                    } else {
-                                       // SC.say("Done.");
+                                       SC.ask(lang.operationSuccessful() + "<br>" + lang.refreshQuestion(),
+                                              new BooleanCallback() {
+
+                                                  @Override
+                                                  public void execute(Boolean value) {
+                                                      if (value) {
+                                                          onRefresh(digitalObject.getUuid());
+                                                      }
+                                                  }
+                                              });
                                    }
                                }
 
@@ -787,7 +796,7 @@ public class ModifyPresenter
                         if (result.isSuccessful()) {
                             SC.say(lang.objectUnlocked(), lang.objectUnlocked());
                         } else {
-                            SC.say(lang.operationFailed(), lang.operationFailed());
+                            EditorSC.operationFailed(lang);
                         }
                         mw.hide();
                     }

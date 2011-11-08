@@ -78,10 +78,11 @@ public final class EditorSC {
         if (parsedTime[1] > 0) {
             sb.append(parsedTime[1]).append(" ");;
             sb.append(parsedTime[1] == 1 ? lang.hour() : parsedTime[1] > 4 ? lang.hours5_() : lang.hours2_4());
-            sb.append(", ");
+            sb.append(" ");
         }
+        sb.append(lang.and() + " ");
         sb.append(parsedTime[2]).append(" ");;
-        sb.append(parsedTime[2] == 1 ? lang.minute() : parsedTime[2] > 5 ? lang.minutes5_() : lang
+        sb.append(parsedTime[2] == 1 ? lang.minute() : parsedTime[2] > 4 ? lang.minutes5_() : lang
                 .minutes2_4());
 
         return sb.toString();
@@ -89,5 +90,13 @@ public final class EditorSC {
 
     public static final void serverTreeError(LangConstants lang) {
         SC.say(lang.attemptingError());
+    }
+
+    public static final void operationFailed(LangConstants lang) {
+        SC.say(lang.operationFailed());
+    }
+
+    public static final void operationSuccessful(LangConstants lang) {
+        SC.say(lang.operationSuccessful());
     }
 }

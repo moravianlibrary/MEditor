@@ -102,7 +102,7 @@ public class StoredTreeGwtRPCDS
     @Override
     protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 
-        dispatcher.execute(new StoredFilesAction(), new DispatchCallback<StoredFilesResult>() {
+        dispatcher.execute(new StoredFilesAction(null), new DispatchCallback<StoredFilesResult>() {
 
             @Override
             public void callbackError(final Throwable cause) {

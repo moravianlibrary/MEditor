@@ -24,6 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
@@ -50,10 +51,13 @@ import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesResult;
 
 /**
  * @author Matous Jobanek
@@ -83,7 +87,9 @@ public class StoringWindow
         storingWindow = null;
     }
 
-    private StoringWindow(final DigitalObjectDetail detail, final LangConstants lang, DispatchAsync dispatcher) {
+    private StoringWindow(final DigitalObjectDetail detail,
+                          final LangConstants lang,
+                          final DispatchAsync dispatcher) {
         this.lang = lang;
         setHeight(450);
         setWidth(550);
@@ -173,7 +179,7 @@ public class StoringWindow
                             @Override
                             public void execute(Boolean value) {
                                 if (value) {
-                                    store(detail);
+                                    store(detail, dispatcher);
                                 }
                             }
                         });
@@ -183,7 +189,7 @@ public class StoringWindow
                 }
 
                 if (!isSame) {
-                    store(detail);
+                    store(detail, dispatcher);
                 }
             }
         });
@@ -219,7 +225,22 @@ public class StoringWindow
         });
     }
 
-    private void store(DigitalObjectDetail detail) {
+    private void store(DigitalObjectDetail detail, DispatchAsync dispatcher) {
 
+        StoredFilesAction storedAction = new StoredFilesAction(detail);
+        DispatchCallback<StoredFilesResult> storedCallback = new DispatchCallback<StoredFilesResult>() {
+
+            @Override
+            public void callback(StoredFilesResult result) {
+                EditorSC.operationSuccessful(lang);
+            }
+
+            @Override
+            public void callbackError(final Throwable cause) {
+                Log.error("Store Handle Failure:", cause);
+                EditorSC.operationFailed(lang);
+            }
+        };
+        dispatcher.execute(storedAction, storedCallback);
     }
 }

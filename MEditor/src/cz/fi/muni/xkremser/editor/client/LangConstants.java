@@ -124,6 +124,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String analog();
 
   /**
+   * Translated "and".
+   * 
+   * @return translated "and"
+   */
+  @DefaultStringValue("and")
+  @Key("and")
+  String and();
+
+  /**
    * Translated "This value is used to identify a date that may not be exact, but is approximated, such as 'ca. 1972'.".
    * 
    * @return translated "This value is used to identify a date that may not be exact, but is approximated, such as 'ca. 1972'."
@@ -2302,6 +2311,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String operationFailed();
 
   /**
+   * Translated "Processing the request was successful.".
+   * 
+   * @return translated "Processing the request was successful."
+   */
+  @DefaultStringValue("Processing the request was successful.")
+  @Key("operationSuccessful")
+  String operationSuccessful();
+
+  /**
    * Translated "An integer that designates the sequence of parts.".
    * 
    * @return translated "An integer that designates the sequence of parts."
@@ -2714,6 +2732,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Refresh")
   @Key("refreshItem")
   String refreshItem();
+
+  /**
+   * Translated "Do you want to refresh the digital object?".
+   * 
+   * @return translated "Do you want to refresh the digital object?"
+   */
+  @DefaultStringValue("Do you want to refresh the digital object?")
+  @Key("refreshQuestion")
+  String refreshQuestion();
 
   /**
    * Translated "Includes regions that have status as a jurisdiction, usually incorporating more than one first level jurisdiction.".
