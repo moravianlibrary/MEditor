@@ -232,7 +232,11 @@ public class StoringWindow
 
             @Override
             public void callback(StoredFilesResult result) {
-                EditorSC.operationSuccessful(lang);
+                if (result != null) {
+                    EditorSC.operationSuccessful(lang);
+                } else {
+                    EditorSC.operationFailed(lang);
+                }
             }
 
             @Override

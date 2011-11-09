@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -75,6 +76,7 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -208,6 +210,9 @@ public class ModifyView
 
     /** The Constant ID_DELETE. */
     public static final String ID_DELETE = "delete";
+
+    /** The Constant ID_UUID. */
+    public static final String ID_UUID = "uuid";
 
     /** The Constant DC_TAB_INDEX. */
     public static final int DC_TAB_INDEX = 1;
@@ -1174,6 +1179,7 @@ public class ModifyView
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
+        MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "");
 
         unlockItem.setEnabled(false);
         if (topTabSet.getLockOwner() != null) {
@@ -1186,6 +1192,15 @@ public class ModifyView
                 removeItem.setEnabled(false);
             }
         }
+
+        persistentUrlItem.setAttribute(ID_UUID, topTabSet.getUuid());
+        persistentUrlItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                showPersistentUrl(event.getItem().getAttributeAsString(ID_UUID));
+            }
+        });
 
         saveItem.setAttribute(ID_TABSET, topTabSet);
         saveItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -1249,8 +1264,37 @@ public class ModifyView
                       refreshItem,
                       downloadItem,
                       removeItem,
-                      publishItem);
+                      publishItem,
+                      persistentUrlItem);
         return menu;
+    }
+
+    private void showPersistentUrl(String uuid) {
+        universalWindow = new UniversalWindow(100, 735, lang.persistentUrl());
+
+        TextItem urlItem = new TextItem();
+        urlItem.setTitle("URL");
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(Location.getProtocol()).append("//");
+        sb.append(Location.getHost());
+        sb.append(Location.getPath());
+        sb.append(Location.getQueryString());
+        sb.append("#home/modify;pids=");
+        sb.append(uuid);
+        urlItem.setDefaultValue(sb.toString());
+
+        urlItem.setWidth(660);
+        DynamicForm urlForm = new DynamicForm();
+        urlForm.setItems(urlItem);
+        urlForm.setMargin(15);
+
+        universalWindow.addItem(urlForm);
+        universalWindow.show();
+        universalWindow.centerInPage();
+        urlItem.focusInItem();
+        urlItem.selectValue();
+        urlForm.setTop(5);
     }
 
     private void saveWork(EditorTabSet ts) {
@@ -1621,6 +1665,8 @@ public class ModifyView
                     showDownloadingWindow(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
                     saveWork(focusedTabSet);
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_W.getCode()) {
+                    showPersistentUrl(focusedTabSet.getUuid());
                 }
             }
         }

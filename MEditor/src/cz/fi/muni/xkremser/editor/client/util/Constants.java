@@ -351,7 +351,13 @@ public class Constants {
          * The value of nativeEvent-keyCode of button S - used for save a
          * working copy on the server
          */
-        CODE_KEY_S(83);
+        CODE_KEY_S(83),
+
+        /**
+         * The value of nativeEvent-keyCode of button W - used for display
+         * persistent url
+         */
+        CODE_KEY_W(87);
 
         private final int code;
 

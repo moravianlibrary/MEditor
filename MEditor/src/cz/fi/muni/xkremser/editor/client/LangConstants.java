@@ -2464,6 +2464,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String periodicalvolumes();
 
   /**
+   * Translated "Persistent url".
+   * 
+   * @return translated "Persistent url"
+   */
+  @DefaultStringValue("Persistent url")
+  @Key("persistentUrl")
+  String persistentUrl();
+
+  /**
    * Translated "equivalent to MARC 21 fields 100, 700".
    * 
    * @return translated "equivalent to MARC 21 fields 100, 700"

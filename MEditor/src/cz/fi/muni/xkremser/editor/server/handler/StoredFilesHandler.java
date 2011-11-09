@@ -24,6 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -83,9 +84,9 @@ public class StoredFilesHandler
             throw new ActionException(e);
         }
 
+        List<StoredItem> storedItems = new ArrayList<StoredItem>();
         if (action.getDetail() == null) {
 
-            List<StoredItem> storedItems;
             try {
                 storedItems = storeDao.getStoredFiles(userId);
             } catch (DatabaseException e) {
@@ -98,7 +99,7 @@ public class StoredFilesHandler
 
             String workingCopyFoxml =
                     FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
-            return new StoredFilesResult(null);
+            return new StoredFilesResult(storedItems);
         }
     }
 
