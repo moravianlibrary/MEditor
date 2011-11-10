@@ -445,7 +445,6 @@ public class CreateStructureView
         specialPageItem.setShowTitle(false);
         specialPageItem.setWidth(100);
         specialPageItem.setTitle(lang.specialType());
-        specialPageItem.disable();
 
         LinkedHashMap<String, String> valueMap =
                 new LinkedHashMap<String, String>(Constants.SPECIAL_PAGE_TYPE_MAP);
@@ -521,6 +520,7 @@ public class CreateStructureView
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);
         layout.addMember(tileGridLayout);
+        specialPageItem.disable();
     }
 
     private ToolStripMenuButton getToolStripMenuButton() {
