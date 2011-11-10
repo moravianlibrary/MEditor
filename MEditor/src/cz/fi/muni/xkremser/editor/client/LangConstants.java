@@ -1798,6 +1798,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lockObjectWindow();
 
   /**
+   * Translated "Do you want to lock the digital object was saved?".
+   * 
+   * @return translated "Do you want to lock the digital object was saved?"
+   */
+  @DefaultStringValue("Do you want to lock the digital object was saved?")
+  @Key("lockStoredObject")
+  String lockStoredObject();
+
+  /**
    * Translated "Lock opened tab".
    * 
    * @return translated "Lock opened tab"

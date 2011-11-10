@@ -39,7 +39,6 @@ import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -47,7 +46,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -152,11 +150,6 @@ public class StoringWindow
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
 
-        final CheckboxItem lockObject = new CheckboxItem();
-        lockObject.setTitle(lang.lockItem());
-        DynamicForm checkForm = new DynamicForm();
-        checkForm.setItems(lockObject);
-
         Button storeButton = new Button(lang.save());
         storeButton.addClickHandler(new ClickHandler() {
 
@@ -173,7 +166,7 @@ public class StoringWindow
                             @Override
                             public void execute(Boolean value) {
                                 if (value) {
-                                    store(detail, lockObject, dispatcher, ts);
+                                    store(detail, dispatcher, ts);
                                 } else {
                                     fileNameItem.selectValue();
                                 }
@@ -185,22 +178,19 @@ public class StoringWindow
                 }
 
                 if (!nameIsSame) {
-                    store(detail, lockObject, dispatcher, ts);
+                    store(detail, dispatcher, ts);
                 }
                 closeInstantiatedWindow();
             }
         });
 
-        HLayout bottomLayout = new HLayout();
-        bottomLayout.addMember(checkForm);
-        bottomLayout.addMember(storeButton);
-
         addItem(fileNameLabel);
         addItem(saveForm);
         addItem(storedLabel);
         addItem(storedFilesGrid);
-        addItem(bottomLayout);
+        addItem(storeButton);
 
+        setEdgeOffset(20);
         fetchStoredItems(storedFilesGrid);
         show();
         centerInPage();
@@ -227,10 +217,7 @@ public class StoringWindow
         });
     }
 
-    private void store(DigitalObjectDetail detail,
-                       final CheckboxItem lockObject,
-                       final DispatchAsync dispatcher,
-                       final EditorTabSet ts) {
+    private void store(DigitalObjectDetail detail, final DispatchAsync dispatcher, final EditorTabSet ts) {
 
         StoredFilesAction storedAction = new StoredFilesAction(detail);
         DispatchCallback<StoredFilesResult> storedCallback = new DispatchCallback<StoredFilesResult>() {
@@ -238,11 +225,16 @@ public class StoringWindow
             @Override
             public void callback(StoredFilesResult result) {
                 if (result.getStoredItems() != null) {
-                    if (lockObject.getValueAsBoolean()) {
-                        LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
-                    } else {
-                        EditorSC.operationSuccessful(lang);
-                    }
+                    SC.ask(lang.operationSuccessful() + "<br><br>" + lang.lockStoredObject(),
+                           new BooleanCallback() {
+
+                               @Override
+                               public void execute(Boolean value) {
+                                   if (value) {
+                                       LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
+                                   }
+                               }
+                           });
                 } else {
                     EditorSC.operationFailed(lang);
                 }
