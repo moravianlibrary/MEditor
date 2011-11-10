@@ -25,6 +25,7 @@
 package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window.Location;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
@@ -152,7 +153,8 @@ public abstract class DownloadingWindow
         sb.append("<center>");
         sb.append("<form method=\"");
         sb.append(content == null ? "get" : "post");
-        sb.append("\" action=\"/");
+        sb.append("\" action=\"");
+        sb.append(Location.getPath());
         sb.append(stream == null ? Constants.SERVLET_DOWNLOAD_FOXML_PREFIX
                 : Constants.SERVLET_DOWNLOAD_DATASTREAMS_PREFIX);
         sb.append("\">");
