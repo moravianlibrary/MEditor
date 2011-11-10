@@ -71,6 +71,8 @@ import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
+import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
+import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.toolbar.ToolStripMenuButton;
@@ -79,6 +81,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter.MyView;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
@@ -154,6 +157,8 @@ public class CreateStructureView
     private TileGrid tileGrid;
 
     private Window winModal;
+
+    private SelectItem specialPageItem;
 
     private int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
 
@@ -398,6 +403,17 @@ public class CreateStructureView
                 }
             }
         });
+        tileGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent event) {
+                if (tileGrid.getSelection() != null && tileGrid.getSelection().length == 1) {
+                    specialPageItem.enable();
+                } else {
+                    specialPageItem.disable();
+                }
+            }
+        });
 
         final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
         pictureField.setType("image");
@@ -425,64 +441,31 @@ public class CreateStructureView
         ToolStripMenuButton menuButton = getToolStripMenuButton();
         toolStrip.addMenuButton(menuButton);
 
+        specialPageItem = new SelectItem();
+        specialPageItem.setShowTitle(false);
+        specialPageItem.setWidth(100);
+        specialPageItem.setTitle(lang.specialType());
+        specialPageItem.disable();
+
+        LinkedHashMap<String, String> valueMap =
+                new LinkedHashMap<String, String>(Constants.SPECIAL_PAGE_TYPE_MAP);
+        specialPageItem.setValueMap(valueMap);
+        specialPageItem.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                tileGrid.getSelectedRecord().setAttribute(Constants.ATTR_NAME, event.getValue());
+            }
+        });
+
+        toolStrip.addFormItem(specialPageItem);
         toolStrip.addResizer();
 
-        ToolStripButton boldButton = new ToolStripButton();
-        boldButton.setIcon("[SKIN]/RichTextEditor/text_bold.png");
-        boldButton.setActionType(SelectionType.CHECKBOX);
-        toolStrip.addButton(boldButton);
-
-        ToolStripButton italicsButton = new ToolStripButton();
-        italicsButton.setIcon("[SKIN]/RichTextEditor/text_italic.png");
-        italicsButton.setActionType(SelectionType.CHECKBOX);
-        toolStrip.addButton(italicsButton);
-
-        ToolStripButton underlineButton = new ToolStripButton();
-        underlineButton.setIcon("[SKIN]/RichTextEditor/text_underline.png");
-        underlineButton.setActionType(SelectionType.CHECKBOX);
-        toolStrip.addButton(underlineButton);
-
-        toolStrip.addSeparator();
-
-        ToolStripButton alignLeftButton = new ToolStripButton();
-        alignLeftButton.setIcon("[SKIN]/RichTextEditor/text_align_left.png");
-        alignLeftButton.setActionType(SelectionType.RADIO);
-        alignLeftButton.setRadioGroup("textAlign");
-        toolStrip.addButton(alignLeftButton);
-
-        ToolStripButton alignRightButton = new ToolStripButton();
-        alignRightButton.setIcon("[SKIN]/RichTextEditor/text_align_right.png");
-        alignRightButton.setActionType(SelectionType.RADIO);
-        alignRightButton.setRadioGroup("textAlign");
-        toolStrip.addButton(alignRightButton);
-
-        ToolStripButton alignCenterButton = new ToolStripButton();
-        alignCenterButton.setIcon("[SKIN]/RichTextEditor/text_align_center.png");
-        alignCenterButton.setActionType(SelectionType.RADIO);
-        alignCenterButton.setRadioGroup("textAlign");
-        toolStrip.addButton(alignCenterButton);
-
-        toolStrip.addSeparator();
-
-        SelectItem fontItem = new SelectItem();
-        fontItem.setShowTitle(false);
-        fontItem.setWidth(120);
-
-        LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
-        valueMap.put("courier", "<span style='font-family:courier'>Courier</span>");
-        valueMap.put("verdana", "<span style='font-family:verdana'>Verdana</span>");
-        valueMap.put("times", "<span style='font-family:times'>Times</span>");
-        fontItem.setValueMap(valueMap);
-        fontItem.setDefaultValue("verdana");
-
-        toolStrip.addFormItem(fontItem);
-
-        toolStrip.addResizer();
-
-        SelectItem zoomItems = new SelectItem("pageDetail", "Detail size");
+        SelectItem zoomItems = new SelectItem("pageDetail", lang.detailSize());
         zoomItems.setName("selectName");
         zoomItems.setShowTitle(true);
-        zoomItems.setWidth(100);
+        zoomItems.setWrapTitle(false);
+        zoomItems.setWidth(70);
         zoomItems.setValueMap("75%", "100%", "125%", "150%");
         zoomItems.addChangedHandler(new ChangedHandler() {
 
@@ -506,6 +489,7 @@ public class CreateStructureView
         ToolStripButton zoomButton = new ToolStripButton();
         zoomButton.setIcon("silk/zoom.png");
         zoomButton.setTitle(lang.pageDetail());
+        zoomButton.setActionType(SelectionType.CHECKBOX);
         zoomButton.addClickHandler(new ClickHandler() {
 
             @Override
@@ -577,30 +561,77 @@ public class CreateStructureView
                 Record[] data = tileGrid.getSelection();
                 if (data != null && data.length > 0) {
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
-                    int i = 1;
-                    if (startingNumber != null && !"".equals(startingNumber) && startingNumber.length() >= 1) {
-                        try {
-                            if (startingNumber.charAt(0) == '[') {
-                                i =
-                                        Integer.parseInt(startingNumber.substring(1, startingNumber
-                                                .lastIndexOf(']')));
-                            } else if (!Character.isDigit(startingNumber.charAt(startingNumber.length() - 1))) {
-                                i =
-                                        Integer.parseInt(startingNumber.substring(0,
-                                                                                  startingNumber.length() - 1));
-                            } else {
-                                i = Integer.parseInt(startingNumber);
-                            }
-                        } catch (NumberFormatException nfe) {
-                            i = 1;
-                        }
-                    }
+                    int i = getPageNumberFromText(startingNumber);
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME, i++);
                     }
                 }
             }
         });
+
+        toRoman.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                Record[] data = tileGrid.getSelection();
+                if (data != null && data.length > 0) {
+                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+                    int i = getPageNumberFromText(startingNumber);
+                    for (Record rec : data) {
+                        rec.setAttribute(Constants.ATTR_NAME, ClientUtils.numbersParse(i++));
+                    }
+                }
+            }
+        });
+
+        surround.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                Record[] data = tileGrid.getSelection();
+                if (data != null && data.length > 0) {
+                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+                    int i = getPageNumberFromText(startingNumber);
+                    for (Record rec : data) {
+                        rec.setAttribute(Constants.ATTR_NAME, "[" + i++ + "]");
+                    }
+                }
+            }
+        });
+
+        abc.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                Record[] data = tileGrid.getSelection();
+                if (data != null && data.length > 0) {
+                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+                    int i = getPageNumberFromText(startingNumber);
+                    int j = 0;
+                    for (Record rec : data) {
+                        rec.setAttribute(Constants.ATTR_NAME, (i + (j / 2)) + (j % 2 == 0 ? "a" : "b"));
+                        j++;
+                    }
+                }
+            }
+        });
+
+        //        toLeft.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        //
+        //            @Override
+        //            public void onClick(MenuItemClickEvent event) {
+        //                Record[] data = tileGrid.getSelection();
+        //                if (data != null && data.length > 0) {
+        //                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+        //                    int i = getPageNumberFromText(startingNumber);
+        //                    int j = 1;
+        //                    for (Record rec : data) {
+        //                        rec.setAttribute(Constants.ATTR_NAME, (i + (j / 2)) + (j % 2 == 1 ? "a" : "b"));
+        //                        j++;
+        //                    }
+        //                }
+        //            }
+        //        });
 
         MenuItemSeparator separator = new MenuItemSeparator();
 
@@ -672,6 +703,25 @@ public class CreateStructureView
                 detailPanelImageShown = true;
             }
         }
+    }
+
+    private int getPageNumberFromText(String text) {
+        if (text != null && !"".equals(text)) {
+            try {
+                if (text.charAt(0) == '[') {
+                    text = text.substring(1, text.lastIndexOf(']'));
+                }
+                while (!Character.isDigit(text.charAt(text.length() - 1))) {
+                    text = text.substring(0, text.length() - 1);
+                }
+                if (!"".equals(text)) {
+                    return Integer.parseInt(text);
+                }
+            } catch (NumberFormatException nfe) {
+                return 1;
+            }
+        }
+        return 1;
     }
 
     private MenuItemIfFunction isSelected() {

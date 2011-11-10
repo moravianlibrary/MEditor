@@ -1060,6 +1060,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String detailNum();
 
   /**
+   * Translated "Detail size".
+   * 
+   * @return translated "Detail size"
+   */
+  @DefaultStringValue("Detail size")
+  @Key("detailSize")
+  String detailSize();
+
+  /**
    * Translated "Contains the title of the part. Only include if this is different than the title in <titleInfo><title>.".
    * 
    * @return translated "Contains the title of the part. Only include if this is different than the title in <titleInfo><title>."
@@ -3038,6 +3047,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Roughly equivalent to MARC 21 field 003.")
   @Key("sourceMarc")
   String sourceMarc();
+
+  /**
+   * Translated "Special type".
+   * 
+   * @return translated "Special type"
+   */
+  @DefaultStringValue("Special type")
+  @Key("specialType")
+  String specialType();
 
   /**
    * Translated "This value is used for the first date of a range (or a single date, if used).".

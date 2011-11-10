@@ -27,6 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ServerConstants.
@@ -423,4 +426,15 @@ public class Constants {
     public static enum DATASTREAM_CONTROLGROUP {
         E, M, R, X
     }
+
+    public static Map<String, String> SPECIAL_PAGE_TYPE_MAP = new HashMap<String, String>() {
+
+        {
+            put("FC", "FrontCover");
+            put("FS", "FrontEndSheet");
+            put("SP", "Spine");
+            put("BS", "BackEndSheet");
+            put("BC", "BackCover");
+        }
+    };
 }

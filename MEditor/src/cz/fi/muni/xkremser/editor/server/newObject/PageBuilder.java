@@ -24,13 +24,11 @@
 
 package cz.fi.muni.xkremser.editor.server.newObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 
@@ -44,16 +42,6 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
  */
 public class PageBuilder
         extends FoxmlBuilder {
-
-    private static Map<String, String> specialPageTypeMap = new HashMap<String, String>();
-
-    static {
-        specialPageTypeMap.put("FC", "FrontCover");
-        specialPageTypeMap.put("FS", "FrontEndSheet");
-        specialPageTypeMap.put("SP", "Spine");
-        specialPageTypeMap.put("BS", "BackEndSheet");
-        specialPageTypeMap.put("BC", "BackCover");
-    }
 
     /**
      * @param uuid
@@ -83,7 +71,7 @@ public class PageBuilder
         Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
         typeOfResource.addText("text");
         Element part = mods.addElement(new QName("part", modsNs));
-        String resolvedPageType = specialPageTypeMap.get(pageLabel);
+        String resolvedPageType = Constants.SPECIAL_PAGE_TYPE_MAP.get(pageLabel);
         part.addAttribute("type", resolvedPageType == null ? "NormalPage" : resolvedPageType);
         //pageNumber
         Element detail = part.addElement(new QName("detail", modsNs));
