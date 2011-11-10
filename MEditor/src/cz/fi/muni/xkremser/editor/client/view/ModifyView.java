@@ -95,6 +95,7 @@ import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -1265,7 +1266,11 @@ public class ModifyView
         sb.append(Location.getHost());
         sb.append(Location.getPath());
         sb.append(Location.getQueryString());
-        sb.append("#home/modify;pids=");
+        sb.append('?');
+        sb.append(NameTokens.MODIFY);
+        sb.append('&');
+        sb.append(Constants.URL_PARAM_UUID);
+        sb.append('=');
         sb.append(uuid);
         urlItem.setDefaultValue(sb.toString());
 
