@@ -26,9 +26,6 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.google.gwt.http.client.URL;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
-import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
@@ -51,7 +48,7 @@ import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.REL
  */
 
 public abstract class DownloadingWindow
-        extends Window {
+        extends UniversalWindow {
 
     private final Layout mainLayout;
     private HTMLFlow foxmlLocalFlow;
@@ -61,28 +58,14 @@ public abstract class DownloadingWindow
     private final ModalWindow modalWindow;
 
     public DownloadingWindow(LangConstants lang, final EditorTabSet ts) {
+        super(350, 450, lang.downloadItem());
         this.lang = lang;
-        setHeight(350);
-        setWidth(450);
-        setCanDragResize(true);
-        setShowEdges(true);
-        setTitle(lang.downloadItem());
-        setShowMinimizeButton(false);
-        setIsModal(true);
-        setShowModalMask(true);
+
         setEdgeOffset(10);
 
         mainLayout = new VLayout(5);
         mainLayout.setHeight100();
         addItem(mainLayout);
-
-        addCloseClickHandler(new CloseClickHandler() {
-
-            @Override
-            public void onCloseClick(CloseClientEvent event) {
-                destroy();
-            }
-        });
 
         modalWindow = new ModalWindow(mainLayout);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
@@ -108,8 +91,8 @@ public abstract class DownloadingWindow
 
         Layout foxmlLayout = new HLayout(2);
         foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
-        
-        Layout foxmlLocalLayout = new VLayout(2);       
+
+        Layout foxmlLocalLayout = new VLayout(2);
         foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
         final Layout foxmlLocalFlowLayout = new VLayout(1);
         foxmlLocalFlowLayout.addMember(foxmlLocalFlow);

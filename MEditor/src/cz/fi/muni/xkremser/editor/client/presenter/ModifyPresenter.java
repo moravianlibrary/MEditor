@@ -72,6 +72,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
+import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.StoringWindow;
 
@@ -91,8 +92,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -719,62 +718,7 @@ public class ModifyPresenter
 
     @Override
     public void lockDigitalObject(final EditorTabSet ts) {
-
-        final ModalWindow mw = new ModalWindow(ts);
-        mw.setLoadingIcon("loadingAnimation.gif");
-        mw.show(true);
-
-        final LockDigitalObjectAction lockAction =
-                new LockDigitalObjectAction(ts.getUuid(), ts.getLockDescription());
-        final DispatchCallback<LockDigitalObjectResult> lockCallback =
-                new DispatchCallback<LockDigitalObjectResult>() {
-
-                    @Override
-                    public void callback(LockDigitalObjectResult result) {
-                        if (result.getLockOwner() == null) {
-                            SC.say(lang.objectLocked(), lang.objectLocked() + "<br>" + lang.lockNote());
-
-                        } else if ("".equals(result.getLockOwner())) {
-                            SC.say(lang.lockUpdated(), lang.lockUpdated());
-
-                        } else {
-                            EditorSC.objectIsLock(lang,
-                                                  result.getLockOwner(),
-                                                  result.getLockDescription(),
-                                                  result.getTimeToExpiration());
-                        }
-                        mw.hide();
-                    }
-
-                    @Override
-                    public void callbackError(final Throwable t) {
-                        if (t.getMessage() != null && t.getMessage().length() > 0
-                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                                       new BooleanCallback() {
-
-                                           @Override
-                                           public void execute(Boolean value) {
-                                               if (value != null && value) {
-                                                   MEditor.redirect(t.getMessage().substring(1));
-                                               }
-                                           }
-                                       });
-                        } else {
-                            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
-
-                                @Override
-                                public void execute(Boolean value) {
-                                    if (value != null && value) {
-                                        lockDigitalObject(ts);
-                                    }
-                                }
-                            });
-                        }
-                        mw.hide();
-                    }
-                };
-        dispatcher.execute(lockAction, lockCallback);
+        LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
     }
 
     /**
@@ -837,7 +781,7 @@ public class ModifyPresenter
      */
 
     @Override
-    public void getStoredFiles(DigitalObjectDetail detail) {
-        StoringWindow.setInstanceOf(detail, lang, dispatcher);
+    public void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts) {
+        StoringWindow.setInstanceOf(detail, lang, dispatcher, ts);
     }
 }

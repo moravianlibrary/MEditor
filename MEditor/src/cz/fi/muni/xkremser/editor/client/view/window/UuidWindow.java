@@ -1,7 +1,6 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -11,7 +10,7 @@ import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 
 public abstract class UuidWindow
-        extends Window {
+        extends UniversalWindow {
 
     private final TextItem uuidField;
 
@@ -22,16 +21,9 @@ public abstract class UuidWindow
      *        the lang
      */
     public UuidWindow(LangConstants lang) {
-        super();
-        setHeight(150);
-        setWidth(370);
+        super(150, 370, "PID");
+
         setEdgeOffset(15);
-        setCanDragResize(true);
-        setShowEdges(true);
-        setTitle("PID");
-        setShowMinimizeButton(false);
-        setIsModal(true);
-        setShowModalMask(true);
 
         RegExpValidator regExpValidator = new RegExpValidator();
         regExpValidator

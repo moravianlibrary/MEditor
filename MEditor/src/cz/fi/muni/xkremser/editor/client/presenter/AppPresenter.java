@@ -294,7 +294,7 @@ public class AppPresenter
     private void escShortCut() {
         if (uuidWindow != null) {
             uuidWindow.destroy();
-            //            uuidWindow = null;
+            uuidWindow = null;
         }
     }
 
@@ -303,6 +303,7 @@ public class AppPresenter
             uuidWindow.destroy();
             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
                     .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));
+            uuidWindow = null;
         }
 
     }

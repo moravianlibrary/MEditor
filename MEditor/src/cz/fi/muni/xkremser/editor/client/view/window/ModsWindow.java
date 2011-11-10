@@ -7,7 +7,6 @@ import java.util.List;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.DateDisplayFormat;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.DateTimeItem;
@@ -37,7 +36,7 @@ import cz.fi.muni.xkremser.editor.client.mods.TitleInfoTypeClient;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 public abstract class ModsWindow
-        extends Window {
+        extends UniversalWindow {
 
     private final LangConstants lang;
 
@@ -204,7 +203,7 @@ public abstract class ModsWindow
      *        the lang
      */
     public ModsWindow(ModsCollectionClient modsCollection, String uuid, LangConstants lang) {
-        super();
+        super(450, 900, lang.quickEdit() + ": " + uuid);
         this.lang = lang;
         this.modsCollection = modsCollection;
         modsTypeClient = modsCollection.getMods().get(0);
@@ -222,15 +221,6 @@ public abstract class ModsWindow
         mainLayout.addMember(itemsLayout);
         mainLayout.addMember(createButtonsLayout());
 
-        setHeight(450);
-        setWidth(900);
-        setEdgeOffset(20);
-        setCanDragResize(true);
-        setShowEdges(true);
-        setTitle(lang.quickEdit() + ": " + uuid);
-        setShowMinimizeButton(false);
-        setIsModal(true);
-        setShowModalMask(true);
         centerInPage();
         addItem(mainLayout);
         init();

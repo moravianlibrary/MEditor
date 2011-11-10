@@ -63,11 +63,8 @@ import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.RichTextEditor;
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
-import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.events.DragStartEvent;
 import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
@@ -109,9 +106,11 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.StoringWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -160,7 +159,7 @@ public class ModifyView
 
         void unlockDigitalObject(final EditorTabSet ts);
 
-        void getStoredFiles(DigitalObjectDetail detail);
+        void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts);
     }
 
     /** The Constant ID_DC. */
@@ -244,8 +243,8 @@ public class ModifyView
     /** Whether is topTabSet2 focused or not **/
     private boolean isSecondFocused = false;
 
-    /** The publish-window **/
-    private Window universalWindow = null;
+    /** The universal-window **/
+    private UniversalWindow universalWindow = null;
 
     /** The value of background color of focused tabSet **/
     private static final String BG_COLOR_FOCUSED = "#ededed";
@@ -263,29 +262,6 @@ public class ModifyView
 
     private DownloadingWindow downloadingWindow = null;
 
-    private static class UniversalWindow
-            extends Window {
-
-        public UniversalWindow(int height, int width, String title) {
-            setHeight(height);
-            setWidth(width);
-            setCanDragResize(true);
-            setShowEdges(true);
-            setTitle(title);
-            setShowMinimizeButton(false);
-            setIsModal(true);
-            setShowModalMask(true);
-            addCloseClickHandler(new CloseClickHandler() {
-
-                @Override
-                public void onCloseClick(CloseClientEvent event) {
-                    destroy();
-                }
-            });
-        }
-
-    }
-
     /**
      * Instantiates a new modify view.
      */
@@ -302,6 +278,10 @@ public class ModifyView
     }
 
     public void showBasicModsWindow(final EditorTabSet focusedTabSet) {
+        if (modsWindow != null && modsWindow.isCreated()) {
+            modsWindow.destroy();
+            modsWindow = null;
+        }
         modsWindow = new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang) {
 
             @Override
@@ -413,15 +393,21 @@ public class ModifyView
         if (downloadingWindow != null && downloadingWindow.isCreated()) {
             downloadingWindow.destroy();
             downloadingWindow = null;
-        } else if (StoringWindow.getInstanceOf() != null && StoringWindow.getInstanceOf().isCreated()) {
-            StoringWindow.getInstanceOf().destroy();
-            StoringWindow.setInstanceAsNull();
+
+        } else if (StoringWindow.isInstanceVisible()) {
+            StoringWindow.closeInstantiatedWindow();
+
         } else if (universalWindow != null && universalWindow.isCreated()) {
             universalWindow.destroy();
             universalWindow = null;
+
+        } else if (LockDigitalObjectWindow.isInstanceVisible()) {
+            LockDigitalObjectWindow.closeInstantiatedWindow();
+
         } else if (modsWindow != null && modsWindow.isCreated()) {
             modsWindow.destroy();
             modsWindow = null;
+
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);
         }
@@ -1303,10 +1289,14 @@ public class ModifyView
         DigitalObjectDetail detail =
                 createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
 
-        getUiHandlers().getStoredFiles(detail);
+        getUiHandlers().storeFoxmlFile(detail, ts);
     }
 
     private void showDownloadingWindow(final EditorTabSet ts) {
+        if (downloadingWindow != null && downloadingWindow.isCreated()) {
+            downloadingWindow.destroy();
+            downloadingWindow = null;
+        }
         downloadingWindow = new DownloadingWindow(lang, ts) {
 
             @Override
@@ -1342,52 +1332,7 @@ public class ModifyView
     }
 
     private void lockDigitalObject(final EditorTabSet ts) {
-
-        universalWindow = new UniversalWindow(300, 490, lang.lockObjectWindow() + ": " + ts.getUuid());
-
-        final RichTextEditor textEditor = new RichTextEditor();
-        textEditor.setHeight(200);
-        textEditor.setWidth(470);
-        textEditor.setOverflow(Overflow.HIDDEN);
-        textEditor.setEdgeSize(2);
-        textEditor.setExtraSpace(5);
-        textEditor.setShowEdges(true);
-        if (ts.getLockDescription() != null) {
-            textEditor.setValue(ts.getLockDescription());
-        }
-        HLayout layout = new HLayout();
-        Button lock = new Button();
-        lock.setTitle("Lock!");
-        Button close = new Button();
-        close.setTitle("Close");
-        layout.addMember(lock);
-        layout.addMember(close);
-
-        lock.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                ts.setLockDescription(textEditor.getValue().equals("<br>") ? null : textEditor.getValue());
-                getUiHandlers().lockDigitalObject(ts);
-                universalWindow.destroy();
-                universalWindow = null;
-            }
-        });
-
-        close.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                universalWindow.destroy();
-                universalWindow = null;
-            }
-        });
-
-        universalWindow.addItem(textEditor);
-        universalWindow.addItem(layout);
-        universalWindow.centerInPage();
-        universalWindow.show();
-        lock.focus();
+        getUiHandlers().lockDigitalObject(ts);
     }
 
     /**

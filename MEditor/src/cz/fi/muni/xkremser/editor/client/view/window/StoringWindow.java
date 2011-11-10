@@ -36,12 +36,10 @@ import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
-import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -49,11 +47,13 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
@@ -65,48 +65,37 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesResult;
  */
 
 public class StoringWindow
-        extends Window {
+        extends UniversalWindow {
 
     private final LangConstants lang;
     private static StoringWindow storingWindow = null;
 
     public static void setInstanceOf(DigitalObjectDetail detail,
                                      final LangConstants lang,
-                                     DispatchAsync dispatcher) {
-        if (storingWindow != null) {
-            storingWindow = null;
+                                     DispatchAsync dispatcher,
+                                     EditorTabSet ts) {
+        if (isInstanceVisible()) {
+            closeInstantiatedWindow();
         }
-        storingWindow = new StoringWindow(detail, lang, dispatcher);
+        storingWindow = new StoringWindow(detail, lang, dispatcher, ts);
     }
 
-    public static StoringWindow getInstanceOf() {
-        return storingWindow;
+    public static boolean isInstanceVisible() {
+        return (storingWindow != null && storingWindow.isCreated());
     }
 
-    public static void setInstanceAsNull() {
+    public static void closeInstantiatedWindow() {
+        storingWindow.destroy();
         storingWindow = null;
     }
 
     private StoringWindow(final DigitalObjectDetail detail,
                           final LangConstants lang,
-                          final DispatchAsync dispatcher) {
+                          final DispatchAsync dispatcher,
+                          final EditorTabSet ts) {
+        super(450, 550, lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel());
         this.lang = lang;
-        setHeight(450);
-        setWidth(550);
-        setCanDragResize(true);
-        setShowEdges(true);
-        setTitle(lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel());
-        setShowMinimizeButton(false);
-        setIsModal(true);
-        setShowModalMask(true);
-        setEdgeOffset(20);
-        addCloseClickHandler(new CloseClickHandler() {
 
-            @Override
-            public void onCloseClick(CloseClientEvent event) {
-                destroy();
-            }
-        });
         final ListGrid storedFilesGrid;
         storedFilesGrid = new ListGrid();
         HTMLFlow fileNameLabel = new HTMLFlow();
@@ -118,13 +107,13 @@ public class StoringWindow
         storedLabel.setAutoHeight();
         storedLabel.setMargin(10);
 
-        final TextItem fileName = new TextItem();
-        fileName.setTitle(lang.fileName());
-        fileName.setWidth(350);
+        final TextItem fileNameItem = new TextItem();
+        fileNameItem.setTitle(lang.fileName());
+        fileNameItem.setWidth(350);
 
-        fileName.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
+        fileNameItem.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
         DynamicForm saveForm = new DynamicForm();
-        saveForm.setItems(fileName);
+        saveForm.setItems(fileNameItem);
         saveForm.setExtraSpace(5);
 
         storedFilesGrid.setWidth(500);
@@ -156,12 +145,17 @@ public class StoringWindow
 
             @Override
             public void onCellClick(CellClickEvent event) {
-                fileName.setValue(event.getRecord().getAttribute(Constants.ATTR_FILE_NAME));
+                fileNameItem.setValue(event.getRecord().getAttribute(Constants.ATTR_FILE_NAME));
             }
         });
         ModalWindow modalWindow = new ModalWindow(storedFilesGrid);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
+
+        final CheckboxItem lockObject = new CheckboxItem();
+        lockObject.setTitle(lang.lockItem());
+        DynamicForm checkForm = new DynamicForm();
+        checkForm.setItems(lockObject);
 
         Button storeButton = new Button(lang.save());
         storeButton.addClickHandler(new ClickHandler() {
@@ -169,42 +163,50 @@ public class StoringWindow
             @Override
             public void onClick(ClickEvent event) {
                 Record[] records = storedFilesGrid.getRecords();
-                boolean isSame = false;
+                boolean nameIsSame = false;
 
                 for (Record record : records) {
-                    if (record.getAttributeAsString(Constants.ATTR_FILE_NAME).equals(fileName.getValue())) {
+                    if (record.getAttributeAsString(Constants.ATTR_FILE_NAME).equals(fileNameItem.getValue())) {
 
                         SC.ask(lang.fileExists(), new BooleanCallback() {
 
                             @Override
                             public void execute(Boolean value) {
                                 if (value) {
-                                    store(detail, dispatcher);
+                                    store(detail, lockObject, dispatcher, ts);
+                                } else {
+                                    fileNameItem.selectValue();
                                 }
                             }
                         });
-                        isSame = true;
+                        nameIsSame = true;
                         break;
                     }
                 }
 
-                if (!isSame) {
-                    store(detail, dispatcher);
+                if (!nameIsSame) {
+                    store(detail, lockObject, dispatcher, ts);
                 }
+                closeInstantiatedWindow();
             }
         });
+
+        HLayout bottomLayout = new HLayout();
+        bottomLayout.addMember(checkForm);
+        bottomLayout.addMember(storeButton);
 
         addItem(fileNameLabel);
         addItem(saveForm);
         addItem(storedLabel);
         addItem(storedFilesGrid);
-        addItem(storeButton);
+        addItem(bottomLayout);
 
         fetchStoredItems(storedFilesGrid);
         show();
         centerInPage();
         focus();
         storeButton.setLeft(400);
+        fileNameItem.selectValue();
         modalWindow.destroy();
     }
 
@@ -225,15 +227,22 @@ public class StoringWindow
         });
     }
 
-    private void store(DigitalObjectDetail detail, DispatchAsync dispatcher) {
+    private void store(DigitalObjectDetail detail,
+                       final CheckboxItem lockObject,
+                       final DispatchAsync dispatcher,
+                       final EditorTabSet ts) {
 
         StoredFilesAction storedAction = new StoredFilesAction(detail);
         DispatchCallback<StoredFilesResult> storedCallback = new DispatchCallback<StoredFilesResult>() {
 
             @Override
             public void callback(StoredFilesResult result) {
-                if (result != null) {
-                    EditorSC.operationSuccessful(lang);
+                if (result.getStoredItems() != null) {
+                    if (lockObject.getValueAsBoolean()) {
+                        LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
+                    } else {
+                        EditorSC.operationSuccessful(lang);
+                    }
                 } else {
                     EditorSC.operationFailed(lang);
                 }
