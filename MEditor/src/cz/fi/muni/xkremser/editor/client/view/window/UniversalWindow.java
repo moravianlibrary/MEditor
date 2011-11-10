@@ -37,6 +37,7 @@ public class UniversalWindow
         extends Window {
 
     public UniversalWindow(int height, int width, String title) {
+        setPadding(5);
         setHeight(height);
         setWidth(width);
         setCanDragResize(true);

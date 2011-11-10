@@ -100,10 +100,12 @@ public class StoringWindow
         fileNameLabel.setContents("<h3>" + lang.fileNameLabel() + ": </h3>");
         fileNameLabel.setAutoHeight();
         fileNameLabel.setMargin(10);
+        fileNameLabel.setExtraSpace(3);
         HTMLFlow storedLabel = new HTMLFlow();
         storedLabel.setContents("<h4>" + lang.storedFiles() + ": </h4>");
         storedLabel.setAutoHeight();
         storedLabel.setMargin(10);
+        storedLabel.setExtraSpace(5);
 
         final TextItem fileNameItem = new TextItem();
         fileNameItem.setTitle(lang.fileName());
