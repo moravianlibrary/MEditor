@@ -397,10 +397,10 @@ public class Constants {
     public static final String RANGE = "range";
 
     public static final String HTTP_CACHE_SECONDS = "7200";
-    public static final int PAGE_HEIGHT_SMALL = 90;
-    public static final int PAGE_HEIGHT_NORMAL = 115;
-    public static final int PAGE_HEIGHT_LARGE = 130;
-    public static final int PAGE_HEIGHT_XLARGE = 150;
+    public static final int PAGE_PREVIEW_HEIGHT_SMALL = 80;
+    public static final int PAGE_PREVIEW_HEIGHT_NORMAL = 120;
+    public static final int PAGE_PREVIEW_HEIGHT_LARGE = 140;
+    public static final int PAGE_PREVIEW_HEIGHT_XLARGE = 160;
 
     /**
      * Fedora FOXML related constants

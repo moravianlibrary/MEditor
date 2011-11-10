@@ -225,4 +225,51 @@ public class ClientUtils {
         // iterate the tree from bottom to top and add DO to fedora
     }
 
+    public static String numbersParse(int number) {
+        if (number < 10) {
+            return smallNumbersParse(number);
+        } else if (number < 50) {
+            if (number == 49) {
+                return "IL";
+            } else {
+                return getXPart(number);
+            }
+        } else {
+            return "L" + numbersParse(number - 50);
+        }
+    }
+
+    private static String getXPart(int number) {
+        StringBuffer sb = new StringBuffer();
+        int countOfTen = number / 10;
+        for (int i = 0; i < countOfTen; i++) {
+            sb.append("X");
+        }
+        sb.append(smallNumbersParse(number % 10));
+        return sb.toString();
+
+    }
+
+    private static String smallNumbersParse(int number) {
+        if (number < 4) {
+            return getIPart(number);
+
+        } else if (number == 4) {
+            return "IV";
+        } else if (number < 9) {
+            return ("V" + getIPart(number - 5));
+        } else if (number == 9) {
+            return "IX";
+        }
+        return "";
+    }
+
+    private static String getIPart(int count) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < count; i++) {
+            sb.append("I");
+        }
+        return sb.toString();
+    }
+
 }

@@ -64,7 +64,6 @@ import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.MenuItemSeparator;
-import com.smartgwt.client.widgets.menu.MenuItemStringFunction;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.TileRecord;
@@ -156,7 +155,7 @@ public class CreateStructureView
 
     private Window winModal;
 
-    private int pageDetailHeight = Constants.PAGE_HEIGHT_NORMAL;
+    private int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
 
     /**
      * Instantiates a new create view.
@@ -490,22 +489,23 @@ public class CreateStructureView
             @Override
             public void onChanged(ChangedEvent event) {
                 String percent = (String) event.getValue();
-                if ("75".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_HEIGHT_SMALL;
+                if ("75%".equals(percent)) {
+                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_SMALL;
                 } else if ("100%".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_HEIGHT_NORMAL;
+                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
                 } else if ("125%".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_HEIGHT_LARGE;
+                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_LARGE;
                 } else if ("150%".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_HEIGHT_XLARGE;
+                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_XLARGE;
                 }
+                showDetail(pageDetailHeight);
             }
         });
         zoomItems.setDefaultValue("100%");
         toolStrip.addFormItem(zoomItems);
         ToolStripButton zoomButton = new ToolStripButton();
         zoomButton.setIcon("silk/zoom.png");
-        zoomButton.setTitle("Detail panel");
+        zoomButton.setTitle(lang.pageDetail());
         zoomButton.addClickHandler(new ClickHandler() {
 
             @Override
@@ -513,7 +513,6 @@ public class CreateStructureView
                 if (detailPanel == null) {
                     detailPanel = new VLayout();
                     detailPanel.setPadding(5);
-                    detailPanel.setHeight((pageDetailHeight * 2) + 30);
                     detailPanel.setAnimateMembers(true);
                     detailPanel.setAnimateHideTime(200);
                     detailPanel.setAnimateShowTime(200);
@@ -525,7 +524,6 @@ public class CreateStructureView
                     tileGridLayout.removeMember(detailPanel);
                 } else {
                     tileGridLayout.addMember(detailPanel);
-
                     detailPanelShown = true;
                 }
             }
@@ -546,50 +544,69 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(3);
 
-        MenuItem renumber = new MenuItem("Renumber", "icons/16/document_plain_new.png", "Ctrl+N");
-        MenuItem toRoman = new MenuItem("Convert selected to roman", "icons/16/folder_out.png", "Ctrl+O");
-        MenuItem surround = new MenuItem("1, 2, ... -> [1], [2], ...", "icons/16/disk_blue.png", "Ctrl+S");
-        MenuItem abc = new MenuItem("1, 2, ... -> 1a, 2b, ...", "icons/16/disk_blue.png", "Ctrl+S");
-        MenuItem toLeft = new MenuItem("Shift to left", "icons/16/save_as.png");
-        MenuItem toRight = new MenuItem("Shift to right", "icons/16/save_as.png");
-
-        MenuItem recentDocItem = new MenuItem("Recent Documents", "icons/16/folder_document.png");
-
-        Menu recentDocSubMenu = new Menu();
-        MenuItem dataSM = new MenuItem("data.xml");
-        dataSM.setChecked(true);
-        MenuItem componentSM = new MenuItem("Component Guide.doc");
-        MenuItem ajaxSM = new MenuItem("AJAX.doc");
-        recentDocSubMenu.setItems(dataSM, componentSM, ajaxSM);
-
-        recentDocItem.setSubmenu(recentDocSubMenu);
-
-        MenuItem exportItem = new MenuItem("Export as...", "icons/16/export1.png");
-        Menu exportSM = new Menu();
-        exportSM.setItems(new MenuItem("XML"), new MenuItem("CSV"), new MenuItem("Plain text"));
-        exportItem.setSubmenu(exportSM);
-
-        MenuItem printItem = new MenuItem("Print", "icons/16/printer3.png", "Ctrl+P");
-        printItem.setEnabled(false);
-
-        MenuItemSeparator separator = new MenuItemSeparator();
-
-        final MenuItem activateMenu = new MenuItem("Activate");
-        activateMenu.setDynamicTitleFunction(new MenuItemStringFunction() {
+        MenuItem renumberAll = new MenuItem(lang.renumberAll(), "icons/16/renumberAll.png");
+        MenuItem renumber = new MenuItem(lang.renumber(), "icons/16/renumber.png");
+        MenuItem toRoman = new MenuItem(lang.convert(), "icons/16/roman.png");
+        MenuItem surround = new MenuItem("1, 2, ... -> [1], [2], ...", "icons/16/surround.png");
+        MenuItem abc = new MenuItem("1, 2, ... -> 1a, 2b, ...", "icons/16/abc.png");
+        MenuItem toLeft = new MenuItem(lang.leftShift(), "icons/16/arrow_left.png");
+        MenuItem toRight = new MenuItem(lang.rightShift(), "icons/16/arrow_right.png");
+        renumber.setEnableIfCondition(isSelected());
+        toRoman.setEnableIfCondition(isSelected());
+        surround.setEnableIfCondition(isSelected());
+        abc.setEnableIfCondition(isSelected());
+        toLeft.setEnableIfCondition(isSelected());
+        toRight.setEnableIfCondition(isSelected());
+        renumberAll.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
-            public String execute(final Canvas aTarget, final Menu aMenu, final MenuItem aItem) {
-                if (Math.random() > 0.5) {
-                    return "De-Activate Blacklist";
-                } else {
-                    return "Activate Blacklist";
+            public void onClick(MenuItemClickEvent event) {
+                Record[] data = tileGrid.getData();
+                if (data != null) {
+                    int i = 1;
+                    for (Record rec : data) {
+                        rec.setAttribute(Constants.ATTR_NAME, i++);
+                    }
+                }
+            }
+        });
+        renumber.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                Record[] data = tileGrid.getSelection();
+                if (data != null && data.length > 0) {
+                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+                    int i = 1;
+                    if (startingNumber != null && !"".equals(startingNumber) && startingNumber.length() >= 1) {
+                        try {
+                            if (startingNumber.charAt(0) == '[') {
+                                i =
+                                        Integer.parseInt(startingNumber.substring(1, startingNumber
+                                                .lastIndexOf(']')));
+                            } else if (!Character.isDigit(startingNumber.charAt(startingNumber.length() - 1))) {
+                                i =
+                                        Integer.parseInt(startingNumber.substring(0,
+                                                                                  startingNumber.length() - 1));
+                            } else {
+                                i = Integer.parseInt(startingNumber);
+                            }
+                        } catch (NumberFormatException nfe) {
+                            i = 1;
+                        }
+                    }
+                    for (Record rec : data) {
+                        rec.setAttribute(Constants.ATTR_NAME, i++);
+                    }
                 }
             }
         });
 
-        menu.setItems(activateMenu, renumber, toRoman, separator, surround, abc, separator, toLeft, toRight);
+        MenuItemSeparator separator = new MenuItemSeparator();
 
-        ToolStripMenuButton menuButton = new ToolStripMenuButton("Page numbers", menu);
+        menu.setItems(renumberAll, renumber, separator, toRoman, surround, abc, separator, toLeft, toRight);
+
+        ToolStripMenuButton menuButton = new ToolStripMenuButton(lang.pageNumbers(), menu);
         menuButton.setWidth(100);
         return menuButton;
     }
@@ -614,6 +631,7 @@ public class CreateStructureView
 
     private void showDetail(String pid, int height) {
         if (detailPanelShown) {
+            detailPanel.setHeight((height * 2) + 52);
             if (detailPanelImageShown) {
                 detailPanel.removeMembers(detailPanel.getMembers());
             }
@@ -641,19 +659,29 @@ public class CreateStructureView
                 bottom.setImageHeight(height);
                 bottom.setImageType(ImageStyle.NORMAL);
                 bottom.setBorder("1px solid gray");
-                Label topL = new Label("Top");
+                Label topL = new Label(lang.top());
                 topL.setHeight(12);
                 detailPanel.setAlign(Alignment.CENTER);
                 detailPanel.setAlign(VerticalAlignment.CENTER);
                 detailPanel.addMember(topL);
                 detailPanel.addMember(top);
-                Label botL = new Label("Bottom");
+                Label botL = new Label(lang.bottom());
                 botL.setHeight(12);
                 detailPanel.addMember(botL);
                 detailPanel.addMember(bottom);
                 detailPanelImageShown = true;
             }
         }
+    }
+
+    private MenuItemIfFunction isSelected() {
+        return new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return tileGrid.getSelectedRecord() != null;
+            }
+        };
     }
 
     /**

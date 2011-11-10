@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -410,6 +410,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("The value is equivalent to codes 'b,' 'i' and 's' in Leader/07.")
   @Key("continuingMARC")
   String continuingMARC();
+
+  /**
+   * Translated "Convert selected to Roman".
+   * 
+   * @return translated "Convert selected to Roman"
+   */
+  @DefaultStringValue("Convert selected to Roman")
+  @Key("convert")
+  String convert();
 
   /**
    * Translated "One or more statements may be supplied. If one is supplied, it is a point (i.e., a single location); if two, it is a line; if more than two, it is a n-sided polygon where n=number of coordinates assigned. No three points should be co-linear, and coordinates should be supplied in polygon-traversal order.".
@@ -1708,6 +1717,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lastName();
 
   /**
+   * Translated "Shift to left".
+   * 
+   * @return translated "Shift to left"
+   */
+  @DefaultStringValue("Shift to left")
+  @Key("leftShift")
+  String leftShift();
+
+  /**
    * Translated "link".
    * 
    * @return translated "link"
@@ -2374,6 +2392,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String pageDetail();
 
   /**
+   * Translated "Page numbers".
+   * 
+   * @return translated "Page numbers"
+   */
+  @DefaultStringValue("Page numbers")
+  @Key("pageNumbers")
+  String pageNumbers();
+
+  /**
    * Translated "Pages".
    * 
    * @return translated "Pages"
@@ -2806,6 +2833,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String rendering();
 
   /**
+   * Translated "Renumber".
+   * 
+   * @return translated "Renumber"
+   */
+  @DefaultStringValue("Renumber")
+  @Key("renumber")
+  String renumber();
+
+  /**
+   * Translated "Renumber all".
+   * 
+   * @return translated "Renumber all"
+   */
+  @DefaultStringValue("Renumber all")
+  @Key("renumberAll")
+  String renumberAll();
+
+  /**
    * Translated "The electronic resource is of high enough quality to serve as a replacement if the original is lost, damaged, or destroyed. If serving more than one purpose, the element may be repeated. ".
    * 
    * @return translated "The electronic resource is of high enough quality to serve as a replacement if the original is lost, damaged, or destroyed. If serving more than one purpose, the element may be repeated. "
@@ -2849,6 +2894,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("A language identifier as specified by the Internet Best Current Practice specification RFC4646.")
   @Key("rfc4646")
   String rfc4646();
+
+  /**
+   * Translated "Shift to right".
+   * 
+   * @return translated "Shift to right"
+   */
+  @DefaultStringValue("Shift to right")
+  @Key("rightShift")
+  String rightShift();
 
   /**
    * Translated "Role".
