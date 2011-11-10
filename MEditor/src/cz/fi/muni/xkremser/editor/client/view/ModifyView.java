@@ -487,7 +487,6 @@ public class ModifyView
 
         topTabSet.setLockOwner(detail.getLockOwner());
         topTabSet.setLockDescription(detail.getLockDescription());
-        topTabSet.setLabel(detail.getLabel());
 
         List<DigitalObjectModel> models = NamedGraphModel.getChildren(model);
         List<Tab> containerTabs = new ArrayList<Tab>();
