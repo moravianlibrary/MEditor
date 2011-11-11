@@ -73,24 +73,25 @@ public class LockDigitalObjectWindow
     private LockDigitalObjectWindow(final LangConstants lang,
                                     final EditorTabSet ts,
                                     final DispatchAsync dispatcher) {
-        super(300, 490, lang.lockObjectWindow() + ": " + ts.getUuid());
+        super(300, 510, lang.lockObjectWindow() + ": " + ts.getUuid());
 
         this.lang = lang;
         final RichTextEditor textEditor = new RichTextEditor();
         textEditor.setHeight(200);
-        textEditor.setWidth(470);
+        textEditor.setWidth(473);
         textEditor.setOverflow(Overflow.HIDDEN);
-        textEditor.setEdgeSize(2);
-        textEditor.setExtraSpace(5);
+        textEditor.setEdgeSize(3);
+        textEditor.setExtraSpace(10);
         textEditor.setShowEdges(true);
         if (ts.getLockDescription() != null) {
             textEditor.setValue(ts.getLockDescription());
         }
         HLayout layout = new HLayout();
         Button lock = new Button();
-        lock.setTitle("Lock!");
+        lock.setExtraSpace(8);
+        lock.setTitle(lang.lockItem());
         Button close = new Button();
-        close.setTitle("Close");
+        close.setTitle(lang.close());
         layout.addMember(lock);
         layout.addMember(close);
 
@@ -111,12 +112,15 @@ public class LockDigitalObjectWindow
                 closeInstantiatedWindow();
             }
         });
-
+        layout.setAutoWidth();
+        setEdgeOffset(20);
         addItem(textEditor);
         addItem(layout);
         centerInPage();
         show();
         lock.focus();
+        layout.setLeft(260);
+
     }
 
     private void lockDigitalObject(final EditorTabSet ts, final DispatchAsync dispatcher) {

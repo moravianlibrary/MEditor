@@ -35,7 +35,7 @@ import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -46,6 +46,7 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -96,16 +97,14 @@ public class StoringWindow
 
         final ListGrid storedFilesGrid;
         storedFilesGrid = new ListGrid();
-        HTMLFlow fileNameLabel = new HTMLFlow();
+        Label fileNameLabel = new Label();
         fileNameLabel.setContents("<h3>" + lang.fileNameLabel() + ": </h3>");
         fileNameLabel.setAutoHeight();
-        fileNameLabel.setMargin(10);
-        fileNameLabel.setExtraSpace(3);
-        HTMLFlow storedLabel = new HTMLFlow();
+        fileNameLabel.setExtraSpace(8);
+        Label storedLabel = new Label();
         storedLabel.setContents("<h4>" + lang.storedFiles() + ": </h4>");
         storedLabel.setAutoHeight();
-        storedLabel.setMargin(10);
-        storedLabel.setExtraSpace(5);
+        storedLabel.setExtraSpace(3);
 
         final TextItem fileNameItem = new TextItem();
         fileNameItem.setTitle(lang.fileName());
@@ -114,7 +113,7 @@ public class StoringWindow
         fileNameItem.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
         DynamicForm saveForm = new DynamicForm();
         saveForm.setItems(fileNameItem);
-        saveForm.setExtraSpace(5);
+        saveForm.setExtraSpace(12);
 
         storedFilesGrid.setWidth(500);
         storedFilesGrid.setHeight(200);
@@ -152,6 +151,8 @@ public class StoringWindow
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
 
+        HLayout buttonsLayout = new HLayout(2);
+        buttonsLayout.setAutoWidth();
         Button storeButton = new Button(lang.save());
         storeButton.addClickHandler(new ClickHandler() {
 
@@ -185,19 +186,31 @@ public class StoringWindow
                 closeInstantiatedWindow();
             }
         });
+        storeButton.setExtraSpace(8);
+        buttonsLayout.addMember(storeButton);
+
+        Button closeButton = new Button(lang.close());
+        closeButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                destroy();
+            }
+        });
+        buttonsLayout.addMember(closeButton);
 
         addItem(fileNameLabel);
         addItem(saveForm);
         addItem(storedLabel);
         addItem(storedFilesGrid);
-        addItem(storeButton);
+        addItem(buttonsLayout);
 
         setEdgeOffset(20);
         fetchStoredItems(storedFilesGrid);
         show();
         centerInPage();
         focus();
-        storeButton.setLeft(400);
+        buttonsLayout.setLeft(280);
         fileNameItem.selectValue();
         modalWindow.destroy();
     }

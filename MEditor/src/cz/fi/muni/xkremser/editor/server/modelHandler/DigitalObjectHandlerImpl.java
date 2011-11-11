@@ -233,19 +233,19 @@ public class DigitalObjectHandlerImpl
         return modsClient;
     }
 
-    //    private DigitalObjectDetail getDigitalObjectFromFoxml(String foxml, String uuid) {
-    //        DigitalObjectModel model = getModel(uuid);
-    //        Foxml originalFoxml = FoxmlUtils.handleFoxml(uuid, getFedoraAccess());
-    //        DigitalObjectDetail detail = new DigitalObjectDetail(model, getRelated(uuid));
-    //        detail.setFoxmlString(originalFoxml.getFoxml());
-    //        detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
-    //        
-    //        detail.setDc(handleDc(uuid, false));
-    //        detail.setMods(handleMods(uuid));      
-    //        detail.setLabel(foxml.getLabel());
-    //        detail.setOcr(handleOCR(uuid));
-    //        
-    //        
-    //        return null;
-    //    }
+    //        private DigitalObjectDetail getDigitalObjectFromFoxml(String foxml, String uuid) {
+    //            DigitalObjectModel model = getModel(uuid);
+    //            Foxml originalFoxml = FoxmlUtils.handleFoxml(uuid, getFedoraAccess());
+    //            DigitalObjectDetail detail = new DigitalObjectDetail(model, getRelated(uuid));
+    //            detail.setFoxmlString(originalFoxml.getFoxml());
+    //            detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
+    //            
+    //            detail.setDc(handleDc(uuid, false));
+    //            detail.setMods(handleMods(uuid));      
+    //            detail.setLabel(foxml.getLabel());
+    //            detail.setOcr(handleOCR(uuid));
+    //            
+    //            
+    //            return null;
+    //        }
 }

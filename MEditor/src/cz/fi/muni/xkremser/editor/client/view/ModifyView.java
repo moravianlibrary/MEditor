@@ -96,6 +96,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -262,6 +263,8 @@ public class ModifyView
     private ModsWindow modsWindow = null;
 
     private DownloadingWindow downloadingWindow = null;
+
+    private EditorClientConfiguration config;
 
     /**
      * Instantiates a new modify view.
@@ -1165,7 +1168,7 @@ public class ModifyView
         MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
-        MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "");
+        MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
 
         unlockItem.setEnabled(false);
         if (topTabSet.getLockOwner() != null) {
@@ -1256,35 +1259,47 @@ public class ModifyView
     }
 
     private void showPersistentUrl(String uuid) {
-        universalWindow = new UniversalWindow(100, 735, lang.persistentUrl());
+        universalWindow = new UniversalWindow(110, 800, lang.persistentUrl());
 
-        TextItem urlItem = new TextItem();
-        urlItem.setTitle("URL");
+        TextItem editorUrlItem = new TextItem();
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(Location.getProtocol()).append("//");
-        sb.append(Location.getHost());
-        sb.append(Location.getPath());
-        sb.append(Location.getQueryString());
-        sb.append('?');
-        sb.append(NameTokens.MODIFY);
-        sb.append('&');
-        sb.append(Constants.URL_PARAM_UUID);
-        sb.append('=');
-        sb.append(uuid);
-        urlItem.setDefaultValue(sb.toString());
+        StringBuffer sbEditor = new StringBuffer();
+        sbEditor.append(Location.getProtocol()).append("//");
+        sbEditor.append(Location.getHost());
+        sbEditor.append(Location.getPath());
+        sbEditor.append(Location.getQueryString());
+        sbEditor.append('?');
+        sbEditor.append(NameTokens.MODIFY);
+        sbEditor.append('&');
+        sbEditor.append(Constants.URL_PARAM_UUID);
+        sbEditor.append('=');
+        sbEditor.append(uuid);
+        editorUrlItem.setDefaultValue(sbEditor.toString());
+        editorUrlItem.setWidth(660);
+        editorUrlItem.setTitle("<a href=\"" + sbEditor.toString() + "\" target=\"_blank\">Editor URL</a> ");
 
-        urlItem.setWidth(660);
-        DynamicForm urlForm = new DynamicForm();
-        urlForm.setItems(urlItem);
-        urlForm.setMargin(15);
+        TextItem krameriusUrlItem = new TextItem();
 
-        universalWindow.addItem(urlForm);
+        StringBuffer sbKram = new StringBuffer();
+        sbKram.append(config.getKrameriusHost());
+        sbKram.append("/handle/");
+        sbKram.append(uuid);
+        krameriusUrlItem.setDefaultValue(sbKram.toString());
+        krameriusUrlItem.setWidth(660);
+        krameriusUrlItem.setTitle("<a href=\"" + sbKram.toString()
+                + "\" target=\"_blank\">Kramerius URL</a> ");
+
+        DynamicForm editorUrlForm = new DynamicForm();
+        editorUrlForm.setItems(editorUrlItem);
+        editorUrlForm.setExtraSpace(5);
+        DynamicForm kramUrlForm = new DynamicForm();
+        kramUrlForm.setItems(krameriusUrlItem);
+
+        universalWindow.addItem(editorUrlForm);
+        universalWindow.addItem(kramUrlForm);
         universalWindow.show();
         universalWindow.centerInPage();
-        urlItem.focusInItem();
-        urlItem.selectValue();
-        urlForm.setTop(5);
+        universalWindow.focus();
     }
 
     private void saveWork(EditorTabSet ts) {
@@ -1620,4 +1635,14 @@ public class ModifyView
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void setConfiguration(EditorClientConfiguration config) {
+        this.config = config;
+    }
+
 }

@@ -63,6 +63,7 @@ import com.smartgwt.client.widgets.tile.TileGrid;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -114,6 +115,9 @@ public class ModifyPresenter
         this.lang = lang;
     }
 
+    @Inject
+    private final EditorClientConfiguration config;
+
     /**
      * The Interface MyView.
      */
@@ -135,6 +139,8 @@ public class ModifyPresenter
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
 
         DownloadingWindow getDownloadingWindow();
+
+        void setConfiguration(EditorClientConfiguration config);
     }
 
     /**
@@ -193,12 +199,14 @@ public class ModifyPresenter
                            final MyProxy proxy,
                            final DigitalObjectMenuPresenter leftPresenter,
                            final DispatchAsync dispatcher,
-                           final PlaceManager placeManager) {
+                           final PlaceManager placeManager,
+                           final EditorClientConfiguration config) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         getView().setUiHandlers(this);
+        this.config = config;
     }
 
     /*
@@ -208,6 +216,8 @@ public class ModifyPresenter
     @Override
     protected void onBind() {
         super.onBind();
+
+        getView().setConfiguration(config);
 
         addRegisteredHandler(DigitalObjectClosedEvent.getType(), new DigitalObjectClosedHandler() {
 
@@ -610,8 +620,7 @@ public class ModifyPresenter
                                    for (int i = 0; i < length; i++) {
                                        stringsWithXml[i] = result.getStringsWithXml()[i];
                                    }
-                                   getView().getDownloadingWindow().addButtons(stringsWithXml,
-                                                                               digitalObject.getUuid());
+                                   getView().getDownloadingWindow().setStringsWithXml(stringsWithXml);
                                }
 
                                @Override

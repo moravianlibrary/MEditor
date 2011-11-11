@@ -29,9 +29,9 @@ import com.google.gwt.user.client.Window.Location;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -52,17 +52,19 @@ public abstract class DownloadingWindow
         extends UniversalWindow {
 
     private final Layout mainLayout;
-    private HTMLFlow foxmlLocalFlow;
+    private VLayout buttonsLayout = new VLayout();
 
     private final LangConstants lang;
 
-    private final ModalWindow modalWindow;
+    private ModalWindow modalWindow;
 
-    public DownloadingWindow(LangConstants lang, final EditorTabSet ts) {
-        super(350, 450, lang.downloadItem());
+    private HTMLFlow foxmlLocalFlow;
+
+    private String[] stringsWithXml;
+
+    public DownloadingWindow(final LangConstants lang, final EditorTabSet ts) {
+        super(360, 350, lang.downloadItem());
         this.lang = lang;
-
-        setEdgeOffset(10);
 
         mainLayout = new VLayout(5);
         mainLayout.setHeight100();
@@ -71,86 +73,177 @@ public abstract class DownloadingWindow
         modalWindow = new ModalWindow(mainLayout);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
+
+        final RadioGroupItem selectVer = new RadioGroupItem();
+        selectVer.setTitle(lang.chooseVersion());
+        selectVer.setValueMap(lang.masterCopy(), lang.workingCopy());
+        selectVer.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                addButtons(stringsWithXml,
+                           ts.getUuid(),
+                           selectVer.getValueAsString().equals(lang.masterCopy()));
+            }
+        });
+        DynamicForm comboForm = new DynamicForm();
+        comboForm.setItems(selectVer);
+        comboForm.setExtraSpace(10);
+        mainLayout.addMember(comboForm);
+
         init();
+    }
+
+    public void setStringsWithXml(String[] stringsWithXml) {
+        this.stringsWithXml = stringsWithXml;
+        modalWindow.hide();
     }
 
     protected abstract void init();
 
-    public void addButtons(final String[] stringsWithXml, final String uuid) {
+    public void addButtons(final String[] stringsWithXml, final String uuid, boolean originalVersion) {
 
-        HTMLFlow foxmlLabel = new HTMLFlow("<big><center>" + lang.downloadFoxml() + ":" + "</center></big>");
-        HTMLFlow streamsLabel =
-                new HTMLFlow("<big><center>" + lang.downloadStream() + ":" + "</center></big>");
+        if (mainLayout.hasMember(buttonsLayout)) {
+            mainLayout.removeMember(buttonsLayout);
+        }
+        buttonsLayout = new VLayout();
+        buttonsLayout.setMembersMargin(3);
+        buttonsLayout.setPadding(10);
 
-        Layout titleLayout = new HLayout(2);
-        titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.masterCopy() + ":" + "</center></h2>"));
-        titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.workingCopy() + ":" + "</center></h2>"));
-        titleLayout.setAutoHeight();
-        mainLayout.addMember(titleLayout);
+        HTMLFlow foxmlLabel = new HTMLFlow("<b>" + lang.downloadFoxml() + ":" + "</b>");
+        HTMLFlow streamsLabel = new HTMLFlow("<b>" + lang.downloadStream() + ":" + "</b>");
+        modalWindow = new ModalWindow(buttonsLayout);
+        modalWindow.setLoadingIcon("loadingAnimation.gif");
+        modalWindow.show(true);
 
-        mainLayout.addMember(foxmlLabel);
+        buttonsLayout.addMember(foxmlLabel);
 
-        Layout foxmlLayout = new HLayout(2);
-        foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
+        final Layout foxmlLayout;
+        if (originalVersion) {
+            foxmlLayout = new VLayout(1);
+            foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
+        } else {
+            foxmlLayout = new VLayout(2);
+            final Layout foxmlLocalFlowLayout = new VLayout(1);
+            foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
+            DynamicForm form = new DynamicForm();
+            final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
+            versionable.setDefaultValue(false);
+            versionable.addChangedHandler(new ChangedHandler() {
 
-        Layout foxmlLocalLayout = new VLayout(2);
-        foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
-        final Layout foxmlLocalFlowLayout = new VLayout(1);
-        foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
-        foxmlLocalLayout.addMember(foxmlLocalFlowLayout);
-
-        DynamicForm form = new DynamicForm();
-        final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
-        versionable.setDefaultValue(false);
-        form.setFields(versionable);
-        form.setWidth(200);
-        foxmlLocalLayout.addMember(form);
-        foxmlLayout.addMember(foxmlLocalLayout);
-
-        foxmlLayout.setMargin(7);
-        foxmlLayout.setExtraSpace(10);
+                @Override
+                public void onChanged(ChangedEvent event) {
+                    foxmlLocalFlowLayout.removeMember(foxmlLocalFlow);
+                    foxmlLocalFlow =
+                            htmlFlowFormLinkFactory(null,
+                                                    uuid,
+                                                    stringsWithXml[versionable.getValueAsBoolean() ? 0 : 1]);
+                    foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
+                }
+            });
+            form.setFields(versionable);
+            form.setWidth(200);
+            foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
+            foxmlLayout.addMember(foxmlLocalFlowLayout);
+            foxmlLayout.addMember(form);
+        }
         foxmlLayout.setAutoHeight();
-        mainLayout.addMember(foxmlLayout);
+        foxmlLayout.setExtraSpace(10);
+        foxmlLayout.setEdgeOffset(5);
+        foxmlLayout.setPadding(5);
+        buttonsLayout.addMember(foxmlLayout);
 
-        mainLayout.addMember(streamsLabel);
+        buttonsLayout.addMember(streamsLabel);
+        final Layout streamsLayout = new VLayout(3);
+        if (originalVersion) {
+            streamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, null));
+            streamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, null));
+            streamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, null));
+        } else {
+            streamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[2]));
+            streamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[3]));
+            streamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[4]));
+        }
+        streamsLayout.setPadding(5);
+        buttonsLayout.addMember(streamsLayout);
 
-        Layout streamLayout = new HLayout(2);
-        Layout fedoraStreamsLayout = new VLayout(3);
-        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, null));
-        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, null));
-        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, null));
+        //----------------------------------
+        //        HTMLFlow foxmlLabel = new HTMLFlow("<big><center>" + lang.downloadFoxml() + ":" + "</center></big>");
+        //        HTMLFlow streamsLabel =
+        //                new HTMLFlow("<big><center>" + lang.downloadStream() + ":" + "</center></big>");
 
-        Layout localStreamsLayout = new VLayout(3);
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[2]));
-        localStreamsLayout
-                .addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[3]));
-        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[4]));
+        //        Layout titleLayout = new HLayout(2);
+        //        //        titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.masterCopy() + ":" + "</center></h2>"));
+        //        //        titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.workingCopy() + ":" + "</center></h2>"));
+        //        titleLayout.addMember(new HTMLFlow("<h2>" + lang.masterCopy() + ":" + "</h2>"));
+        //        titleLayout.addMember(new HTMLFlow("<h2>" + lang.workingCopy() + ":" + "</h2>"));
+        //        titleLayout.setAutoHeight();
+        //        mainLayout.addMember(titleLayout);
+        //
+        //        mainLayout.addMember(foxmlLabel);
+        //
+        //        Layout foxmlLayout = new HLayout(2);
+        //        foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
+        //
+        //        Layout foxmlLocalLayout = new VLayout(2);
+        //        foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
+        //        final Layout foxmlLocalFlowLayout = new VLayout(1);
+        //        foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
+        //        foxmlLocalLayout.addMember(foxmlLocalFlowLayout);
+        //
+        //        DynamicForm form = new DynamicForm();
+        //        final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
+        //        versionable.setDefaultValue(false);
+        //        form.setFields(versionable);
+        //        form.setWidth(200);
+        //        foxmlLocalLayout.addMember(form);
+        //        foxmlLayout.addMember(foxmlLocalLayout);
+        //
+        //        foxmlLayout.setMargin(7);
+        //        foxmlLayout.setExtraSpace(10);
+        //        foxmlLayout.setAutoHeight();
+        //        mainLayout.addMember(foxmlLayout);
+        //
+        //        mainLayout.addMember(streamsLabel);
+        //
+        //        Layout streamLayout = new HLayout(2);
+        //        Layout fedoraStreamsLayout = new VLayout(3);
+        //        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, null));
+        //        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, null));
+        //        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, null));
+        //
+        //        Layout localStreamsLayout = new VLayout(3);
+        //        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[2]));
+        //        localStreamsLayout
+        //                .addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[3]));
+        //        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[4]));
+        //
+        //        streamLayout.addMember(fedoraStreamsLayout);
+        //        streamLayout.addMember(localStreamsLayout);
+        //        streamLayout.setMargin(12);
+        //        streamLayout.setAutoHeight();
+        //        mainLayout.addMember(streamLayout);
 
-        streamLayout.addMember(fedoraStreamsLayout);
-        streamLayout.addMember(localStreamsLayout);
-        streamLayout.setMargin(12);
-        streamLayout.setAutoHeight();
-        mainLayout.addMember(streamLayout);
+        //        versionable.addChangedHandler(new ChangedHandler() {
+        //
+        //            @Override
+        //            public void onChanged(ChangedEvent event) {
+        //                foxmlLocalFlowLayout.removeMember(foxmlLocalFlow);
+        //                foxmlLocalFlow =
+        //                        htmlFlowFormLinkFactory(null,
+        //                                                uuid,
+        //                                                stringsWithXml[versionable.getValueAsBoolean() ? 0 : 1]);
+        //                foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
+        //            }
+        //        });
+        mainLayout.addMember(buttonsLayout);
         modalWindow.hide();
-
-        versionable.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                foxmlLocalFlowLayout.removeMember(foxmlLocalFlow);
-                foxmlLocalFlow =
-                        htmlFlowFormLinkFactory(null,
-                                                uuid,
-                                                stringsWithXml[versionable.getValueAsBoolean() ? 0 : 1]);
-                foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
-            }
-        });
     }
 
     private HTMLFlow htmlFlowFormLinkFactory(String stream, String uuid, String content) {
 
         StringBuffer sb = new StringBuffer();
-        sb.append("<center>");
+        //        sb.append("<center>");
         sb.append("<form method=\"");
         sb.append(content == null ? "get" : "post");
         sb.append("\" action=\"");
@@ -180,7 +273,7 @@ public abstract class DownloadingWindow
         sb.append("\" value=\"");
         sb.append(uuid);
         sb.append("\"/>");
-
+        
         sb.append("<input type=\"submit\" value=\"");
         if (stream == null) {
             sb.append(lang.fullFoxml());
@@ -193,7 +286,7 @@ public abstract class DownloadingWindow
         }
         sb.append("\" />");
         sb.append("</form>");
-        sb.append("</center>");
+        //        sb.append("</center>");
         HTMLFlow newFormFlow = new HTMLFlow(sb.toString());
         newFormFlow.setExtraSpace(8);
 

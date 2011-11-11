@@ -37,6 +37,10 @@ color: rgb(0,0,196); background-color: rgb(228,230,160);
 color: rgb(0,0,0); font-weight: bold; font-style: italic;
 }
 
+input{
+	font-size: 13px;
+	width: 150px;
+}
 
 .interactImageHover {
     font-family:Verdana,Bitstream Vera Sans,sans-serif;

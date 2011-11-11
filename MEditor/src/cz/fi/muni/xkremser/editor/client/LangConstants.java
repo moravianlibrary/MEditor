@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -302,6 +302,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Check availability")
   @Key("checkAvailability")
   String checkAvailability();
+
+  /**
+   * Translated "Choose version".
+   * 
+   * @return translated "Choose version"
+   */
+  @DefaultStringValue("Choose version")
+  @Key("chooseVersion")
+  String chooseVersion();
 
   /**
    * Translated "Name of an inhabited place incorporated as a city, town, etc.".
