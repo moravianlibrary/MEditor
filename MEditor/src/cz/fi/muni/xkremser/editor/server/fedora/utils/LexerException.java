@@ -36,6 +36,8 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
 public class LexerException
         extends Exception {
 
+    private static final long serialVersionUID = -193550590037669708L;
+
     /**
      * Instantiates a new lexer exception.
      */

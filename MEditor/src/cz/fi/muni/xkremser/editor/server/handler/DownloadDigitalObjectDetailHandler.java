@@ -28,16 +28,11 @@ import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.apache.log4j.Logger;
-
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
@@ -51,21 +46,9 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailR
 public class DownloadDigitalObjectDetailHandler
         implements ActionHandler<DownloadDigitalObjectDetailAction, DownloadDigitalObjectDetailResult> {
 
-    /** The fedora access. */
-    @Inject
-    @Named("securedFedoraAccess")
-    private FedoraAccess fedoraAccess;
-
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
-
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(FedoraUtils.class);
-
-    /** The configuration. */
-    @Inject
-    private EditorConfiguration config;
 
     /**
      * {@inheritDoc}

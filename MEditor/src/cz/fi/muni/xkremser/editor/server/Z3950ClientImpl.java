@@ -76,9 +76,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Z3950Client.
+ * @author Jiri Kremser
  */
 public class Z3950ClientImpl
         implements Z3950Client {
@@ -88,35 +87,6 @@ public class Z3950ClientImpl
 
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    /** The Constant MZK_PROFILE_INDEX. */
-    public static final int MZK_PROFILE_INDEX = 0;
-
-    /** The Constant MZK_PROFILE_ID. */
-    public static final String MZK_PROFILE_ID = "mzk";
-
-    /** The Constant MUNI_PROFILE_INDEX. */
-    public static final int MUNI_PROFILE_INDEX = 1;
-
-    /** The Constant MUNI_PROFILE_ID. */
-    public static final String MUNI_PROFILE_ID = "muni";
-
-    /** The Constant NKP_SKC_PROFILE_INDEX. */
-    public static final int NKP_SKC_PROFILE_INDEX = 2;
-
-    /** The Constant NKP_SKC_PROFILE_ID. */
-    public static final String NKP_SKC_PROFILE_ID = "nkp_skc";
-
-    /** The Constant NKP_NKC_PROFILE_INDEX. */
-    public static final int NKP_NKC_PROFILE_INDEX = 3;
-
-    /** The Constant NKP_NKC_PROFILE_ID. */
-    public static final String NKP_NKC_PROFILE_ID = "nkp_nkc";
-
-    /** The Constant RECORD_SYNTAX. */
-    public static final String DC_RECORD_SYNTAX = "xml";
-
-    public static final String MARC_RECORD_SYNTAX = "usmarc";
 
     private String profile = null;
     private String host = null;

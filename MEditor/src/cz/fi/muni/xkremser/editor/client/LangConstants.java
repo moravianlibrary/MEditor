@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1159,6 +1159,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String downloadStream();
 
   /**
+   * Translated "Edit metadata".
+   * 
+   * @return translated "Edit metadata"
+   */
+  @DefaultStringValue("Edit metadata")
+  @Key("editMeta")
+  String editMeta();
+
+  /**
    * Translated "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC).".
    * 
    * @return translated "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."
@@ -1303,6 +1312,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String fbarcode();
 
   /**
+   * Translated "Base".
+   * 
+   * @return translated "Base"
+   */
+  @DefaultStringValue("Base")
+  @Key("fbase")
+  String fbase();
+
+  /**
+   * Translated "Continue without metadata".
+   * 
+   * @return translated "Continue without metadata"
+   */
+  @DefaultStringValue("Continue without metadata")
+  @Key("fcontinueWithout")
+  String fcontinueWithout();
+
+  /**
    * Translated "A file with this name already exists. Do you want to overwrite it?".
    * 
    * @return translated "A file with this name already exists. Do you want to overwrite it?"
@@ -1384,6 +1411,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String fnothing();
 
   /**
+   * Translated "ID prefix".
+   * 
+   * @return translated "ID prefix"
+   */
+  @DefaultStringValue("ID prefix")
+  @Key("fprefix")
+  String fprefix();
+
+  /**
    * Translated "Equivalent to the information in MARC 21 008/18 (Frequency) for Continuing Resources, where it is given in coded form or in field 310 (Current Publication Frequency), where it is given in textual form.".
    * 
    * @return translated "Equivalent to the information in MARC 21 008/18 (Frequency) for Continuing Resources, where it is given in coded form or in field 310 (Current Publication Frequency), where it is given in textual form."
@@ -1418,6 +1454,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Full Image")
   @Key("fullImg")
   String fullImg();
+
+  /**
+   * Translated "Provider's URL".
+   * 
+   * @return translated "Provider's URL"
+   */
+  @DefaultStringValue("Provider's URL")
+  @Key("furl")
+  String furl();
 
   /**
    * Translated "A term(s) that designates a category characterizing a particular style, form, or content, such as artistic, musical, literary composition, etc. ".

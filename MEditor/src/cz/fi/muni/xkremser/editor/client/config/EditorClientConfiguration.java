@@ -60,6 +60,17 @@ public abstract class EditorClientConfiguration {
         /** The Constant GUI_SHOW_INPUT_QUEUE_DEFAULT. */
         public static final boolean GUI_SHOW_INPUT_QUEUE_DEFAULT = true;
 
+        public static final String OAI_PMH_URLS = "oaiUrls";
+
+        public static final String[] OAI_PMH_URLS_DEFAULT = {"http://oai.mzk.cz"};
+
+        public static final String OAI_PMH_PREFIXES = "oaiIdPrefixes";
+
+        public static final String[] OAI_PMH_PREFIXES_DEFAULT = {"oai:aleph.mzk.cz:"};
+
+        public static final String OAI_PMH_BASES = "oaiBases";
+
+        public static final String[] OAI_PMH_BASES_DEFAULT = {"MZK01", "MZK03"};
     }
 
     /**
@@ -103,6 +114,18 @@ public abstract class EditorClientConfiguration {
      */
     public String getKrameriusHost() {
         return getConfiguration().getString(Constants.KRAMERIUS_HOST, null);
+    }
+
+    public String[] getOaiUrls() {
+        return getConfiguration().getStringArray(Constants.OAI_PMH_URLS);
+    }
+
+    public String[] getOaiBases() {
+        return getConfiguration().getStringArray(Constants.OAI_PMH_BASES);
+    }
+
+    public String[] getOaiPrefixes() {
+        return getConfiguration().getStringArray(Constants.OAI_PMH_PREFIXES);
     }
 
     /**

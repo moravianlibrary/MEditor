@@ -268,6 +268,7 @@ public class ModsTab
          * cz.fi.muni.xkremser.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
+        @SuppressWarnings("unchecked")
         @Override
         public VLayout execute() {
             RelatedItemTypeClient modsTypeClient = null;
@@ -361,6 +362,7 @@ public class ModsTab
         modsTypeClient_ = modsTypeClient;
         if (attributePresent) {
             modsTypeClient_ = relatedItem == null ? null : relatedItem.getMods();
+            @SuppressWarnings("serial")
             Attribute[] attributes =
                     new Attribute[] {
                             new Attribute(SelectItem.class,

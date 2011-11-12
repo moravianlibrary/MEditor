@@ -36,6 +36,8 @@ import java.io.IOException;
 public class ConnectionException
         extends IOException {
 
+    private static final long serialVersionUID = -8072446224054072263L;
+
     /**
      * Instantiates a new connection exception.
      * 

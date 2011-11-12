@@ -25,38 +25,26 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.shared.rpc.action;
+package cz.fi.muni.xkremser.editor.server;
 
-import java.util.List;
-
-import com.gwtplatform.dispatch.annotation.GenDispatch;
-import com.gwtplatform.dispatch.annotation.In;
-import com.gwtplatform.dispatch.annotation.Out;
-import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
+import java.util.Map;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GetClientConfig.
+ * @author Jiri Kremser
+ * @version 12.11.2011
  */
-@GenDispatch(isSecure = false)
-public class FindMetadata
-        extends UnsecuredActionImpl<CheckAvailabilityResult> {
+public interface OAIPMHClient {
 
-    @In(1)
-    Constants.SEARCH_FIELD searchType;
+    String MARC_METADATA_PREFIX = "marc21";
 
-    @In(2)
-    String id;
+    String OAI_METADATA_PREFIX = "oai_dc";
 
-    /** The availability. */
-    @Out(1)
-    List<DublinCore> dc;
+    String MARC_TO_MODS_XSLT = "xsdxslt/MARC21slim2MODS3.xsl";
 
-    @Out(2)
-    List<ModsCollectionClient> mods;
+    Map<DublinCore, ModsCollectionClient> search(String url);
+
 }

@@ -30,8 +30,6 @@ import java.sql.SQLException;
 
 import java.text.SimpleDateFormat;
 
-import com.google.inject.Inject;
-
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -46,10 +44,6 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 public class LocksDAOImpl
         extends AbstractDAO
         implements LocksDAO {
-
-    /** The recently modified dao. */
-    @Inject
-    private UserDAO userDAO;
 
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(LocksDAOImpl.class.getPackage().toString());

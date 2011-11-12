@@ -53,6 +53,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 public class ScanImgServiceImpl
         extends HttpServlet {
 
+    private static final long serialVersionUID = -6110151482519362291L;
+
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(ScanImgServiceImpl.class);
 

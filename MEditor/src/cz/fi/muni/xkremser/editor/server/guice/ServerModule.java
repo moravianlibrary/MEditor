@@ -34,6 +34,8 @@ import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
+import cz.fi.muni.xkremser.editor.server.OAIPMHClient;
+import cz.fi.muni.xkremser.editor.server.OAIPMHClientImpl;
 import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.Z3950ClientImpl;
@@ -189,6 +191,7 @@ public class ServerModule
 
         bind(DigitalObjectHandler.class).to(DigitalObjectHandlerImpl.class);
         bind(Z3950Client.class).to(Z3950ClientImpl.class);
+        bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
 
         bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
         // bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);

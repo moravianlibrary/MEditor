@@ -30,7 +30,6 @@ package cz.fi.muni.xkremser.editor.server.guice;
 import com.google.inject.servlet.ServletModule;
 import com.gwtplatform.dispatch.server.guice.DispatchServiceImpl;
 import com.gwtplatform.dispatch.shared.Action;
-import com.gwtplatform.dispatch.shared.ActionImpl;
 
 // TODO: Auto-generated Javadoc
 /**

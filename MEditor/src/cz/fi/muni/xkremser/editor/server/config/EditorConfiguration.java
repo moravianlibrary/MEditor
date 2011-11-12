@@ -115,6 +115,21 @@ public abstract class EditorConfiguration {
         /** The Constant Z3950_DEFAULT_BAR_LENGTH. */
         public static final int[] Z3950_DEFAULT_BAR_LENGTH = {10, 10, 10, 10};
 
+        public static final String OAI_PMH_URLS = EditorClientConfiguration.Constants.OAI_PMH_URLS;
+
+        public static final String[] OAI_PMH_URLS_DEFAULT =
+                EditorClientConfiguration.Constants.OAI_PMH_URLS_DEFAULT;
+
+        public static final String OAI_PMH_PREFIXES = EditorClientConfiguration.Constants.OAI_PMH_PREFIXES;
+
+        public static final String[] OAI_PMH_PREFIXES_DEFAULT =
+                EditorClientConfiguration.Constants.OAI_PMH_PREFIXES_DEFAULT;
+
+        public static final String OAI_PMH_BASES = EditorClientConfiguration.Constants.OAI_PMH_BASES;
+
+        public static final String[] OAI_PMH_BASES_DEFAULT =
+                EditorClientConfiguration.Constants.OAI_PMH_BASES_DEFAULT;
+
         // access
         /** The Constant ACCESS_PATTERN_SEPARATOR. */
         public static final String ACCESS_PATTERN_SEPARATOR = "||";
@@ -302,6 +317,30 @@ public abstract class EditorConfiguration {
      */
     public Integer getZ3950BarLength() {
         return getConfiguration().getInteger(ServerConstants.Z3950_BAR_LENGTH, ServerConstants.UNDEF);
+    }
+
+    public String[] getOaiUrls() {
+        String[] foo = getConfiguration().getStringArray(ServerConstants.OAI_PMH_URLS);
+        if (foo == null || foo.length == 0) {
+            return ServerConstants.OAI_PMH_URLS_DEFAULT;
+        } else
+            return foo;
+    }
+
+    public String[] getOaiPrefixes() {
+        String[] foo = getConfiguration().getStringArray(ServerConstants.OAI_PMH_PREFIXES);
+        if (foo == null || foo.length == 0) {
+            return ServerConstants.OAI_PMH_PREFIXES_DEFAULT;
+        } else
+            return foo;
+    }
+
+    public String[] getOaiBases() {
+        String[] foo = getConfiguration().getStringArray(ServerConstants.OAI_PMH_BASES);
+        if (foo == null || foo.length == 0) {
+            return ServerConstants.OAI_PMH_BASES_DEFAULT;
+        } else
+            return foo;
     }
 
     /**

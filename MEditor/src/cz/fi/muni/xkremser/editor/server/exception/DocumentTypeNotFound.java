@@ -33,4 +33,6 @@ package cz.fi.muni.xkremser.editor.server.exception;
 public class DocumentTypeNotFound
         extends Exception {
 
+    private static final long serialVersionUID = 29417013786649528L;
+
 }

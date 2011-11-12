@@ -60,6 +60,8 @@ public class DCUtils {
 
     private static final String DC_RECORD = "dc-record";
 
+    private static final String OAI_DC_RECORD = "oai_dc:dc";
+
     private static final Logger LOGGER = Logger.getLogger(DCUtils.class.getPackage().toString());
 
     /**
@@ -305,12 +307,17 @@ public class DCUtils {
         } catch (IOException e) {
             LOGGER.warn("Unable to parse xml document", e);
         }
+
         if (doc != null) {
             Element root = doc.getDocumentElement();
+            if (OAI_DC_RECORD.equals(root.getNodeName())) {
+                return getDC(root, true);
+            }
             NodeList childNodes = root.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node item = childNodes.item(i);
-                if (item != null && DC_RECORD.equals(item.getNodeName())) {
+                if (item != null
+                        && (DC_RECORD.equals(item.getNodeName()) || OAI_DC_RECORD.equals(item.getNodeName()))) {
                     return getDC((Element) item, true);
                 }
             }
@@ -355,6 +362,9 @@ public class DCUtils {
             if (item.getNodeType() == Node.ELEMENT_NODE
                     && ((!nodeName && item.getLocalName() != null) || (nodeName && item.getNodeName() != null))) {
                 String name = nodeName ? item.getNodeName() : item.getLocalName();
+                if (name.contains(":")) {
+                    name = name.substring(name.lastIndexOf(':') + 1);
+                }
                 if (name.equals(DublinCoreConstants.DC_CONTRIBUTOR)) {
                     contributor.add(item.getTextContent().trim());
                 } else if (name.equals(DublinCoreConstants.DC_COVERAGE)) {

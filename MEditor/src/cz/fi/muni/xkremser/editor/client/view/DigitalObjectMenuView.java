@@ -88,8 +88,6 @@ public class DigitalObjectMenuView
 
     private final LangConstants lang;
 
-    private final boolean inputQueueShown = false;
-
     /**
      * The Interface MyUiHandlers.
      */

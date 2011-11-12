@@ -28,6 +28,7 @@
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -42,6 +43,7 @@ import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
+import cz.fi.muni.xkremser.editor.server.OAIPMHClient;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -67,7 +69,9 @@ public class FindMetadataHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    private final Z3950Client client;
+    private final Z3950Client z39Client;
+
+    private final OAIPMHClient oaiClient;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -76,9 +80,12 @@ public class FindMetadataHandler
      *        the configuration
      */
     @Inject
-    public FindMetadataHandler(final EditorConfiguration configuration, Z3950Client client) {
+    public FindMetadataHandler(final EditorConfiguration configuration,
+                               Z3950Client z39Client,
+                               OAIPMHClient oaiClient) {
         this.configuration = configuration;
-        this.client = client;
+        this.z39Client = z39Client;
+        this.oaiClient = oaiClient;
     }
 
     /*
@@ -92,12 +99,25 @@ public class FindMetadataHandler
     public FindMetadataResult execute(final FindMetadataAction action, final ExecutionContext context)
             throws ActionException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing action: FindMetadataAction: for code " + action.getCode());
+            LOGGER.debug("Processing action: FindMetadataAction: for id (" + action.getSearchType() + ") "
+                    + action.getId());
         }
         ServerUtils.checkExpiredSession(httpSessionProvider);
-        Map<DublinCore, ModsCollectionClient> documents =
-                client.search(action.getSearchType(), action.getCode());
-        return new FindMetadataResult(new ArrayList(documents.keySet()));
+        Map<DublinCore, ModsCollectionClient> documents = null;
+        if (action.getSearchType() == null) {
+            documents = oaiClient.search(action.getId());
+        } else {
+            documents = z39Client.search(action.getSearchType(), action.getId());
+        }
+        List<DublinCore> dc = new ArrayList<DublinCore>(documents.size());
+        List<ModsCollectionClient> mods = new ArrayList<ModsCollectionClient>(documents.size());
+        if (documents != null) {
+            for (DublinCore dcFoo : documents.keySet()) {
+                dc.add(dcFoo);
+                mods.add(documents.get(dcFoo));
+            }
+        }
+        return new FindMetadataResult(dc, mods);
     }
 
     /*

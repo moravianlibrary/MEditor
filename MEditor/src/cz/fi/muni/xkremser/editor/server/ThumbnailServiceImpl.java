@@ -53,6 +53,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 public class ThumbnailServiceImpl
         extends HttpServlet {
 
+    private static final long serialVersionUID = 5031350967017622089L;
     /** The config. */
     @Inject
     private EditorConfiguration config;

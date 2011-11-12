@@ -71,31 +71,22 @@ public class FindMetadataView
 
     /** The layout. */
     private final VStack layout;
-
-    private final ButtonItem findButton;
-
+    private final ButtonItem findButtonZ39;
+    private final ButtonItem findButtonOai;
     private final IButton nextButton;
-
     private final IButton withoutButton;
-
-    /** The form. */
     private final DynamicForm form1;
-
     private final DynamicForm form2;
-
-    /** The uuid field. */
-    private final TextItem searchValue;
-
+    private final TextItem searchValueZ39;
+    private final TextItem searchValueOai;
+    private final SelectItem oaiUrl;
+    private final SelectItem oaiIdPrefix;
+    private final SelectItem oaiBase;
     private final SelectItem findBy;
-
     private final LangConstants lang;
-
     private final ListGrid resultGrid;
-
     private final DetailViewer printViewer;
-
     private final SectionStack printStack;
-
     private ModalWindow mw;
 
     /**
@@ -108,15 +99,15 @@ public class FindMetadataView
         layout.setHeight100();
         layout.setPadding(15);
 
-        findButton = new ButtonItem(lang.find());
-        findButton.setAutoFit(true);
-        findButton.setStartRow(false);
-        findButton.setWidth(80);
-        findButton.setColSpan(2);
+        findButtonZ39 = new ButtonItem(lang.find());
+        findButtonZ39.setAutoFit(true);
+        findButtonZ39.setStartRow(false);
+        findButtonZ39.setWidth(80);
+        findButtonZ39.setColSpan(2);
 
         HTMLFlow html1 = new HTMLFlow();
-        html1.setContents("<h1>" + lang.create() + "</h1>");
-        html1.setExtraSpace(20);
+        html1.setContents("<h1>Metadata</h1>");
+        html1.setExtraSpace(10);
 
         findBy = new SelectItem();
         findBy.setTitle(lang.findBy());
@@ -127,44 +118,71 @@ public class FindMetadataView
 
             @Override
             public void onChanged(ChangedEvent event) {
-                searchValue.setTitle((String) event.getValue());
-                searchValue.redraw();
+                searchValueZ39.setTitle((String) event.getValue());
+                searchValueZ39.redraw();
             }
         });
-        searchValue = new TextItem();
+        searchValueZ39 = new TextItem();
         // searchValue.setShowTitle(false);
-        searchValue.setTitle(Constants.SYSNO);
-        searchValue.setHoverOpacity(75);
-        searchValue.setHoverWidth(330);
-        searchValue.setHoverStyle("interactImageHover");
-        searchValue.addItemHoverHandler(new ItemHoverHandler() {
+        searchValueZ39.setTitle(Constants.SYSNO);
+        searchValueZ39.setHoverOpacity(75);
+        searchValueZ39.setHoverWidth(330);
+        searchValueZ39.setHoverStyle("interactImageHover");
+        searchValueZ39.addItemHoverHandler(new ItemHoverHandler() {
 
             @Override
             public void onItemHover(ItemHoverEvent event) {
-                searchValue.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
+                searchValueZ39.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
             }
         });
 
         form1 = new DynamicForm();
-        form1.setGroupTitle(lang.findMetadata());
+        form1.setGroupTitle(lang.findMetadata() + " Z39.50");
         form1.setIsGroup(true);
         form1.setWidth(220);
         form1.setHeight(90);
         form1.setNumCols(2);
         form1.setColWidths(70, "*");
         form1.setPadding(5);
-        form1.setFields(findBy, searchValue, findButton);
+        form1.setFields(findBy, searchValueZ39, findButtonZ39);
         form1.setExtraSpace(25);
 
         form2 = new DynamicForm();
-        form2.setGroupTitle("OAI-PMH");
+        form2.setGroupTitle(lang.findMetadata() + " OAI-PMH");
         form2.setIsGroup(true);
-        form2.setWidth(220);
+        form2.setWidth(320);
         form2.setHeight(90);
         form2.setNumCols(2);
         form2.setColWidths(70, "*");
         form2.setPadding(5);
-        form2.setFields(new SelectItem(), new TextItem(), new ButtonItem(lang.find()));
+        findButtonOai = new ButtonItem(lang.find());
+        findButtonOai.setAutoFit(true);
+        findButtonOai.setStartRow(false);
+        findButtonOai.setWidth(80);
+        findButtonOai.setColSpan(2);
+        oaiUrl = new SelectItem();
+        oaiUrl.setTitle(lang.furl());
+        oaiUrl.setWrapTitle(false);
+        oaiIdPrefix = new SelectItem();
+        oaiIdPrefix.setTitle(lang.fprefix());
+        oaiIdPrefix.setWrapTitle(false);
+        oaiBase = new SelectItem();
+        oaiBase.setTitle(lang.fbase());
+        oaiBase.setWrapTitle(false);
+        searchValueOai = new TextItem();
+        searchValueOai.setTitle(Constants.SYSNO);
+        searchValueOai.setWrapTitle(false);
+        searchValueOai.setHoverOpacity(75);
+        searchValueOai.setHoverWidth(330);
+        searchValueOai.setHoverStyle("interactImageHover");
+        searchValueOai.addItemHoverHandler(new ItemHoverHandler() {
+
+            @Override
+            public void onItemHover(ItemHoverEvent event) {
+                searchValueOai.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
+            }
+        });
+        form2.setFields(oaiUrl, oaiIdPrefix, oaiBase, searchValueOai, findButtonOai);
 
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
@@ -175,7 +193,7 @@ public class FindMetadataView
         printStack = new SectionStack();
         printStack.setVisibilityMode(VisibilityMode.MULTIPLE);
         printStack.setWidth(600);
-        printStack.setHeight(500);
+        printStack.setHeight(490);
 
         printViewer = new DetailViewer();
         printViewer.setWidth100();
@@ -219,7 +237,7 @@ public class FindMetadataView
         nextButton.setWidth(80);
         //        nextButton.setMargin(2);
         nextButton.setExtraSpace(8);
-        withoutButton = new IButton("Continue without metadata");
+        withoutButton = new IButton(lang.fcontinueWithout());
         withoutButton.setAutoFit(true);
 
         HLayout buttons = new HLayout();
@@ -249,8 +267,13 @@ public class FindMetadataView
      * ()
      */
     @Override
-    public ButtonItem getFind() {
-        return findButton;
+    public ButtonItem getFindZ39() {
+        return findButtonZ39;
+    }
+
+    @Override
+    public ButtonItem getFindOai() {
+        return findButtonOai;
     }
 
     /*
@@ -260,8 +283,8 @@ public class FindMetadataView
      * ()
      */
     @Override
-    public TextItem getCode() {
-        return searchValue;
+    public TextItem getZ39Id() {
+        return searchValueZ39;
     }
 
     @Override
@@ -312,6 +335,38 @@ public class FindMetadataView
     @Override
     public ListGrid getResults() {
         return resultGrid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TextItem getOaiId() {
+        return searchValueOai;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SelectItem getOaiPrefix() {
+        return oaiIdPrefix;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SelectItem getOaiBase() {
+        return oaiBase;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SelectItem getOaiUrl() {
+        return oaiUrl;
     }
 
 }

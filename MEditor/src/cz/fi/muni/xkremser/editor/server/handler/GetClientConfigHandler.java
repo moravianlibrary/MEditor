@@ -87,6 +87,7 @@ public class GetClientConfigHandler
         LOGGER.debug("Processing action: GetClientConfigAction");
         ServerUtils.checkExpiredSession(httpSessionProvider);
         HashMap<String, Object> result = new HashMap<String, Object>();
+        @SuppressWarnings("unchecked")
         Iterator<String> it = configuration.getClientConfiguration().getKeys();
         while (it.hasNext()) {
             String key = it.next();
@@ -95,8 +96,16 @@ public class GetClientConfigHandler
                                .getProperty(EditorConfiguration.ServerConstants.GUI_CONFIGURATION_PPREFIX
                                        + '.' + key));
         }
+        /**
+         * here, explicitly copy the properties, in order to be able to access
+         * them on the client side (those with prefix "gui." are distributed
+         * automatically)
+         */
         result.put(EditorConfiguration.ServerConstants.FEDORA_HOST, configuration.getFedoraHost());
         result.put(EditorConfiguration.ServerConstants.KRAMERIUS_HOST, configuration.getKrameriusHost());
+        result.put(EditorConfiguration.ServerConstants.OAI_PMH_URLS, configuration.getOaiUrls());
+        result.put(EditorConfiguration.ServerConstants.OAI_PMH_PREFIXES, configuration.getOaiPrefixes());
+        result.put(EditorConfiguration.ServerConstants.OAI_PMH_BASES, configuration.getOaiBases());
         return new GetClientConfigResult(result);
     }
 

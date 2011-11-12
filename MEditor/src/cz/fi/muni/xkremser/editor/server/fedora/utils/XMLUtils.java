@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
@@ -68,6 +70,33 @@ public class XMLUtils {
             IOException {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         return builder.parse(is);
+    }
+
+    /**
+     * Parses the document.
+     * 
+     * @param xml
+     *        the xml
+     * @return the document
+     * @throws ParserConfigurationException
+     *         the parser configuration exception
+     * @throws SAXException
+     *         the sAX exception
+     * @throws IOException
+     *         Signals that an I/O exception has occurred.
+     */
+    public static Document parseDocument(String xml) throws ParserConfigurationException, SAXException,
+            IOException {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        return builder.parse(new InputSource(new StringReader(xml)));
+    }
+
+    public static Document parseDocument(String xml, boolean namespaceaware)
+            throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(namespaceaware);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(new InputSource(new StringReader(xml)));
     }
 
     /**

@@ -257,24 +257,45 @@ public final class BiblioModsUtils {
     }
 
     /**
+     * Gets the mods collection
+     * 
+     * @param doc
+     *        the doc
+     * @return the mods collection
+     */
+    public static ModsCollection getModsCollection(org.w3c.dom.Document doc) {
+        try {
+            JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.server.mods");
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            JAXBElement<?> o = (JAXBElement<?>) unmarshaller.unmarshal(doc);
+            if (o.getDeclaredType() == ModsCollection.class) {
+                return (ModsCollection) o.getValue();
+            }
+        } catch (JAXBException e) {
+            LOGGER.error(e);
+        }
+        return null;
+    }
+
+    /**
      * Gets the mods.
      * 
      * @param doc
      *        the doc
      * @return the mods
      */
-    public static ModsCollection getMods(org.w3c.dom.Document doc) {
-        ModsCollection collection = null;
+    public static ModsType getMods(org.w3c.dom.Document doc) {
         try {
             JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.server.mods");
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            collection = (ModsCollection) unmarshaller.unmarshal(doc);
+            JAXBElement<?> o = (JAXBElement<?>) unmarshaller.unmarshal(doc);
+            if (o.getDeclaredType() == ModsType.class) {
+                return (ModsType) o.getValue();
+            }
         } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error(e);
         }
-
-        return collection;
+        return null;
     }
 
     /**

@@ -80,10 +80,12 @@ import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
@@ -104,6 +106,10 @@ public class CreateStructureView
             extends UiHandlers {
 
         void onAddImages(final TileGrid tileGrid, final Menu menu);
+
+        void createObjects();
+
+        void editMetadata();
 
     }
 
@@ -512,10 +518,31 @@ public class CreateStructureView
             }
         });
         toolStrip.addButton(zoomButton);
-        ToolStripButton nextButton = new ToolStripButton();
-        nextButton.setIcon("silk/forward_green.png");
-        nextButton.setTitle("Next step");
-        toolStrip.addButton(nextButton);
+
+        ToolStripButton editMetadata = new ToolStripButton();
+        editMetadata.setIcon("silk/metadata_edit.png");
+        editMetadata.setTitle(lang.editMeta());
+        editMetadata.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                getUiHandlers().editMetadata();
+            }
+        });
+        toolStrip.addButton(editMetadata);
+
+        ToolStripButton createButton = new ToolStripButton();
+        createButton.setIcon("silk/forward_green.png");
+        createButton.setTitle(lang.create());
+        createButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                getUiHandlers().createObjects();
+            }
+        });
+
+        toolStrip.addButton(createButton);
 
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);
@@ -732,6 +759,13 @@ public class CreateStructureView
                 return tileGrid.getSelectedRecord() != null;
             }
         };
+    }
+
+    @Override
+    public VLayout getModsLayout(ModsCollectionClient mods) {
+        ModsTab t = new ModsTab(1, false);
+        VLayout modsLayout = t.getModsLayout(mods.getMods().get(0), false, null, 0);
+        return modsLayout;
     }
 
     /**

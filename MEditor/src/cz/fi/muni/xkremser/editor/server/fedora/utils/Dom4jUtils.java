@@ -10,8 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import java.util.logging.Logger;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -28,8 +26,6 @@ public class Dom4jUtils {
 
         COMPACT, PRETTY;
     }
-
-    private static final Logger logger = Logger.getLogger(Dom4jUtils.class.getName());
 
     /**
      * Writes dom4j Document into the file

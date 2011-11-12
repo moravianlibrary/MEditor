@@ -223,7 +223,7 @@ public class DigitalObjectHandlerImpl
         Document modsDocument = null;
         try {
             modsDocument = getFedoraAccess().getBiblioMods(uuid);
-            mods = BiblioModsUtils.getMods(modsDocument);
+            mods = BiblioModsUtils.getModsCollection(modsDocument);
             modsClient = BiblioModsUtils.toModsClient(mods);
         } catch (IOException e) {
             LOGGER.error("Unable to get MODS metadata for " + uuid + "[" + e.getMessage() + "]", e);

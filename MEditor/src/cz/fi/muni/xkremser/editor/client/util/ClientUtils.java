@@ -30,15 +30,19 @@ package cz.fi.muni.xkremser.editor.client.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.DOM;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 // TODO: Auto-generated Javadoc
@@ -221,7 +225,8 @@ public class ClientUtils {
         return list.toArray(new ListGridRecord[] {});
     }
 
-    public static void insertTheStructure(DublinCore dc, ListGrid tree) {
+    public static NewDigitalObject createTheStructure(DublinCore dc, ModsCollectionClient mods, ListGrid tree) {
+        return null;
         // iterate the tree from bottom to top and add DO to fedora
     }
 
@@ -272,4 +277,22 @@ public class ClientUtils {
         return sb.toString();
     }
 
+    /**
+     * String.format is not accessible on the gwt client-side
+     * 
+     * @param format
+     * @param args
+     * @return formatted string
+     */
+    public static String format(final String format, final Object... args) {
+        final RegExp regex = RegExp.compile("%[a-z]");
+        final SplitResult split = regex.split(format);
+        final StringBuffer msg = new StringBuffer();
+        for (int pos = 0; pos < split.length() - 1; pos += 1) {
+            msg.append(split.get(pos));
+            msg.append(args[pos].toString());
+        }
+        msg.append(split.get(split.length() - 1));
+        return msg.toString();
+    }
 }

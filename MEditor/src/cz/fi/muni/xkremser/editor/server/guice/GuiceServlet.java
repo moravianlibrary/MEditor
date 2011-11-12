@@ -42,6 +42,8 @@ import com.google.inject.Injector;
 public class GuiceServlet
         extends HttpServlet {
 
+    private static final long serialVersionUID = -7694122875038981343L;
+
     /*
      * (non-Javadoc)
      * @see javax.servlet.GenericServlet#init()

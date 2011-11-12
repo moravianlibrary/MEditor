@@ -57,6 +57,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 public class DownloadFoxmlServlet
         extends HttpServlet {
 
+    private static final long serialVersionUID = -1863406403841249392L;
+
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(DownloadFoxmlServlet.class.getPackage().toString());
 

@@ -51,6 +51,7 @@ import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Progressbar;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
@@ -62,6 +63,8 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
@@ -75,6 +78,7 @@ import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStruct
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
@@ -114,6 +118,8 @@ public class CreateStructurePresenter
         void escShortCut();
 
         TileGrid getTileGrid();
+
+        VLayout getModsLayout(ModsCollectionClient mods);
     }
 
     /**
@@ -146,6 +152,8 @@ public class CreateStructurePresenter
 
     /** The DC. */
     private DublinCore dc;
+
+    private ModsCollectionClient mods;
 
     /** The place manager. */
     private final PlaceManager placeManager;
@@ -573,5 +581,26 @@ public class CreateStructurePresenter
         this.model = event.getModel();
         this.code = event.getCode();
         this.dc = event.getDc();
+        this.mods = event.getMods();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createObjects() {
+        NewDigitalObject object =
+                ClientUtils.createTheStructure(dc, mods, leftPresenter.getView().getSubelementsGrid());
+        System.out.println(NewDigitalObject.toStringTree(object));
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void editMetadata() {
+        // nejake fancy efekty pro prechod na dalsi screenu :]
+        ((VLayout) getView().asWidget()).addMember(getView().getModsLayout(mods));
     }
 }

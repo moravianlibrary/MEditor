@@ -56,7 +56,10 @@ import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
@@ -77,11 +80,21 @@ public class FindMetadataPresenter
     public interface MyView
             extends View {
 
-        TextItem getCode();
+        TextItem getZ39Id();
+
+        TextItem getOaiId();
+
+        SelectItem getOaiPrefix();
+
+        SelectItem getOaiBase();
+
+        SelectItem getOaiUrl();
 
         SelectItem getFindBy();
 
-        ButtonItem getFind();
+        ButtonItem getFindZ39();
+
+        ButtonItem getFindOai();
 
         ListGrid getResults();
 
@@ -116,13 +129,20 @@ public class FindMetadataPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
+    private final EditorClientConfiguration config;
+
     private final LangConstants lang;
 
     private String code = null;
 
     private String model = null;
 
-    private final Map<Integer, DublinCore> results = new HashMap<Integer, DublinCore>();
+    private final Map<Integer, DublinCore> resultsDc = new HashMap<Integer, DublinCore>();
+
+    private final Map<Integer, ModsCollectionClient> resultsMods =
+            new HashMap<Integer, ModsCollectionClient>();
+
+    public static final String OAI_STRING = "%s/?verb=GetRecord&identifier=%s%s-%s&metadataPrefix=";
 
     /**
      * Instantiates a new home presenter.
@@ -148,6 +168,7 @@ public class FindMetadataPresenter
                                  final DigitalObjectMenuPresenter doMenuPresenter,
                                  final DispatchAsync dispatcher,
                                  final PlaceManager placeManager,
+                                 final EditorClientConfiguration config,
                                  final LangConstants lang) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
@@ -155,6 +176,7 @@ public class FindMetadataPresenter
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         this.lang = lang;
+        this.config = config;
         bind();
     }
 
@@ -165,7 +187,7 @@ public class FindMetadataPresenter
     @Override
     protected void onBind() {
         super.onBind();
-        getView().getFind().addClickHandler(new ClickHandler() {
+        getView().getFindZ39().addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
@@ -181,8 +203,20 @@ public class FindMetadataPresenter
                     findBy = Constants.SEARCH_FIELD.TITLE;
                 }
                 if (findBy != null) {
-                    findMetadata(findBy, (String) getView().getCode().getValue());
+                    findMetadata(findBy, (String) getView().getZ39Id().getValue());
                 }
+            }
+        });
+        getView().getFindOai().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                String url = getView().getOaiUrl().getValueAsString();
+                String prefix = getView().getOaiPrefix().getValueAsString();
+                String base = getView().getOaiBase().getValueAsString();
+                String value = getView().getOaiId().getValueAsString();
+                String query = ClientUtils.format(OAI_STRING, url, prefix, base, value);
+                findMetadata(null, query);
             }
         });
         getView().getNext().setDisabled(true);
@@ -197,7 +231,8 @@ public class FindMetadataPresenter
                                           model,
                                           code,
                                           leftPresenter.getView().getInputTree(),
-                                          results.get(id));
+                                          resultsDc.get(id),
+                                          resultsMods.get(id));
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
             }
@@ -206,11 +241,7 @@ public class FindMetadataPresenter
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                CreateStructureEvent.fire(getEventBus(),
-                                          model,
-                                          code,
-                                          leftPresenter.getView().getInputTree(),
-                                          null);
+                CreateStructureEvent.fire(getEventBus(), model, code, leftPresenter.getView().getInputTree());
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
             }
@@ -222,6 +253,12 @@ public class FindMetadataPresenter
                 getView().getNext().setDisabled(false);
             }
         });
+        getView().getOaiUrl().setValueMap(config.getOaiUrls());
+        getView().getOaiUrl().setValue(config.getOaiUrls()[0]);
+        getView().getOaiPrefix().setValueMap(config.getOaiPrefixes());
+        getView().getOaiPrefix().setValue(config.getOaiPrefixes()[0]);
+        getView().getOaiBase().setValueMap(config.getOaiBases());
+        getView().getOaiBase().setValue(config.getOaiBases()[0]);
     }
 
     /*
@@ -246,27 +283,34 @@ public class FindMetadataPresenter
     @Override
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
-        results.clear();
+        resultsDc.clear();
+        resultsMods.clear();
         code = request.getParameter(Constants.URL_PARAM_CODE, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
-        getView().getCode().setValue(code);
+        getView().getZ39Id().setValue(code);
+        getView().getOaiId().setValue(code);
         findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
     }
 
-    private void findMetadata(Constants.SEARCH_FIELD field, String code) {
-        results.clear();
-        dispatcher.execute(new FindMetadataAction(field, code), new DispatchCallback<FindMetadataResult>() {
+    private void findMetadata(Constants.SEARCH_FIELD field, String id) {
+        resultsDc.clear();
+        resultsMods.clear();
+        dispatcher.execute(new FindMetadataAction(field, id), new DispatchCallback<FindMetadataResult>() {
 
             @Override
             public void callback(FindMetadataResult result) {
                 getView().showProgress(true, true);
-                List<DublinCore> list = result.getOutput();
+                List<DublinCore> list = result.getDc();
+                List<ModsCollectionClient> modsList = result.getMods();
                 if (list != null && list.size() != 0) {
                     ListGridRecord[] data = new ListGridRecord[list.size()];
                     for (int i = 0; i < list.size(); i++) {
                         list.get(i).setId(i);
                         data[i] = list.get(i).toRecord();
-                        results.put(i, list.get(i));
+                        resultsDc.put(i, list.get(i));
+                        if (modsList != null) {
+                            resultsMods.put(i, modsList.get(i));
+                        }
                     }
                     getView().refreshData(data);
                 } else {
