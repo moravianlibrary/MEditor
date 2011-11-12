@@ -43,8 +43,7 @@ public interface OAIPMHClient {
 
     String OAI_METADATA_PREFIX = "oai_dc";
 
-    String MARC_TO_MODS_XSLT = "xsdxslt/MARC21slim2MODS3.xsl";
+    String MARC_TO_MODS_XSLT = "xml/MARC21slim2MODS3.xsl";
 
     Map<DublinCore, ModsCollectionClient> search(String url);
-
 }
