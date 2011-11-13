@@ -97,7 +97,7 @@ public class FindMetadataView
         this.lang = lang;
         layout = new VStack();
         layout.setHeight100();
-        layout.setPadding(15);
+        layout.setPadding(12);
 
         findButtonZ39 = new ButtonItem(lang.find());
         findButtonZ39.setAutoFit(true);
@@ -107,7 +107,7 @@ public class FindMetadataView
 
         HTMLFlow html1 = new HTMLFlow();
         html1.setContents("<h1>Metadata</h1>");
-        html1.setExtraSpace(10);
+        html1.setExtraSpace(15);
 
         findBy = new SelectItem();
         findBy.setTitle(lang.findBy());
@@ -186,14 +186,14 @@ public class FindMetadataView
 
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
-        hLayout.addMember(form1);
         hLayout.addMember(form2);
+        hLayout.addMember(form1);
         hLayout.setExtraSpace(10);
 
         printStack = new SectionStack();
         printStack.setVisibilityMode(VisibilityMode.MULTIPLE);
         printStack.setWidth(600);
-        printStack.setHeight(490);
+        printStack.setHeight(450);
 
         printViewer = new DetailViewer();
         printViewer.setWidth100();
@@ -231,7 +231,7 @@ public class FindMetadataView
 
         final VLayout printContainer = new VLayout(10);
         printContainer.addMember(printStack);
-        printContainer.setExtraSpace(25);
+        printContainer.setExtraSpace(15);
 
         nextButton = new IButton(lang.next());
         nextButton.setWidth(80);
@@ -302,6 +302,8 @@ public class FindMetadataView
             resultGrid.setData(data);
             printViewer.setData(new Record[] {data[0]});
             printStack.adjustForContent(true);
+            resultGrid.selectRecord(0);
+            nextButton.setDisabled(false);
         }
     }
 

@@ -53,6 +53,8 @@ public abstract class EditorConfiguration {
         /** The Constant DJATOKA_HOME. */
         public static final String DJATOKA_HOME = "djatoka.home";
 
+        public static final String EDITOR_HOME = "editor.home";
+
         /** The Constant IMAGE_EXTENSIONS. */
         public static final String IMAGE_EXTENSIONS = "imageExtension";
 
@@ -271,6 +273,15 @@ public abstract class EditorConfiguration {
      */
     public String getDjatokaHome() {
         return getConfiguration().getString(ServerConstants.DJATOKA_HOME);
+    }
+
+    /**
+     * Gets the editor home path.
+     * 
+     * @return the editor home path
+     */
+    public String getEditorHome() {
+        return getConfiguration().getString(ServerConstants.EDITOR_HOME);
     }
 
     /**

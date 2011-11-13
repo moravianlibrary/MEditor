@@ -74,6 +74,7 @@ import cz.fi.muni.xkremser.editor.client.mods.ExtensionTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.GenreTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LanguageTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.LocationTypeClient;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NameTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.NoteTypeClient;
@@ -279,8 +280,17 @@ public class ModsTab
             ModsTab modsTab = new ModsTab(deep - 1, false);
             ((List<ModsTab>) getHolders()).add(modsTab);
             increaseCounter();
-            return modsTab.getModsLayout(null, true, modsTypeClient, getCounter());
+            return modsTab.getModsLayout(true, modsTypeClient, getCounter());
         }
+    }
+
+    public ModsTab(int maxDeep, ModsCollectionClient modsCollection) {
+        this(maxDeep, true);
+        if (modsCollection == null || modsCollection.getMods() == null || modsCollection.getMods().isEmpty()
+                || modsCollection.getMods().get(0) == null) {
+            throw new IllegalArgumentException("modsCollection has not been inicialized yet");
+        }
+        modsTypeClient_ = modsCollection.getMods().get(0);
     }
 
     /**
@@ -291,7 +301,7 @@ public class ModsTab
      * @param topLvl
      *        the top lvl
      */
-    public ModsTab(int deep, boolean topLvl) {
+    private ModsTab(int deep, boolean topLvl) {
         super(topLvl ? "MODS" : "Related Item", topLvl ? "pieces/16/pawn_blue.png"
                 : "pieces/16/piece_blue.png");
         titleInfoHolders = new ArrayList<TitleInfoHolder>();
@@ -340,6 +350,10 @@ public class ModsTab
         return tab;
     }
 
+    public VLayout getModsLayout() {
+        return getModsLayout(false, null, 0);
+    }
+
     /**
      * Gets the mods tab set.
      * 
@@ -353,13 +367,11 @@ public class ModsTab
      *        the counter
      * @return the mods tab set
      */
-    public VLayout getModsLayout(ModsTypeClient modsTypeClient,
-                                 boolean attributePresent,
-                                 RelatedItemTypeClient relatedItem,
-                                 final int counter) {
+    private VLayout getModsLayout(boolean attributePresent,
+                                  RelatedItemTypeClient relatedItem,
+                                  final int counter) {
         VLayout layout = new VLayout();
 
-        modsTypeClient_ = modsTypeClient;
         if (attributePresent) {
             modsTypeClient_ = relatedItem == null ? null : relatedItem.getMods();
             @SuppressWarnings("serial")

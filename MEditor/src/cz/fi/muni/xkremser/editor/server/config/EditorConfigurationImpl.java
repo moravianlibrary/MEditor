@@ -135,6 +135,7 @@ public class EditorConfigurationImpl
         }
         file.setReloadingStrategy(new FileChangedReloadingStrategy());
         constconf.addConfiguration(file);
+        constconf.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
         this.configuration = constconf;
     }
 

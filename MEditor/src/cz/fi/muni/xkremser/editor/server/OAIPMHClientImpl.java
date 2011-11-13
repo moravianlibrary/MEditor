@@ -37,6 +37,8 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.google.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import org.dom4j.Document;
@@ -49,6 +51,7 @@ import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
@@ -69,6 +72,9 @@ public class OAIPMHClientImpl
     private static final Logger LOGGER = Logger.getLogger(OAIPMHClientImpl.class);
     private final XPath dcXPath = Dom4jUtils.createXPath("//oai_dc:dc");
 
+    @Inject
+    private EditorConfiguration config;
+
     private Document marc2mods;
 
     @SuppressWarnings("serial")
@@ -76,13 +82,16 @@ public class OAIPMHClientImpl
     public Map<DublinCore, ModsCollectionClient> search(String url) {
         Map<DublinCore, ModsCollectionClient> retMap = new HashMap<DublinCore, ModsCollectionClient>();
         try {
+
+            System.out.println(config.getEditorHome() + MARC_TO_MODS_XSLT);
             if (marc2mods == null) {
+                if (!new File(config.getEditorHome() + MARC_TO_MODS_XSLT).exists()) {
+                    LOGGER.error("File " + config.getEditorHome() + MARC_TO_MODS_XSLT + " does not exist.");
+                    return retMap;
+                }
                 marc2mods =
-                        Dom4jUtils
-                                .loadDocument(OAIPMHClientImpl.class.getResourceAsStream(MARC_TO_MODS_XSLT),
-                                              true);
+                        Dom4jUtils.loadDocument(new File(config.getEditorHome() + MARC_TO_MODS_XSLT), true);
             }
-            System.out.println(new File(".").getAbsolutePath());
             InputStream marcStream = RESTHelper.get(url + MARC_METADATA_PREFIX, null, null, false);
             Document marcDoc = Dom4jUtils.loadDocument(marcStream, true);
             if (marcDoc.asXML().contains("idDoesNotExist")

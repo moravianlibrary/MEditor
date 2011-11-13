@@ -463,7 +463,6 @@ public class ModifyView
         topTabSet.setWidth100();
         topTabSet.setHeight100();
         topTabSet.setAnimateTabScrolling(true);
-        topTabSet.setAnimateTabScrolling(true);
         topTabSet.setShowPaneContainerEdges(false);
         int insertPosition = -1;
 
@@ -643,8 +642,8 @@ public class ModifyView
 
                         @Override
                         public void run() {
-                            ModsTab t = new ModsTab(1, false);
-                            VLayout modsLayout = t.getModsLayout(mods.getMods().get(0), false, null, 0);
+                            ModsTab t = new ModsTab(1, mods);
+                            VLayout modsLayout = t.getModsLayout();
                             topTabSet.setModsTab(t);
                             TabSet ts = event.getTab().getTabSet();
                             ts.setTabPane(event.getTab().getID(), modsLayout);

@@ -27,6 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
@@ -51,7 +52,6 @@ import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Progressbar;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
-import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
@@ -64,6 +64,7 @@ import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
+import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
@@ -118,8 +119,6 @@ public class CreateStructurePresenter
         void escShortCut();
 
         TileGrid getTileGrid();
-
-        VLayout getModsLayout(ModsCollectionClient mods);
     }
 
     /**
@@ -588,9 +587,18 @@ public class CreateStructurePresenter
      * {@inheritDoc}
      */
     @Override
-    public void createObjects() {
+    public void createObjects(DublinCore dc, ModsTypeClient mods) {
+
+        DublinCore newDc = dc == null ? this.dc : dc;
+        ModsCollectionClient newMods;
+        if (mods != null) {
+            newMods = new ModsCollectionClient();
+            newMods.setMods(Arrays.asList(mods));
+        } else {
+            newMods = this.mods;
+        }
         NewDigitalObject object =
-                ClientUtils.createTheStructure(dc, mods, leftPresenter.getView().getSubelementsGrid());
+                ClientUtils.createTheStructure(newDc, newMods, leftPresenter.getView().getSubelementsGrid());
         System.out.println(NewDigitalObject.toStringTree(object));
 
     }
@@ -599,8 +607,15 @@ public class CreateStructurePresenter
      * {@inheritDoc}
      */
     @Override
-    public void editMetadata() {
-        // nejake fancy efekty pro prechod na dalsi screenu :]
-        ((VLayout) getView().asWidget()).addMember(getView().getModsLayout(mods));
+    public ModsCollectionClient getMods() {
+        return mods;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DublinCore getDc() {
+        return dc;
     }
 }

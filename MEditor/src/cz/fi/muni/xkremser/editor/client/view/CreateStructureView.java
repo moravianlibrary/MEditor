@@ -33,6 +33,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -46,6 +47,7 @@ import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.ImageStyle;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionType;
+import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -65,6 +67,10 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.MenuItemSeparator;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tab.Tab;
+import com.smartgwt.client.widgets.tab.TabSet;
+import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
+import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.TileRecord;
 import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
@@ -81,13 +87,18 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
+import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.DCTab;
+import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -107,9 +118,11 @@ public class CreateStructureView
 
         void onAddImages(final TileGrid tileGrid, final Menu menu);
 
-        void createObjects();
+        void createObjects(DublinCore dc, ModsTypeClient mods);
 
-        void editMetadata();
+        ModsCollectionClient getMods();
+
+        DublinCore getDc();
 
     }
 
@@ -153,7 +166,11 @@ public class CreateStructureView
 
     private VLayout detailPanel;
 
+    private VLayout metadataPanel;
+
     private boolean detailPanelShown = false;
+
+    private boolean metadataPanelShown = false;
 
     private boolean detailPanelImageShown = false;
 
@@ -165,6 +182,8 @@ public class CreateStructureView
     private Window winModal;
 
     private SelectItem specialPageItem;
+
+    private EditorTabSet topTabSet;
 
     private int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
 
@@ -245,6 +264,7 @@ public class CreateStructureView
         tileGrid.setCanDrag(true);
         tileGrid.setCanAcceptDrop(true);
         tileGrid.setShowAllRecords(true);
+        tileGrid.setShowResizeBar(true);
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
@@ -491,7 +511,8 @@ public class CreateStructureView
         });
         zoomItems.setDefaultValue("100%");
         toolStrip.addFormItem(zoomItems);
-        ToolStripButton zoomButton = new ToolStripButton();
+        final ToolStripButton zoomButton = new ToolStripButton();
+        final ToolStripButton editMetadataButton = new ToolStripButton();
         zoomButton.setIcon("silk/zoom.png");
         zoomButton.setTitle(lang.pageDetail());
         zoomButton.setActionType(SelectionType.CHECKBOX);
@@ -499,6 +520,11 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
+                if (metadataPanelShown) {
+                    metadataPanelShown = false;
+                    tileGridLayout.removeMember(metadataPanel);
+                    editMetadataButton.setSelected(false);
+                }
                 if (detailPanel == null) {
                     detailPanel = new VLayout();
                     detailPanel.setPadding(5);
@@ -519,17 +545,39 @@ public class CreateStructureView
         });
         toolStrip.addButton(zoomButton);
 
-        ToolStripButton editMetadata = new ToolStripButton();
-        editMetadata.setIcon("silk/metadata_edit.png");
-        editMetadata.setTitle(lang.editMeta());
-        editMetadata.addClickHandler(new ClickHandler() {
+        editMetadataButton.setIcon("silk/metadata_edit.png");
+        editMetadataButton.setTitle(lang.editMeta());
+        editMetadataButton.setActionType(SelectionType.CHECKBOX);
+        editMetadataButton.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-                getUiHandlers().editMetadata();
+                if (detailPanelShown) {
+                    detailPanelShown = false;
+                    tileGridLayout.removeMember(detailPanel);
+                    zoomButton.setSelected(false);
+                }
+                if (metadataPanel == null) {
+                    metadataPanel = new VLayout();
+                    metadataPanel.setPadding(5);
+                    metadataPanel.setAnimateMembers(true);
+                    metadataPanel.setAnimateHideTime(200);
+                    metadataPanel.setAnimateShowTime(200);
+                    metadataPanel.setHeight100();
+                    tileGridLayout.addMember(metadataPanel);
+                    metadataPanelShown = true;
+                    initModsOrDc();
+                } else if (metadataPanelShown) {
+                    metadataPanelShown = false;
+                    tileGridLayout.removeMember(metadataPanel);
+                } else {
+                    tileGridLayout.addMember(metadataPanel);
+                    metadataPanelShown = true;
+                }
+
             }
         });
-        toolStrip.addButton(editMetadata);
+        toolStrip.addButton(editMetadataButton);
 
         ToolStripButton createButton = new ToolStripButton();
         createButton.setIcon("silk/forward_green.png");
@@ -538,7 +586,15 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                getUiHandlers().createObjects();
+                DublinCore dc = null;
+                ModsTypeClient mods = null;
+                if (topTabSet != null) {
+                    dc = topTabSet.getDcTab().getDc();
+                    if (topTabSet.getModsTab() != null) {
+                        mods = ((ModsTab) topTabSet.getModsTab()).getMods();
+                    }
+                }
+                getUiHandlers().createObjects(dc, mods);
             }
         });
 
@@ -761,11 +817,45 @@ public class CreateStructureView
         };
     }
 
-    @Override
-    public VLayout getModsLayout(ModsCollectionClient mods) {
-        ModsTab t = new ModsTab(1, false);
-        VLayout modsLayout = t.getModsLayout(mods.getMods().get(0), false, null, 0);
-        return modsLayout;
+    public void initModsOrDc() {
+        if (metadataPanelShown) {
+            topTabSet = new EditorTabSet();
+            topTabSet.setTabBarPosition(Side.TOP);
+            topTabSet.setWidth100();
+            topTabSet.setHeight100();
+            topTabSet.setAnimateTabScrolling(true);
+            topTabSet.setShowPaneContainerEdges(false);
+            final Tab moTab = new Tab("MODS", "pieces/16/piece_blue.png");
+            moTab.setAttribute("id", "mods");
+            DCTab dcTab = new DCTab(getUiHandlers().getDc());
+            topTabSet.setDcTab(dcTab);
+            topTabSet.setTabs(dcTab, moTab);
+            topTabSet.addTabSelectedHandler(new TabSelectedHandler() {
+
+                @Override
+                public void onTabSelected(final TabSelectedEvent event) {
+                    if ("mods".equals(event.getTab().getAttribute("id")) && event.getTab().getPane() == null) {
+                        final ModalWindow mw = new ModalWindow(topTabSet);
+                        mw.setLoadingIcon("loadingAnimation.gif");
+                        mw.show(true);
+                        Timer timer = new Timer() {
+
+                            @Override
+                            public void run() {
+                                ModsTab modsTab = new ModsTab(1, getUiHandlers().getMods());
+                                VLayout modsLayout = modsTab.getModsLayout();
+                                topTabSet.setModsTab(modsTab);
+                                TabSet ts = event.getTab().getTabSet();
+                                ts.setTabPane(event.getTab().getID(), modsLayout);
+                                mw.hide();
+                            }
+                        };
+                        timer.schedule(25);
+                    }
+                }
+            });
+            metadataPanel.addMember(topTabSet);
+        }
     }
 
     /**

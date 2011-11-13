@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.server;
 
+import java.io.File;
+
 import java.util.Map;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
@@ -43,7 +45,7 @@ public interface OAIPMHClient {
 
     String OAI_METADATA_PREFIX = "oai_dc";
 
-    String MARC_TO_MODS_XSLT = "xml/MARC21slim2MODS3.xsl";
+    String MARC_TO_MODS_XSLT = File.separator + "xml" + File.separator + "MARC21slim2MODS3.xsl";
 
     Map<DublinCore, ModsCollectionClient> search(String url);
 }

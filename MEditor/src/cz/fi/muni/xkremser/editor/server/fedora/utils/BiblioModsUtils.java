@@ -267,10 +267,7 @@ public final class BiblioModsUtils {
         try {
             JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.server.mods");
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            JAXBElement<?> o = (JAXBElement<?>) unmarshaller.unmarshal(doc);
-            if (o.getDeclaredType() == ModsCollection.class) {
-                return (ModsCollection) o.getValue();
-            }
+            return (ModsCollection) unmarshaller.unmarshal(doc);
         } catch (JAXBException e) {
             LOGGER.error(e);
         }

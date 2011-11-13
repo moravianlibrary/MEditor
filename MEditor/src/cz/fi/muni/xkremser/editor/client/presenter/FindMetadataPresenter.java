@@ -191,32 +191,14 @@ public class FindMetadataPresenter
 
             @Override
             public void onClick(ClickEvent event) {
-                String finder = (String) getView().getFindBy().getValue();
-                Constants.SEARCH_FIELD findBy = null;
-                if (finder == null || finder.isEmpty()) {
-                    return;
-                } else if (finder.equals(Constants.SYSNO)) {
-                    findBy = Constants.SEARCH_FIELD.SYSNO;
-                } else if (finder.equals(lang.fbarcode())) {
-                    findBy = Constants.SEARCH_FIELD.BAR;
-                } else if (finder.equals(lang.ftitle())) {
-                    findBy = Constants.SEARCH_FIELD.TITLE;
-                }
-                if (findBy != null) {
-                    findMetadata(findBy, (String) getView().getZ39Id().getValue());
-                }
+                findZ39Metadata();
             }
         });
         getView().getFindOai().addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-                String url = getView().getOaiUrl().getValueAsString();
-                String prefix = getView().getOaiPrefix().getValueAsString();
-                String base = getView().getOaiBase().getValueAsString();
-                String value = getView().getOaiId().getValueAsString();
-                String query = ClientUtils.format(OAI_STRING, url, prefix, base, value);
-                findMetadata(null, query);
+                findOaiMetadata();
             }
         });
         getView().getNext().setDisabled(true);
@@ -289,7 +271,8 @@ public class FindMetadataPresenter
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(code);
         getView().getOaiId().setValue(code);
-        findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
+        //        findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
+        findOaiMetadata();
     }
 
     private void findMetadata(Constants.SEARCH_FIELD field, String id) {
@@ -326,5 +309,31 @@ public class FindMetadataPresenter
             }
         });
         getView().showProgress(true, false);
+    }
+
+    private void findZ39Metadata() {
+        String finder = (String) getView().getFindBy().getValue();
+        Constants.SEARCH_FIELD findBy = null;
+        if (finder == null || finder.isEmpty()) {
+            return;
+        } else if (finder.equals(Constants.SYSNO)) {
+            findBy = Constants.SEARCH_FIELD.SYSNO;
+        } else if (finder.equals(lang.fbarcode())) {
+            findBy = Constants.SEARCH_FIELD.BAR;
+        } else if (finder.equals(lang.ftitle())) {
+            findBy = Constants.SEARCH_FIELD.TITLE;
+        }
+        if (findBy != null) {
+            findMetadata(findBy, (String) getView().getZ39Id().getValue());
+        }
+    }
+
+    private void findOaiMetadata() {
+        String url = getView().getOaiUrl().getValueAsString();
+        String prefix = getView().getOaiPrefix().getValueAsString();
+        String base = getView().getOaiBase().getValueAsString();
+        String value = getView().getOaiId().getValueAsString();
+        String query = ClientUtils.format(OAI_STRING, url, prefix, base, value);
+        findMetadata(null, query);
     }
 }
