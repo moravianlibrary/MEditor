@@ -30,9 +30,8 @@ package cz.fi.muni.xkremser.editor.client.util;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ServerConstants.
+ * @author Jiri Kremser
  */
 public class Constants {
 
@@ -152,6 +151,8 @@ public class Constants {
     public static final String ATTR_TYPE = "type";
 
     public static final String ATTR_TYPE_ID = Constants.ATTR_TYPE + Constants.ATTR_ID;
+
+    public static final String ATTR_EXIST = "exist";
 
     /** The Constant ATTR_IDENTITY. */
     public static final String ATTR_IDENTITY = "identity";

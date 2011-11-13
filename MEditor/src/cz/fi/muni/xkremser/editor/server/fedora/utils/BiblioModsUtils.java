@@ -104,6 +104,7 @@ import cz.fi.muni.xkremser.editor.client.mods.UnstructuredTextClient;
 import cz.fi.muni.xkremser.editor.client.mods.UrlTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.YesClient;
 
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraNamespaceContext;
 import cz.fi.muni.xkremser.editor.server.mods.AbstractType;
 import cz.fi.muni.xkremser.editor.server.mods.AccessConditionType;
@@ -338,18 +339,6 @@ public final class BiblioModsUtils {
             modsClient.setMods(modsClientList);
         }
         return modsClient;
-    }
-
-    /**
-     * To mods server.
-     * 
-     * @param modsClient
-     *        the mods client
-     * @return the mods collection
-     */
-    public static ModsCollection toModsServer(ModsCollectionClient modsClient) {
-        return null;
-
     }
 
     /**
@@ -1610,7 +1599,7 @@ public final class BiblioModsUtils {
                 modsList.add(toMods(modsTypeClient));
             }
         }
-        return mods;
+        return ServerUtils.collapseStructure(mods);
     }
 
     /**

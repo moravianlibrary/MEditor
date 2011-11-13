@@ -51,11 +51,11 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
@@ -64,16 +64,18 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CreateObjectMenuPresenter.
+ * @author Jiri Kremser
  */
 public class CreateObjectMenuPresenter
         extends Presenter<CreateObjectMenuPresenter.MyView, CreateObjectMenuPresenter.MyProxy>
@@ -93,7 +95,7 @@ public class CreateObjectMenuPresenter
 
         void setInputTree(SideNavInputTree tree);
 
-        ListGrid getSubelementsGrid();
+        TreeGrid getSubelementsGrid();
 
         SectionStack getSectionStack();
 
@@ -105,7 +107,13 @@ public class CreateObjectMenuPresenter
 
         void enableCheckbox(boolean isEnabled);
 
-        void addSubstructure(String id, String name, String type, String typeId, String parent, boolean isOpen);
+        void addSubstructure(String id,
+                             String name,
+                             String type,
+                             String typeId,
+                             String parent,
+                             boolean isOpen,
+                             boolean exist);
 
         TextItem getNewName();
     }
@@ -380,4 +388,22 @@ public class CreateObjectMenuPresenter
         return ++lastId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void getModel(String valueAsString, final ConnectExistingObjectWindow window) {
+        dispatcher.execute(new GetDOModelAction(valueAsString), new DispatchCallback<GetDOModelResult>() {
+
+            @Override
+            public void callback(GetDOModelResult result) {
+                window.changeModel(result == null ? null : result.getModel());
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                window.changeModel(null);
+            }
+        });
+    }
 }

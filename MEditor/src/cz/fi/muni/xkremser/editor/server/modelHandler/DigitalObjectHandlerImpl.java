@@ -149,7 +149,8 @@ public class DigitalObjectHandlerImpl
         return detail;
     }
 
-    private DigitalObjectModel getModel(String uuid) throws IOException {
+    @Override
+    public DigitalObjectModel getModel(String uuid) throws IOException {
         DigitalObjectModel model = null;
         try {
             model = fedoraAccess.getDigitalObjectModel(uuid);

@@ -1,8 +1,11 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
@@ -21,7 +24,7 @@ public abstract class UuidWindow
      *        the lang
      */
     public UuidWindow(LangConstants lang) {
-        super(150, 370, "PID");
+        super(155, 440, "PID");
 
         setEdgeOffset(15);
 
@@ -29,11 +32,12 @@ public abstract class UuidWindow
         regExpValidator
                 .setExpression("^.*:([\\da-fA-F]){8}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){4}-([\\da-fA-F]){12}$");
 
-        final ButtonItem open = new ButtonItem();
+        final IButton open = new IButton();
         uuidField = new TextItem();
         uuidField.setTitle("PID");
         uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
         uuidField.setValidators(regExpValidator);
+        uuidField.setWidth(250);
         uuidField.addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {
 
             @Override
@@ -57,20 +61,24 @@ public abstract class UuidWindow
         });
         open.setTitle(lang.open());
         open.setDisabled(true);
-        open.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+        open.addClickHandler(new ClickHandler() {
 
             @Override
-            public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-                doActiton(uuidField);
+            public void onClick(ClickEvent event) {
+                if (uuidField.validate()) {
+                    doActiton(uuidField);
+                }
             }
         });
 
         DynamicForm form = new DynamicForm();
-        form.setMargin(30);
-        form.setWidth(100);
+        form.setMargin(20);
+        form.setWidth(140);
         form.setHeight(15);
-        form.setFields(uuidField, open);
+        form.setFields(uuidField);
+        addItem(new HTMLFlow(lang.enterPID()));
         addItem(form);
+        addItem(open);
         centerInPage();
         show();
         uuidField.focusInItem();

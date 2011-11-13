@@ -33,21 +33,24 @@ import java.util.List;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.DOM;
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.tree.Tree;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
+import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
+import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureTreeNode;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ServerUtils.
+ * @author Jiri Kremser
  */
 public class ClientUtils {
 
@@ -225,9 +228,76 @@ public class ClientUtils {
         return list.toArray(new ListGridRecord[] {});
     }
 
-    public static NewDigitalObject createTheStructure(DublinCore dc, ModsCollectionClient mods, ListGrid tree) {
-        return null;
-        // iterate the tree from bottom to top and add DO to fedora
+    public static NewDigitalObject createTheStructure(DublinCore dc, ModsCollectionClient mods, Tree tree)
+            throws CreateObjectException {
+        TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
+        if (root == null) {
+            return null;
+        }
+        TreeNode[] children = tree.getChildren(root);
+        if (children.length == 0) {
+            return null;
+        }
+
+        String name = root.getAttribute(Constants.ATTR_NAME);
+        if (name == null || "".equals(name)) {
+            throw new CreateObjectException("unknown name");
+        }
+        String modelString = root.getAttribute(Constants.ATTR_TYPE_ID);
+        if (modelString == null || "".equals(modelString)) {
+            throw new CreateObjectException("unknown type");
+        }
+        DigitalObjectModel model = null;
+        try {
+            model = DigitalObjectModel.parseString(modelString);
+        } catch (RuntimeException ex) {
+            throw new CreateObjectException("unknown type");
+        }
+        NewDigitalObject newObj =
+                new NewDigitalObject(0,
+                                     name,
+                                     model,
+                                     dc,
+                                     mods,
+                                     null,
+                                     root.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        for (TreeNode child : children) {
+            newObj.getChildren().add(createTheStructure(dc, mods, tree, child));
+        }
+        return newObj;
+    }
+
+    private static NewDigitalObject createTheStructure(DublinCore dc,
+                                                       ModsCollectionClient mods,
+                                                       Tree tree,
+                                                       TreeNode node) throws CreateObjectException {
+        String name = node.getAttribute(Constants.ATTR_NAME);
+        if (name == null || "".equals(name)) {
+            throw new CreateObjectException("unknown name");
+        }
+        String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
+        if (modelString == null || "".equals(modelString)) {
+            throw new CreateObjectException("unknown type");
+        }
+        DigitalObjectModel model = null;
+        try {
+            model = DigitalObjectModel.parseString(modelString);
+        } catch (RuntimeException ex) {
+            throw new CreateObjectException("unknown type");
+        }
+        NewDigitalObject newObj =
+                new NewDigitalObject(0,
+                                     name,
+                                     model,
+                                     dc,
+                                     mods,
+                                     null,
+                                     node.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        TreeNode[] children = tree.getChildren(node);
+        for (TreeNode child : children) {
+            newObj.getChildren().add(createTheStructure(dc, mods, tree, child));
+        }
+        return newObj;
     }
 
     public static String numbersParse(int number) {
@@ -294,5 +364,16 @@ public class ClientUtils {
         }
         msg.append(split.get(split.length() - 1));
         return msg.toString();
+    }
+
+    public static void main(String... args) {
+        SubstructureTreeNode root =
+                new SubstructureTreeNode("0",
+                                         SubstructureTreeNode.ROOT_ID,
+                                         "root",
+                                         "digital_obj",
+                                         "digital_obj_code",
+                                         true,
+                                         false);
     }
 }

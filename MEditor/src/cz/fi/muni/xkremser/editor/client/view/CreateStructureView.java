@@ -100,9 +100,8 @@ import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CreateView.
+ * @author Jiri Kremser
  */
 public class CreateStructureView
         extends ViewWithUiHandlers<MyUiHandlers>

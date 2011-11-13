@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import cz.fi.muni.xkremser.editor.client.mods.BiblioModsClient;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
@@ -41,11 +41,30 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 public class NewDigitalObject {
 
     private int orderIndex;
+    private String name;
     private final List<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
     private DigitalObjectModel model;
     private DublinCore dc;
-    private BiblioModsClient mods;
+    private ModsCollectionClient mods;
     private String uuid;
+    private boolean exist;
+
+    public NewDigitalObject(int orderIndex,
+                            String name,
+                            DigitalObjectModel model,
+                            DublinCore dc,
+                            ModsCollectionClient mods,
+                            String uuid,
+                            boolean exist) {
+        super();
+        this.orderIndex = orderIndex;
+        this.name = name;
+        this.model = model;
+        this.dc = dc;
+        this.mods = mods;
+        this.uuid = uuid;
+        this.exist = exist;
+    }
 
     @Override
     public String toString() {
@@ -122,11 +141,11 @@ public class NewDigitalObject {
         this.dc = dc;
     }
 
-    public BiblioModsClient getMods() {
+    public ModsCollectionClient getMods() {
         return mods;
     }
 
-    public void setMods(BiblioModsClient mods) {
+    public void setMods(ModsCollectionClient mods) {
         this.mods = mods;
     }
 
@@ -140,5 +159,21 @@ public class NewDigitalObject {
 
     public List<NewDigitalObject> getChildren() {
         return children;
+    }
+
+    public boolean getExist() {
+        return exist;
+    }
+
+    public void setExist(boolean exist) {
+        this.exist = exist;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

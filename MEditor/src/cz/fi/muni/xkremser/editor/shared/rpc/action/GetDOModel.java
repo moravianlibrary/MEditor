@@ -25,22 +25,29 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.server.modelHandler;
+package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import java.io.IOException;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
+import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DigitalObjectHandler.
+ * @author Jiri Kremser
+ * @version 13.11.2011
  */
-public interface DigitalObjectHandler {
+@GenDispatch(isSecure = false)
+public class GetDOModel
+        extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
 
-    DigitalObjectDetail getDigitalObject(String uuid) throws IOException;
+    /** The uuid. */
+    @In(1)
+    private String uuid;
 
-    DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel) throws IOException;
+    /** The model. */
+    @Out(1)
+    private DigitalObjectModel model;
 
-    DigitalObjectModel getModel(String uuid) throws IOException;
 }

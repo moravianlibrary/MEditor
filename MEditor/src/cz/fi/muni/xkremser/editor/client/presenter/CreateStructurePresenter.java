@@ -59,6 +59,7 @@ import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 
+import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
@@ -67,6 +68,7 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureTreeNode;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
@@ -85,9 +87,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderResult;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CreateStructurePresenter.
+ * @author Jiri Kremser
  */
 public class CreateStructurePresenter
         extends Presenter<CreateStructurePresenter.MyView, CreateStructurePresenter.MyProxy>
@@ -250,7 +251,13 @@ public class CreateStructurePresenter
         } else {
             name = code;
         }
-        leftPresenter.getView().addSubstructure("0", name, model, model, "1", true);
+        leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
+                                                name,
+                                                model,
+                                                model,
+                                                SubstructureTreeNode.ROOT_ID,
+                                                true,
+                                                false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
     }
 
@@ -541,7 +548,8 @@ public class CreateStructurePresenter
                                                         type,
                                                         model.getValue(),
                                                         parent,
-                                                        true);
+                                                        true,
+                                                        false);
             } else { // adding something and enrich it with selected pages
                 possibleParent = parent;
             }
@@ -556,7 +564,8 @@ public class CreateStructurePresenter
                                                                     .get(DigitalObjectModel.PAGE.getValue()),
                                                             DigitalObjectModel.PAGE.getValue(),
                                                             possibleParent,
-                                                            true);
+                                                            true,
+                                                            false);
                     if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
                         getView().getTileGrid().removeSelectedData();
                     }
@@ -597,8 +606,15 @@ public class CreateStructurePresenter
         } else {
             newMods = this.mods;
         }
-        NewDigitalObject object =
-                ClientUtils.createTheStructure(newDc, newMods, leftPresenter.getView().getSubelementsGrid());
+        NewDigitalObject object = null;
+        try {
+            object =
+                    ClientUtils.createTheStructure(newDc, newMods, leftPresenter.getView()
+                            .getSubelementsGrid().getTree());
+        } catch (CreateObjectException e) {
+            SC.warn(e.getMessage());
+            e.printStackTrace();
+        }
         System.out.println(NewDigitalObject.toStringTree(object));
 
     }

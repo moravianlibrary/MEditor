@@ -119,9 +119,8 @@ import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ModifyView.
+ * @author Jiri Kremser
  */
 public class ModifyView
         extends ViewWithUiHandlers<MyUiHandlers>

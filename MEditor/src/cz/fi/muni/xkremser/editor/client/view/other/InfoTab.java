@@ -106,7 +106,7 @@ public class InfoTab
                         + (isPage ? "" : "uuid:") + firstPageURL + "' />");
 
         quickEdit.setTitle(lang.quickEdit());
-        quickEdit.setExtraSpace(5);
+        quickEdit.setExtraSpace(15);
 
         layout.setMembers(lockInfoButton != null ? lockInfoButton : new HTMLFlow(),
                           info,

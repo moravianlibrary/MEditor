@@ -73,7 +73,6 @@ import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
@@ -522,10 +521,7 @@ public class FedoraUtils {
     public static String createNewModsPart(ModsCollectionClient modsClient) {
         if (modsClient != null) {
             ModsCollection mods = BiblioModsUtils.toMods(modsClient);
-            ModsCollection collapsedMods = ServerUtils.collapseStructure(mods);
-            String content = BiblioModsUtils.toXML(collapsedMods);
-
-            return content;
+            return BiblioModsUtils.toXML(mods);
         }
         return null;
     }

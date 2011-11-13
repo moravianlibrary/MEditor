@@ -232,6 +232,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String authorityAttr();
 
   /**
+   * Translated "Availability".
+   * 
+   * @return translated "Availability"
+   */
+  @DefaultStringValue("Availability")
+  @Key("availability")
+  String availability();
+
+  /**
    * Translated "A resource was created and is intended to remain in digital form. (No MARC equivalent, but includes value 'c')".
    * 
    * @return translated "A resource was created and is intended to remain in digital form. (No MARC equivalent, but includes value 'c')"
@@ -383,6 +392,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("equivalent to MARC 21 fields 111, 711")
   @Key("conferenceMARC")
   String conferenceMARC();
+
+  /**
+   * Translated "Connect".
+   * 
+   * @return translated "Connect"
+   */
+  @DefaultStringValue("Connect")
+  @Key("connect")
+  String connect();
 
   /**
    * Translated "Connect existing digital object to this object".
@@ -1213,6 +1231,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String endValue();
 
   /**
+   * Translated "Please enter the PID of a digital object".
+   * 
+   * @return translated "Please enter the PID of a digital object"
+   */
+  @DefaultStringValue("Please enter the PID of a digital object")
+  @Key("enterPID")
+  String enterPID();
+
+  /**
    * Translated "Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>.".
    * 
    * @return translated "Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>."
@@ -1348,11 +1375,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String fileName();
 
   /**
-   * Translated "Please input the name of the file".
+   * Translated "Please enter the name of the file".
    * 
-   * @return translated "Please input the name of the file"
+   * @return translated "Please enter the name of the file"
    */
-  @DefaultStringValue("Please input the name of the file")
+  @DefaultStringValue("Please enter the name of the file")
   @Key("fileNameLabel")
   String fileNameLabel();
 
@@ -1879,11 +1906,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lockObjectWindow();
 
   /**
-   * Translated "Do you want to lock the digital object was saved?".
+   * Translated "Do you want to lock the saved digital object?".
    * 
-   * @return translated "Do you want to lock the digital object was saved?"
+   * @return translated "Do you want to lock the saved digital object?"
    */
-  @DefaultStringValue("Do you want to lock the digital object was saved?")
+  @DefaultStringValue("Do you want to lock the saved digital object?")
   @Key("lockStoredObject")
   String lockStoredObject();
 

@@ -51,7 +51,6 @@ import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
@@ -61,6 +60,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
+import com.smartgwt.client.widgets.menu.events.ClickHandler;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
@@ -70,13 +71,14 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CreateObjectMenuView.
+ * @author Jiri Kremser
+ * @version 12.11.2011
  */
 public class CreateObjectMenuView
         extends ViewWithUiHandlers<CreateObjectMenuView.MyUiHandlers>
@@ -99,6 +101,8 @@ public class CreateObjectMenuView
         Map<String, DigitalObjectModel> getModelFromLabel();
 
         Map<String, String> getLabelFromModel();
+
+        void getModel(String valueAsString, ConnectExistingObjectWindow window);
 
     }
 
@@ -137,7 +141,7 @@ public class CreateObjectMenuView
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public CreateObjectMenuView(LangConstants lang) {
+    public CreateObjectMenuView(final LangConstants lang) {
         this.lang = lang;
         layout = new VLayout();
 
@@ -179,6 +183,44 @@ public class CreateObjectMenuView
             @Override
             public boolean execute(Canvas target, Menu menu, MenuItem item) {
                 return connectEx2Enabled;
+            }
+        });
+        connectToExisting.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                new ConnectExistingObjectWindow(lang, true) {
+
+                    private DigitalObjectModel model;
+
+                    @Override
+                    protected void doActiton(TextItem uuidField) {
+
+                    }
+
+                    @Override
+                    protected void checkAvailability(TextItem uuidField) {
+                        getUiHandlers().getModel(uuidField.getValueAsString(), this);
+                    }
+                };
+            }
+        });
+        connectExistingTo.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                new ConnectExistingObjectWindow(lang, false) {
+
+                    @Override
+                    protected void doActiton(TextItem uuidField) {
+
+                    }
+
+                    @Override
+                    protected void checkAvailability(TextItem uuidField) {
+                        getUiHandlers().getModel(uuidField.getValueAsString(), this);
+                    }
+                };
             }
         });
         final Menu editMenu = new Menu();
@@ -324,7 +366,7 @@ public class CreateObjectMenuView
      * MyView#getRecentlyModifiedTree()
      */
     @Override
-    public ListGrid getSubelementsGrid() {
+    public TreeGrid getSubelementsGrid() {
         return structureTreeGrid;
     }
 
@@ -407,18 +449,24 @@ public class CreateObjectMenuView
     public static class SubstructureTreeNode
             extends TreeNode {
 
+        public static final String ROOT_ID = "1";
+
+        public static final String ROOT_OBJECT_ID = "0";
+
         public SubstructureTreeNode(String id,
                                     String parent,
                                     String name,
                                     String type,
                                     String typeId,
-                                    boolean isOpen) {
+                                    boolean isOpen,
+                                    boolean exist) {
             setAttribute(Constants.ATTR_ID, id);
             setAttribute(Constants.ATTR_PARENT, parent);
             setAttribute(Constants.ATTR_NAME, name);
             setAttribute(Constants.ATTR_TYPE, type);
             setAttribute(Constants.ATTR_TYPE_ID, typeId);
             setAttribute("isOpen", isOpen);
+            setAttribute(Constants.ATTR_EXIST, exist);
         }
     }
 
@@ -431,9 +479,11 @@ public class CreateObjectMenuView
                                 String type,
                                 String typeId,
                                 String parent,
-                                boolean isOpen) {
+                                boolean isOpen,
+                                boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
-        structureTree.add(new SubstructureTreeNode(id, parent, name, type, typeId, isOpen), parentNode);
+        structureTree
+                .add(new SubstructureTreeNode(id, parent, name, type, typeId, isOpen, exist), parentNode);
         structureTreeGrid.setData(structureTree);
     }
 }

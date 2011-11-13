@@ -1,8 +1,5 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
  * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
@@ -25,22 +22,22 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.server.modelHandler;
+package cz.fi.muni.xkremser.editor.client;
 
-import java.io.IOException;
-
-import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class DigitalObjectHandler.
+ * @author Jiri Kremser
+ * @version 13.11.2011
  */
-public interface DigitalObjectHandler {
+public class CreateObjectException
+        extends Exception {
 
-    DigitalObjectDetail getDigitalObject(String uuid) throws IOException;
-
-    DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel) throws IOException;
-
-    DigitalObjectModel getModel(String uuid) throws IOException;
+    /**
+     * Instantiates a new connection exception.
+     * 
+     * @param msg
+     *        the msg
+     */
+    public CreateObjectException(String msg) {
+        super(msg);
+    }
 }

@@ -73,9 +73,8 @@ import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DigitalObjectMenuView.
+ * @author Jiri Kremser
  */
 public class DigitalObjectMenuView
         extends ViewWithUiHandlers<DigitalObjectMenuView.MyUiHandlers>

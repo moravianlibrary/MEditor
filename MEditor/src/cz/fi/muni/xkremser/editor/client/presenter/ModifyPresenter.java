@@ -100,10 +100,6 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailResult
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectResult;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ModifyPresenter.
- */
 public class ModifyPresenter
         extends Presenter<ModifyPresenter.MyView, ModifyPresenter.MyProxy>
         implements MyUiHandlers {
