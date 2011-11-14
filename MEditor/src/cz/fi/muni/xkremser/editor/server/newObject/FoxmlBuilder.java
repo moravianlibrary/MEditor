@@ -35,7 +35,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.QName;
 
-import cz.fi.muni.xkremser.editor.client.mods.BiblioModsClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
@@ -43,6 +42,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
@@ -58,18 +58,23 @@ public abstract class FoxmlBuilder {
     private static final String PID_PREFIX = Constants.FEDORA_UUID_PREFIX;
     private final String uuid;
     private final String pid;
-    private final String label;
-    private final Policy policy;
+    private String signature;
+    private String sysno;
+    private String label;
+    private Policy policy;
     private final List<RelsExtRelation> children;
     private DublinCore dc;
-    private BiblioModsClient mods;
+    private ModsCollection mods;
     private Document document;
     protected Element rootElement;
-    private Element dcXmlContent;
-    private Element modsXmlContent;
-    private Element relsExtXmlContent;
+    private Document dcXmlContent;
+    private Document modsXmlContent;
+    private Document relsExtXmlContent;
     private Element policyContentLocation;
     private static final String OVER_MAX_LENGTH_SUFFIX = "...";
+    private String krameriusUrl;
+    private String alephUrl;
+    private MarcDocument marcDocument;
 
     private static final int MAX_LABEL_LENGTH = 100;
     private static final Boolean VERSIONABLE = true;
@@ -175,6 +180,7 @@ public abstract class FoxmlBuilder {
         Element rights = rootElement.addElement(new QName("rights", Namespaces.dc));
         rights.addText("policy:" + getPolicy().toString().toLowerCase());
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.DC, rootElement, null, null);
+        dcXmlContent = rootElement.getDocument();
     }
 
     protected void appendDatastream(DATASTREAM_CONTROLGROUP dsCGroup,
@@ -264,6 +270,7 @@ public abstract class FoxmlBuilder {
                          relsExt.getRootElement(),
                          null,
                          null);
+        relsExtXmlContent = relsExt;
     }
 
     protected abstract void decorateMODSStream();
@@ -278,16 +285,20 @@ public abstract class FoxmlBuilder {
         this.dc = dc;
     }
 
-    public BiblioModsClient getMods() {
+    public ModsCollection getMods() {
         return mods;
     }
 
-    public void setMods(BiblioModsClient mods) {
+    public void setMods(ModsCollection mods) {
         this.mods = mods;
     }
 
     public String getLabel() {
         return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getPid() {
@@ -302,8 +313,76 @@ public abstract class FoxmlBuilder {
         return policy;
     }
 
+    public void setPolicy(Policy policy) {
+        this.policy = policy;
+    }
+
     public List<RelsExtRelation> getChildren() {
         return children;
+    }
+
+    public Document getDcXmlContent() {
+        return dcXmlContent;
+    }
+
+    public void setDcXmlContent(Document dcXmlContent) {
+        this.dcXmlContent = dcXmlContent;
+    }
+
+    public Document getModsXmlContent() {
+        return modsXmlContent;
+    }
+
+    public void setModsXmlContent(Document modsXmlContent) {
+        this.modsXmlContent = modsXmlContent;
+    }
+
+    public Document getRelsExtXmlContent() {
+        return relsExtXmlContent;
+    }
+
+    public void setRelsExtXmlContent(Document relsExtXmlContent) {
+        this.relsExtXmlContent = relsExtXmlContent;
+    }
+
+    public String getKrameriusUrl() {
+        return krameriusUrl;
+    }
+
+    public void setKrameriusUrl(String krameriusUrl) {
+        this.krameriusUrl = krameriusUrl;
+    }
+
+    public String getAlephUrl() {
+        return alephUrl;
+    }
+
+    public void setAlephUrl(String alephUrl) {
+        this.alephUrl = alephUrl;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getSysno() {
+        return sysno;
+    }
+
+    public void setSysno(String sysno) {
+        this.sysno = sysno;
+    }
+
+    public MarcDocument getMarcDocument() {
+        return marcDocument;
+    }
+
+    public void setMarcDocument(MarcDocument marcDocument) {
+        this.marcDocument = marcDocument;
     }
 
     public static void main(String... args) {

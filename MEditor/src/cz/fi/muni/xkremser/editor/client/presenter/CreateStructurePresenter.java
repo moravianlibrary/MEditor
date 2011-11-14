@@ -84,6 +84,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.InsertNewDigitalObjectAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.InsertNewDigitalObjectResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderResult;
 
@@ -152,6 +154,8 @@ public class CreateStructurePresenter
 
     /** The DC. */
     private DublinCore dc;
+
+    private String marc;
 
     private ModsCollectionClient mods;
 
@@ -615,7 +619,25 @@ public class CreateStructurePresenter
             SC.warn(e.getMessage());
             e.printStackTrace();
         }
-        System.out.println(NewDigitalObject.toStringTree(object));
+        //        object.setMarcXml(marcXml);
+
+        if (object != null) {
+            System.out.println(ClientUtils.toStringTree(object));
+            dispatcher.execute(new InsertNewDigitalObjectAction(object),
+                               new DispatchCallback<InsertNewDigitalObjectResult>() {
+
+                                   @Override
+                                   public void callback(InsertNewDigitalObjectResult result) {
+                                       System.out.println(result);
+
+                                   }
+
+                                   @Override
+                                   public void callbackError(Throwable t) {
+                                       System.out.println(t);
+                                   }
+                               });
+        }
 
     }
 
@@ -624,7 +646,7 @@ public class CreateStructurePresenter
      */
     @Override
     public ModsCollectionClient getMods() {
-        return mods == null ? new ModsCollectionClient() : mods;
+        return mods;
     }
 
     /**

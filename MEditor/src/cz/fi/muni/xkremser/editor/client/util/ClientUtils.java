@@ -28,6 +28,8 @@
 package cz.fi.muni.xkremser.editor.client.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.regexp.shared.RegExp;
@@ -298,6 +300,51 @@ public class ClientUtils {
             newObj.getChildren().add(createTheStructure(dc, mods, tree, child));
         }
         return newObj;
+    }
+
+    public static String toStringTree(NewDigitalObject node) {
+        final StringBuilder buffer = new StringBuilder();
+        return toStringTreeHelper(node, buffer, new LinkedList<Iterator<NewDigitalObject>>()).toString();
+    }
+
+    private static String toStringTreeDrawLines(List<Iterator<NewDigitalObject>> parentIterators,
+                                                boolean amLast) {
+        StringBuilder result = new StringBuilder();
+        Iterator<Iterator<NewDigitalObject>> it = parentIterators.iterator();
+        while (it.hasNext()) {
+            Iterator<NewDigitalObject> anIt = it.next();
+            if (anIt.hasNext() || (!it.hasNext() && amLast)) {
+                result.append("   |");
+            } else {
+                result.append("    ");
+            }
+        }
+        return result.toString();
+    }
+
+    private static StringBuilder toStringTreeHelper(NewDigitalObject node,
+                                                    StringBuilder buffer,
+                                                    List<Iterator<NewDigitalObject>> parentIterators) {
+        if (!parentIterators.isEmpty()) {
+            boolean amLast = !parentIterators.get(parentIterators.size() - 1).hasNext();
+            buffer.append("\n");
+            String lines = toStringTreeDrawLines(parentIterators, amLast);
+            buffer.append(lines);
+            buffer.append("\n");
+            buffer.append(lines);
+            buffer.append("- ");
+        }
+        buffer.append(node.toString());
+        if (node.getChildren() != null && node.getChildren().size() > 0) {
+            Iterator<NewDigitalObject> it = node.getChildren().iterator();
+            parentIterators.add(it);
+            while (it.hasNext()) {
+                NewDigitalObject child = it.next();
+                toStringTreeHelper(child, buffer, parentIterators);
+            }
+            parentIterators.remove(it);
+        }
+        return buffer;
     }
 
     private static final String[] RCODE_1 = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V",

@@ -24,17 +24,52 @@
 
 package cz.fi.muni.xkremser.editor.server.newObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+
+import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
 /**
  * @author Jiri Kremser
  * @version 29.10.2011
  */
-
 public class CreateObjectUtils {
 
-    public static String convertToFOXML(NewDigitalObject node) {
-        return null;
+    private static final Logger LOGGER = Logger.getLogger(CreateObjectUtils.class);
+
+    private static String convertToFOXML(NewDigitalObject node, Document mods, Document dc) {
+        FoxmlBuilder builder = FOXMLBuilderMapping.getBuilder(node.getModel());
+        if (builder == null) {
+            return null;
+        }
+        builder.setDcXmlContent(dc);
+        builder.setModsXmlContent(mods);
+        builder.setLabel(node.getName());
+        builder.createDocument();
+        return builder.getDocument();
     }
 
+    public static List<String> convertAllTheStructureToFOXMLs(NewDigitalObject node) {
+        List<String> retList = new ArrayList<String>();
+        String modsString = FedoraUtils.createNewModsPart(node.getMods());
+        String dcString = FedoraUtils.createNewDublinCorePart(node.getDc());
+        Document mods = null, dc = null;
+        try {
+            mods = Dom4jUtils.loadDocument(modsString, true);
+            dc = Dom4jUtils.loadDocument(dcString, true);
+        } catch (DocumentException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println(convertToFOXML(node, mods, dc));
+        return null;
+    }
 }

@@ -141,10 +141,8 @@ public class LockDigitalObjectWindow
                         LockInfo lockInfo = result.getLockInfo();
                         if (lockInfo.getLockOwner() == null) {
                             SC.say(lang.objectLocked(), lang.objectLocked() + "<br>" + lang.lockNote());
-
                         } else if ("".equals(lockInfo.getLockOwner())) {
                             SC.say(lang.lockUpdated(), lang.lockUpdated());
-
                         } else {
                             EditorSC.objectIsLock(lang, lockInfo);
                         }

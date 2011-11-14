@@ -286,11 +286,9 @@ public class ModsTab
 
     public ModsTab(int maxDeep, ModsCollectionClient modsCollection) {
         this(maxDeep, true);
-        if (modsCollection == null || modsCollection.getMods() == null || modsCollection.getMods().isEmpty()
-                || modsCollection.getMods().get(0) == null) {
-            throw new IllegalArgumentException("modsCollection has not been inicialized yet");
-        }
-        modsTypeClient_ = modsCollection.getMods().get(0);
+        modsTypeClient_ =
+                modsCollection == null || modsCollection.getMods() == null ? null : modsCollection.getMods()
+                        .get(0);
     }
 
     /**
