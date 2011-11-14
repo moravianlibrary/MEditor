@@ -156,13 +156,13 @@ public class ModifyView
 
         void openAnotherObject(final String uuid);
 
-        void lockDigitalObject(final EditorTabSet ts,
-                               final boolean getOnlyInfo,
-                               final boolean calledDuringPublishing);
+        void lockDigitalObject(final EditorTabSet ts);
 
         void unlockDigitalObject(final EditorTabSet ts);
 
         void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts);
+
+        void getLockDigitalObjectInformation(final EditorTabSet ts, final boolean calledDuringPublishing);
     }
 
     /** The Constant ID_DC. */
@@ -348,7 +348,7 @@ public class ModifyView
                 ts.getInfoTab().hideLockInfoButton();
             }
         }
-        updateMenuItems(ts);
+        //        updateMenuItems(ts);
 
     }
 
@@ -528,7 +528,7 @@ public class ModifyView
 
                     @Override
                     protected void getCurrentLockInfo() {
-                        getUiHandlers().lockDigitalObject(topTabSet, true, false);
+                        getUiHandlers().getLockDigitalObjectInformation(topTabSet, false);
                     }
                 };
         topTabSet.setInfoTab((InfoTab) infoTab);
@@ -1159,12 +1159,11 @@ public class ModifyView
         menu.setShadowDepth(10);
 
         MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
-        topTabSet.setLockItem(new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z"));
-        topTabSet
-                .setUnlockItem(new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O"));
+        MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
+        MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+Alt+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png", "Ctrl+Alt+F");
-        topTabSet.setRemoveItem(new MenuItem(lang.removeItem(), "icons/16/close.png"));
+        MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
@@ -1196,8 +1195,8 @@ public class ModifyView
             }
         });
 
-        topTabSet.getLockItem().setAttribute(ID_TABSET, topTabSet);
-        topTabSet.getLockItem().addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        lockItem.setAttribute(ID_TABSET, topTabSet);
+        lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -1205,8 +1204,8 @@ public class ModifyView
             }
         });
 
-        topTabSet.getUnlockItem().setAttribute(ID_TABSET, topTabSet);
-        topTabSet.getUnlockItem().addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        unlockItem.setAttribute(ID_TABSET, topTabSet);
+        unlockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
@@ -1234,12 +1233,12 @@ public class ModifyView
         });
 
         menu.setItems(newItem,
-                      topTabSet.getLockItem(),
-                      topTabSet.getUnlockItem(),
+                      lockItem,
+                      unlockItem,
                       saveItem,
                       refreshItem,
                       downloadItem,
-                      topTabSet.getRemoveItem(),
+                      removeItem,
                       publishItem,
                       persistentUrlItem);
         return menu;
@@ -1351,11 +1350,11 @@ public class ModifyView
     }
 
     private void lockDigitalObject(final EditorTabSet ts) {
-        getUiHandlers().lockDigitalObject(ts, false, false);
+        getUiHandlers().lockDigitalObject(ts);
     }
 
     private void tryToPublish(EditorTabSet ts) {
-        getUiHandlers().lockDigitalObject(ts, true, true);
+        getUiHandlers().getLockDigitalObjectInformation(ts, true);
     }
 
     /**

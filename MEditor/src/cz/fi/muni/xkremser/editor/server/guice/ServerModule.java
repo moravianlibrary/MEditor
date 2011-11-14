@@ -72,6 +72,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDOModelHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetLockInformationHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetLoggedUserHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetUserInfoHandler;
@@ -105,6 +106,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserInfoAction;
@@ -169,6 +171,7 @@ public class ServerModule
         bindHandler(DownloadDigitalObjectDetailAction.class, DownloadDigitalObjectDetailHandler.class);
         bindHandler(StoredFilesAction.class, StoredFilesHandler.class);
         bindHandler(GetDOModelAction.class, GetDOModelHandler.class);
+        bindHandler(GetLockInformationAction.class, GetLockInformationHandler.class);
 
         bindHandler(LogoutAction.class, LogoutHandler.class);
 

@@ -2,7 +2,7 @@
  * Metadata Editor
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -32,22 +32,19 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 
 /**
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * @version $Id$
  */
 @GenDispatch(isSecure = false)
-public class LockDigitalObject
-        extends UnsecuredActionImpl<LockDigitalObjectResult> {
+public class GetLockInformation
+        extends UnsecuredActionImpl<GetLoggedUserResult> {
 
     /** The uuid of the digital object */
     @In(1)
     private String uuid;
 
-    /** The description */
-    @In(2)
-    private String description;
-
     /** The info about the lock */
     @Out(1)
     private LockInfo lockInfo;
+
 }

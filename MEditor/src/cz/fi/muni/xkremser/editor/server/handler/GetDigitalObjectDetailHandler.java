@@ -57,7 +57,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -80,12 +80,8 @@ public class GetDigitalObjectDetailHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    /** The LockDigitalObjectHandler handler */
-    private final LockDigitalObjectHandler lockDigitalObjectHandler;
-
-    //    /** The locks DAO **/
-    //    @Inject
-    //    private LocksDAO locksDAO;
+    /** The GetLockInformationHandler handler */
+    private final GetLockInformationHandler getLockInformationHandler;
 
     /** The user DAO **/
     @Inject
@@ -101,7 +97,7 @@ public class GetDigitalObjectDetailHandler
     public GetDigitalObjectDetailHandler(final DigitalObjectHandler objectHandler) {
         this.objectHandler = objectHandler;
         this.descritptionHandler = new GetDescriptionHandler();
-        this.lockDigitalObjectHandler = new LockDigitalObjectHandler();
+        this.getLockInformationHandler = new GetLockInformationHandler();
     }
 
     /*
@@ -122,7 +118,7 @@ public class GetDigitalObjectDetailHandler
             HttpSession ses = httpSessionProvider.get();
             Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
             injector.injectMembers(descritptionHandler);
-            injector.injectMembers(lockDigitalObjectHandler);
+            injector.injectMembers(getLockInformationHandler);
             ServerUtils.checkExpiredSession(ses);
             DigitalObjectDetail obj = null;
             if (action.getModel() == null) { // lazy
@@ -143,7 +139,7 @@ public class GetDigitalObjectDetailHandler
                 throw new ActionException(e);
             }
             LockInfo lockInfo =
-                    lockDigitalObjectHandler.execute(new LockDigitalObjectAction(uuid, null, true), context)
+                    getLockInformationHandler.execute(new GetLockInformationAction(uuid), context)
                             .getLockInfo();
             obj.setLockInfo(lockInfo);
 

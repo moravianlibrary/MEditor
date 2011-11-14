@@ -42,7 +42,6 @@ import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -50,9 +49,9 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -75,12 +74,8 @@ public class GetRecentlyModifiedHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    /** The LockDigitalObjectHandler handler */
-    private final LockDigitalObjectHandler lockDigitalObjectHandler;
-
-    /** The locks DAO **/
-    @Inject
-    private LocksDAO locksDAO;
+    /** The GetLockInformationHandler handler */
+    private final GetLockInformationHandler getLockInformationHandler;
 
     /** The user DAO **/
     @Inject
@@ -99,7 +94,7 @@ public class GetRecentlyModifiedHandler
                                       final RecentlyModifiedItemDAO recentlyModifiedDAO) {
         this.configuration = configuration;
         this.recentlyModifiedDAO = recentlyModifiedDAO;
-        this.lockDigitalObjectHandler = new LockDigitalObjectHandler();
+        this.getLockInformationHandler = new GetLockInformationHandler();
     }
 
     /*
@@ -117,7 +112,7 @@ public class GetRecentlyModifiedHandler
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
         Injector injector = (Injector) session.getServletContext().getAttribute(Injector.class.getName());
-        injector.injectMembers(lockDigitalObjectHandler);
+        injector.injectMembers(getLockInformationHandler);
 
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 
@@ -134,10 +129,8 @@ public class GetRecentlyModifiedHandler
 
             for (RecentlyModifiedItem item : recItems) {
                 LockInfo lockInfo =
-                        lockDigitalObjectHandler.execute(new LockDigitalObjectAction(item.getUuid(),
-                                                                                     null,
-                                                                                     true),
-                                                         context).getLockInfo();
+                        getLockInformationHandler.execute(new GetLockInformationAction(item.getUuid()),
+                                                          context).getLockInfo();
                 item.setLockInfo(lockInfo);
             }
             return new GetRecentlyModifiedResult(recItems);

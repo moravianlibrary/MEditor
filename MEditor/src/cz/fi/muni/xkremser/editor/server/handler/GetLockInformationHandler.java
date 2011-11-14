@@ -2,7 +2,7 @@
  * Metadata Editor
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -27,13 +27,10 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
@@ -43,61 +40,40 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationResult;
 
 /**
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * @version $Id$
  */
 
-public class LockDigitalObjectHandler
-        implements ActionHandler<LockDigitalObjectAction, LockDigitalObjectResult> {
-
-    /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(LockDigitalObjectHandler.class.getPackage()
-            .toString());
-
-    /** The locks DAO **/
-    @Inject
-    private LocksDAO locksDAO;
-
-    /** The user DAO **/
-    @Inject
-    private UserDAO userDAO;
+public class GetLockInformationHandler
+        implements ActionHandler<GetLockInformationAction, GetLockInformationResult> {
 
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    /** The GetLockInformationHandler handler */
-    private final GetLockInformationHandler getLockInformationHandler;
-
-    /** Instantiate a new lock digital object handler **/
+    /** The user DAO **/
     @Inject
-    public LockDigitalObjectHandler() {
-        this.getLockInformationHandler = new GetLockInformationHandler();
-    }
+    private UserDAO userDAO;
+
+    /** The locks DAO **/
+    @Inject
+    private LocksDAO locksDAO;
 
     /**
      * {@inheritDoc}
      */
 
     @Override
-    public LockDigitalObjectResult execute(LockDigitalObjectAction action, ExecutionContext context)
+    public GetLockInformationResult execute(GetLockInformationAction action, ExecutionContext context)
             throws ActionException {
 
         String uuid = action.getUuid();
-        String description = (action.getDescription() == null ? "" : action.getDescription());
 
         HttpSession ses = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(ses);
-
-        Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
-        injector.injectMembers(getLockInformationHandler);
-
-        LockInfo lockInfo =
-                getLockInformationHandler.execute(new GetLockInformationAction(uuid), context).getLockInfo();
 
         long usersId = 0;
         try {
@@ -106,25 +82,22 @@ public class LockDigitalObjectHandler
             throw new ActionException(e);
         }
 
-        boolean successful = false;
+        long lockOwnerId = 0;
         try {
 
-            if (lockInfo.getLockOwner() == null) {
+            lockOwnerId = locksDAO.getLockOwnersID(uuid);
+            if (lockOwnerId == 0) {
 
-                successful = locksDAO.lockDigitalObject(uuid, usersId, description);
-                LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
-                        + successful);
-                return new LockDigitalObjectResult(lockInfo);
+                return new GetLockInformationResult(new LockInfo(null, null, null));
 
             } else {
-                if ("".equals(lockInfo.getLockOwner())) {
-                    successful = locksDAO.lockDigitalObject(uuid, null, description);
-                    LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
-                            + successful);
-                    return new LockDigitalObjectResult(lockInfo);
+                String[] timeToExpiration = locksDAO.getTimeToExpirationLock(uuid);
+                if (usersId == lockOwnerId) {
+                    return new GetLockInformationResult(new LockInfo("", null, timeToExpiration));
 
                 } else {
-                    return new LockDigitalObjectResult(lockInfo);
+                    return new GetLockInformationResult(new LockInfo(userDAO.getName(String
+                            .valueOf(lockOwnerId), false), locksDAO.getDescription(uuid), timeToExpiration));
                 }
             }
         } catch (DatabaseException e) {
@@ -137,8 +110,8 @@ public class LockDigitalObjectHandler
      */
 
     @Override
-    public Class<LockDigitalObjectAction> getActionType() {
-        return LockDigitalObjectAction.class;
+    public Class<GetLockInformationAction> getActionType() {
+        return GetLockInformationAction.class;
     }
 
     /**
@@ -146,7 +119,7 @@ public class LockDigitalObjectHandler
      */
 
     @Override
-    public void undo(LockDigitalObjectAction arg0, LockDigitalObjectResult arg1, ExecutionContext arg2)
+    public void undo(GetLockInformationAction arg0, GetLockInformationResult arg1, ExecutionContext arg2)
             throws ActionException {
         // TODO Auto-generated method stub
     }

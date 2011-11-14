@@ -132,7 +132,7 @@ public class LockDigitalObjectWindow
         mw.show(true);
 
         final LockDigitalObjectAction lockAction =
-                new LockDigitalObjectAction(ts.getUuid(), ts.getLockInfo().getLockDescription(), false);
+                new LockDigitalObjectAction(ts.getUuid(), ts.getLockInfo().getLockDescription());
         final DispatchCallback<LockDigitalObjectResult> lockCallback =
                 new DispatchCallback<LockDigitalObjectResult>() {
 
