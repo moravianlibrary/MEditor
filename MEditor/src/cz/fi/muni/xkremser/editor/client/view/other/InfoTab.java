@@ -8,23 +8,26 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
-public class InfoTab
+public abstract class InfoTab
         extends Tab {
 
     private final TextItem labelItem;
     private final String originalLabel;
     private final DigitalObjectModel model;
     private final IButton quickEdit = new IButton();
+    private Button lockInfoButton = null;
+    private final LangConstants lang;
+    final Layout lockLayout;
 
     public InfoTab(String title,
                    String icon,
@@ -33,40 +36,19 @@ public class InfoTab
                    String type,
                    String firstPageURL) {
         super(title, icon);
+        this.lang = lang;
         String label = detail.getLabel();
         this.model = detail.getModel();;
         this.originalLabel = label;
+        this.lockLayout = new Layout();
+
         VStack layout = new VStack();
         layout.setPadding(15);
         DublinCore dc = detail.getDc();
-        final String lockOwner = detail.getLockOwner();
-        final String lockDescription = detail.getLockDescription();
+        final String lockOwner = detail.getLockInfo().getLockOwner();
 
-        Button lockInfoButton = null;
         if (lockOwner != null) {
-            lockInfoButton = new Button();
-            lockInfoButton.setTitle(lang.lockInfoButton());
-            lockInfoButton.setWidth(160);
-
-            if ("".equals(lockOwner)) {
-                lockInfoButton.setIcon("icons/16/lock_lock_all.png");
-            } else {
-                lockInfoButton.setIcon("icons/16/lock_lock_all_red.png");
-            }
-
-            lockInfoButton.addClickHandler(new ClickHandler() {
-
-                @Override
-                public void onClick(ClickEvent event) {
-                    if (null != lockOwner) {
-                        StringBuffer objectLockedBuffer = new StringBuffer();
-                        EditorSC.objectIsLock(lang,
-                                              lockOwner,
-                                              lockDescription,
-                                              detail.getTimeToExpirationLock());
-                    }
-                }
-            });
+            showLockInfoButton("".equals(lockOwner));
         }
 
         HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
@@ -102,21 +84,21 @@ public class InfoTab
         form.setWidth(150);
         form.setExtraSpace(5);
         HTMLFlow img =
-                new HTMLFlow("<img style='border: 3px solid;max-height: 300px;max-width: 300px;' src='./images/full/"
-                        + (isPage ? "" : "uuid:") + firstPageURL + "' />");
+                new HTMLFlow("<img style='infoTabImg' src='./images/full/" + (isPage ? "" : "uuid:")
+                        + firstPageURL + "' />");
 
         quickEdit.setTitle(lang.quickEdit());
         quickEdit.setExtraSpace(15);
 
-        layout.setMembers(lockInfoButton != null ? lockInfoButton : new HTMLFlow(),
-                          info,
-                          pid,
-                          tit,
-                          typ,
-                          form,
-                          quickEdit,
-                          prev,
-                          img);
+        if (lockInfoButton != null) {
+            if (lockLayout.hasMember(lockInfoButton)) {
+                lockLayout.removeMember(lockInfoButton);
+            }
+            lockLayout.addMember(lockInfoButton);
+        }
+        lockLayout.setAutoHeight();
+
+        layout.setMembers(lockLayout, info, pid, tit, typ, form, quickEdit, prev, img);
 
         setPane(layout);
     }
@@ -136,4 +118,41 @@ public class InfoTab
     public IButton getQuickEdit() {
         return quickEdit;
     }
+
+    public Button getLockInfoButton() {
+        return lockInfoButton;
+    }
+
+    public void showLockInfoButton(boolean isLockByUser) {
+        if (lockInfoButton != null && lockLayout.hasMember(lockInfoButton)) {
+            lockLayout.removeMember(lockInfoButton);
+        }
+        lockInfoButton = new Button();
+        lockInfoButton.setTitle(lang.lockInfoButton());
+        lockInfoButton.setWidth(160);
+
+        if (isLockByUser) {
+            lockInfoButton.setIcon("icons/16/lock_lock_all.png");
+        } else {
+            lockInfoButton.setIcon("icons/16/lock_lock_all_red.png");
+        }
+
+        lockInfoButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                getCurrentLockInfo();
+            }
+        });
+        lockLayout.addMember(lockInfoButton);
+        lockInfoButton.setRight(180);
+    }
+
+    public void hideLockInfoButton() {
+        if (lockInfoButton != null && lockLayout.hasMember(lockInfoButton)) {
+            lockLayout.removeMember(lockInfoButton);
+        }
+    }
+
+    protected abstract void getCurrentLockInfo();
 }

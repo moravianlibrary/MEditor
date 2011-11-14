@@ -71,6 +71,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
 /**
@@ -232,9 +233,12 @@ public class DigitalObjectMenuView
 
                         @Override
                         public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                            EditorSC.objectIsLock(lang, lockOwner, rollOverRecord
-                                    .getAttributeAsString(Constants.ATTR_LOCK_DESCRIPTION), rollOverRecord
-                                    .getAttributeAsStringArray(Constants.ATTR_TIME_TO_EXP_LOCK));
+                            EditorSC.objectIsLock(lang,
+                                                  new LockInfo(lockOwner,
+                                                               rollOverRecord
+                                                                       .getAttributeAsString(Constants.ATTR_LOCK_DESCRIPTION),
+                                                               rollOverRecord
+                                                                       .getAttributeAsStringArray(Constants.ATTR_TIME_TO_EXP_LOCK)));
                         }
                     });
                     rollOverCanvas.addChild(lockImg);

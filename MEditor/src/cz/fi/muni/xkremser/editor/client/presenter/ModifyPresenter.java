@@ -86,6 +86,7 @@ import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
@@ -93,6 +94,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -137,6 +140,12 @@ public class ModifyPresenter
         DownloadingWindow getDownloadingWindow();
 
         void setConfiguration(EditorClientConfiguration config);
+
+        void updateLockInformation(EditorTabSet ts);
+
+        void publish(EditorTabSet ts);
+
+        void storeWork(EditorTabSet ts);
     }
 
     /**
@@ -461,11 +470,8 @@ public class ModifyPresenter
                     public void callback(GetDigitalObjectDetailResult result) {
                         DigitalObjectDetail detail = result.getDetail();
 
-                        if (null != detail.getLockOwner()) {
-                            EditorSC.objectIsLock(lang,
-                                                  detail.getLockOwner(),
-                                                  detail.getLockDescription(),
-                                                  detail.getTimeToExpirationLock());
+                        if (null != detail.getLockInfo().getLockOwner()) {
+                            EditorSC.objectIsLock(lang, detail.getLockInfo());
                         }
 
                         getView().addDigitalObject(uuid, detail, refresh);
@@ -722,8 +728,88 @@ public class ModifyPresenter
      */
 
     @Override
-    public void lockDigitalObject(final EditorTabSet ts) {
-        LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
+    public void lockDigitalObject(final EditorTabSet ts,
+                                  final boolean getOnlyInfo,
+                                  final boolean calledDuringPublishing) {
+        if (getOnlyInfo) {
+            final ModalWindow mw = new ModalWindow(ts);
+            mw.setLoadingIcon("loadingAnimation.gif");
+            mw.show(true);
+
+            LockDigitalObjectAction lockAction = new LockDigitalObjectAction(ts.getUuid(), null, true);
+            DispatchCallback<LockDigitalObjectResult> lockCallback =
+                    new DispatchCallback<LockDigitalObjectResult>() {
+
+                        @Override
+                        public void callback(LockDigitalObjectResult result) {
+
+                            LockInfo lockInfo = result.getLockInfo();
+                            if (null != lockInfo.getLockOwner()) {
+                                if (calledDuringPublishing) {
+                                    if ("".equals(lockInfo.getLockOwner())) {
+                                        getView().publish(ts);
+                                    } else {
+                                        String message =
+                                                EditorSC.getObjectIsLockMessage(lang,
+                                                                                lockInfo,
+                                                                                lang.storeQuestion());
+                                        SC.ask(message, new BooleanCallback() {
+
+                                            @Override
+                                            public void execute(Boolean value) {
+                                                if (value) {
+                                                    getView().storeWork(ts);
+                                                }
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    EditorSC.objectIsLock(lang, lockInfo);
+                                }
+                            } else {
+                                if (calledDuringPublishing) {
+                                    getView().publish(ts);
+                                } else {
+                                    SC.say(lang.noLocked());
+                                }
+                            }
+                            ts.setLockInfo(lockInfo);
+                            getView().updateLockInformation(ts);
+                            mw.hide();
+                        }
+
+                        @Override
+                        public void callbackError(final Throwable t) {
+                            if (t.getMessage() != null && t.getMessage().length() > 0
+                                    && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+                                SC.confirm("Session has expired. Do you want to be redirected to login page?",
+                                           new BooleanCallback() {
+
+                                               @Override
+                                               public void execute(Boolean value) {
+                                                   if (value != null && value) {
+                                                       MEditor.redirect(t.getMessage().substring(1));
+                                                   }
+                                               }
+                                           });
+                            } else {
+                                SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
+
+                                    @Override
+                                    public void execute(Boolean value) {
+                                        if (value != null && value) {
+                                            lockDigitalObject(ts, true, calledDuringPublishing);
+                                        }
+                                    }
+                                });
+                            }
+                            mw.hide();
+                        }
+                    };
+            dispatcher.execute(lockAction, lockCallback);
+        } else {
+            LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
+        }
     }
 
     /**
@@ -744,6 +830,7 @@ public class ModifyPresenter
                     public void callback(UnlockDigitalObjectResult result) {
                         if (result.isSuccessful()) {
                             SC.say(lang.objectUnlocked(), lang.objectUnlocked());
+                            ts.setLockInfo(new LockInfo());
                         } else {
                             EditorSC.operationFailed(lang);
                         }

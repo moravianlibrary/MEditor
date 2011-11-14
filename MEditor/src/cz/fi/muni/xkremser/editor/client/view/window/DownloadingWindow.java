@@ -273,7 +273,7 @@ public abstract class DownloadingWindow
         sb.append("\" value=\"");
         sb.append(uuid);
         sb.append("\"/>");
-        
+
         sb.append("<input type=\"submit\" value=\"");
         if (stream == null) {
             sb.append(lang.fullFoxml());

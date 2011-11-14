@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -47,9 +48,11 @@ import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -72,6 +75,9 @@ public class GetRecentlyModifiedHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
+    /** The LockDigitalObjectHandler handler */
+    private final LockDigitalObjectHandler lockDigitalObjectHandler;
+
     /** The locks DAO **/
     @Inject
     private LocksDAO locksDAO;
@@ -93,6 +99,7 @@ public class GetRecentlyModifiedHandler
                                       final RecentlyModifiedItemDAO recentlyModifiedDAO) {
         this.configuration = configuration;
         this.recentlyModifiedDAO = recentlyModifiedDAO;
+        this.lockDigitalObjectHandler = new LockDigitalObjectHandler();
     }
 
     /*
@@ -109,6 +116,8 @@ public class GetRecentlyModifiedHandler
 
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
+        Injector injector = (Injector) session.getServletContext().getAttribute(Injector.class.getName());
+        injector.injectMembers(lockDigitalObjectHandler);
 
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 
@@ -124,19 +133,12 @@ public class GetRecentlyModifiedHandler
             long userId = userDAO.getUsersId(openID);
 
             for (RecentlyModifiedItem item : recItems) {
-                long lockOwnersId = locksDAO.getLockOwnersID(item.getUuid());
-
-                if (lockOwnersId == 0) {
-                    item.setLockOwner(null);
-                } else {
-                    item.setLockDescription(locksDAO.getDescription(item.getUuid()));
-                    item.setTimeToExpirationLock(locksDAO.getTimeToExpirationLock(item.getUuid()));
-                    if (lockOwnersId == userId) {
-                        item.setLockOwner("");
-                    } else if (lockOwnersId > 0) {
-                        item.setLockOwner(userDAO.getName(String.valueOf(lockOwnersId), false));
-                    }
-                }
+                LockInfo lockInfo =
+                        lockDigitalObjectHandler.execute(new LockDigitalObjectAction(item.getUuid(),
+                                                                                     null,
+                                                                                     true),
+                                                         context).getLockInfo();
+                item.setLockInfo(lockInfo);
             }
             return new GetRecentlyModifiedResult(recItems);
         } catch (DatabaseException e) {

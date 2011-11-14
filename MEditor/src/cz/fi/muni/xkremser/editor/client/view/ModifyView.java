@@ -156,7 +156,9 @@ public class ModifyView
 
         void openAnotherObject(final String uuid);
 
-        void lockDigitalObject(final EditorTabSet ts);
+        void lockDigitalObject(final EditorTabSet ts,
+                               final boolean getOnlyInfo,
+                               final boolean calledDuringPublishing);
 
         void unlockDigitalObject(final EditorTabSet ts);
 
@@ -247,18 +249,6 @@ public class ModifyView
     /** The universal-window **/
     private UniversalWindow universalWindow = null;
 
-    /** The value of background color of focused tabSet **/
-    private static final String BG_COLOR_FOCUSED = "#ededed";
-
-    /** The value of background color of focused tabSet which is locked **/
-    private static final String BG_COLOR_FOCUSED_LOCK = "#ffe7a3";
-
-    /** The value of background color of focused tabSet which is locked by user **/
-    private static final String BG_COLOR_FOCUSED_LOCK_BY_USER = "#daffce";
-
-    /** The value of background color of "unfocused" tabSet **/
-    private static final String BG_COLOR_UNFOCUSED = "white";
-
     private ModsWindow modsWindow = null;
 
     private DownloadingWindow downloadingWindow = null;
@@ -291,8 +281,8 @@ public class ModifyView
             protected void init() {
                 show();
                 focus();
-
-                if (focusedTabSet.getLockOwner() == null || "".equals(focusedTabSet.getLockOwner())) {
+                String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
+                if (lockOwner == null || "".equals(lockOwner)) {
 
                     getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
@@ -323,35 +313,43 @@ public class ModifyView
     private void changeFocus() {
         if (!isSecondFocused || topTabSet2 == null) {
             if (topTabSet1 != null) {
-                if (topTabSet1.getLockOwner() != null) {
-                    topTabSet1
-                            .setBackgroundColor("".equals(topTabSet1.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK_BY_USER
-                                    : BG_COLOR_FOCUSED_LOCK);
-                } else {
-                    topTabSet1.setBackgroundColor(BG_COLOR_FOCUSED);
-                }
+                updateLockInformation(topTabSet1);
                 getUiHandlers().onChangeFocusedTabSet(topTabSet1.getUuid());
             } else {
                 getUiHandlers().onChangeFocusedTabSet(null);
             }
             if (topTabSet2 != null) {
-                topTabSet2.setBackgroundColor(BG_COLOR_UNFOCUSED);
+                topTabSet2.setBackgroundColor(Constants.BG_COLOR_UNFOCUSED);
             }
         } else if (isSecondFocused && topTabSet2 != null) {
 
             if (topTabSet2 != null) {
-                if (topTabSet2.getLockOwner() != null) {
-                    topTabSet2
-                            .setBackgroundColor("".equals(topTabSet2.getLockOwner().trim()) ? BG_COLOR_FOCUSED_LOCK_BY_USER
-                                    : BG_COLOR_FOCUSED_LOCK);
-                } else {
-                    topTabSet2.setBackgroundColor(BG_COLOR_FOCUSED);
-                }
+                updateLockInformation(topTabSet2);
             }
 
-            topTabSet1.setBackgroundColor(BG_COLOR_UNFOCUSED);
+            topTabSet1.setBackgroundColor(Constants.BG_COLOR_UNFOCUSED);
             getUiHandlers().onChangeFocusedTabSet(topTabSet2.getUuid());
         }
+    }
+
+    @Override
+    public void updateLockInformation(EditorTabSet ts) {
+        if (ts.getLockInfo().getLockOwner() != null) {
+            if ("".equals(ts.getLockInfo().getLockOwner().trim())) {
+                ts.setBackgroundColor(Constants.BG_COLOR_FOCUSED_LOCK_BY_USER);
+                ts.getInfoTab().showLockInfoButton(true);
+            } else {
+                ts.setBackgroundColor(Constants.BG_COLOR_FOCUSED_LOCK);
+                ts.getInfoTab().showLockInfoButton(false);
+            }
+        } else {
+            ts.setBackgroundColor(Constants.BG_COLOR_FOCUSED);
+            if (ts.getInfoTab() != null) {
+                ts.getInfoTab().hideLockInfoButton();
+            }
+        }
+        updateMenuItems(ts);
+
     }
 
     /*
@@ -384,9 +382,7 @@ public class ModifyView
             universalWindow.destroy();
             universalWindow = null;
         }
-        InfoTab infoT = focusedTabSet.getInfoTab();
-        DCTab dcT = focusedTabSet.getDcTab();
-        publish(focusedTabSet, infoT.getModel(), dcT.getDc(), focusedTabSet.getModsCollection());
+        tryToPublish(focusedTabSet);
     }
 
     /**
@@ -486,9 +482,7 @@ public class ModifyView
             }
         }
         makeTuple(uuid, topTabSet);
-
-        topTabSet.setLockOwner(detail.getLockOwner());
-        topTabSet.setLockDescription(detail.getLockDescription());
+        topTabSet.setLockInfo(detail.getLockInfo());
 
         List<DigitalObjectModel> models = NamedGraphModel.getChildren(model);
         List<Tab> containerTabs = new ArrayList<Tab>();
@@ -530,7 +524,13 @@ public class ModifyView
         topTabSet.setDc(dc);
         final Tab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", lang, detail, labelsSingular.get(model
-                        .getValue()), previewPID);
+                        .getValue()), previewPID) {
+
+                    @Override
+                    protected void getCurrentLockInfo() {
+                        getUiHandlers().lockDigitalObject(topTabSet, true, false);
+                    }
+                };
         topTabSet.setInfoTab((InfoTab) infoTab);
         ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
 
@@ -1159,26 +1159,15 @@ public class ModifyView
         menu.setShadowDepth(10);
 
         MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
-        MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
-        MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
+        topTabSet.setLockItem(new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z"));
+        topTabSet
+                .setUnlockItem(new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O"));
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+Alt+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png", "Ctrl+Alt+F");
-        MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
+        topTabSet.setRemoveItem(new MenuItem(lang.removeItem(), "icons/16/close.png"));
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
-
-        unlockItem.setEnabled(false);
-        if (topTabSet.getLockOwner() != null) {
-            if ("".equals(topTabSet.getLockOwner())) {
-                lockItem.setTitle(lang.updateLock());
-                unlockItem.setEnabled(true);
-            } else {
-                lockItem.setEnabled(false);
-                publishItem.setEnabled(false);
-                removeItem.setEnabled(false);
-            }
-        }
 
         persistentUrlItem.setAttribute(ID_UUID, topTabSet.getUuid());
         persistentUrlItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -1194,7 +1183,7 @@ public class ModifyView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                saveWork((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
+                storeWork((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
@@ -1207,8 +1196,8 @@ public class ModifyView
             }
         });
 
-        lockItem.setAttribute(ID_TABSET, topTabSet);
-        lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        topTabSet.getLockItem().setAttribute(ID_TABSET, topTabSet);
+        topTabSet.getLockItem().addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -1216,8 +1205,8 @@ public class ModifyView
             }
         });
 
-        unlockItem.setAttribute(ID_TABSET, topTabSet);
-        unlockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        topTabSet.getUnlockItem().setAttribute(ID_TABSET, topTabSet);
+        topTabSet.getUnlockItem().addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
@@ -1240,20 +1229,38 @@ public class ModifyView
 
             @Override
             public void onClick(final MenuItemClickEvent event) {
-                publish((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET), model, dc, mods);
+                tryToPublish((EditorTabSet) event.getItem().getAttributeAsObject(ID_TABSET));
             }
         });
 
         menu.setItems(newItem,
-                      lockItem,
-                      unlockItem,
+                      topTabSet.getLockItem(),
+                      topTabSet.getUnlockItem(),
                       saveItem,
                       refreshItem,
                       downloadItem,
-                      removeItem,
+                      topTabSet.getRemoveItem(),
                       publishItem,
                       persistentUrlItem);
         return menu;
+    }
+
+    /**
+     * @param topTabSet
+     */
+
+    private void updateMenuItems(EditorTabSet topTabSet) {
+        topTabSet.getUnlockItem().setEnabled(false);
+        String lockOwner = topTabSet.getLockInfo().getLockOwner();
+        if (lockOwner != null) {
+            if ("".equals(lockOwner)) {
+                topTabSet.getLockItem().setTitle(lang.updateLock());
+                topTabSet.getUnlockItem().setEnabled(true);
+            } else {
+                topTabSet.getLockItem().setEnabled(false);
+                topTabSet.getRemoveItem().setEnabled(false);
+            }
+        }
     }
 
     private void showPersistentUrl(String uuid) {
@@ -1300,11 +1307,9 @@ public class ModifyView
         universalWindow.focus();
     }
 
-    private void saveWork(EditorTabSet ts) {
-        InfoTab infoT = ts.getInfoTab();
-        DCTab dcT = ts.getDcTab();
-        DigitalObjectDetail detail =
-                createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
+    @Override
+    public void storeWork(EditorTabSet ts) {
+        DigitalObjectDetail detail = createDigitalObjectDetail(ts);
 
         getUiHandlers().storeFoxmlFile(detail, ts);
     }
@@ -1323,10 +1328,7 @@ public class ModifyView
                 focus();
             }
         };
-        InfoTab infoT = ts.getInfoTab();
-        DCTab dcT = ts.getDcTab();
-        DigitalObjectDetail detail =
-                createDigitalObjectDetail(ts, infoT.getModel(), dcT.getDc(), ts.getModsCollection());
+        DigitalObjectDetail detail = createDigitalObjectDetail(ts);
         getUiHandlers().onHandleWorkingCopyDigObj(detail);
 
     }
@@ -1349,22 +1351,22 @@ public class ModifyView
     }
 
     private void lockDigitalObject(final EditorTabSet ts) {
-        getUiHandlers().lockDigitalObject(ts);
+        getUiHandlers().lockDigitalObject(ts, false, false);
+    }
+
+    private void tryToPublish(EditorTabSet ts) {
+        getUiHandlers().lockDigitalObject(ts, true, true);
     }
 
     /**
      * Method for publish focused tabSet
      * 
-     * @param topTabSet
-     * @param model
-     * @param dc
-     * @param mods
      * @param ts
+     *        the focused EditorTabSet
      */
-    private void publish(final EditorTabSet ts,
-                         final DigitalObjectModel model,
-                         final DublinCore dc,
-                         final ModsCollectionClient mods) {
+    @Override
+    public void publish(final EditorTabSet ts) {
+
         universalWindow = new UniversalWindow(160, 350, lang.publishName());
 
         HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
@@ -1384,13 +1386,10 @@ public class ModifyView
             @Override
             public void onClick(ClickEvent event2) {
 
-                getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts, model, dc, mods),
+                getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts),
                                                     versionable.getValueAsBoolean());
                 universalWindow.destroy();
                 universalWindow = null;
-                if (ts.getLockOwner() != null && "".equals(ts.getLockOwner())) {
-                    unlockDigitalObject(ts, lang.publishUnlock());
-                }
             }
         });
         Button cancel = new Button();
@@ -1418,10 +1417,9 @@ public class ModifyView
         publish.focus();
     }
 
-    private DigitalObjectDetail createDigitalObjectDetail(final EditorTabSet ts,
-                                                          final DigitalObjectModel model,
-                                                          final DublinCore dc,
-                                                          final ModsCollectionClient mods) {
+    private DigitalObjectDetail createDigitalObjectDetail(final EditorTabSet ts) {
+        final DigitalObjectModel model = ts.getInfoTab().getModel();
+
         DublinCore changedDC = null;
         ModsCollectionClient changedMods = null;
         DigitalObjectDetail object = new DigitalObjectDetail(model, null);
@@ -1451,7 +1449,7 @@ public class ModifyView
                 changedDC = dcT_.getDc();
                 object.setDcChanged(true);
             } else {
-                changedDC = dc;
+                changedDC = ts.getDcTab().getDc();
                 object.setDcChanged(false);
             }
 
@@ -1461,7 +1459,7 @@ public class ModifyView
                 changedMods.setMods(Arrays.asList(modsT_.getMods()));
                 object.setModsChanged(true);
             } else {
-                changedMods = mods;
+                changedMods = ts.getModsCollection();
                 object.setModsChanged(false);
             }
 
@@ -1616,17 +1614,19 @@ public class ModifyView
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_B.getCode()) {
                     showBasicModsWindow(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_O.getCode()) {
-                    if (focusedTabSet.getLockOwner() != null && "".equals(focusedTabSet.getLockOwner())) {
+                    String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
+                    if (lockOwner != null && "".equals(lockOwner)) {
                         unlockDigitalObject(focusedTabSet, lang.reallyUnlock());
                     }
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_Z.getCode()) {
-                    if (focusedTabSet.getLockOwner() == null || "".equals(focusedTabSet.getLockOwner())) {
+                    String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
+                    if (lockOwner == null || "".equals(lockOwner)) {
                         lockDigitalObject(focusedTabSet);
                     }
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_F.getCode()) {
                     showDownloadingWindow(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
-                    saveWork(focusedTabSet);
+                    storeWork(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_W.getCode()) {
                     showPersistentUrl(focusedTabSet.getUuid());
                 }

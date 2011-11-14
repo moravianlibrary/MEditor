@@ -29,6 +29,8 @@ import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
+
 /**
  * @author Jiri Kremser
  * @version $Id$
@@ -46,20 +48,14 @@ public class LockDigitalObject
     private String description;
 
     /**
-     * The name of the lock-owner
-     * <code>lockOwner<code> is not empty when the digital object has already been locked by somebody else
-     * <code>lockOwner == null<code> if the lock has been created
-     * <code>"".equals(lockOwner)<code> if the lock has been updated
+     * If <code>getOnlyInfo == true</code> then give me only the information
+     * about the lock, if <code>getOnlyInfo == false</code> then try to lock the
+     * object.
      */
+    @In(3)
+    private boolean getOnlyInfo;
+
+    /** The info about the lock */
     @Out(1)
-    private String lockOwner;
-
-    /** The description of the lock */
-    @Out(2)
-    private String lockDescription;
-
-    /** The parsed time to expiration of the lock String[days,hours,minutes] */
-    @Out(3)
-    private String[] timeToExpiration;
-
+    private LockInfo lockInfo;
 }

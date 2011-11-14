@@ -28,6 +28,8 @@ import com.smartgwt.client.util.SC;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
+
 /**
  * @author Matous Jobanek
  * @version $Id$
@@ -35,13 +37,18 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 
 public final class EditorSC {
 
-    public static final void objectIsLock(LangConstants lang,
-                                          String lockOwner,
-                                          String lockDescription,
-                                          String[] timeToExpirationLock) {
-        StringBuffer objectLockedBuffer = new StringBuffer();
+    public static final void objectIsLock(LangConstants lang, LockInfo lockInfo) {
 
-        if ("".equals(lockOwner)) {
+        SC.say(lang.objectIsLocked(), getObjectIsLockMessage(lang, lockInfo, null));
+    }
+
+    public static final String getObjectIsLockMessage(LangConstants lang,
+                                                      LockInfo lockInfo,
+                                                      String otherMessage) {
+        StringBuffer objectLockedBuffer = new StringBuffer();
+        String lockDescription = lockInfo.getLockDescription();
+
+        if ("".equals(lockInfo.getLockOwner())) {
             objectLockedBuffer.append(lang.lockedByUser());
             objectLockedBuffer.append(": ").append("<br>").append("<br>");
             objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription() : lockDescription);
@@ -49,7 +56,7 @@ public final class EditorSC {
         } else {
             objectLockedBuffer.append(lang.objectLockedBy());
             objectLockedBuffer.append(": ").append("<br>").append("<br>");
-            objectLockedBuffer.append(lockOwner);
+            objectLockedBuffer.append(lockInfo.getLockOwner());
             objectLockedBuffer.append("<br>").append("<br>");
             objectLockedBuffer.append(lang.withDescription());
             objectLockedBuffer.append(": ").append("<br>").append("<br>");
@@ -57,10 +64,15 @@ public final class EditorSC {
                     : lockDescription);
         }
         objectLockedBuffer.append("<br>").append("<br>");
-        objectLockedBuffer
-                .append(lang.lockExpires() + ": " + createTimeToExpLock(lang, timeToExpirationLock))
-                .append("<br>");
-        SC.say(lang.objectIsLocked(), objectLockedBuffer.toString());
+        objectLockedBuffer.append(lang.lockExpires() + ": "
+                + createTimeToExpLock(lang, lockInfo.getTimeToExpiration())).append("<br>");
+
+        if (otherMessage != null) {
+            objectLockedBuffer.append("<br>").append("<br>");
+            objectLockedBuffer.append(otherMessage);
+        }
+
+        return objectLockedBuffer.toString();
     }
 
     private static String createTimeToExpLock(LangConstants lang, String[] parsedTimeString) {

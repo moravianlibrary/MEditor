@@ -47,16 +47,17 @@ import cz.fi.muni.xkremser.editor.client.ConnectionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -79,9 +80,12 @@ public class GetDigitalObjectDetailHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    /** The locks DAO **/
-    @Inject
-    private LocksDAO locksDAO;
+    /** The LockDigitalObjectHandler handler */
+    private final LockDigitalObjectHandler lockDigitalObjectHandler;
+
+    //    /** The locks DAO **/
+    //    @Inject
+    //    private LocksDAO locksDAO;
 
     /** The user DAO **/
     @Inject
@@ -97,6 +101,7 @@ public class GetDigitalObjectDetailHandler
     public GetDigitalObjectDetailHandler(final DigitalObjectHandler objectHandler) {
         this.objectHandler = objectHandler;
         this.descritptionHandler = new GetDescriptionHandler();
+        this.lockDigitalObjectHandler = new LockDigitalObjectHandler();
     }
 
     /*
@@ -117,6 +122,7 @@ public class GetDigitalObjectDetailHandler
             HttpSession ses = httpSessionProvider.get();
             Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
             injector.injectMembers(descritptionHandler);
+            injector.injectMembers(lockDigitalObjectHandler);
             ServerUtils.checkExpiredSession(ses);
             DigitalObjectDetail obj = null;
             if (action.getModel() == null) { // lazy
@@ -136,25 +142,10 @@ public class GetDigitalObjectDetailHandler
             } catch (DatabaseException e) {
                 throw new ActionException(e);
             }
-
-            long lockOwnerId = 0;
-            lockOwnerId = locksDAO.getLockOwnersID(uuid);
-            String lockDescription = "";
-
-            if (lockOwnerId > 0) {
-                lockDescription = locksDAO.getDescription(uuid);
-                obj.setTimeToExpirationLock(locksDAO.getTimeToExpirationLock(uuid));
-                if (usersId == lockOwnerId) {
-                    lockDescription = locksDAO.getDescription(uuid);
-                    obj.setLockOwner("");
-                    obj.setLockDescription(lockDescription);
-
-                } else {
-                    obj.setLockOwner(userDAO.getName(String.valueOf(lockOwnerId), false));
-                    obj.setLockDescription(lockDescription);
-
-                }
-            }
+            LockInfo lockInfo =
+                    lockDigitalObjectHandler.execute(new LockDigitalObjectAction(uuid, null, true), context)
+                            .getLockInfo();
+            obj.setLockInfo(lockInfo);
 
             return new GetDigitalObjectDetailResult(obj,
                                                     description == null ? "" : description,
@@ -170,8 +161,6 @@ public class GetDigitalObjectDetailHandler
             }
             LOGGER.error(msg, e);
             throw new ActionException(msg, e);
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
         }
     }
 

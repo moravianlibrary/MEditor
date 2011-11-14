@@ -438,4 +438,16 @@ public class Constants {
             put("BC", "BackCover");
         }
     };
+
+    /** The value of background color of focused tabSet **/
+    public static final String BG_COLOR_FOCUSED = "#ededed";
+
+    /** The value of background color of focused tabSet which is locked **/
+    public static final String BG_COLOR_FOCUSED_LOCK = "#ffe7a3";
+
+    /** The value of background color of focused tabSet which is locked by user **/
+    public static final String BG_COLOR_FOCUSED_LOCK_BY_USER = "#daffce";
+
+    /** The value of background color of "unfocused" tabSet **/
+    public static final String BG_COLOR_UNFOCUSED = "white";
 }

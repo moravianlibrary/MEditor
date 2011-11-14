@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1870,11 +1870,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lockExpires();
 
   /**
-   * Translated "Information about the lock".
+   * Translated "Current info about the lock".
    * 
-   * @return translated "Information about the lock"
+   * @return translated "Current info about the lock"
    */
-  @DefaultStringValue("Information about the lock")
+  @DefaultStringValue("Current info about the lock")
   @Key("lockInfoButton")
   String lockInfoButton();
 
@@ -2264,6 +2264,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("No description")
   @Key("noDescription")
   String noDescription();
+
+  /**
+   * Translated "The digital object is no longer locked.".
+   * 
+   * @return translated "The digital object is no longer locked."
+   */
+  @DefaultStringValue("The digital object is no longer locked.")
+  @Key("noLocked")
+  String noLocked();
 
   /**
    * Translated "missing".
@@ -3155,6 +3164,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Includes first order political divisions called states within a country, e.g. in U.S., Argentina, Italy. Use also for France département.")
   @Key("state")
   String state();
+
+  /**
+   * Translated "Do you want to save the working copy of this digital object on the server?".
+   * 
+   * @return translated "Do you want to save the working copy of this digital object on the server?"
+   */
+  @DefaultStringValue("Do you want to save the working copy of this digital object on the server?")
+  @Key("storeQuestion")
+  String storeQuestion();
 
   /**
    * Translated "Stored".

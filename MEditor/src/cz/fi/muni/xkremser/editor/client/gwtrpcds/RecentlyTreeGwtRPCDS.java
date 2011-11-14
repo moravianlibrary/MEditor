@@ -50,6 +50,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedResult;
@@ -283,9 +284,11 @@ public class RecentlyTreeGwtRPCDS
         to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
         to.setModel((DigitalObjectModel) from.getAttributeAsObject(Constants.ATTR_MODEL));
         to.setModified(from.getAttributeAsDate(Constants.ATTR_MODIFIED));
-        to.setLockDescription(from.getAttribute(Constants.ATTR_LOCK_DESCRIPTION));
-        to.setLockOwner(from.getAttribute(Constants.ATTR_LOCK_OWNER));
-        to.setTimeToExpirationLock(from.getAttributeAsStringArray(Constants.ATTR_TIME_TO_EXP_LOCK));
+        LockInfo lockInfo = new LockInfo();
+        lockInfo.setLockDescription(from.getAttribute(Constants.ATTR_LOCK_DESCRIPTION));
+        lockInfo.setLockOwner(from.getAttribute(Constants.ATTR_LOCK_OWNER));
+        lockInfo.setTimeToExpiration(from.getAttributeAsStringArray(Constants.ATTR_TIME_TO_EXP_LOCK));
+        to.setLockInfo(lockInfo);
     }
 
     /**
@@ -302,9 +305,9 @@ public class RecentlyTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
         to.setAttribute(Constants.ATTR_MODEL, from.getModel());
         to.setAttribute(Constants.ATTR_MODIFIED, from.getModified());
-        to.setAttribute(Constants.ATTR_LOCK_OWNER, from.getLockOwner());
-        to.setAttribute(Constants.ATTR_LOCK_DESCRIPTION, from.getLockDescription());
-        to.setAttribute(Constants.ATTR_TIME_TO_EXP_LOCK, from.getTimeToExpirationLock());
+        to.setAttribute(Constants.ATTR_LOCK_OWNER, from.getLockInfo().getLockOwner());
+        to.setAttribute(Constants.ATTR_LOCK_DESCRIPTION, from.getLockInfo().getLockDescription());
+        to.setAttribute(Constants.ATTR_TIME_TO_EXP_LOCK, from.getLockInfo().getTimeToExpiration());
     }
 
     /**

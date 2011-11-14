@@ -40,6 +40,7 @@ import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectResult;
 
@@ -83,7 +84,6 @@ public class LockDigitalObjectHandler
 
         String uuid = action.getUuid();
         String description = (action.getDescription() == null ? "" : action.getDescription());
-        LOGGER.debug("Processing action: LockDigitalObject: " + action.getUuid());
 
         HttpSession ses = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(ses);
@@ -100,24 +100,33 @@ public class LockDigitalObjectHandler
 
             lockOwnerId = locksDAO.getLockOwnersID(uuid);
             if (lockOwnerId == 0) {
-                locksDAO.lockDigitalObject(uuid, usersId, description);
-                return new LockDigitalObjectResult(null, null, null);
+
+                if (!action.isGetOnlyInfo()) {
+                    lock(uuid, usersId, description);
+                }
+                return new LockDigitalObjectResult(new LockInfo(null, null, null));
 
             } else {
                 String[] timeToExpiration = locksDAO.getTimeToExpirationLock(uuid);
                 if (usersId == lockOwnerId) {
-                    locksDAO.lockDigitalObject(uuid, null, description);
-                    return new LockDigitalObjectResult("", null, timeToExpiration);
+                    if (!action.isGetOnlyInfo()) {
+                        lock(uuid, null, description);
+                    }
+                    return new LockDigitalObjectResult(new LockInfo("", null, timeToExpiration));
 
                 } else {
-                    return new LockDigitalObjectResult(userDAO.getName(String.valueOf(lockOwnerId), false),
-                                                       locksDAO.getDescription(uuid),
-                                                       timeToExpiration);
+                    return new LockDigitalObjectResult(new LockInfo(userDAO.getName(String
+                            .valueOf(lockOwnerId), false), locksDAO.getDescription(uuid), timeToExpiration));
                 }
             }
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
+    }
+
+    private void lock(String uuid, Long id, String description) throws DatabaseException {
+        boolean successful = locksDAO.lockDigitalObject(uuid, null, description);
+        LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful=" + successful);
     }
 
     /**

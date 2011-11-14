@@ -89,18 +89,7 @@ public class DigitalObjectDetail
 
     private DigitalObjectModel model;
 
-    /**
-     * The digital object is locked by the <code>lockOwner<code>, 
-     * <code>lockOwner = ""<code> if the lockOwner is user
-     * <code>lockOwner = null<code> if there is no lockOwner
-     */
-    private String lockOwner;
-
-    /** The returned description of the lockOwner */
-    private String lockDescription;
-
-    /** The parsed time to expiration of the lock String[days,hours,minutes] */
-    private String[] timeToExpirationLock;
+    private LockInfo lockInfo;
 
     public boolean thereWasAnyOcr() {
         return thereWasAnyOcr;
@@ -108,22 +97,6 @@ public class DigitalObjectDetail
 
     public void setThereWasAnyOcr(boolean thereWasAnyOcr) {
         this.thereWasAnyOcr = thereWasAnyOcr;
-    }
-
-    public String getLockOwner() {
-        return lockOwner;
-    }
-
-    public void setLockOwner(String lockOwner) {
-        this.lockOwner = lockOwner;
-    }
-
-    public String getLockDescription() {
-        return lockDescription;
-    }
-
-    public void setLockDescription(String lockDescription) {
-        this.lockDescription = lockDescription;
     }
 
     public DigitalObjectDetail() {
@@ -413,21 +386,20 @@ public class DigitalObjectDetail
     }
 
     /**
-     * Gets the parsed time to expiration of the lock String[days,hours,minutes]
-     * 
-     * @return the timeToExpirationLock
+     * @return the lockInfo
      */
-    public String[] getTimeToExpirationLock() {
-        return timeToExpirationLock;
+
+    public LockInfo getLockInfo() {
+        return lockInfo;
     }
 
     /**
-     * Sets the parsed time to expiration of the lock String[days,hours,minutes]
-     * 
-     * @param timeToExpirationLock
-     *        the timeToExpirationLock to set
+     * @param lockInfo
+     *        the lockInfo to set
      */
-    public void setTimeToExpirationLock(String[] timeToExpirationLock) {
-        this.timeToExpirationLock = timeToExpirationLock;
+
+    public void setLockInfo(LockInfo lockInfo) {
+        this.lockInfo = lockInfo;
     }
+
 }

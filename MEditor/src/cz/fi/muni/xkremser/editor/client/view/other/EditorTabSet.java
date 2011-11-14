@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
@@ -13,6 +14,7 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 
 public class EditorTabSet
         extends TabSet {
@@ -39,9 +41,28 @@ public class EditorTabSet
 
     private TileGrid tileGrid;
 
-    private String lockOwner;
+    private LockInfo lockInfo;
 
-    private String lockDescription;
+    private MenuItem lockItem;
+    private MenuItem unlockItem;
+    private MenuItem removeItem;
+
+    /**
+     * @return the lockInfo
+     */
+
+    public LockInfo getLockInfo() {
+        return lockInfo;
+    }
+
+    /**
+     * @param lockInfo
+     *        the lockInfo to set
+     */
+
+    public void setLockInfo(LockInfo lockInfo) {
+        this.lockInfo = lockInfo;
+    }
 
     public String getOriginalOcrContent() {
         return originalOcrContent;
@@ -49,22 +70,6 @@ public class EditorTabSet
 
     public void setOriginalOcrContent(String originalOcrContent) {
         this.originalOcrContent = originalOcrContent;
-    }
-
-    public String getLockOwner() {
-        return lockOwner;
-    }
-
-    public void setLockOwner(String lockOwner) {
-        this.lockOwner = lockOwner;
-    }
-
-    public String getLockDescription() {
-        return lockDescription;
-    }
-
-    public void setLockDescription(String lockDescription) {
-        this.lockDescription = lockDescription;
     }
 
     public TileGrid getTileGrid() {
@@ -145,6 +150,63 @@ public class EditorTabSet
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    /**
+     * @param lockItem
+     *        the lockItem to set
+     */
+
+    public void setLockItem(MenuItem lockItem) {
+        this.lockItem = lockItem;
+
+    }
+
+    /**
+     * @return the lockItem
+     */
+
+    public MenuItem getLockItem() {
+        return lockItem;
+
+    }
+
+    /**
+     * @param unlockItem
+     *        the unlockItem to set
+     */
+
+    public void setUnlockItem(MenuItem unlockItem) {
+        this.unlockItem = unlockItem;
+
+    }
+
+    /**
+     * @return the unlockItem
+     */
+
+    public MenuItem getUnlockItem() {
+        return unlockItem;
+
+    }
+
+    /**
+     * @param removeItem
+     *        the removeItem to set
+     */
+
+    public void setRemoveItem(MenuItem removeItem) {
+        this.removeItem = removeItem;
+
+    }
+
+    /**
+     * @return the removeItem
+     */
+
+    public MenuItem getRemoveItem() {
+        return removeItem;
+
     }
 
 }
