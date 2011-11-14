@@ -300,51 +300,28 @@ public class ClientUtils {
         return newObj;
     }
 
-    public static String numbersParse(int number) {
-        if (number < 10) {
-            return smallNumbersParse(number);
-        } else if (number < 50) {
-            if (number == 49) {
-                return "IL";
-            } else {
-                return getXPart(number);
+    private static final String[] RCODE_1 = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V",
+            "IV", "I"};
+
+    private static final String[] RCODE_2 = {"M", "DCCCC", "D", "CCCC", "C", "LXXXX", "L", "XXXX", "X",
+            "VIIII", "V", "IIII", "I"};
+    private static final int[] BVAL = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+
+    public static String decimalToRoman(int binary, boolean oldFashion) {
+        if (binary <= 0 || binary >= 4000) {
+            throw new NumberFormatException("Value outside roman numeral range.");
+        }
+        String roman = "";
+
+        // Loop from biggest value to smallest, successively subtracting,
+        // from the binary value while adding to the roman representation.
+        for (int i = 0; i < RCODE_1.length; i++) {
+            while (binary >= BVAL[i]) {
+                binary -= BVAL[i];
+                roman += oldFashion ? RCODE_2[i] : RCODE_1[i];
             }
-        } else {
-            return "L" + numbersParse(number - 50);
         }
-    }
-
-    private static String getXPart(int number) {
-        StringBuffer sb = new StringBuffer();
-        int countOfTen = number / 10;
-        for (int i = 0; i < countOfTen; i++) {
-            sb.append("X");
-        }
-        sb.append(smallNumbersParse(number % 10));
-        return sb.toString();
-
-    }
-
-    private static String smallNumbersParse(int number) {
-        if (number < 4) {
-            return getIPart(number);
-
-        } else if (number == 4) {
-            return "IV";
-        } else if (number < 9) {
-            return ("V" + getIPart(number - 5));
-        } else if (number == 9) {
-            return "IX";
-        }
-        return "";
-    }
-
-    private static String getIPart(int count) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < count; i++) {
-            sb.append("I");
-        }
-        return sb.toString();
+        return roman;
     }
 
     /**
@@ -364,16 +341,5 @@ public class ClientUtils {
         }
         msg.append(split.get(split.length() - 1));
         return msg.toString();
-    }
-
-    public static void main(String... args) {
-        SubstructureTreeNode root =
-                new SubstructureTreeNode("0",
-                                         SubstructureTreeNode.ROOT_ID,
-                                         "root",
-                                         "digital_obj",
-                                         "digital_obj_code",
-                                         true,
-                                         false);
     }
 }

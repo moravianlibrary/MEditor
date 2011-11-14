@@ -624,7 +624,7 @@ public class CreateStructurePresenter
      */
     @Override
     public ModsCollectionClient getMods() {
-        return mods;
+        return mods == null ? new ModsCollectionClient() : mods;
     }
 
     /**
@@ -632,6 +632,6 @@ public class CreateStructurePresenter
      */
     @Override
     public DublinCore getDc() {
-        return dc;
+        return dc == null ? new DublinCore() : dc;
     }
 }

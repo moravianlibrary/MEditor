@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -439,13 +439,22 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String continuingMARC();
 
   /**
-   * Translated "Convert selected to Roman".
+   * Translated "To Roman (4 = IV)".
    * 
-   * @return translated "Convert selected to Roman"
+   * @return translated "To Roman (4 = IV)"
    */
-  @DefaultStringValue("Convert selected to Roman")
-  @Key("convert")
-  String convert();
+  @DefaultStringValue("To Roman (4 = IV)")
+  @Key("convertToRoman")
+  String convertToRoman();
+
+  /**
+   * Translated "To Roman (4 = IIII)".
+   * 
+   * @return translated "To Roman (4 = IIII)"
+   */
+  @DefaultStringValue("To Roman (4 = IIII)")
+  @Key("convertToRomanOld")
+  String convertToRomanOld();
 
   /**
    * Translated "One or more statements may be supplied. If one is supplied, it is a point (i.e., a single location); if two, it is a line; if more than two, it is a n-sided polygon where n=number of coordinates assigned. No three points should be co-linear, and coordinates should be supplied in polygon-traversal order.".

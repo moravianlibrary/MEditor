@@ -612,7 +612,8 @@ public class CreateStructureView
 
         MenuItem renumberAll = new MenuItem(lang.renumberAll(), "icons/16/renumberAll.png");
         MenuItem renumber = new MenuItem(lang.renumber(), "icons/16/renumber.png");
-        MenuItem toRoman = new MenuItem(lang.convert(), "icons/16/roman.png");
+        MenuItem toRoman = new MenuItem(lang.convertToRoman(), "icons/16/roman.png");
+        MenuItem toRomanOld = new MenuItem(lang.convertToRomanOld(), "icons/16/roman.png");
         MenuItem surround = new MenuItem("1, 2, ... -> [1], [2], ...", "icons/16/surround.png");
         MenuItem abc = new MenuItem("1, 2, ... -> 1a, 2b, ...", "icons/16/abc.png");
         MenuItem toLeft = new MenuItem(lang.leftShift(), "icons/16/arrow_left.png");
@@ -660,7 +661,22 @@ public class CreateStructureView
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
                     for (Record rec : data) {
-                        rec.setAttribute(Constants.ATTR_NAME, ClientUtils.numbersParse(i++));
+                        rec.setAttribute(Constants.ATTR_NAME, ClientUtils.decimalToRoman(i++, false));
+                    }
+                }
+            }
+        });
+
+        toRomanOld.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                Record[] data = tileGrid.getSelection();
+                if (data != null && data.length > 0) {
+                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+                    int i = getPageNumberFromText(startingNumber);
+                    for (Record rec : data) {
+                        rec.setAttribute(Constants.ATTR_NAME, ClientUtils.decimalToRoman(i++, true));
                     }
                 }
             }
@@ -717,7 +733,17 @@ public class CreateStructureView
 
         MenuItemSeparator separator = new MenuItemSeparator();
 
-        menu.setItems(renumberAll, renumber, separator, toRoman, surround, abc, separator, toLeft, toRight);
+        menu.setItems(renumberAll,
+                      renumber,
+                      separator,
+                      toRoman,
+                      toRomanOld,
+                      separator,
+                      surround,
+                      abc,
+                      separator,
+                      toLeft,
+                      toRight);
 
         ToolStripMenuButton menuButton = new ToolStripMenuButton(lang.pageNumbers(), menu);
         menuButton.setWidth(100);
