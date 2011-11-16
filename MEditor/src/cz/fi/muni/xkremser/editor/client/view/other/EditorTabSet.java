@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
@@ -42,10 +41,6 @@ public class EditorTabSet
     private TileGrid tileGrid;
 
     private LockInfo lockInfo;
-
-    private MenuItem lockItem;
-    private MenuItem unlockItem;
-    private MenuItem removeItem;
 
     /**
      * @return the lockInfo
@@ -151,62 +146,4 @@ public class EditorTabSet
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-
-    /**
-     * @param lockItem
-     *        the lockItem to set
-     */
-
-    public void setLockItem(MenuItem lockItem) {
-        this.lockItem = lockItem;
-
-    }
-
-    /**
-     * @return the lockItem
-     */
-
-    public MenuItem getLockItem() {
-        return lockItem;
-
-    }
-
-    /**
-     * @param unlockItem
-     *        the unlockItem to set
-     */
-
-    public void setUnlockItem(MenuItem unlockItem) {
-        this.unlockItem = unlockItem;
-
-    }
-
-    /**
-     * @return the unlockItem
-     */
-
-    public MenuItem getUnlockItem() {
-        return unlockItem;
-
-    }
-
-    /**
-     * @param removeItem
-     *        the removeItem to set
-     */
-
-    public void setRemoveItem(MenuItem removeItem) {
-        this.removeItem = removeItem;
-
-    }
-
-    /**
-     * @return the removeItem
-     */
-
-    public MenuItem getRemoveItem() {
-        return removeItem;
-
-    }
-
 }

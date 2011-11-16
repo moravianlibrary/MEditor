@@ -216,6 +216,35 @@ public class ModifyView
     /** The Constant ID_UUID. */
     public static final String ID_UUID = "uuid";
 
+    /** The Constant ID_MENU_ITEM. */
+    public static final String ID_MENU_ITEM = "menuItem";
+
+    /** The attributes enum of items influenced by locks */
+    private static enum ATTR_ITEM_INFLUENCED_BY_LOCK {
+
+        /** The value of publish-item. */
+        PUBLISH("publish"),
+
+        /** The value of remove-item. */
+        REMOVE("remove"),
+
+        /** The value of lock-item. */
+        LOCK("lock"),
+
+        /** The value of unlock-item. */
+        UNLOCK("unlock");
+
+        private final String item;
+
+        private ATTR_ITEM_INFLUENCED_BY_LOCK(final String item) {
+            this.item = item;
+        }
+
+        public String getValue() {
+            return item;
+        }
+    }
+
     /** The Constant DC_TAB_INDEX. */
     public static final int DC_TAB_INDEX = 1;
 
@@ -348,8 +377,6 @@ public class ModifyView
                 ts.getInfoTab().hideLockInfoButton();
             }
         }
-        //        updateMenuItems(ts);
-
     }
 
     /*
@@ -741,10 +768,57 @@ public class ModifyView
         });
 
         // MENU
-        Menu menu = getMenu(topTabSet, model, dc, mods);
+        final Menu menu = getMenu(topTabSet, model, dc, mods);
         IMenuButton menuButton = new IMenuButton("Menu", menu);
         menuButton.setWidth(60);
         menuButton.setHeight(16);
+        menuButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                IMenuButton eventButton = (IMenuButton) event.getSource();
+
+                EditorTabSet ts = null;
+                for (MenuItem item : eventButton.getMenu().getItems()) {
+                    if (ts == null) {
+                        ts = (EditorTabSet) item.getAttributeAsObject(ID_TABSET);
+                    }
+
+                    if (item.getAttributeAsObject(ID_MENU_ITEM) instanceof ATTR_ITEM_INFLUENCED_BY_LOCK) {
+
+                        ATTR_ITEM_INFLUENCED_BY_LOCK attrItem =
+                                (ATTR_ITEM_INFLUENCED_BY_LOCK) item.getAttributeAsObject(ID_MENU_ITEM);
+
+                        String lockOwner = ts.getLockInfo().getLockOwner();
+                        if (lockOwner != null) {
+
+                            if ("".equals(lockOwner)) {
+                                if (ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK == attrItem) {
+                                    item.setTitle(lang.updateLock());
+                                } else
+                                    item.setEnabled(true);
+                            } else {
+                                if (ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK == attrItem) {
+                                    item.setTitle(lang.lockItem());
+                                }
+                                item.setEnabled(false);
+                            }
+
+                        } else {
+                            if (ATTR_ITEM_INFLUENCED_BY_LOCK.UNLOCK == attrItem) {
+                                item.setEnabled(false);
+                            } else {
+                                if (ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK == attrItem) {
+                                    item.setTitle(lang.lockItem());
+                                }
+                                item.setEnabled(true);
+                            }
+                        }
+                    }
+                }
+                eventButton.getMenu().redraw();
+            }
+        });
 
         final ImgButton closeButton = new ImgButton();
         closeButton.setSrc("[SKIN]headerIcons/close.png");
@@ -1168,6 +1242,8 @@ public class ModifyView
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
 
+        removeItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.REMOVE);
+
         persistentUrlItem.setAttribute(ID_UUID, topTabSet.getUuid());
         persistentUrlItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -1196,6 +1272,7 @@ public class ModifyView
         });
 
         lockItem.setAttribute(ID_TABSET, topTabSet);
+        lockItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK);
         lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -1205,6 +1282,7 @@ public class ModifyView
         });
 
         unlockItem.setAttribute(ID_TABSET, topTabSet);
+        unlockItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.UNLOCK);
         unlockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -1224,6 +1302,7 @@ public class ModifyView
         });
 
         publishItem.setAttribute(ID_TABSET, topTabSet);
+        publishItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.PUBLISH);
         publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -1242,24 +1321,6 @@ public class ModifyView
                       publishItem,
                       persistentUrlItem);
         return menu;
-    }
-
-    /**
-     * @param topTabSet
-     */
-
-    private void updateMenuItems(EditorTabSet topTabSet) {
-        topTabSet.getUnlockItem().setEnabled(false);
-        String lockOwner = topTabSet.getLockInfo().getLockOwner();
-        if (lockOwner != null) {
-            if ("".equals(lockOwner)) {
-                topTabSet.getLockItem().setTitle(lang.updateLock());
-                topTabSet.getUnlockItem().setEnabled(true);
-            } else {
-                topTabSet.getLockItem().setEnabled(false);
-                topTabSet.getRemoveItem().setEnabled(false);
-            }
-        }
     }
 
     private void showPersistentUrl(String uuid) {
