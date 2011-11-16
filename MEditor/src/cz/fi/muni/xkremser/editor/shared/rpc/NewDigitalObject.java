@@ -44,7 +44,7 @@ public class NewDigitalObject
     private static final long serialVersionUID = -1473902336327167367L;
     private int orderIndex;
     private String name;
-    private final ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
+    private ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
     private DigitalObjectModel model;
     private DublinCore dc;
     private ModsCollectionClient mods;
@@ -122,6 +122,10 @@ public class NewDigitalObject
 
     public List<NewDigitalObject> getChildren() {
         return children;
+    }
+
+    public void setChildren(ArrayList<NewDigitalObject> children) {
+        this.children = children;
     }
 
     public boolean getExist() {
