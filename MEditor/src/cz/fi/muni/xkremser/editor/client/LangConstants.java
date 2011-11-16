@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1868,6 +1868,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This attribute is used to indicate different kinds of locations, e.g. current, discovery, former, creation.")
   @Key("locationType")
   String locationType();
+
+  /**
+   * Translated "Please enter a description of the lock, which will be available to all users".
+   * 
+   * @return translated "Please enter a description of the lock, which will be available to all users"
+   */
+  @DefaultStringValue("Please enter a description of the lock, which will be available to all users")
+  @Key("lockDescLabel")
+  String lockDescLabel();
 
   /**
    * Translated "The lock expires in".

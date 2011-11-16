@@ -29,6 +29,7 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.RichTextEditor;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -74,10 +75,13 @@ public class LockDigitalObjectWindow
     private LockDigitalObjectWindow(final LangConstants lang,
                                     final EditorTabSet ts,
                                     final DispatchAsync dispatcher) {
-        super(300, 510, lang.lockObjectWindow() + ": " + ts.getUuid());
+        super(310, 510, lang.lockObjectWindow() + ": " + ts.getUuid());
 
         final LockInfo lockInfo = ts.getLockInfo();
         this.lang = lang;
+        final Label descLabel = new Label("<b>" + lang.lockDescLabel() + "</b>");
+        descLabel.setAutoHeight();
+        descLabel.setExtraSpace(5);
         final RichTextEditor textEditor = new RichTextEditor();
         textEditor.setHeight(200);
         textEditor.setWidth(472);
@@ -91,7 +95,7 @@ public class LockDigitalObjectWindow
         HLayout layout = new HLayout();
         Button lock = new Button();
         lock.setExtraSpace(8);
-        lock.setTitle(lang.lockItem());
+        lock.setTitle("".equals(ts.getLockInfo().getLockOwner()) ? lang.updateLock() : lang.lockItem());
         Button close = new Button();
         close.setTitle(lang.close());
         layout.addMember(lock);
@@ -117,6 +121,7 @@ public class LockDigitalObjectWindow
         });
         layout.setAutoWidth();
         setEdgeOffset(20);
+        addItem(descLabel);
         addItem(textEditor);
         addItem(layout);
         centerInPage();
@@ -141,13 +146,21 @@ public class LockDigitalObjectWindow
                         LockInfo lockInfo = result.getLockInfo();
                         if (lockInfo.getLockOwner() == null) {
                             SC.say(lang.objectLocked(), lang.objectLocked() + "<br>" + lang.lockNote());
+                            ts.setLockInfo(new LockInfo("",
+                                                        ts.getLockInfo().getLockDescription(),
+                                                        new String[] {"0", "0", "0"}));
+
                         } else if ("".equals(lockInfo.getLockOwner())) {
                             SC.say(lang.lockUpdated(), lang.lockUpdated());
+                            ts.setLockInfo(new LockInfo("",
+                                                        ts.getLockInfo().getLockDescription(),
+                                                        new String[] {"0", "0", "0"}));
+
                         } else {
                             EditorSC.objectIsLock(lang, lockInfo);
+                            ts.setLockInfo(new LockInfo(lockInfo.getLockOwner(), lockInfo
+                                    .getLockDescription(), lockInfo.getTimeToExpiration()));
                         }
-                        ts.setLockInfo(new LockInfo("", ts.getLockInfo().getLockDescription(), new String[] {
-                                "0", "0", "0"}));
 
                         if (ts.getLockInfo().getLockOwner() != null) {
                             ts.setBackgroundColor("".equals(ts.getLockInfo().getLockOwner().trim()) ? Constants.BG_COLOR_FOCUSED_LOCK_BY_USER
