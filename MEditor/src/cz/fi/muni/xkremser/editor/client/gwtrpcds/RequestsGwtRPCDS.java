@@ -60,8 +60,6 @@ public class RequestsGwtRPCDS
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
-    private final LangConstants lang;
-
     /**
      * Instantiates a new recently tree gwt rpcds.
      * 
@@ -70,7 +68,6 @@ public class RequestsGwtRPCDS
      */
     public RequestsGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
         this.dispatcher = dispatcher;
-        this.lang = lang;
         DataSourceField field;
         field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
         field.setRequired(true);
@@ -224,7 +221,8 @@ public class RequestsGwtRPCDS
      *        the request
      * @return the edited record
      */
-    private ListGridRecord getEditedRecord(DSRequest request) {
+    @SuppressWarnings("unused")
+    private ListGridRecord getEditedRecord(final DSRequest request) {
         // Retrieving values before edit
         JavaScriptObject oldValues = request.getAttributeAsJavaScriptObject("oldValues");
         // Creating new record for combining old values with changes

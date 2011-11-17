@@ -5,8 +5,9 @@ import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Order;
 
 @GenEvent
+@SuppressWarnings("unused")
 public class ChangeFocusedTabSet {
 
     @Order(1)
-    String focusedUuid;
+    private String focusedUuid;
 }

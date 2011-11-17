@@ -16,7 +16,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConsta
 public class SessionListener
         implements HttpSessionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(SessionListener.class);
+    //    private static final Logger LOGGER = Logger.getLogger(SessionListener.class);
     private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 

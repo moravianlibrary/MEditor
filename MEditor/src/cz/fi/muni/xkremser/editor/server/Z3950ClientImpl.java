@@ -52,9 +52,7 @@ package cz.fi.muni.xkremser.editor.server;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import com.google.inject.Inject;
@@ -67,18 +65,18 @@ import com.k_int.z3950.IRClient.Z3950Origin;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
 /**
  * @author Jiri Kremser
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 public class Z3950ClientImpl
         implements Z3950Client {
 
@@ -115,16 +113,17 @@ public class Z3950ClientImpl
      * @return the dublin core xml
      */
     @Override
-    public Map<DublinCore, ModsCollectionClient> search(Constants.SEARCH_FIELD field, String what) {
+    public ArrayList<MetadataBundle> search(Constants.SEARCH_FIELD field, String what) {
         boolean isOk = init();
         if (!isOk) {
             return null;
         }
         List<String> dcStrings = search(field, what, false);
         List<String> marcStrings = search(field, what, true);
-        Map<DublinCore, ModsCollectionClient> retMap = new HashMap<DublinCore, ModsCollectionClient>();
+        ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
         for (int i = 0; i < dcStrings.size(); i++) {
-            retMap.put(DCUtils.getDC(dcStrings.get(i)), null);
+            MetadataBundle bundle = new MetadataBundle(DCUtils.getDC(dcStrings.get(i)), null, null);
+            retList.add(bundle);
         }
         //        try {
         //            String marc = marcStrings.get(0);
@@ -145,7 +144,7 @@ public class Z3950ClientImpl
         //            LOGGER.error(e.getMessage());
         //            e.printStackTrace();
         //        }
-        return retMap;
+        return retList;
     }
 
     private List<String> search(Constants.SEARCH_FIELD field, String what, boolean marc) {

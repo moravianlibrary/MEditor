@@ -31,33 +31,29 @@ import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Order;
 
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ConfigReceived.
  */
 @GenEvent
+@SuppressWarnings("unused")
 public class CreateStructure {
 
     @Order(1)
-    String model;
+    private String model;
 
     @Order(2)
-    String code;
+    private String code;
 
     @Order(3)
-    SideNavInputTree tree;
+    private SideNavInputTree tree;
 
     @Order(4)
     @Optional
-    DublinCore dc;
-
-    @Order(5)
-    @Optional
-    ModsCollectionClient mods;
+    private MetadataBundle bundle;
 
 }

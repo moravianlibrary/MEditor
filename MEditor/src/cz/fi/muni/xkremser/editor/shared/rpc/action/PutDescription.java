@@ -36,19 +36,20 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class PutDescription
         extends UnsecuredActionImpl<PutDescriptionResult> {
 
     /** The config. */
     @In(1)
-    String uuid;
+    private String uuid;
 
     /** The description. */
     @In(2)
-    String description;
+    private String description;
 
     /** The common. */
     @In(3)
-    boolean common;
+    private boolean common;
 
 }

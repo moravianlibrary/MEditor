@@ -37,6 +37,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class CheckAvailability
         extends UnsecuredActionImpl<CheckAvailabilityResult> {
 
@@ -48,13 +49,13 @@ public class CheckAvailability
 
     /** The config. */
     @In(1)
-    int serverId;
+    private int serverId;
 
     /** The availability. */
     @Out(1)
-    boolean availability;
+    private boolean availability;
 
     /** The url. */
     @Out(2)
-    String url;
+    private String url;
 }

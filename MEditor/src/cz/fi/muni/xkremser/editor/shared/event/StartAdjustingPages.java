@@ -38,14 +38,15 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
  * The Class ConfigReceived.
  */
 @GenEvent
+@SuppressWarnings("unused")
 public class StartAdjustingPages {
 
     /** The status ok. */
     @Order(1)
-    String path;
+    private String path;
 
     @Order(2)
     @Optional
-    DublinCore dc;
+    private DublinCore dc;
 
 }

@@ -36,6 +36,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
  * @version $Id$
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class DownloadDigitalObjectDetail
         extends UnsecuredActionImpl<DownloadDigitalObjectDetailResult> {
 

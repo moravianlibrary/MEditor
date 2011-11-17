@@ -36,6 +36,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
  * @version $Id$
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class LockDigitalObject
         extends UnsecuredActionImpl<LockDigitalObjectResult> {
 

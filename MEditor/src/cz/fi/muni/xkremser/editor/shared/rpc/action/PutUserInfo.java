@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.UserInfoItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class PutUserInfo
         extends UnsecuredActionImpl<PutUserInfoResult> {
 

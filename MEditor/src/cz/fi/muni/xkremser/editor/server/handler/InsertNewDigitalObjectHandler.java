@@ -24,8 +24,6 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import com.google.inject.Inject;
@@ -69,8 +67,8 @@ public class InsertNewDigitalObjectHandler
         if (LOGGER.isInfoEnabled()) {
             LOGGER.debug("Inserting digital object: " + object.getName());
         }
-        List<String> foxmls = CreateObjectUtils.convertAllTheStructureToFOXMLs(object);
-        return null;
+        boolean success = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
+        return new InsertNewDigitalObjectResult(success);
     }
 
     /**

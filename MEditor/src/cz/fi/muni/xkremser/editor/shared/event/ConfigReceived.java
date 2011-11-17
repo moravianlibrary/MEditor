@@ -35,12 +35,10 @@ import com.gwtplatform.dispatch.annotation.Order;
  * The Class ConfigReceived.
  */
 @GenEvent
+@SuppressWarnings("unused")
 public class ConfigReceived {
-
-    // @Order(1)
-    // HasEventBus source;
 
     /** The status ok. */
     @Order(1)
-    boolean statusOK;
+    private boolean statusOK;
 }

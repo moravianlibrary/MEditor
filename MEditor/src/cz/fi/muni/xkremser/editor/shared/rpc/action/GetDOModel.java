@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
  * @version 13.11.2011
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class GetDOModel
         extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
 

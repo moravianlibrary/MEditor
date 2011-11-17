@@ -35,6 +35,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
 /**
  * @author Jiri Kremser
@@ -47,8 +48,8 @@ public class PageBuilder
      * @param uuid
      * @param label
      */
-    public PageBuilder(String label) {
-        super(label);
+    public PageBuilder(NewDigitalObject object) {
+        super(object);
     }
 
     /**
@@ -92,5 +93,14 @@ public class PageBuilder
     @Override
     protected DigitalObjectModel getModel() {
         return DigitalObjectModel.PAGE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void init() {
+        // TODO Auto-generated method stub
+
     }
 }

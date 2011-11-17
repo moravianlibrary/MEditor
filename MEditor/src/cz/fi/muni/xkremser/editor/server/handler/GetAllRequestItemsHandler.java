@@ -57,6 +57,7 @@ public class GetAllRequestItemsHandler
             .toString());
 
     /** The configuration. */
+    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The recently modified dao. */

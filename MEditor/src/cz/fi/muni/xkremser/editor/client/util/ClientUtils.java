@@ -40,14 +40,13 @@ import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureTreeNode;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -230,7 +229,7 @@ public class ClientUtils {
         return list.toArray(new ListGridRecord[] {});
     }
 
-    public static NewDigitalObject createTheStructure(DublinCore dc, ModsCollectionClient mods, Tree tree)
+    public static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree)
             throws CreateObjectException {
         TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
         if (root == null) {
@@ -259,20 +258,17 @@ public class ClientUtils {
                 new NewDigitalObject(0,
                                      name,
                                      model,
-                                     dc,
-                                     mods,
+                                     bundle,
                                      null,
                                      root.getAttributeAsBoolean(Constants.ATTR_EXIST));
         for (TreeNode child : children) {
-            newObj.getChildren().add(createTheStructure(dc, mods, tree, child));
+            newObj.getChildren().add(createTheStructure(bundle, tree, child));
         }
         return newObj;
     }
 
-    private static NewDigitalObject createTheStructure(DublinCore dc,
-                                                       ModsCollectionClient mods,
-                                                       Tree tree,
-                                                       TreeNode node) throws CreateObjectException {
+    private static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree, TreeNode node)
+            throws CreateObjectException {
         String name = node.getAttribute(Constants.ATTR_NAME);
         if (name == null || "".equals(name)) {
             throw new CreateObjectException("unknown name");
@@ -291,13 +287,12 @@ public class ClientUtils {
                 new NewDigitalObject(0,
                                      name,
                                      model,
-                                     dc,
-                                     mods,
+                                     bundle,
                                      null,
                                      node.getAttributeAsBoolean(Constants.ATTR_EXIST));
         TreeNode[] children = tree.getChildren(node);
         for (TreeNode child : children) {
-            newObj.getChildren().add(createTheStructure(dc, mods, tree, child));
+            newObj.getChildren().add(createTheStructure(bundle, tree, child));
         }
         return newObj;
     }

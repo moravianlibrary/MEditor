@@ -35,13 +35,9 @@ import com.gwtplatform.dispatch.annotation.Order;
  * The Class ConfigReceived.
  */
 @GenEvent
+@SuppressWarnings("unused")
 public class DigitalObjectClosed {
 
-    // @Order(1)
-    // HasEventBus source;
-
-    /** The status ok. */
-
     @Order(1)
-    String uuid;
+    private String uuid;
 }

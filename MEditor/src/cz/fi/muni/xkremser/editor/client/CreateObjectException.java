@@ -31,6 +31,8 @@ package cz.fi.muni.xkremser.editor.client;
 public class CreateObjectException
         extends Exception {
 
+    private static final long serialVersionUID = -4243784278363477766L;
+
     /**
      * Instantiates a new connection exception.
      * 
@@ -39,5 +41,13 @@ public class CreateObjectException
      */
     public CreateObjectException(String msg) {
         super(msg);
+    }
+
+    public CreateObjectException() {
+        super();
+    }
+
+    public CreateObjectException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

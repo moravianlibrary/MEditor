@@ -88,6 +88,9 @@ public class DigitalObjectHandlerImpl
      */
     private ArrayList<ArrayList<String>> getRelated(final String uuid) {
         List<RelationshipTuple> triplets = FedoraUtils.getSubjectPids(uuid);
+        if (triplets == null) { // RI can be disabled
+            return null;
+        }
         ArrayList<ArrayList<String>> returnList = new ArrayList<ArrayList<String>>(triplets.size());
         for (RelationshipTuple triplet : triplets) {
             ArrayList<String> relatedRecord = new ArrayList<String>(2);

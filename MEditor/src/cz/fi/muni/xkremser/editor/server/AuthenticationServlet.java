@@ -64,6 +64,8 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 public class AuthenticationServlet
         extends HttpServlet {
 
+    private static final long serialVersionUID = -146532693218441119L;
+
     /** The Constant LOGGER. */
     private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
 

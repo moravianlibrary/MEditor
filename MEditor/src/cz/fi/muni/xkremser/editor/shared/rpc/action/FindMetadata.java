@@ -27,36 +27,33 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetClientConfig.
  */
+@SuppressWarnings("unused")
 @GenDispatch(isSecure = false)
 public class FindMetadata
         extends UnsecuredActionImpl<CheckAvailabilityResult> {
 
     @In(1)
-    Constants.SEARCH_FIELD searchType;
+    private Constants.SEARCH_FIELD searchType;
 
     @In(2)
-    String id;
+    private String id;
 
-    /** The availability. */
     @Out(1)
-    List<DublinCore> dc;
+    private ArrayList<MetadataBundle> bundle;
 
-    @Out(2)
-    List<ModsCollectionClient> mods;
 }

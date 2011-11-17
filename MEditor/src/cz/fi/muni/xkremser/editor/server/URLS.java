@@ -94,6 +94,7 @@ public class URLS {
 
     public static final String DOWNLOAD_SERVLET = "/download";
 
+    @SuppressWarnings("serial")
     public static Set<String> nonRestricted = new HashSet<String>() {
 
         {
@@ -132,7 +133,7 @@ public class URLS {
      *        the parameters
      * @return the string
      */
-    public static String convertToAJAXURL(Map parameters) {
+    public static String convertToAJAXURL(@SuppressWarnings("rawtypes") Map parameters) {
         StringBuilder sufix = new StringBuilder();
         sufix.append('#');
 

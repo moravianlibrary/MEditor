@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
  * The Class GetDigitalObjectDetail.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class PutDigitalObjectDetail
         extends UnsecuredActionImpl<PutDigitalObjectDetailResult> {
 

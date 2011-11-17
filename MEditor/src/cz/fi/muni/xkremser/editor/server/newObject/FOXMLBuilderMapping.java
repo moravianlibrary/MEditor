@@ -24,12 +24,16 @@
 
 package cz.fi.muni.xkremser.editor.server.newObject;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
 /**
  * @author Jiri Kremser
@@ -43,22 +47,36 @@ public class FOXMLBuilderMapping {
             new HashMap<DigitalObjectModel, Class<? extends FoxmlBuilder>>(DigitalObjectModel.values().length);
     static {
         MAP.put(DigitalObjectModel.MONOGRAPH, MonographBuilder.class);
-        MAP.put(DigitalObjectModel.PAGE, PageBuilder.class);
+        MAP.put(DigitalObjectModel.PERIODICAL, PeriodicalBuilder.class);
         MAP.put(DigitalObjectModel.INTERNALPART, IntPartBuilder.class);
+        MAP.put(DigitalObjectModel.PAGE, PageBuilder.class);
     }
 
-    public static FoxmlBuilder getBuilder(DigitalObjectModel model) {
+    @SuppressWarnings("unchecked")
+    public static FoxmlBuilder getBuilder(NewDigitalObject object) {
         try {
-            Class<? extends FoxmlBuilder> clazz = MAP.get(model);
+            Class<? extends FoxmlBuilder> clazz = MAP.get(object.getModel());
             if (clazz != null) {
-                return clazz.newInstance();
+                Constructor<? extends FoxmlBuilder>[] constructors =
+                        (Constructor<? extends FoxmlBuilder>[]) clazz.getConstructors();
+                if (constructors.length == 0) {
+                    return null;
+                } else {
+                    return constructors[0].newInstance(object);
+                }
             }
-            //            return null;
-            return new MonographBuilder("unknown");
+            return null;
+            //            return new MonographBuilder(object);
         } catch (InstantiationException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }

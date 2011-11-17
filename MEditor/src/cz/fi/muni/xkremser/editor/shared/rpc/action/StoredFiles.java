@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
  * @version $Id$
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class StoredFiles
         extends UnsecuredActionImpl<StoredFilesResult> {
 

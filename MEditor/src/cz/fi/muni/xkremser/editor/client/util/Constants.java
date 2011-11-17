@@ -428,6 +428,7 @@ public class Constants {
         E, M, R, X
     }
 
+    @SuppressWarnings("serial")
     public static Map<String, String> SPECIAL_PAGE_TYPE_MAP = new HashMap<String, String>() {
 
         {
@@ -439,15 +440,18 @@ public class Constants {
         }
     };
 
-    /** The value of background color of focused tabSet **/
+    /** The value of background color of focused tabSet */
     public static final String BG_COLOR_FOCUSED = "#ededed";
 
-    /** The value of background color of focused tabSet which is locked **/
+    /** The value of background color of focused tabSet which is locked */
     public static final String BG_COLOR_FOCUSED_LOCK = "#ffe7a3";
 
-    /** The value of background color of focused tabSet which is locked by user **/
+    /** The value of background color of focused tabSet which is locked by user */
     public static final String BG_COLOR_FOCUSED_LOCK_BY_USER = "#daffce";
 
-    /** The value of background color of "unfocused" tabSet **/
+    /** The value of background color of "unfocused" tabSet */
     public static final String BG_COLOR_UNFOCUSED = "white";
+
+    /** If the ingest fails more than this number of times, it will fail */
+    public static final int MAX_NUMBER_OF_INGEST_ATTEMPTS = 3;
 }

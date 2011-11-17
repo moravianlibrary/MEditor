@@ -68,6 +68,8 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 public class FullImgServiceImpl
         extends HttpServlet {
 
+    private static final long serialVersionUID = 3561025763154478622L;
+
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(FullImgServiceImpl.class);
 

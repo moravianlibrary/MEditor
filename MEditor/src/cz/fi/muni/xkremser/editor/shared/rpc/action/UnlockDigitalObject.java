@@ -34,6 +34,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * @version $Id$
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class UnlockDigitalObject
         extends UnsecuredActionImpl<UnlockDigitalObjectResult> {
 

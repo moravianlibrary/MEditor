@@ -58,12 +58,11 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
 
@@ -137,10 +136,7 @@ public class FindMetadataPresenter
 
     private String model = null;
 
-    private final Map<Integer, DublinCore> resultsDc = new HashMap<Integer, DublinCore>();
-
-    private final Map<Integer, ModsCollectionClient> resultsMods =
-            new HashMap<Integer, ModsCollectionClient>();
+    private final Map<Integer, MetadataBundle> results = new HashMap<Integer, MetadataBundle>();
 
     public static final String OAI_STRING = "%s/?verb=GetRecord&identifier=%s%s-%s&metadataPrefix=";
 
@@ -213,8 +209,7 @@ public class FindMetadataPresenter
                                           model,
                                           code,
                                           leftPresenter.getView().getInputTree(),
-                                          resultsDc.get(id),
-                                          resultsMods.get(id));
+                                          results.get(id));
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
             }
@@ -265,8 +260,7 @@ public class FindMetadataPresenter
     @Override
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
-        resultsDc.clear();
-        resultsMods.clear();
+        results.clear();
         code = request.getParameter(Constants.URL_PARAM_CODE, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(code);
@@ -276,24 +270,19 @@ public class FindMetadataPresenter
     }
 
     private void findMetadata(Constants.SEARCH_FIELD field, String id) {
-        resultsDc.clear();
-        resultsMods.clear();
+        results.clear();
         dispatcher.execute(new FindMetadataAction(field, id), new DispatchCallback<FindMetadataResult>() {
 
             @Override
             public void callback(FindMetadataResult result) {
                 getView().showProgress(true, true);
-                List<DublinCore> list = result.getDc();
-                List<ModsCollectionClient> modsList = result.getMods();
+                List<MetadataBundle> list = result.getBundle();
                 if (list != null && list.size() != 0) {
                     ListGridRecord[] data = new ListGridRecord[list.size()];
                     for (int i = 0; i < list.size(); i++) {
-                        list.get(i).setId(i);
-                        data[i] = list.get(i).toRecord();
-                        resultsDc.put(i, list.get(i));
-                        if (modsList != null) {
-                            resultsMods.put(i, modsList.get(i));
-                        }
+                        list.get(i).getDc().setId(i);
+                        data[i] = list.get(i).getDc().toRecord();
+                        results.put(i, list.get(i));
                     }
                     getView().refreshData(data);
                 } else {

@@ -35,15 +35,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-
-import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 // TODO: Auto-generated Javadoc
@@ -54,9 +50,6 @@ public class ScanImgServiceImpl
         extends HttpServlet {
 
     private static final long serialVersionUID = -6110151482519362291L;
-
-    /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(ScanImgServiceImpl.class);
 
     private static final String DJATOKA_URL =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=2&svc.scale="
@@ -74,9 +67,9 @@ public class ScanImgServiceImpl
     private static final String DJATOKA_URL_GET_METADATA =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getMetadata&rft_id=";
 
-    /** The config. */
-    @Inject
-    private EditorConfiguration config;
+    //    /** The config. */
+    //    @Inject
+    //    private EditorConfiguration config;
 
     //    private boolean baseOk;
     //

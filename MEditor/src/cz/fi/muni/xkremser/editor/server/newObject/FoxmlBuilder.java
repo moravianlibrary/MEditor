@@ -42,29 +42,28 @@ import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
-import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
-import cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship;
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
+import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
 /**
  * @author Jiri Kremser
  * @version 31.10.2011
  */
+@SuppressWarnings("unused")
 public abstract class FoxmlBuilder {
 
     private static final String PID_PREFIX = Constants.FEDORA_UUID_PREFIX;
-    private final String uuid;
-    private final String pid;
+    private String uuid;
+    private String pid;
     private String signature;
     private String sysno;
     private String label;
-    private Policy policy;
+    private Policy policy = Policy.PUBLIC;
     private final List<RelsExtRelation> children;
-    private DublinCore dc;
-    private ModsCollection mods;
+    private MetadataBundle bundle;
     private Document document;
     protected Element rootElement;
     private Document dcXmlContent;
@@ -74,24 +73,22 @@ public abstract class FoxmlBuilder {
     private static final String OVER_MAX_LENGTH_SUFFIX = "...";
     private String krameriusUrl;
     private String alephUrl;
-    private MarcDocument marcDocument;
 
     private static final int MAX_LABEL_LENGTH = 100;
     private static final Boolean VERSIONABLE = true;
 
-    public FoxmlBuilder(String label) {
-        this(label, Policy.PUBLIC);
+    public FoxmlBuilder(NewDigitalObject object) {
+        this(object, Policy.PUBLIC);
     }
 
-    public FoxmlBuilder(String label, Policy policy) {
-        this.uuid = FoxmlUtils.getRandomUuid();
-        this.pid = PID_PREFIX + uuid;
-        this.label = trim(label, MAX_LABEL_LENGTH);
+    public FoxmlBuilder(NewDigitalObject object, Policy policy) {
+        this.label = trim(object.getName(), MAX_LABEL_LENGTH);
         this.children = new ArrayList<RelsExtRelation>();
         this.policy = policy;
     }
 
     public void createDocument() {
+        init();
         createDocumentAndRootElement();
         decotateProperties();
         decorateDCStream();
@@ -104,8 +101,10 @@ public abstract class FoxmlBuilder {
         //        policyContentLocation = createPolicyContentLocation();
     }
 
-    public String getDocument() {
-        Dom4jUtils.writeDocument(rootElement.getDocument(), System.out, PrintType.PRETTY);
+    public String getDocument(boolean toScreen) {
+        if (toScreen) {
+            Dom4jUtils.writeDocument(rootElement.getDocument(), System.out, PrintType.PRETTY);
+        }
         return rootElement.getDocument().asXML();
     }
 
@@ -171,6 +170,7 @@ public abstract class FoxmlBuilder {
     protected void decorateDCStream() {
         Element rootElement = DocumentHelper.createElement(new QName("dc", Namespaces.oai_dc));
         rootElement.add(Namespaces.dc);
+        rootElement.add(Namespaces.xsi);
         Element title = rootElement.addElement(new QName("title", Namespaces.dc));
         title.addText(getLabel());
         Element identifier = rootElement.addElement(new QName("identifier", Namespaces.dc));
@@ -275,23 +275,9 @@ public abstract class FoxmlBuilder {
 
     protected abstract void decorateMODSStream();
 
+    protected abstract void init();
+
     protected abstract DigitalObjectModel getModel();
-
-    public DublinCore getDc() {
-        return dc;
-    }
-
-    public void setDc(DublinCore dc) {
-        this.dc = dc;
-    }
-
-    public ModsCollection getMods() {
-        return mods;
-    }
-
-    public void setMods(ModsCollection mods) {
-        this.mods = mods;
-    }
 
     public String getLabel() {
         return label;
@@ -307,6 +293,11 @@ public abstract class FoxmlBuilder {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+        this.pid = PID_PREFIX + uuid;
     }
 
     public Policy getPolicy() {
@@ -377,32 +368,32 @@ public abstract class FoxmlBuilder {
         this.sysno = sysno;
     }
 
-    public MarcDocument getMarcDocument() {
-        return marcDocument;
+    public MetadataBundle getBundle() {
+        return bundle;
     }
 
-    public void setMarcDocument(MarcDocument marcDocument) {
-        this.marcDocument = marcDocument;
+    public void setBundle(MetadataBundle bundle) {
+        this.bundle = bundle;
     }
 
     public static void main(String... args) {
-        FoxmlBuilder test = new PageBuilder("FC");
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        test.createDocument();
-        //        Dom4jUtils.writeDocument(doc, out, printType)
-        //        System.out.println(test.getDocument());
-        test.getDocument();
+        //        FoxmlBuilder test = new PageBuilder("FC");
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
+        //        test.createDocument();
+        //        //        Dom4jUtils.writeDocument(doc, out, printType)
+        //        //        System.out.println(test.getDocument());
+        //        test.getDocument(true);
     }
 }

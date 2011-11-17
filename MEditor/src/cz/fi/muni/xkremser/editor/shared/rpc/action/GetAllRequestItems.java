@@ -40,6 +40,7 @@ import cz.fi.muni.xkremser.editor.common.RequestItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class GetAllRequestItems
         extends UnsecuredActionImpl<PutUserInfoResult> {
 

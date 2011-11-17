@@ -55,8 +55,6 @@ public class UserView
         extends ViewImpl
         implements UserPresenter.MyView {
 
-    private final LangConstants lang;
-
     /** The layout. */
     private final VLayout layout;
 
@@ -105,7 +103,6 @@ public class UserView
      */
     @Inject
     public UserView(LangConstants lang) {
-        this.lang = lang;
         this.layout = new VLayout();
         this.layout.setPadding(10);
         this.layout.setHeight100();

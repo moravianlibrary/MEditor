@@ -54,13 +54,13 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
 /**
  * @author Jiri Kremser
- * @version 14.11.2011
+ * @version 17.11.2011
  */
 @SuppressWarnings("unused")
-class MonographBuilder
+class PeriodicalBuilder
         extends FoxmlBuilder {
 
-    final Logger logger = Logger.getLogger(MonographBuilder.class.getName());
+    final Logger logger = Logger.getLogger(PeriodicalBuilder.class.getName());
     private final XPath modsXpath = Dom4jUtils.createXPath("/mods:modsCollection/mods:mods");
     private final XPath locationXpath = Dom4jUtils
             .createXPath("/mods:modsCollection/mods:mods/mods:location");
@@ -75,7 +75,7 @@ class MonographBuilder
      * @throws DocumentException
      *         final case of error in loading xsl template
      */
-    public MonographBuilder(NewDigitalObject object) {
+    public PeriodicalBuilder(NewDigitalObject object) {
         super(object);
     }
 
@@ -295,7 +295,7 @@ class MonographBuilder
      */
     @Override
     protected DigitalObjectModel getModel() {
-        return DigitalObjectModel.MONOGRAPH;
+        return DigitalObjectModel.PERIODICAL;
     }
 
     /**

@@ -25,6 +25,7 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
 /**
  * @author Jiri Kremser
@@ -37,8 +38,8 @@ public class IntPartBuilder
      * @param uuid
      * @param label
      */
-    public IntPartBuilder(String label) {
-        super(label);
+    public IntPartBuilder(NewDigitalObject object) {
+        super(object);
     }
 
     /**
@@ -56,6 +57,15 @@ public class IntPartBuilder
     @Override
     protected DigitalObjectModel getModel() {
         return DigitalObjectModel.INTERNALPART;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void init() {
+        // TODO Auto-generated method stub
+
     }
 
 }

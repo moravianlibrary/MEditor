@@ -39,22 +39,23 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class GetDescription
         extends UnsecuredActionImpl<GetDescriptionResult> {
 
     /** The config. */
     @In(1)
-    String uuid;
+    private String uuid;
 
     /** The description. */
     @Out(1)
-    String description;
+    private String description;
 
     /** The user description. */
     @Out(2)
-    String userDescription;
+    private String userDescription;
 
     /** The modified. */
     @Out(3)
-    Date modified;
+    private Date modified;
 }

@@ -41,6 +41,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
  * The Class ScanInputQueue.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class ScanInputQueue
         extends UnsecuredActionImpl<ScanInputQueueResult> {
 

@@ -36,10 +36,11 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class Logout
         extends UnsecuredActionImpl<LogoutResult> {
 
     @Out(1)
-    String url;
+    private String url;
 
 }

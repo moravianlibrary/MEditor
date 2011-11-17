@@ -129,6 +129,7 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 /**
  * The Class TabUtils.
  */
+@SuppressWarnings({"unchecked", "serial"})
 public final class TabUtils {
 
     private static LangConstants lang;
@@ -3083,7 +3084,7 @@ public final class TabUtils {
     private static VLayout getGeneralDeepLayout(final Attribute[] attribs) {
         final VLayout layout = new VLayout();
         layout.setExtraSpace(40);
-        if (attribs != null || attribs.length > 0) {
+        if (attribs != null && attribs.length > 0) {
             boolean first = true;
             for (Attribute attr : attribs) {
                 final SectionStack sectionStack = new SectionStack();

@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
  * The Class PutRecentlyModified.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class PutRecentlyModified
         extends UnsecuredActionImpl<PutRecentlyModifiedResult> {
 

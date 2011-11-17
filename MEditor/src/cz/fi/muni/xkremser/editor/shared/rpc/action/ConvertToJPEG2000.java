@@ -38,6 +38,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
  * The Class ScanInputQueue.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class ConvertToJPEG2000
         extends UnsecuredActionImpl<ScanInputQueueResult> {
 

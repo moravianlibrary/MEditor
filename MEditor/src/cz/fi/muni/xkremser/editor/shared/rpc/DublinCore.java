@@ -27,10 +27,11 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
@@ -38,7 +39,9 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 public class DublinCore
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = 4853881157734392676L;
 
     private int id;
 

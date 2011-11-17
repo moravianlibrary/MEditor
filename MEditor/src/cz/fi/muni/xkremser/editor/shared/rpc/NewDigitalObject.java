@@ -29,8 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
 /**
@@ -46,11 +44,9 @@ public class NewDigitalObject
     private String name;
     private ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
     private DigitalObjectModel model;
-    private DublinCore dc;
-    private ModsCollectionClient mods;
+    private MetadataBundle bundle;
     private String uuid;
     private boolean exist;
-    private String marcXml;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -60,24 +56,16 @@ public class NewDigitalObject
     public NewDigitalObject(int orderIndex,
                             String name,
                             DigitalObjectModel model,
-                            DublinCore dc,
-                            ModsCollectionClient mods,
+                            MetadataBundle bundle,
                             String uuid,
                             boolean exist) {
         super();
         this.orderIndex = orderIndex;
         this.name = name;
         this.model = model;
-        this.dc = dc;
-        this.mods = mods;
+        this.bundle = bundle;
         this.uuid = uuid;
         this.exist = exist;
-    }
-
-    @Override
-    public String toString() {
-        return orderIndex + ". " + model + " title: "
-                + (dc != null && dc.getTitle() != null ? dc.getTitle().get(0) : "no title");
     }
 
     public int getOrderIndex() {
@@ -94,22 +82,6 @@ public class NewDigitalObject
 
     public void setModel(DigitalObjectModel model) {
         this.model = model;
-    }
-
-    public DublinCore getDc() {
-        return dc;
-    }
-
-    public void setDc(DublinCore dc) {
-        this.dc = dc;
-    }
-
-    public ModsCollectionClient getMods() {
-        return mods;
-    }
-
-    public void setMods(ModsCollectionClient mods) {
-        this.mods = mods;
     }
 
     public String getUuid() {
@@ -144,12 +116,12 @@ public class NewDigitalObject
         this.name = name;
     }
 
-    public String getMarcXml() {
-        return marcXml;
+    public MetadataBundle getBundle() {
+        return bundle;
     }
 
-    public void setMarcXml(String marcXml) {
-        this.marcXml = marcXml;
+    public void setBundle(MetadataBundle bundle) {
+        this.bundle = bundle;
     }
 
 }

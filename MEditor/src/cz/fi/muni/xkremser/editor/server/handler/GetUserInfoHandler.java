@@ -56,6 +56,7 @@ public class GetUserInfoHandler
     private static final Logger LOGGER = Logger.getLogger(GetUserInfoHandler.class.getPackage().toString());
 
     /** The configuration. */
+    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The recently modified dao. */

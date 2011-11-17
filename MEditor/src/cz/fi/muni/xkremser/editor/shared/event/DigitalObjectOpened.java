@@ -39,17 +39,18 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
  * The Class DigitalObjectOpened.
  */
 @GenEvent
+@SuppressWarnings("unused")
 public class DigitalObjectOpened {
 
     /** The status ok. */
     @Order(1)
-    boolean statusOK;
+    private boolean statusOK;
 
     /** The item. */
     @Order(2)
-    RecentlyModifiedItem item;
+    private RecentlyModifiedItem item;
 
     /** The related. */
     @Order(3)
-    List<? extends List<String>> related;
+    private List<? extends List<String>> related;
 }

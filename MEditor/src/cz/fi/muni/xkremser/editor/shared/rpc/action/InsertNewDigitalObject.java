@@ -36,6 +36,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
  * @version 14.11.2011
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class InsertNewDigitalObject
         extends UnsecuredActionImpl<PutDigitalObjectDetailResult> {
 

@@ -31,9 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -49,8 +48,6 @@ import org.dom4j.XPath;
 
 import org.xml.sax.SAXException;
 
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
@@ -59,8 +56,11 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 import cz.fi.muni.xkremser.editor.server.mods.ModsType;
+import cz.fi.muni.xkremser.editor.server.newObject.MarcDocument;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
 /**
  * @author Jiri Kremser
@@ -77,27 +77,42 @@ public class OAIPMHClientImpl
 
     private Document marc2mods;
 
-    @SuppressWarnings("serial")
     @Override
-    public Map<DublinCore, ModsCollectionClient> search(String url) {
-        Map<DublinCore, ModsCollectionClient> retMap = new HashMap<DublinCore, ModsCollectionClient>();
+    public ArrayList<MetadataBundle> search(String url) {
+        ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
         try {
 
-            System.out.println(config.getEditorHome() + MARC_TO_MODS_XSLT);
             if (marc2mods == null) {
                 if (!new File(config.getEditorHome() + MARC_TO_MODS_XSLT).exists()) {
                     LOGGER.error("File " + config.getEditorHome() + MARC_TO_MODS_XSLT + " does not exist.");
-                    return retMap;
+                    return retList;
                 }
                 marc2mods =
                         Dom4jUtils.loadDocument(new File(config.getEditorHome() + MARC_TO_MODS_XSLT), true);
             }
             InputStream marcStream = RESTHelper.get(url + MARC_METADATA_PREFIX, null, null, false);
+
+            //            StringWriter writer = new StringWriter();
+            //            IOUtils.copy(marcStream, writer, "UTF-8");
+            //            String theString = writer.toString();
+            //            System.out.println(theString);
+
             Document marcDoc = Dom4jUtils.loadDocument(marcStream, true);
             if (marcDoc.asXML().contains("idDoesNotExist")
                     || marcDoc.asXML().contains("cannotDisseminateFormat")) {
-                return retMap;
+                return retList;
             }
+
+            MarcDocument mrc = new MarcDocument(marcDoc);
+            MarcSpecificMetadata marcSpecific =
+                    new MarcSpecificMetadata(mrc.findSysno(),
+                                             mrc.findBase(),
+                                             mrc.find040a(),
+                                             mrc.find080a(),
+                                             mrc.find650a(),
+                                             mrc.find260aCorrected(),
+                                             mrc.find260bCorrected(),
+                                             mrc.find260c());
             InputStream dcStream = RESTHelper.get(url + OAI_METADATA_PREFIX, null, null, false);
             Document dcDoc = Dom4jUtils.loadDocument(dcStream, true);
             Document modsDoc = Dom4jUtils.transformDocument(marcDoc, marc2mods);
@@ -116,8 +131,9 @@ public class OAIPMHClientImpl
             ModsType mods = BiblioModsUtils.getMods(XMLUtils.parseDocument(modsDoc.asXML(), true));
             final ModsCollection modsC = new ModsCollection();
             modsC.setMods(Arrays.asList(mods));
-            retMap.put(dc, BiblioModsUtils.toModsClient(modsC));
-            return retMap;
+            MetadataBundle bundle = new MetadataBundle(dc, BiblioModsUtils.toModsClient(modsC), marcSpecific);
+            retList.add(bundle);
+            return retList;
         } catch (ParserConfigurationException e) {
             LOGGER.error(e.getMessage());
         } catch (SAXException e) {
@@ -127,6 +143,6 @@ public class OAIPMHClientImpl
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
-        return retMap;
+        return retList;
     }
 }

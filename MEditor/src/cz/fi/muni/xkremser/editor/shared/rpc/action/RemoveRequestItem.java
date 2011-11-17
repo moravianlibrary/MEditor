@@ -36,6 +36,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class RemoveRequestItem
         extends UnsecuredActionImpl<RemoveUserRoleResult> {
 

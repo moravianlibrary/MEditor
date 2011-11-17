@@ -38,10 +38,11 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  * The Class GetClientConfig.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class GetClientConfig
         extends UnsecuredActionImpl<GetClientConfigResult> {
 
     /** The config. */
     @Out(1)
-    HashMap<String, Object> config;
+    private HashMap<String, Object> config;
 }

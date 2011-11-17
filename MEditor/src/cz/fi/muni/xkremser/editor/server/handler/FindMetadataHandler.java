@@ -28,8 +28,6 @@
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,14 +39,12 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-
 import cz.fi.muni.xkremser.editor.server.OAIPMHClient;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
 
@@ -63,6 +59,7 @@ public class FindMetadataHandler
     private static final Logger LOGGER = Logger.getLogger(FindMetadataHandler.class.getPackage().toString());
 
     /** The configuration. */
+    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The http session provider. */
@@ -103,21 +100,13 @@ public class FindMetadataHandler
                     + action.getId());
         }
         ServerUtils.checkExpiredSession(httpSessionProvider);
-        Map<DublinCore, ModsCollectionClient> documents = null;
+        ArrayList<MetadataBundle> bundle = null;
         if (action.getSearchType() == null) {
-            documents = oaiClient.search(action.getId());
+            bundle = oaiClient.search(action.getId());
         } else {
-            documents = z39Client.search(action.getSearchType(), action.getId());
+            bundle = z39Client.search(action.getSearchType(), action.getId());
         }
-        List<DublinCore> dc = new ArrayList<DublinCore>(documents.size());
-        List<ModsCollectionClient> mods = new ArrayList<ModsCollectionClient>(documents.size());
-        if (documents != null) {
-            for (DublinCore dcFoo : documents.keySet()) {
-                dc.add(dcFoo);
-                mods.add(documents.get(dcFoo));
-            }
-        }
-        return new FindMetadataResult(dc, mods);
+        return new FindMetadataResult(bundle);
     }
 
     /*

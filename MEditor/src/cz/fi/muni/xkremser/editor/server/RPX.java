@@ -58,8 +58,9 @@ import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class RPX.
+ * The Class RPX. taken from janrain example (therfore no generics)
  */
+@SuppressWarnings({"rawtypes", "unchecked", "unused"})
 public class RPX {
 
     /** The api key. */

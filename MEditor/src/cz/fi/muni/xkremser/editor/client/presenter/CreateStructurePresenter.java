@@ -81,6 +81,7 @@ import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStruct
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
@@ -152,12 +153,7 @@ public class CreateStructurePresenter
     /** The model. */
     private String model;
 
-    /** The DC. */
-    private DublinCore dc;
-
-    private String marc;
-
-    private ModsCollectionClient mods;
+    private MetadataBundle bundle;
 
     /** The place manager. */
     private final PlaceManager placeManager;
@@ -249,6 +245,7 @@ public class CreateStructurePresenter
         leftPresenter.getView().getSectionStack().expandSection(1);
         leftPresenter.getView().getSectionStack().expandSection(2);
         String name = null;
+        DublinCore dc = bundle != null ? bundle.getDc() : null;
         if (dc != null && dc.getTitle() != null && dc.getTitle().size() != 0 && dc.getTitle().get(0) != null
                 && !"".equals(dc.getTitle().get(0).trim())) {
             name = dc.getTitle().get(0).trim();
@@ -592,8 +589,7 @@ public class CreateStructurePresenter
     public void onCreateStructure(CreateStructureEvent event) {
         this.model = event.getModel();
         this.code = event.getCode();
-        this.dc = event.getDc();
-        this.mods = event.getMods();
+        this.bundle = event.getBundle();
     }
 
     /**
@@ -602,19 +598,19 @@ public class CreateStructurePresenter
     @Override
     public void createObjects(DublinCore dc, ModsTypeClient mods) {
 
-        DublinCore newDc = dc == null ? this.dc : dc;
+        DublinCore newDc = dc == null ? this.bundle.getDc() : dc;
         ModsCollectionClient newMods;
         if (mods != null) {
             newMods = new ModsCollectionClient();
             newMods.setMods(Arrays.asList(mods));
         } else {
-            newMods = this.mods;
+            newMods = this.bundle.getMods();
         }
         NewDigitalObject object = null;
         try {
             object =
-                    ClientUtils.createTheStructure(newDc, newMods, leftPresenter.getView()
-                            .getSubelementsGrid().getTree());
+                    ClientUtils.createTheStructure(new MetadataBundle(newDc, newMods, bundle.getMarc()),
+                                                   leftPresenter.getView().getSubelementsGrid().getTree());
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();
@@ -646,7 +642,7 @@ public class CreateStructurePresenter
      */
     @Override
     public ModsCollectionClient getMods() {
-        return mods;
+        return bundle.getMods();
     }
 
     /**
@@ -654,6 +650,6 @@ public class CreateStructurePresenter
      */
     @Override
     public DublinCore getDc() {
-        return dc == null ? new DublinCore() : dc;
+        return bundle == null || bundle.getDc() == null ? new DublinCore() : bundle.getDc();
     }
 }

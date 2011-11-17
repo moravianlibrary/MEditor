@@ -124,6 +124,7 @@ public class ServerUtils {
                 if (field.get(object) != null) {
                     if (field.getType().getName().contains("java.util.List")
                             && !((List<?>) field.get(object)).isEmpty()) {
+                        @SuppressWarnings("unchecked")
                         List<Object> list = (List<Object>) field.get(object);
                         for (int i = 0; i < list.size(); i++) {
                             if (!hasOnlyNullFields(list.get(i))) {
@@ -142,7 +143,10 @@ public class ServerUtils {
                             || field.getType().getName().contains("NameTypeAttribute")
                             || field.getType().getName().contains("PlaceAuthority")
                             || field.getType().getName().contains("Yes")) {
-                        if (!"".equals(field.getClass().getField("value").get(field.get(object)))) {
+                        Field auxField = field.getType().getDeclaredField("value");
+                        auxField.setAccessible(true);
+                        String s = (String) auxField.get(field.get(object));
+                        if (!"".equals(s)) {
                             isNull = false;
                             break;
                         }
@@ -175,6 +179,7 @@ public class ServerUtils {
                 }
                 if (field.get(object) != null) {
                     if (field.getType().getName().contains("java.util.List")) {
+                        @SuppressWarnings("unchecked")
                         List<Object> list = (List<Object>) field.get(object);
                         List<Object> newList = new ArrayList<Object>(list.size());
                         boolean isNull = true;
@@ -196,7 +201,10 @@ public class ServerUtils {
                             || field.getType().getName().contains("NameTypeAttribute")
                             || field.getType().getName().contains("PlaceAuthority")
                             || field.getType().getName().contains("Yes")) {
-                        if ("".equals(field.getClass().getField("value").get(field.get(object)))) {
+                        Field auxField = field.getType().getDeclaredField("value");
+                        auxField.setAccessible(true);
+                        String s = (String) auxField.get(field.get(object));
+                        if ("".equals(s)) {
                             field.set(object, null);
                         }
                         continue;
@@ -265,4 +273,5 @@ public class ServerUtils {
         }
         return addr.getHostName();
     }
+
 }

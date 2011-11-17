@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
  * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class PutUserRole
         extends UnsecuredActionImpl<PutUserRoleResult> {
 

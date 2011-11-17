@@ -34,7 +34,6 @@ import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
@@ -43,6 +42,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
  * The Class GetDigitalObjectDetail.
  */
 @GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
 public class GetDigitalObjectDetail
         extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
 

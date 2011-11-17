@@ -35,8 +35,9 @@ import com.gwtplatform.dispatch.annotation.Order;
  * The Class ConfigReceived.
  */
 @GenEvent
+@SuppressWarnings("unused")
 public class KeyPressed {
 
     @Order(1)
-    int code;
+    private int code;
 }
