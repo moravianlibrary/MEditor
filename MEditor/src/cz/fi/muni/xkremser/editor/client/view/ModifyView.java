@@ -107,11 +107,11 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorDragMoveHandler;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
-import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.StoringWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
@@ -280,7 +280,7 @@ public class ModifyView
 
     private ModsWindow modsWindow = null;
 
-    private DownloadingWindow downloadingWindow = null;
+    private DownloadFoxmlWindow downloadingWindow = null;
 
     private EditorClientConfiguration config;
 
@@ -420,8 +420,8 @@ public class ModifyView
             downloadingWindow.destroy();
             downloadingWindow = null;
 
-        } else if (StoringWindow.isInstanceVisible()) {
-            StoringWindow.closeInstantiatedWindow();
+        } else if (StoreWorkingCopyWindow.isInstanceVisible()) {
+            StoreWorkingCopyWindow.closeInstantiatedWindow();
 
         } else if (universalWindow != null && universalWindow.isCreated()) {
             universalWindow.destroy();
@@ -1379,7 +1379,7 @@ public class ModifyView
             downloadingWindow.destroy();
             downloadingWindow = null;
         }
-        downloadingWindow = new DownloadingWindow(lang, ts) {
+        downloadingWindow = new DownloadFoxmlWindow(lang, ts) {
 
             @Override
             protected void init() {
@@ -1394,7 +1394,7 @@ public class ModifyView
     }
 
     @Override
-    public DownloadingWindow getDownloadingWindow() {
+    public DownloadFoxmlWindow getDownloadingWindow() {
         return downloadingWindow;
     }
 

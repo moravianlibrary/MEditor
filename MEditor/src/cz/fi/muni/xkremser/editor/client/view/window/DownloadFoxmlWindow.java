@@ -48,7 +48,7 @@ import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.REL
  * @version $Id$
  */
 
-public abstract class DownloadingWindow
+public abstract class DownloadFoxmlWindow
         extends UniversalWindow {
 
     private final Layout mainLayout;
@@ -62,7 +62,7 @@ public abstract class DownloadingWindow
 
     private String[] stringsWithXml;
 
-    public DownloadingWindow(final LangConstants lang, final EditorTabSet ts) {
+    public DownloadFoxmlWindow(final LangConstants lang, final EditorTabSet ts) {
         super(360, 350, lang.downloadItem());
         this.lang = lang;
 

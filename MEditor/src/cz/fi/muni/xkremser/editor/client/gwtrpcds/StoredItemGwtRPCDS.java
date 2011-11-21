@@ -45,14 +45,14 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsResult;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class StoredTreeGwtRPCDS.
+ * The Class StoredItemGwtRPCDS.
  */
-public class StoredTreeGwtRPCDS
+public class StoredItemGwtRPCDS
         extends AbstractGwtRPCDS {
 
     /** The dispatcher. */
@@ -66,7 +66,7 @@ public class StoredTreeGwtRPCDS
      * @param dispatcher
      *        the dispatcher
      */
-    public StoredTreeGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
+    public StoredItemGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
         this.dispatcher = dispatcher;
         this.lang = lang;
         DataSourceField field;
@@ -102,7 +102,7 @@ public class StoredTreeGwtRPCDS
     @Override
     protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 
-        dispatcher.execute(new StoredFilesAction(null), new DispatchCallback<StoredFilesResult>() {
+        dispatcher.execute(new StoredItemsAction(null), new DispatchCallback<StoredItemsResult>() {
 
             @Override
             public void callbackError(final Throwable cause) {
@@ -112,7 +112,7 @@ public class StoredTreeGwtRPCDS
             }
 
             @Override
-            public void callback(StoredFilesResult result) {
+            public void callback(StoredItemsResult result) {
                 List<StoredItem> items = result.getStoredItems();
                 ListGridRecord[] list = new ListGridRecord[items.size()];
                 for (int i = 0; i < items.size(); i++) {
@@ -169,7 +169,7 @@ public class StoredTreeGwtRPCDS
     //     * @param to
     //     *        the to
     //     */
-    //    private static void copyValues(ListGridRecord from, StoredItem to) {
+    //    private static void copyValues(ListGridRecord from, StoredItems to) {
     //        to.setName(from.getAttributeAsString(Constants.ATTR_FILE_NAME));
     //        to.setStoredDate(from.getAttributeAsString(Constants.ATTR_STORED));
     //        //        to.setName(from.getAttributeAsString(Constants.ATTR_NAME));

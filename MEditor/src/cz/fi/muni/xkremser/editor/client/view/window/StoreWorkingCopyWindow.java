@@ -50,24 +50,24 @@ import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredTreeGwtRPCDS;
+import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredItemGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsResult;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
 
-public class StoringWindow
+public class StoreWorkingCopyWindow
         extends UniversalWindow {
 
     private final LangConstants lang;
-    private static StoringWindow storingWindow = null;
+    private static StoreWorkingCopyWindow storingWindow = null;
 
     public static void setInstanceOf(DigitalObjectDetail detail,
                                      final LangConstants lang,
@@ -76,7 +76,7 @@ public class StoringWindow
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        storingWindow = new StoringWindow(detail, lang, dispatcher, ts);
+        storingWindow = new StoreWorkingCopyWindow(detail, lang, dispatcher, ts);
     }
 
     public static boolean isInstanceVisible() {
@@ -88,10 +88,10 @@ public class StoringWindow
         storingWindow = null;
     }
 
-    private StoringWindow(final DigitalObjectDetail detail,
-                          final LangConstants lang,
-                          final DispatchAsync dispatcher,
-                          final EditorTabSet ts) {
+    private StoreWorkingCopyWindow(final DigitalObjectDetail detail,
+                                   final LangConstants lang,
+                                   final DispatchAsync dispatcher,
+                                   final EditorTabSet ts) {
         super(450, 550, lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel());
         this.lang = lang;
 
@@ -124,7 +124,7 @@ public class StoringWindow
         storedFilesGrid.setHoverStyle("interactImageHover");
         storedFilesGrid.setExtraSpace(20);
 
-        storedFilesGrid.setDataSource(new StoredTreeGwtRPCDS(dispatcher, lang));
+        storedFilesGrid.setDataSource(new StoredItemGwtRPCDS(dispatcher, lang));
         storedFilesGrid.setAutoFetchData(true);
         storedFilesGrid.setHoverWidth(300);
         storedFilesGrid.setHoverCustomizer(new HoverCustomizer() {
@@ -234,11 +234,11 @@ public class StoringWindow
 
     private void store(DigitalObjectDetail detail, final DispatchAsync dispatcher, final EditorTabSet ts) {
 
-        StoredFilesAction storedAction = new StoredFilesAction(detail);
-        DispatchCallback<StoredFilesResult> storedCallback = new DispatchCallback<StoredFilesResult>() {
+        StoredItemsAction storedAction = new StoredItemsAction(detail);
+        DispatchCallback<StoredItemsResult> storedCallback = new DispatchCallback<StoredItemsResult>() {
 
             @Override
-            public void callback(StoredFilesResult result) {
+            public void callback(StoredItemsResult result) {
                 if (result.getStoredItems() != null) {
                     SC.ask(lang.operationSuccessful() + "<br><br>" + lang.lockStoredObject(),
                            new BooleanCallback() {

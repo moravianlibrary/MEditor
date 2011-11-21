@@ -35,26 +35,24 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
  * @version $Id$
  */
 
-public interface StoreDAO {
-
+public interface StoredItemsDAO {
 
     /**
-      * @param userId
-      * @return
-      * @throws DatabaseException
-      */
-        
-    List<StoredItem> getStoredFiles(long userId) throws DatabaseException;
-    
-//    /**
-//     * @param userId
-//     * @param storedItem
-//     * @param foxml
-//     * @return
-//     * @throws DatabaseException
-//     */
-//
-//    boolean storeDigitalObject(String userId, StoredItem storedItem, String foxml) throws DatabaseException;
+     * @param userId
+     * @return
+     * @throws DatabaseException
+     */
 
+    List<StoredItem> getStoredItem(long userId) throws DatabaseException;
+
+    //    /**
+    //     * @param userId
+    //     * @param storedItem
+    //     * @param foxml
+    //     * @return
+    //     * @throws DatabaseException
+    //     */
+    //
+    //    boolean storeDigitalObject(String userId, StoredItems storedItem, String foxml) throws DatabaseException;
 
 }

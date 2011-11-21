@@ -37,26 +37,26 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.StoreDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.StoredItemsDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredFilesResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsResult;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
 
-public class StoredFilesHandler
-        implements ActionHandler<StoredFilesAction, StoredFilesResult> {
+public class StoredItemsHandler
+        implements ActionHandler<StoredItemsAction, StoredItemsResult> {
 
     /** The store dao */
     @Inject
-    private StoreDAO storeDao;
+    private StoredItemsDAO storeDao;
 
     /** The user DAO **/
     @Inject
@@ -71,7 +71,7 @@ public class StoredFilesHandler
      */
 
     @Override
-    public StoredFilesResult execute(StoredFilesAction action, ExecutionContext context)
+    public StoredItemsResult execute(StoredItemsAction action, ExecutionContext context)
             throws ActionException {
 
         HttpSession session = httpSessionProvider.get();
@@ -88,18 +88,18 @@ public class StoredFilesHandler
         if (action.getDetail() == null) {
 
             try {
-                storedItems = storeDao.getStoredFiles(userId);
+                storedItems = storeDao.getStoredItem(userId);
             } catch (DatabaseException e) {
                 throw new ActionException(e);
             }
 
-            return new StoredFilesResult(storedItems);
+            return new StoredItemsResult(storedItems);
 
         } else {
 
             String workingCopyFoxml =
                     FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
-            return new StoredFilesResult(storedItems);
+            return new StoredItemsResult(storedItems);
         }
     }
 
@@ -108,8 +108,8 @@ public class StoredFilesHandler
      */
 
     @Override
-    public Class<StoredFilesAction> getActionType() {
-        return StoredFilesAction.class;
+    public Class<StoredItemsAction> getActionType() {
+        return StoredItemsAction.class;
     }
 
     /**
@@ -117,7 +117,7 @@ public class StoredFilesHandler
      */
 
     @Override
-    public void undo(StoredFilesAction arg0, StoredFilesResult arg1, ExecutionContext arg2)
+    public void undo(StoredItemsAction arg0, StoredItemsResult arg1, ExecutionContext arg2)
             throws ActionException {
         // TODO Auto-generated method stub
     }

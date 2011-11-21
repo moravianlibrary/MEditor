@@ -40,8 +40,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class StoredFiles
-        extends UnsecuredActionImpl<StoredFilesResult> {
+public class StoredItems
+        extends UnsecuredActionImpl<StoredItemsResult> {
 
     @In(1)
     private DigitalObjectDetail detail;

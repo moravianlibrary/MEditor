@@ -46,19 +46,19 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
  * @version $Id$
  */
 
-public class StoreDAOImpl
+public class StoredItemsDAOImpl
         extends AbstractDAO
-        implements StoreDAO {
+        implements StoredItemsDAO {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(StoreDAOImpl.class.getPackage().toString());
+    private static final Logger LOGGER = Logger.getLogger(StoredItemsDAOImpl.class.getPackage().toString());
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    private static final String SELECT_STORED_FILES =
+    private static final String SELECT_STORED_ITEM =
             "SELECT file_name, uuid, name, description, stored FROM " + Constants.TABLE_STORED_FILES
                     + " WHERE user_id=(?)";
 
-    private static final String INSERT_STORED_FILE =
+    private static final String INSERT_STORED_ITEM =
             "INSERT INTO "
                     + Constants.TABLE_STORED_FILES
                     + " (user_id, file_name, uuid, name, description, stored) VALUES ((?)(?)(?)(?)(?)(CURRENT_TIMESTAMP)) ";
@@ -68,13 +68,13 @@ public class StoreDAOImpl
      */
 
     @Override
-    public List<StoredItem> getStoredFiles(long userId) throws DatabaseException {
+    public List<StoredItem> getStoredItem(long userId) throws DatabaseException {
 
         PreparedStatement selectSt = null;
         List<StoredItem> storedItems = new ArrayList<StoredItem>();
 
         try {
-            selectSt = getConnection().prepareStatement(SELECT_STORED_FILES);
+            selectSt = getConnection().prepareStatement(SELECT_STORED_ITEM);
             selectSt.setLong(1, userId);
 
             ResultSet rs = selectSt.executeQuery();
@@ -100,26 +100,26 @@ public class StoreDAOImpl
         return storedItems;
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//
-//    @Override
-//    public boolean storeDigitalObject(String userId, StoredItem storedItem, String foxml)
-//            throws DatabaseException {
-//                PreparedStatement updateSt = null;
-//        
-//                try {
-//                    updateSt = getConnection().prepareStatement(INSERT_STORED_FILE);
-//                    updateSt.setString(1, userId);
-//                    updateSt.setString(2, storedItem.);
-//                    
-//                    
-//                } catch (SQLException e) {
-//                    // TODO Auto-generated method stub
-//                    e.printStackTrace();
-//        
-//                }
-//        return false;
-//    }
+    //    /**
+    //     * {@inheritDoc}
+    //     */
+    //
+    //    @Override
+    //    public boolean storeDigitalObject(String userId, StoredItems storedItem, String foxml)
+    //            throws DatabaseException {
+    //                PreparedStatement updateSt = null;
+    //        
+    //                try {
+    //                    updateSt = getConnection().prepareStatement(INSERT_STORED_ITEM);
+    //                    updateSt.setString(1, userId);
+    //                    updateSt.setString(2, storedItem.);
+    //                    
+    //                    
+    //                } catch (SQLException e) {
+    //                    // TODO Auto-generated method stub
+    //                    e.printStackTrace();
+    //        
+    //                }
+    //        return false;
+    //    }
 }

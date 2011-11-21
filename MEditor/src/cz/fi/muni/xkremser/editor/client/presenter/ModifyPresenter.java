@@ -71,11 +71,11 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
-import cz.fi.muni.xkremser.editor.client.view.window.DownloadingWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.StoringWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.StoreWorkingCopyWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
@@ -137,7 +137,7 @@ public class ModifyPresenter
 
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
 
-        DownloadingWindow getDownloadingWindow();
+        DownloadFoxmlWindow getDownloadingWindow();
 
         void setConfiguration(EditorClientConfiguration config);
 
@@ -876,6 +876,6 @@ public class ModifyPresenter
 
     @Override
     public void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts) {
-        StoringWindow.setInstanceOf(detail, lang, dispatcher, ts);
+        StoreWorkingCopyWindow.setInstanceOf(detail, lang, dispatcher, ts);
     }
 }
