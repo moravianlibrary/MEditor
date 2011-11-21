@@ -37,6 +37,12 @@ color: rgb(0,0,196); background-color: rgb(228,230,160);
 color: rgb(0,0,0); font-weight: bold; font-style: italic;
 }
 
+.infoTabImg{
+	border: 3px solid;
+	max-height: 300px;
+	max-width: 300px;
+}
+
 input{
 	font-size: 13px;
 	width: 150px;
