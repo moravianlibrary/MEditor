@@ -42,7 +42,6 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -294,7 +293,7 @@ public class FindMetadataPresenter
             @Override
             public void callbackError(Throwable t) {
                 getView().showProgress(false, false);
-                SC.warn(t.getMessage());
+                super.callbackError(t);
             }
         });
         getView().showProgress(true, false);

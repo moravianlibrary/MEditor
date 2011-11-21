@@ -26,7 +26,6 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Label;
@@ -36,8 +35,8 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.dispatcher.TryAgainCallbackError;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 
@@ -173,29 +172,13 @@ public class LockDigitalObjectWindow
 
                     @Override
                     public void callbackError(final Throwable t) {
-                        if (t.getMessage() != null && t.getMessage().length() > 0
-                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                                       new BooleanCallback() {
+                        super.callbackError(t, new TryAgainCallbackError() {
 
-                                           @Override
-                                           public void execute(Boolean value) {
-                                               if (value != null && value) {
-                                                   MEditor.redirect(t.getMessage().substring(1));
-                                               }
-                                           }
-                                       });
-                        } else {
-                            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
-
-                                @Override
-                                public void execute(Boolean value) {
-                                    if (value != null && value) {
-                                        lockDigitalObject(ts, dispatcher);
-                                    }
-                                }
-                            });
-                        }
+                            @Override
+                            public void theMethodForCalling() {
+                                lockDigitalObject(ts, dispatcher);
+                            }
+                        });
                         mw.hide();
                     }
                 };

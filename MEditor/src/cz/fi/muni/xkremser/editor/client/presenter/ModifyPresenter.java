@@ -61,10 +61,10 @@ import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.dispatcher.TryAgainCallbackError;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
@@ -490,29 +490,13 @@ public class ModifyPresenter
 
                     @Override
                     public void callbackError(final Throwable t) {
-                        if (t.getMessage() != null && t.getMessage().length() > 0
-                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                                       new BooleanCallback() {
+                        super.callbackError(t, new TryAgainCallbackError() {
 
-                                           @Override
-                                           public void execute(Boolean value) {
-                                               if (value != null && value) {
-                                                   MEditor.redirect(t.getMessage().substring(1));
-                                               }
-                                           }
-                                       });
-                        } else {
-                            SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
-
-                                @Override
-                                public void execute(Boolean value) {
-                                    if (value != null && value) {
-                                        getObject(forcedRefresh);
-                                    }
-                                }
-                            });
-                        }
+                            @Override
+                            public void theMethodForCalling() {
+                                getObject(forcedRefresh);
+                            }
+                        });
                         getView().getPopupPanel().setVisible(false);
                         getView().getPopupPanel().hide();
                     }
@@ -683,29 +667,13 @@ public class ModifyPresenter
 
                     @Override
                     public void callbackError(final Throwable t) {
-                        if (t.getMessage() != null && t.getMessage().length() > 0
-                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                                       new BooleanCallback() {
+                        super.callbackError(t, new TryAgainCallbackError() {
 
-                                           @Override
-                                           public void execute(Boolean value) {
-                                               if (value != null && value) {
-                                                   MEditor.redirect(t.getMessage().substring(1));
-                                               }
-                                           }
-                                       });
-                        } else {
-                            SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
-
-                                @Override
-                                public void execute(Boolean value) {
-                                    if (value != null && value) {
-                                        getStream(uuid, model, ts);
-                                    }
-                                }
-                            });
-                        }
+                            @Override
+                            public void theMethodForCalling() {
+                                getStream(uuid, model, ts);
+                            }
+                        });
                         mw.hide();
                     }
                 };
@@ -773,29 +741,13 @@ public class ModifyPresenter
 
                     @Override
                     public void callbackError(final Throwable t) {
-                        if (t.getMessage() != null && t.getMessage().length() > 0
-                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                                       new BooleanCallback() {
+                        super.callbackError(t, new TryAgainCallbackError() {
 
-                                           @Override
-                                           public void execute(Boolean value) {
-                                               if (value != null && value) {
-                                                   MEditor.redirect(t.getMessage().substring(1));
-                                               }
-                                           }
-                                       });
-                        } else {
-                            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
-
-                                @Override
-                                public void execute(Boolean value) {
-                                    if (value != null && value) {
-                                        getLockDigitalObjectInformation(ts, calledDuringPublishing);
-                                    }
-                                }
-                            });
-                        }
+                            @Override
+                            public void theMethodForCalling() {
+                                getLockDigitalObjectInformation(ts, calledDuringPublishing);
+                            }
+                        });
                         mw.hide();
                     }
                 };
@@ -841,29 +793,13 @@ public class ModifyPresenter
 
                     @Override
                     public void callbackError(final Throwable t) {
-                        if (t.getMessage() != null && t.getMessage().length() > 0
-                                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                            SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                                       new BooleanCallback() {
+                        super.callbackError(t, new TryAgainCallbackError() {
 
-                                           @Override
-                                           public void execute(Boolean value) {
-                                               if (value != null && value) {
-                                                   MEditor.redirect(t.getMessage().substring(1));
-                                               }
-                                           }
-                                       });
-                        } else {
-                            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
-
-                                @Override
-                                public void execute(Boolean value) {
-                                    if (value != null && value) {
-                                        unlockDigitalObject(ts);
-                                    }
-                                }
-                            });
-                        }
+                            @Override
+                            public void theMethodForCalling() {
+                                unlockDigitalObject(ts);
+                            }
+                        });
                         mw.hide();
                     }
                 };

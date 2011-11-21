@@ -28,9 +28,11 @@
 package cz.fi.muni.xkremser.editor.client.dispatcher;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
@@ -43,6 +45,9 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
  */
 public abstract class DispatchCallback<T>
         implements AsyncCallback<T> {
+
+    @Inject
+    private static LangConstants lang;
 
     /**
      * Instantiates a new dispatch callback.
@@ -88,26 +93,49 @@ public abstract class DispatchCallback<T>
      *        the t
      */
     public void callbackError(final Throwable t) {
-        String msg = null;
-        final boolean redirect =
-                (t.getMessage() != null && t.getMessage().length() > 0 && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG);
-        if (redirect) {
-            msg = "Session has expired. Do you want to be redirected to login page?";
+        if (!sessionHasExpired(t)) {
+            SC.warn("RPC failed:" + t.getMessage());
         }
-        SC.confirm((redirect ? "" : "RPC failed:" + t.getMessage()) + (msg == null ? "" : msg),
-                   new BooleanCallback() {
+    }
 
-                       @Override
-                       public void execute(Boolean value) {
-                           if (value != null && value) {
-                               if (redirect) {
-                                   MEditor.redirect(t.getMessage().substring(1));
-                               }
-                           } else {
+    public void callbackError(final Throwable t, final TryAgainCallbackError tryAgain) {
 
-                           }
-                       }
-                   });
+        if (!sessionHasExpired(t)) {
+        } else {
+            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
 
+                @Override
+                public void execute(Boolean value) {
+                    if (value != null && value) {
+                        tryAgain.theMethodForCalling();
+                    }
+                }
+            });
+        }
+    }
+
+    public void callbackError(final Throwable t, String message) {
+        if (!sessionHasExpired(t)) {
+            //            SC.warn("RPC failed:" + message);
+            SC.warn(message);
+        }
+    }
+
+    private boolean sessionHasExpired(final Throwable t) {
+        if (t.getMessage() != null && t.getMessage().length() > 0
+                && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
+            SC.confirm(lang.sesExp(), new BooleanCallback() {
+
+                @Override
+                public void execute(Boolean value) {
+                    if (value != null && value) {
+                        MEditor.redirect(t.getMessage().substring(1));
+                    }
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
     }
 }

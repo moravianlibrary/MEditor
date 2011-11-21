@@ -258,7 +258,7 @@ public class StoreWorkingCopyWindow
             @Override
             public void callbackError(final Throwable cause) {
                 Log.error("Store Handle Failure:", cause);
-                EditorSC.operationFailed(lang);
+                super.callbackError(cause, lang.operationFailed());
             }
         };
         dispatcher.execute(storedAction, storedCallback);

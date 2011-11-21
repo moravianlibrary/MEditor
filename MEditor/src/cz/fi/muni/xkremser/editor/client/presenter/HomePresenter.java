@@ -292,7 +292,7 @@ public class HomePresenter
 
                                @Override
                                public void callbackError(Throwable t) {
-                                   SC.warn(t.getMessage());
+                                   super.callbackError(t);
                                    getView().refreshKramerius(false, null);
                                }
                            });

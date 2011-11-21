@@ -100,10 +100,6 @@ public final class EditorSC {
         return sb.toString();
     }
 
-    public static final void serverTreeError(LangConstants lang) {
-        SC.say(lang.attemptingError());
-    }
-
     public static final void operationFailed(LangConstants lang) {
         SC.say(lang.operationFailed());
     }

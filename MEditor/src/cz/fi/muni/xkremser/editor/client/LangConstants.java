@@ -3103,6 +3103,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String scriptAttr();
 
   /**
+   * Translated "Session has expired. Do you want to be redirected to login page?".
+   * 
+   * @return translated "Session has expired. Do you want to be redirected to login page?"
+   */
+  @DefaultStringValue("Session has expired. Do you want to be redirected to login page?")
+  @Key("sesExp")
+  String sesExp();
+
+  /**
    * Translated "Equivalent to MARC 21 field 856 subfields $y and $3.".
    * 
    * @return translated "Equivalent to MARC 21 field 856 subfields $y and $3."
