@@ -50,6 +50,21 @@ public abstract class EditorConfiguration {
         /** The Constant INPUT_QUEUE. */
         public static final String INPUT_QUEUE = "inputQueue";
 
+        /** The Constant IMAGE_SERVER_URL. */
+        public static final String IMAGE_SERVER_URL = "imageServer.url";
+
+        public static final String IMAGE_SERVER_URL_DEFAULT = "??";
+
+        /** The Constant IMAGE_SERVER_KNOWN. */
+        public static final String IMAGE_SERVER_KNOWN = "imageServer.known";
+
+        public static final String IMAGE_SERVER_KNOWN_DEFAULT = "??";
+
+        /** The Constant IMAGE_SERVER_UNKNOWN. */
+        public static final String IMAGE_SERVER_UNKNOWN = "imageServer.unknown";
+
+        public static final String IMAGE_SERVER_UNKNOWN_DEFAULT = "??";
+
         /** The Constant DJATOKA_HOME. */
         public static final String DJATOKA_HOME = "djatoka.home";
 
@@ -264,6 +279,38 @@ public abstract class EditorConfiguration {
      */
     public String getScanInputQueuePath() {
         return getConfiguration().getString(ServerConstants.INPUT_QUEUE);
+    }
+
+    /**
+     * Gets the image server url.
+     * 
+     * @return the image server url
+     */
+    public String getImageServerUrl() {
+        return getConfiguration().getString(ServerConstants.IMAGE_SERVER_URL,
+                                            ServerConstants.IMAGE_SERVER_URL_DEFAULT);
+    }
+
+    /**
+     * Gets the path to image server directory where data with known sysno is
+     * stored.
+     * 
+     * @return the path to image directory (known)
+     */
+    public String getImageServerKnown() {
+        return getConfiguration().getString(ServerConstants.IMAGE_SERVER_KNOWN,
+                                            ServerConstants.IMAGE_SERVER_KNOWN_DEFAULT);
+    }
+
+    /**
+     * Gets the path to image server directory where data with unknown sysno is
+     * stored.
+     * 
+     * @return the path to image directory (unknown)
+     */
+    public String getImageServerUnknown() {
+        return getConfiguration().getString(ServerConstants.IMAGE_SERVER_UNKNOWN,
+                                            ServerConstants.IMAGE_SERVER_UNKNOWN_DEFAULT);
     }
 
     /**
