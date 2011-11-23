@@ -336,7 +336,7 @@ public class CreateObjectMenuPresenter
                     items2[0].focus();
                     isRefByFocused = false;
                 }
-            } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_D.getCode()) {
+            } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_H.getCode()) {
                 Canvas[] items1 = getView().getSectionStack().getSection(1).getItems();
                 if (items1.length > 0) {
                     items1[0].focus();

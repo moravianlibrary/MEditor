@@ -34,7 +34,10 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.fi.muni.xkremser.editor.client.CreateObjectException;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -54,6 +57,10 @@ public class InsertNewDigitalObjectHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
+    /** The configuration. */
+    @Inject
+    private EditorConfiguration config;
+
     /**
      * {@inheritDoc}
      */
@@ -67,7 +74,13 @@ public class InsertNewDigitalObjectHandler
         if (LOGGER.isInfoEnabled()) {
             LOGGER.debug("Inserting digital object: " + object.getName());
         }
-        boolean success = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
+
+        boolean success;
+        try {
+            success = CreateObjectUtils.insertAllTheStructureToFOXMLs(object, config);
+        } catch (CreateObjectException e) {
+            throw new ActionException(e.getMessage());
+        }
         return new InsertNewDigitalObjectResult(success);
     }
 

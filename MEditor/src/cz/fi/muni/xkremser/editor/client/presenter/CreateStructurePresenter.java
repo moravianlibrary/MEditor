@@ -147,8 +147,8 @@ public class CreateStructurePresenter
     /** The doMenuPresenter presenter. */
     private final DigitalObjectMenuPresenter doMenuPresenter;
 
-    /** The code. */
-    private String code;
+    /** The sysno. */
+    private String sysno;
 
     /** The model. */
     private String model;
@@ -218,7 +218,7 @@ public class CreateStructurePresenter
     @Override
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
-        code = request.getParameter(Constants.URL_PARAM_CODE, null);
+        sysno = request.getParameter(Constants.URL_PARAM_CODE, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
     }
 
@@ -250,7 +250,7 @@ public class CreateStructurePresenter
                 && !"".equals(dc.getTitle().get(0).trim())) {
             name = dc.getTitle().get(0).trim();
         } else {
-            name = code;
+            name = sysno;
         }
         leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
                                                 name,
@@ -268,7 +268,7 @@ public class CreateStructurePresenter
       */
 
     private void processImages() {
-        final ScanFolderAction action = new ScanFolderAction(model, code);
+        final ScanFolderAction action = new ScanFolderAction(model, sysno);
         final DispatchCallback<ScanFolderResult> callback = new DispatchCallback<ScanFolderResult>() {
 
             private volatile int done = 0;
@@ -349,11 +349,11 @@ public class CreateStructurePresenter
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
-                                new ScanRecord(String.valueOf(i), model, code, itemList.get(i)
+                                new ScanRecord(String.valueOf(i), model, sysno, itemList.get(i)
                                         .getIdentifier(), itemList.get(i).getJpgFsPath());
                     }
 
-                    getView().onAddImages(model, code, items);
+                    getView().onAddImages(model, sysno, items);
                 }
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -592,7 +592,7 @@ public class CreateStructurePresenter
     @Override
     public void onCreateStructure(CreateStructureEvent event) {
         this.model = event.getModel();
-        this.code = event.getCode();
+        this.sysno = event.getCode();
         this.bundle = event.getBundle();
     }
 
@@ -622,6 +622,7 @@ public class CreateStructurePresenter
         //        object.setMarcXml(marcXml);
 
         if (object != null) {
+            object.setSysno(sysno);
             System.out.println(ClientUtils.toStringTree(object));
             dispatcher.execute(new InsertNewDigitalObjectAction(object),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {

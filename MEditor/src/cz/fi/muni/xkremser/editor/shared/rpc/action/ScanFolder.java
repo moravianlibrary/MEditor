@@ -43,7 +43,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
 public class ScanFolder
-        extends UnsecuredActionImpl<ScanInputQueueResult> {
+        extends UnsecuredActionImpl<ScanFolderResult> {
 
     /** The model. */
     @In(1)
