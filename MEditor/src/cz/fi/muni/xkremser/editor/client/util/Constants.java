@@ -280,10 +280,16 @@ public class Constants {
         CODE_KEY_M(77),
 
         /**
-         * The value of nativeEvent-keyCode of button D - used for focus on
-         * Referenced-by-Tab
+         * The value of nativeEvent-keyCode of button D - used for delete a
+         * digital object
          **/
         CODE_KEY_D(68),
+
+        /**
+         * The value of nativeEvent-keyCode of button H - used for focus on
+         * Referenced-by-Tab
+         **/
+        CODE_KEY_H(72),
 
         /**
          * The value of nativeEvent-keyCode of button Esc - used for close
