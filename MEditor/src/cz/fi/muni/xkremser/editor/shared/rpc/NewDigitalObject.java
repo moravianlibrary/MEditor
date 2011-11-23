@@ -47,6 +47,7 @@ public class NewDigitalObject
     private MetadataBundle bundle;
     private String uuid;
     private boolean exist;
+    private String sysno;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -66,6 +67,23 @@ public class NewDigitalObject
         this.bundle = bundle;
         this.uuid = uuid;
         this.exist = exist;
+    }
+
+    /**
+     * @return the sysno
+     */
+
+    public String getSysno() {
+        return sysno;
+    }
+
+    /**
+     * @param sysno
+     *        the sysno to set
+     */
+
+    public void setSysno(String sysno) {
+        this.sysno = sysno;
     }
 
     public int getOrderIndex() {
