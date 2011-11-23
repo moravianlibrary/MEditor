@@ -48,6 +48,7 @@ public class NewDigitalObject
     private String uuid;
     private boolean exist;
     private String sysno;
+    private String path;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -140,6 +141,14 @@ public class NewDigitalObject
 
     public void setBundle(MetadataBundle bundle) {
         this.bundle = bundle;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }

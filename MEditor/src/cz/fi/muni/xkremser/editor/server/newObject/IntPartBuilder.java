@@ -63,7 +63,7 @@ public class IntPartBuilder
      * {@inheritDoc}
      */
     @Override
-    protected void init() {
+    protected void createOtherStreams() {
         // TODO Auto-generated method stub
 
     }

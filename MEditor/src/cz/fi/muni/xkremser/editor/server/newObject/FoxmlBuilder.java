@@ -88,12 +88,12 @@ public abstract class FoxmlBuilder {
     }
 
     public void createDocument() {
-        init();
         createDocumentAndRootElement();
         decotateProperties();
         decorateDCStream();
         decorateMODSStream();
         decorateRelsExtStream();
+        createOtherStreams();
         //        addPolicyDatastream(policy);
         //dcXmlContent = createDcXmlContent();
         //        modsXmlContent = createModsXmlContent();
@@ -275,7 +275,7 @@ public abstract class FoxmlBuilder {
 
     protected abstract void decorateMODSStream();
 
-    protected abstract void init();
+    protected abstract void createOtherStreams();
 
     protected abstract DigitalObjectModel getModel();
 
@@ -374,26 +374,6 @@ public abstract class FoxmlBuilder {
 
     public void setBundle(MetadataBundle bundle) {
         this.bundle = bundle;
-    }
-
-    public static void main(String... args) {
-        //        FoxmlBuilder test = new PageBuilder("FC");
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.getChildren().add(new RelsExtRelation(FoxmlUtils.getRandomUuid(), FedoraRelationship.hasUnit));
-        //        test.createDocument();
-        //        //        Dom4jUtils.writeDocument(doc, out, printType)
-        //        //        System.out.println(test.getDocument());
-        //        test.getDocument(true);
+        setSysno(getBundle().getMarc().getSysno());
     }
 }

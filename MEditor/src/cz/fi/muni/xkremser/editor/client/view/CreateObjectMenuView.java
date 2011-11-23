@@ -456,6 +456,7 @@ public class CreateObjectMenuView
         public SubstructureTreeNode(String id,
                                     String parent,
                                     String name,
+                                    String uuid,
                                     String type,
                                     String typeId,
                                     boolean isOpen,
@@ -463,6 +464,7 @@ public class CreateObjectMenuView
             setAttribute(Constants.ATTR_ID, id);
             setAttribute(Constants.ATTR_PARENT, parent);
             setAttribute(Constants.ATTR_NAME, name);
+            setAttribute(Constants.ATTR_PICTURE, uuid);
             setAttribute(Constants.ATTR_TYPE, type);
             setAttribute(Constants.ATTR_TYPE_ID, typeId);
             setAttribute("isOpen", isOpen);
@@ -476,14 +478,15 @@ public class CreateObjectMenuView
     @Override
     public void addSubstructure(String id,
                                 String name,
+                                String uuid,
                                 String type,
                                 String typeId,
                                 String parent,
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
-        structureTree
-                .add(new SubstructureTreeNode(id, parent, name, type, typeId, isOpen, exist), parentNode);
+        structureTree.add(new SubstructureTreeNode(id, parent, name, uuid, type, typeId, isOpen, exist),
+                          parentNode);
         structureTreeGrid.setData(structureTree);
     }
 }

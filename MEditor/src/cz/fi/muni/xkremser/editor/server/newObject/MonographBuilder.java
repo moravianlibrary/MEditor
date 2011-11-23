@@ -302,8 +302,8 @@ class MonographBuilder
      * {@inheritDoc}
      */
     @Override
-    protected void init() {
+    protected void createOtherStreams() {
         //        setSignature(getBundle().getMarc().getSysno());
-        setSysno(getBundle().getMarc().getSysno());
+
     }
 }

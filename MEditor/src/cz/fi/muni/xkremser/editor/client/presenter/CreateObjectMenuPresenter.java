@@ -109,6 +109,7 @@ public class CreateObjectMenuPresenter
 
         void addSubstructure(String id,
                              String name,
+                             String uuid,
                              String type,
                              String typeId,
                              String parent,

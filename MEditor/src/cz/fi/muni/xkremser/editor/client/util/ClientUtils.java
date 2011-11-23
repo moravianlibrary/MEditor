@@ -273,6 +273,10 @@ public class ClientUtils {
         if (name == null || "".equals(name)) {
             throw new CreateObjectException("unknown name");
         }
+        String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
+        if (name == null || "".equals(name)) {
+            throw new CreateObjectException("unknown name");
+        }
         String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
         if (modelString == null || "".equals(modelString)) {
             throw new CreateObjectException("unknown type");
@@ -290,6 +294,7 @@ public class ClientUtils {
                                      bundle,
                                      null,
                                      node.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        newObj.setPath(imgUuid);
         TreeNode[] children = tree.getChildren(node);
         for (TreeNode child : children) {
             newObj.getChildren().add(createTheStructure(bundle, tree, child));

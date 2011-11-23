@@ -99,7 +99,7 @@ public class PageBuilder
      * {@inheritDoc}
      */
     @Override
-    protected void init() {
+    protected void createOtherStreams() {
         // TODO Auto-generated method stub
 
     }

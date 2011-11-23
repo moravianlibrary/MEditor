@@ -254,6 +254,7 @@ public class CreateStructurePresenter
         }
         leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
                                                 name,
+                                                null,
                                                 model,
                                                 model,
                                                 SubstructureTreeNode.ROOT_ID,
@@ -545,6 +546,7 @@ public class CreateStructurePresenter
                 String name = leftPresenter.getView().getNewName().getValueAsString();
                 name = "".equals(name) ? possibleParent : name;
                 leftPresenter.getView().addSubstructure(possibleParent,
+                                                        null,
                                                         name,
                                                         type,
                                                         model.getValue(),
@@ -559,14 +561,16 @@ public class CreateStructurePresenter
             if (selection != null && selection.length > 0
                     && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
                 for (int i = 0; i < selection.length; i++) {
-                    leftPresenter.getView().addSubstructure(String.valueOf(leftPresenter.newId()),
-                                                            selection[i].getAttribute(Constants.ATTR_NAME),
-                                                            leftPresenter.getLabelFromModel()
-                                                                    .get(DigitalObjectModel.PAGE.getValue()),
-                                                            DigitalObjectModel.PAGE.getValue(),
-                                                            possibleParent,
-                                                            true,
-                                                            false);
+                    leftPresenter.getView()
+                            .addSubstructure(String.valueOf(leftPresenter.newId()),
+                                             selection[i].getAttribute(Constants.ATTR_NAME),
+                                             selection[i].getAttribute(Constants.ATTR_PICTURE),
+                                             leftPresenter.getLabelFromModel().get(DigitalObjectModel.PAGE
+                                                     .getValue()),
+                                             DigitalObjectModel.PAGE.getValue(),
+                                             possibleParent,
+                                             true,
+                                             false);
                     if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
                         getView().getTileGrid().removeSelectedData();
                     }
