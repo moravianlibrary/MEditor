@@ -73,6 +73,7 @@ public abstract class FoxmlBuilder {
     private static final String OVER_MAX_LENGTH_SUFFIX = "...";
     private String krameriusUrl;
     private String alephUrl;
+    private String newFilePath;
 
     private static final int MAX_LABEL_LENGTH = 100;
     private static final Boolean VERSIONABLE = true;
@@ -216,6 +217,13 @@ public abstract class FoxmlBuilder {
                                                        "RDF Statements about this object",
                                                        versionId);
                 break;
+            case IMG_FULL:
+                dataStreamVersion =
+                        createDatastreamVersionElement(datastreamEl, null, "image/jpeg", "", versionId);
+                break;
+            case IMG_THUMB:
+                dataStreamVersion =
+                        createDatastreamVersionElement(datastreamEl, null, "image/jpeg", "", versionId);
         }
         switch (dsCGroup) {
             case X:
@@ -278,6 +286,23 @@ public abstract class FoxmlBuilder {
     protected abstract void createOtherStreams();
 
     protected abstract DigitalObjectModel getModel();
+
+    /**
+     * @return the newFilePath
+     */
+
+    public String getNewFilePath() {
+        return newFilePath;
+    }
+
+    /**
+     * @param newFilePath
+     *        the newFilePath to set
+     */
+
+    public void setNewFilePath(String newFilePath) {
+        this.newFilePath = newFilePath;
+    }
 
     public String getLabel() {
         return label;

@@ -100,7 +100,11 @@ public class PageBuilder
      */
     @Override
     protected void createOtherStreams() {
-        // TODO Auto-generated method stub
+        appendDatastream(DATASTREAM_CONTROLGROUP.E, DATASTREAM_ID.IMG_FULL, null, "URL", getNewFilePath()
+                + "/big.jpg");
+
+        appendDatastream(DATASTREAM_CONTROLGROUP.E, DATASTREAM_ID.IMG_THUMB, null, "URL", getNewFilePath()
+                + "/preview.jpg");
 
     }
 }

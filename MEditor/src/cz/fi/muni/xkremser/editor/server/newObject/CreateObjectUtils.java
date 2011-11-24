@@ -110,12 +110,25 @@ public class CreateObjectUtils {
                         .getModel(), child.getModel())));
             }
         }
+        String newFilePath = null;
+        if (node.getModel() == DigitalObjectModel.PAGE) {
+            if (sysno == null) {
+                newFilePath = config.getImageServerUnknown() + node.getUuid();
+            } else {
+                newFilePath = getSysnoPath(sysno, config) + node.getUuid();
+            }
+            builder.setNewFilePath(newFilePath);
+        }
+
         builder.createDocument();
+
         String foxmlRepresentation = builder.getDocument(false);
         boolean success = ingest(foxmlRepresentation);
+
         if (success && node.getModel() == DigitalObjectModel.PAGE) {
-            copyfile(sysno, node.getUuid(), node.getPath(), config);
+            copyfile(newFilePath + ".jp2", node.getPath(), config);
         }
+
         if (!success) {
             insertFOXML(node, mods, dc, attempt - 1, sysno, first, config);
         }
@@ -134,11 +147,11 @@ public class CreateObjectUtils {
      * @param string
      * @throws CreateObjectException
      */
-    private static void copyfile(String sysno, String uuid, String path, EditorConfiguration config)
+    private static void copyfile(String newFilePath, String path, EditorConfiguration config)
             throws CreateObjectException {
 
         File inputFile = new File(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + path + ".jp2");
-        File outputFile = new File(getSysnoPath(sysno, config) + uuid + ".jp2");
+        File outputFile = new File(newFilePath);
         FileReader in;
         try {
             in = new FileReader(inputFile);
