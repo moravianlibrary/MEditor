@@ -113,7 +113,11 @@ public class CreateObjectUtils {
         String newFilePath = null;
         if (node.getModel() == DigitalObjectModel.PAGE) {
             if (sysno == null) {
-                newFilePath = config.getImageServerUnknown() + node.getUuid();
+                String url = config.getImageServerUrl();
+                if (!url.endsWith("/")) {
+                    url += '/';
+                }
+                newFilePath = url + "unknown" + '/' + node.getUuid();
             } else {
                 newFilePath = getSysnoPath(sysno, config) + node.getUuid();
             }
@@ -170,8 +174,13 @@ public class CreateObjectUtils {
     }
 
     private static String getSysnoPath(String sysno, EditorConfiguration config) {
-        return config.getImageServerKnown() + File.separator + sysno.substring(0, 3) + File.separator
-                + sysno.substring(3, 6) + File.separator + sysno.substring(6, 9) + File.separator;
+        String url = config.getImageServerUrl();
+        if (!url.endsWith("/")) {
+            url += '/';
+        }
+        // TODO: stringbuffer
+        return url + '/' + sysno.substring(0, 3) + '/' + sysno.substring(3, 6) + '/' + sysno.substring(6, 9)
+                + '/';
     }
 
     private static void controlFilesAndDirectories(String sysno,
