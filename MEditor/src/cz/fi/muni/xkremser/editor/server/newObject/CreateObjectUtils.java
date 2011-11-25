@@ -134,11 +134,11 @@ public class CreateObjectUtils {
 
         if (isPage && success) {
             boolean copySuccess =
-                    copyfile(newFilePath + ".jp2",
-                             EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + ".jp2");
+                    copyfile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + ".jp2",
+                             newFilePath + ".jp2");
             if (copySuccess && LOGGER.isInfoEnabled()) {
-                LOGGER.info("image " + newFilePath + ".jp2  was copied to  "
-                        + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + ".jp2");
+                LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
+                        + ".jp2  was copied to  " + newFilePath + ".jp2");
             }
         }
 
@@ -164,12 +164,12 @@ public class CreateObjectUtils {
      */
     private static boolean copyfile(String path, String newFilePath) throws CreateObjectException {
 
-        File inputFile = new File(newFilePath);
+        File inputFile = new File(path);
         if (!inputFile.exists()) {
             LOGGER.error("file " + path + " does not exist");
             return false;
         }
-        File outputFile = new File(path);
+        File outputFile = new File(newFilePath);
 
         InputStream in = null;
         OutputStream out = null;
