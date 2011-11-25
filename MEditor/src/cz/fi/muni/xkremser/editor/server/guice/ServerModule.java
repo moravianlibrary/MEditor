@@ -96,6 +96,7 @@ import cz.fi.muni.xkremser.editor.server.handler.StoredItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.UnlockDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
+import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
@@ -209,6 +210,7 @@ public class ServerModule
         requestStaticInjection(FedoraUtils.class);
         requestStaticInjection(AuthenticationServlet.class);
         requestStaticInjection(URLS.class);
+        requestStaticInjection(CreateObjectUtils.class);
 
     }
 }

@@ -73,7 +73,7 @@ public abstract class FoxmlBuilder {
     private static final String OVER_MAX_LENGTH_SUFFIX = "...";
     private String krameriusUrl;
     private String alephUrl;
-    private String newFilePath;
+    private String imageUrl;
 
     private static final int MAX_LABEL_LENGTH = 100;
     private static final Boolean VERSIONABLE = true;
@@ -287,21 +287,12 @@ public abstract class FoxmlBuilder {
 
     protected abstract DigitalObjectModel getModel();
 
-    /**
-     * @return the newFilePath
-     */
-
-    public String getNewFilePath() {
-        return newFilePath;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    /**
-     * @param newFilePath
-     *        the newFilePath to set
-     */
-
-    public void setNewFilePath(String newFilePath) {
-        this.newFilePath = newFilePath;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getLabel() {

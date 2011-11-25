@@ -25,11 +25,15 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import java.util.List;
+
+import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 
@@ -57,28 +61,19 @@ public class CreateObjectUtils {
 
     private static final Logger LOGGER = Logger.getLogger(CreateObjectUtils.class);
 
-    private static String insertFOXML(NewDigitalObject node,
-                                      Document mods,
-                                      Document dc,
-                                      String sysno,
-                                      boolean first,
-                                      EditorConfiguration config) throws CreateObjectException {
-        return insertFOXML(node, mods, dc, Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS, sysno, first, config);
+    @Inject
+    private static EditorConfiguration config;
+
+    private static String insertFOXML(NewDigitalObject node, Document mods, Document dc, String sysno)
+            throws CreateObjectException {
+        return insertFOXML(node, mods, dc, Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS, sysno);
     }
 
     private static String insertFOXML(NewDigitalObject node,
                                       Document mods,
                                       Document dc,
                                       int attempt,
-                                      String sysno,
-                                      boolean first,
-                                      EditorConfiguration config) throws CreateObjectException {
-
-        if (node.getModel() == DigitalObjectModel.PAGE) {
-            controlFilesAndDirectories(sysno, node.getPath(), first, config);
-            first = false;
-        }
-
+                                      String sysno) throws CreateObjectException {
         if (attempt == 0) {
             throw new CreateObjectException("max number of attempts has been reached");
         }
@@ -103,25 +98,33 @@ public class CreateObjectUtils {
             List<RelsExtRelation> relations = builder.getChildren();
             for (NewDigitalObject child : childrenToAdd) {
                 if (!child.getExist()) {
-                    String uuid = insertFOXML(child, mods, dc, sysno, first, config);
+                    String uuid = insertFOXML(child, mods, dc, sysno);
                     child.setUuid(uuid);
                 }
                 relations.add(new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(node
                         .getModel(), child.getModel())));
             }
         }
+        String imageUrl = null;
         String newFilePath = null;
-        if (node.getModel() == DigitalObjectModel.PAGE) {
-            if (sysno == null) {
-                String url = config.getImageServerUrl();
-                if (!url.endsWith("/")) {
-                    url += '/';
-                }
-                newFilePath = url + "unknown" + '/' + node.getUuid();
-            } else {
-                newFilePath = getSysnoPath(sysno, config) + node.getUuid();
+        boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
+        if (isPage) {
+            String url = config.getImageServerUrl();
+            if (!url.endsWith("/")) {
+                url += '/';
             }
-            builder.setNewFilePath(newFilePath);
+            if (sysno == null) {
+                imageUrl = url + "meditor" + node.getUuid();
+            } else {
+                imageUrl = url + "mzk03/" + getSysnoPath(sysno) + node.getUuid();
+            }
+            builder.setImageUrl(imageUrl);
+
+            String path = sysno == null ? config.getImageServerUnknown() : config.getImageServerKnown();
+            if (!path.endsWith("/")) {
+                path += '/';
+            }
+            newFilePath = path + getSysnoPath(sysno) + node.getUuid();
         }
 
         builder.createDocument();
@@ -129,12 +132,18 @@ public class CreateObjectUtils {
         String foxmlRepresentation = builder.getDocument(false);
         boolean success = ingest(foxmlRepresentation);
 
-        if (success && node.getModel() == DigitalObjectModel.PAGE) {
-            copyfile(newFilePath + ".jp2", node.getPath(), config);
+        if (isPage && success) {
+            boolean copySuccess =
+                    copyfile(newFilePath + ".jp2",
+                             EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + ".jp2");
+            if (copySuccess && LOGGER.isInfoEnabled()) {
+                LOGGER.info("image " + newFilePath + ".jp2  was copied to  "
+                        + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + ".jp2");
+            }
         }
 
         if (!success) {
-            insertFOXML(node, mods, dc, attempt - 1, sysno, first, config);
+            insertFOXML(node, mods, dc, attempt - 1, sysno);
         }
         return node.getUuid();
     }
@@ -147,83 +156,79 @@ public class CreateObjectUtils {
     }
 
     /**
-     * @param sysno
-     * @param string
+     * @param path
+     *        from
+     * @param path
+     *        to
      * @throws CreateObjectException
      */
-    private static void copyfile(String newFilePath, String path, EditorConfiguration config)
-            throws CreateObjectException {
+    private static boolean copyfile(String path, String newFilePath) throws CreateObjectException {
 
-        File inputFile = new File(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + path + ".jp2");
-        File outputFile = new File(newFilePath);
-        FileReader in;
+        File inputFile = new File(newFilePath);
+        if (!inputFile.exists()) {
+            LOGGER.error("file " + path + " does not exist");
+            return false;
+        }
+        File outputFile = new File(path);
+
+        InputStream in = null;
+        OutputStream out = null;
         try {
-            in = new FileReader(inputFile);
-
-            FileWriter out = new FileWriter(outputFile);
-            int c;
-
-            while ((c = in.read()) != -1)
-                out.write(c);
-
-            in.close();
-            out.close();
-        } catch (IOException e) {
-            throw new CreateObjectException(e.getMessage());
-        }
-    }
-
-    private static String getSysnoPath(String sysno, EditorConfiguration config) {
-        String url = config.getImageServerUrl();
-        if (!url.endsWith("/")) {
-            url += '/';
-        }
-        // TODO: stringbuffer
-        return url + '/' + sysno.substring(0, 3) + '/' + sysno.substring(3, 6) + '/' + sysno.substring(6, 9)
-                + '/';
-    }
-
-    private static void controlFilesAndDirectories(String sysno,
-                                                   String path,
-                                                   boolean first,
-                                                   EditorConfiguration config) throws CreateObjectException {
-        if (first) {
-            File imagesDir;
-            if (sysno != null && sysno.length() == 9) {
-                imagesDir = new File(getSysnoPath(sysno, config));
-            } else {
-                imagesDir = new File(config.getImageServerUnknown());
+            in = new FileInputStream(inputFile);
+            out = new FileOutputStream(outputFile);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
             }
-
-            if (!imagesDir.exists()) {
-                boolean mkdirs = imagesDir.mkdirs();
-                if (!mkdirs) {
-                    LOGGER.error("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
-                    throw new CreateObjectException("cannot create directory '" + imagesDir.getAbsolutePath()
-                            + "'");
+            return true;
+        } catch (IOException e) {
+            throw new CreateObjectException(e.getMessage(), e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    in = null;
                 }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        out = null;
+                    }
+                }
+            }
+        }
+    }
+
+    private static String getSysnoPath(String sysno) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(sysno.substring(0, 3)).append('/').append(sysno.substring(3, 6)).append('/')
+                .append(sysno.substring(6, 9)).append('/');
+        return sb.toString();
+    }
+
+    private static void checkAccessRightsAndCreateDirectories(String sysno) throws CreateObjectException {
+        File imagesDir =
+                new File(sysno != null && sysno.length() == 9 ? config.getImageServerKnown() + '/'
+                        + getSysnoPath(sysno) : config.getImageServerUnknown());
+        if (!imagesDir.exists()) {
+            boolean mkdirs = imagesDir.mkdirs();
+            if (!mkdirs) {
+                LOGGER.error("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
+                throw new CreateObjectException("cannot create directory '" + imagesDir.getAbsolutePath()
+                        + "'");
             } else {
-                File testDir = new File(imagesDir.getAbsolutePath() + "testDir");
-                boolean mkdirs = testDir.mkdirs();
-                if (!mkdirs) {
+                if (!imagesDir.canRead() || !imagesDir.canWrite()) {
                     LOGGER.error("cannot write into '" + imagesDir.getAbsolutePath() + "'");
                     throw new CreateObjectException("cannot write into '" + imagesDir.getAbsolutePath() + "'");
-                } else {
-                    testDir.delete();
                 }
             }
         }
-
-        File oldImagePath = new File(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + path + ".jp2");
-        if (!oldImagePath.exists()) {
-            throw new CreateObjectException("cannot find the file '" + oldImagePath.getAbsolutePath() + "'");
-        }
-
     }
 
-    public static boolean insertAllTheStructureToFOXMLs(NewDigitalObject node, EditorConfiguration config)
-            throws CreateObjectException {
-
+    public static boolean insertAllTheStructureToFOXMLs(NewDigitalObject node) throws CreateObjectException {
         String modsString = FedoraUtils.createNewModsPart(node.getBundle().getMods());
         String dcString = FedoraUtils.createNewDublinCorePart(node.getBundle().getDc());
         Document mods = null, dc = null;
@@ -234,7 +239,9 @@ public class CreateObjectUtils {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
-        insertFOXML(node, mods, dc, node.getSysno(), true, config);
+
+        checkAccessRightsAndCreateDirectories(node.getSysno());
+        insertFOXML(node, mods, dc, node.getSysno());
         return true;
     }
 }

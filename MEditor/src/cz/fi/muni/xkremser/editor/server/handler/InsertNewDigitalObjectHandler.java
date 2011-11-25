@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -57,10 +56,6 @@ public class InsertNewDigitalObjectHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    /** The configuration. */
-    @Inject
-    private EditorConfiguration config;
-
     /**
      * {@inheritDoc}
      */
@@ -77,7 +72,7 @@ public class InsertNewDigitalObjectHandler
 
         boolean success;
         try {
-            success = CreateObjectUtils.insertAllTheStructureToFOXMLs(object, config);
+            success = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
         } catch (CreateObjectException e) {
             throw new ActionException(e.getMessage());
         }
