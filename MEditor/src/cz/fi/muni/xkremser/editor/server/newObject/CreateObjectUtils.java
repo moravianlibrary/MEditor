@@ -191,12 +191,12 @@ public class CreateObjectUtils {
                 } catch (IOException e) {
                     in = null;
                 }
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        out = null;
-                    }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    out = null;
                 }
             }
         }
