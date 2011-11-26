@@ -48,6 +48,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -113,6 +114,12 @@ public class CreateObjectUtils {
             if (!url.endsWith("/")) {
                 url += '/';
             }
+            if (!url.startsWith("http://")) {
+                if (url.startsWith("https://")) {
+                    url = url.substring(8);
+                }
+                url = "http://" + url;
+            }
             if (sysno == null) {
                 imageUrl = url + "meditor" + node.getUuid();
             } else {
@@ -130,15 +137,16 @@ public class CreateObjectUtils {
         builder.createDocument();
 
         String foxmlRepresentation = builder.getDocument(false);
-        boolean success = ingest(foxmlRepresentation);
+        boolean success = ingest(foxmlRepresentation, node.getName(), node.getUuid());
 
         if (isPage && success) {
             boolean copySuccess =
-                    copyfile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + ".jp2",
-                             newFilePath + ".jp2");
+                    copyfile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
+                            + Constants.JPEG_2000_EXTENSION, newFilePath + ".Constants.JPEG_2000_EXTENSION");
             if (copySuccess && LOGGER.isInfoEnabled()) {
-                LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
-                        + ".jp2  was copied to  " + newFilePath + ".jp2");
+                LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + "."
+                        + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath + "."
+                        + Constants.JPEG_2000_EXTENSION);
             }
         }
 
@@ -148,11 +156,21 @@ public class CreateObjectUtils {
         return node.getUuid();
     }
 
-    private static boolean ingest(String foxml) {
-        // logging
-        System.out.println("\n\n\n\n\n\n\n\n\n...ingesting:" + foxml);
-
-        return true;
+    private static boolean ingest(String foxml, String label, String uuid) {
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Ingesting the digital object with PID uuid:" + uuid + " and label " + label);
+        }
+        String login = config.getFedoraLogin();
+        String password = config.getFedoraPassword();
+        String url = config.getFedoraHost() + "/objects/new";
+        boolean success = RESTHelper.post(url, foxml, login, password, false);
+        if (LOGGER.isInfoEnabled() && success) {
+            LOGGER.info("Object uuid:" + uuid + " [" + label + "] has been successfully ingested.");
+        }
+        if (!success) {
+            LOGGER.error("Unable to ingest object uuid:" + uuid + " [" + label + "]");
+        }
+        return success;
     }
 
     /**
@@ -176,7 +194,7 @@ public class CreateObjectUtils {
         try {
             in = new FileInputStream(inputFile);
             out = new FileOutputStream(outputFile);
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[1024 * 128];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
@@ -210,6 +228,20 @@ public class CreateObjectUtils {
     }
 
     private static void checkAccessRightsAndCreateDirectories(String sysno) throws CreateObjectException {
+        String unknown = config.getImageServerUnknown();
+        String known = config.getImageServerKnown();
+        String url = config.getImageServerUrl();
+        if (unknown == null || "".equals(unknown) || known == null || "".equals(known) || url == null
+                || "".equals(url)) {
+            String errorMsg =
+                    "Error, one of folloving compulsory options have not been set ["
+                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
+                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + " ,"
+                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_URL + "]";
+            LOGGER.error(errorMsg);
+            throw new CreateObjectException(errorMsg);
+        }
+
         File imagesDir =
                 new File(sysno != null && sysno.length() == 9 ? config.getImageServerKnown() + '/'
                         + getSysnoPath(sysno) : config.getImageServerUnknown());

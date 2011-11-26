@@ -157,11 +157,13 @@ public class RESTHelper {
                         out = new OutputStreamWriter(uc.getOutputStream());
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return uc;
                     }
                     try {
                         out.write(content);
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return uc;
                     }
                     out.flush();
                     break;
@@ -175,11 +177,13 @@ public class RESTHelper {
                         out = new OutputStreamWriter(uc.getOutputStream());
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return uc;
                     }
                     try {
                         out.write(content);
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return uc;
                     }
                     out.flush();
                     break;
@@ -191,10 +195,11 @@ public class RESTHelper {
             }
 
             int resp = ((HttpURLConnection) uc).getResponseCode();
-            if (resp != 200) {
+            if (resp < 200 || resp >= 300) {
                 if (robustMode) {
                     return null;
                 } else {
+                    if (uc != null) LOGGER.error(convertStreamToString(uc.getInputStream()));
                     LOGGER.error("Unable to open connection on " + urlString + "  response code: " + resp);
                     throw new ConnectionException("connection cannot be established");
                 }
@@ -234,12 +239,14 @@ public class RESTHelper {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }
-
-        try {
-            if (conn != null) LOGGER.debug(convertStreamToString(conn.getInputStream()));
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } finally {
+            try {
+                if (conn != null)
+                    LOGGER.debug("response of HTTP " + (isPut ? "PUT: " : "POST: ")
+                            + convertStreamToString(conn.getInputStream()));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
         return true;
     }
