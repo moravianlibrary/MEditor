@@ -115,7 +115,7 @@ public enum DigitalObjectModel
      * 
      * @param s
      *        the s
-     * @return the kramerius model
+     * @return the model
      */
     public static DigitalObjectModel parseString(String s) {
         DigitalObjectModel[] values = DigitalObjectModel.values();

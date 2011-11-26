@@ -44,6 +44,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
+import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
@@ -86,6 +87,8 @@ public class EditorClientModule
 
         // ServerConstants
         bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
+
+        //i18n
         bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
         // Presenters
@@ -130,6 +133,7 @@ public class EditorClientModule
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
         requestStaticInjection(DCTab.class);
+        requestStaticInjection(DispatchCallback.class);
 
     }
 }

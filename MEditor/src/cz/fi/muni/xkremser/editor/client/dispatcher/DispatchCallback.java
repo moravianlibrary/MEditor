@@ -27,8 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client.dispatcher;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 
@@ -53,7 +54,6 @@ public abstract class DispatchCallback<T>
      * Instantiates a new dispatch callback.
      */
     public DispatchCallback() {
-
     }
 
     /*
@@ -101,8 +101,7 @@ public abstract class DispatchCallback<T>
     public void callbackError(final Throwable t, final TryAgainCallbackError tryAgain) {
 
         if (!sessionHasExpired(t)) {
-        } else {
-            SC.ask(t.getMessage() + "<br>" + lang.mesTryAgain(), new BooleanCallback() {
+            SC.ask(t.getMessage() + "<br/>" + lang.mesTryAgain(), new BooleanCallback() {
 
                 @Override
                 public void execute(Boolean value) {

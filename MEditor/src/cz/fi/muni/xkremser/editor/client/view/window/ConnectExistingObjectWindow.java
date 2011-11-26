@@ -1,6 +1,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -80,6 +81,7 @@ public abstract class ConnectExistingObjectWindow
             public void onClick(ClickEvent event) {
                 if (uuidField.validate()) {
                     doActiton(uuidField);
+                    animateHide(AnimationEffect.FLY, null, 300);
                     destroy();
                 }
             }
@@ -115,7 +117,7 @@ public abstract class ConnectExistingObjectWindow
         addItem(form);
         addItem(buttons);
         centerInPage();
-        show();
+        animateShow(AnimationEffect.FLY, null, 300);
         uuidField.focusInItem();
     }
 

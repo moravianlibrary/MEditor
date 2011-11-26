@@ -42,6 +42,7 @@ import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.ImageStyle;
@@ -49,6 +50,8 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionType;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
@@ -268,17 +271,22 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
 
-        MenuItem viewItem = new MenuItem(lang.menuView(), "icons/16/eye.png");
-        viewItem.setAttribute(ID_NAME, ID_VIEW);
-        viewItem.setEnableIfCondition(new MenuItemIfFunction() {
+        MenuItem editItem = new MenuItem("TODOEditovat jmeno stranky", "icons/16/edit.png");
+        editItem.setEnableIfCondition(isSelected(true));
+        editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
-            public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return tileGrid.getSelection() != null && tileGrid.getSelection().length == 1;
+            public void onClick(MenuItemClickEvent event) {
+                editPageTitle();
             }
         });
+
+        MenuItem viewItem = new MenuItem(lang.menuView(), "icons/16/eye.png");
+        viewItem.setAttribute(ID_NAME, ID_VIEW);
+        viewItem.setEnableIfCondition(isSelected(true));
         viewItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
+            @SuppressWarnings("serial")
             @Override
             public void onClick(MenuItemClickEvent event) {
                 final String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE);
@@ -314,7 +322,7 @@ public class CreateStructureView
                 });
                 viewerPane.setContentsType(ContentsType.PAGE);
                 winModal.addItem(viewerPane);
-                winModal.show();
+                winModal.animateShow(AnimationEffect.FLY, null, 300);
             }
         });
 
@@ -362,7 +370,8 @@ public class CreateStructureView
             }
         });
 
-        menu.setItems(viewItem,
+        menu.setItems(editItem,
+                      viewItem,
                       separator,
                       selectAllItem,
                       deselectAllItem,
@@ -373,6 +382,8 @@ public class CreateStructureView
                       removeSelectedItem);
         tileGrid.setContextMenu(menu);
         tileGrid.setDropTypes(model);
+        tileGrid.setCanAcceptDrop(true);
+        tileGrid.setCanAcceptDroppedRecords(true);
         tileGrid.setDragType(model);
         tileGrid.setDragAppearance(DragAppearance.TRACKER);
         tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
@@ -610,20 +621,32 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(3);
 
+        MenuItem editTitle = new MenuItem("TODOEditovat nazev stranky", "icons/16/edit.png");
         MenuItem renumberAll = new MenuItem(lang.renumberAll(), "icons/16/renumberAll.png");
         MenuItem renumber = new MenuItem(lang.renumber(), "icons/16/renumber.png");
         MenuItem toRoman = new MenuItem(lang.convertToRoman(), "icons/16/roman.png");
         MenuItem toRomanOld = new MenuItem(lang.convertToRomanOld(), "icons/16/roman.png");
-        MenuItem surround = new MenuItem("1, 2, ... -> [1], [2], ...", "icons/16/surround.png");
-        MenuItem abc = new MenuItem("1, 2, ... -> 1a, 2b, ...", "icons/16/abc.png");
+        MenuItem surround = new MenuItem("1, 2, ...   ⇨   [1], [2], ...", "icons/16/surround.png");
+        MenuItem abc = new MenuItem("1, 2, ...   ⇨   1a, 1b, ...", "icons/16/abc.png");
         MenuItem toLeft = new MenuItem(lang.leftShift(), "icons/16/arrow_left.png");
         MenuItem toRight = new MenuItem(lang.rightShift(), "icons/16/arrow_right.png");
-        renumber.setEnableIfCondition(isSelected());
-        toRoman.setEnableIfCondition(isSelected());
-        surround.setEnableIfCondition(isSelected());
-        abc.setEnableIfCondition(isSelected());
-        toLeft.setEnableIfCondition(isSelected());
-        toRight.setEnableIfCondition(isSelected());
+        editTitle.setEnableIfCondition(isSelected(true));
+        renumber.setEnableIfCondition(isSelected(false));
+        toRoman.setEnableIfCondition(isSelected(false));
+        toRomanOld.setEnableIfCondition(isSelected(false));
+        surround.setEnableIfCondition(isSelected(false));
+        abc.setEnableIfCondition(isSelected(false));
+        toLeft.setEnableIfCondition(isSelected(false));
+        toRight.setEnableIfCondition(isSelected(false));
+
+        editTitle.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                editPageTitle();
+            }
+        });
+
         renumberAll.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -660,6 +683,10 @@ public class CreateStructureView
                 if (data != null && data.length > 0) {
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
+                    if (i <= 0) {
+                        SC.say("TODOpage number have to be greater than zero");
+                        return;
+                    }
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME, ClientUtils.decimalToRoman(i++, false));
                     }
@@ -675,6 +702,10 @@ public class CreateStructureView
                 if (data != null && data.length > 0) {
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
+                    if (i <= 0) {
+                        SC.say("TODOpage number have to be greater than zero");
+                        return;
+                    }
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME, ClientUtils.decimalToRoman(i++, true));
                     }
@@ -688,52 +719,59 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 Record[] data = tileGrid.getSelection();
                 if (data != null && data.length > 0) {
-                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
-                    int i = getPageNumberFromText(startingNumber);
                     for (Record rec : data) {
-                        rec.setAttribute(Constants.ATTR_NAME, "[" + i++ + "]");
+                        rec.setAttribute(Constants.ATTR_NAME, "[" + rec.getAttribute(Constants.ATTR_NAME)
+                                + "]");
                     }
                 }
             }
         });
 
-        abc.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        abc.setSubmenu(getAbcSubmenu());
+
+        toLeft.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                Record[] data = tileGrid.getSelection();
-                if (data != null && data.length > 0) {
-                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
-                    int i = getPageNumberFromText(startingNumber);
-                    int j = 0;
-                    for (Record rec : data) {
-                        rec.setAttribute(Constants.ATTR_NAME, (i + (j / 2)) + (j % 2 == 0 ? "a" : "b"));
-                        j++;
+                SC.askforValue("TODOZadej cislo", "TODOOkolik posunout doleva", new ValueCallback() {
+
+                    @Override
+                    public void execute(String value) {
+                        try {
+                            int n = Integer.parseInt(value);
+                            shift(-n);
+                        } catch (NumberFormatException nfe) {
+                            SC.say("TODONot a number");
+                        }
                     }
-                }
+                });
             }
         });
 
-        //        toLeft.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-        //
-        //            @Override
-        //            public void onClick(MenuItemClickEvent event) {
-        //                Record[] data = tileGrid.getSelection();
-        //                if (data != null && data.length > 0) {
-        //                    String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
-        //                    int i = getPageNumberFromText(startingNumber);
-        //                    int j = 1;
-        //                    for (Record rec : data) {
-        //                        rec.setAttribute(Constants.ATTR_NAME, (i + (j / 2)) + (j % 2 == 1 ? "a" : "b"));
-        //                        j++;
-        //                    }
-        //                }
-        //            }
-        //        });
+        toRight.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                SC.askforValue("TODOZadej cislo", "TODOOkolik posunout doprava", new ValueCallback() {
+
+                    @Override
+                    public void execute(String value) {
+                        try {
+                            int n = Integer.parseInt(value);
+                            shift(n);
+                        } catch (NumberFormatException nfe) {
+                            SC.say("TODONot a number");
+                        }
+                    }
+                });
+            }
+        });
 
         MenuItemSeparator separator = new MenuItemSeparator();
 
-        menu.setItems(renumberAll,
+        menu.setItems(editTitle,
+                      separator,
+                      renumberAll,
                       renumber,
                       separator,
                       toRoman,
@@ -750,12 +788,97 @@ public class CreateStructureView
         return menuButton;
     }
 
+    private Menu getAbcSubmenu() {
+        Menu menu = new Menu();
+        menu.setShowShadow(true);
+        menu.setShadowDepth(3);
+
+        MenuItem abc2 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 2a, 2b");
+        MenuItem abc3 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 1c, 2a");
+        MenuItem abc4 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 1c, 1d");
+        MenuItem abc5 = new MenuItem("1, .. 4, 5   ⇨   1a, ... 1e, 2a");
+        MenuItem abcN = new MenuItem("Customize...");
+        abc2.addClickHandler(getAbcHandler(2));
+        abc3.addClickHandler(getAbcHandler(3));
+        abc4.addClickHandler(getAbcHandler(4));
+        abc5.addClickHandler(getAbcHandler(5));
+        abcN.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                // TODO Auto-generated method stub
+                SC.askforValue("TODOZadej cislo", "To cislo uz zadej", new ValueCallback() {
+
+                    @Override
+                    public void execute(String value) {
+                        try {
+                            int n = Integer.parseInt(value);
+                            toAbcN(n);
+                        } catch (NumberFormatException nfe) {
+                            SC.say("TODONot a number");
+                        }
+                    }
+                });
+            }
+        });
+        abc2.setEnableIfCondition(isSelected(false));
+        abc3.setEnableIfCondition(isSelected(false));
+        abc4.setEnableIfCondition(isSelected(false));
+        abc5.setEnableIfCondition(isSelected(false));
+        abcN.setEnableIfCondition(isSelected(false));
+        menu.setItems(abc2, abc3, abc4, abc5, new MenuItemSeparator(), abcN);
+        return menu;
+    }
+
+    private com.smartgwt.client.widgets.menu.events.ClickHandler getAbcHandler(final int n) {
+        return new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                toAbcN(n);
+            }
+        };
+    }
+
+    private void shift(final int n) {
+        if (n == 0) {
+            return;
+        }
+        Record[] data = tileGrid.getSelection();
+        if (data != null && data.length > 0) {
+            String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+            int i = getPageNumberFromText(startingNumber);
+            for (Record rec : data) {
+                rec.setAttribute(Constants.ATTR_NAME, i++ + n);
+            }
+        }
+    }
+
+    private void toAbcN(final int n) {
+        if (n > 26 || n < 2)
+            throw new IllegalArgumentException("bad argument (allowed values are between 2 and 26)");
+        final char[] alphabet =
+                {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                        's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+        Record[] data = tileGrid.getSelection();
+        if (data != null && data.length > 0) {
+            String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
+            int i = getPageNumberFromText(startingNumber);
+            int j = 0;
+            for (Record rec : data) {
+                rec.setAttribute(Constants.ATTR_NAME, (i + (j / n)) + "" + alphabet[j % n]);
+                j++;
+            }
+        }
+    }
+
     /**
      * Method for close currently displayed window
      */
     @Override
     public void escShortCut() {
         if (winModal != null) {
+            winModal.animateHide(AnimationEffect.FLY, null, 300);
             winModal.destroy();
             winModal = null;
         } else if (imagePopup.isVisible()) {
@@ -832,12 +955,25 @@ public class CreateStructureView
         return 1;
     }
 
-    private MenuItemIfFunction isSelected() {
+    private void editPageTitle() {
+        SC.askforValue("TODOZadej jmeno stranky", "TODOZadej jmeno stranky", new ValueCallback() {
+
+            @Override
+            public void execute(String value) {
+                if (value != null && !"".equals(value.trim())) {
+                    tileGrid.getSelection()[0].setAttribute(Constants.ATTR_NAME, value);
+                }
+            }
+        });
+    }
+
+    private MenuItemIfFunction isSelected(final boolean justOne) {
         return new MenuItemIfFunction() {
 
             @Override
             public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return tileGrid.getSelectedRecord() != null;
+                return tileGrid.getSelection() != null && tileGrid.getSelection().length > 0
+                        && (!justOne || tileGrid.getSelection().length == 1);
             }
         };
     }

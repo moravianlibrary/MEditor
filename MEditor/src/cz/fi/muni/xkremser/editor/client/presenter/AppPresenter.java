@@ -44,6 +44,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -293,6 +294,7 @@ public class AppPresenter
      */
     private void escShortCut() {
         if (uuidWindow != null) {
+            uuidWindow.animateHide(AnimationEffect.FLY, null, 300);
             uuidWindow.destroy();
             uuidWindow = null;
         }
@@ -300,6 +302,7 @@ public class AppPresenter
 
     private void evaluateUuid(TextItem uuidField) {
         if (uuidField.validate()) {
+            uuidWindow.animateHide(AnimationEffect.FLY, null, 300);
             uuidWindow.destroy();
             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
                     .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));

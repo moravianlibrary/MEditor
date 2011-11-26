@@ -455,16 +455,11 @@ public class DigitalObjectMenuPresenter
                     items1[0].focus();
                     isRefByFocused = true;
                 }
-
             } else if (code == Constants.CODE_KEY_ENTER) {
-
                 if (getView().getRecentlyModifiedGrid().getSelection().length > 0 && !isRefByFocused) {
-
                     ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelection();
                     revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
-
                 } else if (getView().getRelatedGrid().getSelection().length > 0 && isRefByFocused) {
-
                     ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelection();
                     revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
                 }

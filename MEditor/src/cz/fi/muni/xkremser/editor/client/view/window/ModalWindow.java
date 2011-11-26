@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.Page;
 import com.smartgwt.client.widgets.Canvas;
@@ -122,7 +123,7 @@ public class ModalWindow {
         if (showLoading) {
             modal.addMember(createLabel("", showLoading));
         }
-        parent.show();
+        parent.animateShow(AnimationEffect.FADE, null, 400);
     }
 
     /**

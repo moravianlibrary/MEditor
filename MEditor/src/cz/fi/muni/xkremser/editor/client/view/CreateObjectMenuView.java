@@ -34,13 +34,18 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
+import com.smartgwt.client.util.EventHandler;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.DropEvent;
+import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
@@ -60,8 +65,10 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
+import com.smartgwt.client.widgets.menu.MenuItemSeparator;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
@@ -104,6 +111,11 @@ public class CreateObjectMenuView
 
         void getModel(String valueAsString, ConnectExistingObjectWindow window);
 
+        /**
+         * @return
+         */
+        int newId();
+
     }
 
     /** The input tree. */
@@ -136,6 +148,7 @@ public class CreateObjectMenuView
 
     private boolean connect2ExEnabled;
     private boolean connectEx2Enabled;
+    private boolean removeSelectedEnabled;
 
     /**
      * Instantiates a new digital object menu view.
@@ -161,6 +174,9 @@ public class CreateObjectMenuView
         structureTreeGrid.setHoverStyle("interactImageHover");
         structureTreeGrid.setCanReorderRecords(true);
         structureTreeGrid.setCanAcceptDroppedRecords(true);
+        structureTreeGrid.setCanDragRecordsOut(true);
+        structureTreeGrid.setDropTypes(DigitalObjectModel.PAGE.getValue());
+        structureTreeGrid.setDragType(DigitalObjectModel.PAGE.getValue());
         structureTreeGrid.setShowOpenIcons(false);
         structureTreeGrid.setDropIconSuffix("into");
         structureTreeGrid.setClosedIconSuffix("");
@@ -169,6 +185,59 @@ public class CreateObjectMenuView
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
         structureTreeGrid.setShowConnectors(true);
 
+        structureTreeGrid.addDropHandler(new DropHandler() {
+
+            @Override
+            public void onDrop(DropEvent event) {
+                Object draggable = EventHandler.getDragTarget();
+                if (draggable instanceof TileGrid) {
+                    TileGrid tileGrid = (TileGrid) draggable;
+                    Record[] pages = tileGrid.getSelection();
+                    Record dropPlace = structureTreeGrid.getRecord(structureTreeGrid.getEventRow());
+                    if (pages == null || pages.length == 0) {
+                        event.cancel();
+                        return;
+                    }
+                    if (dropPlace != null) {
+                        String modelString = dropPlace.getAttribute(Constants.ATTR_TYPE_ID);
+                        List<DigitalObjectModel> possibleChildModels =
+                                NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelString));
+                        if (possibleChildModels == null
+                                || !possibleChildModels.contains(DigitalObjectModel.PAGE)) {
+                            SC.say("TODO Stranku muzete pretahnout jen na objekt, ktery muze stranky obsahovat.");
+                            event.cancel();
+                            return;
+                        }
+                    } else {
+                        SC.say("TODO Stranku muzete pretahnout jen na objekt, ktery muze stranky obsahovat.");
+                        event.cancel();
+                        return;
+                    }
+                    for (Record rec : pages) {
+                        addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                        rec.getAttribute(Constants.ATTR_NAME),
+                                        rec.getAttribute(Constants.ATTR_PICTURE),
+                                        getUiHandlers().getLabelFromModel().get(DigitalObjectModel.PAGE
+                                                .getValue()),
+                                        DigitalObjectModel.PAGE.getValue(),
+                                        dropPlace.getAttribute(Constants.ATTR_ID),
+                                        true,
+                                        false);
+                    }
+                    event.cancel();
+                }
+            }
+        });
+
+        final MenuItem deleteSelected = new MenuItem("TODO Remove selected", "icons/16/close.png");
+        deleteSelected.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return removeSelectedEnabled;
+            }
+        });
+
         final MenuItem connectToExisting = new MenuItem(lang.connectToExisting(), "icons/16/connect2Ex.png");
         final MenuItem connectExistingTo = new MenuItem(lang.connectExistingTo(), "icons/16/ex2Connect.png");
         connectToExisting.setEnableIfCondition(new MenuItemIfFunction() {
@@ -176,6 +245,13 @@ public class CreateObjectMenuView
             @Override
             public boolean execute(Canvas target, Menu menu, MenuItem item) {
                 return connect2ExEnabled;
+            }
+        });
+        deleteSelected.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                structureTreeGrid.removeSelectedData();
             }
         });
         connectExistingTo.setEnableIfCondition(new MenuItemIfFunction() {
@@ -226,19 +302,35 @@ public class CreateObjectMenuView
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
         editMenu.setShadowDepth(10);
-        editMenu.setItems(connectToExisting, connectExistingTo);
+        editMenu.setItems(deleteSelected, new MenuItemSeparator(), connectToExisting, connectExistingTo);
         structureTreeGrid.setContextMenu(editMenu);
         structureTreeGrid.addCellContextClickHandler(new CellContextClickHandler() {
 
             @Override
             public void onCellContextClick(CellContextClickEvent event) {
-                ListGridRecord record = event.getRecord();
-                final String parrentId = record.getAttribute(Constants.ATTR_PARENT);
-                connect2ExEnabled = "1".equals(parrentId);
-                String modelStr = (record.getAttribute(Constants.ATTR_TYPE_ID));
-                List<DigitalObjectModel> possibleChildModels =
-                        NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelStr));
-                connectEx2Enabled = possibleChildModels != null;
+                ListGridRecord[] selection = structureTreeGrid.getSelection();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                String modelStr = selection[0].getAttribute(Constants.ATTR_TYPE_ID);
+                connect2ExEnabled = true;
+                removeSelectedEnabled = true;
+                for (int i = 0; i < selection.length; i++) {
+                    // root mustn't be selected and all selected items must be of the same type
+                    connect2ExEnabled &=
+                            (i == 0 || modelStr.equals(selection[i].getAttribute(Constants.ATTR_TYPE_ID)));
+
+                    removeSelectedEnabled &= !"1".equals(selection[i].getAttribute(Constants.ATTR_PARENT));
+                    if (!removeSelectedEnabled) {
+                        break;
+                    }
+                }
+                connect2ExEnabled &= removeSelectedEnabled;
+                // only 1 element must be selected and type of selected element must allow connecting children (is not a leave)
+                connectEx2Enabled =
+                        selection.length == 1
+                                && NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelStr)) != null;
+
                 editMenu.showContextMenu();
             }
         });

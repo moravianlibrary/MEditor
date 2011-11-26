@@ -51,6 +51,7 @@ import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
 import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
 import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
@@ -301,6 +302,7 @@ public class ModifyView
 
     public void showBasicModsWindow(final EditorTabSet focusedTabSet) {
         if (modsWindow != null && modsWindow.isCreated()) {
+            modsWindow.animateHide(AnimationEffect.FLY, null, 300);
             modsWindow.destroy();
             modsWindow = null;
         }
@@ -308,7 +310,7 @@ public class ModifyView
 
             @Override
             protected void init() {
-                show();
+                animateShow(AnimationEffect.FLY, null, 300);
                 focus();
                 String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
                 if (lockOwner == null || "".equals(lockOwner)) {
@@ -328,6 +330,7 @@ public class ModifyView
 
                     @Override
                     public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                        animateHide(AnimationEffect.FLY, null, 300);
                         destroy();
                         modsWindow = null;
                     }
@@ -406,6 +409,7 @@ public class ModifyView
      */
     private void publishShortCut(EditorTabSet focusedTabSet) {
         if (universalWindow != null) {
+            universalWindow.animateHide(AnimationEffect.FLY, null, 300);
             universalWindow.destroy();
             universalWindow = null;
         }
@@ -417,6 +421,7 @@ public class ModifyView
      */
     private void escShortCut() {
         if (downloadingWindow != null && downloadingWindow.isCreated()) {
+            downloadingWindow.animateHide(AnimationEffect.FLY, null, 300);
             downloadingWindow.destroy();
             downloadingWindow = null;
 
@@ -424,6 +429,7 @@ public class ModifyView
             StoreWorkingCopyWindow.closeInstantiatedWindow();
 
         } else if (universalWindow != null && universalWindow.isCreated()) {
+            universalWindow.animateHide(AnimationEffect.FLY, null, 300);
             universalWindow.destroy();
             universalWindow = null;
 
@@ -431,6 +437,7 @@ public class ModifyView
             LockDigitalObjectWindow.closeInstantiatedWindow();
 
         } else if (modsWindow != null && modsWindow.isCreated()) {
+            modsWindow.animateHide(AnimationEffect.FLY, null, 300);
             modsWindow.destroy();
             modsWindow = null;
 
@@ -1362,7 +1369,7 @@ public class ModifyView
 
         universalWindow.addItem(editorUrlForm);
         universalWindow.addItem(kramUrlForm);
-        universalWindow.show();
+        universalWindow.animateShow(AnimationEffect.FLY, null, 300);
         universalWindow.centerInPage();
         universalWindow.focus();
     }
@@ -1376,6 +1383,7 @@ public class ModifyView
 
     private void showDownloadingWindow(final EditorTabSet ts) {
         if (downloadingWindow != null && downloadingWindow.isCreated()) {
+            downloadingWindow.animateHide(AnimationEffect.FLY, null, 300);
             downloadingWindow.destroy();
             downloadingWindow = null;
         }
@@ -1383,7 +1391,7 @@ public class ModifyView
 
             @Override
             protected void init() {
-                show();
+                animateShow(AnimationEffect.FLY, null, 300);
                 centerInPage();
                 focus();
             }
@@ -1448,6 +1456,7 @@ public class ModifyView
 
                 getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts),
                                                     versionable.getValueAsBoolean());
+                universalWindow.animateHide(AnimationEffect.FLY, null, 300);
                 universalWindow.destroy();
                 universalWindow = null;
             }
@@ -1458,6 +1467,7 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event2) {
+                universalWindow.animateHide(AnimationEffect.FLY, null, 300);
                 universalWindow.destroy();
                 universalWindow = null;
             }
@@ -1473,7 +1483,7 @@ public class ModifyView
         universalWindow.addItem(hLayout);
 
         universalWindow.centerInPage();
-        universalWindow.show();
+        universalWindow.animateShow(AnimationEffect.FLY, null, 300);
         publish.focus();
     }
 
@@ -1497,6 +1507,7 @@ public class ModifyView
             }
 
             if (modsWindow != null && downloadingWindow == null) {
+                modsWindow.animateHide(AnimationEffect.FLY, null, 300);
                 modsWindow.destroy();
                 modsWindow = null;
             }

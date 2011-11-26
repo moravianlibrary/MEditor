@@ -30,6 +30,7 @@ import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.util.BooleanCallback;
@@ -84,6 +85,7 @@ public class StoreWorkingCopyWindow
     }
 
     public static void closeInstantiatedWindow() {
+        storingWindow.animateHide(AnimationEffect.FLY, null, 300);
         storingWindow.destroy();
         storingWindow = null;
     }
@@ -133,9 +135,9 @@ public class StoreWorkingCopyWindow
             public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
                 StringBuffer sb = new StringBuffer();
                 sb.append(record.getAttribute(Constants.ATTR_UUID));
-                sb.append("<br>").append(lang.name()).append(": ");
+                sb.append("<br/>").append(lang.name()).append(": ");
                 sb.append(record.getAttribute(Constants.ATTR_NAME));
-                sb.append("<br>").append(lang.description()).append(": ").append("<br>");
+                sb.append("<br/>").append(lang.description()).append(": ").append("<br/>");
                 sb.append(record.getAttribute(Constants.ATTR_DESC));
                 return sb.toString();
             }
@@ -194,6 +196,7 @@ public class StoreWorkingCopyWindow
 
             @Override
             public void onClick(ClickEvent event) {
+                animateHide(AnimationEffect.FLY, null, 300);
                 destroy();
             }
         });
@@ -207,7 +210,7 @@ public class StoreWorkingCopyWindow
 
         setEdgeOffset(20);
         fetchStoredItems(storedFilesGrid);
-        show();
+        animateShow(AnimationEffect.FLY, null, 300);
         centerInPage();
         focus();
         buttonsLayout.setLeft(280);
@@ -240,7 +243,7 @@ public class StoreWorkingCopyWindow
             @Override
             public void callback(StoredItemsResult result) {
                 if (result.getStoredItems() != null) {
-                    SC.ask(lang.operationSuccessful() + "<br><br>" + lang.lockStoredObject(),
+                    SC.ask(lang.operationSuccessful() + "<br/><br/>" + lang.lockStoredObject(),
                            new BooleanCallback() {
 
                                @Override

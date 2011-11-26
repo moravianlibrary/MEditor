@@ -343,15 +343,14 @@ public class CreateObjectMenuPresenter
                     isRefByFocused = true;
                 }
 
-            } else if (code == Constants.CODE_KEY_ENTER) {
-
-                if (getView().getSubelementsGrid().getSelection().length > 0 && !isRefByFocused) {
-
-                    ListGridRecord[] listGridRecords = getView().getSubelementsGrid().getSelection();
-                    revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
-
-                }
             }
+            //  tadle else vetev nedava smysl, ty subelementy, jeste nejsou vytvorene, takze je nejde editovat
+            //            else if (code == Constants.CODE_KEY_ENTER) {
+            //                if (getView().getSubelementsGrid().getSelection().length > 0 && !isRefByFocused) {
+            //                    ListGridRecord[] listGridRecords = getView().getSubelementsGrid().getSelection();
+            //                    revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
+            //                }
+            //            }
         }
     }
 
@@ -385,6 +384,7 @@ public class CreateObjectMenuPresenter
         return labelsFromModels;
     }
 
+    @Override
     public int newId() {
         return ++lastId;
     }

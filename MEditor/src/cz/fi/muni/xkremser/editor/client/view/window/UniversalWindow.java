@@ -24,6 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
@@ -50,6 +51,7 @@ public class UniversalWindow
 
             @Override
             public void onCloseClick(CloseClientEvent event) {
+                animateHide(AnimationEffect.FLY, null, 300);
                 destroy();
             }
         });

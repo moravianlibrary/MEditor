@@ -48,16 +48,21 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Progressbar;
+import com.smartgwt.client.widgets.events.DropEvent;
+import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
@@ -252,6 +257,11 @@ public class CreateStructurePresenter
         } else {
             name = sysno;
         }
+        leftPresenter.getView().getSubelementsGrid().disable();
+        leftPresenter.getView().getSubelementsGrid().selectAllRecords();
+        leftPresenter.getView().getSubelementsGrid().removeSelectedData();
+        leftPresenter.getView().getSubelementsGrid().enable();
+        leftPresenter.getView().getSubelementsGrid().redraw();
         leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
                                                 name,
                                                 null,
@@ -349,11 +359,35 @@ public class CreateStructurePresenter
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
-                                new ScanRecord(String.valueOf(i), model, sysno, itemList.get(i)
+                                new ScanRecord(String.valueOf(i + 1), model, sysno, itemList.get(i)
                                         .getIdentifier(), itemList.get(i).getJpgFsPath());
                     }
 
-                    getView().onAddImages(model, sysno, items);
+                    getView().onAddImages(DigitalObjectModel.PAGE.getValue(), sysno, items);
+                    getView().getTileGrid().addDropHandler(new DropHandler() {
+
+                        @Override
+                        public void onDrop(DropEvent event) {
+                            Object draggable = EventHandler.getDragTarget();
+                            if (draggable instanceof TreeGrid) {
+                                ListGridRecord[] selection =
+                                        leftPresenter.getView().getSubelementsGrid().getSelection();
+                                if (selection == null || selection.length == 0) {
+                                    event.cancel();
+                                    return;
+                                }
+                                for (ListGridRecord rec : selection) {
+                                    if (!DigitalObjectModel.PAGE.getValue()
+                                            .equals(rec.getAttribute(Constants.ATTR_TYPE_ID))) {
+                                        SC.say("TODO Sem muzete pretahovat jen objekty typu stranka.");
+                                        event.cancel();
+                                        return;
+                                    }
+                                }
+
+                            }
+                        }
+                    });
                 }
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -414,21 +448,21 @@ public class CreateStructurePresenter
     public void onAddImages(final TileGrid tileGrid, final Menu menu) {
         MenuItem[] items = menu.getItems();
         if (!CreateStructureView.ID_SEL_ALL
-                .equals(items[2].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+                .equals(items[3].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[2].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[3].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
                 tileGrid.selectAllRecords();
             }
         });
-        if (!CreateStructureView.ID_SEL_NONE.equals(items[3]
+        if (!CreateStructureView.ID_SEL_NONE.equals(items[4]
                 .getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[3].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[4].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -436,10 +470,10 @@ public class CreateStructurePresenter
             }
         });
         if (!CreateStructureView.ID_SEL_INV
-                .equals(items[4].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+                .equals(items[5].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[4].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[5].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -448,20 +482,20 @@ public class CreateStructurePresenter
                 tileGrid.deselectRecords(selected);
             }
         });
-        if (!CreateStructureView.ID_COPY.equals(items[6].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+        if (!CreateStructureView.ID_COPY.equals(items[7].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[6].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[7].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
                 getView().toClipboard(tileGrid.getSelection());
             }
         });
-        if (!CreateStructureView.ID_PASTE.equals(items[7].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+        if (!CreateStructureView.ID_PASTE.equals(items[8].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
-        items[7].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[8].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
@@ -493,16 +527,16 @@ public class CreateStructurePresenter
                     timer.schedule(40);
                 } else {
                     for (int i = 0; i < data.length; i++) {
-                        tileGrid.addData(((ContainerRecord) data[i]).deepCopy());
+                        tileGrid.addData(((ScanRecord) data[i]).deepCopy());
                     }
                 }
             }
         });
-        if (!CreateStructureView.ID_DELETE.equals(items[8].getAttributeAsObject(CreateStructureView.ID_NAME))) {
+        if (!CreateStructureView.ID_DELETE.equals(items[9].getAttributeAsObject(CreateStructureView.ID_NAME))) {
             throw new IllegalStateException("Inconsistent gui.");
         }
 
-        items[8].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        items[9].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {

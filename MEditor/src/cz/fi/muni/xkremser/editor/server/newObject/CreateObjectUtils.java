@@ -84,7 +84,7 @@ public class CreateObjectUtils {
         }
         FoxmlBuilder builder = FOXMLBuilderMapping.getBuilder(node);
         if (builder == null) {
-            return null;
+            throw new CreateObjectException("unknown type " + node.getModel());
         }
         if (node.getUuid() == null || attempt != Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
             node.setUuid(FoxmlUtils.getRandomUuid());

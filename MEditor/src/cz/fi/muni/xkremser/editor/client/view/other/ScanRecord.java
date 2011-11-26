@@ -179,7 +179,7 @@ public class ScanRecord
      * @return the page record
      */
     public ScanRecord deepCopy() {
-        return new ScanRecord(getName(), getBarcode(), getPicture(), getDescription());
+        return new ScanRecord(getName(), getModel(), getBarcode(), getPicture());
     }
 
     /*
