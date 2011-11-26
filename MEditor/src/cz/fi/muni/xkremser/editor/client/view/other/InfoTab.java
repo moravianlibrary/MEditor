@@ -84,7 +84,7 @@ public abstract class InfoTab
         form.setWidth(150);
         form.setExtraSpace(5);
         HTMLFlow img =
-                new HTMLFlow("<img style='infoTabImg' src='./images/full/" + (isPage ? "" : "uuid:")
+                new HTMLFlow("<img class='infoTabImg' src='./images/full/" + (isPage ? "" : "uuid:")
                         + firstPageURL + "' />");
 
         quickEdit.setTitle(lang.quickEdit());
