@@ -29,9 +29,10 @@ package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;

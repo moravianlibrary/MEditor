@@ -33,7 +33,7 @@ import java.io.OutputStream;
 
 import java.util.List;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 

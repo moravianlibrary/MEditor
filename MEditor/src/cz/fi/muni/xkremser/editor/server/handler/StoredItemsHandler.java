@@ -29,7 +29,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;

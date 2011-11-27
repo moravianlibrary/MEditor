@@ -55,7 +55,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.k_int.IR.IRQuery;
 import com.k_int.IR.InformationFragment;
 import com.k_int.IR.SearchException;

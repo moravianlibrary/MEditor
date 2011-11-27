@@ -29,7 +29,8 @@ package cz.fi.muni.xkremser.editor.server.fedora;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.google.inject.Provider;
 
 import org.apache.log4j.Logger;

@@ -32,7 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.google.inject.name.Named;
 
 import org.apache.log4j.Logger;

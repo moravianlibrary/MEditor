@@ -27,8 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client;
 
+import javax.inject.Inject;
+
 import com.google.gwt.event.shared.EventBus;
-import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.proxy.PlaceManagerImpl;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.TokenFormatter;

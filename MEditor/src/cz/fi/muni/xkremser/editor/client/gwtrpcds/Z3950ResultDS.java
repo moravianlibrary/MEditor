@@ -27,7 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceIntegerField;

@@ -34,7 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 // TODO: Auto-generated Javadoc
 /**

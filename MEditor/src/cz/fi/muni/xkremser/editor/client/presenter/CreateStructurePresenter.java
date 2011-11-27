@@ -30,11 +30,12 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -682,9 +683,9 @@ public class CreateStructurePresenter
                                        } else {
                                            SC.warn("Vložení se nepodařilo.");
                                        }
-                                       if (!result.isReindexSuccess()) {
-                                           SC.warn("Reindexace se nepodařila.");
-                                       }
+                                       //                                       if (!result.isReindexSuccess()) {
+                                       //                                           SC.warn("Reindexace se nepodařila.");
+                                       //                                       }
 
                                    }
 

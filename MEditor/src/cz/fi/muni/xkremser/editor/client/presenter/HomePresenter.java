@@ -27,9 +27,10 @@
 
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import javax.inject.Inject;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;

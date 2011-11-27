@@ -27,7 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.form.fields.DateItem;

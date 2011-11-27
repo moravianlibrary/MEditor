@@ -30,8 +30,9 @@ package cz.fi.muni.xkremser.editor.client.view;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;

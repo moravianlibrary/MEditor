@@ -33,7 +33,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 

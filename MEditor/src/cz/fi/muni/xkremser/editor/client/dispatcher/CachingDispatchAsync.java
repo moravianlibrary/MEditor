@@ -30,8 +30,9 @@ package cz.fi.muni.xkremser.editor.client.dispatcher;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.client.DispatchAsync;
 import com.gwtplatform.dispatch.client.DispatchRequest;
 import com.gwtplatform.dispatch.shared.Action;

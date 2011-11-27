@@ -27,9 +27,10 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
+import javax.inject.Inject;
+
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;

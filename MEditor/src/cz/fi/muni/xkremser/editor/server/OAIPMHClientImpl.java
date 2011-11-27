@@ -36,7 +36,7 @@ import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 

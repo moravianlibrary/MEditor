@@ -44,7 +44,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 

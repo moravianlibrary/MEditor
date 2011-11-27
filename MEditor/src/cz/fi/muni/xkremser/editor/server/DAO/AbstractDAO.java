@@ -35,9 +35,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.sql.DataSource;
-
-import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 

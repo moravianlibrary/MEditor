@@ -56,7 +56,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.shared.ActionException;
 
