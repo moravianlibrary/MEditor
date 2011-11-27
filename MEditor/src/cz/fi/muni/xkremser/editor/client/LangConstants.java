@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -259,6 +259,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String bottom();
 
   /**
+   * Translated "can contain only objects of type".
+   * 
+   * @return translated "can contain only objects of type"
+   */
+  @DefaultStringValue("can contain only objects of type")
+  @Key("canContain")
+  String canContain();
+
+  /**
    * Translated "Cancel".
    * 
    * @return translated "Cancel"
@@ -374,6 +383,33 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This attribute is used as collection='yes' when the resource is a collection. (Leader/07 code 'c')")
   @Key("collectionAttr")
   String collectionAttr();
+
+  /**
+   * Translated "Type Compatibility".
+   * 
+   * @return translated "Type Compatibility"
+   */
+  @DefaultStringValue("Type Compatibility")
+  @Key("compatibility")
+  String compatibility();
+
+  /**
+   * Translated "not satisfied".
+   * 
+   * @return translated "not satisfied"
+   */
+  @DefaultStringValue("not satisfied")
+  @Key("compatibilityNoTOk")
+  String compatibilityNoTOk();
+
+  /**
+   * Translated "satisfied".
+   * 
+   * @return translated "satisfied"
+   */
+  @DefaultStringValue("satisfied")
+  @Key("compatibilityOk")
+  String compatibilityOk();
 
   /**
    * Translated "There is no controlled list of abstract types.".
@@ -563,6 +599,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Created by Jiri Kremser.")
   @Key("credits")
   String credits();
+
+  /**
+   * Translated "Customize...".
+   * 
+   * @return translated "Customize..."
+   */
+  @DefaultStringValue("Customize...")
+  @Key("customize")
+  String customize();
+
+  /**
+   * Translated "Customize Index".
+   * 
+   * @return translated "Customize Index"
+   */
+  @DefaultStringValue("Customize Index")
+  @Key("customizeIndex")
+  String customizeIndex();
 
   /**
    * Translated "Date".
@@ -1195,6 +1249,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String editMeta();
 
   /**
+   * Translated "Edit Page Number".
+   * 
+   * @return translated "Edit Page Number"
+   */
+  @DefaultStringValue("Edit Page Number")
+  @Key("editPageName")
+  String editPageName();
+
+  /**
+   * Translated "Please enter a new name of the page".
+   * 
+   * @return translated "Please enter a new name of the page"
+   */
+  @DefaultStringValue("Please enter a new name of the page")
+  @Key("editPageNewName")
+  String editPageNewName();
+
+  /**
    * Translated "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC).".
    * 
    * @return translated "This attribute contains a designation of the edition of the particular classification scheme indicated in authority for those schemes that are issued in editions (e.g. DDC)."
@@ -1238,6 +1310,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This value is used for the end date of a range.")
   @Key("endValue")
   String endValue();
+
+  /**
+   * Translated "Please enter the number by which to shift the pages.".
+   * 
+   * @return translated "Please enter the number by which to shift the pages."
+   */
+  @DefaultStringValue("Please enter the number by which to shift the pages.")
+  @Key("enterNumber")
+  String enterNumber();
+
+  /**
+   * Translated "Please enter the number which will represent the maximal alphabetic character taken as a right index (1 = a, 10 = j, etc.)".
+   * 
+   * @return translated "Please enter the number which will represent the maximal alphabetic character taken as a right index (1 = a, 10 = j, etc.)"
+   */
+  @DefaultStringValue("Please enter the number which will represent the maximal alphabetic character taken as a right index (1 = a, 10 = j, etc.)")
+  @Key("enterNumberForIndex")
+  String enterNumberForIndex();
 
   /**
    * Translated "Please enter the PID of a digital object".
@@ -1483,11 +1573,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String fullFoxml();
 
   /**
-   * Translated "Full Image".
+   * Translated "Full Image of The First Page".
    * 
-   * @return translated "Full Image"
+   * @return translated "Full Image of The First Page"
    */
-  @DefaultStringValue("Full Image")
+  @DefaultStringValue("Full Image of The First Page")
   @Key("fullImg")
   String fullImg();
 
@@ -2311,6 +2401,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String nonSortMARC();
 
   /**
+   * Translated "none".
+   * 
+   * @return translated "none"
+   */
+  @DefaultStringValue("none")
+  @Key("none")
+  String none();
+
+  /**
    * Translated "This is roughly equivalent to MARC 21 Leader/06 value 'i'.".
    * 
    * @return translated "This is roughly equivalent to MARC 21 Leader/06 value 'i'."
@@ -2318,6 +2417,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This is roughly equivalent to MARC 21 Leader/06 value 'i'.")
   @Key("nonmusicalMARC")
   String nonmusicalMARC();
+
+  /**
+   * Translated "The number is not valid.".
+   * 
+   * @return translated "The number is not valid."
+   */
+  @DefaultStringValue("The number is not valid.")
+  @Key("notANumber")
+  String notANumber();
 
   /**
    * Translated "Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used.".
@@ -2372,6 +2480,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This digital object has been locked by")
   @Key("objectLockedBy")
   String objectLockedBy();
+
+  /**
+   * Translated "Object of type".
+   * 
+   * @return translated "Object of type"
+   */
+  @DefaultStringValue("Object of type")
+  @Key("objectOfType")
+  String objectOfType();
 
   /**
    * Translated "Designates which part of the resource is in the language supplied, e.g. <language objectPart='summary'><languageTerm authority='iso639-2b'>spa</languageTerm></language> indicates that only the summary is in Spanish.".
@@ -2507,6 +2624,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Page detail")
   @Key("pageDetail")
   String pageDetail();
+
+  /**
+   * Translated "You can drop the pages only on an object which can contain pages.".
+   * 
+   * @return translated "You can drop the pages only on an object which can contain pages."
+   */
+  @DefaultStringValue("You can drop the pages only on an object which can contain pages.")
+  @Key("pageNotDropable")
+  String pageNotDropable();
+
+  /**
+   * Translated "The page number have to be greater than zero.".
+   * 
+   * @return translated "The page number have to be greater than zero."
+   */
+  @DefaultStringValue("The page number have to be greater than zero.")
+  @Key("pageNumberGreater")
+  String pageNumberGreater();
 
   /**
    * Translated "Page numbers".
@@ -3128,6 +3263,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This information is equivalent to MARC 852 $h (Classification part), $i (Item part), $j (Shelving control number), $k (Call number prefix), $l (Shelving form of title), $m (Call number suffix) and $t (Copy number).")
   @Key("shelfLocator")
   String shelfLocator();
+
+  /**
+   * Translated "Shift to the Left".
+   * 
+   * @return translated "Shift to the Left"
+   */
+  @DefaultStringValue("Shift to the Left")
+  @Key("shiftLeft")
+  String shiftLeft();
+
+  /**
+   * Translated "Posunout to the Right".
+   * 
+   * @return translated "Posunout to the Right"
+   */
+  @DefaultStringValue("Posunout to the Right")
+  @Key("shiftRight")
+  String shiftRight();
 
   /**
    * Translated "Show".

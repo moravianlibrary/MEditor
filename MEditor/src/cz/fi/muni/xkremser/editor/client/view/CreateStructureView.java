@@ -271,7 +271,7 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
 
-        MenuItem editItem = new MenuItem("TODOEditovat jmeno stranky", "icons/16/edit.png");
+        MenuItem editItem = new MenuItem(lang.editPageName(), "icons/16/edit.png");
         editItem.setEnableIfCondition(isSelected(true));
         editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -621,15 +621,15 @@ public class CreateStructureView
         menu.setShowShadow(true);
         menu.setShadowDepth(3);
 
-        MenuItem editTitle = new MenuItem("TODOEditovat nazev stranky", "icons/16/edit.png");
+        MenuItem editTitle = new MenuItem(lang.editPageName(), "icons/16/edit.png");
         MenuItem renumberAll = new MenuItem(lang.renumberAll(), "icons/16/renumberAll.png");
         MenuItem renumber = new MenuItem(lang.renumber(), "icons/16/renumber.png");
         MenuItem toRoman = new MenuItem(lang.convertToRoman(), "icons/16/roman.png");
         MenuItem toRomanOld = new MenuItem(lang.convertToRomanOld(), "icons/16/roman.png");
         MenuItem surround = new MenuItem("1, 2, ...   ⇨   [1], [2], ...", "icons/16/surround.png");
         MenuItem abc = new MenuItem("1, 2, ...   ⇨   1a, 1b, ...", "icons/16/abc.png");
-        MenuItem toLeft = new MenuItem(lang.leftShift(), "icons/16/arrow_left.png");
-        MenuItem toRight = new MenuItem(lang.rightShift(), "icons/16/arrow_right.png");
+        MenuItem toLeft = new MenuItem(lang.leftShift() + "...", "icons/16/arrow_left.png");
+        MenuItem toRight = new MenuItem(lang.rightShift() + "...", "icons/16/arrow_right.png");
         editTitle.setEnableIfCondition(isSelected(true));
         renumber.setEnableIfCondition(isSelected(false));
         toRoman.setEnableIfCondition(isSelected(false));
@@ -684,7 +684,7 @@ public class CreateStructureView
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
                     if (i <= 0) {
-                        SC.say("TODOpage number have to be greater than zero");
+                        SC.say(lang.pageNumberGreater());
                         return;
                     }
                     for (Record rec : data) {
@@ -703,7 +703,7 @@ public class CreateStructureView
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
                     if (i <= 0) {
-                        SC.say("TODOpage number have to be greater than zero");
+                        SC.say(lang.pageNumberGreater());
                         return;
                     }
                     for (Record rec : data) {
@@ -733,15 +733,18 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                SC.askforValue("TODOZadej cislo", "TODOOkolik posunout doleva", new ValueCallback() {
+                SC.askforValue(lang.shiftLeft(), lang.enterNumber(), new ValueCallback() {
 
                     @Override
                     public void execute(String value) {
+                        if (value == null) {
+                            return;
+                        }
                         try {
                             int n = Integer.parseInt(value);
                             shift(-n);
                         } catch (NumberFormatException nfe) {
-                            SC.say("TODONot a number");
+                            SC.say(lang.notANumber());
                         }
                     }
                 });
@@ -752,7 +755,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                SC.askforValue("TODOZadej cislo", "TODOOkolik posunout doprava", new ValueCallback() {
+                SC.askforValue(lang.shiftRight(), lang.enterNumber(), new ValueCallback() {
 
                     @Override
                     public void execute(String value) {
@@ -760,7 +763,7 @@ public class CreateStructureView
                             int n = Integer.parseInt(value);
                             shift(n);
                         } catch (NumberFormatException nfe) {
-                            SC.say("TODONot a number");
+                            SC.say(lang.notANumber());
                         }
                     }
                 });
@@ -797,7 +800,7 @@ public class CreateStructureView
         MenuItem abc3 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 1c, 2a");
         MenuItem abc4 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 1c, 1d");
         MenuItem abc5 = new MenuItem("1, .. 4, 5   ⇨   1a, ... 1e, 2a");
-        MenuItem abcN = new MenuItem("Customize...");
+        MenuItem abcN = new MenuItem(lang.customizeIndex() + "...");
         abc2.addClickHandler(getAbcHandler(2));
         abc3.addClickHandler(getAbcHandler(3));
         abc4.addClickHandler(getAbcHandler(4));
@@ -807,7 +810,7 @@ public class CreateStructureView
             @Override
             public void onClick(MenuItemClickEvent event) {
                 // TODO Auto-generated method stub
-                SC.askforValue("TODOZadej cislo", "To cislo uz zadej", new ValueCallback() {
+                SC.askforValue(lang.customizeIndex(), lang.enterNumberForIndex(), new ValueCallback() {
 
                     @Override
                     public void execute(String value) {
@@ -815,7 +818,7 @@ public class CreateStructureView
                             int n = Integer.parseInt(value);
                             toAbcN(n);
                         } catch (NumberFormatException nfe) {
-                            SC.say("TODONot a number");
+                            SC.say(lang.notANumber());
                         }
                     }
                 });
@@ -956,7 +959,7 @@ public class CreateStructureView
     }
 
     private void editPageTitle() {
-        SC.askforValue("TODOZadej jmeno stranky", "TODOZadej jmeno stranky", new ValueCallback() {
+        SC.askforValue(lang.editPageName(), lang.editPageNewName(), new ValueCallback() {
 
             @Override
             public void execute(String value) {

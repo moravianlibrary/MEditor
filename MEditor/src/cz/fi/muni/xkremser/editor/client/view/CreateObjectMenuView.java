@@ -204,12 +204,12 @@ public class CreateObjectMenuView
                                 NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelString));
                         if (possibleChildModels == null
                                 || !possibleChildModels.contains(DigitalObjectModel.PAGE)) {
-                            SC.say("TODO Stranku muzete pretahnout jen na objekt, ktery muze stranky obsahovat.");
+                            SC.say(lang.pageNotDropable());
                             event.cancel();
                             return;
                         }
                     } else {
-                        SC.say("TODO Stranku muzete pretahnout jen na objekt, ktery muze stranky obsahovat.");
+                        SC.say(lang.pageNotDropable());
                         event.cancel();
                         return;
                     }
@@ -229,7 +229,7 @@ public class CreateObjectMenuView
             }
         });
 
-        final MenuItem deleteSelected = new MenuItem("TODO Remove selected", "icons/16/close.png");
+        final MenuItem deleteSelected = new MenuItem(lang.removeSelected(), "icons/16/close.png");
         deleteSelected.setEnableIfCondition(new MenuItemIfFunction() {
 
             @Override
@@ -415,18 +415,6 @@ public class CreateObjectMenuView
     @Override
     public Widget asWidget() {
         return layout;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#expandNode(java.lang.String)
-     */
-    @Override
-    public void expandNode(String id) {
-        // TODO Auto-generated method stub
-
     }
 
     /*
