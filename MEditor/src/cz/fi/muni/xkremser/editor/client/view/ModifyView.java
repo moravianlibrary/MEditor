@@ -51,7 +51,6 @@ import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
 import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
 import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
@@ -302,15 +301,14 @@ public class ModifyView
 
     public void showBasicModsWindow(final EditorTabSet focusedTabSet) {
         if (modsWindow != null && modsWindow.isCreated()) {
-            modsWindow.animateHide(AnimationEffect.FLY, null, 300);
-            modsWindow.destroy();
+            modsWindow.hide();
             modsWindow = null;
         }
         modsWindow = new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang) {
 
             @Override
             protected void init() {
-                animateShow(AnimationEffect.FLY, null, 300);
+                show();
                 focus();
                 String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
                 if (lockOwner == null || "".equals(lockOwner)) {
@@ -330,8 +328,7 @@ public class ModifyView
 
                     @Override
                     public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                        animateHide(AnimationEffect.FLY, null, 300);
-                        destroy();
+                        hide();
                         modsWindow = null;
                     }
                 });
@@ -409,8 +406,7 @@ public class ModifyView
      */
     private void publishShortCut(EditorTabSet focusedTabSet) {
         if (universalWindow != null) {
-            universalWindow.animateHide(AnimationEffect.FLY, null, 300);
-            universalWindow.destroy();
+            universalWindow.hide();
             universalWindow = null;
         }
         tryToPublish(focusedTabSet);
@@ -421,24 +417,21 @@ public class ModifyView
      */
     private void escShortCut() {
         if (downloadingWindow != null && downloadingWindow.isCreated()) {
-            downloadingWindow.animateHide(AnimationEffect.FLY, null, 300);
-            downloadingWindow.destroy();
+            downloadingWindow.hide();
             downloadingWindow = null;
 
         } else if (StoreWorkingCopyWindow.isInstanceVisible()) {
             StoreWorkingCopyWindow.closeInstantiatedWindow();
 
         } else if (universalWindow != null && universalWindow.isCreated()) {
-            universalWindow.animateHide(AnimationEffect.FLY, null, 300);
-            universalWindow.destroy();
+            universalWindow.hide();
             universalWindow = null;
 
         } else if (LockDigitalObjectWindow.isInstanceVisible()) {
             LockDigitalObjectWindow.closeInstantiatedWindow();
 
         } else if (modsWindow != null && modsWindow.isCreated()) {
-            modsWindow.animateHide(AnimationEffect.FLY, null, 300);
-            modsWindow.destroy();
+            modsWindow.hide();
             modsWindow = null;
 
         } else if (imagePopup.isVisible()) {
@@ -1369,7 +1362,7 @@ public class ModifyView
 
         universalWindow.addItem(editorUrlForm);
         universalWindow.addItem(kramUrlForm);
-        universalWindow.animateShow(AnimationEffect.FLY, null, 300);
+        universalWindow.show();
         universalWindow.centerInPage();
         universalWindow.focus();
     }
@@ -1383,15 +1376,14 @@ public class ModifyView
 
     private void showDownloadingWindow(final EditorTabSet ts) {
         if (downloadingWindow != null && downloadingWindow.isCreated()) {
-            downloadingWindow.animateHide(AnimationEffect.FLY, null, 300);
-            downloadingWindow.destroy();
+            downloadingWindow.hide();
             downloadingWindow = null;
         }
         downloadingWindow = new DownloadFoxmlWindow(lang, ts) {
 
             @Override
             protected void init() {
-                animateShow(AnimationEffect.FLY, null, 300);
+                show();
                 centerInPage();
                 focus();
             }
@@ -1456,8 +1448,7 @@ public class ModifyView
 
                 getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts),
                                                     versionable.getValueAsBoolean());
-                universalWindow.animateHide(AnimationEffect.FLY, null, 300);
-                universalWindow.destroy();
+                universalWindow.hide();
                 universalWindow = null;
             }
         });
@@ -1467,8 +1458,7 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event2) {
-                universalWindow.animateHide(AnimationEffect.FLY, null, 300);
-                universalWindow.destroy();
+                universalWindow.hide();
                 universalWindow = null;
             }
         });
@@ -1483,7 +1473,7 @@ public class ModifyView
         universalWindow.addItem(hLayout);
 
         universalWindow.centerInPage();
-        universalWindow.animateShow(AnimationEffect.FLY, null, 300);
+        universalWindow.show();
         publish.focus();
     }
 
@@ -1507,8 +1497,7 @@ public class ModifyView
             }
 
             if (modsWindow != null && downloadingWindow == null) {
-                modsWindow.animateHide(AnimationEffect.FLY, null, 300);
-                modsWindow.destroy();
+                modsWindow.hide();
                 modsWindow = null;
             }
 

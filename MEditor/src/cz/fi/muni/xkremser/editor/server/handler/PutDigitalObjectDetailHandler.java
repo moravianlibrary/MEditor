@@ -27,10 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
-import java.net.MalformedURLException;
 
 import javax.servlet.http.HttpSession;
 
@@ -148,35 +145,10 @@ public class PutDigitalObjectDetailHandler
                 shouldReindex = true;
             }
             if (shouldReindex) {
-                reindex(detail.getUuid());
+                ServerUtils.reindex(detail.getUuid());
             }
         }
         return new PutDigitalObjectDetailResult(write);
-    }
-
-    /**
-     * Reindex.
-     * 
-     * @param uuid
-     *        the uuid
-     */
-    private void reindex(String uuid) {
-        String host = configuration.getKrameriusHost();
-        String login = configuration.getKrameriusLogin();
-        String password = configuration.getKrameriusPassword();
-        if (host == null || login == null || password == null) {
-            return;
-        }
-        String url =
-                host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + uuid + "," + uuid
-                        + "&userName=" + login + "&pswd=" + password;
-        try {
-            RESTHelper.openConnection(url, login, password, false);
-        } catch (MalformedURLException e) {
-            LOGGER.error("Unable to reindex", e);
-        } catch (IOException e) {
-            LOGGER.error("Unable to reindex", e);
-        }
     }
 
     /*

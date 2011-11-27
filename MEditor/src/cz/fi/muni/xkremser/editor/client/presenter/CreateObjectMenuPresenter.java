@@ -87,8 +87,6 @@ public class CreateObjectMenuPresenter
     public interface MyView
             extends View, HasUiHandlers<MyUiHandlers> {
 
-        void expandNode(String id);
-
         HasClickHandlers getRefreshWidget();
 
         SideNavInputTree getInputTree();

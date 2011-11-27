@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.shared.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,16 @@ public class NamedGraphModel
 
     public static DigitalObjectModel getChildByRelation(String relation) {
         return childrenByRelation.get(relation);
+    }
+
+    public static boolean isTopLvlModel(DigitalObjectModel model) {
+        Collection<List<DigitalObjectModel>> sets = children.values();
+        for (List<DigitalObjectModel> list : sets) {
+            if (list.contains(model)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

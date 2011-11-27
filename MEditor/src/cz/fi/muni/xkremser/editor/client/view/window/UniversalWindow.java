@@ -25,9 +25,12 @@
 package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.smartgwt.client.types.AnimationEffect;
+import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
+
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 /**
  * @author Matous Jobanek
@@ -51,10 +54,25 @@ public class UniversalWindow
 
             @Override
             public void onCloseClick(CloseClientEvent event) {
-                animateHide(AnimationEffect.FLY, null, 300);
-                destroy();
+                hide();
             }
         });
+    }
+
+    @Override
+    public void hide() {
+        animateHide(AnimationEffect.FLY, new AnimationCallback() {
+
+            @Override
+            public void execute(boolean earlyFinish) {
+                destroy();
+            }
+        }, Constants.WINDOW_ANIMATION_DELAY_IN_MILLIS);
+    }
+
+    @Override
+    public void show() {
+        animateShow(AnimationEffect.FLY, null, Constants.WINDOW_ANIMATION_DELAY_IN_MILLIS);
     }
 
 }

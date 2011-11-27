@@ -71,6 +71,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
+import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
@@ -333,7 +334,7 @@ public class DigitalObjectMenuPresenter
 
     @Override
     protected void onReset() {
-
+        ChangeMenuWidthEvent.fire(getEventBus(), "275");
     };
 
     /*

@@ -27,9 +27,12 @@
 
 package cz.fi.muni.xkremser.editor.server;
 
+import java.io.IOException;
+
 import java.lang.reflect.Field;
 
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 
 import java.util.ArrayList;
@@ -41,12 +44,17 @@ import javax.servlet.http.HttpSession;
 
 import javax.xml.bind.JAXBElement;
 
+import javax.inject.Inject;
+
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -56,6 +64,9 @@ public class ServerUtils {
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(ServerUtils.class);
+
+    @Inject
+    private static EditorConfiguration config;
 
     /**
      * Checks if is caused by exception.
@@ -98,6 +109,34 @@ public class ServerUtils {
             fields.addAll(getAllFields(clazz.getSuperclass()));
         }
         return fields;
+    }
+
+    /**
+     * Reindex.
+     * 
+     * @param pid
+     *        the pid
+     */
+    public static boolean reindex(String pid) {
+        String host = config.getKrameriusHost();
+        String login = config.getKrameriusLogin();
+        String password = config.getKrameriusPassword();
+        if (host == null || login == null || password == null) {
+            return false;
+        }
+        String url =
+                host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
+                        + "&userName=" + login + "&pswd=" + password;
+        try {
+            RESTHelper.get(url, login, password, false);
+        } catch (MalformedURLException e) {
+            LOGGER.error("Unable to reindex", e);
+            return false;
+        } catch (IOException e) {
+            LOGGER.error("Unable to reindex", e);
+            return false;
+        }
+        return true;
     }
 
     private static boolean hasOnlyNullFields(Object object) {

@@ -42,7 +42,6 @@ import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.ImageStyle;
@@ -322,7 +321,7 @@ public class CreateStructureView
                 });
                 viewerPane.setContentsType(ContentsType.PAGE);
                 winModal.addItem(viewerPane);
-                winModal.animateShow(AnimationEffect.FLY, null, 300);
+                winModal.show();
             }
         });
 
@@ -881,8 +880,7 @@ public class CreateStructureView
     @Override
     public void escShortCut() {
         if (winModal != null) {
-            winModal.animateHide(AnimationEffect.FLY, null, 300);
-            winModal.destroy();
+            winModal.hide();
             winModal = null;
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);

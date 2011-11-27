@@ -152,6 +152,8 @@ public class Constants {
 
     public static final String ATTR_TYPE_ID = Constants.ATTR_TYPE + Constants.ATTR_ID;
 
+    public static final String ATTR_CREATE = "create";
+
     public static final String ATTR_EXIST = "exist";
 
     /** The Constant ATTR_IDENTITY. */
@@ -460,4 +462,6 @@ public class Constants {
 
     /** If the ingest fails more than this number of times, it will fail */
     public static final int MAX_NUMBER_OF_INGEST_ATTEMPTS = 3;
+
+    public static final int WINDOW_ANIMATION_DELAY_IN_MILLIS = 300;
 }

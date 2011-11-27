@@ -30,7 +30,6 @@ import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.util.BooleanCallback;
@@ -85,8 +84,7 @@ public class StoreWorkingCopyWindow
     }
 
     public static void closeInstantiatedWindow() {
-        storingWindow.animateHide(AnimationEffect.FLY, null, 300);
-        storingWindow.destroy();
+        storingWindow.hide();
         storingWindow = null;
     }
 
@@ -196,8 +194,7 @@ public class StoreWorkingCopyWindow
 
             @Override
             public void onClick(ClickEvent event) {
-                animateHide(AnimationEffect.FLY, null, 300);
-                destroy();
+                hide();
             }
         });
         buttonsLayout.addMember(closeButton);
@@ -210,7 +207,7 @@ public class StoreWorkingCopyWindow
 
         setEdgeOffset(20);
         fetchStoredItems(storedFilesGrid);
-        animateShow(AnimationEffect.FLY, null, 300);
+        show();
         centerInPage();
         focus();
         buttonsLayout.setLeft(280);

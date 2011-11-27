@@ -36,6 +36,7 @@ import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.TreeModelType;
@@ -181,7 +182,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setDropIconSuffix("into");
         structureTreeGrid.setClosedIconSuffix("");
         structureTreeGrid.setOpenIconSuffix("");
-        structureTreeGrid.setTreeRootValue("1");
+        structureTreeGrid.setTreeRootValue(SubstructureTreeNode.ROOT_ID);
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
         structureTreeGrid.setShowConnectors(true);
 
@@ -265,13 +266,54 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                new ConnectExistingObjectWindow(lang, true) {
-
-                    private DigitalObjectModel model;
+                final Record[] selection = structureTreeGrid.getSelection();
+                DigitalObjectModel model =
+                        DigitalObjectModel.parseString(selection[0].getAttribute(Constants.ATTR_TYPE_ID));
+                new ConnectExistingObjectWindow(lang, true, model) {
 
                     @Override
                     protected void doActiton(TextItem uuidField) {
+                        if (NamedGraphModel.isTopLvlModel(getModel())) {
+                            TreeNode root = structureTree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
+                            root.setAttribute(Constants.ATTR_EXIST, true);
+                            root.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
+                            structureTreeGrid.setData(structureTree);
+                        } else {
+                            String parentId = selection[0].getAttributeAsString(Constants.ATTR_PARENT);
+                            TreeNode parent = structureTree.findById(parentId);
+                            boolean parentIsTopLvl =
+                                    NamedGraphModel.isTopLvlModel(DigitalObjectModel.parseString(parent
+                                            .getAttribute(Constants.ATTR_TYPE_ID)));
+                            String newParentId = String.valueOf(getUiHandlers().newId());
 
+                            // add new parent
+                            addSubstructure(newParentId,
+                                            uuidField.getValueAsString(),
+                                            uuidField.getValueAsString(),
+                                            getUiHandlers().getLabelFromModel().get(getModel().getValue()),
+                                            getModel().getValue(),
+                                            parent.getAttribute(parentIsTopLvl ? Constants.ATTR_ID
+                                                    : Constants.ATTR_PARENT),
+                                            true,
+                                            true);
+                            // TODO: set create checkbox to unmodifiable
+                            for (Record rec : selection) {
+                                addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                                rec.getAttribute(Constants.ATTR_NAME),
+                                                rec.getAttribute(Constants.ATTR_PICTURE),
+                                                rec.getAttribute(Constants.ATTR_TYPE),
+                                                rec.getAttribute(Constants.ATTR_TYPE_ID),
+                                                newParentId,
+                                                true,
+                                                false);
+                            }
+                            if (structureTree.getChildren(parent).length == structureTreeGrid.getSelection().length
+                                    && !parentIsTopLvl) {
+                                //parent has no other children (no siblings) and is not top lvl
+                                structureTree.remove(parent);
+                                structureTreeGrid.setData(structureTree);
+                            }
+                        }
                     }
 
                     @Override
@@ -285,11 +327,23 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                new ConnectExistingObjectWindow(lang, false) {
+                DigitalObjectModel model =
+                        DigitalObjectModel.parseString(structureTreeGrid.getSelection()[0]
+                                .getAttribute(Constants.ATTR_TYPE_ID));
+
+                new ConnectExistingObjectWindow(lang, false, model) {
 
                     @Override
                     protected void doActiton(TextItem uuidField) {
 
+                        addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                        uuidField.getValueAsString(),
+                                        uuidField.getValueAsString(),
+                                        getUiHandlers().getLabelFromModel().get(getModel().getValue()),
+                                        getModel().getValue(),
+                                        structureTreeGrid.getSelection()[0].getAttribute(Constants.ATTR_ID),
+                                        false,
+                                        true);
                     }
 
                     @Override
@@ -320,7 +374,8 @@ public class CreateObjectMenuView
                     connect2ExEnabled &=
                             (i == 0 || modelStr.equals(selection[i].getAttribute(Constants.ATTR_TYPE_ID)));
 
-                    removeSelectedEnabled &= !"1".equals(selection[i].getAttribute(Constants.ATTR_PARENT));
+                    removeSelectedEnabled &=
+                            !SubstructureTreeNode.ROOT_ID.equals(selection[i].getAttribute(Constants.ATTR_ID));
                     if (!removeSelectedEnabled) {
                         break;
                     }
@@ -344,25 +399,35 @@ public class CreateObjectMenuView
 
         structureTree = new Tree();
         structureTree.setModelType(TreeModelType.PARENT);
-        structureTree.setRootValue("1");
+        structureTree.setRootValue(SubstructureTreeNode.ROOT_ID);
         //        structureTree.setNameProperty(Constants.ATTR_NAME);
         structureTree.setIdField(Constants.ATTR_ID);
         structureTree.setParentIdField(Constants.ATTR_PARENT);
         structureTree.setOpenProperty("isOpen");
 
-        TreeGridField nameField = new TreeGridField();
-        nameField.setCanFilter(true);
-        nameField.setCanEdit(true);
-        nameField.setName(Constants.ATTR_NAME);
-        nameField.setTitle(lang.name());
+        TreeGridField createField = new TreeGridField();
+        createField.setCanFilter(true);
+        createField.setCanEdit(true);
+        createField.setName(Constants.ATTR_CREATE);
+        createField.setTitle("TODO vytvorit");
+        createField.setType(ListGridFieldType.BOOLEAN);
+        createField.setWidth("40");
 
         TreeGridField typeField = new TreeGridField();
         typeField.setCanFilter(true);
         typeField.setCanEdit(false);
         typeField.setName(Constants.ATTR_TYPE);
         typeField.setTitle(lang.dcType());
+        typeField.setWidth("40%");
 
-        structureTreeGrid.setFields(typeField, nameField);
+        TreeGridField nameField = new TreeGridField();
+        nameField.setCanFilter(true);
+        nameField.setCanEdit(true);
+        nameField.setName(Constants.ATTR_NAME);
+        nameField.setTitle(lang.name());
+        nameField.setWidth("*");
+
+        structureTreeGrid.setFields(typeField, nameField, createField);
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
@@ -549,6 +614,7 @@ public class CreateObjectMenuView
             setAttribute(Constants.ATTR_TYPE_ID, typeId);
             setAttribute("isOpen", isOpen);
             setAttribute(Constants.ATTR_EXIST, exist);
+            setAttribute(Constants.ATTR_CREATE, !exist);
         }
     }
 

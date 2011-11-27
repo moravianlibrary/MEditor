@@ -33,7 +33,6 @@ import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.Overflow;
@@ -196,7 +195,7 @@ public class AppView
                 helpPane.setContentsURL("./help_" + (en ? "en.html" : "cs.html"));
                 helpPane.setContentsType(ContentsType.FRAGMENT);
                 winModal.addItem(helpPane);
-                winModal.animateShow(AnimationEffect.FLY, null, 300);
+                winModal.show();
             }
         });
         logged.addMember(hotKeysFlow);
@@ -315,10 +314,14 @@ public class AppView
     @Override
     public void escShortCut() {
         if (winModal != null) {
-            winModal.animateHide(AnimationEffect.FLY, null, 300);
-            winModal.destroy();
+            winModal.hide();
             winModal = null;
         }
+    }
+
+    @Override
+    public void changeMenuWidth(String width) {
+        leftContainer.setWidth(width);
     }
 
 }

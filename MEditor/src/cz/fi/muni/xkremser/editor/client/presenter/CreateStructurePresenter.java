@@ -76,11 +76,11 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureTreeNode;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
-import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
+import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
@@ -271,6 +271,7 @@ public class CreateStructurePresenter
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
+        ChangeMenuWidthEvent.fire(getEventBus(), "340");
     }
 
     /**
@@ -515,7 +516,7 @@ public class CreateStructurePresenter
                         @Override
                         public void run() {
                             hBar1.setPercentDone(((100 * (alreadyDone + 1)) / data.length));
-                            tileGrid.addData(((ContainerRecord) data[alreadyDone]).deepCopy());
+                            tileGrid.addData(((ScanRecord) data[alreadyDone]).deepCopy());
                             if (++alreadyDone != data.length) {
                                 schedule(15);
                             } else {

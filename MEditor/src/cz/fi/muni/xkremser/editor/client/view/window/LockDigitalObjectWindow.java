@@ -25,7 +25,6 @@
 package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.gwtplatform.dispatch.client.DispatchAsync;
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
@@ -68,8 +67,7 @@ public class LockDigitalObjectWindow
     }
 
     public static void closeInstantiatedWindow() {
-        lockWindow.animateHide(AnimationEffect.FLY, null, 300);
-        lockWindow.destroy();
+        lockWindow.hide();
         lockWindow = null;
     }
 
@@ -126,7 +124,7 @@ public class LockDigitalObjectWindow
         addItem(textEditor);
         addItem(layout);
         centerInPage();
-        animateShow(AnimationEffect.FLY, null, 300);
+        show();
         lock.focus();
         layout.setLeft(260);
 

@@ -275,7 +275,7 @@ public class ClientUtils {
         }
         String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
         if (name == null || "".equals(name)) {
-            throw new CreateObjectException("unknown name");
+            throw new CreateObjectException("unknown uuid");
         }
         String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
         if (modelString == null || "".equals(modelString)) {
@@ -287,6 +287,7 @@ public class ClientUtils {
         } catch (RuntimeException ex) {
             throw new CreateObjectException("unknown type");
         }
+        // TODO: attribute "create"
         NewDigitalObject newObj =
                 new NewDigitalObject(0,
                                      name,

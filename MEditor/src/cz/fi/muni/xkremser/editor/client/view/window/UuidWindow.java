@@ -1,7 +1,6 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -81,7 +80,7 @@ public abstract class UuidWindow
         addItem(form);
         addItem(open);
         centerInPage();
-        animateShow(AnimationEffect.FLY, null, 300);
+        show();
         uuidField.focusInItem();
     }
 

@@ -44,7 +44,6 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
-import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -57,6 +56,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
+import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
@@ -113,21 +113,13 @@ public class AppPresenter
     public interface MyView
             extends View, HasUiHandlers<MyUiHandlers> {
 
-        /**
-         * Gets the username.
-         * 
-         * @return the username
-         */
         HTMLFlow getUsername();
 
-        /**
-         * Gets the edits the users.
-         * 
-         * @return the edits the users
-         */
         HTMLFlow getEditUsers();
 
         void escShortCut();
+
+        void changeMenuWidth(String width);
     }
 
     /** The left presenter. */
@@ -230,6 +222,15 @@ public class AppPresenter
 
         });
 
+        addRegisteredHandler(ChangeMenuWidthEvent.getType(),
+                             new ChangeMenuWidthEvent.ChangeMenuWidthHandler() {
+
+                                 @Override
+                                 public void onChangeMenuWidth(ChangeMenuWidthEvent event) {
+                                     getView().changeMenuWidth(event.getWidth());
+                                 }
+                             });
+
         addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
 
             @Override
@@ -294,16 +295,14 @@ public class AppPresenter
      */
     private void escShortCut() {
         if (uuidWindow != null) {
-            uuidWindow.animateHide(AnimationEffect.FLY, null, 300);
-            uuidWindow.destroy();
+            uuidWindow.hide();
             uuidWindow = null;
         }
     }
 
     private void evaluateUuid(TextItem uuidField) {
         if (uuidField.validate()) {
-            uuidWindow.animateHide(AnimationEffect.FLY, null, 300);
-            uuidWindow.destroy();
+            uuidWindow.hide();
             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
                     .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));
             uuidWindow = null;

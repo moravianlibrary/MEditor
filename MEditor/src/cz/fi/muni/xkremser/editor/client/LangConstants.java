@@ -399,8 +399,8 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
    * @return translated "not satisfied"
    */
   @DefaultStringValue("not satisfied")
-  @Key("compatibilityNoTOk")
-  String compatibilityNoTOk();
+  @Key("compatibilityNotOk")
+  String compatibilityNotOk();
 
   /**
    * Translated "satisfied".
@@ -2480,6 +2480,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This digital object has been locked by")
   @Key("objectLockedBy")
   String objectLockedBy();
+
+  /**
+   * Translated "The object with given PID is not in the repository.".
+   * 
+   * @return translated "The object with given PID is not in the repository."
+   */
+  @DefaultStringValue("The object with given PID is not in the repository.")
+  @Key("objectNotPresent")
+  String objectNotPresent();
 
   /**
    * Translated "Object of type".

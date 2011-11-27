@@ -1,7 +1,8 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
-import com.smartgwt.client.types.AnimationEffect;
+import java.util.List;
+
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -15,6 +16,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 
 /**
  * @author Jiri Kremser
@@ -25,18 +27,29 @@ public abstract class ConnectExistingObjectWindow
 
     private final TextItem uuidField;
 
-    private DigitalObjectModel model;
+    private final DigitalObjectModel subject;
+
+    private DigitalObjectModel object;
 
     private final HTMLFlow availability;
+
+    private final HTMLFlow compatibility;
+
+    private final HTMLFlow info;
 
     private final IButton connect;
 
     private final LangConstants lang;
 
-    public ConnectExistingObjectWindow(final LangConstants lang, boolean connectToExisting) {
-        super(175, 440, connectToExisting ? lang.connectToExisting() : lang.connectExistingTo());
+    private final boolean connectToExisting;
 
+    public ConnectExistingObjectWindow(final LangConstants lang,
+                                       boolean connectToExisting,
+                                       DigitalObjectModel subject) {
+        super(210, 450, connectToExisting ? lang.connectToExisting() : lang.connectExistingTo());
         this.lang = lang;
+        this.subject = subject;
+        this.connectToExisting = connectToExisting;
         setEdgeOffset(15);
 
         RegExpValidator regExpValidator = new RegExpValidator();
@@ -81,14 +94,12 @@ public abstract class ConnectExistingObjectWindow
             public void onClick(ClickEvent event) {
                 if (uuidField.validate()) {
                     doActiton(uuidField);
-                    animateHide(AnimationEffect.FLY, null, 300);
-                    destroy();
+                    hide();
                 }
             }
         });
         check.setTitle(lang.checkAvailability());
         availability = new HTMLFlow(lang.availability() + ": ");
-        availability.setExtraSpace(5);
         check.addClickHandler(new ClickHandler() {
 
             @Override
@@ -98,6 +109,11 @@ public abstract class ConnectExistingObjectWindow
                 }
             }
         });
+
+        compatibility = new HTMLFlow(lang.compatibility() + ": ");
+        compatibility.setExtraSpace(3);
+        info = new HTMLFlow("");
+        info.setExtraSpace(5);
         DynamicForm form = new DynamicForm();
         form.setMargin(15);
         form.setWidth(100);
@@ -110,14 +126,16 @@ public abstract class ConnectExistingObjectWindow
 
         HLayout buttons = new HLayout();
         buttons.setMembers(check, connect);
-        HTMLFlow header = new HTMLFlow(lang.enterPID());
-        header.setExtraSpace(3);
+        HTMLFlow header = new HTMLFlow("<b>" + lang.enterPID() + "</b>");
+        header.setExtraSpace(10);
         addItem(header);
         addItem(availability);
+        addItem(compatibility);
+        addItem(info);
         addItem(form);
         addItem(buttons);
         centerInPage();
-        animateShow(AnimationEffect.FLY, null, 300);
+        show();
         uuidField.focusInItem();
     }
 
@@ -129,14 +147,60 @@ public abstract class ConnectExistingObjectWindow
         }
     }
 
+    private String getCompatibility(boolean available, LangConstants lang) {
+        if (available) {
+            return lang.compatibility() + ": <span class='greenFont'>" + lang.compatibilityOk() + "</span>";
+        } else {
+            return lang.compatibility() + ": <span class='redFont'>" + lang.compatibilityNotOk() + "</span>";
+        }
+    }
+
     public TextItem getUuidField() {
         return uuidField;
     }
 
     public void changeModel(DigitalObjectModel model) {
-        this.model = model;
-        availability.setContents(getStatus(model != null, lang));
-        connect.setDisabled(model == null);
+        this.object = model;
+        boolean ok = model != null;
+        availability.setContents(getStatus(ok, lang));
+        connect.setDisabled(!ok);
+        if (!ok) {
+            info.setContents("<i>" + lang.objectNotPresent() + "</i>");
+            compatibility.setContents(getCompatibility(false, lang));
+        } else {
+            info.setContents("");
+            checkModelCompatibility();
+        }
+    }
+
+    private void checkModelCompatibility() {
+        DigitalObjectModel parent = connectToExisting ? object : subject;
+        DigitalObjectModel child = connectToExisting ? subject : object;
+        List<DigitalObjectModel> possibleChildren = NamedGraphModel.getChildren(parent);
+        boolean ok = possibleChildren != null && possibleChildren.contains(child);
+        compatibility.setContents(getCompatibility(ok, lang));
+        connect.setDisabled(!ok);
+        if (!ok) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("<i>").append(lang.objectOfType()).append(" ").append(parent.getValue()).append(" ")
+                    .append(lang.canContain()).append(": ");
+            if (possibleChildren != null && possibleChildren.size() != 0) {
+                for (DigitalObjectModel model : possibleChildren) {
+                    sb.append(model.getValue()).append(", ");
+                }
+                sb.deleteCharAt(sb.length() - 2);
+            } else {
+                sb.append("<i>").append(lang.none());
+            }
+            sb.append("</i>");
+            info.setContents(sb.toString());
+        } else {
+            info.setContents("");
+        }
+    }
+
+    public DigitalObjectModel getModel() {
+        return this.object;
     }
 
     protected abstract void doActiton(TextItem uuidField);

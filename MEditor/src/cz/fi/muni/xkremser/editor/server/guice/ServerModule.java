@@ -36,6 +36,7 @@ import com.gwtplatform.dispatch.server.guice.HandlerModule;
 import cz.fi.muni.xkremser.editor.server.AuthenticationServlet;
 import cz.fi.muni.xkremser.editor.server.OAIPMHClient;
 import cz.fi.muni.xkremser.editor.server.OAIPMHClientImpl;
+import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.Z3950ClientImpl;
@@ -211,6 +212,7 @@ public class ServerModule
         requestStaticInjection(AuthenticationServlet.class);
         requestStaticInjection(URLS.class);
         requestStaticInjection(CreateObjectUtils.class);
+        requestStaticInjection(ServerUtils.class);
 
     }
 }
