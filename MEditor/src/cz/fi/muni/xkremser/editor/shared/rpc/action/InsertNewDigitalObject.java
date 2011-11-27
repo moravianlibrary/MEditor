@@ -45,6 +45,12 @@ public class InsertNewDigitalObject
     private NewDigitalObject object;
 
     @Out(1)
-    private boolean success;
+    private boolean ingestSuccess;
+
+    @Out(2)
+    private boolean reindexSuccess;
+
+    @Out(3)
+    private String newPid;
 
 }

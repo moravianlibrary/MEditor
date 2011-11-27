@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
@@ -70,13 +71,16 @@ public class InsertNewDigitalObjectHandler
             LOGGER.debug("Inserting digital object: " + object.getName());
         }
 
-        boolean success;
+        boolean ingestSuccess;
+        boolean reindexSuccess;
         try {
-            success = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
+            ingestSuccess = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
+            reindexSuccess = ServerUtils.reindex(Constants.FEDORA_UUID_PREFIX + object.getUuid());
         } catch (CreateObjectException e) {
             throw new ActionException(e.getMessage());
         }
-        return new InsertNewDigitalObjectResult(success);
+        return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, Constants.FEDORA_UUID_PREFIX
+                + object.getUuid());
     }
 
     /**

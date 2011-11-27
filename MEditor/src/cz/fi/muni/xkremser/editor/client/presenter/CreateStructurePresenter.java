@@ -663,14 +663,35 @@ public class CreateStructurePresenter
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
                                    @Override
-                                   public void callback(InsertNewDigitalObjectResult result) {
-                                       System.out.println(result);
+                                   public void callback(final InsertNewDigitalObjectResult result) {
+                                       if (result.isIngestSuccess()) {
+                                           // TODO" i18n
+                                           SC.ask("Vložení proběhlo v pořádku, přejete si otevřít nový objekt?",
+                                                  new BooleanCallback() {
+
+                                                      @Override
+                                                      public void execute(Boolean value) {
+                                                          if (value) {
+                                                              placeManager
+                                                                      .revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                                                                              .with(Constants.URL_PARAM_UUID,
+                                                                                    result.getNewPid()));
+                                                          }
+                                                      }
+                                                  });
+                                       } else {
+                                           SC.warn("Vložení se nepodařilo.");
+                                       }
+                                       if (!result.isReindexSuccess()) {
+                                           SC.warn("Reindexace se nepodařila.");
+                                       }
 
                                    }
 
                                    @Override
                                    public void callbackError(Throwable t) {
                                        System.out.println(t);
+                                       SC.say("Nepodarilo se:  " + t.getMessage());
                                    }
                                });
         }

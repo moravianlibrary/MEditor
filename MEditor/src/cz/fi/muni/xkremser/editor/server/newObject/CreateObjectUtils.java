@@ -43,7 +43,6 @@ import org.dom4j.DocumentException;
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
@@ -144,11 +143,10 @@ public class CreateObjectUtils {
             // TODO: StringBuffer
             boolean copySuccess =
                     copyfile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
-                            + Constants.JPEG_2000_EXTENSION, newFilePath + "."
-                            + Constants.JPEG_2000_EXTENSION);
+                            + Constants.JPEG_2000_EXTENSION, newFilePath + Constants.JPEG_2000_EXTENSION);
             if (copySuccess && LOGGER.isInfoEnabled()) {
                 LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + "."
-                        + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath + "."
+                        + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
                         + Constants.JPEG_2000_EXTENSION);
             }
         }
@@ -273,11 +271,11 @@ public class CreateObjectUtils {
         } catch (DocumentException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+            return false;
         }
 
         checkAccessRightsAndCreateDirectories(node.getSysno());
         String uuid = insertFOXML(node, mods, dc, node.getSysno());
-        ServerUtils.reindex(Constants.FEDORA_UUID_PREFIX + uuid);
         return true;
     }
 }
