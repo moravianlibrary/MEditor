@@ -72,6 +72,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
 /**
@@ -121,9 +122,25 @@ public class Z3950ClientImpl
         }
         List<String> dcStrings = search(field, what, false);
         List<String> marcStrings = search(field, what, true);
+        List<String> sysnos = new ArrayList<String>(marcStrings.size());
+        if (!marcStrings.isEmpty()) {
+            for (String marc : marcStrings) {
+                sysnos.add(getSysno(marc));
+            }
+        }
         ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
         for (int i = 0; i < dcStrings.size(); i++) {
-            MetadataBundle bundle = new MetadataBundle(DCUtils.getDC(dcStrings.get(i)), null, null);
+            MetadataBundle bundle =
+                    new MetadataBundle(DCUtils.getDC(dcStrings.get(i)),
+                                       null,
+                                       new MarcSpecificMetadata(sysnos.get(i),
+                                                                null,
+                                                                null,
+                                                                null,
+                                                                null,
+                                                                null,
+                                                                null,
+                                                                null));
             retList.add(bundle);
         }
         //        try {
@@ -146,6 +163,14 @@ public class Z3950ClientImpl
         //            e.printStackTrace();
         //        }
         return retList;
+    }
+
+    /**
+     * @param marc
+     * @return
+     */
+    private String getSysno(String marc) {
+        return marc.split("\n")[1].substring(4, 13);
     }
 
     private List<String> search(Constants.SEARCH_FIELD field, String what, boolean marc) {

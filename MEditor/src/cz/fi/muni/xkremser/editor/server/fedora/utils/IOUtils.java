@@ -212,7 +212,7 @@ public class IOUtils {
      * @throws IOException
      *         Signals that an I/O exception has occurred.
      */
-    public static void copyBundledResources(Class caller, String[] texts, String prefix, File folder)
+    public static void copyBundledResources(Class<?> caller, String[] texts, String prefix, File folder)
             throws FileNotFoundException, IOException {
         for (String def : texts) {
             InputStream is = null;

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
@@ -61,7 +61,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsResult;
 public class RemoveDigitalObjectWindow
         extends UniversalWindow {
 
-    private static final String BLACK_CIRCLE = "other/blackCircle.png";
+    //    private static final String BLACK_CIRCLE = "other/blackCircle.png";
     private static final String GREEN_CIRCLE = "other/greenCircle.png";
     private static final String RED_CIRCLE = "other/redCircle.png";
     private static final String GREEN_FOCUSED_CIRCLE = "other/greenCircle_Over.png";
@@ -75,6 +75,7 @@ public class RemoveDigitalObjectWindow
     private static final String ARROW_ASKEW_RIGHT_CONFLICT = "other/arrowAskewRightConflict.png";
     private static final String ARROW_ASKEW_LEFT_CONFLICT = "other/arrowAskewLeftConflict.png";
 
+    @SuppressWarnings("unused")
     private final LangConstants lang;
     private static RemoveDigitalObjectWindow removeWindow = null;
     private final Layout mainLayout = new VLayout();

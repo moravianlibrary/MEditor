@@ -96,12 +96,12 @@ public class FedoraNamespaceContext
      * @see javax.xml.namespace.NamespaceContext#getPrefixes(java.lang.String)
      */
     @Override
-    public Iterator getPrefixes(String arg0) {
+    public Iterator<String> getPrefixes(String arg0) {
         String prefixInternal = MAP_URI2PREFIX.get(arg0.intern());
         if (prefixInternal != null) {
             return Arrays.asList(prefixInternal).iterator();
         } else {
-            return Collections.emptyList().iterator();
+            return Collections.<String> emptyList().iterator();
         }
     }
 }

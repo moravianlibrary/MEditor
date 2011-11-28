@@ -27,7 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;

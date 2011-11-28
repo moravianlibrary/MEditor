@@ -119,7 +119,8 @@ public class CheckAvailabilityHandler
             URLConnection con = RESTHelper.openConnection(url, usr, pass, false);
             if (con instanceof HttpURLConnection) {
                 HttpURLConnection httpConnection = (HttpURLConnection) con;
-                if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                int resp = httpConnection.getResponseCode();
+                if (resp < 200 || resp >= 308) {
                     status = false;
                     LOGGER.info("Server " + url + " answered with HTTP code "
                             + httpConnection.getResponseCode());

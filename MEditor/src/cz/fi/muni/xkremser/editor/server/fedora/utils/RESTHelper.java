@@ -195,7 +195,7 @@ public class RESTHelper {
             }
 
             int resp = ((HttpURLConnection) uc).getResponseCode();
-            if (resp < 200 || resp >= 300) {
+            if (resp < 200 || resp >= 308) {
                 if (robustMode) {
                     return null;
                 } else {

@@ -99,6 +99,7 @@ public class AppView
     /** The edit users. */
     private final HTMLFlow editUsers;
 
+    @SuppressWarnings("unused")
     private final LangConstants lang;
 
     private Window winModal;

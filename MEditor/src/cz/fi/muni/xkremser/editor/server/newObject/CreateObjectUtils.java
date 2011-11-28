@@ -111,27 +111,23 @@ public class CreateObjectUtils {
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
         if (isPage) {
             String url = config.getImageServerUrl();
-            if (!url.endsWith("/")) {
-                url += '/';
-            }
+            addSlash(url);
             if (!url.startsWith("http://")) {
                 if (url.startsWith("https://")) {
                     url = url.substring(8);
                 }
                 url = "http://" + url;
             }
-            if (sysno == null) {
-                imageUrl = url + "meditor" + node.getUuid();
+            if (!isSysno(sysno)) {
+                imageUrl = url + "meditor/" + getPathFromNonSysno(sysno) + node.getUuid();
+                newFilePath =
+                        addSlash(config.getImageServerUnknown()) + getPathFromNonSysno(sysno)
+                                + node.getUuid();
             } else {
                 imageUrl = url + "mzk03/" + getSysnoPath(sysno) + node.getUuid();
+                newFilePath = addSlash(config.getImageServerKnown()) + getSysnoPath(sysno) + node.getUuid();
             }
             builder.setImageUrl(imageUrl);
-
-            String path = sysno == null ? config.getImageServerUnknown() : config.getImageServerKnown();
-            if (!path.endsWith("/")) {
-                path += '/';
-            }
-            newFilePath = path + getSysnoPath(sysno) + node.getUuid();
         }
 
         builder.createDocument();
@@ -157,7 +153,7 @@ public class CreateObjectUtils {
         return node.getUuid();
     }
 
-    private static boolean ingest(String foxml, String label, String uuid) {
+    public static boolean ingest(String foxml, String label, String uuid) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Ingesting the digital object with PID uuid:" + uuid + " and label " + label);
         }
@@ -228,6 +224,17 @@ public class CreateObjectUtils {
         return sb.toString();
     }
 
+    private static String getPathFromNonSysno(String nonSysno) {
+        return (nonSysno == null || "".equals(nonSysno) ? "/" : '/' + nonSysno + '/');
+    }
+
+    private static String addSlash(String string) {
+        if (!string.endsWith("/")) {
+            string += '/';
+        }
+        return string;
+    }
+
     private static void checkAccessRightsAndCreateDirectories(String sysno) throws CreateObjectException {
         String unknown = config.getImageServerUnknown();
         String known = config.getImageServerKnown();
@@ -244,8 +251,8 @@ public class CreateObjectUtils {
         }
 
         File imagesDir =
-                new File(sysno != null && sysno.length() == 9 ? config.getImageServerKnown() + '/'
-                        + getSysnoPath(sysno) : config.getImageServerUnknown());
+                new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + getSysnoPath(sysno)
+                        : config.getImageServerUnknown() + getPathFromNonSysno(sysno));
         if (!imagesDir.exists()) {
             boolean mkdirs = imagesDir.mkdirs();
             if (!mkdirs) {
@@ -259,6 +266,10 @@ public class CreateObjectUtils {
                 }
             }
         }
+    }
+
+    private static boolean isSysno(String sysno) {
+        return sysno != null && sysno.length() == 9;
     }
 
     public static boolean insertAllTheStructureToFOXMLs(NewDigitalObject node) throws CreateObjectException {
@@ -275,7 +286,7 @@ public class CreateObjectUtils {
         }
 
         checkAccessRightsAndCreateDirectories(node.getSysno());
-        String uuid = insertFOXML(node, mods, dc, node.getSysno());
+        insertFOXML(node, mods, dc, node.getSysno());
         return true;
     }
 }

@@ -33,7 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
@@ -44,7 +44,6 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -66,7 +65,6 @@ import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
-import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.UsersGwtRPCDS;
@@ -75,9 +73,6 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.OpenIDItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.RoleItem;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailability;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
@@ -248,6 +243,7 @@ public class UserPresenter
     private final DigitalObjectMenuPresenter leftPresenter;
 
     /** The place manager. */
+    @SuppressWarnings("unused")
     private final PlaceManager placeManager;
 
     /** The roles. */
@@ -763,53 +759,6 @@ public class UserPresenter
     @Override
     protected void revealInParent() {
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
-    }
-
-    /**
-     * Check availability.
-     */
-    private void checkAvailability() {
-        dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID),
-                           new DispatchCallback<CheckAvailabilityResult>() {
-
-                               @Override
-                               public void callback(CheckAvailabilityResult result) {
-                                   String krameriusURL = result.getUrl();
-                                   getView().refreshKramerius(result.isAvailability(), krameriusURL);
-                                   if (krameriusURL == null || "".equals(krameriusURL)) {
-                                       SC.warn("Please set "
-                                               + EditorClientConfiguration.Constants.KRAMERIUS_HOST
-                                               + " in system configuration.");
-                                   }
-                               }
-
-                               @Override
-                               public void callbackError(Throwable t) {
-                                   super.callbackError(t);
-                                   getView().refreshKramerius(false, null);
-                               }
-                           });
-
-        dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID),
-                           new DispatchCallback<CheckAvailabilityResult>() {
-
-                               @Override
-                               public void callback(CheckAvailabilityResult result) {
-                                   String fedoraURL = result.getUrl();
-                                   getView().refreshFedora(result.isAvailability(), fedoraURL);
-                                   if (fedoraURL == null || "".equals(fedoraURL)) {
-                                       SC.warn("Please set "
-                                               + EditorClientConfiguration.Constants.FEDORA_HOST
-                                               + " in system configuration.");
-                                   }
-                               }
-
-                               @Override
-                               public void callbackError(Throwable t) {
-                                   SC.warn(t.getMessage());
-                                   getView().refreshFedora(false, null);
-                               }
-                           });
     }
 
     /**

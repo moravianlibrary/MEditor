@@ -32,14 +32,12 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
-import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
@@ -137,30 +135,7 @@ public class InputTreeGwtRPCDS
      */
     @Override
     protected void executeAdd(final String requestId, final DSRequest request, final DSResponse response) {
-        // Retrieve record which should be added.
-        // JavaScriptObject data = request.getData();
-        // ListGridRecord rec = new ListGridRecord(data);
-        // InputQueueItem testRec = new InputQueueItem();
-        // copyValues(rec, testRec);
-        // SimpleGwtRPCDSServiceAsync service =
-        // GWT.create(SimpleGwtRPCDSService.class);
-        // service.add(testRec, new DispatchCallback<InputQueueItem>() {
-        // @Override
-        // public void callbackError(Throwable caught) {
-        // response.setStatus(RPCResponse.STATUS_FAILURE);
-        // processResponse(requestId, response);
-        // }
-        //
-        // @Override
-        // public void callback(InputQueueItem result) {
-        // ListGridRecord[] list = new ListGridRecord[1];
-        // ListGridRecord newRec = new ListGridRecord();
-        // copyValues(result, newRec);
-        // list[0] = newRec;
-        // response.setData(list);
-        // processResponse(requestId, response);
-        // }
-        // });
+
     }
 
     /*
@@ -172,31 +147,7 @@ public class InputTreeGwtRPCDS
      */
     @Override
     protected void executeUpdate(final String requestId, final DSRequest request, final DSResponse response) {
-        // Retrieve record which should be updated.
-        // Next line would be nice to replace with line:
-        // ListGridRecord rec = request.getEditedRecord ();
-        // ListGridRecord rec = getEditedRecord(request);
-        // InputQueueItem testRec = new InputQueueItem();
-        // copyValues(rec, testRec);
-        // SimpleGwtRPCDSServiceAsync service =
-        // GWT.create(SimpleGwtRPCDSService.class);
-        // service.update(testRec, new DispatchCallback<InputQueueItem>() {
-        // @Override
-        // public void callbackError(Throwable caught) {
-        // response.setStatus(RPCResponse.STATUS_FAILURE);
-        // processResponse(requestId, response);
-        // }
-        //
-        // @Override
-        // public void callback(InputQueueItem result) {
-        // ListGridRecord[] list = new ListGridRecord[1];
-        // ListGridRecord updRec = new ListGridRecord();
-        // copyValues(result, updRec);
-        // list[0] = updRec;
-        // response.setData(list);
-        // processResponse(requestId, response);
-        // }
-        // });
+
     }
 
     /*
@@ -208,44 +159,7 @@ public class InputTreeGwtRPCDS
      */
     @Override
     protected void executeRemove(final String requestId, final DSRequest request, final DSResponse response) {
-        // Retrieve record which should be removed.
-        // JavaScriptObject data = request.getData();
-        // final ListGridRecord rec = new ListGridRecord(data);
-        // InputQueueItem testRec = new InputQueueItem();
-        // copyValues(rec, testRec);
-        // SimpleGwtRPCDSServiceAsync service =
-        // GWT.create(SimpleGwtRPCDSService.class);
-        // service.remove(testRec, new DispatchCallback<Object>() {
-        // @Override
-        // public void callbackError(Throwable caught) {
-        // response.setStatus(RPCResponse.STATUS_FAILURE);
-        // processResponse(requestId, response);
-        // }
-        //
-        // @Override
-        // public void callback(Object result) {
-        // ListGridRecord[] list = new ListGridRecord[1];
-        // // We do not receive removed record from server.
-        // // Return record from request.
-        // list[0] = rec;
-        // response.setData(list);
-        // processResponse(requestId, response);
-        // }
-        //
-        // });
-    }
 
-    /**
-     * Copy values.
-     * 
-     * @param from
-     *        the from
-     * @param to
-     *        the to
-     */
-    private static void copyValues(ListGridRecord from, InputQueueItem to) {
-        to.setPath(from.getAttributeAsString(Constants.ATTR_ID));
-        to.setBarcode(from.getAttributeAsString(Constants.ATTR_BARCODE));
     }
 
     /**
@@ -261,24 +175,4 @@ public class InputTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_BARCODE, from.getBarcode());
     }
 
-    /**
-     * Gets the edited record.
-     * 
-     * @param request
-     *        the request
-     * @return the edited record
-     */
-    private ListGridRecord getEditedRecord(DSRequest request) {
-        // Retrieving values before edit
-        JavaScriptObject oldValues = request.getAttributeAsJavaScriptObject("oldValues");
-        // Creating new record for combining old values with changes
-        ListGridRecord newRecord = new ListGridRecord();
-        // Copying properties from old record
-        JSOHelper.apply(oldValues, newRecord.getJsObj());
-        // Retrieving changed values
-        JavaScriptObject data = request.getData();
-        // Apply changes
-        JSOHelper.apply(data, newRecord.getJsObj());
-        return newRecord;
-    }
 }

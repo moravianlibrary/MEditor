@@ -102,12 +102,23 @@ public class FindMetadataHandler
         }
         ServerUtils.checkExpiredSession(httpSessionProvider);
         ArrayList<MetadataBundle> bundle = null;
-        if (action.getSearchType() == null) {
-            bundle = oaiClient.search(action.getId());
+        ArrayList<MetadataBundle> enrichedBundle = null;
+        if (action.isOai()) {
+            String completeQuery = String.format(action.getOaiQuery(), action.getId());
+            bundle = oaiClient.search(completeQuery);
         } else {
             bundle = z39Client.search(action.getSearchType(), action.getId());
+            // co kdyz to je v Z39.50 a neni to v oai
+            enrichedBundle = new ArrayList<MetadataBundle>(bundle.size());
+            for (MetadataBundle bun : bundle) {
+                String completeQuery = String.format(action.getOaiQuery(), bun.getMarc().getSysno());
+                ArrayList<MetadataBundle> foo = oaiClient.search(completeQuery);
+                if (!foo.isEmpty()) {
+                    enrichedBundle.add(foo.get(0));
+                }
+            }
         }
-        return new FindMetadataResult(bundle);
+        return new FindMetadataResult(action.isOai() ? bundle : enrichedBundle);
     }
 
     /*

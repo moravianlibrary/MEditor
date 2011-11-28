@@ -119,6 +119,9 @@ public class ScanFolderHandler
         String[] imageTypes = configuration.getImageExtensions();
         String prefix = base + File.separator + model + File.separator + code + File.separator;
         List<String> imgFileNames = scanDirectoryStructure(prefix, imageTypes);
+        if (imgFileNames == null) {
+            throw new ActionException("No images found in " + prefix);
+        }
         Collections.sort(imgFileNames);
         // due to gwt performance issues, more
         // concrete interface is used
@@ -186,6 +189,9 @@ public class ScanFolderHandler
 
         };
         File[] imgs = dir.listFiles(filter);
+        if (imgs == null || imgs.length == 0) {
+            return null;
+        }
         ArrayList<String> list = new ArrayList<String>(imgs != null ? imgs.length : 0);
         for (int i = 0; i < imgs.length; i++) {
             list.add(path + imgs[i].getName());

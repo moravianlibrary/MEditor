@@ -133,9 +133,11 @@ public class GetDigitalObjectDetailHandler
             String description = result.getUserDescription();
             Date modified = result.getModified();
 
+            @SuppressWarnings("unused")
             long usersId = 0;
             try {
                 usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
+                // TODO: is the given user authorized to this operation?
             } catch (DatabaseException e) {
                 throw new ActionException(e);
             }

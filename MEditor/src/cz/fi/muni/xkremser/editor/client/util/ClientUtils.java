@@ -28,10 +28,12 @@
 package cz.fi.muni.xkremser.editor.client.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.DOM;
@@ -379,8 +381,8 @@ public class ClientUtils {
      * @param args
      * @return formatted string
      */
-    public static String format(final String format, final Object... args) {
-        final RegExp regex = RegExp.compile("%[a-z]");
+    public static String format(final String format, final char escapeCharacter, final Object... args) {
+        final RegExp regex = RegExp.compile("%" + escapeCharacter);
         final SplitResult split = regex.split(format);
         final StringBuffer msg = new StringBuffer();
         for (int pos = 0; pos < split.length() - 1; pos += 1) {
@@ -390,4 +392,38 @@ public class ClientUtils {
         msg.append(split.get(split.length() - 1));
         return msg.toString();
     }
+
+    public static class SimpleDateFormat {
+
+        private DateTimeFormat format;
+
+        public SimpleDateFormat() {
+            super();
+        }
+
+        protected SimpleDateFormat(DateTimeFormat format) {
+            this.format = format;
+        }
+
+        public SimpleDateFormat(String pattern) {
+            applyPattern(pattern);
+        }
+
+        public void applyPattern(String pattern) {
+            this.format = DateTimeFormat.getFormat(pattern);
+        }
+
+        public String format(Date date) {
+            return format.format(date);
+        }
+
+        /**
+         * Parses text and returns the corresponding date object.
+         */
+        public Date parse(String source) {
+            return format.parse(source);
+        }
+
+    }
+
 }

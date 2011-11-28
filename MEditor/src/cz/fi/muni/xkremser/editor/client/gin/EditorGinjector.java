@@ -34,7 +34,6 @@ import com.google.gwt.inject.client.Ginjector;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
@@ -60,13 +59,6 @@ public interface EditorGinjector
      * @return the place manager
      */
     PlaceManager getPlaceManager();
-
-    /**
-     * Gets the proxy failure handler.
-     * 
-     * @return the proxy failure handler
-     */
-    ProxyFailureHandler getProxyFailureHandler();
 
     /**
      * Gets the event bus.

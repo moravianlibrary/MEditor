@@ -98,6 +98,7 @@ public abstract class ModsWindow
     };
 
     /** The List of FormItem designated for Author1 */
+    @SuppressWarnings("serial")
     private final List<FormItem> authorPartsOfName1 = new ArrayList<FormItem>() {
 
         {
@@ -106,6 +107,7 @@ public abstract class ModsWindow
     };
 
     /** The List of FormItem designated for Author2 */
+    @SuppressWarnings("serial")
     private final List<FormItem> authorPartsOfName2 = new ArrayList<FormItem>() {
 
         {
@@ -186,13 +188,6 @@ public abstract class ModsWindow
          */
         public void setDefaultTitle() {
             setTitle(defaultTitle);
-        }
-
-        /**
-         * @return String=""
-         */
-        public String getDefaultValue() {
-            return "";
         }
     }
 
@@ -780,7 +775,7 @@ public abstract class ModsWindow
     }
 
     private boolean isNotNullEmpty(Object o) {
-        List<Object> objectList = (List<Object>) o;
+        List<?> objectList = (List<?>) o;
         return objectList != null && !objectList.isEmpty();
     }
 

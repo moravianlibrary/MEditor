@@ -58,10 +58,10 @@ public class StoredItemsDAOImpl
             "SELECT file_name, uuid, name, description, stored FROM " + Constants.TABLE_STORED_FILES
                     + " WHERE user_id=(?)";
 
-    private static final String INSERT_STORED_ITEM =
-            "INSERT INTO "
-                    + Constants.TABLE_STORED_FILES
-                    + " (user_id, file_name, uuid, name, description, stored) VALUES ((?)(?)(?)(?)(?)(CURRENT_TIMESTAMP)) ";
+    //    private static final String INSERT_STORED_ITEM =
+    //            "INSERT INTO "
+    //                    + Constants.TABLE_STORED_FILES
+    //                    + " (user_id, file_name, uuid, name, description, stored) VALUES ((?)(?)(?)(?)(?)(CURRENT_TIMESTAMP)) ";
 
     /**
      * {@inheritDoc}

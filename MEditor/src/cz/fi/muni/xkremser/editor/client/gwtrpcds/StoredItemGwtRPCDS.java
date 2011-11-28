@@ -30,7 +30,7 @@ package cz.fi.muni.xkremser.editor.client.gwtrpcds;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;

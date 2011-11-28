@@ -34,7 +34,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
@@ -132,13 +132,13 @@ public class FindMetadataPresenter
 
     private final LangConstants lang;
 
-    private String code = null;
+    private String sysno = null;
 
     private String model = null;
 
     private final Map<Integer, MetadataBundle> results = new HashMap<Integer, MetadataBundle>();
 
-    public static final String OAI_STRING = "%s/?verb=GetRecord&identifier=%s%s-%s&metadataPrefix=";
+    public static final String OAI_STRING = "%p/?verb=GetRecord&identifier=%p%p-%s&metadataPrefix=";
 
     /**
      * Instantiates a new home presenter.
@@ -194,7 +194,7 @@ public class FindMetadataPresenter
 
             @Override
             public void onClick(ClickEvent event) {
-                findOaiMetadata();
+                findPropriateMetadata();
             }
         });
         getView().getNext().setDisabled(true);
@@ -205,22 +205,20 @@ public class FindMetadataPresenter
                 int id =
                         getView().getResults().getSelectedRecord()
                                 .getAttributeAsInt(Constants.ATTR_GENERIC_ID);
-                CreateStructureEvent.fire(getEventBus(),
-                                          model,
-                                          code,
-                                          leftPresenter.getView().getInputTree(),
-                                          results.get(id));
+                MetadataBundle bundle = results.get(id);
+                CreateStructureEvent.fire(getEventBus(), model, bundle.getMarc().getSysno(), leftPresenter
+                        .getView().getInputTree(), bundle);
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
-                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
+                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, sysno));
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                CreateStructureEvent.fire(getEventBus(), model, code, leftPresenter.getView().getInputTree());
+                CreateStructureEvent.fire(getEventBus(), model, sysno, leftPresenter.getView().getInputTree());
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
-                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, code));
+                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, sysno));
             }
         });
         getView().getResults().addCellClickHandler(new CellClickHandler() {
@@ -261,42 +259,42 @@ public class FindMetadataPresenter
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
         results.clear();
-        code = request.getParameter(Constants.URL_PARAM_CODE, null);
+        sysno = request.getParameter(Constants.URL_PARAM_CODE, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
-        getView().getZ39Id().setValue(code);
-        getView().getOaiId().setValue(code);
-        //        findMetadata(Constants.SEARCH_FIELD.SYSNO, code);
-        findOaiMetadata();
+        getView().getZ39Id().setValue(sysno);
+        getView().getOaiId().setValue(sysno);
+        findPropriateMetadata();
     }
 
-    private void findMetadata(Constants.SEARCH_FIELD field, String id) {
+    private void findMetadata(Constants.SEARCH_FIELD field, String id, boolean oai, String query) {
         results.clear();
-        dispatcher.execute(new FindMetadataAction(field, id), new DispatchCallback<FindMetadataResult>() {
+        dispatcher.execute(new FindMetadataAction(field, id, oai, query),
+                           new DispatchCallback<FindMetadataResult>() {
 
-            @Override
-            public void callback(FindMetadataResult result) {
-                getView().showProgress(true, true);
-                List<MetadataBundle> list = result.getBundle();
-                if (list != null && list.size() != 0) {
-                    ListGridRecord[] data = new ListGridRecord[list.size()];
-                    for (int i = 0; i < list.size(); i++) {
-                        list.get(i).getDc().setId(i);
-                        data[i] = list.get(i).getDc().toRecord();
-                        results.put(i, list.get(i));
-                    }
-                    getView().refreshData(data);
-                } else {
-                    getView().refreshData(null);
-                }
-                getView().showProgress(false, false);
-            }
+                               @Override
+                               public void callback(FindMetadataResult result) {
+                                   getView().showProgress(true, true);
+                                   List<MetadataBundle> list = result.getBundle();
+                                   if (list != null && list.size() != 0) {
+                                       ListGridRecord[] data = new ListGridRecord[list.size()];
+                                       for (int i = 0; i < list.size(); i++) {
+                                           list.get(i).getDc().setId(i);
+                                           data[i] = list.get(i).getDc().toRecord();
+                                           results.put(i, list.get(i));
+                                       }
+                                       getView().refreshData(data);
+                                   } else {
+                                       getView().refreshData(null);
+                                   }
+                                   getView().showProgress(false, false);
+                               }
 
-            @Override
-            public void callbackError(Throwable t) {
-                getView().showProgress(false, false);
-                super.callbackError(t);
-            }
-        });
+                               @Override
+                               public void callbackError(Throwable t) {
+                                   getView().showProgress(false, false);
+                                   super.callbackError(t);
+                               }
+                           });
         getView().showProgress(true, false);
     }
 
@@ -313,16 +311,31 @@ public class FindMetadataPresenter
             findBy = Constants.SEARCH_FIELD.TITLE;
         }
         if (findBy != null) {
-            findMetadata(findBy, (String) getView().getZ39Id().getValue());
+            findMetadata(findBy, (String) getView().getZ39Id().getValue(), false, getQuery());
         }
     }
 
-    private void findOaiMetadata() {
+    private void findPropriateMetadata() {
+        String id = getView().getOaiId().getValueAsString();
+        if (id != null && !"".equals(id)) {
+            if (id.length() == 9) {
+                findMetadata(null, id, true, getQuery());
+            } else if (id.length() == 10) {
+                getView().getFindBy().setValue(lang.fbarcode());
+                findMetadata(Constants.SEARCH_FIELD.BAR, id, false, getQuery());
+                getView().getFindBy().setValue(lang.fbarcode());
+            } else {
+                getView().getFindBy().setValue(lang.ftitle());
+                findMetadata(Constants.SEARCH_FIELD.TITLE, id, false, getQuery());
+            }
+        }
+    }
+
+    private String getQuery() {
         String url = getView().getOaiUrl().getValueAsString();
         String prefix = getView().getOaiPrefix().getValueAsString();
         String base = getView().getOaiBase().getValueAsString();
-        String value = getView().getOaiId().getValueAsString();
-        String query = ClientUtils.format(OAI_STRING, url, prefix, base, value);
-        findMetadata(null, query);
+        String query = ClientUtils.format(OAI_STRING, 'p', url, prefix, base);
+        return query;
     }
 }

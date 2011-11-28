@@ -67,6 +67,7 @@ public class NameTokens {
     /** The Constant USERS. */
     public static final String USERS = "users";
 
+    @SuppressWarnings("serial")
     public static List<String> getAllNameTokens() {
         return new ArrayList<String>() {
 

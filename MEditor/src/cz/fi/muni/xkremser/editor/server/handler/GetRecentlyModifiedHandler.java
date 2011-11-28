@@ -126,6 +126,7 @@ public class GetRecentlyModifiedHandler
                 recItems = recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID);
             }
 
+            @SuppressWarnings("unused")
             long userId = userDAO.getUsersId(openID);
 
             for (RecentlyModifiedItem item : recItems) {

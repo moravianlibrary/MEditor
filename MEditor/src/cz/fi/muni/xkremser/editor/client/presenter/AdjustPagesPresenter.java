@@ -30,7 +30,7 @@ package cz.fi.muni.xkremser.editor.client.presenter;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
@@ -90,14 +90,17 @@ public class AdjustPagesPresenter
     }
 
     /** The dispatcher. */
+    @SuppressWarnings("unused")
     private final DispatchAsync dispatcher;
 
     /** The left presenter. */
     private final DigitalObjectMenuPresenter leftPresenter;
 
     /** The place manager. */
+    @SuppressWarnings("unused")
     private final PlaceManager placeManager;
 
+    @SuppressWarnings("unused")
     private final LangConstants lang;
 
     private String code = null;

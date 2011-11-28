@@ -24,7 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;

@@ -24,6 +24,8 @@
 
 package cz.fi.muni.xkremser.editor.server.newObject;
 
+import java.io.ByteArrayOutputStream;
+
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
@@ -103,10 +105,12 @@ public abstract class FoxmlBuilder {
     }
 
     public String getDocument(boolean toScreen) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Dom4jUtils.writeDocument(rootElement.getDocument(), baos, PrintType.PRETTY);
         if (toScreen) {
-            Dom4jUtils.writeDocument(rootElement.getDocument(), System.out, PrintType.PRETTY);
+            System.out.println(baos.toString());
         }
-        return rootElement.getDocument().asXML();
+        return baos.toString();
     }
 
     private void createDocumentAndRootElement() {

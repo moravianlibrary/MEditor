@@ -840,6 +840,7 @@ public class FedoraUtils {
         return returnList;
     }
 
+    @SuppressWarnings("serial")
     public static ArrayList<ArrayList<String>> getAllChildren(String uuid) {
         List<RelationshipTuple> triplets = FedoraUtils.getObjectPids(uuid);
         ArrayList<ArrayList<String>> children = new ArrayList<ArrayList<String>>();

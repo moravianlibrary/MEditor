@@ -34,6 +34,8 @@ import java.util.List;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.form.DynamicForm;
 
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ListOfSimpleValuesHolder.
@@ -92,7 +94,9 @@ public class ListOfSimpleValuesHolder
                 if (o instanceof String) {
                     value = (String) o;
                 } else if (o instanceof Date) {
-                    value = ((Date) o).toGMTString();
+                    ClientUtils.SimpleDateFormat sdf =
+                            new ClientUtils.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    value = sdf.format(((Date) o));
                 }
                 if (!"".equals(value.trim())) {
                     values.add(value);

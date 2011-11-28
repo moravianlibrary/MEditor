@@ -149,7 +149,7 @@ public class KrameriusImageSupport {
             try {
                 document = PDDocument.load(url.openStream());
                 int resolution = 96;
-                List pages = document.getDocumentCatalog().getAllPages();
+                List<?> pages = document.getDocumentCatalog().getAllPages();
                 PDPage pdPage = (PDPage) pages.get(page);
                 BufferedImage image = pdPage.convertToImage(BufferedImage.TYPE_INT_RGB, resolution);
                 return image;
@@ -421,6 +421,7 @@ public class KrameriusImageSupport {
      *        the img
      * @return the buffered image
      */
+    @SuppressWarnings("unused")
     private static BufferedImage toBufferedImage(Image img) {
         BufferedImage bufferedImage =
                 new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);

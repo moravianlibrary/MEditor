@@ -226,26 +226,16 @@ public class ModifyView
     private static enum ATTR_ITEM_INFLUENCED_BY_LOCK {
 
         /** The value of publish-item. */
-        PUBLISH("publish"),
+        PUBLISH,
 
         /** The value of remove-item. */
-        REMOVE("remove"),
+        REMOVE,
 
         /** The value of lock-item. */
-        LOCK("lock"),
+        LOCK,
 
         /** The value of unlock-item. */
-        UNLOCK("unlock");
-
-        private final String item;
-
-        private ATTR_ITEM_INFLUENCED_BY_LOCK(final String item) {
-            this.item = item;
-        }
-
-        public String getValue() {
-            return item;
-        }
+        UNLOCK;
     }
 
     /** The Constant DC_TAB_INDEX. */
@@ -253,9 +243,6 @@ public class ModifyView
 
     /** The Constant TAB_INITIALIZED. */
     public static final String TAB_INITIALIZED = "initialized";
-
-    /** The ocr text content. */
-    private final Map<TextAreaItem, String> ocrTextContent = new HashMap<TextAreaItem, String>();
 
     /** The opened objects tabsets. */
     private final Map<String, EditorTabSet> openedObjectsTabsets = new HashMap<String, EditorTabSet>();
@@ -478,7 +465,6 @@ public class ModifyView
     public void addDigitalObject(final String uuid, DigitalObjectDetail detail, boolean refresh) {
         final DublinCore dc = detail.getDc();
         final ModsCollectionClient mods = detail.getMods();
-        final String label = detail.getLabel();
         String foxmlString = detail.getFoxmlString();
         String ocr = detail.getOcr();
         DigitalObjectModel model = detail.getModel();

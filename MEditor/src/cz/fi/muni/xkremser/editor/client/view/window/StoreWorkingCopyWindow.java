@@ -25,7 +25,7 @@
 package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;

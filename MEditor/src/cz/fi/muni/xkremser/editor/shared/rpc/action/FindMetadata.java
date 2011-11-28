@@ -53,6 +53,12 @@ public class FindMetadata
     @In(2)
     private String id;
 
+    @In(3)
+    private boolean oai;
+
+    @In(4)
+    private String oaiQuery;
+
     @Out(1)
     private ArrayList<MetadataBundle> bundle;
 
