@@ -48,7 +48,7 @@ import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.REL
  * @version $Id$
  */
 
-public abstract class DownloadFoxmlWindow
+public class DownloadFoxmlWindow
         extends UniversalWindow {
 
     private final Layout mainLayout;
@@ -90,16 +90,15 @@ public abstract class DownloadFoxmlWindow
         comboForm.setItems(selectVer);
         comboForm.setExtraSpace(10);
         mainLayout.addMember(comboForm);
-
-        init();
+        centerInPage();
+        show();
+        focus();
     }
 
     public void setStringsWithXml(String[] stringsWithXml) {
         this.stringsWithXml = stringsWithXml;
         modalWindow.hide();
     }
-
-    protected abstract void init();
 
     public void addButtons(final String[] stringsWithXml, final String uuid, boolean originalVersion) {
 
@@ -167,75 +166,6 @@ public abstract class DownloadFoxmlWindow
         streamsLayout.setPadding(5);
         buttonsLayout.addMember(streamsLayout);
 
-        //----------------------------------
-        //        HTMLFlow foxmlLabel = new HTMLFlow("<big><center>" + lang.downloadFoxml() + ":" + "</center></big>");
-        //        HTMLFlow streamsLabel =
-        //                new HTMLFlow("<big><center>" + lang.downloadStream() + ":" + "</center></big>");
-
-        //        Layout titleLayout = new HLayout(2);
-        //        //        titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.masterCopy() + ":" + "</center></h2>"));
-        //        //        titleLayout.addMember(new HTMLFlow("<h2><center>" + lang.workingCopy() + ":" + "</center></h2>"));
-        //        titleLayout.addMember(new HTMLFlow("<h2>" + lang.masterCopy() + ":" + "</h2>"));
-        //        titleLayout.addMember(new HTMLFlow("<h2>" + lang.workingCopy() + ":" + "</h2>"));
-        //        titleLayout.setAutoHeight();
-        //        mainLayout.addMember(titleLayout);
-        //
-        //        mainLayout.addMember(foxmlLabel);
-        //
-        //        Layout foxmlLayout = new HLayout(2);
-        //        foxmlLayout.addMember(htmlFlowFormLinkFactory(null, uuid, null));
-        //
-        //        Layout foxmlLocalLayout = new VLayout(2);
-        //        foxmlLocalFlow = htmlFlowFormLinkFactory(null, uuid, stringsWithXml[1]);
-        //        final Layout foxmlLocalFlowLayout = new VLayout(1);
-        //        foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
-        //        foxmlLocalLayout.addMember(foxmlLocalFlowLayout);
-        //
-        //        DynamicForm form = new DynamicForm();
-        //        final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
-        //        versionable.setDefaultValue(false);
-        //        form.setFields(versionable);
-        //        form.setWidth(200);
-        //        foxmlLocalLayout.addMember(form);
-        //        foxmlLayout.addMember(foxmlLocalLayout);
-        //
-        //        foxmlLayout.setMargin(7);
-        //        foxmlLayout.setExtraSpace(10);
-        //        foxmlLayout.setAutoHeight();
-        //        mainLayout.addMember(foxmlLayout);
-        //
-        //        mainLayout.addMember(streamsLabel);
-        //
-        //        Layout streamLayout = new HLayout(2);
-        //        Layout fedoraStreamsLayout = new VLayout(3);
-        //        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, null));
-        //        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, null));
-        //        fedoraStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, null));
-        //
-        //        Layout localStreamsLayout = new VLayout(3);
-        //        localStreamsLayout.addMember(htmlFlowFormLinkFactory(DC.getValue(), uuid, stringsWithXml[2]));
-        //        localStreamsLayout
-        //                .addMember(htmlFlowFormLinkFactory(BIBLIO_MODS.getValue(), uuid, stringsWithXml[3]));
-        //        localStreamsLayout.addMember(htmlFlowFormLinkFactory(RELS_EXT.getValue(), uuid, stringsWithXml[4]));
-        //
-        //        streamLayout.addMember(fedoraStreamsLayout);
-        //        streamLayout.addMember(localStreamsLayout);
-        //        streamLayout.setMargin(12);
-        //        streamLayout.setAutoHeight();
-        //        mainLayout.addMember(streamLayout);
-
-        //        versionable.addChangedHandler(new ChangedHandler() {
-        //
-        //            @Override
-        //            public void onChanged(ChangedEvent event) {
-        //                foxmlLocalFlowLayout.removeMember(foxmlLocalFlow);
-        //                foxmlLocalFlow =
-        //                        htmlFlowFormLinkFactory(null,
-        //                                                uuid,
-        //                                                stringsWithXml[versionable.getValueAsBoolean() ? 0 : 1]);
-        //                foxmlLocalFlowLayout.addMember(foxmlLocalFlow);
-        //            }
-        //        });
         mainLayout.addMember(buttonsLayout);
         modalWindow.hide();
     }
