@@ -267,7 +267,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                final Record[] selection = structureTreeGrid.getSelection();
+                final Record[] selection = structureTreeGrid.getSelectedRecords();
                 DigitalObjectModel model =
                         DigitalObjectModel.parseString(selection[0].getAttribute(Constants.ATTR_TYPE_ID));
                 new ConnectExistingObjectWindow(lang, true, model) {
@@ -308,8 +308,8 @@ public class CreateObjectMenuView
                                                 true,
                                                 false);
                             }
-                            if (structureTree.getChildren(parent).length == structureTreeGrid.getSelection().length
-                                    && !parentIsTopLvl) {
+                            if (structureTree.getChildren(parent).length == structureTreeGrid
+                                    .getSelectedRecords().length && !parentIsTopLvl) {
                                 //parent has no other children (no siblings) and is not top lvl
                                 structureTree.remove(parent);
                                 structureTreeGrid.setData(structureTree);
@@ -329,7 +329,7 @@ public class CreateObjectMenuView
             @Override
             public void onClick(MenuItemClickEvent event) {
                 DigitalObjectModel model =
-                        DigitalObjectModel.parseString(structureTreeGrid.getSelection()[0]
+                        DigitalObjectModel.parseString(structureTreeGrid.getSelectedRecords()[0]
                                 .getAttribute(Constants.ATTR_TYPE_ID));
 
                 new ConnectExistingObjectWindow(lang, false, model) {
@@ -342,7 +342,8 @@ public class CreateObjectMenuView
                                         uuidField.getValueAsString(),
                                         getUiHandlers().getLabelFromModel().get(getModel().getValue()),
                                         getModel().getValue(),
-                                        structureTreeGrid.getSelection()[0].getAttribute(Constants.ATTR_ID),
+                                        structureTreeGrid.getSelectedRecords()[0]
+                                                .getAttribute(Constants.ATTR_ID),
                                         false,
                                         true);
                     }
@@ -363,7 +364,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onCellContextClick(CellContextClickEvent event) {
-                ListGridRecord[] selection = structureTreeGrid.getSelection();
+                ListGridRecord[] selection = structureTreeGrid.getSelectedRecords();
                 if (selection == null || selection.length == 0) {
                     return;
                 }

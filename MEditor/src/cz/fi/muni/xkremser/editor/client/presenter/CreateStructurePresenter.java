@@ -373,7 +373,7 @@ public class CreateStructurePresenter
                             Object draggable = EventHandler.getDragTarget();
                             if (draggable instanceof TreeGrid) {
                                 ListGridRecord[] selection =
-                                        leftPresenter.getView().getSubelementsGrid().getSelection();
+                                        leftPresenter.getView().getSubelementsGrid().getSelectedRecords();
                                 if (selection == null || selection.length == 0) {
                                     event.cancel();
                                     return;

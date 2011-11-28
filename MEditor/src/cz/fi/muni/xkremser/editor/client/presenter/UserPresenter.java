@@ -505,7 +505,7 @@ public class UserPresenter
 
             @Override
             public void onClick(ClickEvent event) {
-                final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelection();
+                final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelectedRecords();
                 if (selection != null && selection.length > 0) {
                     final int total = selection.length;
                     for (final ListGridRecord record : selection) {
@@ -629,7 +629,7 @@ public class UserPresenter
 
             @Override
             public void onClick(ClickEvent event) {
-                final ListGridRecord[] selection = getView().getUserRoleGrid().getSelection();
+                final ListGridRecord[] selection = getView().getUserRoleGrid().getSelectedRecords();
                 if (selection != null && selection.length > 0) {
                     final int total = selection.length;
                     for (final ListGridRecord record : selection) {
