@@ -76,6 +76,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.RemoveDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.StoreWorkingCopyWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
@@ -814,5 +815,14 @@ public class ModifyPresenter
     @Override
     public void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts) {
         StoreWorkingCopyWindow.setInstanceOf(detail, lang, dispatcher, ts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void removeDigitalObject(String uuid) {
+        RemoveDigitalObjectWindow.setInstanceOf(uuid, lang, dispatcher);
     }
 }

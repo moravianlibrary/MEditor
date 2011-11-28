@@ -164,6 +164,8 @@ public class ModifyView
         void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts);
 
         void getLockDigitalObjectInformation(final EditorTabSet ts, final boolean calledDuringPublishing);
+
+        void removeDigitalObject(String uuid);
     }
 
     /** The Constant ID_DC. */
@@ -1233,17 +1235,25 @@ public class ModifyView
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
 
-        MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+N");
+        MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+Alt+N");
         MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
         MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+Alt+S");
         MenuItem downloadItem = new MenuItem(lang.downloadItem(), "icons/16/download.png", "Ctrl+Alt+F");
-        MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
+        MenuItem removeItem = new MenuItem(lang.removeItem(), "icons/16/close.png", "Ctrl+Alt+D");
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
 
         removeItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.REMOVE);
+        removeItem.setAttribute(ID_UUID, topTabSet.getUuid());
+        removeItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                removeDigitalObject(event.getItem().getAttributeAsString(ID_UUID));
+            }
+        });
 
         persistentUrlItem.setAttribute(ID_UUID, topTabSet.getUuid());
         persistentUrlItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -1324,6 +1334,10 @@ public class ModifyView
         return menu;
     }
 
+    private void removeDigitalObject(String uuid) {
+        getUiHandlers().removeDigitalObject(uuid);
+    }
+
     private void showPersistentUrl(String uuid) {
         universalWindow = new UniversalWindow(110, 800, lang.persistentUrl());
 
@@ -1380,15 +1394,7 @@ public class ModifyView
             downloadingWindow.hide();
             downloadingWindow = null;
         }
-        downloadingWindow = new DownloadFoxmlWindow(lang, ts) {
-
-            @Override
-            protected void init() {
-                show();
-                centerInPage();
-                focus();
-            }
-        };
+        downloadingWindow = new DownloadFoxmlWindow(lang, ts);
         DigitalObjectDetail detail = createDigitalObjectDetail(ts);
         getUiHandlers().onHandleWorkingCopyDigObj(detail);
 
@@ -1690,6 +1696,8 @@ public class ModifyView
                     storeWork(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_W.getCode()) {
                     showPersistentUrl(focusedTabSet.getUuid());
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_D.getCode()) {
+                    removeDigitalObject(focusedTabSet.getUuid());
                 }
             }
         }

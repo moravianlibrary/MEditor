@@ -209,11 +209,25 @@ public class FedoraUtils {
      * @return the subject pids
      */
     public static List<RelationshipTuple> getSubjectPids(String objectPid) {
+        return getSubjectOrObjectPids("*%20*%20%3Cinfo:fedora/" + objectPid + "%3E");
+    }
+
+    /**
+     * Gets the object pids.
+     * 
+     * @param subjectPid
+     *        the subject pid
+     * @return the object pids
+     */
+    public static List<RelationshipTuple> getObjectPids(String subjectPid) {
+        return getSubjectOrObjectPids("%3Cinfo:fedora/" + subjectPid + "%3E%20*%20*");
+    }
+
+    private static List<RelationshipTuple> getSubjectOrObjectPids(String restOfCommand) {
         List<RelationshipTuple> retval = new ArrayList<RelationshipTuple>();
         String command =
-                configuration.getFedoraHost()
-                        + "/risearch?type=triples&lang=spo&format=N-Triples&query=*%20*%20%3Cinfo:fedora/"
-                        + objectPid + "%3E";
+                configuration.getFedoraHost() + "/risearch?type=triples&lang=spo&format=N-Triples&query="
+                        + restOfCommand;
         InputStream stream = null;
         try {
             stream =
@@ -792,5 +806,64 @@ public class FedoraUtils {
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }
+    }
+
+    /**
+     * Gets the related.
+     * 
+     * @param uuid
+     *        the uuid
+     * @return the related
+     */
+    public static ArrayList<ArrayList<String>> getRelated(final String uuid) {
+        List<RelationshipTuple> triplets = FedoraUtils.getSubjectPids(uuid);
+        if (triplets == null) { // RI can be disabled
+            return null;
+        }
+        ArrayList<ArrayList<String>> returnList = new ArrayList<ArrayList<String>>(triplets.size());
+        for (RelationshipTuple triplet : triplets) {
+            ArrayList<String> relatedRecord = new ArrayList<String>(2);
+            String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX).length());
+            String predicate = null;
+            if (triplet.getPredicate().startsWith(Constants.FEDORA_INFO_PREFIX)) {
+                predicate = triplet.getPredicate().substring(Constants.FEDORA_INFO_PREFIX.length());
+            } else {
+                predicate =
+                        triplet.getPredicate()
+                                .substring(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI.length());
+            }
+
+            relatedRecord.add(subject);
+            relatedRecord.add(predicate);
+            returnList.add(relatedRecord);
+        }
+        return returnList;
+    }
+
+    public static ArrayList<ArrayList<String>> getAllChildren(String uuid) {
+        List<RelationshipTuple> triplets = FedoraUtils.getObjectPids(uuid);
+        ArrayList<ArrayList<String>> children = new ArrayList<ArrayList<String>>();
+
+        if (triplets != null) {
+            for (final RelationshipTuple triplet : triplets) {
+                if (triplet.getObject().contains("uuid")
+                        && triplet.getObject().contains(Constants.FEDORA_INFO_PREFIX)) {
+
+                    final String childUuid =
+                            triplet.getObject().substring((Constants.FEDORA_INFO_PREFIX).length());
+
+                    if (!childUuid.contains("/")) {
+                        children.add(new ArrayList<String>() {
+
+                            {
+                                add(triplet.getPredicate());
+                                add(childUuid);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        return children;
     }
 }

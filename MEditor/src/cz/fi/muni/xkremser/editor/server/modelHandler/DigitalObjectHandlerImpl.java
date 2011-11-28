@@ -40,11 +40,8 @@ import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
 
-import org.fedora.api.RelationshipTuple;
-
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
-import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
@@ -54,7 +51,6 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
@@ -80,38 +76,6 @@ public class DigitalObjectHandlerImpl
         this.fedoraAccess = fedoraAccess;
     }
 
-    /**
-     * Gets the related.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the related
-     */
-    private ArrayList<ArrayList<String>> getRelated(final String uuid) {
-        List<RelationshipTuple> triplets = FedoraUtils.getSubjectPids(uuid);
-        if (triplets == null) { // RI can be disabled
-            return null;
-        }
-        ArrayList<ArrayList<String>> returnList = new ArrayList<ArrayList<String>>(triplets.size());
-        for (RelationshipTuple triplet : triplets) {
-            ArrayList<String> relatedRecord = new ArrayList<String>(2);
-            String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX).length());
-            String predicate = null;
-            if (triplet.getPredicate().startsWith(Constants.FEDORA_INFO_PREFIX)) {
-                predicate = triplet.getPredicate().substring(Constants.FEDORA_INFO_PREFIX.length());
-            } else {
-                predicate =
-                        triplet.getPredicate()
-                                .substring(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI.length());
-            }
-
-            relatedRecord.add(subject);
-            relatedRecord.add(predicate);
-            returnList.add(relatedRecord);
-        }
-        return returnList;
-    }
-
     /*
      * (non-Javadoc)
      * @see
@@ -122,7 +86,7 @@ public class DigitalObjectHandlerImpl
     @Override
     public DigitalObjectDetail getDigitalObject(String uuid) throws IOException {
         DigitalObjectModel model = getModel(uuid);
-        DigitalObjectDetail detail = new DigitalObjectDetail(model, getRelated(uuid));
+        DigitalObjectDetail detail = new DigitalObjectDetail(model, FedoraUtils.getRelated(uuid));
         detail.setDc(handleDc(uuid, false));
         detail.setMods(handleMods(uuid));
         Foxml foxml = FoxmlUtils.handleFoxml(uuid, getFedoraAccess());

@@ -98,7 +98,7 @@ public abstract class DispatchCallback<T>
         }
     }
 
-    public void callbackError(final Throwable t, final TryAgainCallbackError tryAgain) {
+    protected final void callbackError(final Throwable t, final TryAgainCallbackError tryAgain) {
 
         if (!sessionHasExpired(t)) {
             SC.ask(t.getMessage() + "<br/>" + lang.mesTryAgain(), new BooleanCallback() {
@@ -113,7 +113,7 @@ public abstract class DispatchCallback<T>
         }
     }
 
-    public void callbackError(final Throwable t, String message) {
+    protected final void callbackError(final Throwable t, String message) {
         if (!sessionHasExpired(t)) {
             //            SC.warn("RPC failed:" + message);
             SC.warn(message);
