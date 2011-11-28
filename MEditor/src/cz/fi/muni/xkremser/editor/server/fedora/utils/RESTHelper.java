@@ -134,7 +134,7 @@ public class RESTHelper {
         URL url = new URL(urlString);
         boolean auth = false;
         String encoded = null;
-        if (auth = (user != null && pass != null)) {
+        if (auth = (user != null && pass != null && !"".equals(user) && !"".equals(pass))) {
             String userPassword = user + ":" + pass;
             encoded = Base64Utils.toBase64(userPassword.getBytes());
         }

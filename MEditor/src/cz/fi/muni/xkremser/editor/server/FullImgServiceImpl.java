@@ -103,6 +103,9 @@ public class FullImgServiceImpl
 
             try {
                 String mimetype = fedoraAccess.getMimeTypeForStream(uuid, FedoraUtils.IMG_FULL_STREAM);
+                if (mimetype == null) {
+                    mimetype = "image/jpeg";
+                }
                 ImageMimeType loadFromMimeType = ImageMimeType.loadFromMimeType(mimetype);
                 if (loadFromMimeType == ImageMimeType.JPEG || loadFromMimeType == ImageMimeType.PNG) {
                     StringBuffer sb = new StringBuffer();
