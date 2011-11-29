@@ -459,8 +459,7 @@ public class DigitalObjectMenuPresenter
                 }
             } else if (code == Constants.CODE_KEY_ENTER) {
                 if (getView().getRecentlyModifiedGrid().getSelectedRecords().length > 0 && !isRefByFocused) {
-                    ListGridRecord[] listGridRecords =
-                            getView().getRecentlyModifiedGrid().getSelectedRecords();
+                    ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelectedRecords();
                     revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
                 } else if (getView().getRelatedGrid().getSelectedRecords().length > 0 && isRefByFocused) {
                     ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelectedRecords();

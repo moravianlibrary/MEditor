@@ -35,7 +35,6 @@ import com.google.inject.Provider;
 import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 
-import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter;
@@ -81,8 +80,6 @@ public interface EditorGinjector
     AsyncProvider<ModifyPresenter> getModifyPresenter();
 
     AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
-
-    AsyncProvider<AdjustPagesPresenter> getAdjustPagesPresenterPresenter();
 
     AsyncProvider<CreateStructurePresenter> getCreatePresenterPresenter();
 

@@ -429,7 +429,7 @@ public class CreateObjectMenuView
         nameField.setTitle(lang.name());
         nameField.setWidth("*");
 
-        structureTreeGrid.setFields(typeField, nameField, createField);
+        structureTreeGrid.setFields(typeField, nameField/* , createField */);
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());

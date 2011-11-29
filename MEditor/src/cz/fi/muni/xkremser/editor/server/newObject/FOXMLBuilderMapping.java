@@ -50,6 +50,9 @@ public class FOXMLBuilderMapping {
         MAP.put(DigitalObjectModel.PERIODICAL, PeriodicalBuilder.class);
         MAP.put(DigitalObjectModel.INTERNALPART, IntPartBuilder.class);
         MAP.put(DigitalObjectModel.PAGE, PageBuilder.class);
+        MAP.put(DigitalObjectModel.MONOGRAPHUNIT, MonographUnitBuilder.class);
+        MAP.put(DigitalObjectModel.PERIODICALVOLUME, PeriodicalVolumeBuilder.class);
+        MAP.put(DigitalObjectModel.PERIODICALITEM, PeriodicalItemBuilder.class);
     }
 
     @SuppressWarnings("unchecked")

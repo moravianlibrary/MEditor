@@ -79,7 +79,9 @@ public class Constants {
     /** The Constant URL_PARAM_ACTION_MODIFY. */
     public static final String URL_PARAM_ACTION_MODIFY = "modify";
 
-    public static final String URL_PARAM_CODE = "code";
+    public static final String URL_PARAM_SYSNO = "sysno";
+
+    public static final String URL_PARAM_PATH = "path";
 
     public static final String URL_PARAM_METADATA = "metadata";
 

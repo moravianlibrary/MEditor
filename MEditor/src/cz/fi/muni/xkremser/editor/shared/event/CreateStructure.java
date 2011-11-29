@@ -50,9 +50,12 @@ public class CreateStructure {
     private String code;
 
     @Order(3)
-    private SideNavInputTree tree;
+    private String inputPath;
 
     @Order(4)
+    private SideNavInputTree tree;
+
+    @Order(5)
     @Optional
     private MetadataBundle bundle;
 

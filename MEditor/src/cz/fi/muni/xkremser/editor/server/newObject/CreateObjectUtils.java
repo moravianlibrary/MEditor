@@ -111,7 +111,7 @@ public class CreateObjectUtils {
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
         if (isPage) {
             String url = config.getImageServerUrl();
-            addSlash(url);
+            url = addSlash(url);
             if (!url.startsWith("http://")) {
                 if (url.startsWith("https://")) {
                     url = url.substring(8);

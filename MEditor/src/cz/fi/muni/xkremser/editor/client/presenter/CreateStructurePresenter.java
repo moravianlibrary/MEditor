@@ -156,6 +156,8 @@ public class CreateStructurePresenter
     /** The sysno. */
     private String sysno;
 
+    private String inputPath;
+
     /** The model. */
     private String model;
 
@@ -224,7 +226,8 @@ public class CreateStructurePresenter
     @Override
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
-        sysno = request.getParameter(Constants.URL_PARAM_CODE, null);
+        sysno = request.getParameter(Constants.URL_PARAM_SYSNO, null);
+        inputPath = request.getParameter(Constants.URL_PARAM_PATH, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
     }
 
@@ -280,7 +283,7 @@ public class CreateStructurePresenter
       */
 
     private void processImages() {
-        final ScanFolderAction action = new ScanFolderAction(model, sysno);
+        final ScanFolderAction action = new ScanFolderAction(model, inputPath);
         final DispatchCallback<ScanFolderResult> callback = new DispatchCallback<ScanFolderResult>() {
 
             private volatile int done = 0;
@@ -582,8 +585,8 @@ public class CreateStructurePresenter
                 String name = leftPresenter.getView().getNewName().getValueAsString();
                 name = "".equals(name) ? possibleParent : name;
                 leftPresenter.getView().addSubstructure(possibleParent,
-                                                        null,
                                                         name,
+                                                        null,
                                                         type,
                                                         model.getValue(),
                                                         parent,
@@ -629,6 +632,7 @@ public class CreateStructurePresenter
     public void onCreateStructure(CreateStructureEvent event) {
         this.model = event.getModel();
         this.sysno = event.getCode();
+        this.inputPath = event.getInputPath();
         this.bundle = event.getBundle();
     }
 

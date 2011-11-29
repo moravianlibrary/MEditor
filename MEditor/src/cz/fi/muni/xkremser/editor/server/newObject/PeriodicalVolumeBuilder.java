@@ -31,14 +31,14 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
  * @author Jiri Kremser
  * @version 28.11.2011
  */
-public class PeriodiacalVolumeBuilder
+public class PeriodicalVolumeBuilder
         extends FoxmlBuilder {
 
     /**
      * @param uuid
      * @param label
      */
-    public PeriodiacalVolumeBuilder(NewDigitalObject object) {
+    public PeriodicalVolumeBuilder(NewDigitalObject object) {
         super(object);
     }
 

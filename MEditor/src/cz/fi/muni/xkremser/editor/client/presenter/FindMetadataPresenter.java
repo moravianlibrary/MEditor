@@ -134,6 +134,8 @@ public class FindMetadataPresenter
 
     private String sysno = null;
 
+    private String inputPath = null;
+
     private String model = null;
 
     private final Map<Integer, MetadataBundle> results = new HashMap<Integer, MetadataBundle>();
@@ -206,19 +208,27 @@ public class FindMetadataPresenter
                         getView().getResults().getSelectedRecord()
                                 .getAttributeAsInt(Constants.ATTR_GENERIC_ID);
                 MetadataBundle bundle = results.get(id);
-                CreateStructureEvent.fire(getEventBus(), model, bundle.getMarc().getSysno(), leftPresenter
-                        .getView().getInputTree(), bundle);
+                CreateStructureEvent.fire(getEventBus(),
+                                          model,
+                                          bundle.getMarc().getSysno(),
+                                          inputPath,
+                                          leftPresenter.getView().getInputTree(),
+                                          bundle);
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
-                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, sysno));
+                        .with(Constants.ATTR_MODEL, model)
+                        .with(Constants.URL_PARAM_SYSNO, bundle.getMarc().getSysno())
+                        .with(Constants.URL_PARAM_PATH, inputPath));
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                CreateStructureEvent.fire(getEventBus(), model, sysno, leftPresenter.getView().getInputTree());
+                CreateStructureEvent.fire(getEventBus(), model, sysno, inputPath, leftPresenter.getView()
+                        .getInputTree());
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
-                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, sysno));
+                        .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, sysno)
+                        .with(Constants.URL_PARAM_PATH, inputPath));
             }
         });
         getView().getResults().addCellClickHandler(new CellClickHandler() {
@@ -259,7 +269,8 @@ public class FindMetadataPresenter
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
         results.clear();
-        sysno = request.getParameter(Constants.URL_PARAM_CODE, null);
+        sysno = request.getParameter(Constants.URL_PARAM_PATH, null);
+        inputPath = request.getParameter(Constants.URL_PARAM_PATH, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(sysno);
         getView().getOaiId().setValue(sysno);

@@ -43,7 +43,6 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfigurationImpl;
 import cz.fi.muni.xkremser.editor.client.dispatcher.CachingDispatchAsync;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.presenter.AdjustPagesPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateStructurePresenter;
@@ -52,7 +51,6 @@ import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
-import cz.fi.muni.xkremser.editor.client.view.AdjustPagesView;
 import cz.fi.muni.xkremser.editor.client.view.AppView;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
@@ -114,10 +112,6 @@ public class EditorClientModule
                       FindMetadataPresenter.MyView.class,
                       FindMetadataView.class,
                       FindMetadataPresenter.MyProxy.class);
-        bindPresenter(AdjustPagesPresenter.class,
-                      AdjustPagesPresenter.MyView.class,
-                      AdjustPagesView.class,
-                      AdjustPagesPresenter.MyProxy.class);
         bindPresenter(DigitalObjectMenuPresenter.class,
                       DigitalObjectMenuPresenter.MyView.class,
                       DigitalObjectMenuView.class,

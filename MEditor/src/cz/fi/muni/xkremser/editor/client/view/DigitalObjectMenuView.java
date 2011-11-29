@@ -390,7 +390,7 @@ public class DigitalObjectMenuView
                             String id = msg.substring(msg.indexOf("/") + 1);
 
                             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
-                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_CODE, id));
+                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_PATH, id));
                         }
                     });
         } else {

@@ -82,7 +82,6 @@ public class DigitalObjectHandlerImpl
      * cz.fi.muni.xkremser.editor.server.modelHandler.CanGetObject#getDigitalObject
      * (java.lang.String)
      */
-
     @Override
     public DigitalObjectDetail getDigitalObject(String uuid) throws IOException {
         DigitalObjectModel model = getModel(uuid);
