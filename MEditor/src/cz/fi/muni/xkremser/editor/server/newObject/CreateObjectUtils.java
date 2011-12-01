@@ -44,6 +44,7 @@ import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
@@ -61,7 +62,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 public class CreateObjectUtils {
 
     private static final Logger LOGGER = Logger.getLogger(CreateObjectUtils.class);
-
+    private static final Logger INGEST_LOGGER = Logger.getLogger(ServerConstants.INGEST_LOG_ID);
     @Inject
     private static EditorConfiguration config;
 
@@ -163,6 +164,9 @@ public class CreateObjectUtils {
         boolean success = RESTHelper.post(url, foxml, login, password, false);
         if (LOGGER.isInfoEnabled() && success) {
             LOGGER.info("Object uuid:" + uuid + " [" + label + "] has been successfully ingested.");
+        }
+        if (INGEST_LOGGER.isInfoEnabled()) {
+            INGEST_LOGGER.info(uuid);
         }
         if (!success) {
             LOGGER.error("Unable to ingest object uuid:" + uuid + " [" + label + "]");

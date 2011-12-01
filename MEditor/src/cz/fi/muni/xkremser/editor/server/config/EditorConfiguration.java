@@ -230,6 +230,8 @@ public abstract class EditorConfiguration {
 
         public static final String ACCESS_LOG_ID = "cz.fi.muni.xkremser.editor.AccessLog";
 
+        public static final String INGEST_LOG_ID = "cz.fi.muni.xkremser.editor.IngestLog";
+
     }
 
     /**
