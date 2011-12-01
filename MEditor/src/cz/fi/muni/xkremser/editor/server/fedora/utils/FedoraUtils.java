@@ -822,6 +822,7 @@ public class FedoraUtils {
         }
         ArrayList<ArrayList<String>> returnList = new ArrayList<ArrayList<String>>(triplets.size());
         for (RelationshipTuple triplet : triplets) {
+            //            System.err.println(triplet.toString());
             ArrayList<String> relatedRecord = new ArrayList<String>(2);
             String subject = triplet.getSubject().substring((Constants.FEDORA_INFO_PREFIX).length());
             String predicate = null;
@@ -857,8 +858,8 @@ public class FedoraUtils {
                         children.add(new ArrayList<String>() {
 
                             {
-                                add(triplet.getPredicate());
                                 add(childUuid);
+                                add(triplet.getPredicate());
                             }
                         });
                     }

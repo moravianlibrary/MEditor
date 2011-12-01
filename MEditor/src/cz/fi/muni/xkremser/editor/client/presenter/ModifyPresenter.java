@@ -788,7 +788,7 @@ public class ModifyPresenter
                             SC.say(lang.objectUnlocked(), lang.objectUnlocked());
                             ts.setLockInfo(new LockInfo());
                         } else {
-                            EditorSC.operationFailed(lang);
+                            EditorSC.operationFailed(lang, null);
                         }
                         mw.hide();
                     }

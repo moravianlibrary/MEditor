@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1096,6 +1096,33 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String dcTypes();
 
   /**
+   * Translated "Delete anyway".
+   * 
+   * @return translated "Delete anyway"
+   */
+  @DefaultStringValue("Delete anyway")
+  @Key("deleteAnyway")
+  String deleteAnyway();
+
+  /**
+   * Translated "This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.".
+   * 
+   * @return translated "This remove can create some conflicts. Please click on the Explore to find out the possible conflicts."
+   */
+  @DefaultStringValue("This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.")
+  @Key("deleteWarningExplore")
+  String deleteWarningExplore();
+
+  /**
+   * Translated "You want to remove a digital object with uuid".
+   * 
+   * @return translated "You want to remove a digital object with uuid"
+   */
+  @DefaultStringValue("You want to remove a digital object with uuid")
+  @Key("deleteWarningWant")
+  String deleteWarningWant();
+
+  /**
    * Translated "Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18.".
    * 
    * @return translated "Roughly equivalent to the information found in MARC 21 field 040$e or Leader/18."
@@ -1346,6 +1373,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>.")
   @Key("enumAndChron")
   String enumAndChron();
+
+  /**
+   * Translated "Explore".
+   * 
+   * @return translated "Explore"
+   */
+  @DefaultStringValue("Explore")
+  @Key("explore")
+  String explore();
 
   /**
    * Translated "Contains the ending unit of the extent within a part.".

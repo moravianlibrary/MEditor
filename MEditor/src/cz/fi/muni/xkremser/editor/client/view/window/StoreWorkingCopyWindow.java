@@ -251,7 +251,7 @@ public class StoreWorkingCopyWindow
                                }
                            });
                 } else {
-                    EditorSC.operationFailed(lang);
+                    EditorSC.operationFailed(lang, null);
                 }
             }
 

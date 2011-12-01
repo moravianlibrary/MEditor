@@ -63,6 +63,7 @@ public class GetRelationshipsHandler
 
     private List<String> uuidList;
     private List<String> sharedPages;
+    private List<String> uuidNotToRemove;
     private int test;
 
     /**
@@ -75,43 +76,46 @@ public class GetRelationshipsHandler
         test = 0;
         uuidList = new ArrayList<String>();
         sharedPages = new ArrayList<String>();
+        uuidNotToRemove = new ArrayList<String>();
         HttpSession ses = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(ses);
 
         DigitalObjectRelationships digObjRel = new DigitalObjectRelationships(action.getUuid());
-        getChildren(digObjRel);
-        //        if (!action.isGetOlnyChildren()) {
+        getChildren(digObjRel, null);
         getParents(digObjRel);
-        //        }
         detectChildrenConflicts(digObjRel, true);
-        return new GetRelationshipsResult(digObjRel, sharedPages);
+        return new GetRelationshipsResult(digObjRel, sharedPages, uuidNotToRemove);
     }
 
     /**
+     * @param uuidToOmit
      * @param uuid
      * @throws IOException
      */
 
-    private DigitalObjectRelationships getChildren(DigitalObjectRelationships digObjRel) {
+    private DigitalObjectRelationships getChildren(DigitalObjectRelationships digObjRel, String uuidToOmit) {
 
         uuidList.add(digObjRel.getUuid());
+        System.err.println(digObjRel.getUuid());
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(digObjRel.getUuid());
         for (ArrayList<String> child : children) {
-            if (uuidList.contains(child.get(1))) {
-                sharedPages.add(child.get(1));
-            }
+            if (uuidToOmit == null || !uuidToOmit.equals(child.get(0))) {
+                if (uuidList.contains(child.get(0))) {
+                    sharedPages.add(child.get(0));
+                }
 
-            String predicate = getOnlyPredicate(child.get(0));
-            DigitalObjectRelationships newDigObjRel =
-                    getChildren(new DigitalObjectRelationships(child.get(1)));
+                String predicate = getOnlyPredicate(child.get(1));
+                DigitalObjectRelationships newDigObjRel =
+                        getChildren(new DigitalObjectRelationships(child.get(0)), uuidToOmit);
 
-            if (digObjRel.getChildren().containsKey(predicate)) {
-                digObjRel.getChildren().get(predicate).add(newDigObjRel);
-            } else {
-                List<DigitalObjectRelationships> digObjList = new ArrayList<DigitalObjectRelationships>();
-                digObjList.add(newDigObjRel);
-                digObjRel.getChildren().put(predicate, digObjList);
+                if (digObjRel.getChildren().containsKey(predicate)) {
+                    digObjRel.getChildren().get(predicate).add(newDigObjRel);
+                } else {
+                    List<DigitalObjectRelationships> digObjList = new ArrayList<DigitalObjectRelationships>();
+                    digObjList.add(newDigObjRel);
+                    digObjRel.getChildren().put(predicate, digObjList);
+                }
             }
         }
         return digObjRel;
@@ -168,7 +172,7 @@ public class GetRelationshipsHandler
                             parentConflict.setConflictCode(2);
                         }
                     }
-                    getChildren(parentConflict);
+                    getChildren(parentConflict, digObjRel.getUuid());
 
                     if (digObjRel.getParents().containsKey(grandParent.get(0))) {
                         digObjRel.getParents().get(grandParent.get(0)).add(parentConflict);
@@ -212,6 +216,7 @@ public class GetRelationshipsHandler
                 test++;
                 for (ArrayList<String> subject : related) {
                     if (!uuidList.contains(subject.get(0))) {
+                        uuidNotToRemove.add(digObjRel.getUuid());
                         digObjRel.setConflictCode(1);
                     }
                 }

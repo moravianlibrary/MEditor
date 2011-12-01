@@ -100,8 +100,8 @@ public final class EditorSC {
         return sb.toString();
     }
 
-    public static final void operationFailed(LangConstants lang) {
-        SC.say(lang.operationFailed());
+    public static final void operationFailed(LangConstants lang, String message) {
+        SC.say(lang.operationFailed() + (message != null ? "<br><br>" + message : ""));
     }
 
     public static final void operationSuccessful(LangConstants lang) {

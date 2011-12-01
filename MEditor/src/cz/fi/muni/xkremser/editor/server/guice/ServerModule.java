@@ -88,6 +88,7 @@ import cz.fi.muni.xkremser.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.PutUserRoleHandler;
+import cz.fi.muni.xkremser.editor.server.handler.RemoveDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveRequestItemHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserIdentityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
@@ -125,6 +126,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.PutUserRoleAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveDigitalObjectAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
@@ -180,6 +182,7 @@ public class ServerModule
         bindHandler(GetLockInformationAction.class, GetLockInformationHandler.class);
         bindHandler(InsertNewDigitalObjectAction.class, InsertNewDigitalObjectHandler.class);
         bindHandler(GetRelationshipsAction.class, GetRelationshipsHandler.class);
+        bindHandler(RemoveDigitalObjectAction.class, RemoveDigitalObjectHandler.class);
 
         bindHandler(LogoutAction.class, LogoutHandler.class);
 

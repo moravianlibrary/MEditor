@@ -88,11 +88,15 @@ public class GetDOModelHandler
         // parse input
         String uuid = action.getUuid();
         LOGGER.debug("Processing action: GetDOModelAction: " + action.getUuid());
+        HttpSession ses = httpSessionProvider.get();
+        ServerUtils.checkExpiredSession(ses);
+        return new GetDOModelResult(getModel(uuid));
+    }
+
+    public DigitalObjectModel getModel(String uuid) {
         try {
-            HttpSession ses = httpSessionProvider.get();
-            ServerUtils.checkExpiredSession(ses);
             DigitalObjectModel model = objectHandler.getModel(uuid);
-            return new GetDOModelResult(model);
+            return model;
         } catch (IOException e) {
             return null;
         }

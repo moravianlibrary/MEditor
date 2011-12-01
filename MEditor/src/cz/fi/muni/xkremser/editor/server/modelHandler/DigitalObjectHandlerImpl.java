@@ -122,7 +122,7 @@ public class DigitalObjectHandlerImpl
         try {
             model = fedoraAccess.getDigitalObjectModel(uuid);
         } catch (ConnectionException e) {
-            LOGGER.error("Digital object " + uuid + " is not in the repository. " + e.getMessage(), e);
+            LOGGER.error("Digital object " + uuid + " is not in the repository. " + e.getMessage());
             throw e;
         } catch (IOException e) {
             LOGGER.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);

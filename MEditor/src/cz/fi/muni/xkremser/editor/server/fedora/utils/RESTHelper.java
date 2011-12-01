@@ -38,7 +38,6 @@ import java.io.Writer;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -125,12 +124,12 @@ public class RESTHelper {
      * @throws IOException
      *         Signals that an I/O exception has occurred.
      */
-    public static URLConnection openConnection(String urlString,
-                                               String user,
-                                               String pass,
-                                               final int method,
-                                               String content,
-                                               boolean robustMode) throws MalformedURLException, IOException {
+    private static URLConnection openConnection(String urlString,
+                                                String user,
+                                                String pass,
+                                                final int method,
+                                                String content,
+                                                boolean robustMode) throws MalformedURLException, IOException {
         URL url = new URL(urlString);
         boolean auth = false;
         String encoded = null;
@@ -160,7 +159,7 @@ public class RESTHelper {
                         return uc;
                     }
                     try {
-                        out.write(content);
+                        if (content != null) out.write(content);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return uc;
@@ -180,7 +179,7 @@ public class RESTHelper {
                         return uc;
                     }
                     try {
-                        out.write(content);
+                        if (content != null) out.write(content);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return uc;
@@ -286,7 +285,23 @@ public class RESTHelper {
     }
 
     /**
-     * Delete.
+     * Delete with String result.
+     * 
+     * @param urlString
+     *        the url string
+     * @param user
+     *        the user
+     * @param pass
+     *        the pass
+     * @return The string of the result
+     */
+    public static String deleteWithStringResult(String urlString, String user, String pass, boolean robustMode) {
+        return delete(urlString, user, pass, robustMode, true);
+
+    }
+
+    /**
+     * Delete with boolean result.
      * 
      * @param urlString
      *        the url string
@@ -296,27 +311,81 @@ public class RESTHelper {
      *        the pass
      * @return true, if successful
      */
-    public static boolean delete(String urlString, String user, String pass, boolean robustMode) {
+    public static boolean deleteWithBooleanResult(String urlString,
+                                                  String user,
+                                                  String pass,
+                                                  boolean robustMode) {
+        return Boolean.valueOf(delete(urlString, user, pass, robustMode, false));
+    }
+
+    /**
+     * Delete.
+     * 
+     * @param urlString
+     *        the url string
+     * @param user
+     *        the user
+     * @param pass
+     *        the pass
+     * @param isResultString
+     * @return true, if successful
+     * @throws IOException
+     */
+    private static String delete(String urlString,
+                                 String user,
+                                 String pass,
+                                 boolean robustMode,
+                                 boolean isResultString) {
         HttpURLConnection uc = null;
         try {
-            uc = (HttpURLConnection) openConnection(urlString, user, pass, robustMode);
-            if (uc == null) return false;
+            uc = (HttpURLConnection) openConnection(urlString, user, pass, DELETE, null, robustMode);
+            if (uc == null) return Boolean.FALSE.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return false;
+            return Boolean.FALSE.toString();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return Boolean.FALSE.toString();
         }
-        uc.setDoOutput(true);
-        uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        try {
-            uc.setRequestMethod("DELETE");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            return false;
+
+        //        
+        //        
+        //        System.err.println("content enc: " + uc.getContentEncoding());
+        //        System.err.println("con type: " + uc.getContentType());
+        //        System.err.println("con length: " + uc.getContentLength());
+        //
+        //        System.err.println("req method: " + uc.getRequestMethod());
+        //        System.err.println("head fileds: " + uc.getHeaderFields());
+        //        System.err.println("do input: " + uc.getDoInput());
+        //        System.err.println("do output: " + uc.getDoOutput());
+        //        try {
+        //            System.err.println("content: " + uc.getContent());
+        //
+        //        } catch (IOException e1) {
+        //            // TODO Auto-generated method stub
+        //            e1.printStackTrace();
+        //
+        //        }
+        //        try {
+        //            System.err.println("resp message: " + uc.getResponseMessage());
+        //        } catch (IOException e1) {
+        //            // TODO Auto-generated method stub
+        //            e1.printStackTrace();
+        //
+        //        }
+        //        
+        //        
+
+        if (isResultString) {
+            try {
+                return convertStreamToString(uc.getInputStream());
+            } catch (IOException e) {
+                LOGGER.error("The convert from InputStream to String failed: " + e.getMessage());
+                return Boolean.FALSE.toString();
+            }
+        } else {
+            return Boolean.TRUE.toString();
         }
-        return true;
     }
 
     /**
@@ -347,5 +416,4 @@ public class RESTHelper {
             return "";
         }
     }
-
 }

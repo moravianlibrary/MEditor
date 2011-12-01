@@ -1,8 +1,11 @@
 /*
  * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -31,30 +34,28 @@ import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectRelationships;
-
+// TODO: Auto-generated Javadoc
 /**
- * @author Matous Jobanek
- * @version $Id$
+ * The Class GetRecentlyModified.
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetRelationships
-        extends UnsecuredActionImpl<GetRelationshipsResult> {
+public class RemoveDigitalObject
+        extends UnsecuredActionImpl<RemoveDigitalObjectResult> {
 
-    /** The uuid of the root object */
+    /** The uuid of the object is going to be removed */
     @In(1)
     private String uuid;
 
-    /** The main digital object relationships */
-    @Out(1)
-    private DigitalObjectRelationships digObjRel;
-
-    /** List f uuid of the shared pages */
-    @Out(2)
-    private List<String> sharedPages;
-
-    /** The list of uuid with has not to be removed */
-    @Out(3)
+    /** The list of uuid of digital object which has not to be removed */
+    @In(2)
     private List<String> uuidNotToRemove;
+
+    /**
+     * The message about the failure, <code>errorMessage == null</code> when
+     * there hasn't been any failure
+     */
+    @Out(1)
+    private String errorMessage;
+
 }

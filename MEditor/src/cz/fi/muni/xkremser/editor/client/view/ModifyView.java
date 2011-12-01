@@ -112,6 +112,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.RemoveDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
 
@@ -423,6 +424,9 @@ public class ModifyView
         } else if (modsWindow != null && modsWindow.isCreated()) {
             modsWindow.hide();
             modsWindow = null;
+
+        } else if (RemoveDigitalObjectWindow.isInstanceVisible()) {
+            RemoveDigitalObjectWindow.closeInstantiatedWindow();
 
         } else if (imagePopup.isVisible()) {
             imagePopup.setVisible(false);
