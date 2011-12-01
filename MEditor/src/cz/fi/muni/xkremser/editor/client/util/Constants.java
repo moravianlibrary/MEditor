@@ -466,4 +466,10 @@ public class Constants {
     public static final int MAX_NUMBER_OF_INGEST_ATTEMPTS = 3;
 
     public static final int WINDOW_ANIMATION_DELAY_IN_MILLIS = 300;
+
+    /**
+     * delay after ingesting the object, fedora may fall down, if there is too
+     * much requests
+     */
+    public static final int INGEST_DELAY = 100;
 }

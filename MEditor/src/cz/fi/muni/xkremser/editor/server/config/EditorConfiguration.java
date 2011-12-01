@@ -68,7 +68,7 @@ public abstract class EditorConfiguration {
         public static final String IMAGE_EXTENSIONS = "imageExtension";
 
         /** The Constant IMAGE_EXTENSIONS. */
-        public static final String[] IMAGE_EXTENSIONS_DEFAULT = {"jpg", "png", "tiff"};
+        public static final String[] IMAGE_EXTENSIONS_DEFAULT = {"jpg", "png", "tiff", "tif", "jpeg"};
 
         /** The Constant DOCUMENT_TYPES. */
         public static final String DOCUMENT_TYPES = EditorClientConfiguration.Constants.DOCUMENT_TYPES;

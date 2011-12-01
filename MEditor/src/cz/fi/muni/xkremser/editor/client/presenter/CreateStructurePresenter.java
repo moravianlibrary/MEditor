@@ -640,27 +640,34 @@ public class CreateStructurePresenter
      * {@inheritDoc}
      */
     @Override
-    public void createObjects(DublinCore dc, ModsTypeClient mods) {
+    public void createObjects(final DublinCore dc, final ModsTypeClient mods) {
 
-        DublinCore newDc = dc == null ? this.bundle.getDc() : dc;
+        Image progress = new Image("images/ingesting.gif");
+        getView().getPopupPanel().setWidget(progress);
+        getView().getPopupPanel().setVisible(true);
+        getView().getPopupPanel().center();
+        alreadyDone = 0;
+
+        DublinCore newDc = dc == null ? CreateStructurePresenter.this.bundle.getDc() : dc;
         ModsCollectionClient newMods;
         if (mods != null) {
             newMods = new ModsCollectionClient();
             newMods.setMods(Arrays.asList(mods));
         } else {
-            newMods = this.bundle.getMods();
+            newMods = CreateStructurePresenter.this.bundle.getMods();
         }
         NewDigitalObject object = null;
         try {
             object =
-                    ClientUtils.createTheStructure(new MetadataBundle(newDc, newMods, bundle.getMarc()),
+                    ClientUtils.createTheStructure(new MetadataBundle(newDc,
+                                                                      newMods,
+                                                                      CreateStructurePresenter.this.bundle
+                                                                              .getMarc()),
                                                    leftPresenter.getView().getSubelementsGrid().getTree());
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();
         }
-        //        object.setMarcXml(marcXml);
-
         if (object != null) {
             object.setSysno(sysno);
             System.out.println(ClientUtils.toStringTree(object));
@@ -670,37 +677,47 @@ public class CreateStructurePresenter
                                    @Override
                                    public void callback(final InsertNewDigitalObjectResult result) {
                                        if (result.isIngestSuccess()) {
-                                           // TODO" i18n
-                                           SC.ask("Vložení proběhlo v pořádku, přejete si otevřít nový objekt?",
-                                                  new BooleanCallback() {
+                                           if (!result.isReindexSuccess()) {
+                                               // TODO" i18n
+                                               SC.warn("Reindexace se nepodařila.", new BooleanCallback() {
 
-                                                      @Override
-                                                      public void execute(Boolean value) {
-                                                          if (value) {
-                                                              placeManager
-                                                                      .revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                                                                              .with(Constants.URL_PARAM_UUID,
-                                                                                    result.getNewPid()));
-                                                          }
-                                                      }
-                                                  });
+                                                   @Override
+                                                   public void execute(Boolean value) {
+                                                       openCreated(result.getNewPid());
+                                                   }
+                                               });
+                                           } else {
+                                               openCreated(result.getNewPid());
+                                           }
                                        } else {
                                            SC.warn("Vložení se nepodařilo.");
                                        }
-                                       //                                       if (!result.isReindexSuccess()) {
-                                       //                                           SC.warn("Reindexace se nepodařila.");
-                                       //                                       }
-
+                                       getView().getPopupPanel().setVisible(false);
+                                       getView().getPopupPanel().hide();
                                    }
 
                                    @Override
                                    public void callbackError(Throwable t) {
                                        System.out.println(t);
-                                       SC.say("Nepodarilo se:  " + t.getMessage());
+                                       SC.warn("Vložení se nepodařilo. Chyba: " + t.getMessage());
+                                       getView().getPopupPanel().setVisible(false);
+                                       getView().getPopupPanel().hide();
                                    }
                                });
         }
+    }
 
+    private void openCreated(final String pid) {
+        SC.ask("Vložení proběhlo v pořádku, přejete si otevřít nový objekt?", new BooleanCallback() {
+
+            @Override
+            public void execute(Boolean value) {
+                if (value) {
+                    placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                            .with(Constants.URL_PARAM_UUID, pid));
+                }
+            }
+        });
     }
 
     /**
