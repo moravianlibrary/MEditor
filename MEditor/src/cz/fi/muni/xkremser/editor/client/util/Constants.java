@@ -472,4 +472,46 @@ public class Constants {
      * much requests
      */
     public static final int INGEST_DELAY = 100;
+
+    public static enum CONFLICT {
+
+        /** When there is no conflict */
+        NO_CONFLICT(0),
+
+        /**
+         * WHen there is a child in the tree structure which exists a reference
+         * from the external object to
+         */
+        CHILD_EXTERNAL_REFERENCE(1),
+
+        /**
+         * When there is a parent which has a same parent as the original object
+         */
+        SAME_PARENT_GRANDPARENT(2),
+
+        /**
+         * When there is a parent which has a same parent as the original object
+         * and has some other children
+         */
+        COUSIN(3),
+
+        /**
+         * When there is a parent which has a same parent as the original object
+         * and some other parents and some other children as well
+         */
+        UNCLE_COUSINE(4),
+
+        /** When some of the offsprings or the ancestors has a conflict */
+        INHERITED(Integer.MAX_VALUE);
+
+        private final int conflictCode;
+
+        private CONFLICT(int conflictCode) {
+            this.conflictCode = conflictCode;
+        }
+
+        public int getConflictCode() {
+            return conflictCode;
+        }
+    }
 }

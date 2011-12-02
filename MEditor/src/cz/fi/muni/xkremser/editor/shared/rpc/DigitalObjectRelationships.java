@@ -33,17 +33,19 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractDigitalObjectDetail.
  */
 public class DigitalObjectRelationships
-        implements IsSerializable {
+        implements IsSerializable, Comparable<DigitalObjectRelationships> {
 
     private Map<String, List<DigitalObjectRelationships>> parents;
     private Map<String, List<DigitalObjectRelationships>> children;
     private String uuid;
-    private int conflictCode = 0;
+    private Constants.CONFLICT conflict = Constants.CONFLICT.NO_CONFLICT;
 
     public DigitalObjectRelationships() {
     }
@@ -106,20 +108,20 @@ public class DigitalObjectRelationships
     }
 
     /**
-     * @return the conflictCode
+     * @return the conflict
      */
 
-    public int getConflictCode() {
-        return conflictCode;
+    public Constants.CONFLICT getConflict() {
+        return conflict;
     }
 
     /**
-     * @param conflictCode
-     *        the conflictCode to set
+     * @param conflict
+     *        the conflict to set
      */
 
-    public void setConflictCode(int conflictCode) {
-        this.conflictCode = conflictCode;
+    public void setConflict(Constants.CONFLICT conflict) {
+        this.conflict = conflict;
     }
 
     /**
@@ -157,7 +159,28 @@ public class DigitalObjectRelationships
     @Override
     public String toString() {
         return "DigitalObjectRelationships [parents=" + parents + ", children=" + children + ", uuid=" + uuid
-                + ", conflictCode=" + conflictCode + "]";
+                + ", conflict=" + conflict + "]";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public int compareTo(DigitalObjectRelationships toCompare) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+
+        if (toCompare == null) return AFTER;
+        if (this.equals(toCompare)) return EQUAL;
+
+        if (this.getConflict().getConflictCode() > toCompare.getConflict().getConflictCode()) {
+            return BEFORE;
+        } else if (this.getConflict().getConflictCode() < toCompare.getConflict().getConflictCode()) {
+            return AFTER;
+        } else {
+            return this.getUuid().compareTo(toCompare.getUuid());
+        }
+    }
 }

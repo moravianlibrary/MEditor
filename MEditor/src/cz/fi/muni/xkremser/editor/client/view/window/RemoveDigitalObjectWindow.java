@@ -25,12 +25,15 @@
 package cz.fi.muni.xkremser.editor.client.view.window;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
@@ -48,6 +51,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.CONFLICT;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectRelationships;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsAction;
@@ -99,12 +104,14 @@ public class RemoveDigitalObjectWindow
     private static List<String> sharedPages;
 
     /** The list of uuid of digital object which has the first conflict */
-    private static List<String> uuidNotToRemove;
+    private List<String> uuidNotToRemove = new ArrayList<String>();
 
     /** List of all depicted ItemImgButtons */
     private static List<ItemImgButton> itemList;
 
-    private static int lowestLevel;
+    private boolean isConflict = false;
+
+    private int lowestLevel;
 
     private static final class ItemImgButton
             extends ImgButton {
@@ -191,7 +198,7 @@ public class RemoveDigitalObjectWindow
         }
     }
 
-    private static final class ThreeDots
+    private final class ThreeDots
             extends Layout {
 
         public ThreeDots(final List<DigitalObjectRelationships> digObjRelList, final boolean children) {
@@ -211,6 +218,8 @@ public class RemoveDigitalObjectWindow
 
                 @Override
                 public void onClick(ClickEvent event) {
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
                     removeMember(img);
                     setVertical(false);
                     for (DigitalObjectRelationships digObj : digObjRelList) {
@@ -219,6 +228,8 @@ public class RemoveDigitalObjectWindow
                         createdRelLayout.setExtraSpace(5);
                         addMember(createdRelLayout);
                     }
+                    customizeWindow();
+                    mw.hide();
                 }
             });
         }
@@ -246,7 +257,7 @@ public class RemoveDigitalObjectWindow
         }
     }
 
-    private static final class ItemLayout
+    private final class ItemLayout
             extends VLayout {
 
         public ItemLayout(DigitalObjectRelationships digObjRel, boolean isRoot, boolean isFirst) {
@@ -261,6 +272,7 @@ public class RemoveDigitalObjectWindow
 
                 for (String relName : parentsMap.keySet()) {
                     if (parentsMap.get(relName).size() > 0) {
+                        Collections.sort(parentsMap.get(relName));
                         if (relName.contains("uuid:")) {
                             parentsRelLayout.addMember(new ParentConflictItemLayout(relName, parentsMap
                                     .get(relName)));
@@ -272,19 +284,20 @@ public class RemoveDigitalObjectWindow
                     }
                 }
                 addMember(parentsRelLayout);
-                itemImgButton =
-                        new ItemImgButton(digObjRel.getUuid(), digObjRel.getConflictCode() > 0 ? RED_SQUARE
-                                : GREEN_SQUARE, true);
-
+                if (digObjRel.getConflict() != Constants.CONFLICT.NO_CONFLICT) {
+                    itemImgButton = new ItemImgButton(digObjRel.getUuid(), RED_SQUARE, true);
+                    if (!isConflict) isConflict = true;
+                } else {
+                    itemImgButton = new ItemImgButton(digObjRel.getUuid(), GREEN_SQUARE, true);
+                }
             } else {
-                if (digObjRel.getConflictCode() > 0) {
-
+                if (digObjRel.getConflict() != Constants.CONFLICT.NO_CONFLICT) {
                     itemImgButton = new ItemImgButton(digObjRel.getUuid(), RED_CIRCLE, false);
                 } else {
                     itemImgButton = new ItemImgButton(digObjRel.getUuid(), GREEN_CIRCLE, false);
                 }
             }
-            if (digObjRel.getConflictCode() == 1) {
+            if (digObjRel.getConflict() == Constants.CONFLICT.CHILD_EXTERNAL_REFERENCE) {
                 Layout conflictLayout = new HLayout(2);
                 itemImgButton.setExtraSpace(0);
                 conflictLayout.addMember(itemImgButton);
@@ -301,6 +314,7 @@ public class RemoveDigitalObjectWindow
 
             if (isFirst && childrenMap.size() > 0) lowestLevel++;
             for (String relName : childrenMap.keySet()) {
+                Collections.sort(childrenMap.get(relName));
                 childrenRelLayout.addMember(new RelationshipsLayout(relName, childrenMap.get(relName), true));
             }
             childrenRelLayout.setAutoWidth();
@@ -316,7 +330,7 @@ public class RemoveDigitalObjectWindow
         }
     }
 
-    private static final class RelationshipsLayout
+    private final class RelationshipsLayout
             extends VLayout {
 
         public RelationshipsLayout(String relationshipName,
@@ -324,7 +338,7 @@ public class RemoveDigitalObjectWindow
                                    boolean children) {
             super();
             boolean toMany = false;
-            int count = ((toMany = (digObjRelList.size() > 3)) ? 2 : digObjRelList.size());
+            int count = ((toMany = (digObjRelList.size() > 5)) ? 2 : digObjRelList.size());
             Layout arrowsLayout = new HLayout(count);
 
             for (int i = 0; i < count; i++) {
@@ -407,7 +421,8 @@ public class RemoveDigitalObjectWindow
             conArrowLayout.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
             conArrowLayout.addMember(new ArrowAskewConflict(ARROW_ASKEW_LEFT_CONFLICT));
 
-            if (digObjRel.getConflictCode() == 3 || digObjRel.getConflictCode() == 4) {
+            if (digObjRel.getConflict() == CONFLICT.COUSIN
+                    || digObjRel.getConflict() == Constants.CONFLICT.UNCLE_COUSINE) {
                 conArrowLayout.addMember(new ArrowAskewConflict(ARROW_ASKEW_RIGHT_CONFLICT));
 
                 for (String childRel : digObjRel.getChildren().keySet()) {
@@ -453,9 +468,32 @@ public class RemoveDigitalObjectWindow
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    RemoveDigitalObjectWindow.this.remove();
                     mw.setLoadingIcon("loadingAnimation.gif");
                     mw.show(true);
+
+                    StringBuffer sb = new StringBuffer("");
+                    if (isConflict) {
+                        sb.append(lang.isConflictsWarning());
+                        if (lowestLevel > 2) sb.append("<br>");
+                    }
+                    if (lowestLevel > 2) sb.append(lang.abundantTree());
+                    if (isConflict || lowestLevel > 2) sb.append("<br><br>").append(lang.wishContinue());
+
+                    if (!"".equals(sb.toString())) {
+                        SC.ask(sb.toString(), new BooleanCallback() {
+
+                            @Override
+                            public void execute(Boolean value) {
+                                if (value) {
+                                    RemoveDigitalObjectWindow.this.remove();
+                                } else {
+                                    mw.hide();
+                                }
+                            }
+                        });
+                    } else {
+                        RemoveDigitalObjectWindow.this.remove();
+                    }
                 }
             });
         }
@@ -492,7 +530,7 @@ public class RemoveDigitalObjectWindow
         setShowMaximizeButton(true);
 
         HTMLFlow removeWarning =
-                new HTMLFlow("<b>" + lang.deleteWarningWant() + ": " + uuid + "<br>"
+                new HTMLFlow("<b>" + lang.deleteWarningWant() + ": " + uuid + " "
                         + lang.deleteWarningExplore() + "</b>");
         removeWarning.setExtraSpace(5);
 
@@ -534,7 +572,6 @@ public class RemoveDigitalObjectWindow
         mainLayout.addMember(newLayout);
         addMember(new ButtonsLayout(lang.removeItem()));
         customizeWindow();
-        centerInPage();
         mw.hide();
     }
 
@@ -549,9 +586,10 @@ public class RemoveDigitalObjectWindow
         setHeight100();
         int newHeight = (lowestLevel * 85) + 130;
         if (newHeight < getHeight()) setHeight(newHeight);
+        centerInPage();
     }
 
-    private static Layout createRelLayout(DigitalObjectRelationships child, int index, boolean children) {
+    private Layout createRelLayout(DigitalObjectRelationships child, int index, boolean children) {
         Layout itemLayout = new VLayout(2);
 
         if (children) {
@@ -584,10 +622,10 @@ public class RemoveDigitalObjectWindow
                         sharedPages = result.getSharedPages();
                         uuidNotToRemove = result.getUuidNotToRemove();
 
-                        System.err.println("count of uuid not to remove: " + uuidNotToRemove.size());
-                        for (String uuid : uuidNotToRemove) {
-                            System.err.println("shared: " + uuid);
-                        }
+                        //                        System.err.println("count of uuid not to remove: " + uuidNotToRemove.size());
+                        //                        for (String uuid : uuidNotToRemove) {
+                        //                            System.err.println("shared: " + uuid);
+                        //                        }
 
                         createRelationshipsTree(result.getDigObjRel());
                     }
@@ -614,7 +652,12 @@ public class RemoveDigitalObjectWindow
                         mw.hide();
                         RemoveDigitalObjectWindow.this.hide();
                         if (result.getErrorMessage() == null) {
-                            EditorSC.operationSuccessful(lang);
+                            StringBuffer sb = new StringBuffer(lang.removedUuids());
+                            sb.append("<br>");
+                            for (String removedUuid : result.getRemoved()) {
+                                sb.append("<br>").append(removedUuid);
+                            }
+                            EditorSC.operationSuccessful(lang, sb.toString());
                         } else {
                             EditorSC.operationFailed(lang, result.getErrorMessage());
                         }
@@ -622,6 +665,7 @@ public class RemoveDigitalObjectWindow
 
                     @Override
                     public void callbackError(Throwable t) {
+                        mw.hide();
                         super.callbackError(t);
                     }
                 };

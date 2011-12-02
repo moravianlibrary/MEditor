@@ -104,7 +104,7 @@ public final class EditorSC {
         SC.say(lang.operationFailed() + (message != null ? "<br><br>" + message : ""));
     }
 
-    public static final void operationSuccessful(LangConstants lang) {
-        SC.say(lang.operationSuccessful());
+    public static final void operationSuccessful(LangConstants lang, String message) {
+        SC.say(lang.operationSuccessful() + (message != null ? "<br><br>" + message : ""));
     }
 }

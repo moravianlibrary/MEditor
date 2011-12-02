@@ -58,4 +58,8 @@ public class RemoveDigitalObject
     @Out(1)
     private String errorMessage;
 
+    /** The list of uuid which has been removed */
+    @Out(2)
+    private List<String> removed;
+
 }

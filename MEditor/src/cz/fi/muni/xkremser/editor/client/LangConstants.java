@@ -34,6 +34,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String abstractAndTableMARC();
 
   /**
+   * Translated "This digital object has abundant substructures.".
+   * 
+   * @return translated "This digital object has abundant substructures."
+   */
+  @DefaultStringValue("This digital object has abundant substructures.")
+  @Key("abundantTree")
+  String abundantTree();
+
+  /**
    * Translated "The electronic resource is intended to support current electronic access to the original item (i.e., reference use), but is not sufficient to serve as a preservation copy.".
    * 
    * @return translated "The electronic resource is intended to support current electronic access to the original item (i.e., reference use), but is not sufficient to serve as a preservation copy."
@@ -1105,11 +1114,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String deleteAnyway();
 
   /**
-   * Translated "This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.".
+   * Translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.".
    * 
-   * @return translated "This remove can create some conflicts. Please click on the Explore to find out the possible conflicts."
+   * @return translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore to find out the possible conflicts."
    */
-  @DefaultStringValue("This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.")
+  @DefaultStringValue("and all its offsprings. This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.")
   @Key("deleteWarningExplore")
   String deleteWarningExplore();
 
@@ -1823,6 +1832,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("If invalid='yes' is not present, the identifier is assumed to be valid.")
   @Key("invalid")
   String invalid();
+
+  /**
+   * Translated "After removing some conflicts may arise. ".
+   * 
+   * @return translated "After removing some conflicts may arise. "
+   */
+  @DefaultStringValue("After removing some conflicts may arise. ")
+  @Key("isConflictsWarning")
+  String isConflictsWarning();
 
   /**
    * Translated "is not running".
@@ -3121,6 +3139,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String removeSelected();
 
   /**
+   * Translated "There have been removed these digital objects".
+   * 
+   * @return translated "There have been removed these digital objects"
+   */
+  @DefaultStringValue("There have been removed these digital objects")
+  @Key("removedUuids")
+  String removedUuids();
+
+  /**
    * Translated "Rendering GUI".
    * 
    * @return translated "Rendering GUI"
@@ -3740,6 +3767,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("keep also the previous versions")
   @Key("versionable")
   String versionable();
+
+  /**
+   * Translated "Do you wish to continue?".
+   * 
+   * @return translated "Do you wish to continue?"
+   */
+  @DefaultStringValue("Do you wish to continue?")
+  @Key("wishContinue")
+  String wishContinue();
 
   /**
    * Translated "with description".

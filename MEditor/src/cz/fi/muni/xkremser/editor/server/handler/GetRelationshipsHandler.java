@@ -96,7 +96,7 @@ public class GetRelationshipsHandler
     private DigitalObjectRelationships getChildren(DigitalObjectRelationships digObjRel, String uuidToOmit) {
 
         uuidList.add(digObjRel.getUuid());
-        System.err.println(digObjRel.getUuid());
+        //        System.err.println(digObjRel.getUuid());
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(digObjRel.getUuid());
         for (ArrayList<String> child : children) {
@@ -154,7 +154,7 @@ public class GetRelationshipsHandler
             for (ArrayList<String> grandParent : grandParents) {
 
                 if (parentsUuid.contains(grandParent.get(0))) {
-                    digObjRel.setConflictCode(Integer.MAX_VALUE);
+                    digObjRel.setConflict(Constants.CONFLICT.INHERITED);
 
                     removeDigObjRelFromMap(digObjRel.getParents(), grandParent.get(0));
 
@@ -162,14 +162,14 @@ public class GetRelationshipsHandler
                             removeDigObjRelFromMap(digObjRel.getParents(), parentUuid);
 
                     if (grandParents.size() > 1) {
-                        parentConflict.setConflictCode(4);
+                        parentConflict.setConflict(Constants.CONFLICT.UNCLE_COUSINE);
 
                     } else {
                         ArrayList<ArrayList<String>> cousins = FedoraUtils.getAllChildren(parentUuid);
                         if (cousins.size() > 1) {
-                            parentConflict.setConflictCode(3);
+                            parentConflict.setConflict(Constants.CONFLICT.COUSIN);
                         } else {
-                            parentConflict.setConflictCode(2);
+                            parentConflict.setConflict(Constants.CONFLICT.SAME_PARENT_GRANDPARENT);
                         }
                     }
                     getChildren(parentConflict, digObjRel.getUuid());
@@ -217,14 +217,14 @@ public class GetRelationshipsHandler
                 for (ArrayList<String> subject : related) {
                     if (!uuidList.contains(subject.get(0))) {
                         uuidNotToRemove.add(digObjRel.getUuid());
-                        digObjRel.setConflictCode(1);
+                        digObjRel.setConflict(Constants.CONFLICT.CHILD_EXTERNAL_REFERENCE);
                     }
                 }
             }
         } else {
-            digObjRel.setConflictCode(Integer.MAX_VALUE);
+            digObjRel.setConflict(Constants.CONFLICT.INHERITED);
         }
-        return digObjRel.getConflictCode() > 0;
+        return digObjRel.getConflict().getConflictCode() > 0;
     }
 
     private String getOnlyPredicate(String toParse) {

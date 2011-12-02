@@ -104,4 +104,14 @@ public interface RecentlyModifiedItemDAO {
      * @return the items
      */
     ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) throws DatabaseException;
+
+    /**
+     * Deletes the removed item
+     * 
+     * @param uuid
+     * @return
+     * @throws DatabaseException
+     */
+
+    boolean deleteRemovedItem(String uuid) throws DatabaseException;
 }

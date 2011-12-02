@@ -47,7 +47,9 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
+import cz.fi.muni.xkremser.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
@@ -82,6 +84,15 @@ public class RemoveDigitalObjectHandler
 
     /** The fedora access. */
     private final FedoraAccess fedoraAccess;
+
+    /** The list of digital objects which have been removed */
+    private final List<RemovedDigitalObject> removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
+
+    /** The recently modified dao */
+    @Inject
+    private RecentlyModifiedItemDAO recModDao;
+
+    private final int fail = 0;
 
     private static final class RemovedDigitalObject {
 
@@ -159,9 +170,21 @@ public class RemoveDigitalObjectHandler
 
         String returnedMessage = remove(uuid, context, uuidNotToRemove);
         if (!"".equals(returnedMessage)) {
-            return new RemoveDigitalObjectResult(returnedMessage);
+            return new RemoveDigitalObjectResult(returnedMessage, null);
         }
-        return new RemoveDigitalObjectResult(null);
+        List<String> removedUuid = new ArrayList<String>();
+
+        for (RemovedDigitalObject removedObj : removedDigitalObjects) {
+            removedUuid.add(removedObj.getUuid());
+            try {
+                recModDao.deleteRemovedItem(removedObj.getUuid());
+            } catch (DatabaseException e) {
+                LOGGER.error("The digital object: " + removedObj.getUuid() + " could not be removed from "
+                        + Constants.TABLE_RECENTLY_MODIFIED_NAME + " " + e);
+            }
+        }
+
+        return new RemoveDigitalObjectResult(null, removedUuid);
     }
 
     private String remove(String uuid, final ExecutionContext context, List<String> uuidNotToRemove)
@@ -169,7 +192,6 @@ public class RemoveDigitalObjectHandler
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(uuid);
 
-        List<RemovedDigitalObject> removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         for (ArrayList<String> child : children) {
             if (!uuidNotToRemove.contains(child.get(0)) && getDoModelHandler.getModel(uuid) != null) {
                 String returnedMessage = remove(child.get(0), context, uuidNotToRemove);
@@ -240,7 +262,8 @@ public class RemoveDigitalObjectHandler
                                 + " predicate: "
                                 + parentRel.get(1)
                                 + " and object: "
-                                + uuid).append("<br>").toString());
+                                + uuid).toString());
+                message.append("<br>");
                 break;
             }
         }
@@ -251,7 +274,8 @@ public class RemoveDigitalObjectHandler
 
             int attempt = 0;
             successful = false;
-            while (!successful && attempt++ < 3) {
+            //            fail++;
+            while (!successful && attempt++ < 3 && fail < 2) {
                 LOGGER.debug("Processing action: RemoveDigitalObjectAction the " + attempt
                         + ". attempt of removing digital object with uuid:" + uuid);
                 if (RESTHelper.deleteWithBooleanResult(url, usr, pass, true))
@@ -270,7 +294,8 @@ public class RemoveDigitalObjectHandler
                 } else {
                     LOGGER.error(message
                             .append("Processing action RemoveDigitalObjectAction failed during removing digital object with uuid: "
-                                    + uuid).append("<br>").toString());
+                                    + uuid).toString());
+                    message.append("<br>");
                     message.append(rollbackRemoval(removedRelationships, uuid, removedDigitalObjects));
                     return message.toString();
 
@@ -306,7 +331,8 @@ public class RemoveDigitalObjectHandler
 
                 LOGGER.error(message
                         .append("Processing rollback action: RemoveDigitalObjectAction failed during rollback removal digital object with uuid: "
-                                + removed.getUuid()).append("<br>").toString());
+                                + removed.getUuid()).toString());
+                message.append("<br>");
             }
             message.append(addRelationships(removed.getRemovedRelationships(), removed.getUuid()));
         }
@@ -360,7 +386,8 @@ public class RemoveDigitalObjectHandler
                                 + " predicate: "
                                 + parentRel.get(1)
                                 + " and object: "
-                                + uuid).append("<br>").toString());
+                                + uuid).toString());
+                message.append("<br>");
             }
         }
         return message.toString();

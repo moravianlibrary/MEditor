@@ -103,6 +103,10 @@ public class RecentlyModifiedItemDAOImpl
     public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_RECENTLY_MODIFIED_NAME
             + " SET modified = CURRENT_TIMESTAMP WHERE id = (?)";
 
+    /** The Constant DELETE_REMOVED_ITEM */
+    private static final String DELETE_REMOVED_ITEM = "DELETE FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+            + " WHERE uuid = (?)";
+
     private static final Logger LOGGER = Logger.getLogger(RecentlyModifiedItemDAOImpl.class);
 
     /*
@@ -368,5 +372,36 @@ public class RecentlyModifiedItemDAOImpl
             closeConnection();
         }
         return ret;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws DatabaseException
+     */
+
+    @Override
+    public boolean deleteRemovedItem(String uuid) throws DatabaseException {
+
+        PreparedStatement deleteSt = null;
+        try {
+            deleteSt = getConnection().prepareStatement(DELETE_REMOVED_ITEM);
+            deleteSt.setString(1, uuid);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get delete statement", e);
+        }
+
+        try {
+            deleteSt.executeUpdate();
+            getConnection().commit();
+            LOGGER.debug("DB has been updated. Queries: \"" + deleteSt + "\"");
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + deleteSt, e);
+        } finally {
+            closeConnection();
+        }
+
+        return true;
     }
 }
