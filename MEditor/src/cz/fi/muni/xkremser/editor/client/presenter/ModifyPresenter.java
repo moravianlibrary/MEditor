@@ -85,6 +85,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
@@ -254,6 +255,16 @@ public class ModifyPresenter
             }
 
         });
+        addRegisteredHandler(OpenDigitalObjectEvent.getType(),
+                             new OpenDigitalObjectEvent.OpenDigitalObjectHandler() {
+
+                                 @Override
+                                 public void onOpenDigitalObject(OpenDigitalObjectEvent event) {
+                                     openAnotherObject(event.getUuid());
+                                     if (RemoveDigitalObjectWindow.isInstanceVisible())
+                                         RemoveDigitalObjectWindow.closeInstantiatedWindow();
+                                 }
+                             });
     }
 
     /*
@@ -823,6 +834,6 @@ public class ModifyPresenter
 
     @Override
     public void removeDigitalObject(String uuid) {
-        RemoveDigitalObjectWindow.setInstanceOf(uuid, lang, dispatcher);
+        RemoveDigitalObjectWindow.setInstanceOf(uuid, lang, dispatcher, getEventBus());
     }
 }

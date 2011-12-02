@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -44,16 +45,22 @@ import com.smartgwt.client.widgets.events.MouseOutEvent;
 import com.smartgwt.client.widgets.events.MouseOutHandler;
 import com.smartgwt.client.widgets.events.MouseOverEvent;
 import com.smartgwt.client.widgets.events.MouseOverHandler;
+import com.smartgwt.client.widgets.events.RightMouseDownEvent;
+import com.smartgwt.client.widgets.events.RightMouseDownHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.CONFLICT;
 
+import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectRelationships;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsResult;
@@ -81,7 +88,7 @@ public class RemoveDigitalObjectWindow
     private static final String ARROW_ASKEW_RIGHT_CONFLICT = "other/arrowAskewRightConflict.png";
     private static final String ARROW_ASKEW_LEFT_CONFLICT = "other/arrowAskewLeftConflict.png";
 
-    private final LangConstants lang;
+    private static LangConstants lang;
 
     /** The uuid of the object is going to be removed */
     private final String uuid;
@@ -113,6 +120,8 @@ public class RemoveDigitalObjectWindow
 
     private int lowestLevel;
 
+    private static EventBus eventBus;
+
     private static final class ItemImgButton
             extends ImgButton {
 
@@ -137,6 +146,26 @@ public class RemoveDigitalObjectWindow
             setHoverStyle("interactImageHover");
             setHoverWidth(310);
             setExtraSpace(5);
+
+            addRightMouseDownHandler(new RightMouseDownHandler() {
+
+                @Override
+                public void onRightMouseDown(RightMouseDownEvent event) {
+                    Menu menu = new Menu();
+                    menu.setShowShadow(true);
+                    menu.setShadowDepth(10);
+                    MenuItem newItem = new MenuItem(lang.menuEdit(), "icons/16/document_plain_new.png");
+                    newItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+                        @Override
+                        public void onClick(MenuItemClickEvent event) {
+                            eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
+                        }
+                    });
+                    menu.addItem(newItem);
+                    setContextMenu(menu);
+                }
+            });
 
             addMouseOverHandler(new MouseOverHandler() {
 
@@ -501,11 +530,13 @@ public class RemoveDigitalObjectWindow
 
     public static void setInstanceOf(final String uuid,
                                      final LangConstants lang,
-                                     final DispatchAsync dispatcher) {
+                                     final DispatchAsync dispatcher,
+                                     final EventBus eventBus) {
+
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        removeWindow = new RemoveDigitalObjectWindow(uuid, lang, dispatcher);
+        removeWindow = new RemoveDigitalObjectWindow(uuid, lang, dispatcher, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -519,11 +550,13 @@ public class RemoveDigitalObjectWindow
 
     private RemoveDigitalObjectWindow(final String uuid,
                                       final LangConstants lang,
-                                      final DispatchAsync dispatcher) {
+                                      final DispatchAsync dispatcher,
+                                      EventBus eventBus) {
         super(180, 570, lang.removeItem() + ": " + uuid);
         this.lang = lang;
         this.uuid = uuid;
         this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
         setEdgeOffset(15);
         itemList = new ArrayList<RemoveDigitalObjectWindow.ItemImgButton>();
         lowestLevel = 1;
