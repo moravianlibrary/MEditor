@@ -79,6 +79,7 @@ public abstract class InfoTab
         if (label.length() > 25) {
             labelItem.setWidth(label.length() + 200);
         }
+        labelItem.setLength(100);
         final DynamicForm form = new DynamicForm();
         form.setFields(labelItem);
         form.setWidth(150);
