@@ -443,7 +443,7 @@ public class CreateStructureView
 
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                if (tileGrid.getSelection() != null && tileGrid.getSelection().length == 1) {
+                if (tileGrid.getSelection() != null) {
                     specialPageItem.enable();
                 } else {
                     specialPageItem.disable();
@@ -488,8 +488,36 @@ public class CreateStructureView
         specialPageItem.addChangedHandler(new ChangedHandler() {
 
             @Override
-            public void onChanged(ChangedEvent event) {
-                tileGrid.getSelectedRecord().setAttribute(Constants.ATTR_NAME, event.getValue());
+            public void onChanged(final ChangedEvent event) {
+                final ModalWindow mw = new ModalWindow(tileGridLayout);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
+
+                Timer timer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        Record[] selectedRecords = tileGrid.getSelection();
+                        tileGrid.selectAllRecords();
+                        Record[] allRecords = tileGrid.getSelection();
+                        tileGrid.selectRecords(selectedRecords);
+                        tileGrid.removeSelectedData();
+                        int index = 0;
+
+                        for (Record r : allRecords) {
+                            if (r.equals(selectedRecords[index])) {
+                                r.setAttribute(Constants.ATTR_NAME, event.getValue());
+                                System.err.println(index);
+                                if (++index + 1 > selectedRecords.length) break;
+                            }
+                        }
+                        tileGrid.setData(allRecords);
+                        tileGrid.selectRecords(selectedRecords);
+                    }
+                };
+                timer.schedule(25);
+                mw.hide();
             }
         });
 
@@ -630,6 +658,7 @@ public class CreateStructureView
         MenuItem abc = new MenuItem("1, 2, ...   ⇨   1a, 1b, ...", "icons/16/abc.png");
         MenuItem toLeft = new MenuItem(lang.leftShift() + "...", "icons/16/arrow_left.png");
         MenuItem toRight = new MenuItem(lang.rightShift() + "...", "icons/16/arrow_right.png");
+        MenuItem moveOn = new MenuItem("move on" + "...", "icons/16/arrow_in.png");
         editTitle.setEnableIfCondition(isSelected(true));
         renumber.setEnableIfCondition(isSelected(false));
         toRoman.setEnableIfCondition(isSelected(false));
@@ -638,6 +667,7 @@ public class CreateStructureView
         abc.setEnableIfCondition(isSelected(false));
         toLeft.setEnableIfCondition(isSelected(false));
         toRight.setEnableIfCondition(isSelected(false));
+        moveOn.setEnableIfCondition(isSelected(false));
 
         editTitle.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -784,7 +814,8 @@ public class CreateStructureView
                       abc,
                       separator,
                       toLeft,
-                      toRight);
+                      toRight,
+                      moveOn);
 
         ToolStripMenuButton menuButton = new ToolStripMenuButton(lang.pageNumbers(), menu);
         menuButton.setWidth(100);
