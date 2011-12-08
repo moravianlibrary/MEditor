@@ -27,7 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -489,7 +491,7 @@ public class CreateStructureView
 
             @Override
             public void onChanged(final ChangedEvent event) {
-                final ModalWindow mw = new ModalWindow(tileGridLayout);
+                final ModalWindow mw = new ModalWindow(tileGrid);
                 mw.setLoadingIcon("loadingAnimation.gif");
                 mw.show(true);
 
@@ -508,7 +510,7 @@ public class CreateStructureView
                         for (Record r : allRecords) {
                             if (r.equals(selectedRecords[index])) {
                                 r.setAttribute(Constants.ATTR_NAME, event.getValue());
-                                System.err.println(index);
+                                //                                System.err.println(index);
                                 if (++index + 1 > selectedRecords.length) break;
                             }
                         }
@@ -698,6 +700,9 @@ public class CreateStructureView
                 if (data != null && data.length > 0) {
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
+                    if (i == Integer.MIN_VALUE) {
+                        i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                    }
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME, i++);
                     }
@@ -713,6 +718,9 @@ public class CreateStructureView
                 if (data != null && data.length > 0) {
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
+                    if (i == Integer.MIN_VALUE) {
+                        i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                    }
                     if (i <= 0) {
                         SC.say(lang.pageNumberGreater());
                         return;
@@ -732,6 +740,9 @@ public class CreateStructureView
                 if (data != null && data.length > 0) {
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
+                    if (i == Integer.MIN_VALUE) {
+                        i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                    }
                     if (i <= 0) {
                         SC.say(lang.pageNumberGreater());
                         return;
@@ -772,7 +783,7 @@ public class CreateStructureView
                         }
                         try {
                             int n = Integer.parseInt(value);
-                            shift(-n);
+                            shift(-n, false);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
@@ -789,9 +800,33 @@ public class CreateStructureView
 
                     @Override
                     public void execute(String value) {
+                        if (value == null) {
+                            return;
+                        }
                         try {
                             int n = Integer.parseInt(value);
-                            shift(n);
+                            shift(n, false);
+                        } catch (NumberFormatException nfe) {
+                            SC.say(lang.notANumber());
+                        }
+                    }
+                });
+            }
+        });
+        moveOn.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                SC.askforValue("move on", lang.enterNumber(), new ValueCallback() {
+
+                    @Override
+                    public void execute(String value) {
+                        if (value == null) {
+                            return;
+                        }
+                        try {
+                            int n = Integer.parseInt(value);
+                            shift(n, true);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
@@ -874,18 +909,105 @@ public class CreateStructureView
         };
     }
 
-    private void shift(final int n) {
-        if (n == 0) {
-            return;
-        }
-        Record[] data = tileGrid.getSelection();
-        if (data != null && data.length > 0) {
-            String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
-            int i = getPageNumberFromText(startingNumber);
-            for (Record rec : data) {
-                rec.setAttribute(Constants.ATTR_NAME, i++ + n);
+    private void shift(final int n, boolean isMoveOn) {
+        final ModalWindow mw = new ModalWindow(layout);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+
+        Record[] selectedRecords = tileGrid.getSelection();
+        tileGrid.selectAllRecords();
+        Record[] allRecords = tileGrid.getSelection();
+        int selLength = selectedRecords.length;
+        int allLength = allRecords.length;
+
+        if (selectedRecords != null && selectedRecords.length > 0) {
+            int moveOver = n;
+            if (isMoveOn) {
+                if (moveOver <= 0) {
+                    moveOver = -allLength;
+                } else {
+                    moveOver = (n - 1) - tileGrid.getRecordList().indexOf(selectedRecords[0]);
+                }
             }
+
+            if (moveOver == 0) {
+                tileGrid.selectRecords(selectedRecords);
+                mw.hide();
+                return;
+            }
+
+            Map<Integer, Record> bufferedRecords = new HashMap<Integer, Record>();
+
+            if (moveOver < 0) {
+                int index = selLength - 1;
+                int lastIndex = tileGrid.getRecordList().indexOf(selectedRecords[selLength - 1]);
+                for (int i = lastIndex; i > -1 || !(bufferedRecords.isEmpty() && (index - 1 < 0)); i--) {
+
+                    if (!(index < 0) && allRecords[i].equals(selectedRecords[index])) {
+
+                        int newPosition = 0;
+                        if (i - (index - moveOver) < 0) {
+                            newPosition = index;
+                        } else {
+                            newPosition = i + moveOver;
+                        }
+                        allRecords[i].setAttribute(Constants.ATTR_NAME, i + moveOver + 1);
+                        bufferedRecords.put(newPosition, allRecords[i]);
+                        allRecords[i] = null;
+                        index--;
+                    }
+
+                    if (!(i > -1) || allRecords[i] != null) {
+                        while (bufferedRecords.containsKey(lastIndex)) {
+                            allRecords[lastIndex] = bufferedRecords.remove(lastIndex);
+                            lastIndex--;
+                        }
+                        if (i != lastIndex && (i > -1)) {
+                            allRecords[i].setAttribute(Constants.ATTR_NAME, lastIndex + 1);
+                            allRecords[lastIndex] = allRecords[i];
+                        }
+                        lastIndex--;
+                    }
+                }
+
+            } else {
+                int index = 0;
+                int lastIndex = tileGrid.getRecordList().indexOf(selectedRecords[0]);
+                for (int i = lastIndex; i < allLength
+                        || !(bufferedRecords.isEmpty() && (index + 1 > selLength)); i++) {
+
+                    if (!(index + 1 > selLength) && allRecords[i].equals(selectedRecords[index])) {
+
+                        int newPosition = 0;
+                        if (i + moveOver + (selLength - index) > allLength) {
+                            newPosition = allLength - (selLength - index);
+                        } else {
+                            newPosition = i + moveOver;
+                        }
+                        allRecords[i].setAttribute(Constants.ATTR_NAME, i + moveOver + 1);
+                        bufferedRecords.put(newPosition, allRecords[i]);
+                        allRecords[i] = null;
+                        index++;
+                    }
+
+                    if (!(i < allLength) || allRecords[i] != null) {
+                        while (bufferedRecords.containsKey(lastIndex)) {
+                            allRecords[lastIndex] = bufferedRecords.remove(lastIndex);
+                            lastIndex++;
+                        }
+                        if (i != lastIndex && (i < allLength)) {
+                            allRecords[i].setAttribute(Constants.ATTR_NAME, lastIndex + 1);
+                            allRecords[lastIndex] = allRecords[i];
+                        }
+                        lastIndex++;
+                    }
+                }
+            }
+            tileGrid.removeSelectedData();
+            tileGrid.setData(allRecords);
+            tileGrid.selectRecords(selectedRecords);
         }
+        mw.hide();
     }
 
     private void toAbcN(final int n) {
@@ -898,6 +1020,9 @@ public class CreateStructureView
         if (data != null && data.length > 0) {
             String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
             int i = getPageNumberFromText(startingNumber);
+            if (i == Integer.MIN_VALUE) {
+                i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+            }
             int j = 0;
             for (Record rec : data) {
                 rec.setAttribute(Constants.ATTR_NAME, (i + (j / n)) + "" + alphabet[j % n]);
@@ -975,17 +1100,17 @@ public class CreateStructureView
                 if (text.charAt(0) == '[') {
                     text = text.substring(1, text.lastIndexOf(']'));
                 }
-                while (!Character.isDigit(text.charAt(text.length() - 1))) {
+                while (!"".equals(text) && !Character.isDigit(text.charAt(text.length() - 1))) {
                     text = text.substring(0, text.length() - 1);
                 }
                 if (!"".equals(text)) {
                     return Integer.parseInt(text);
                 }
             } catch (NumberFormatException nfe) {
-                return 1;
+                return Integer.MIN_VALUE;
             }
         }
-        return 1;
+        return Integer.MIN_VALUE;
     }
 
     private void editPageTitle() {
