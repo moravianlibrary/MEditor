@@ -269,7 +269,7 @@ public class FindMetadataPresenter
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
         results.clear();
-        sysno = request.getParameter(Constants.URL_PARAM_PATH, null);
+        sysno = request.getParameter(Constants.URL_PARAM_SYSNO, null);
         inputPath = request.getParameter(Constants.URL_PARAM_PATH, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(sysno);

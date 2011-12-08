@@ -701,7 +701,7 @@ public class CreateStructureView
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
                     if (i == Integer.MIN_VALUE) {
-                        i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                        i = tileGrid.getRecordIndex(data[0]) + 1;
                     }
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME, i++);
@@ -719,7 +719,7 @@ public class CreateStructureView
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
                     if (i == Integer.MIN_VALUE) {
-                        i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                        i = tileGrid.getRecordIndex(data[0]) + 1;
                     }
                     if (i <= 0) {
                         SC.say(lang.pageNumberGreater());
@@ -741,7 +741,7 @@ public class CreateStructureView
                     String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
                     int i = getPageNumberFromText(startingNumber);
                     if (i == Integer.MIN_VALUE) {
-                        i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                        i = tileGrid.getRecordIndex(data[0]) + 1;
                     }
                     if (i <= 0) {
                         SC.say(lang.pageNumberGreater());
@@ -817,7 +817,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                SC.askforValue("move on", lang.enterNumber(), new ValueCallback() {
+                SC.askforValue(lang.shiftTo(), lang.enterNumber(), new ValueCallback() {
 
                     @Override
                     public void execute(String value) {
@@ -937,7 +937,6 @@ public class CreateStructureView
             }
 
             Map<Integer, Record> bufferedRecords = new HashMap<Integer, Record>();
-
             if (moveOver < 0) {
                 int index = selLength - 1;
                 int lastIndex = tileGrid.getRecordList().indexOf(selectedRecords[selLength - 1]);
@@ -945,13 +944,21 @@ public class CreateStructureView
 
                     if (!(index < 0) && allRecords[i].equals(selectedRecords[index])) {
 
+                        String startingNumber = allRecords[i].getAttributeAsString(Constants.ATTR_NAME);
+                        int stringNumber = getPageNumberFromText(startingNumber);
+                        if (stringNumber == Integer.MIN_VALUE) {
+                            stringNumber = tileGrid.getRecordIndex(allRecords[i]) + 1;
+                        }
+
                         int newPosition = 0;
                         if (i - (index - moveOver) < 0) {
                             newPosition = index;
                         } else {
                             newPosition = i + moveOver;
                         }
-                        allRecords[i].setAttribute(Constants.ATTR_NAME, i + moveOver + 1);
+                        allRecords[i].setAttribute(Constants.ATTR_NAME,
+                                                   (stringNumber - (index - moveOver) < 1) ? (index + 1)
+                                                           : (stringNumber + moveOver + 1));
                         bufferedRecords.put(newPosition, allRecords[i]);
                         allRecords[i] = null;
                         index--;
@@ -979,11 +986,7 @@ public class CreateStructureView
                     if (!(index + 1 > selLength) && allRecords[i].equals(selectedRecords[index])) {
 
                         int newPosition = 0;
-                        if (i + moveOver + (selLength - index) > allLength) {
-                            newPosition = allLength - (selLength - index);
-                        } else {
-                            newPosition = i + moveOver;
-                        }
+                        newPosition = i + moveOver;
                         allRecords[i].setAttribute(Constants.ATTR_NAME, i + moveOver + 1);
                         bufferedRecords.put(newPosition, allRecords[i]);
                         allRecords[i] = null;
@@ -991,15 +994,20 @@ public class CreateStructureView
                     }
 
                     if (!(i < allLength) || allRecords[i] != null) {
-                        while (bufferedRecords.containsKey(lastIndex)) {
-                            allRecords[lastIndex] = bufferedRecords.remove(lastIndex);
+                        int toFind = (i < allLength) ? lastIndex : i;
+                        while (bufferedRecords.containsKey(toFind)) {
+                            allRecords[lastIndex] = bufferedRecords.remove(toFind);
                             lastIndex++;
                         }
-                        if (i != lastIndex && (i < allLength)) {
-                            allRecords[i].setAttribute(Constants.ATTR_NAME, lastIndex + 1);
-                            allRecords[lastIndex] = allRecords[i];
+                        if (i != lastIndex) {
+                            if (i < allLength) {
+                                allRecords[i].setAttribute(Constants.ATTR_NAME, lastIndex + 1);
+                                allRecords[lastIndex] = allRecords[i];
+                                lastIndex++;
+                            }
+                        } else {
+                            lastIndex++;
                         }
-                        lastIndex++;
                     }
                 }
             }
@@ -1021,7 +1029,7 @@ public class CreateStructureView
             String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
             int i = getPageNumberFromText(startingNumber);
             if (i == Integer.MIN_VALUE) {
-                i = tileGrid.getRecordList().indexOf(data[0]) + 1;
+                i = tileGrid.getRecordIndex(data[0]) + 1;
             }
             int j = 0;
             for (Record rec : data) {

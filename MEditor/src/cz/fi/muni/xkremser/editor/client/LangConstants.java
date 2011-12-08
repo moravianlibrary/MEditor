@@ -3346,13 +3346,22 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String shiftLeft();
 
   /**
-   * Translated "Posunout to the Right".
+   * Translated "Shift to the Right".
    * 
-   * @return translated "Posunout to the Right"
+   * @return translated "Shift to the Right"
    */
-  @DefaultStringValue("Posunout to the Right")
+  @DefaultStringValue("Shift to the Right")
   @Key("shiftRight")
   String shiftRight();
+
+  /**
+   * Translated "Shift to the number".
+   * 
+   * @return translated "Shift to the number"
+   */
+  @DefaultStringValue("Shift to the number")
+  @Key("shiftTo")
+  String shiftTo();
 
   /**
    * Translated "Show".

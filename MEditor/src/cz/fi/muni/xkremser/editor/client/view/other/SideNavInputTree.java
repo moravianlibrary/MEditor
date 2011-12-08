@@ -100,13 +100,13 @@ public class SideNavInputTree
                 ListGridRecord record = event.getRecord();
                 String path = record.getAttribute(Constants.ATTR_ID);
                 if (path != null && path.length() > 1 && path.substring(1).contains("/")) {
-                    String model = path.substring(1, path.substring(1).indexOf("/") + 1);
+                    //                    String model = path.substring(1, path.substring(1).indexOf("/") + 1);
                     String id = path.substring(path.substring(1).indexOf("/") + 2);
                     if (id.contains("/")) {
                         id = id.substring(0, id.indexOf("/"));
                     }
 
-                    editMenu.setEmptyMessage(model + "/" + id);
+                    editMenu.setEmptyMessage(path.substring(1, path.length()));
                     editMenu.showContextMenu();
                 } else {
                     showMenu.showContextMenu();
