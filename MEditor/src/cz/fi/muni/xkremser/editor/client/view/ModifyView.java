@@ -1367,8 +1367,8 @@ public class ModifyView
 
         universalWindow.addItem(editorUrlForm);
         universalWindow.addItem(kramUrlForm);
-        universalWindow.show();
         universalWindow.centerInPage();
+        universalWindow.show();
         universalWindow.focus();
     }
 

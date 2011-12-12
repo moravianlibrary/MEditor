@@ -323,9 +323,8 @@ public class RemoveDigitalObjectHandler
             boolean successful = false;
             while (!successful && attempt++ < 3) {
                 successful =
-                        CreateObjectUtils.ingest(removed.getFoxml().getFoxml(),
-                                                 removed.getFoxml().getLabel(),
-                                                 removed.getUuid());
+                        CreateObjectUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
+                                .getLabel(), removed.getUuid());
             }
             if (!successful) {
 

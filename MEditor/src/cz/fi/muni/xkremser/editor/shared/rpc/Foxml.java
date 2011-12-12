@@ -42,9 +42,27 @@ public class Foxml
     private String label;
     private String identifier;
     private String foxml;
+    private String noCodedfoxml;
 
     public String getFoxml() {
         return foxml;
+    }
+
+    /**
+     * @return the noCodedfoxml
+     */
+
+    public String getNoCodedfoxml() {
+        return noCodedfoxml;
+    }
+
+    /**
+     * @param noCodedfoxml
+     *        the noCodedfoxml to set
+     */
+
+    public void setNoCodedfoxml(String noCodedfoxml) {
+        this.noCodedfoxml = noCodedfoxml;
     }
 
     public void setFoxml(String foxml) {

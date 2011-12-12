@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Timer;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -249,16 +250,23 @@ public class RemoveDigitalObjectWindow
                 public void onClick(ClickEvent event) {
                     mw.setLoadingIcon("loadingAnimation.gif");
                     mw.show(true);
-                    removeMember(img);
-                    setVertical(false);
-                    for (DigitalObjectRelationships digObj : digObjRelList) {
-                        Layout createdRelLayout =
-                                createRelLayout(digObj, 2 + digObjRelList.indexOf(digObj), children);
-                        createdRelLayout.setExtraSpace(5);
-                        addMember(createdRelLayout);
-                    }
-                    customizeWindow();
-                    mw.hide();
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+                            removeMember(img);
+                            setVertical(false);
+                            for (DigitalObjectRelationships digObj : digObjRelList) {
+                                Layout createdRelLayout =
+                                        createRelLayout(digObj, 2 + digObjRelList.indexOf(digObj), children);
+                                createdRelLayout.setExtraSpace(5);
+                                addMember(createdRelLayout);
+                            }
+                            customizeWindow();
+                            mw.hide();
+                        }
+                    };
+                    timer.schedule(25);
                 }
             });
         }
@@ -548,6 +556,7 @@ public class RemoveDigitalObjectWindow
         removeWindow = null;
     }
 
+    @SuppressWarnings("static-access")
     private RemoveDigitalObjectWindow(final String uuid,
                                       final LangConstants lang,
                                       final DispatchAsync dispatcher,
@@ -581,9 +590,16 @@ public class RemoveDigitalObjectWindow
 
             @Override
             public void onClick(ClickEvent event) {
-                callServer();
                 mw.setLoadingIcon("loadingAnimation.gif");
                 mw.show(true);
+                Timer timer = new Timer() {
+
+                    @Override
+                    public void run() {
+                        callServer();
+                    }
+                };
+                timer.schedule(25);
             }
         });
 
