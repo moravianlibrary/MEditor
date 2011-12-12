@@ -1375,6 +1375,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String enterPID();
 
   /**
+   * Translated "Please enter the position number you want to shift the sites onto".
+   * 
+   * @return translated "Please enter the position number you want to shift the sites onto"
+   */
+  @DefaultStringValue("Please enter the position number you want to shift the sites onto")
+  @Key("enterShiftToNum")
+  String enterShiftToNum();
+
+  /**
    * Translated "Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>.".
    * 
    * @return translated "Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>."
