@@ -69,6 +69,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
@@ -375,12 +376,22 @@ public class DigitalObjectMenuPresenter
      */
     @Override
     public void onRefresh() {
+        final ModalWindow mw = new ModalWindow(getView().getInputTree());
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
         dispatcher.execute(new ScanInputQueueAction(null, true),
                            new DispatchCallback<ScanInputQueueResult>() {
 
                                @Override
                                public void callback(ScanInputQueueResult result) {
+                                   mw.hide();
                                    getView().getInputTree().refreshTree();
+                               }
+
+                               @Override
+                               public void callbackError(final Throwable t) {
+                                   mw.hide();
+                                   super.callbackError(t);
                                }
                            });
     }
@@ -459,7 +470,8 @@ public class DigitalObjectMenuPresenter
                 }
             } else if (code == Constants.CODE_KEY_ENTER) {
                 if (getView().getRecentlyModifiedGrid().getSelectedRecords().length > 0 && !isRefByFocused) {
-                    ListGridRecord[] listGridRecords = getView().getRecentlyModifiedGrid().getSelectedRecords();
+                    ListGridRecord[] listGridRecords =
+                            getView().getRecentlyModifiedGrid().getSelectedRecords();
                     revealItem(listGridRecords[0].getAttribute(Constants.ATTR_UUID));
                 } else if (getView().getRelatedGrid().getSelectedRecords().length > 0 && isRefByFocused) {
                     ListGridRecord[] listGridRecords = getView().getRelatedGrid().getSelectedRecords();
