@@ -57,4 +57,13 @@ public interface InputQueueItemDAO {
      */
     ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException;
 
+    /**
+     * Updates the info about a possible ingest
+     * 
+     * @param ingested
+     *        the info about a possible ingest
+     * @param path
+     *        the path to the (non)ingested images
+     */
+    void updateIngestInfo(boolean ingested, String path) throws DatabaseException;
 }

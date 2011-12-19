@@ -178,6 +178,9 @@ public class Constants {
     /** The Constant ATTR_BARCODE. */
     public static final String ATTR_BARCODE = "barcode";
 
+    /** The Constant ATTR_INGEST_INFO. */
+    public static final String ATTR_INGEST_INFO = "ingestInfo";
+
     /** The Constant DIR_MAX_DEPTH. */
     public static final int DIR_MAX_DEPTH = 5;
 
@@ -514,4 +517,16 @@ public class Constants {
             return conflictCode;
         }
     }
+
+    /** The name of the file obtaining the info of ingests */
+    public static final String INGEST_INFO_FILE_NAME = "ingestInfo.xml";
+
+    /** The name of the root element from the ingestInfo file */
+    public static final String NAME_ROOT_INGEST_ELEMENT = "ingestInfo";
+
+    /**
+     * The name of the element from the ingestInfo file containing info about
+     * individual ingestInfo
+     */
+    public static final String NAME_INGEST_ELEMENT = "ingest";
 }

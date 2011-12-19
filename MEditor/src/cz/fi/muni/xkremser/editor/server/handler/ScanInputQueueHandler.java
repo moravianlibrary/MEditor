@@ -29,11 +29,17 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
@@ -45,6 +51,11 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import org.xml.sax.SAXException;
+
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
@@ -52,6 +63,7 @@ import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
@@ -190,8 +202,9 @@ public class ScanInputQueueHandler
             if (!test.exists()) {
                 test.mkdir(); // create if not exists
             }
-            listTopLvl.add(new InputQueueItem(File.separator + types[i], types[i]));
-            list.add(new InputQueueItem(File.separator + types[i], types[i]));
+            InputQueueItem topLvl = new InputQueueItem(File.separator + types[i], types[i], false);
+            listTopLvl.add(topLvl);
+            list.add(topLvl);
             list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
         }
         inputQueueDAO.updateItems(list);
@@ -211,10 +224,9 @@ public class ScanInputQueueHandler
      * @return the list
      */
     private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
-        return scanDirectoryStructure(pathPrefix,
-                                      relativePath,
-                                      new ArrayList<InputQueueItem>(),
-                                      Constants.DIR_MAX_DEPTH);
+        ArrayList<InputQueueItem> inputQueueList = new ArrayList<InputQueueItem>();
+        scanDirectoryStructure(pathPrefix, relativePath, inputQueueList, Constants.DIR_MAX_DEPTH);
+        return inputQueueList;
     }
 
     /**
@@ -230,11 +242,11 @@ public class ScanInputQueueHandler
      *        the level
      * @return the list
      */
-    private List<InputQueueItem> scanDirectoryStructure(String pathPrefix,
-                                                        String relativePath,
-                                                        List<InputQueueItem> list,
-                                                        int level) {
-        if (level == 0) return list;
+    private boolean scanDirectoryStructure(String pathPrefix,
+                                           String relativePath,
+                                           final List<InputQueueItem> list,
+                                           int level) {
+        if (level == 0) return false;
         File path = new File(pathPrefix + relativePath);
         FileFilter filter = new FileFilter() {
 
@@ -245,12 +257,47 @@ public class ScanInputQueueHandler
 
         };
         File[] dirs = path.listFiles(filter);
+        boolean hasBeenIngested = dirs.length > 0;
         for (int i = 0; i < dirs.length; i++) {
             String rltvpth = relativePath + File.separator + dirs[i].getName();
-            list.add(new InputQueueItem(rltvpth, dirs[i].getName()));
-            scanDirectoryStructure(pathPrefix, rltvpth, list, level - 1);
+
+            boolean lowerLevelIngested = scanDirectoryStructure(pathPrefix, rltvpth, list, level - 1);
+            list.add(new InputQueueItem(rltvpth, dirs[i].getName(), hasBeenIngested(rltvpth)
+                    || lowerLevelIngested));
+
+            hasBeenIngested =
+                    list.get(i > 0 ? list.size() - 2 : list.size() - 1).getIngestInfo()
+                            && list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
         }
-        return list;
+        return hasBeenIngested;
+    }
+
+    private boolean hasBeenIngested(String path) {
+        File ingestInfoFile =
+                new File(configuration.getScanInputQueuePath() + path + "/" + Constants.INGEST_INFO_FILE_NAME);
+        boolean fileExists = ingestInfoFile.exists();
+        Element element = null;
+        if (fileExists) {
+            try {
+                FileInputStream fileStream = new FileInputStream(ingestInfoFile);
+                Document doc = XMLUtils.parseDocument(fileStream);
+                element =
+                        XMLUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]//"
+                                + Constants.NAME_INGEST_ELEMENT);
+                fileStream.close();
+            } catch (FileNotFoundException e) {
+                fileExists = false;
+            } catch (SAXException e) {
+                fileExists = false;
+            } catch (IOException e) {
+                fileExists = false;
+            } catch (ParserConfigurationException e) {
+                fileExists = false;
+            } catch (XPathExpressionException e) {
+                fileExists = false;
+            }
+        }
+        return fileExists && element != null;
     }
 
     /*

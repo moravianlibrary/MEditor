@@ -38,6 +38,9 @@ import java.util.Stack;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -190,4 +193,14 @@ public class XMLUtils {
         return null;
     }
 
+    public static Element getElement(Document foxmlDocument, String xPath) throws XPathExpressionException {
+        XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(xPath);
+
+        NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
+        Element parentOfStream = null;
+        if (nodesOfStream.getLength() != 0) {
+            parentOfStream = (Element) nodesOfStream.item(0);
+        }
+        return parentOfStream;
+    }
 }

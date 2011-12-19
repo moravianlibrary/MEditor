@@ -702,10 +702,11 @@ public class FedoraUtils {
                 String lastStreamXPath =
                         "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
                 int versionNumber =
-                        getVersionNumber(getElement(foxmlDocument, lastStreamXPath).getAttribute("ID"));
+                        getVersionNumber(XMLUtils.getElement(foxmlDocument, lastStreamXPath)
+                                .getAttribute("ID"));
 
                 String streamXPath = "//foxml:datastream[@ID=\'" + streamToModify + "\']";
-                Element parentOfStream = getElement(foxmlDocument, streamXPath);
+                Element parentOfStream = XMLUtils.getElement(foxmlDocument, streamXPath);
 
                 Element versionElement = foxmlDocument.createElement("foxml:datastreamVersion");
 
@@ -764,17 +765,6 @@ public class FedoraUtils {
         }
     }
 
-    private static Element getElement(Document foxmlDocument, String xPath) throws XPathExpressionException {
-        XPathExpression all = makeNSAwareXpath().compile(xPath);
-
-        NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
-        Element parentOfStream = null;
-        if (nodesOfStream.getLength() != 0) {
-            parentOfStream = (Element) nodesOfStream.item(0);
-        }
-        return parentOfStream;
-    }
-
     private static void removeNextToLastVersion(Document foxmlDocument, String streamToModify) {
 
         String nextToLastStreamXPath =
@@ -785,9 +775,8 @@ public class FedoraUtils {
 
         try {
 
-            removeElements(getElement(foxmlDocument, streamXPath),
-                           foxmlDocument,
-                           makeNSAwareXpath().compile(nextToLastStreamXPath));
+            removeElements(XMLUtils.getElement(foxmlDocument, streamXPath), foxmlDocument, makeNSAwareXpath()
+                    .compile(nextToLastStreamXPath));
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }
@@ -802,7 +791,7 @@ public class FedoraUtils {
         String propertyLabelXPath = "//foxml:objectProperties/foxml:property[@NAME=\'" + LABEL_VALUE + "\']";
 
         try {
-            getElement(foxmlDocument, propertyLabelXPath).setAttribute("VALUE", detail.getLabel());
+            XMLUtils.getElement(foxmlDocument, propertyLabelXPath).setAttribute("VALUE", detail.getLabel());
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }

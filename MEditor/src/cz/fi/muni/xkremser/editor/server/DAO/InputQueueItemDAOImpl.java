@@ -61,16 +61,19 @@ public class InputQueueItemDAOImpl
 
     /** The Constant INSERT_ITEM_STATEMENT. */
     public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_NAME
-            + " (path, barcode) VALUES ((?),(?))";
+            + " (path, barcode, ingested) VALUES ((?),(?),(?))";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT. */
-    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, barcode FROM "
+    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, barcode, ingested FROM "
             + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('" + File.separator
             + "' IN trim(leading ((?)) FROM path)) = 0";
 
     /** The Constant FIND_ITEMS_BY_PATH_STATEMENT. */
     public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT
             + " AND path LIKE ((?))";
+
+    public static final String UPDATE_INGEST_INFO = "UPDATE " + Constants.TABLE_INPUT_QUEUE_NAME
+            + " SET ingested = (?) WHERE path = (?)";
 
     private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
 
@@ -135,6 +138,7 @@ public class InputQueueItemDAOImpl
             itemStmt = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
             itemStmt.setString(1, item.getPath());
             itemStmt.setString(2, item.getBarcode());
+            itemStmt.setBoolean(3, item.getIngestInfo());
         } catch (SQLException ex) {
             LOGGER.error("Could not get insert item statement " + itemStmt, ex);
         }
@@ -167,7 +171,8 @@ public class InputQueueItemDAOImpl
 
             ResultSet rs = findSt.executeQuery();
             while (rs.next()) {
-                retList.add(new InputQueueItem(rs.getString("path"), rs.getString("barcode")));
+                retList.add(new InputQueueItem(rs.getString("path"), rs.getString("barcode"), rs
+                        .getBoolean("ingested")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + findSt, e);
@@ -175,5 +180,38 @@ public class InputQueueItemDAOImpl
             closeConnection();
         }
         return retList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void updateIngestInfo(boolean ingested, String path) throws DatabaseException {
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+        try {
+
+            PreparedStatement updateSt = getConnection().prepareStatement(UPDATE_INGEST_INFO);
+            updateSt.setBoolean(1, ingested);
+            updateSt.setString(2, path);
+            int updated = updateSt.executeUpdate();
+            getConnection().commit();
+
+            if (updated == 1) {
+                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
+            } else {
+                LOGGER.error("DB has been updated, with unexpected count of updated lines: " + updated
+                        + ". Queries: \"" + updateSt + "\".");
+            }
+            // TX end
+        } catch (SQLException e) {
+            LOGGER.error(e);
+        } finally {
+            closeConnection();
+        }
     }
 }

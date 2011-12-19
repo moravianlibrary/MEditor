@@ -24,7 +24,24 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import java.text.SimpleDateFormat;
+
 import javax.servlet.http.HttpSession;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
@@ -35,10 +52,21 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import org.xml.sax.SAXException;
+
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
+import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
+import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -57,6 +85,20 @@ public class InsertNewDigitalObjectHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    @Inject
+    private InputQueueItemDAO inputQueueItemDAO;
+
+    /** The user DAO **/
+    @Inject
+    private UserDAO userDAO;
+
+    @Inject
+    private EditorConfiguration config;
+
+    public InsertNewDigitalObjectHandler() {
+        super();
+    }
 
     /**
      * {@inheritDoc}
@@ -77,11 +119,116 @@ public class InsertNewDigitalObjectHandler
         try {
             ingestSuccess = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
             reindexSuccess = ServerUtils.reindex(Constants.FEDORA_UUID_PREFIX + object.getUuid());
+
+            if (ingestSuccess) {
+                String name;
+                try {
+                    name =
+                            userDAO.getName(String.valueOf(String.valueOf(ses
+                                    .getAttribute(HttpCookies.SESSION_ID_KEY))), true);
+                } catch (DatabaseException e) {
+                    throw new ActionException(e);
+                }
+                try {
+                    inputQueueItemDAO.updateIngestInfo(true, action.getInputPath());
+                } catch (DatabaseException e) {
+                    throw new ActionException(e);
+                }
+                createInfoXml(name, object.getUuid(), config.getScanInputQueuePath() + action.getInputPath());
+
+            }
+
         } catch (CreateObjectException e) {
             throw new ActionException(e.getMessage());
         }
         return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, Constants.FEDORA_UUID_PREFIX
                 + object.getUuid());
+
+    }
+
+    /**
+     * @param name
+     * @param uuid
+     * @param path
+     */
+
+    private void createInfoXml(String name, String uuid, String path) {
+
+        try {
+            File ingestInfoFile = new File(path + "/" + Constants.INGEST_INFO_FILE_NAME);
+            Document doc = null;
+            Element rootElement = null;
+            boolean fileExists = ingestInfoFile.exists();
+            final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+            if (fileExists) {
+                try {
+                    FileInputStream fileStream = new FileInputStream(ingestInfoFile);
+                    doc = XMLUtils.parseDocument(fileStream);
+                    rootElement = XMLUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]");
+                    fileStream.close();
+                } catch (FileNotFoundException e) {
+                    fileExists = false;
+                } catch (SAXException e) {
+                    fileExists = false;
+                } catch (IOException e) {
+                    fileExists = false;
+                }
+            }
+            if (!fileExists) {
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                doc = docBuilder.newDocument();
+                rootElement = null;
+            }
+            int number = 0;
+            if (rootElement == null) {
+                rootElement = doc.createElement(Constants.NAME_ROOT_INGEST_ELEMENT);
+                doc.appendChild(rootElement);
+            } else {
+                number =
+                        Integer.parseInt(XMLUtils.getElement(doc,
+                                                             "//" + Constants.NAME_ROOT_INGEST_ELEMENT
+                                                                     + "[1]//"
+                                                                     + Constants.NAME_INGEST_ELEMENT
+                                                                     + "[position()=last()]")
+                                .getAttribute("number"));
+            }
+
+            // ingest elements
+            Element ingest = doc.createElement("ingest");
+            ingest.setAttribute("number", String.valueOf(++number));
+            rootElement.appendChild(ingest);
+
+            // uuid element
+            Element uuidEl = doc.createElement("uuid");
+            uuidEl.appendChild(doc.createTextNode(uuid));
+            ingest.appendChild(uuidEl);
+
+            // name element
+            Element nameEl = doc.createElement("name");
+            nameEl.appendChild(doc.createTextNode(name));
+            ingest.appendChild(nameEl);
+
+            // time element
+            Element time = doc.createElement("time");
+            time.appendChild(doc.createTextNode(FORMATTER.format(new java.util.Date())));
+            ingest.appendChild(time);
+
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(ingestInfoFile);
+            transformer.transform(source, result);
+
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e1) {
+            e1.printStackTrace();
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

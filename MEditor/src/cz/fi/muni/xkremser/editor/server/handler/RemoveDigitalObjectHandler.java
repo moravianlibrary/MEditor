@@ -191,12 +191,13 @@ public class RemoveDigitalObjectHandler
             throws ActionException {
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(uuid);
-
-        for (ArrayList<String> child : children) {
-            if (!uuidNotToRemove.contains(child.get(0)) && getDoModelHandler.getModel(uuid) != null) {
-                String returnedMessage = remove(child.get(0), context, uuidNotToRemove);
-                if (!"".equals(returnedMessage)) {
-                    return returnedMessage;
+        if (children != null) {
+            for (ArrayList<String> child : children) {
+                if (!uuidNotToRemove.contains(child.get(0)) && getDoModelHandler.getModel(uuid) != null) {
+                    String returnedMessage = remove(child.get(0), context, uuidNotToRemove);
+                    if (!"".equals(returnedMessage)) {
+                        return returnedMessage;
+                    }
                 }
             }
         }
@@ -225,46 +226,49 @@ public class RemoveDigitalObjectHandler
         boolean successful = true;
 
         /** ----- For Fedora 3.4 and higher ---- */
-        for (ArrayList<String> parentRel : parents) {
-            try {
-                url =
-                        configuration.getFedoraHost()
-                                + "/objects/"
-                                + parentRel.get(0)
-                                + "/relationships?subject="
-                                + Constants.FEDORA_INFO_PREFIX
-                                + parentRel.get(0)
-                                + "&predicate="
-                                + java.net.URLEncoder
-                                        .encode(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI, "UTF-8")
-                                + parentRel.get(1) + "&object=" + Constants.FEDORA_INFO_PREFIX + uuid
-                                + "&isLiteral=false" + "&datatype=null";
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
+        if (parents != null) {
+            for (ArrayList<String> parentRel : parents) {
+                try {
+                    url =
+                            configuration.getFedoraHost()
+                                    + "/objects/"
+                                    + parentRel.get(0)
+                                    + "/relationships?subject="
+                                    + Constants.FEDORA_INFO_PREFIX
+                                    + parentRel.get(0)
+                                    + "&predicate="
+                                    + java.net.URLEncoder
+                                            .encode(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI,
+                                                    "UTF-8") + parentRel.get(1) + "&object="
+                                    + Constants.FEDORA_INFO_PREFIX + uuid + "&isLiteral=false"
+                                    + "&datatype=null";
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
 
-            int attempt = 0;
-            successful = false;
-            while (!successful && attempt++ < 3) {
-                LOGGER.debug("Processing action: RemoveDigitalObjectAction the " + attempt
-                        + ". attempt of removing relationship with subject: " + parentRel.get(0)
-                        + " predicate: " + parentRel.get(1) + " and object: " + uuid);
-                String result = RESTHelper.deleteWithStringResult(url, usr, pass, true);
-                successful = result.contains("true");
-            }
+                int attempt = 0;
+                successful = false;
+                while (!successful && attempt++ < 3) {
+                    LOGGER.debug("Processing action: RemoveDigitalObjectAction the " + attempt
+                            + ". attempt of removing relationship with subject: " + parentRel.get(0)
+                            + " predicate: " + parentRel.get(1) + " and object: " + uuid);
+                    String result = RESTHelper.deleteWithStringResult(url, usr, pass, true);
+                    successful = result.contains("true");
+                }
 
-            if (successful) {
-                removedRelationships.add(parentRel);
-            } else {
-                LOGGER.error(message
-                        .append("Processing action RemoveDigitalObjectAction failed during removing relationship with subject: "
-                                + parentRel.get(0)
-                                + " predicate: "
-                                + parentRel.get(1)
-                                + " and object: "
-                                + uuid).toString());
-                message.append("<br>");
-                break;
+                if (successful) {
+                    removedRelationships.add(parentRel);
+                } else {
+                    LOGGER.error(message
+                            .append("Processing action RemoveDigitalObjectAction failed during removing relationship with subject: "
+                                    + parentRel.get(0)
+                                    + " predicate: "
+                                    + parentRel.get(1)
+                                    + " and object: "
+                                    + uuid).toString());
+                    message.append("<br>");
+                    break;
+                }
             }
         }
         /** --------------------------------------------------- */

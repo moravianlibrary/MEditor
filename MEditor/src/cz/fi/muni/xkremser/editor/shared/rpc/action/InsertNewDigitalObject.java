@@ -44,6 +44,10 @@ public class InsertNewDigitalObject
     @In(1)
     private NewDigitalObject object;
 
+    /** The path to the directory with original images */
+    @In(2)
+    private String inputPath;
+
     @Out(1)
     private boolean ingestSuccess;
 

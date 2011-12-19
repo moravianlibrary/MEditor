@@ -671,7 +671,7 @@ public class CreateStructurePresenter
         if (object != null) {
             object.setSysno(sysno);
             System.out.println(ClientUtils.toStringTree(object));
-            dispatcher.execute(new InsertNewDigitalObjectAction(object),
+            dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
                                    @Override

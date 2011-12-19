@@ -99,22 +99,25 @@ public class GetRelationshipsHandler
         //        System.err.println(digObjRel.getUuid());
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(digObjRel.getUuid());
-        for (ArrayList<String> child : children) {
-            if (uuidToOmit == null || !uuidToOmit.equals(child.get(0))) {
-                if (uuidList.contains(child.get(0))) {
-                    sharedPages.add(child.get(0));
-                }
+        if (children != null) {
+            for (ArrayList<String> child : children) {
+                if (uuidToOmit == null || !uuidToOmit.equals(child.get(0))) {
+                    if (uuidList.contains(child.get(0))) {
+                        sharedPages.add(child.get(0));
+                    }
 
-                String predicate = getOnlyPredicate(child.get(1));
-                DigitalObjectRelationships newDigObjRel =
-                        getChildren(new DigitalObjectRelationships(child.get(0)), uuidToOmit);
+                    String predicate = getOnlyPredicate(child.get(1));
+                    DigitalObjectRelationships newDigObjRel =
+                            getChildren(new DigitalObjectRelationships(child.get(0)), uuidToOmit);
 
-                if (digObjRel.getChildren().containsKey(predicate)) {
-                    digObjRel.getChildren().get(predicate).add(newDigObjRel);
-                } else {
-                    List<DigitalObjectRelationships> digObjList = new ArrayList<DigitalObjectRelationships>();
-                    digObjList.add(newDigObjRel);
-                    digObjRel.getChildren().put(predicate, digObjList);
+                    if (digObjRel.getChildren().containsKey(predicate)) {
+                        digObjRel.getChildren().get(predicate).add(newDigObjRel);
+                    } else {
+                        List<DigitalObjectRelationships> digObjList =
+                                new ArrayList<DigitalObjectRelationships>();
+                        digObjList.add(newDigObjRel);
+                        digObjRel.getChildren().put(predicate, digObjList);
+                    }
                 }
             }
         }
@@ -127,16 +130,17 @@ public class GetRelationshipsHandler
         List<String> parentsUuid = new ArrayList<String>();
 
         ArrayList<ArrayList<String>> related = FedoraUtils.getRelated(digObjRel.getUuid());
-
-        for (ArrayList<String> subject : related) {
-            parentsUuid.add(subject.get(0));
-            if (parentsMap.containsKey(subject.get(1))) {
-                parentsMap.get(subject.get(1)).add(new DigitalObjectRelationships(subject.get(0)));
-            } else {
-                List<DigitalObjectRelationships> newDigObjRelList =
-                        new ArrayList<DigitalObjectRelationships>();
-                newDigObjRelList.add(new DigitalObjectRelationships(subject.get(0)));
-                parentsMap.put(subject.get(1), newDigObjRelList);
+        if (related != null) {
+            for (ArrayList<String> subject : related) {
+                parentsUuid.add(subject.get(0));
+                if (parentsMap.containsKey(subject.get(1))) {
+                    parentsMap.get(subject.get(1)).add(new DigitalObjectRelationships(subject.get(0)));
+                } else {
+                    List<DigitalObjectRelationships> newDigObjRelList =
+                            new ArrayList<DigitalObjectRelationships>();
+                    newDigObjRelList.add(new DigitalObjectRelationships(subject.get(0)));
+                    parentsMap.put(subject.get(1), newDigObjRelList);
+                }
             }
         }
         digObjRel.setParents(parentsMap);

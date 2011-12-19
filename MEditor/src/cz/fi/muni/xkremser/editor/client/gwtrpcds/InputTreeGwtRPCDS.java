@@ -79,12 +79,16 @@ public class InputTreeGwtRPCDS
         addField(field);
         field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
         field.setRequired(true);
+        field.setHidden(true);
         addField(field);
         field = new DataSourceTextField(Constants.ATTR_BARCODE, "ID");
         field.setAttribute("width", "60%");
         field.setRequired(true);
         addField(field);
-
+        field = new DataSourceTextField(Constants.ATTR_INGEST_INFO, "ingestInfo");
+        field.setHidden(true);
+        field.setRequired(true);
+        addField(field);
     }
 
     /*
@@ -173,6 +177,7 @@ public class InputTreeGwtRPCDS
     private static void copyValues(InputQueueItem from, ListGridRecord to) {
         to.setAttribute(Constants.ATTR_ID, from.getPath());
         to.setAttribute(Constants.ATTR_BARCODE, from.getBarcode());
+        to.setAttribute(Constants.ATTR_INGEST_INFO, from.getIngestInfo());
     }
 
 }

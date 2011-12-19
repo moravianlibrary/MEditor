@@ -42,6 +42,9 @@ public class InputQueueItem
     /** The barcode. */
     private String barcode;
 
+    /** The ingest info */
+    private boolean ingestInfo = false;
+
     /**
      * Instantiates a new input queue item.
      */
@@ -60,10 +63,11 @@ public class InputQueueItem
      * @param name
      *        the name
      */
-    public InputQueueItem(String path, String barcode) {
+    public InputQueueItem(String path, String barcode, boolean ingestInfo) {
         super();
         this.path = path;
         this.barcode = barcode;
+        this.ingestInfo = ingestInfo;
     }
 
     /**
@@ -110,7 +114,24 @@ public class InputQueueItem
      */
     @Override
     public String toString() {
-        return "(" + this.path + ", " + this.barcode + ")";
+        return "(" + this.path + ", " + this.barcode + ", " + this.ingestInfo + ")";
+    }
+
+    /**
+     * @return the ingestInfo
+     */
+
+    public boolean getIngestInfo() {
+        return ingestInfo;
+    }
+
+    /**
+     * @param ingestInfo
+     *        the ingestInfo to set
+     */
+
+    public void setIngestInfo(boolean ingestInfo) {
+        this.ingestInfo = ingestInfo;
     }
 
 }

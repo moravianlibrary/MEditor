@@ -31,6 +31,7 @@ import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
+import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
@@ -51,6 +52,8 @@ public class SideNavInputTree
         extends TreeGrid {
 
     private final MenuItem createItem;
+    MenuItem ingestInfo = new MenuItem();
+    private static final String HTML_TICK_CODE = "<img src=\"images/silk/tick.png\">";
 
     /**
      * Instantiates a new side nav input tree.
@@ -85,11 +88,11 @@ public class SideNavInputTree
         showMenu.setItems(showItem);
 
         createItem = new MenuItem(lang.create(), "icons/16/structure_into.png");
+        ingestInfo = new MenuItem("Get ingest Info", "icons/16/export1.png");
 
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
         editMenu.setShadowDepth(10);
-        editMenu.setItems(createItem);
         setContextMenu(editMenu);
 
         addCellContextClickHandler(new CellContextClickHandler() {
@@ -105,6 +108,11 @@ public class SideNavInputTree
                     if (id.contains("/")) {
                         id = id.substring(0, id.indexOf("/"));
                     }
+//                    if (record.getAttributeAsBoolean(Constants.ATTR_INGEST_INFO)) {
+//                        editMenu.setItems(createItem, ingestInfo);
+//                    } else {
+                        editMenu.setItems(createItem);
+//                    }
 
                     editMenu.setEmptyMessage(path.substring(1, path.length()));
                     editMenu.showContextMenu();
@@ -126,6 +134,20 @@ public class SideNavInputTree
         field1.setCanFilter(true);
         field1.setName(Constants.ATTR_BARCODE);
         field1.setTitle("ID");
+        field1.setCellFormatter(new CellFormatter() {
+
+            @Override
+            public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+                boolean ingestInfo = record.getAttributeAsBoolean(Constants.ATTR_INGEST_INFO);
+                if (ingestInfo) {
+                    return record.getAttribute(Constants.ATTR_BARCODE) + HTML_TICK_CODE;
+
+                } else {
+                    return record.getAttribute(Constants.ATTR_BARCODE);
+                }
+            }
+        });
+
         setFields(field1);
         setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
     }
@@ -138,4 +160,7 @@ public class SideNavInputTree
         return createItem;
     }
 
+    public MenuItem getIngestInfoMenuItem() {
+        return ingestInfo;
+    }
 }
