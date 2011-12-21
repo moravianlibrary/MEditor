@@ -45,6 +45,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.HomePresenter;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -121,7 +122,7 @@ public class HomeView
         checkButton.setStylePrimaryName("checkButton");
 
         HTMLFlow html2 = new HTMLFlow();
-        html2.setContents("<h2>" + lang.openDigitalObject() + "</h2>");
+        html2.setContents(HtmlCode.title(lang.openDigitalObject(), 2));
         html2.setExtraSpace(30);
 
         DataSource dataSource = new DataSource();
@@ -133,7 +134,7 @@ public class HomeView
 
         uuidField = new TextItem();
         uuidField.setTitle("PID");
-        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
+        uuidField.setHint(HtmlCode.nobr(lang.withoutPrefix()));
         uuidField.setValidators(regExpValidator);
 
         form = new DynamicForm();

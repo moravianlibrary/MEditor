@@ -38,6 +38,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
 import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.DC;
@@ -109,8 +110,8 @@ public class DownloadFoxmlWindow
         buttonsLayout.setMembersMargin(3);
         buttonsLayout.setPadding(10);
 
-        HTMLFlow foxmlLabel = new HTMLFlow("<b>" + lang.downloadFoxml() + ":" + "</b>");
-        HTMLFlow streamsLabel = new HTMLFlow("<b>" + lang.downloadStream() + ":" + "</b>");
+        HTMLFlow foxmlLabel = new HTMLFlow(HtmlCode.bold(lang.downloadFoxml() + ":"));
+        HTMLFlow streamsLabel = new HTMLFlow(HtmlCode.bold(lang.downloadStream() + ":"));
         modalWindow = new ModalWindow(buttonsLayout);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);

@@ -106,6 +106,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorDragMoveHandler;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
@@ -1426,7 +1427,7 @@ public class ModifyView
 
         universalWindow = new UniversalWindow(160, 350, lang.publishName());
 
-        HTMLFlow label = new HTMLFlow("<h3>" + lang.areYouSure() + "</h3>");
+        HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
         label.setMargin(5);
         label.setExtraSpace(10);
         final DynamicForm form = new DynamicForm();

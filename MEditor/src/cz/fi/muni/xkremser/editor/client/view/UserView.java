@@ -47,6 +47,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.UserPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -161,7 +162,7 @@ public class UserView
         field.setRequired(true);
         source.addField(field);
         userRolesGrid.setDataSource(source);
-        HTMLFlow roles = new HTMLFlow("<b>" + lang.roles() + "</b>");
+        HTMLFlow roles = new HTMLFlow(HtmlCode.bold(lang.roles()));
         roles.setHeight(15);
         rolesLayout.addMember(roles);
         rolesLayout.addMember(userRolesGrid);
@@ -205,7 +206,7 @@ public class UserView
         field.setRequired(true);
         source2.addField(field);
         userIdentitiesGrid.setDataSource(source2);
-        HTMLFlow openIds = new HTMLFlow("<b>" + lang.openIds() + "</b>");
+        HTMLFlow openIds = new HTMLFlow(HtmlCode.bold(lang.openIds()));
         openIds.setHeight(15);
         identitiesLayout.addMember(openIds);
         identitiesLayout.addMember(userIdentitiesGrid);
@@ -224,7 +225,7 @@ public class UserView
         detailLayout.addMember(identitiesLayout);
 
         VLayout userLayout = new VLayout();
-        HTMLFlow users = new HTMLFlow("<b>" + lang.users() + "</b>");
+        HTMLFlow users = new HTMLFlow(HtmlCode.bold(lang.users()));
         users.setHeight(15);
         userLayout.addMember(users);
         userLayout.addMember(userGrid);
@@ -244,7 +245,7 @@ public class UserView
 
         VLayout requestsLayout = new VLayout();
         // requestsLayout.setMargin(10);
-        HTMLFlow requests = new HTMLFlow("<b>" + lang.requests() + "</b>");
+        HTMLFlow requests = new HTMLFlow(HtmlCode.bold(lang.requests()));
         requests.setHeight(15);
         requestsLayout.addMember(requests);
         requestsGrid = new ListGrid();

@@ -11,6 +11,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 public abstract class UuidWindow
         extends UniversalWindow {
@@ -35,7 +36,7 @@ public abstract class UuidWindow
         final IButton open = new IButton();
         uuidField = new TextItem();
         uuidField.setTitle("PID");
-        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
+        uuidField.setHint(HtmlCode.nobr(lang.withoutPrefix()));
         uuidField.setValidators(regExpValidator);
         uuidField.setWidth(250);
         uuidField.addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {

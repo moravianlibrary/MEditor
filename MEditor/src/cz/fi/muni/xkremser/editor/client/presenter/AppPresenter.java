@@ -55,6 +55,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
@@ -257,7 +258,7 @@ public class AppPresenter
 
                 @Override
                 public void callback(GetLoggedUserResult result) {
-                    getView().getUsername().setContents("<b>" + result.getName() + "</b>");
+                    getView().getUsername().setContents(HtmlCode.bold(result.getName()));
                     if (result.isEditUsers()) {
                         getView().getEditUsers().setContents(lang.userMgmt());
                         getView().getEditUsers().setCursor(Cursor.HAND);

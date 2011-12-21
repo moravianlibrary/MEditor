@@ -53,6 +53,7 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredItemGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
@@ -98,11 +99,11 @@ public class StoreWorkingCopyWindow
         final ListGrid storedFilesGrid;
         storedFilesGrid = new ListGrid();
         Label fileNameLabel = new Label();
-        fileNameLabel.setContents("<h3>" + lang.fileNameLabel() + ": </h3>");
+        fileNameLabel.setContents(HtmlCode.title(lang.fileNameLabel() + ": ", 3));
         fileNameLabel.setAutoHeight();
         fileNameLabel.setExtraSpace(8);
         Label storedLabel = new Label();
-        storedLabel.setContents("<h4>" + lang.storedFiles() + ": </h4>");
+        storedLabel.setContents(HtmlCode.title(lang.storedFiles() + ": ", 4));
         storedLabel.setAutoHeight();
         storedLabel.setExtraSpace(3);
 

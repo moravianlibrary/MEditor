@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.dispatcher.TryAgainCallbackError;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LockDigitalObjectAction;
@@ -78,7 +79,7 @@ public class LockDigitalObjectWindow
 
         final LockInfo lockInfo = ts.getLockInfo();
         this.lang = lang;
-        final Label descLabel = new Label("<b>" + lang.lockDescLabel() + "</b>");
+        final Label descLabel = new Label(HtmlCode.bold(lang.lockDescLabel()));
         descLabel.setAutoHeight();
         descLabel.setExtraSpace(5);
         final RichTextEditor textEditor = new RichTextEditor();

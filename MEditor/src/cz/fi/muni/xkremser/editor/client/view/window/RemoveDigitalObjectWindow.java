@@ -60,6 +60,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.CONFLICT;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectRelationships;
@@ -398,11 +399,11 @@ public class RemoveDigitalObjectWindow
                 setDefaultLayoutAlign(Alignment.CENTER);
             }
             if (children) {
-                addMember(new HTMLFlow("<U>" + relationshipName + "</U>"));
+                addMember(new HTMLFlow(HtmlCode.underline(relationshipName)));
                 addMember(arrowsLayout);
             } else {
                 addMember(arrowsLayout);
-                addMember(new HTMLFlow("<U>" + relationshipName + "</U>"));
+                addMember(new HTMLFlow(HtmlCode.underline(relationshipName)));
             }
 
             setEdgeSize(1);
@@ -425,7 +426,7 @@ public class RemoveDigitalObjectWindow
                 relConflits.addMember(new ParentConflictRelLayout(digObjRel));
             }
             addMember(relConflits);
-            addMember(new HTMLFlow("<U>" + "Conflict" + "</U>"));
+            addMember(new HTMLFlow(HtmlCode.underline("Conflict")));
             setEdgeSize(1);
             setShowEdges(true);
         }
@@ -572,8 +573,8 @@ public class RemoveDigitalObjectWindow
         setShowMaximizeButton(true);
 
         HTMLFlow removeWarning =
-                new HTMLFlow("<b>" + lang.deleteWarningWant() + ": " + uuid + " "
-                        + lang.deleteWarningExplore() + "</b>");
+                new HTMLFlow(HtmlCode.bold(lang.deleteWarningWant() + ": " + uuid + " "
+                        + lang.deleteWarningExplore()));
         removeWarning.setExtraSpace(5);
 
         Button explore = new Button();

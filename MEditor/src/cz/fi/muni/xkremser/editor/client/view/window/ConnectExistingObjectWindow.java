@@ -14,6 +14,7 @@ import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -60,7 +61,7 @@ public abstract class ConnectExistingObjectWindow
         final IButton check = new IButton();
         uuidField = new TextItem();
         uuidField.setTitle("PID");
-        uuidField.setHint("<nobr>" + lang.withoutPrefix() + "</nobr>");
+        uuidField.setHint(HtmlCode.nobr(lang.withoutPrefix()));
         uuidField.setValidators(regExpValidator);
         uuidField.setWidth(250);
         uuidField.addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {
@@ -126,7 +127,7 @@ public abstract class ConnectExistingObjectWindow
 
         HLayout buttons = new HLayout();
         buttons.setMembers(check, connect);
-        HTMLFlow header = new HTMLFlow("<b>" + lang.enterPID() + "</b>");
+        HTMLFlow header = new HTMLFlow(HtmlCode.bold(lang.enterPID()));
         header.setExtraSpace(10);
         addItem(header);
         addItem(availability);
@@ -165,7 +166,7 @@ public abstract class ConnectExistingObjectWindow
         availability.setContents(getStatus(ok, lang));
         connect.setDisabled(!ok);
         if (!ok) {
-            info.setContents("<i>" + lang.objectNotPresent() + "</i>");
+            info.setContents(HtmlCode.italic(lang.objectNotPresent()));
             compatibility.setContents(getCompatibility(false, lang));
         } else {
             info.setContents("");

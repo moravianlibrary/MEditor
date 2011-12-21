@@ -79,7 +79,7 @@ public class IngestInfoWindow
         Layout mainLayout = new VLayout();
 
         for (int i = 0; i < pid.size(); i++) {
-            HTMLFlow titleFlow = new HTMLFlow(HtmlCode.h4(lang.ingestNumber() + ": " + (i + 1)));
+            HTMLFlow titleFlow = new HTMLFlow(HtmlCode.title(lang.ingestNumber() + ": " + (i + 1), 4));
             mainLayout.addMember(titleFlow);
 
             final String pidString = pid.get(i);

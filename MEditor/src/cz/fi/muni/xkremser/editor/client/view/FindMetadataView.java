@@ -60,6 +60,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.Z3950ResultDS;
 import cz.fi.muni.xkremser.editor.client.presenter.FindMetadataPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc
@@ -107,7 +108,7 @@ public class FindMetadataView
         findButtonZ39.setColSpan(2);
 
         HTMLFlow html1 = new HTMLFlow();
-        html1.setContents("<h1>Metadata</h1>");
+        html1.setContents(HtmlCode.title("Metadata", 1));
         html1.setExtraSpace(15);
 
         findBy = new SelectItem();
@@ -133,7 +134,7 @@ public class FindMetadataView
 
             @Override
             public void onItemHover(ItemHoverEvent event) {
-                searchValueZ39.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
+                searchValueZ39.setPrompt(HtmlCode.nobr(lang.findHint()));
             }
         });
 
@@ -180,7 +181,7 @@ public class FindMetadataView
 
             @Override
             public void onItemHover(ItemHoverEvent event) {
-                searchValueOai.setPrompt("<nobr>" + lang.findHint() + "</nobr>");
+                searchValueOai.setPrompt(HtmlCode.nobr(lang.findHint()));
             }
         });
         form2.setFields(oaiUrl, oaiIdPrefix, oaiBase, searchValueOai, findButtonOai);

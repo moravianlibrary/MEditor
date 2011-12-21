@@ -42,13 +42,44 @@ public class HtmlCode {
     }
 
     /**
-     * Adds the HTML <code> "h4" <code> tags to the string
+     * Adds the HTML <code> "i" <code> tags to the string
      * 
      * @param string
-     * @return String with the HTML <code> "h4" <code> tags
+     * @return String with the HTML <code> "i" <code> tags
      */
-    public static String h4(String string) {
-        return "<h4>" + string + "</h4>";
+    public static String italic(String string) {
+        return "<i>" + string + "</i>";
     }
 
+    /**
+     * Adds the HTML <code> "u" <code> tags to the string
+     * 
+     * @param string
+     * @return String with the HTML <code> "u" <code> tags
+     */
+    public static String underline(String string) {
+        return "<u>" + string + "</u>";
+    }
+
+    /**
+     * Adds the HTML
+     * <code> "h1, h2, h3, ..." <code> tags to the string, where the number is titleLevel
+     * 
+     * @param string
+     * @param titleLevel
+     * @return String with the HTML <code> "h1, h2, h3, ..." <code> tags
+     */
+    public static String title(String string, int titleLevel) {
+        return "<h" + titleLevel + ">" + string + "</h" + titleLevel + ">";
+    }
+
+    /**
+     * Adds the HTML <code> "nobr" <code> tags to the string
+     * 
+     * @param string
+     * @return String with the HTML <code> "nobr" <code> tags
+     */
+    public static String nobr(String string) {
+        return "<nobr>" + string + "</nobr>";
+    }
 }

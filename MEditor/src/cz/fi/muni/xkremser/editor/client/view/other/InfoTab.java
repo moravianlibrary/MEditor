@@ -51,29 +51,27 @@ public abstract class InfoTab
             showLockInfoButton("".equals(lockOwner));
         }
 
-        HTMLFlow info = new HTMLFlow("<h2>" + lang.doInfo() + "</h2>");
+        HTMLFlow info = new HTMLFlow(HtmlCode.title(lang.doInfo(), 2));
         info.setExtraSpace(25);
         HTMLFlow pid =
-                new HTMLFlow("<b>PID:</b> "
+                new HTMLFlow(HtmlCode.bold("PID: ")
                         + (dc.getIdentifier() != null && dc.getIdentifier().size() > 0 ? dc.getIdentifier()
                                 .get(0) : lang.noTitle()));
         pid.setExtraSpace(5);
         HTMLFlow tit =
-                new HTMLFlow("<b>"
-                        + lang.name()
-                        + ":</b> "
+                new HTMLFlow(HtmlCode.bold(lang.name() + ": ")
                         + (dc.getTitle() != null && dc.getTitle().size() > 0 ? dc.getTitle().get(0)
                                 : lang.noTitle()));
         tit.setExtraSpace(5);
-        HTMLFlow typ = new HTMLFlow("<b>" + lang.dcType() + ":</b> " + type);
+        HTMLFlow typ = new HTMLFlow(HtmlCode.bold(lang.dcType() + ": ") + type);
         typ.setExtraSpace(5);
         boolean isPage = DigitalObjectModel.PAGE.equals(model);
         String imgTitle = isPage ? lang.fullImg() : lang.doFirstPage();
-        HTMLFlow prev = new HTMLFlow("<b>" + imgTitle + ":</b>");
+        HTMLFlow prev = new HTMLFlow(HtmlCode.bold(imgTitle + ":"));
         prev.setExtraSpace(5);
 
         labelItem = new TextItem();
-        labelItem.setTitle("<b>Label</b>");
+        labelItem.setTitle(HtmlCode.bold("Label"));
         labelItem.setTitleStyle("color: black;");
         labelItem.setValue(label);
         if (label.length() > 25) {
