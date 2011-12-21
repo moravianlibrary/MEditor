@@ -27,6 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
+import java.util.List;
+
+import com.google.gwt.user.client.Timer;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
@@ -37,12 +40,21 @@ import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.events.ClickHandler;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
+import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,6 +66,7 @@ public class SideNavInputTree
     private final MenuItem createItem;
     MenuItem ingestInfo = new MenuItem();
     private static final String HTML_TICK_CODE = "<img src=\"images/silk/tick.png\">";
+    private final LangConstants lang;
 
     /**
      * Instantiates a new side nav input tree.
@@ -62,7 +75,8 @@ public class SideNavInputTree
      *        the dispatcher
      * @param lang
      */
-    public SideNavInputTree(DispatchAsync dispatcher, LangConstants lang) {
+    public SideNavInputTree(final DispatchAsync dispatcher, LangConstants lang) {
+        this.lang = lang;
         setWidth100();
         setHeight100();
         setCustomIconProperty("icon");
@@ -88,7 +102,7 @@ public class SideNavInputTree
         showMenu.setItems(showItem);
 
         createItem = new MenuItem(lang.create(), "icons/16/structure_into.png");
-        ingestInfo = new MenuItem("Get ingest Info", "icons/16/export1.png");
+        ingestInfo = new MenuItem(lang.ingestInfo(), "icons/16/export1.png");
 
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
@@ -101,18 +115,26 @@ public class SideNavInputTree
             public void onCellContextClick(CellContextClickEvent event) {
 
                 ListGridRecord record = event.getRecord();
-                String path = record.getAttribute(Constants.ATTR_ID);
+                final String path = record.getAttribute(Constants.ATTR_ID);
                 if (path != null && path.length() > 1 && path.substring(1).contains("/")) {
                     //                    String model = path.substring(1, path.substring(1).indexOf("/") + 1);
                     String id = path.substring(path.substring(1).indexOf("/") + 2);
                     if (id.contains("/")) {
                         id = id.substring(0, id.indexOf("/"));
                     }
-//                    if (record.getAttributeAsBoolean(Constants.ATTR_INGEST_INFO)) {
-//                        editMenu.setItems(createItem, ingestInfo);
-//                    } else {
+                    if (record.getAttributeAsBoolean(Constants.ATTR_INGEST_INFO)) {
+                        ingestInfo.addClickHandler(new ClickHandler() {
+
+                            @Override
+                            public void onClick(MenuItemClickEvent event) {
+                                getIngestInfo(path, dispatcher);
+                            }
+
+                        });
+                        editMenu.setItems(createItem, ingestInfo);
+                    } else {
                         editMenu.setItems(createItem);
-//                    }
+                    }
 
                     editMenu.setEmptyMessage(path.substring(1, path.length()));
                     editMenu.showContextMenu();
@@ -160,7 +182,41 @@ public class SideNavInputTree
         return createItem;
     }
 
-    public MenuItem getIngestInfoMenuItem() {
-        return ingestInfo;
+    private void getIngestInfo(final String path, final DispatchAsync dispatcher) {
+        final ModalWindow mw = new ModalWindow(SideNavInputTree.this);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+                GetIngestInfoAction ingestInfoAction = new GetIngestInfoAction(path);
+                DispatchCallback<GetIngestInfoResult> ingestInfoCallback =
+                        new DispatchCallback<GetIngestInfoResult>() {
+
+                            @Override
+                            public void callback(GetIngestInfoResult result) {
+                                mw.hide();
+                                List<String> pid = result.getPid();
+                                if (pid == null) {
+                                    EditorSC.operationFailed(lang, lang.noIngestFile());
+                                } else {
+                                    IngestInfoWindow.setInstanceOf(pid,
+                                                                   result.getUsername(),
+                                                                   result.getTime(),
+                                                                   lang);
+                                }
+                            }
+
+                            @Override
+                            public void callbackError(Throwable t) {
+                                mw.hide();
+                                super.callbackError(t);
+                            }
+                        };
+                dispatcher.execute(ingestInfoAction, ingestInfoCallback);
+            }
+        };
+        timer.schedule(25);
     }
 }

@@ -55,6 +55,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
@@ -298,6 +299,8 @@ public class AppPresenter
         if (uuidWindow != null) {
             uuidWindow.hide();
             uuidWindow = null;
+        } else if (IngestInfoWindow.isInstanceVisible()) {
+            IngestInfoWindow.closeInstantiatedWindow();
         }
     }
 

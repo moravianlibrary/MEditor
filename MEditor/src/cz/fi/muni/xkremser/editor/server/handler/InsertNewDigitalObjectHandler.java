@@ -121,9 +121,9 @@ public class InsertNewDigitalObjectHandler
             reindexSuccess = ServerUtils.reindex(Constants.FEDORA_UUID_PREFIX + object.getUuid());
 
             if (ingestSuccess) {
-                String name;
+                String username;
                 try {
-                    name =
+                    username =
                             userDAO.getName(String.valueOf(String.valueOf(ses
                                     .getAttribute(HttpCookies.SESSION_ID_KEY))), true);
                 } catch (DatabaseException e) {
@@ -134,7 +134,9 @@ public class InsertNewDigitalObjectHandler
                 } catch (DatabaseException e) {
                     throw new ActionException(e);
                 }
-                createInfoXml(name, object.getUuid(), config.getScanInputQueuePath() + action.getInputPath());
+                createInfoXml(username,
+                              object.getUuid(),
+                              config.getScanInputQueuePath() + action.getInputPath());
 
             }
 
@@ -152,7 +154,7 @@ public class InsertNewDigitalObjectHandler
      * @param path
      */
 
-    private void createInfoXml(String name, String uuid, String path) {
+    private void createInfoXml(String username, String pid, String path) {
 
         try {
             File ingestInfoFile = new File(path + "/" + Constants.INGEST_INFO_FILE_NAME);
@@ -201,17 +203,17 @@ public class InsertNewDigitalObjectHandler
             rootElement.appendChild(ingest);
 
             // uuid element
-            Element uuidEl = doc.createElement("uuid");
-            uuidEl.appendChild(doc.createTextNode(uuid));
-            ingest.appendChild(uuidEl);
+            Element pidEl = doc.createElement(Constants.PARAM_PID);
+            pidEl.appendChild(doc.createTextNode(pid));
+            ingest.appendChild(pidEl);
 
             // name element
-            Element nameEl = doc.createElement("name");
-            nameEl.appendChild(doc.createTextNode(name));
+            Element nameEl = doc.createElement(Constants.PARAM_USER_NAME);
+            nameEl.appendChild(doc.createTextNode(username));
             ingest.appendChild(nameEl);
 
             // time element
-            Element time = doc.createElement("time");
+            Element time = doc.createElement(Constants.PARAM_TIME);
             time.appendChild(doc.createTextNode(FORMATTER.format(new java.util.Date())));
             ingest.appendChild(time);
 

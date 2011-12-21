@@ -58,6 +58,15 @@ public class Constants {
     /** The Constant PARAM_UUID. */
     public static final String PARAM_UUID = "uuid";
 
+    /** The Constant PARAM_PID. */
+    public static final String PARAM_PID = "pid";
+
+    /** The Constant PARAM_USER_NAME. */
+    public static final String PARAM_USER_NAME = "username";
+
+    /** The Constant PARAM_TIME. */
+    public static final String PARAM_TIME = "time";
+
     /** The Constant PARAM_CONTENT. */
     public static final String PARAM_CONTENT = "content";
 
@@ -529,4 +538,6 @@ public class Constants {
      * individual ingestInfo
      */
     public static final String NAME_INGEST_ELEMENT = "ingest";
+
+    public static final String PATH_IMG_EDIT = "icons/16/edit.png";
 }

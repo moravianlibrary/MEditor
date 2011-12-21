@@ -1789,6 +1789,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String inferredValue();
 
   /**
+   * Translated "Ingest info".
+   * 
+   * @return translated "Ingest info"
+   */
+  @DefaultStringValue("Ingest info")
+  @Key("ingestInfo")
+  String ingestInfo();
+
+  /**
+   * Translated "Ingest number".
+   * 
+   * @return translated "Ingest number"
+   */
+  @DefaultStringValue("Ingest number")
+  @Key("ingestNumber")
+  String ingestNumber();
+
+  /**
    * Translated "Input queue".
    * 
    * @return translated "Input queue"
@@ -2435,6 +2453,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("No description")
   @Key("noDescription")
   String noDescription();
+
+  /**
+   * Translated "There is no file with the ingest info for this directory or is invalid.".
+   * 
+   * @return translated "There is no file with the ingest info for this directory or is invalid."
+   */
+  @DefaultStringValue("There is no file with the ingest info for this directory or is invalid.")
+  @Key("noIngestFile")
+  String noIngestFile();
 
   /**
    * Translated "The digital object is no longer locked.".
@@ -3767,6 +3794,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("User Management")
   @Key("userMgmt")
   String userMgmt();
+
+  /**
+   * Translated "Username".
+   * 
+   * @return translated "Username"
+   */
+  @DefaultStringValue("Username")
+  @Key("username")
+  String username();
 
   /**
    * Translated "Users".

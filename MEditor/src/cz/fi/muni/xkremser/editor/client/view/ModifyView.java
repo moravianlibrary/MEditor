@@ -932,7 +932,7 @@ public class ModifyView
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
-        MenuItem editItem = new MenuItem(lang.menuEdit(), "icons/16/edit.png");
+        MenuItem editItem = new MenuItem(lang.menuEdit(), Constants.PATH_IMG_EDIT);
         editItem.setAttribute(ID_NAME, ID_EDIT);
         editItem.setEnableIfCondition(new MenuItemIfFunction() {
 
