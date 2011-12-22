@@ -274,10 +274,6 @@ public class FindMetadataPresenter
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(sysno);
         getView().getOaiId().setValue(sysno);
-        if (model.equals("monograph") || model.equals("monographs")) {
-            getView().getZ39Id().setTitle(lang.fbarcode());
-            getView().getFindBy().setValue(lang.fbarcode());
-        }
         findPropriateMetadata();
     }
 
@@ -333,14 +329,23 @@ public class FindMetadataPresenter
     private void findPropriateMetadata() {
         String id = getView().getOaiId().getValueAsString();
         if (id != null && !"".equals(id)) {
+
             if (id.length() == 9) {
+                getView().getFindBy().setValue(Constants.SYSNO);
+                getView().getZ39Id().setTitle(Constants.SYSNO);
+                getView().getZ39Id().redraw();
                 findMetadata(null, id, true, getQuery());
+
             } else if (id.length() == 10) {
                 getView().getFindBy().setValue(lang.fbarcode());
+                getView().getZ39Id().setTitle(lang.fbarcode());
+                getView().getZ39Id().redraw();
                 findMetadata(Constants.SEARCH_FIELD.BAR, id, false, getQuery());
-                getView().getFindBy().setValue(lang.fbarcode());
+
             } else {
                 getView().getFindBy().setValue(lang.ftitle());
+                getView().getZ39Id().setTitle(lang.ftitle());
+                getView().getZ39Id().redraw();
                 findMetadata(Constants.SEARCH_FIELD.TITLE, id, false, getQuery());
             }
         }
