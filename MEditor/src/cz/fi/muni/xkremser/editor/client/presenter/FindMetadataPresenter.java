@@ -274,6 +274,10 @@ public class FindMetadataPresenter
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(sysno);
         getView().getOaiId().setValue(sysno);
+        if (model.equals("monograph") || model.equals("monographs")) {
+            getView().getZ39Id().setTitle(lang.fbarcode());
+            getView().getFindBy().setValue(lang.fbarcode());
+        }
         findPropriateMetadata();
     }
 

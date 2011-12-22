@@ -388,7 +388,10 @@ public class DigitalObjectMenuView
                             String msg = event.getMenu().getEmptyMessage();
                             String model = msg.substring(0, msg.indexOf("/"));
                             String path = msg.substring(msg.indexOf("/") + 1);
-                            String id = path.substring(0, msg.indexOf("/") - 1);
+                            String id = path;
+                            if (path.contains("/")) {
+                                id = path.substring(0, path.indexOf("/"));
+                            }
 
                             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
                                     .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, id)
