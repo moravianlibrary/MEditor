@@ -539,5 +539,9 @@ public class Constants {
      */
     public static final String NAME_INGEST_ELEMENT = "ingest";
 
+    /** The file path to the edit icon */
     public static final String PATH_IMG_EDIT = "icons/16/edit.png";
+
+    /** The MISSING constant */
+    public static final String MISSING = "missing";
 }

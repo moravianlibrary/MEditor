@@ -113,6 +113,7 @@ public class FoxmlUtils {
         Foxml foxml = new Foxml();
 
         String stringFoxml = fedoraAccess.getFOXML(uuid);
+        foxml.setNoCodedfoxml(stringFoxml);
         InputStream is = getInputStreamFromString(stringFoxml, uuid);
 
         try {

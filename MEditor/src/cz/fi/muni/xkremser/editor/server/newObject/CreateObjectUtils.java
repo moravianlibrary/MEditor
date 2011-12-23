@@ -156,7 +156,8 @@ public class CreateObjectUtils {
 
     public static boolean ingest(String foxml, String label, String uuid) {
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Ingesting the digital object with PID uuid:" + uuid + " and label " + label);
+            LOGGER.info("Ingesting the digital object with PID" + (!uuid.contains("uuid:") ? " uuid:" : " ")
+                    + uuid + " and label " + label);
         }
         String login = config.getFedoraLogin();
         String password = config.getFedoraPassword();

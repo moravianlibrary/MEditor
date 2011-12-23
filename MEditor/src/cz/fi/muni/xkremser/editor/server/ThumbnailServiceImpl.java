@@ -27,6 +27,8 @@
 
 package cz.fi.muni.xkremser.editor.server;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -78,8 +80,12 @@ public class ThumbnailServiceImpl
             StringBuffer sb = new StringBuffer();
             sb.append(config.getFedoraHost()).append("/objects/").append(uuid)
                     .append("/datastreams/IMG_THUMB/content");
-            InputStream is =
-                    RESTHelper.get(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword(), true);
+            InputStream is = null;
+            if (!Constants.MISSING.equals(uuid)) {
+                is = RESTHelper.get(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword(), true);
+            } else {
+                is = new FileInputStream(new File("images/other/file_not_found.png"));
+            }
             if (is == null) {
                 return;
             }

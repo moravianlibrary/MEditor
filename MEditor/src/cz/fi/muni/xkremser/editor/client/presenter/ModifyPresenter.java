@@ -663,15 +663,24 @@ public class ModifyPresenter
                             items = new Record[itemList.size()];
                             for (int i = 0, total = itemList.size(); i < total; i++) {
                                 DublinCore dc = itemList.get(i).getDc();
-                                String title = dc.getTitle() == null ? lang.noTitle() : dc.getTitle().get(0);
-                                String id =
-                                        dc.getIdentifier() == null ? lang.noTitle() : dc.getIdentifier()
-                                                .get(0);
-                                items[i] =
-                                        new ContainerRecord(title,
-                                                            id,
-                                                            DigitalObjectModel.PAGE.equals(model) ? id
-                                                                    : model.getIcon());
+                                if (dc != null) {
+                                    String title =
+                                            dc.getTitle() == null ? lang.noTitle() : dc.getTitle().get(0);
+                                    String id =
+                                            dc.getIdentifier() == null ? lang.noTitle() : dc.getIdentifier()
+                                                    .get(0);
+                                    items[i] =
+                                            new ContainerRecord(title,
+                                                                id,
+                                                                DigitalObjectModel.PAGE.equals(model) ? id
+                                                                        : model.getIcon());
+                                } else {
+                                    items[i] =
+                                            new ContainerRecord(lang.objectNotFound(),
+                                                                lang.objectNotFound(),
+                                                                DigitalObjectModel.PAGE.equals(model) ? Constants.MISSING
+                                                                        : "icons/128/folder_not_found.png");
+                                }
                             }
                         }
                         getView().addStream(items, uuid, model);

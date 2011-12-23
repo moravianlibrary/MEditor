@@ -2572,6 +2572,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String objectLockedBy();
 
   /**
+   * Translated "Digital object not found".
+   * 
+   * @return translated "Digital object not found"
+   */
+  @DefaultStringValue("Digital object not found")
+  @Key("objectNotFound")
+  String objectNotFound();
+
+  /**
    * Translated "The object with given PID is not in the repository.".
    * 
    * @return translated "The object with given PID is not in the repository."

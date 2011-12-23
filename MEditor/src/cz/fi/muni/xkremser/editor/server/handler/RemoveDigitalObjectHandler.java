@@ -86,13 +86,11 @@ public class RemoveDigitalObjectHandler
     private final FedoraAccess fedoraAccess;
 
     /** The list of digital objects which have been removed */
-    private final List<RemovedDigitalObject> removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
+    private List<RemovedDigitalObject> removedDigitalObjects;
 
     /** The recently modified dao */
     @Inject
     private RecentlyModifiedItemDAO recModDao;
-
-    private final int fail = 0;
 
     private static final class RemovedDigitalObject {
 
@@ -165,6 +163,7 @@ public class RemoveDigitalObjectHandler
 
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
+        removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         String uuid = action.getUuid();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();
 
@@ -278,14 +277,12 @@ public class RemoveDigitalObjectHandler
 
             int attempt = 0;
             successful = false;
-            //            fail++;
-            while (!successful && attempt++ < 3 && fail < 2) {
+            while (!successful && attempt++ < 3) {
                 LOGGER.debug("Processing action: RemoveDigitalObjectAction the " + attempt
                         + ". attempt of removing digital object with uuid:" + uuid);
                 if (RESTHelper.deleteWithBooleanResult(url, usr, pass, true))
                     successful = getDoModelHandler.getModel(uuid) == null;
             }
-
             if (successful) {
                 removedDigitalObjects.add(new RemovedDigitalObject(uuid, foxml, removedRelationships));
                 return "";
