@@ -142,17 +142,17 @@ public abstract class ConnectExistingObjectWindow
 
     private String getStatus(boolean available, LangConstants lang) {
         if (available) {
-            return lang.availability() + ": <span class='greenFont'>" + lang.isRunning() + "</span>";
+            return lang.availability() + ": " + HtmlCode.greenFont(lang.isRunning());
         } else {
-            return lang.availability() + ": <span class='redFont'>" + lang.isNotRunning() + "</span>";
+            return lang.availability() + ": " + HtmlCode.redFont(lang.isNotRunning());
         }
     }
 
     private String getCompatibility(boolean available, LangConstants lang) {
         if (available) {
-            return lang.compatibility() + ": <span class='greenFont'>" + lang.compatibilityOk() + "</span>";
+            return lang.compatibility() + ": " + HtmlCode.greenFont(lang.compatibilityOk());
         } else {
-            return lang.compatibility() + ": <span class='redFont'>" + lang.compatibilityNotOk() + "</span>";
+            return lang.compatibility() + ": " + HtmlCode.redFont(lang.compatibilityNotOk());
         }
     }
 

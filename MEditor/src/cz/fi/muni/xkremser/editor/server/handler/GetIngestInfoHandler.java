@@ -25,6 +25,7 @@
 package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -59,6 +60,7 @@ import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.IngestInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoResult;
 
@@ -76,6 +78,8 @@ public class GetIngestInfoHandler
 
     /** The configuration. */
     private final EditorConfiguration configuration;
+
+    private String prefix;
 
     /**
      * Instantiates a new get ingest info handler.
@@ -99,14 +103,54 @@ public class GetIngestInfoHandler
         HttpSession ses = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(ses);
 
+        prefix = configuration.getScanInputQueuePath();
         String path = action.getPath();
+
+        ArrayList<IngestInfo> ingestInfoList = new ArrayList<IngestInfo>();
+
+        scanDirectoryStructure(path, ingestInfoList, Constants.DIR_MAX_DEPTH);
+
+        return new GetIngestInfoResult(ingestInfoList);
+    }
+
+    /**
+     * @param rltvpth
+     * @param ingestInfoList
+     * @param i
+     * @return
+     */
+
+    private void scanDirectoryStructure(String path, final ArrayList<IngestInfo> ingestInfoList, int level) {
+        IngestInfo directoryIngestInfo = getDirectoryIngestInfo(path);
+        if (directoryIngestInfo != null) {
+            ingestInfoList.add(directoryIngestInfo);
+        }
+        if (level != 0) {
+            File direcotry = new File(prefix + path);
+            FileFilter filter = new FileFilter() {
+
+                @Override
+                public boolean accept(File pathname) {
+                    return !pathname.isFile();
+                }
+
+            };
+
+            File[] dirs = direcotry.listFiles(filter);
+            for (int i = 0; i < dirs.length; i++) {
+                String rltvpth = path + File.separator + dirs[i].getName();
+                scanDirectoryStructure(rltvpth, ingestInfoList, level - 1);
+            }
+        }
+    }
+
+    private IngestInfo getDirectoryIngestInfo(String path) {
 
         List<String> pid = new ArrayList<String>();
         List<String> username = new ArrayList<String>();
         List<String> time = new ArrayList<String>();
 
-        File ingestInfoFile =
-                new File(configuration.getScanInputQueuePath() + path + "/" + Constants.INGEST_INFO_FILE_NAME);
+        File ingestInfoFile = new File(prefix + path + "/" + Constants.INGEST_INFO_FILE_NAME);
         boolean fileExists = ingestInfoFile.exists();
         if (fileExists) {
             try {
@@ -132,9 +176,9 @@ public class GetIngestInfoHandler
                             if (childNodes.item(j).getNodeName().equals(Constants.PARAM_TIME)
                                     && time.size() < i + 1) time.add(childNodes.item(j).getTextContent());
                         }
-                        if (pid.size() < i + 1) pid.add("missing");
-                        if (username.size() < i + 1) username.add("missing");
-                        if (time.size() < i + 1) time.add("missing");
+                        if (pid.size() < i + 1) pid.add(Constants.MISSING);
+                        if (username.size() < i + 1) username.add(Constants.MISSING);
+                        if (time.size() < i + 1) time.add(Constants.MISSING);
                     }
                 }
                 fileStream.close();
@@ -151,9 +195,9 @@ public class GetIngestInfoHandler
             }
         }
         if (fileExists) {
-            return new GetIngestInfoResult(pid, username, time);
+            return new IngestInfo(path, pid, username, time);
         } else {
-            return new GetIngestInfoResult(null, null, null);
+            return null;
         }
     }
 

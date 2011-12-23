@@ -53,6 +53,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.IngestInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoResult;
 
@@ -197,14 +198,11 @@ public class SideNavInputTree
                             @Override
                             public void callback(GetIngestInfoResult result) {
                                 mw.hide();
-                                List<String> pid = result.getPid();
-                                if (pid == null) {
+                                List<IngestInfo> ingestInfoList = result.getIngestInfo();
+                                if (ingestInfoList.isEmpty()) {
                                     EditorSC.operationFailed(lang, lang.noIngestFile());
                                 } else {
-                                    IngestInfoWindow.setInstanceOf(pid,
-                                                                   result.getUsername(),
-                                                                   result.getTime(),
-                                                                   lang);
+                                    IngestInfoWindow.setInstanceOf(ingestInfoList, lang);
                                 }
                             }
 

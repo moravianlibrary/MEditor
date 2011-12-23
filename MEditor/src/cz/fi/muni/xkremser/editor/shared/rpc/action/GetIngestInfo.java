@@ -31,6 +31,8 @@ import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.IngestInfo;
+
 /**
  * @author Matous Jobanek
  * @version $Id$
@@ -44,15 +46,7 @@ public class GetIngestInfo
     @In(1)
     private String path;
 
-    /** The pid of the ingested object */
+    /** The list of ingest info */
     @Out(1)
-    private List<String> pid;
-
-    /** The username of the user who ingested the new digital object */
-    @Out(2)
-    private List<String> username;
-
-    /** When the new digital object was ingested */
-    @Out(3)
-    private List<String> time;
+    private List<IngestInfo> ingestInfo;
 }

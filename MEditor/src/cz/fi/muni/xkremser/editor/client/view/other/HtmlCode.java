@@ -82,4 +82,24 @@ public class HtmlCode {
     public static String nobr(String string) {
         return "<nobr>" + string + "</nobr>";
     }
+
+    /**
+     * Adds the HTML tags to the string in order to turn it red
+     * 
+     * @param string
+     * @return The red string with the HTML tags
+     */
+    public static String redFont(String string) {
+        return "<span class='redFont'>" + string + "</span>";
+    }
+
+    /**
+     * Adds the HTML tags to the string in order to turn it green
+     * 
+     * @param string
+     * @return The green string with the HTML tags
+     */
+    public static String greenFont(String string) {
+        return "<span class='greenFont'>" + string + "</span>";
+    }
 }
