@@ -208,8 +208,8 @@ public class StoreWorkingCopyWindow
 
         setEdgeOffset(20);
         fetchStoredItems(storedFilesGrid);
-        show();
         centerInPage();
+        show();
         focus();
         buttonsLayout.setLeft(280);
         fileNameItem.selectValue();

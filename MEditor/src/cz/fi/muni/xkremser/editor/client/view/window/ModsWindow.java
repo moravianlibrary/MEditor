@@ -80,7 +80,7 @@ public abstract class ModsWindow
     private final CheckboxItem reflectInDC = new CheckboxItem();
 
     /** The original modsTypeClient */
-    private final ModsTypeClient modsTypeClient;
+    private ModsTypeClient modsTypeClient;
 
     /** The original modsCollectionClient */
     private final ModsCollectionClient modsCollection;
@@ -201,7 +201,11 @@ public abstract class ModsWindow
         super(450, 900, lang.quickEdit() + ": " + uuid);
         this.lang = lang;
         this.modsCollection = modsCollection;
-        modsTypeClient = modsCollection.getMods().get(0);
+        if (modsTypeClient != null) {
+            modsTypeClient = modsCollection.getMods().get(0);
+        } else {
+            modsTypeClient = new ModsTypeClient();
+        }
         setVariables();
 
         VStack mainLayout = new VStack();
