@@ -35,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 
 import java.nio.charset.Charset;
 
@@ -45,7 +46,6 @@ import java.util.List;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -353,8 +353,11 @@ public class FedoraUtils {
      *        the doc
      * @param expr
      *        the expr
+     * @throws XPathExpressionException
      */
-    private static void removeElements(Element parent, Document doc, XPathExpression expr) {
+    public static void removeElements(Element parent, Document doc, String xPath)
+            throws XPathExpressionException {
+        XPathExpression expr = makeNSAwareXpath().compile(xPath);
         NodeList nodes = null;
         try {
             nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
@@ -415,28 +418,19 @@ public class FedoraUtils {
                     String xPathString =
                             NamedGraphModel.getRelationship(detail.getModel(), models.get(modelId))
                                     .getXPathNamespaceAwareQuery();
-                    removeElements(parent, relsExt, makeNSAwareXpath().compile(xPathString));
+                    removeElements(parent, relsExt, xPathString);
                 }
                 modelId++;
             }
             if (!changed) return null;
 
-            TransformerFactory transFactory = TransformerFactory.newInstance();
-            Transformer transformer = null;
+            String str = null;
             try {
-                transformer = transFactory.newTransformer();
-            } catch (TransformerConfigurationException e) {
-                e.printStackTrace();
-            }
-            StringWriter buffer = new StringWriter();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            try {
-                transformer.transform(new DOMSource(relsExt), new StreamResult(buffer));
+                str = getStringFromDocument(relsExt, true);
             } catch (TransformerException e) {
-                e.printStackTrace();
+                LOGGER.warn("Document transformer failure", e);
             }
 
-            String str = buffer.toString();
             int lastIndex = str.indexOf(Constants.RELS_EXT_LAST_ELEMENT);
             if (lastIndex == -1) {
                 // error
@@ -614,6 +608,21 @@ public class FedoraUtils {
         return createStringsArray(detail, onlyFoxml, stringsWithXml, documentsWithXml);
     }
 
+    /**
+     * @param document
+     */
+    public static String getStringFromDocument(Document document, boolean omitXmlDeclaration)
+            throws TransformerException {
+        TransformerFactory transFactory = TransformerFactory.newInstance();
+        Transformer transformer = transFactory.newTransformer();
+        StringWriter buffer = new StringWriter();
+        if (omitXmlDeclaration) {
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        }
+        transformer.transform(new DOMSource(document), new StreamResult(buffer));
+        return buffer.toString();
+    }
+
     private static String[] createStringsArray(DigitalObjectDetail detail,
                                                boolean onlyFoxml,
                                                String[] stringsWithXml,
@@ -624,11 +633,7 @@ public class FedoraUtils {
         for (int i = 0; i < creatingLength; i++) {
             if (stringsWithXml[i] == null && documentsWithXml[i] != null) {
                 try {
-                    TransformerFactory transFactory = TransformerFactory.newInstance();
-                    Transformer transformer = transFactory.newTransformer();
-                    StringWriter buffer = new StringWriter();
-                    transformer.transform(new DOMSource(documentsWithXml[i]), new StreamResult(buffer));
-                    stringsWithXml[i] = buffer.toString();
+                    stringsWithXml[i] = getStringFromDocument(documentsWithXml[i], false);;
                     if (i == 0 && !onlyFoxml) {
                         try {
                             documentsWithXml[1] =
@@ -775,8 +780,9 @@ public class FedoraUtils {
 
         try {
 
-            removeElements(XMLUtils.getElement(foxmlDocument, streamXPath), foxmlDocument, makeNSAwareXpath()
-                    .compile(nextToLastStreamXPath));
+            removeElements(XMLUtils.getElement(foxmlDocument, streamXPath),
+                           foxmlDocument,
+                           nextToLastStreamXPath);
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }
@@ -856,5 +862,25 @@ public class FedoraUtils {
             }
         }
         return children;
+    }
+
+    public static boolean putRelsExt(String uuid, String content, boolean versionable) {
+        String url = null;
+        try {
+            url =
+                    configuration.getFedoraHost() + "/objects/" + uuid + "/datastreams/RELS-EXT?versionable="
+                            + versionable
+                            + java.net.URLEncoder.encode("&mimeType=application/rdf+xml", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.warn("Encoding failure", e);
+        }
+
+        String usr = configuration.getFedoraLogin();
+        String pass = configuration.getFedoraPassword();
+        if (content != null) {
+            RESTHelper.put(url, content, usr, pass, false);
+            return true;
+        }
+        return false;
     }
 }

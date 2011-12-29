@@ -27,12 +27,16 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathException;
 
 import javax.inject.Inject;
 
@@ -44,6 +48,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.w3c.dom.Document;
+
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
@@ -54,6 +60,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
@@ -215,7 +222,6 @@ public class RemoveDigitalObjectHandler
         ArrayList<ArrayList<String>> parents = FedoraUtils.getRelated(uuid);
 
         StringBuffer message = new StringBuffer("");
-        String url = null;
         String usr = configuration.getFedoraLogin();
         String pass = configuration.getFedoraPassword();
 
@@ -224,40 +230,34 @@ public class RemoveDigitalObjectHandler
 
         boolean successful = true;
 
-        /** ----- For Fedora 3.4 and higher ---- */
         if (parents != null) {
             for (ArrayList<String> parentRel : parents) {
-                try {
-                    url =
-                            configuration.getFedoraHost()
-                                    + "/objects/"
-                                    + parentRel.get(0)
-                                    + "/relationships?subject="
-                                    + Constants.FEDORA_INFO_PREFIX
-                                    + parentRel.get(0)
-                                    + "&predicate="
-                                    + java.net.URLEncoder
-                                            .encode(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI,
-                                                    "UTF-8") + parentRel.get(1) + "&object="
-                                    + Constants.FEDORA_INFO_PREFIX + uuid + "&isLiteral=false"
-                                    + "&datatype=null";
-                } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
-                }
 
                 int attempt = 0;
                 successful = false;
                 while (!successful && attempt++ < 3) {
+
                     LOGGER.debug("Processing action: RemoveDigitalObjectAction the " + attempt
                             + ". attempt of removing relationship with subject: " + parentRel.get(0)
                             + " predicate: " + parentRel.get(1) + " and object: " + uuid);
-                    String result = RESTHelper.deleteWithStringResult(url, usr, pass, true);
-                    successful = result.contains("true");
+
+                    if (fedoraHasRelationshipsServices()) {
+
+                        /** ----- For Fedora 3.4 and newer ---- */
+                        successful =
+                                removeRelationshipNew(parentRel,
+                                                      uuid,
+                                                      successful,
+                                                      usr,
+                                                      pass,
+                                                      removedRelationships);
+                    } else {
+                        successful = removeRelationshipOld(parentRel, uuid, successful, removedRelationships);
+                    }
+
                 }
 
-                if (successful) {
-                    removedRelationships.add(parentRel);
-                } else {
+                if (!successful) {
                     LOGGER.error(message
                             .append("Processing action RemoveDigitalObjectAction failed during removing relationship with subject: "
                                     + parentRel.get(0)
@@ -270,10 +270,9 @@ public class RemoveDigitalObjectHandler
                 }
             }
         }
-        /** --------------------------------------------------- */
 
         if (successful) {
-            url = configuration.getFedoraHost() + "/objects/" + uuid;
+            String url = configuration.getFedoraHost() + "/objects/" + uuid;
 
             int attempt = 0;
             successful = false;
@@ -308,6 +307,115 @@ public class RemoveDigitalObjectHandler
         }
     }
 
+    private boolean fedoraHasRelationshipsServices() {
+        String fedoraVersion = configuration.getFedoraVersion();
+        int secondNum = 0;
+        if (fedoraVersion != null && fedoraVersion.length() > 2) {
+            try {
+                if (Integer.parseInt(fedoraVersion.substring(0, 1)) < 4) {
+                    secondNum = Integer.parseInt(fedoraVersion.substring(2, 3));
+                } else {
+                    return true;
+                }
+            } catch (NumberFormatException nfe) {
+            }
+        }
+
+        return (secondNum > 3);
+    }
+
+    /**
+     * @param parentRel
+     * @param uuid
+     * @param successful
+     * @param usr
+     * @param pass
+     * @param removedRelationships
+     * @return successful
+     */
+    private boolean removeRelationshipNew(final ArrayList<String> parentRel,
+                                          final String uuid,
+                                          boolean successful,
+                                          final String usr,
+                                          final String pass,
+                                          ArrayList<ArrayList<String>> removedRelationships) {
+        String url = null;
+        try {
+            url =
+                    configuration.getFedoraHost()
+                            + "/objects/"
+                            + parentRel.get(0)
+                            + "/relationships?subject="
+                            + Constants.FEDORA_INFO_PREFIX
+                            + parentRel.get(0)
+                            + "&predicate="
+                            + java.net.URLEncoder
+                                    .encode(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI, "UTF-8")
+                            + parentRel.get(1) + "&object=" + Constants.FEDORA_INFO_PREFIX + uuid
+                            + "&isLiteral=false" + "&datatype=null";
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+
+        String result = RESTHelper.deleteWithStringResult(url, usr, pass, true);
+        successful = result.contains("true");
+
+        if (successful) {
+            removedRelationships.add(parentRel);
+        }
+
+        return successful;
+    }
+
+    /**
+     * @param parentRel
+     * @param uuid
+     * @param successful
+     * @param removedRelationships
+     * @return successful
+     */
+    private boolean removeRelationshipOld(final ArrayList<String> parentRel,
+                                          final String uuid,
+                                          boolean successful,
+                                          ArrayList<ArrayList<String>> removedRelationships) {
+        String originalRelsExt = null;
+        try {
+            Document relsExt = fedoraAccess.getRelsExt(parentRel.get(0));
+
+            originalRelsExt = FedoraUtils.getStringFromDocument(relsExt, true);
+
+            String xPath =
+                    "/rdf:RDF/rdf:Description/kramerius:" + parentRel.get(1) + "[@rdf:resource=\'"
+                            + Constants.FEDORA_INFO_PREFIX + uuid + "\']";
+
+            FedoraUtils.removeElements(XMLUtils.getElement(relsExt, "//rdf:RDF/rdf:Description"),
+                                       relsExt,
+                                       xPath);
+
+            String content = FedoraUtils.getStringFromDocument(relsExt, true);
+            successful = FedoraUtils.putRelsExt(parentRel.get(0), content, false);
+
+        } catch (IOException e) {
+            LOGGER.warn("IO failure", e);
+            successful = false;
+        } catch (XPathException e) {
+            LOGGER.warn("XPath failure", e);
+            successful = false;
+        } catch (TransformerException e) {
+            LOGGER.warn("Document transformer failure", e);
+            successful = false;
+        }
+
+        if (successful) {
+            ArrayList<String> removedRel = new ArrayList<String>(2);
+            removedRel.add(parentRel.get(0));
+            removedRel.add(originalRelsExt);
+            removedRelationships.add(removedRel);
+        }
+
+        return successful;
+    }
+
     /**
      * @param removedRelationships
      */
@@ -317,6 +425,7 @@ public class RemoveDigitalObjectHandler
                                    final List<RemovedDigitalObject> removedDigitalObjects) {
 
         StringBuffer message = new StringBuffer("");
+
         message.append(addRelationships(removedRelationships, uuid));
 
         for (RemovedDigitalObject removed : removedDigitalObjects) {
@@ -327,8 +436,8 @@ public class RemoveDigitalObjectHandler
                         CreateObjectUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
                                 .getLabel(), removed.getUuid());
             }
-            if (!successful) {
 
+            if (!successful) {
                 LOGGER.error(message
                         .append("Processing rollback action: RemoveDigitalObjectAction failed during rollback removal digital object with uuid: "
                                 + removed.getUuid()).toString());
@@ -349,34 +458,19 @@ public class RemoveDigitalObjectHandler
         StringBuffer message = new StringBuffer("");
 
         for (ArrayList<String> parentRel : removedRelationships) {
-            String url = null;
-            try {
-                url =
-                        configuration.getFedoraHost()
-                                + "/objects/"
-                                + parentRel.get(0)
-                                + "/relationships/new?subject="
-                                + Constants.FEDORA_INFO_PREFIX
-                                + parentRel.get(0)
-                                + "&predicate="
-                                + java.net.URLEncoder
-                                        .encode(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI, "UTF-8")
-                                + parentRel.get(1) + "&object=" + Constants.FEDORA_INFO_PREFIX + uuid
-                                + "&isLiteral=false" + "&datatype=null";
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            String usr = configuration.getFedoraLogin();
-            String pass = configuration.getFedoraPassword();
-
             int attempt = 0;
             boolean successful = false;
             while (!successful && attempt++ < 3) {
                 LOGGER.debug("Processing rollback action: RemoveDigitalObjectAction the " + attempt
                         + ". attempt of rollback removal relationship with subject: " + parentRel.get(0)
                         + " predicate: " + parentRel.get(1) + " and object: " + uuid);
-                successful = RESTHelper.post(url, null, usr, pass, true);
+
+                if (fedoraHasRelationshipsServices()) {
+                    /** ----- For Fedora 3.4 and newer ---- */
+                    successful = addRelationshipNew(parentRel, uuid);
+                } else {
+                    successful = addRelationshipOld(parentRel);
+                }
             }
 
             if (!successful) {
@@ -391,6 +485,45 @@ public class RemoveDigitalObjectHandler
             }
         }
         return message.toString();
+    }
+
+    /**
+     * @param parentRel
+     * @param uuid
+     * @return successful
+     */
+
+    private boolean addRelationshipNew(ArrayList<String> parentRel, String uuid) {
+        String url = null;
+        String usr = configuration.getFedoraLogin();
+        String pass = configuration.getFedoraPassword();
+        try {
+            url =
+                    configuration.getFedoraHost()
+                            + "/objects/"
+                            + parentRel.get(0)
+                            + "/relationships/new?subject="
+                            + Constants.FEDORA_INFO_PREFIX
+                            + parentRel.get(0)
+                            + "&predicate="
+                            + java.net.URLEncoder
+                                    .encode(FedoraNamespaces.ONTOLOGY_RELATIONSHIP_NAMESPACE_URI, "UTF-8")
+                            + parentRel.get(1) + "&object=" + Constants.FEDORA_INFO_PREFIX + uuid
+                            + "&isLiteral=false" + "&datatype=null";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return RESTHelper.post(url, null, usr, pass, true);
+    }
+
+    /**
+     * @param parentRel
+     * @param uuid
+     * @return successful
+     */
+
+    private boolean addRelationshipOld(ArrayList<String> parentRel) {
+        return FedoraUtils.putRelsExt(parentRel.get(0), parentRel.get(1), false);
     }
 
     /*

@@ -27,8 +27,6 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
-import java.io.UnsupportedEncodingException;
-
 import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
@@ -61,6 +59,7 @@ public class PutDigitalObjectDetailHandler
         implements ActionHandler<PutDigitalObjectDetailAction, PutDigitalObjectDetailResult> {
 
     /** The logger. */
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
@@ -186,25 +185,10 @@ public class PutDigitalObjectDetailHandler
      * @param versionable
      */
     private boolean modifyRelations(DigitalObjectDetail detail, boolean versionable) {
-        String url = null;
 
-        try {
-            url =
-                    configuration.getFedoraHost() + "/objects/" + detail.getUuid()
-                            + "/datastreams/RELS-EXT?versionable=" + (versionable ? "true" : "false")
-                            + java.net.URLEncoder.encode("&mimeType=application/rdf+xml", "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.warn("Encoding failure", e);
-        }
-
-        String usr = configuration.getFedoraLogin();
-        String pass = configuration.getFedoraPassword();
-        String content = FedoraUtils.createNewRealitonsPart(detail);
-        if (content != null) {
-            RESTHelper.put(url, content, usr, pass, false);
-            return true;
-        }
-        return false;
+        return FedoraUtils.putRelsExt(detail.getUuid(),
+                                      FedoraUtils.createNewRealitonsPart(detail),
+                                      versionable);
     }
 
     /**

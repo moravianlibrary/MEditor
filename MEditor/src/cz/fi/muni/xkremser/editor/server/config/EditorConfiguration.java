@@ -186,6 +186,12 @@ public abstract class EditorConfiguration {
         /** The Constant FEDORA_PASSWORD. */
         public static final String FEDORA_PASSWORD = "fedoraPassword";
 
+        /** The Constant FEDORA_VERSION. */
+        public static final String FEDORA_VERSION = "fedoraVersion";
+
+        /** The Constant FEDORA_VERSION_DEFAULT. */
+        public static final String FEDORA_VERSION_DEFAULT = "3.3";
+
         // database
         /** The Constant DB_HOST. */
         public static final String DB_HOST = "dbHost";
@@ -447,6 +453,16 @@ public abstract class EditorConfiguration {
      */
     public String getFedoraPassword() {
         return getConfiguration().getString(ServerConstants.FEDORA_PASSWORD);
+    }
+
+    /**
+     * Gets the fedora version.
+     * 
+     * @return the fedora version
+     */
+    public String getFedoraVersion() {
+        return getConfiguration().getString(ServerConstants.FEDORA_VERSION,
+                                            ServerConstants.FEDORA_VERSION_DEFAULT);
     }
 
     /**
