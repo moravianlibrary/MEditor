@@ -159,7 +159,7 @@ public class IngestInfoWindow
 
         int newWidth = ingestInfoList.size() * 350;
         setWidth(newWidth);
-        int newHeight = maxIngest * 130;
+        int newHeight = 110 + (maxIngest * 100);
         setHeight(newHeight);
 
         setEdgeOffset(15);
