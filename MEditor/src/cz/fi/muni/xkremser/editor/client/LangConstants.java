@@ -439,6 +439,42 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String conferenceMARC();
 
   /**
+   * Translated "A digital object from the tree which is going to be removed is in a relationship with some digital objects which however are not occur in a given tree. If you continue in removing, the relationships with the problem digital object will be removed, but the digital object itself will not be removed.".
+   * 
+   * @return translated "A digital object from the tree which is going to be removed is in a relationship with some digital objects which however are not occur in a given tree. If you continue in removing, the relationships with the problem digital object will be removed, but the digital object itself will not be removed."
+   */
+  @DefaultStringValue("A digital object from the tree which is going to be removed is in a relationship with some digital objects which however are not occur in a given tree. If you continue in removing, the relationships with the problem digital object will be removed, but the digital object itself will not be removed.")
+  @Key("conflictChildExtRef")
+  String conflictChildExtRef();
+
+  /**
+   * Translated "A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. This parental object is also in a relationship(s) with another child(ren). If you continue in removing, the relationships will be removed only.".
+   * 
+   * @return translated "A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. This parental object is also in a relationship(s) with another child(ren). If you continue in removing, the relationships will be removed only."
+   */
+  @DefaultStringValue("A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. This parental object is also in a relationship(s) with another child(ren). If you continue in removing, the relationships will be removed only.")
+  @Key("conflictCousin")
+  String conflictCousin();
+
+  /**
+   * Translated "A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. If you continue in removing, the relationships will be removed only. Nonetheless, there is a risk that the problem parental digital object will become so-called zombie.".
+   * 
+   * @return translated "A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. If you continue in removing, the relationships will be removed only. Nonetheless, there is a risk that the problem parental digital object will become so-called zombie."
+   */
+  @DefaultStringValue("A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. If you continue in removing, the relationships will be removed only. Nonetheless, there is a risk that the problem parental digital object will become so-called zombie.")
+  @Key("conflictPaGrandpa")
+  String conflictPaGrandpa();
+
+  /**
+   * Translated "A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. This parental object is also in a relationship(s) with another child(ren) from another tree  structure.  If you continue in removing, the relationships will be removed only.".
+   * 
+   * @return translated "A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. This parental object is also in a relationship(s) with another child(ren) from another tree  structure.  If you continue in removing, the relationships will be removed only."
+   */
+  @DefaultStringValue("A digital object which is going to be removed is in a relationship with some parental digital object which has however the same ancestor. This parental object is also in a relationship(s) with another child(ren) from another tree  structure.  If you continue in removing, the relationships will be removed only.")
+  @Key("conflictUncleCousin")
+  String conflictUncleCousin();
+
+  /**
    * Translated "Connect".
    * 
    * @return translated "Connect"
@@ -1114,20 +1150,20 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String deleteAnyway();
 
   /**
-   * Translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.".
+   * Translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore in order to find out and subsequently fix the possible conflicts.".
    * 
-   * @return translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore to find out the possible conflicts."
+   * @return translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore in order to find out and subsequently fix the possible conflicts."
    */
-  @DefaultStringValue("and all its offsprings. This remove can create some conflicts. Please click on the Explore to find out the possible conflicts.")
+  @DefaultStringValue("and all its offsprings. This remove can create some conflicts. Please click on the Explore in order to find out and subsequently fix the possible conflicts.")
   @Key("deleteWarningExplore")
   String deleteWarningExplore();
 
   /**
-   * Translated "You want to remove a digital object with uuid".
+   * Translated "You want to remove a digital object with PID".
    * 
-   * @return translated "You want to remove a digital object with uuid"
+   * @return translated "You want to remove a digital object with PID"
    */
-  @DefaultStringValue("You want to remove a digital object with uuid")
+  @DefaultStringValue("You want to remove a digital object with PID")
   @Key("deleteWarningWant")
   String deleteWarningWant();
 
@@ -2689,6 +2725,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String operationSuccessful();
 
   /**
+   * Translated "or".
+   * 
+   * @return translated "or"
+   */
+  @DefaultStringValue("or")
+  @Key("or")
+  String or();
+
+  /**
    * Translated "An integer that designates the sequence of parts.".
    * 
    * @return translated "An integer that designates the sequence of parts."
@@ -3776,6 +3821,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Unlock the digital object")
   @Key("unlockObjectWindow")
   String unlockObjectWindow();
+
+  /**
+   * Translated "Unroll".
+   * 
+   * @return translated "Unroll"
+   */
+  @DefaultStringValue("Unroll")
+  @Key("unroll")
+  String unroll();
 
   /**
    * Translated "Update lock".

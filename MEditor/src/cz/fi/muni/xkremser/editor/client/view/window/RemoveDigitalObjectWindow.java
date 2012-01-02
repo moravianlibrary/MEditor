@@ -42,6 +42,8 @@ import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.events.MouseOutEvent;
 import com.smartgwt.client.widgets.events.MouseOutHandler;
 import com.smartgwt.client.widgets.events.MouseOverEvent;
@@ -58,7 +60,6 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.CONFLICT;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
@@ -232,7 +233,9 @@ public class RemoveDigitalObjectWindow
     private final class ThreeDots
             extends Layout {
 
-        public ThreeDots(final List<DigitalObjectRelationships> digObjRelList, final boolean children) {
+        public ThreeDots(final List<DigitalObjectRelationships> digObjRelList,
+                         final boolean children,
+                         final boolean isParentConflict) {
             super();
             final ImgButton img = new ImgButton();
             img.setSrc(THREE_DOTS);
@@ -242,9 +245,22 @@ public class RemoveDigitalObjectWindow
             img.setWidth(24);
             img.setHeight(6);
             addMember(img);
-            setHeight(60);
+            setHeight(isParentConflict ? 10 : 60);
             setAutoWidth();
-            setAlign(VerticalAlignment.CENTER);
+            setAlign(isParentConflict ? VerticalAlignment.BOTTOM : VerticalAlignment.CENTER);
+            setDefaultLayoutAlign(isParentConflict ? VerticalAlignment.BOTTOM : VerticalAlignment.CENTER);
+            img.setCanHover(true);
+            img.setHoverOpacity(75);
+            img.setHoverStyle("interactImageHover");
+            img.setHoverOpacity(75);
+            img.setShowHover(true);
+            img.addHoverHandler(new HoverHandler() {
+
+                @Override
+                public void onHover(HoverEvent event) {
+                    img.setPrompt(lang.unroll());
+                }
+            });
             img.addClickHandler(new ClickHandler() {
 
                 @Override
@@ -258,10 +274,20 @@ public class RemoveDigitalObjectWindow
                             removeMember(img);
                             setVertical(false);
                             for (DigitalObjectRelationships digObj : digObjRelList) {
-                                Layout createdRelLayout =
-                                        createRelLayout(digObj, 2 + digObjRelList.indexOf(digObj), children);
-                                createdRelLayout.setExtraSpace(5);
-                                addMember(createdRelLayout);
+                                if (!isParentConflict) {
+                                    Layout createdRelLayout =
+                                            createRelLayout(digObj,
+                                                            2 + digObjRelList.indexOf(digObj),
+                                                            children);
+                                    createdRelLayout.setExtraSpace(5);
+                                    addMember(createdRelLayout);
+                                } else {
+
+                                    ItemImgButton itemImgButton =
+                                            new ItemImgButton(digObj.getUuid(), RED_CIRCLE, false);
+                                    itemImgButton.setValign(VerticalAlignment.BOTTOM);
+                                    addMember(itemImgButton);
+                                }
                             }
                             customizeWindow();
                             mw.hide();
@@ -274,24 +300,86 @@ public class RemoveDigitalObjectWindow
     }
 
     private static final class ArrowLeftConflict
-            extends Img {
+            extends ImgButton {
 
-        public ArrowLeftConflict() {
-            super(ARROW_LEFT_CONFLICT);
+        public ArrowLeftConflict(final Map<String, List<DigitalObjectRelationships>> map) {
+            super();
+            setSrc(ARROW_LEFT_CONFLICT);
             setWidth(37);
             setHeight(9);
             setExtraSpace(5);
+            setShowRollOver(false);
+            setShowDown(false);
+            setCanHover(true);
+            setHoverOpacity(95);
+            setHoverWidth(300);
+            setHoverStyle("interactImageHover");
+            setShowHover(true);
+            addHoverHandler(new HoverHandler() {
+
+                @Override
+                public void onHover(HoverEvent event) {
+                    setPrompt(lang.conflictChildExtRef() + "<br><br>"
+                            + "<img src=\"images/other/conflictChildExtRef.png\">");
+                }
+            });
+            addRightMouseDownHandler(new RightMouseDownHandler() {
+
+                @Override
+                public void onRightMouseDown(RightMouseDownEvent event) {
+                    Menu menu = new Menu();
+                    menu.setShowShadow(true);
+                    menu.setShadowDepth(10);
+                    for (final String uuid : map.keySet()) {
+                        MenuItem newItem =
+                                new MenuItem(lang.menuEdit() + (map.size() == 1 ? "" : " " + uuid),
+                                             "icons/16/document_plain_new.png");
+
+                        newItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+                            @Override
+                            public void onClick(MenuItemClickEvent event) {
+                                eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
+                            }
+                        });
+                        menu.addItem(newItem);
+                    }
+                    setContextMenu(menu);
+                }
+            });
         }
     }
 
     private static final class ArrowAskewConflict
             extends Img {
 
-        public ArrowAskewConflict(String src) {
+        public ArrowAskewConflict(String src, final CONFLICT conflict) {
             super(src);
             setWidth(10);
             setHeight(18);
             setExtraSpace(5);
+            setCanHover(true);
+            setHoverOpacity(95);
+            setHoverWidth(250);
+            setHoverStyle("interactImageHover");
+            setShowHover(true);
+            addHoverHandler(new HoverHandler() {
+
+                @Override
+                public void onHover(HoverEvent event) {
+                    if (conflict == CONFLICT.SAME_PARENT_GRANDPARENT) {
+                        setPrompt(lang.conflictPaGrandpa() + "<br><br>"
+                                + "<img src=\"images/other/conflictPaGrandpa.png\">");
+                    } else if (conflict == CONFLICT.COUSIN) {
+                        setHoverWidth(450);
+                        setPrompt(lang.conflictCousin() + "<br><br><center>" + lang.or() + "</center>"
+                                + "<img src=\"images/other/conflictCousin.png\">");
+                    } else if (conflict == CONFLICT.UNCLE_COUSINE) {
+                        setPrompt(lang.conflictUncleCousin() + "<br><br>"
+                                + "<img src=\"images/other/conflictUncleCousin.png\">");
+                    }
+                }
+            });
         }
     }
 
@@ -322,24 +410,24 @@ public class RemoveDigitalObjectWindow
                     }
                 }
                 addMember(parentsRelLayout);
-                if (digObjRel.getConflict() != Constants.CONFLICT.NO_CONFLICT) {
+                if (digObjRel.getConflict() != CONFLICT.NO_CONFLICT) {
                     itemImgButton = new ItemImgButton(digObjRel.getUuid(), RED_SQUARE, true);
                     if (!isConflict) isConflict = true;
                 } else {
                     itemImgButton = new ItemImgButton(digObjRel.getUuid(), GREEN_SQUARE, true);
                 }
             } else {
-                if (digObjRel.getConflict() != Constants.CONFLICT.NO_CONFLICT) {
+                if (digObjRel.getConflict() != CONFLICT.NO_CONFLICT) {
                     itemImgButton = new ItemImgButton(digObjRel.getUuid(), RED_CIRCLE, false);
                 } else {
                     itemImgButton = new ItemImgButton(digObjRel.getUuid(), GREEN_CIRCLE, false);
                 }
             }
-            if (digObjRel.getConflict() == Constants.CONFLICT.CHILD_EXTERNAL_REFERENCE) {
+            if (digObjRel.getConflict() == CONFLICT.CHILD_EXTERNAL_REFERENCE) {
                 Layout conflictLayout = new HLayout(2);
                 itemImgButton.setExtraSpace(0);
                 conflictLayout.addMember(itemImgButton);
-                conflictLayout.addMember(new ArrowLeftConflict());
+                conflictLayout.addMember(new ArrowLeftConflict(digObjRel.getParents()));
                 conflictLayout.setAutoHeight();
                 conflictLayout.setAutoWidth();
                 addMember(conflictLayout);
@@ -385,7 +473,8 @@ public class RemoveDigitalObjectWindow
 
             if (toMany) {
                 arrowsLayout.addMember(new ThreeDots(digObjRelList.subList(count, digObjRelList.size() - 1),
-                                                     children));
+                                                     children,
+                                                     false));
                 arrowsLayout.addMember(createRelLayout(digObjRelList.get(digObjRelList.size() - 1),
                                                        digObjRelList.size() - 1,
                                                        children));
@@ -412,7 +501,7 @@ public class RemoveDigitalObjectWindow
         }
     }
 
-    private static final class ParentConflictItemLayout
+    private final class ParentConflictItemLayout
             extends VLayout {
 
         public ParentConflictItemLayout(String relName, List<DigitalObjectRelationships> relParentsList) {
@@ -432,7 +521,7 @@ public class RemoveDigitalObjectWindow
         }
     }
 
-    private static final class ParentConflictRelLayout
+    private final class ParentConflictRelLayout
             extends VLayout {
 
         public ParentConflictRelLayout(DigitalObjectRelationships digObjRel) {
@@ -440,7 +529,7 @@ public class RemoveDigitalObjectWindow
             setAutoHeight();
             setAutoWidth();
 
-            addMember(new ArrowAskewConflict(ARROW_ASKEW_RIGHT_CONFLICT));
+            addMember(new ArrowAskewConflict(ARROW_ASKEW_RIGHT_CONFLICT, digObjRel.getConflict()));
 
             Layout circleLayout = new HLayout();
             circleLayout.addMember(new DynamicForm() {
@@ -457,15 +546,34 @@ public class RemoveDigitalObjectWindow
 
             Layout conArrowLayout = new HLayout(2);
             conArrowLayout.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
-            conArrowLayout.addMember(new ArrowAskewConflict(ARROW_ASKEW_LEFT_CONFLICT));
+            conArrowLayout.addMember(new ArrowAskewConflict(ARROW_ASKEW_LEFT_CONFLICT, digObjRel
+                    .getConflict()));
 
             if (digObjRel.getConflict() == CONFLICT.COUSIN
-                    || digObjRel.getConflict() == Constants.CONFLICT.UNCLE_COUSINE) {
-                conArrowLayout.addMember(new ArrowAskewConflict(ARROW_ASKEW_RIGHT_CONFLICT));
+                    || digObjRel.getConflict() == CONFLICT.UNCLE_COUSINE) {
+                conArrowLayout.addMember(new ArrowAskewConflict(ARROW_ASKEW_RIGHT_CONFLICT, digObjRel
+                        .getConflict()));
 
                 for (String childRel : digObjRel.getChildren().keySet()) {
-                    for (DigitalObjectRelationships child : digObjRel.getChildren().get(childRel)) {
-                        conArrowLayout.addMember(new ItemImgButton(child.getUuid(), RED_CIRCLE, false));
+
+                    List<DigitalObjectRelationships> digObjRelList = digObjRel.getChildren().get(childRel);
+                    boolean toMany = false;
+                    int count = ((toMany = (digObjRelList.size() > 5)) ? 2 : digObjRelList.size());
+
+                    for (int i = 0; i < count; i++) {
+                        conArrowLayout.addMember(new ItemImgButton(digObjRelList.get(i).getUuid(),
+                                                                   RED_CIRCLE,
+                                                                   false));
+                    }
+
+                    if (toMany) {
+                        conArrowLayout
+                                .addMember(new ThreeDots(digObjRelList.subList(count,
+                                                                               digObjRelList.size() - 1),
+                                                         false,
+                                                         true));
+                        conArrowLayout.addMember(new ItemImgButton(digObjRelList
+                                .get(digObjRelList.size() - 1).getUuid(), RED_CIRCLE, false));
                     }
                 }
             }

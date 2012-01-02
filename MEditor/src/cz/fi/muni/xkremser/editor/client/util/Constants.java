@@ -491,7 +491,7 @@ public class Constants {
         NO_CONFLICT(0),
 
         /**
-         * WHen there is a child in the tree structure which exists a reference
+         * When there is a child in the tree structure which exists a reference
          * from the external object to
          */
         CHILD_EXTERNAL_REFERENCE(1),

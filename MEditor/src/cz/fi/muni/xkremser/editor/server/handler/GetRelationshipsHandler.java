@@ -222,6 +222,7 @@ public class GetRelationshipsHandler
                     if (!uuidList.contains(subject.get(0))) {
                         uuidNotToRemove.add(digObjRel.getUuid());
                         digObjRel.setConflict(Constants.CONFLICT.CHILD_EXTERNAL_REFERENCE);
+                        digObjRel.getParents().put(subject.get(0), null);
                     }
                 }
             }
