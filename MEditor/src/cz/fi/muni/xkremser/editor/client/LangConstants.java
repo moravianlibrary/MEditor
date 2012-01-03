@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -2183,6 +2183,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This is roughly equivalent to MARC 21 Leader/06 value 'g'.")
   @Key("mImageMARC")
   String mImageMARC();
+
+  /**
+   * Translated "make public".
+   * 
+   * @return translated "make public"
+   */
+  @DefaultStringValue("make public")
+  @Key("makePublic")
+  String makePublic();
 
   /**
    * Translated "This attribute is used as manuscript='yes' when the resource is written in handwriting or typescript. (Leader/06 values 'd', 'f' and 't')".

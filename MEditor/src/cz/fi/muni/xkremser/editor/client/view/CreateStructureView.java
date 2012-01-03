@@ -54,7 +54,9 @@ import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.util.ValueCallback;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
@@ -63,9 +65,12 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -99,9 +104,11 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.DCTab;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
@@ -122,7 +129,7 @@ public class CreateStructureView
 
         void onAddImages(final TileGrid tileGrid, final Menu menu);
 
-        void createObjects(DublinCore dc, ModsTypeClient mods);
+        void createObjects(DublinCore dc, ModsTypeClient mods, boolean visible);
 
         ModsCollectionClient getMods();
 
@@ -193,6 +200,8 @@ public class CreateStructureView
     private EditorTabSet topTabSet;
 
     private int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+
+    private UniversalWindow universalWindow = null;
 
     /**
      * Instantiates a new create view.
@@ -629,15 +638,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                DublinCore dc = null;
-                ModsTypeClient mods = null;
-                if (topTabSet != null) {
-                    dc = topTabSet.getDcTab().getDc();
-                    if (topTabSet.getModsTab() != null) {
-                        mods = ((ModsTab) topTabSet.getModsTab()).getMods();
-                    }
-                }
-                getUiHandlers().createObjects(dc, mods);
+                create();
             }
         });
 
@@ -647,6 +648,65 @@ public class CreateStructureView
         tileGridLayout.addMember(tileGrid);
         layout.addMember(tileGridLayout);
         specialPageItem.disable();
+    }
+
+    private void create() {
+
+        universalWindow = new UniversalWindow(160, 350, lang.publishName());
+
+        HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
+        label.setMargin(5);
+        label.setExtraSpace(10);
+        final DynamicForm form = new DynamicForm();
+        form.setMargin(0);
+        form.setWidth(100);
+        form.setHeight(20);
+        form.setExtraSpace(7);
+
+        final CheckboxItem makePublic = new CheckboxItem("makePublic", lang.makePublic());
+        Button publish = new Button();
+        publish.setTitle(lang.ok());
+        publish.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event2) {
+
+                DublinCore dc = null;
+                ModsTypeClient mods = null;
+                if (topTabSet != null) {
+                    dc = topTabSet.getDcTab().getDc();
+                    if (topTabSet.getModsTab() != null) {
+                        mods = ((ModsTab) topTabSet.getModsTab()).getMods();
+                    }
+                }
+                getUiHandlers().createObjects(dc, mods, makePublic.getValueAsBoolean());
+                universalWindow.hide();
+                universalWindow = null;
+            }
+        });
+        Button cancel = new Button();
+        cancel.setTitle(lang.cancel());
+        cancel.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event2) {
+                universalWindow.hide();
+                universalWindow = null;
+            }
+        });
+        HLayout hLayout = new HLayout();
+        hLayout.setMembersMargin(10);
+        hLayout.addMember(publish);
+        hLayout.addMember(cancel);
+        hLayout.setMargin(5);
+        form.setFields(makePublic);
+        universalWindow.addItem(label);
+        universalWindow.addItem(form);
+        universalWindow.addItem(hLayout);
+
+        universalWindow.centerInPage();
+        universalWindow.show();
+        publish.focus();
     }
 
     private ToolStripMenuButton getToolStripMenuButton() {

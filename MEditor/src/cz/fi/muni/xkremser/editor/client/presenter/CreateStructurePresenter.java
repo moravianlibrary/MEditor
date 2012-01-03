@@ -640,7 +640,7 @@ public class CreateStructurePresenter
      * {@inheritDoc}
      */
     @Override
-    public void createObjects(final DublinCore dc, final ModsTypeClient mods) {
+    public void createObjects(final DublinCore dc, final ModsTypeClient mods, final boolean visible) {
 
         Image progress = new Image("images/ingesting.gif");
         getView().getPopupPanel().setWidget(progress);
@@ -669,8 +669,9 @@ public class CreateStructurePresenter
             e.printStackTrace();
         }
         if (object != null) {
+            object.setVisible(visible);
             object.setSysno(sysno);
-            System.out.println(ClientUtils.toStringTree(object));
+            //            System.out.println(ClientUtils.toStringTree(object));
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
@@ -704,6 +705,8 @@ public class CreateStructurePresenter
                                        getView().getPopupPanel().hide();
                                    }
                                });
+        } else {
+            SC.warn("Objekt neobsahuje žádné podčásti, proto se nebude vytvářet");
         }
     }
 

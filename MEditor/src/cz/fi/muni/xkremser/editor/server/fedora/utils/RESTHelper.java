@@ -200,12 +200,12 @@ public class RESTHelper {
                 } else {
                     if (uc != null) LOGGER.error(convertStreamToString(uc.getInputStream()));
                     LOGGER.error("Unable to open connection on " + urlString + "  response code: " + resp);
-                    throw new ConnectionException("connection cannot be established");
+                    throw new ConnectionException("connection to " + urlString + " cannot be established");
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new ConnectionException("connection cannot be established");
+            throw new ConnectionException("connection to " + urlString + " cannot be established");
         }
         return uc;
     }

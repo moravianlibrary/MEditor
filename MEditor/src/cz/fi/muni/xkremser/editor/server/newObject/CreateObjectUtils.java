@@ -95,6 +95,7 @@ public class CreateObjectUtils {
         builder.setModsXmlContent(mods);
         builder.setBundle(node.getBundle());
         builder.setLabel(node.getName());
+        builder.setPolicy(node.getVisible() ? Policy.PUBLIC : Policy.PRIVATE);
         List<NewDigitalObject> childrenToAdd = node.getChildren();
         if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
             List<RelsExtRelation> relations = builder.getChildren();

@@ -49,6 +49,7 @@ public class NewDigitalObject
     private boolean exist;
     private String sysno;
     private String path;
+    private boolean visible;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -151,4 +152,11 @@ public class NewDigitalObject
         this.path = path;
     }
 
+    public boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }

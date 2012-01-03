@@ -63,7 +63,7 @@ public abstract class FoxmlBuilder {
     private String signature;
     private String sysno;
     private String label;
-    private Policy policy = Policy.PUBLIC;
+    private Policy policy = Policy.PRIVATE;
     private final List<RelsExtRelation> children;
     private MetadataBundle bundle;
     private Document document;
