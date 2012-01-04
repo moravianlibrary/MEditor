@@ -315,6 +315,7 @@ public class RemoveDigitalObjectWindow
             setHoverWidth(300);
             setHoverStyle("interactImageHover");
             setShowHover(true);
+            setHoverHeight(320);
             addHoverHandler(new HoverHandler() {
 
                 @Override
@@ -361,6 +362,7 @@ public class RemoveDigitalObjectWindow
             setCanHover(true);
             setHoverOpacity(95);
             setHoverWidth(250);
+            setHoverHeight(320);
             setHoverStyle("interactImageHover");
             setShowHover(true);
             addHoverHandler(new HoverHandler() {

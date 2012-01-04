@@ -308,8 +308,8 @@ public class Constants {
         CODE_KEY_H(72),
 
         /**
-         * The value of nativeEvent-keyCode of button Esc - used for close
-         * pop-up windows
+         * The value of nativeEvent-keyCode of button U - used for display
+         * window for entering the new object's PID
          **/
         CODE_KEY_U(85),
 
