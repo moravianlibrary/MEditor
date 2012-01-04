@@ -428,6 +428,17 @@ public class ModifyPresenter
                 tileGrid.removeSelectedData();
             }
         });
+        items[9].addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                if (tileGrid.getSelection().length > 1) {
+                    SC.warn(lang.deleteOne());
+                } else {
+                    removeDigitalObject(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID));
+                }
+            }
+        });
     }
 
     /*

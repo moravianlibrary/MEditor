@@ -218,6 +218,9 @@ public class ModifyView
     /** The Constant ID_DELETE. */
     public static final String ID_DELETE = "delete";
 
+    /** The Constant ID_COMPLETELY_DELETE. */
+    public static final String ID_COMPLETELY_DELETE = "completelyDelete";
+
     /** The Constant ID_UUID. */
     public static final String ID_UUID = "uuid";
 
@@ -986,6 +989,17 @@ public class ModifyView
             }
         });
 
+        MenuItem completelyRemove =
+                new MenuItem(lang.menuCompletelyRemove(), "icons/16/completelyRemove.png");
+        completelyRemove.setAttribute(ID_NAME, ID_COMPLETELY_DELETE);
+        completelyRemove.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return tileGrid.getSelection().length > 0;
+            }
+        });
+
         menu.setItems(editItem,
                       separator,
                       selectAllItem,
@@ -994,7 +1008,8 @@ public class ModifyView
                       separator,
                       copyItem,
                       pasteItem,
-                      removeSelectedItem);
+                      removeSelectedItem,
+                      completelyRemove);
         tileGrid.setContextMenu(menu);
         tileGrid.setDropTypes(model);
         tileGrid.setDragType(model);

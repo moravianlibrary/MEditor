@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1150,6 +1150,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String deleteAnyway();
 
   /**
+   * Translated "It is not possible to completely remove more than one digital object at once. Please remove each digital object separately.".
+   * 
+   * @return translated "It is not possible to completely remove more than one digital object at once. Please remove each digital object separately."
+   */
+  @DefaultStringValue("It is not possible to completely remove more than one digital object at once. Please remove each digital object separately.")
+  @Key("deleteOne")
+  String deleteOne();
+
+  /**
    * Translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore in order to find out and subsequently fix the possible conflicts.".
    * 
    * @return translated "and all its offsprings. This remove can create some conflicts. Please click on the Explore in order to find out and subsequently fix the possible conflicts."
@@ -2228,6 +2237,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("me")
   @Key("me")
   String me();
+
+  /**
+   * Translated "Completely remove".
+   * 
+   * @return translated "Completely remove"
+   */
+  @DefaultStringValue("Completely remove")
+  @Key("menuCompletelyRemove")
+  String menuCompletelyRemove();
 
   /**
    * Translated "Copy selected".
