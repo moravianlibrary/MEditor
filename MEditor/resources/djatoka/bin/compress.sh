@@ -1,10 +1,17 @@
 #!/bin/bash
+# author Jiri Kremser
 # script for conversion to JPEG 2000 format
 # setup environment variables for shell script
 
+#set -x
 DJATOKA_HOME=$1
 LIBPATH=$DJATOKA_HOME/lib
 TIFF_TMP=""
+
+if [ $# -ne 3 ] ; then
+  echo 'Usage: convert.sh path_to_djatoka source_image output_image'
+  exit 1
+fi
 
 if [ `uname` = 'Linux' ] ; then
   if [ `uname -p` = "x86_64" ] ; then
@@ -42,17 +49,17 @@ fi
 INPUT_FILE=$(echo $2 | tr "[:upper:]" "[:lower:]")
 
 NO_PROBLEM=""
-if [ ${INPUT_FILE:(-4)} != ".tif" ] && [ ${INPUT_FILE:(-5)} != "tiff" ] ; then
+if [ "${INPUT_FILE:(-4)}x" != ".tifx" ] && [ "${INPUT_FILE:(-5)}x" != "tiffx" ] ; then
   TIFF_TMP1=`tempfile -s ".tif"`;
   TIFF_TMP2=`tempfile -s ".tif"`;
-  convert $2 $TIFF_TMP1 && tiffcp -c none $TIFF_TMP1 $TIFF_TMP2 && {
+  convert $2 $TIFF_TMP1 && tiffcp -c none $TIFF_TMP1 $TIFF_TMP2 && rm $TIFF_TMP1 && {
     NO_PROBLEM="ok";
   }
 fi
 
 if [ "$TIFF_TMP2" != "" ] ; then
   [ "$NO_PROBLEM" != "ok" ] && {
-     exit 1
+     exit 2
   }
   TIFF_IMG=$TIFF_TMP2
 else
@@ -61,5 +68,8 @@ fi
 
 $DJATOKA_HOME/bin/$PLATFORM/kdu_compress -s $DJATOKA_HOME/bin/kakadu.properties -i "$TIFF_IMG" -o "$3"
 
+if [ "$TIFF_TMP2" != "" ] ; then
+  rm $TIFF_TMP2
+fi
 
 exit 0
