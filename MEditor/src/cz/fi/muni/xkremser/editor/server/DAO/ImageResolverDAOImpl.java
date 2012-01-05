@@ -72,6 +72,10 @@ public class ImageResolverDAOImpl
     public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_IMAGE_NAME
             + " (identifier, imageFile, old_fs_path, shown) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP))";
 
+    /** The Constant INSERT_ITEM_STATEMENT. */
+    public static final String DELETE_ITEM_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE_NAME
+            + " WHERE identifier = (?)";
+
     private static final Logger LOGGER = Logger.getLogger(ImageResolverDAOImpl.class);
 
     /**
@@ -96,6 +100,25 @@ public class ImageResolverDAOImpl
     }
 
     /**
+     * Gets the item delete statement.
+     * 
+     * @param identifier
+     *        the identifier
+     * @return the item delete statement
+     * @throws DatabaseException
+     */
+    private PreparedStatement getItemDeleteStatement(String identifier) throws DatabaseException {
+        PreparedStatement deleteItemStmt = null;
+        try {
+            deleteItemStmt = getConnection().prepareStatement(DELETE_ITEM_STATEMENT);
+            deleteItemStmt.setString(1, identifier);
+        } catch (SQLException ex) {
+            LOGGER.error("Could not get delete item statement " + deleteItemStmt, ex);
+        }
+        return deleteItemStmt;
+    }
+
+    /**
      * {@inheritDoc}
      */
 
@@ -112,6 +135,7 @@ public class ImageResolverDAOImpl
             // TX start
             int updated = 0;
             for (ImageItem item : toInsert) {
+                getItemDeleteStatement(item.getIdentifier()).executeUpdate();
                 updated += getItemInsertStatement(item).executeUpdate();
             }
             if (updated == toInsert.size()) {
