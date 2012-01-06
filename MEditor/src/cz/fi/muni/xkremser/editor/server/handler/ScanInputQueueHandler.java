@@ -81,6 +81,8 @@ public class ScanInputQueueHandler
     private static final Logger LOGGER = Logger
             .getLogger(ScanInputQueueHandler.class.getPackage().toString());
 
+    private static final Object LOCK = ScanInputQueueHandler.class;
+
     /** The configuration. */
     private final EditorConfiguration configuration;
 
@@ -225,7 +227,9 @@ public class ScanInputQueueHandler
      */
     private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
         ArrayList<InputQueueItem> inputQueueList = new ArrayList<InputQueueItem>();
-        scanDirectoryStructure(pathPrefix, relativePath, inputQueueList, Constants.DIR_MAX_DEPTH);
+        synchronized (LOCK) {
+            scanDirectoryStructure(pathPrefix, relativePath, inputQueueList, Constants.DIR_MAX_DEPTH);
+        }
         return inputQueueList;
     }
 

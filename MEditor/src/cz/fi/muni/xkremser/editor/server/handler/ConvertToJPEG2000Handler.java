@@ -60,6 +60,8 @@ public class ConvertToJPEG2000Handler
     private static final Logger LOGGER = Logger.getLogger(ConvertToJPEG2000Handler.class.getPackage()
             .toString());
 
+    private static final Object LOCK = ConvertToJPEG2000Handler.class;
+
     /** The configuration. */
     private final EditorConfiguration configuration;
 
@@ -146,7 +148,9 @@ public class ConvertToJPEG2000Handler
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath());
             }
-            p = Runtime.getRuntime().exec(command.toString());
+            synchronized (LOCK) {
+                p = Runtime.getRuntime().exec(command.toString());
+            }
 
             if (processTimeout(p, 100, 20000)) {
                 if (p.exitValue() != 0) {
