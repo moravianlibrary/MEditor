@@ -123,7 +123,7 @@ public class ConvertToJPEG2000Handler
 
     }
 
-    private void convertToJpeg2000(ImageItem item) throws ActionException {
+    private boolean convertToJpeg2000(ImageItem item) throws ActionException {
         StringBuffer sb;
         if (djatokaHome == null) {
             djatokaHome = configuration.getDjatokaHome();
@@ -147,11 +147,53 @@ public class ConvertToJPEG2000Handler
                 LOGGER.debug("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath());
             }
             p = Runtime.getRuntime().exec(command.toString());
-            p.waitFor();
+
+            if (processTimeout(p, 100, 20000)) {
+                if (p.exitValue() != 0) {
+                    LOGGER.warn("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath()
+                            + " returns non-zero exitValue: " + p.exitValue());
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                LOGGER.warn("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath()
+                        + " took very long time.");
+                return false;
+            }
+
         } catch (IOException e) {
             throw new ActionException(e);
-        } catch (InterruptedException e) {
-            throw new ActionException(e);
+        }
+    }
+
+    private static synchronized boolean processTimeout(Process process, long interval, long timeout)
+            throws ActionException {
+        long time_waiting = 0;
+        boolean process_finished = false;
+
+        while (time_waiting < timeout && !process_finished) {
+            process_finished = true;
+            try {
+                Thread.sleep(interval);
+            } catch (InterruptedException e) {
+                throw new ActionException(e);
+            }
+
+            try {
+                process.exitValue();
+            } catch (IllegalThreadStateException e) {
+                // process hasn't finished yet
+                process_finished = false;
+            }
+            time_waiting += interval;
+        }
+
+        if (process_finished) {
+            return true;
+        } else {
+            process.destroy();
+            return false;
         }
     }
 
