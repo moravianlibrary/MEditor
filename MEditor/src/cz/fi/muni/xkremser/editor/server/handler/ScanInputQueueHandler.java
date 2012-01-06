@@ -191,6 +191,7 @@ public class ScanInputQueueHandler
      * @throws DatabaseException
      */
     private ArrayList<InputQueueItem> updateDb(String base) throws DatabaseException {
+
         String[] types = configuration.getDocumentTypes();
         try {
             checkDocumentTypes(types);
@@ -199,15 +200,17 @@ public class ScanInputQueueHandler
         }
         ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();
         ArrayList<InputQueueItem> listTopLvl = new ArrayList<InputQueueItem>(types.length);
-        for (int i = 0; i < types.length; i++) {
-            File test = new File(base + File.separator + types[i]);
-            if (!test.exists()) {
-                test.mkdir(); // create if not exists
+        synchronized (LOCK) {
+            for (int i = 0; i < types.length; i++) {
+                File test = new File(base + File.separator + types[i]);
+                if (!test.exists()) {
+                    test.mkdir(); // create if not exists
+                }
+                InputQueueItem topLvl = new InputQueueItem(File.separator + types[i], types[i], false);
+                listTopLvl.add(topLvl);
+                list.add(topLvl);
+                list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
             }
-            InputQueueItem topLvl = new InputQueueItem(File.separator + types[i], types[i], false);
-            listTopLvl.add(topLvl);
-            list.add(topLvl);
-            list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
         }
         inputQueueDAO.updateItems(list);
         return listTopLvl;
@@ -227,9 +230,7 @@ public class ScanInputQueueHandler
      */
     private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
         ArrayList<InputQueueItem> inputQueueList = new ArrayList<InputQueueItem>();
-        synchronized (LOCK) {
-            scanDirectoryStructure(pathPrefix, relativePath, inputQueueList, Constants.DIR_MAX_DEPTH);
-        }
+        scanDirectoryStructure(pathPrefix, relativePath, inputQueueList, Constants.DIR_MAX_DEPTH);
         return inputQueueList;
     }
 

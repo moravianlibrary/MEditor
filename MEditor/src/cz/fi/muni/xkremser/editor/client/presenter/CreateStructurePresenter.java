@@ -679,7 +679,7 @@ public class CreateStructurePresenter
                                    public void callback(final InsertNewDigitalObjectResult result) {
                                        if (result.isIngestSuccess()) {
                                            if (!result.isReindexSuccess()) {
-                                               // TODO" i18n
+                                               // TODO: i18n
                                                SC.warn("Reindexace se nepodařila.", new BooleanCallback() {
 
                                                    @Override
@@ -700,17 +700,20 @@ public class CreateStructurePresenter
                                    @Override
                                    public void callbackError(Throwable t) {
                                        System.out.println(t);
+                                       // TODO: i18n
                                        SC.warn("Vložení se nepodařilo. Chyba: " + t.getMessage());
                                        getView().getPopupPanel().setVisible(false);
                                        getView().getPopupPanel().hide();
                                    }
                                });
         } else {
+            // TODO: i18n
             SC.warn("Objekt neobsahuje žádné podčásti, proto se nebude vytvářet");
         }
     }
 
     private void openCreated(final String pid) {
+        // TODO: i18n
         SC.ask("Vložení proběhlo v pořádku, přejete si otevřít nový objekt?", new BooleanCallback() {
 
             @Override

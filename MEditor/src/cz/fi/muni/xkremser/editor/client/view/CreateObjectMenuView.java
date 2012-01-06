@@ -167,7 +167,8 @@ public class CreateObjectMenuView
         structureTreeGrid = new TreeGrid();
         structureTreeGrid.setWidth100();
         structureTreeGrid.setHeight100();
-        structureTreeGrid.setShowSortArrow(SortArrow.CORNER);
+        //        structureTreeGrid.setShowSortArrow(SortArrow.CORNER);
+        structureTreeGrid.setCanSort(false);
         structureTreeGrid.setShowAllRecords(true);
         structureTreeGrid.setCanHover(true);
         structureTreeGrid.setHoverOpacity(75);

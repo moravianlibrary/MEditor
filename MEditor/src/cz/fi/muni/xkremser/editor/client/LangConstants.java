@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1409,6 +1409,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Please enter the number which will represent the maximal alphabetic character taken as a right index (1 = a, 10 = j, etc.)")
   @Key("enterNumberForIndex")
   String enterNumberForIndex();
+
+  /**
+   * Translated "Enter the number the sequence will start with".
+   * 
+   * @return translated "Enter the number the sequence will start with"
+   */
+  @DefaultStringValue("Enter the number the sequence will start with")
+  @Key("enterNumberForRenumber")
+  String enterNumberForRenumber();
 
   /**
    * Translated "Please enter the PID of a digital object".
