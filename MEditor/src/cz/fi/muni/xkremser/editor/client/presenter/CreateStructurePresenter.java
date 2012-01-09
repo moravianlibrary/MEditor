@@ -129,6 +129,8 @@ public class CreateStructurePresenter
         void escShortCut();
 
         TileGrid getTileGrid();
+
+        void addUndoRedo(Record[] data, boolean isUndoList, boolean isRedoOperation);
     }
 
     /**
@@ -504,6 +506,7 @@ public class CreateStructurePresenter
 
             @Override
             public void onClick(MenuItemClickEvent event) {
+                getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 final Record[] data = getView().fromClipboard();
                 final boolean progressbar = data.length > Constants.CLIPBOARD_MAX_WITHOUT_PROGRESSBAR;
                 final Progressbar hBar1 = progressbar ? new Progressbar() : null;
@@ -545,6 +548,7 @@ public class CreateStructurePresenter
 
             @Override
             public void onClick(MenuItemClickEvent event) {
+                getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 tileGrid.removeSelectedData();
             }
         });
@@ -599,6 +603,7 @@ public class CreateStructurePresenter
             Record[] selection = getView().getTileGrid().getSelection();
             if (selection != null && selection.length > 0
                     && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
+                getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 for (int i = 0; i < selection.length; i++) {
                     leftPresenter.getView()
                             .addSubstructure(String.valueOf(leftPresenter.newId()),

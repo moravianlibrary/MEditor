@@ -27,7 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -200,6 +202,11 @@ public class CreateStructureView
     private UniversalWindow universalWindow = null;
 
     private PageNumberingManager numbering;
+
+    private final List<Record[]> undoList = new ArrayList<Record[]>();
+    private final ToolStripButton undoButton = new ToolStripButton();
+    private List<Record[]> redoList = new ArrayList<Record[]>();
+    private final ToolStripButton redoButton = new ToolStripButton();
 
     /**
      * Instantiates a new create view.
@@ -510,7 +517,7 @@ public class CreateStructureView
 
                     @Override
                     public void run() {
-
+                        addUndoRedo(tileGrid.getData(), true, false);
                         Record[] selectedRecords = tileGrid.getSelection();
                         tileGrid.selectAllRecords();
                         Record[] allRecords = tileGrid.getSelection();
@@ -643,6 +650,46 @@ public class CreateStructureView
 
         toolStrip.addButton(createButton);
 
+        undoButton.setIcon("icons/16/undo.png");
+        undoButton.setTitle("Undo");
+        undoButton.disable();
+
+        redoButton.setIcon("icons/16/redo.png");
+        redoButton.setTitle("Redo");
+        redoButton.disable();
+
+        undoButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (undoList.size() > 0) {
+                    addUndoRedo(tileGrid.getData(), false, false);
+                    tileGrid.setData(undoList.remove(undoList.size() - 1));
+                    if (undoList.size() == 0) undoButton.disable();
+                    updateTileGrid();
+                } else {
+                    undoButton.disable();
+                }
+            }
+        });
+        toolStrip.addButton(undoButton);
+
+        redoButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (redoList.size() > 0) {
+                    addUndoRedo(tileGrid.getData(), true, true);
+                    tileGrid.setData(redoList.remove(redoList.size() - 1));
+                    if (redoList.size() == 0) redoButton.disable();
+                    updateTileGrid();
+                } else {
+                    redoButton.disable();
+                }
+            }
+        });
+        toolStrip.addButton(redoButton);
+
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);
         layout.addMember(tileGridLayout);
@@ -745,14 +792,35 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                Record[] data = tileGrid.getData();
-                if (data != null) {
-                    int i = 1;
-                    for (Record rec : data) {
-                        rec.setAttribute(Constants.ATTR_NAME, i++);
+
+                SC.askforValue(lang.renumber(), lang.enterNumberForRenumber(), "1", new ValueCallback() {
+
+                    @Override
+                    public void execute(String value) {
+                        if (value == null) {
+                            return;
+                        }
+                        try {
+                            int n = Integer.parseInt(value);
+                            addUndoRedo(tileGrid.getData(), true, false);
+                            Record[] data = tileGrid.getData();
+                            int i = 0;
+                            if (data != null && data.length > 0) {
+                                for (Record rec : data) {
+                                    rec.setAttribute(Constants.ATTR_NAME, n + i++);
+                                }
+                            }
+                            updateTileGrid();
+                        } catch (NumberFormatException nfe) {
+                            SC.say(lang.notANumber());
+                        }
                     }
-                }
-                updateTileGrid();
+                }, new com.smartgwt.client.widgets.Dialog() {
+
+                    {
+                        setWidth(300);
+                    }
+                });
             }
         });
         renumber.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -769,6 +837,7 @@ public class CreateStructureView
                         }
                         try {
                             int n = Integer.parseInt(value);
+                            addUndoRedo(tileGrid.getData(), true, false);
                             Record[] data = tileGrid.getSelection();
                             if (data != null && data.length > 0) {
                                 for (int i = 0; i < data.length; i++) {
@@ -792,6 +861,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 Record[] data = tileGrid.getSelection();
                 if (data != null && data.length > 0) {
+                    addUndoRedo(tileGrid.getData(), true, false);
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME,
                                          ClientUtils.decimalToRoman(tileGrid.getRecordIndex(rec) + 1, false));
@@ -807,6 +877,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 Record[] data = tileGrid.getSelection();
                 if (data != null && data.length > 0) {
+                    addUndoRedo(tileGrid.getData(), true, false);
                     for (Record rec : data) {
                         rec.setAttribute(Constants.ATTR_NAME,
                                          ClientUtils.decimalToRoman(tileGrid.getRecordIndex(rec) + 1, true));
@@ -822,6 +893,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 Record[] data = tileGrid.getSelection();
                 if (data != null && data.length > 0) {
+                    addUndoRedo(tileGrid.getData(), true, false);
                     for (Record rec : data) {
                         if (!(rec.getAttributeAsString(Constants.ATTR_NAME).contains("[") && rec
                                 .getAttributeAsString(Constants.ATTR_NAME).contains("]")))
@@ -848,6 +920,7 @@ public class CreateStructureView
                         }
                         try {
                             int n = Integer.parseInt(value);
+                            addUndoRedo(tileGrid.getData(), true, false);
                             numbering.shift(-n, false, layout);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
@@ -870,6 +943,7 @@ public class CreateStructureView
                         }
                         try {
                             int n = Integer.parseInt(value);
+                            addUndoRedo(tileGrid.getData(), true, false);
                             numbering.shift(n, false, layout);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
@@ -891,6 +965,7 @@ public class CreateStructureView
                         }
                         try {
                             int n = Integer.parseInt(value);
+                            addUndoRedo(tileGrid.getData(), true, false);
                             numbering.shift(n, true, layout);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
@@ -957,6 +1032,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
+                addUndoRedo(tileGrid.getData(), true, false);
                 numbering.foliation();
                 updateTileGrid();
             }
@@ -976,6 +1052,7 @@ public class CreateStructureView
                     public void execute(String value) {
                         try {
                             int n = Integer.parseInt(value);
+                            addUndoRedo(tileGrid.getData(), true, false);
                             numbering.toAbcN(n);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
@@ -1000,6 +1077,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
+                addUndoRedo(tileGrid.getData(), true, false);
                 numbering.toAbcN(n);
                 updateTileGrid();
             }
@@ -1075,6 +1153,7 @@ public class CreateStructureView
             @Override
             public void execute(String value) {
                 if (value != null && !"".equals(value.trim())) {
+                    addUndoRedo(tileGrid.getData(), true, false);
                     tileGrid.getSelection()[0].setAttribute(Constants.ATTR_NAME, value);
                 }
             }
@@ -1139,5 +1218,35 @@ public class CreateStructureView
     @Override
     public TileGrid getTileGrid() {
         return tileGrid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addUndoRedo(Record[] data, boolean isUndoList, boolean isRedoOperation) {
+        Record[] newData = new Record[data.length];
+        int i = 0;
+        for (Record d : data) {
+            newData[i] =
+                    new ScanRecord(d.getAttribute(Constants.ATTR_NAME),
+                                   d.getAttribute(Constants.ATTR_MODEL),
+                                   d.getAttribute(Constants.ATTR_BARCODE),
+                                   d.getAttribute(Constants.ATTR_PICTURE),
+                                   d.getAttribute(Constants.ATTR_DESC));
+            i++;
+        }
+        if (isUndoList) {
+            undoList.add(newData);
+            undoButton.enable();
+            if (!isRedoOperation && redoList.size() > 0) {
+                redoList = new ArrayList<Record[]>();
+                redoButton.setDisabled(true);
+            }
+        } else {
+            redoList.add(newData);
+            redoButton.enable();
+        };
+
     }
 }
