@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -1391,6 +1391,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This value is used for the end date of a range.")
   @Key("endValue")
   String endValue();
+
+  /**
+   * Translated "Enter the (latin) number the sequence will start with".
+   * 
+   * @return translated "Enter the (latin) number the sequence will start with"
+   */
+  @DefaultStringValue("Enter the (latin) number the sequence will start with")
+  @Key("enterLatinNumberForRenumber")
+  String enterLatinNumberForRenumber();
 
   /**
    * Translated "Please enter the number by which to shift the pages.".

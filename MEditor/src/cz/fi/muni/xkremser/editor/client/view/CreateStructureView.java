@@ -859,15 +859,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                Record[] data = tileGrid.getSelection();
-                if (data != null && data.length > 0) {
-                    addUndoRedo(tileGrid.getData(), true, false);
-                    for (Record rec : data) {
-                        rec.setAttribute(Constants.ATTR_NAME,
-                                         ClientUtils.decimalToRoman(tileGrid.getRecordIndex(rec) + 1, false));
-                    }
-                }
-                updateTileGrid();
+                romanRenumber(false);
             }
         });
 
@@ -875,15 +867,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                Record[] data = tileGrid.getSelection();
-                if (data != null && data.length > 0) {
-                    addUndoRedo(tileGrid.getData(), true, false);
-                    for (Record rec : data) {
-                        rec.setAttribute(Constants.ATTR_NAME,
-                                         ClientUtils.decimalToRoman(tileGrid.getRecordIndex(rec) + 1, true));
-                    }
-                }
-                updateTileGrid();
+                romanRenumber(true);
             }
         });
 
@@ -995,6 +979,42 @@ public class CreateStructureView
         ToolStripMenuButton menuButton = new ToolStripMenuButton(lang.pageNumbers(), menu);
         menuButton.setWidth(100);
         return menuButton;
+    }
+
+    private void romanRenumber(final boolean toRomanOld) {
+        SC.askforValue(toRomanOld ? lang.convertToRomanOld() : lang.convertToRoman(),
+                       lang.enterLatinNumberForRenumber(),
+                       String.valueOf(tileGrid.getDataAsRecordList().indexOf(tileGrid.getSelection()[0]) + 1),
+                       new ValueCallback() {
+
+                           @Override
+                           public void execute(String value) {
+                               if (value == null) {
+                                   return;
+                               }
+                               try {
+                                   int n = Integer.parseInt(value);
+                                   addUndoRedo(tileGrid.getData(), true, false);
+                                   Record[] data = tileGrid.getSelection();
+                                   int i = 0;
+                                   if (data != null && data.length > 0) {
+                                       for (Record rec : data) {
+                                           rec.setAttribute(Constants.ATTR_NAME,
+                                                            ClientUtils.decimalToRoman(n + i++, toRomanOld));
+                                       }
+                                   }
+                                   updateTileGrid();
+                               } catch (NumberFormatException nfe) {
+                                   SC.say(lang.notANumber());
+                               }
+                           }
+                       },
+                       new com.smartgwt.client.widgets.Dialog() {
+
+                           {
+                               setWidth(330);
+                           }
+                       });
     }
 
     private void updateTileGrid() {
