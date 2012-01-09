@@ -65,7 +65,6 @@ public class SideNavInputTree
         extends TreeGrid {
 
     private final MenuItem createItem;
-    MenuItem ingestInfo = new MenuItem();
     private static final String HTML_TICK_CODE = "<img src=\"images/silk/tick.png\">";
     private final LangConstants lang;
 
@@ -76,7 +75,7 @@ public class SideNavInputTree
      *        the dispatcher
      * @param lang
      */
-    public SideNavInputTree(final DispatchAsync dispatcher, LangConstants lang) {
+    public SideNavInputTree(final DispatchAsync dispatcher, final LangConstants lang) {
         this.lang = lang;
         setWidth100();
         setHeight100();
@@ -103,7 +102,6 @@ public class SideNavInputTree
         showMenu.setItems(showItem);
 
         createItem = new MenuItem(lang.create(), "icons/16/structure_into.png");
-        ingestInfo = new MenuItem(lang.ingestInfo(), "icons/16/export1.png");
 
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
@@ -124,6 +122,7 @@ public class SideNavInputTree
                         id = id.substring(0, id.indexOf("/"));
                     }
                     if (record.getAttributeAsBoolean(Constants.ATTR_INGEST_INFO)) {
+                        MenuItem ingestInfo = new MenuItem(lang.ingestInfo(), "icons/16/export1.png");
                         ingestInfo.addClickHandler(new ClickHandler() {
 
                             @Override

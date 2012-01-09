@@ -85,13 +85,15 @@ public class IngestInfoWindow
             if (maxIngest < pid.size()) maxIngest = pid.size();
 
             Layout mainInfoLayout = new VLayout();
-            HTMLFlow directoryFlow = new HTMLFlow(HtmlCode.title(info.getDirectory(), 3));
+            HTMLFlow directoryFlow = new HTMLFlow(HtmlCode.title(info.getDirectory(), 3) + "<br>");
             directoryFlow.setWidth(info.getDirectory().length() * 8);
             mainInfoLayout.addMember(directoryFlow);
 
             for (int i = 0; i < pid.size(); i++) {
 
-                HTMLFlow titleFlow = new HTMLFlow(HtmlCode.title(lang.ingestNumber() + ": " + (i + 1), 4));
+                HTMLFlow titleFlow =
+                        new HTMLFlow("<br>" + HtmlCode.bold(lang.ingestNumber() + ": " + (i + 1))
+                                + "<br><br>");
                 mainInfoLayout.addMember(titleFlow);
 
                 final String pidString = pid.get(i);
