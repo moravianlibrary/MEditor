@@ -254,6 +254,7 @@ public class FindMetadataPresenter
     protected void onReset() {
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
         leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
+        getView().getNext().setDisabled(true);
     }
 
     /*

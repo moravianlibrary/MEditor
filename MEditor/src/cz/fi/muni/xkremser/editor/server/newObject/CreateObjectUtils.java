@@ -35,10 +35,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.google.inject.name.Named;
+
 import org.apache.log4j.Logger;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.io.DOMReader;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -46,6 +49,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
@@ -60,6 +64,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
  * @version 29.10.2011
  */
 public class CreateObjectUtils {
+
+    @Inject
+    @Named("securedFedoraAccess")
+    private static FedoraAccess fedoraAccess;
 
     private static final Logger LOGGER = Logger.getLogger(CreateObjectUtils.class);
     private static final Logger INGEST_LOGGER = Logger.getLogger(ServerConstants.INGEST_LOG_ID);
@@ -81,6 +89,16 @@ public class CreateObjectUtils {
         }
         if (node.getExist()) {
             // do not create, but append only 
+            List<NewDigitalObject> childrenToAdd = node.getChildren();
+            if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
+                for (NewDigitalObject child : childrenToAdd) {
+                    if (!child.getExist()) {
+                        String uuid = insertFOXML(child, mods, dc, sysno);
+                        child.setUuid(uuid);
+                        append(node, child);
+                    }
+                }
+            }
             return node.getUuid();
         }
         FoxmlBuilder builder = FOXMLBuilderMapping.getBuilder(node);
@@ -153,6 +171,25 @@ public class CreateObjectUtils {
             insertFOXML(node, mods, dc, attempt - 1, sysno);
         }
         return node.getUuid();
+    }
+
+    private static void append(NewDigitalObject parrent, NewDigitalObject child) throws CreateObjectException {
+        org.w3c.dom.Document doc = null;
+        try {
+            doc = fedoraAccess.getRelsExt(parrent.getUuid());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new CreateObjectException("Unable to append " + child.getName() + " (" + child.getUuid()
+                    + ") to parrent named " + parrent.getName() + " (" + parrent.getUuid() + ")!");
+        }
+        DOMReader domReader = new DOMReader();
+        Document document = domReader.read(doc);
+        RelsExtRelation rel =
+                new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(parrent.getModel(),
+                                                                                     child.getModel()));
+        FoxmlUtils.addRelationshipToRelsExt(document, rel);
+        FedoraUtils.putRelsExt(parrent.getUuid(), document.asXML(), false);
     }
 
     public static boolean ingest(String foxml, String label, String uuid) {

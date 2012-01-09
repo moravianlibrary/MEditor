@@ -39,13 +39,13 @@ import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
@@ -94,6 +94,8 @@ public class CreateObjectMenuView
         implements CreateObjectMenuPresenter.MyView {
 
     private static final String SECTION_INPUT_ID = "input";
+
+    public static final String CREATE_BUTTON_HAS_A_HANDLER = "CREATE_BUTTON_HAS_A_HANDLER";
 
     private final LangConstants lang;
 
@@ -164,7 +166,15 @@ public class CreateObjectMenuView
         layout.setWidth100();
         layout.setOverflow(Overflow.AUTO);
 
-        structureTreeGrid = new TreeGrid();
+        structureTreeGrid = new TreeGrid() {
+
+            @Override
+            protected String getCellCSSText(ListGridRecord record, int rowNum, int colNum) {
+                boolean exist = record.getAttributeAsBoolean(Constants.ATTR_EXIST);
+                return exist ? "color: grey" : "";
+            };
+
+        };
         structureTreeGrid.setWidth100();
         structureTreeGrid.setHeight100();
         //        structureTreeGrid.setShowSortArrow(SortArrow.CORNER);
@@ -187,6 +197,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setTreeRootValue(SubstructureTreeNode.ROOT_ID);
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
         structureTreeGrid.setShowConnectors(true);
+        structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
 
         structureTreeGrid.addDropHandler(new DropHandler() {
 
@@ -278,6 +289,7 @@ public class CreateObjectMenuView
                         if (NamedGraphModel.isTopLvlModel(getModel())) {
                             TreeNode root = structureTree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
                             root.setAttribute(Constants.ATTR_EXIST, true);
+                            root.setAttribute(Constants.ATTR_CREATE, false);
                             root.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
                             structureTreeGrid.setData(structureTree);
                         } else {
@@ -298,7 +310,6 @@ public class CreateObjectMenuView
                                                     : Constants.ATTR_PARENT),
                                             true,
                                             true);
-                            // TODO: set create checkbox to unmodifiable
                             for (Record rec : selection) {
                                 addSubstructure(String.valueOf(getUiHandlers().newId()),
                                                 rec.getAttribute(Constants.ATTR_NAME),
@@ -316,6 +327,7 @@ public class CreateObjectMenuView
                                 structureTreeGrid.setData(structureTree);
                             }
                         }
+                        structureTreeGrid.redraw();
                     }
 
                     @Override
@@ -410,7 +422,6 @@ public class CreateObjectMenuView
 
         TreeGridField createField = new TreeGridField();
         createField.setCanFilter(true);
-        createField.setCanEdit(true);
         createField.setName(Constants.ATTR_CREATE);
         createField.setTitle("TODO vytvorit");
         createField.setType(ListGridFieldType.BOOLEAN);
@@ -431,6 +442,7 @@ public class CreateObjectMenuView
         nameField.setWidth("*");
 
         structureTreeGrid.setFields(typeField, nameField/* , createField */);
+        structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
@@ -446,6 +458,7 @@ public class CreateObjectMenuView
         createButton.setTitle(lang.create());
         createButton.setAlign(Alignment.CENTER);
         createButton.setColSpan(2);
+        createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, false);
         final DynamicForm form = new DynamicForm();
         form.setNumCols(2);
         form.setPadding(5);
@@ -553,6 +566,13 @@ public class CreateObjectMenuView
                 refreshButton.setPrompt("Rescan directory structure.");
             }
         });
+        refreshButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                getUiHandlers().onRefresh();
+            }
+        });
 
         section1.setControls(refreshButton);
         section1.setResizeable(true);
@@ -637,5 +657,21 @@ public class CreateObjectMenuView
         structureTree.add(new SubstructureTreeNode(id, parent, name, uuid, type, typeId, isOpen, exist),
                           parentNode);
         structureTreeGrid.setData(structureTree);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasCreateButtonAClickHandler() {
+        return createButton.getAttributeAsBoolean(CREATE_BUTTON_HAS_A_HANDLER);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCreateButtonHasAClickHandler() {
+        createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, true);
     }
 }

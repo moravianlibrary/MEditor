@@ -566,13 +566,16 @@ public class CreateStructurePresenter
             }
         });
 
-        leftPresenter.getView().getCreateButton().addClickHandler(new ClickHandler() {
+        if (!leftPresenter.getView().hasCreateButtonAClickHandler()) {
+            leftPresenter.getView().getCreateButton().addClickHandler(new ClickHandler() {
 
-            @Override
-            public void onClick(ClickEvent event) {
-                addNewStructure();
-            }
-        });
+                @Override
+                public void onClick(ClickEvent event) {
+                    addNewStructure();
+                }
+            });
+            leftPresenter.getView().setCreateButtonHasAClickHandler();
+        }
     }
 
     private void addNewStructure() {
@@ -587,7 +590,7 @@ public class CreateStructurePresenter
             if (canContain != null) { //adding selected pages
                 possibleParent = String.valueOf(leftPresenter.newId());
                 String name = leftPresenter.getView().getNewName().getValueAsString();
-                name = "".equals(name) ? possibleParent : name;
+                name = name == null || "".equals(name) ? possibleParent : name;
                 leftPresenter.getView().addSubstructure(possibleParent,
                                                         name,
                                                         null,

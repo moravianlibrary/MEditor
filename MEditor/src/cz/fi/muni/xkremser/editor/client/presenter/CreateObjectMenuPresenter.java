@@ -66,6 +66,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -104,6 +105,10 @@ public class CreateObjectMenuPresenter
 
         SelectItem getSelectModel();
 
+        boolean hasCreateButtonAClickHandler();
+
+        void setCreateButtonHasAClickHandler();
+
         void enableCheckbox(boolean isEnabled);
 
         void addSubstructure(String id,
@@ -130,9 +135,6 @@ public class CreateObjectMenuPresenter
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
-    /** The input queue shown. */
-    private boolean inputQueueShown = false;
-
     /** The place manager. */
     private final PlaceManager placeManager;
 
@@ -151,6 +153,11 @@ public class CreateObjectMenuPresenter
             new HashMap<String, DigitalObjectModel>();
 
     private final Map<String, String> labelsFromModels = new HashMap<String, String>();
+
+    // this is not a mistake (the lock should be shared with another presenter)
+    private static final Object LOCK = DigitalObjectMenuPresenter.class;
+
+    private static volatile boolean ready = true;
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -211,19 +218,20 @@ public class CreateObjectMenuPresenter
         //        });
         getView().enableCheckbox(false);
         getView().getCreateButton().disable();
-        getView().getSubelementsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+        registerHandler(getView().getSubelementsGrid()
+                .addSelectionChangedHandler(new SelectionChangedHandler() {
 
-            @Override
-            public void onSelectionChanged(SelectionEvent event) {
-                ListGridRecord rec = event.getSelectedRecord();
-                if (rec != null) {
-                    String modelString = rec.getAttribute(Constants.ATTR_TYPE_ID);
-                    refreshSelectModel(modelString);
-                }
-            }
-        });
+                    @Override
+                    public void onSelectionChanged(SelectionEvent event) {
+                        ListGridRecord rec = event.getSelectedRecord();
+                        if (rec != null) {
+                            String modelString = rec.getAttribute(Constants.ATTR_TYPE_ID);
+                            refreshSelectModel(modelString);
+                        }
+                    }
+                }));
 
-        getView().getSelectModel().addChangeHandler(new ChangeHandler() {
+        registerHandler(getView().getSelectModel().addChangeHandler(new ChangeHandler() {
 
             @Override
             public void onChange(ChangeEvent event) {
@@ -234,7 +242,7 @@ public class CreateObjectMenuPresenter
                     getView().getCreateButton().disable();
                 }
             }
-        });
+        }));
 
         addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
 
@@ -271,25 +279,6 @@ public class CreateObjectMenuPresenter
         //        getView().getSubelementGrid().setHoverCustomizer(null);
     }
 
-    /**
-     * Checks if is input queue shown.
-     * 
-     * @return true, if is input queue shown
-     */
-    public boolean isInputQueueShown() {
-        return inputQueueShown;
-    }
-
-    /**
-     * Sets the input queue shown.
-     * 
-     * @param inputQueueShown
-     *        the new input queue shown
-     */
-    public void setInputQueueShown(boolean inputQueueShown) {
-        this.inputQueueShown = inputQueueShown;
-    }
-
     /*
      * (non-Javadoc)
      * @see
@@ -298,14 +287,33 @@ public class CreateObjectMenuPresenter
      */
     @Override
     public void onRefresh() {
-        dispatcher.execute(new ScanInputQueueAction(null, true),
-                           new DispatchCallback<ScanInputQueueResult>() {
+        if (ready) {
+            synchronized (LOCK) {
+                if (ready) { // double-lock idiom
+                    ready = false;
+                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+                    dispatcher.execute(new ScanInputQueueAction(null, true),
+                                       new DispatchCallback<ScanInputQueueResult>() {
 
-                               @Override
-                               public void callback(ScanInputQueueResult result) {
-                                   getView().getInputTree().refreshTree();
-                               }
-                           });
+                                           @Override
+                                           public void callback(ScanInputQueueResult result) {
+                                               mw.hide();
+                                               getView().getInputTree().refreshTree();
+                                               ready = true;
+                                           }
+
+                                           @Override
+                                           public void callbackError(final Throwable t) {
+                                               mw.hide();
+                                               super.callbackError(t);
+                                               ready = true;
+                                           }
+                                       });
+                }
+            }
+        }
     }
 
     /*

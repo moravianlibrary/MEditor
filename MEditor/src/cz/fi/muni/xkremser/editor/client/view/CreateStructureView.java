@@ -637,19 +637,6 @@ public class CreateStructureView
         });
         toolStrip.addButton(editMetadataButton);
 
-        ToolStripButton createButton = new ToolStripButton();
-        createButton.setIcon("silk/forward_green.png");
-        createButton.setTitle(lang.create());
-        createButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                create();
-            }
-        });
-
-        toolStrip.addButton(createButton);
-
         undoButton = new ToolStripButton();
         redoButton = new ToolStripButton();
         undoList = new ArrayList<Record[]>();
@@ -694,6 +681,20 @@ public class CreateStructureView
             }
         });
         toolStrip.addButton(redoButton);
+
+        toolStrip.addSeparator();
+
+        ToolStripButton createButton = new ToolStripButton();
+        createButton.setIcon("silk/forward_green.png");
+        createButton.setTitle(lang.create());
+        createButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                create();
+            }
+        });
+        toolStrip.addButton(createButton);
 
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);

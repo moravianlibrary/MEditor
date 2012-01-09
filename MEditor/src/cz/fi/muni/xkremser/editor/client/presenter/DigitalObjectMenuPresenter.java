@@ -193,6 +193,10 @@ public class DigitalObjectMenuPresenter
     private final Map<String, List<? extends List<String>>> openedObjectsUuidAndRelated =
             new HashMap<String, List<? extends List<String>>>();
 
+    private static final Object LOCK = DigitalObjectMenuPresenter.class;
+
+    private static volatile boolean ready = true;
+
     /**
      * Instantiates a new digital object menu presenter.
      * 
@@ -376,24 +380,33 @@ public class DigitalObjectMenuPresenter
      */
     @Override
     public void onRefresh() {
-        final ModalWindow mw = new ModalWindow(getView().getInputTree());
-        mw.setLoadingIcon("loadingAnimation.gif");
-        mw.show(true);
-        dispatcher.execute(new ScanInputQueueAction(null, true),
-                           new DispatchCallback<ScanInputQueueResult>() {
+        if (ready) {
+            synchronized (LOCK) {
+                if (ready) { // double-lock idiom
+                    ready = false;
+                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+                    dispatcher.execute(new ScanInputQueueAction(null, true),
+                                       new DispatchCallback<ScanInputQueueResult>() {
 
-                               @Override
-                               public void callback(ScanInputQueueResult result) {
-                                   mw.hide();
-                                   getView().getInputTree().refreshTree();
-                               }
+                                           @Override
+                                           public void callback(ScanInputQueueResult result) {
+                                               mw.hide();
+                                               getView().getInputTree().refreshTree();
+                                               ready = true;
+                                           }
 
-                               @Override
-                               public void callbackError(final Throwable t) {
-                                   mw.hide();
-                                   super.callbackError(t);
-                               }
-                           });
+                                           @Override
+                                           public void callbackError(final Throwable t) {
+                                               mw.hide();
+                                               super.callbackError(t);
+                                               ready = true;
+                                           }
+                                       });
+                }
+            }
+        }
     }
 
     /*

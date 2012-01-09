@@ -106,7 +106,7 @@ public class ScanFolderHandler
             return null;
         }
         final String base = configuration.getScanInputQueuePath();
-        LOGGER.debug("Processing input queue: (model = " + model + ", code = " + code + ")");
+        LOGGER.debug("Scanning folder: (model = " + model + ", code = " + code + ")");
         HttpServletRequest req = requestProvider.get();
         ServerUtils.checkExpiredSession(req.getSession());
 

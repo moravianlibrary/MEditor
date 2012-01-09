@@ -256,13 +256,8 @@ public class ClientUtils {
         } catch (RuntimeException ex) {
             throw new CreateObjectException("unknown type");
         }
-        NewDigitalObject newObj =
-                new NewDigitalObject(0,
-                                     name,
-                                     model,
-                                     bundle,
-                                     null,
-                                     root.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        boolean exists = root.getAttributeAsBoolean(Constants.ATTR_EXIST);
+        NewDigitalObject newObj = new NewDigitalObject(0, name, model, bundle, exists ? name : null, exists);
         for (TreeNode child : children) {
             newObj.getChildren().add(createTheStructure(bundle, tree, child));
         }
