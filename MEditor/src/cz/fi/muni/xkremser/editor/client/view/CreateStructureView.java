@@ -203,10 +203,10 @@ public class CreateStructureView
 
     private PageNumberingManager numbering;
 
-    private final List<Record[]> undoList = new ArrayList<Record[]>();
-    private final ToolStripButton undoButton = new ToolStripButton();
-    private List<Record[]> redoList = new ArrayList<Record[]>();
-    private final ToolStripButton redoButton = new ToolStripButton();
+    private List<Record[]> undoList;
+    private ToolStripButton undoButton;
+    private List<Record[]> redoList;
+    private ToolStripButton redoButton;
 
     /**
      * Instantiates a new create view.
@@ -649,6 +649,11 @@ public class CreateStructureView
         });
 
         toolStrip.addButton(createButton);
+
+        undoButton = new ToolStripButton();
+        redoButton = new ToolStripButton();
+        undoList = new ArrayList<Record[]>();
+        redoList = new ArrayList<Record[]>();
 
         undoButton.setIcon("icons/16/undo.png");
         undoButton.setTitle("Undo");
