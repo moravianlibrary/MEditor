@@ -65,6 +65,10 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
+import com.smartgwt.client.widgets.events.DragStartEvent;
+import com.smartgwt.client.widgets.events.DragStartHandler;
+import com.smartgwt.client.widgets.events.DragStopEvent;
+import com.smartgwt.client.widgets.events.DragStopHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -207,6 +211,7 @@ public class CreateStructureView
     private ToolStripButton undoButton;
     private List<Record[]> redoList;
     private ToolStripButton redoButton;
+    int positionBeforeMoving;
 
     /**
      * Instantiates a new create view.
@@ -286,6 +291,34 @@ public class CreateStructureView
         tileGrid.setCanAcceptDrop(true);
         tileGrid.setShowAllRecords(true);
         tileGrid.setShowResizeBar(true);
+        positionBeforeMoving = -1;
+        tileGrid.addDragStartHandler(new DragStartHandler() {
+
+            @Override
+            public void onDragStart(DragStartEvent event) {
+                Record[] selection = tileGrid.getSelection();
+                if (selection != null && selection.length > 0) {
+                    positionBeforeMoving = tileGrid.getRecordIndex(selection[0]);
+                    addUndoRedo(tileGrid.getData(), true, false);
+                }
+            }
+        });
+
+        tileGrid.addDragStopHandler(new DragStopHandler() {
+
+            @Override
+            public void onDragStop(DragStopEvent event) {
+                tileGrid.getSelection();
+                if (positionBeforeMoving >= 0) {
+                    if (tileGrid.getRecordIndex(tileGrid.getSelection()[0]) == positionBeforeMoving) {
+                        undoList.remove(undoList.size() - 1);
+                        if (undoList.size() == 0) undoButton.disable();
+                    }
+                    positionBeforeMoving = -1;
+                }
+            }
+        });
+
         numbering = new PageNumberingManager(tileGrid);
         Menu menu = new Menu();
         menu.setShowShadow(true);
