@@ -27,6 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,7 @@ import com.smartgwt.client.widgets.menu.MenuItemSeparator;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
+import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
@@ -154,12 +156,18 @@ public class CreateObjectMenuView
     private boolean connectEx2Enabled;
     private boolean removeSelectedEnabled;
 
+    private List<Tree> undoList;
+    private ToolStripButton undoButton;
+    private List<Tree> redoList;
+    private ToolStripButton redoButton;
+
     /**
      * Instantiates a new digital object menu view.
      */
     @Inject
     public CreateObjectMenuView(final LangConstants lang) {
         this.lang = lang;
+
         layout = new VLayout();
 
         layout.setHeight100();
@@ -199,6 +207,48 @@ public class CreateObjectMenuView
         structureTreeGrid.setShowConnectors(true);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
 
+        undoButton = new ToolStripButton();
+        redoButton = new ToolStripButton();
+        undoList = new ArrayList<Tree>();
+        redoList = new ArrayList<Tree>();
+        undoButton.setIcon("icons/16/undo.png");
+        undoButton.setTitle("Undo");
+        undoButton.disable();
+
+        redoButton.setIcon("icons/16/redo.png");
+        redoButton.setTitle("Redo");
+        redoButton.disable();
+
+        undoButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (undoList.size() > 1) {
+                    addUndoRedo(structureTreeGrid.getData(), false, false);
+                    structureTreeGrid.setData(undoList.remove(undoList.size() - 1));
+                    if (undoList.size() == 1) undoButton.disable();
+                    structureTreeGrid.redraw();
+                } else {
+                    undoButton.disable();
+                }
+            }
+        });
+
+        redoButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (redoList.size() > 0) {
+                    addUndoRedo(structureTreeGrid.getData(), true, true);
+                    structureTreeGrid.setData(redoList.remove(redoList.size() - 1));
+                    if (redoList.size() == 0) redoButton.disable();
+                    structureTreeGrid.redraw();
+                } else {
+                    redoButton.disable();
+                }
+            }
+        });
+
         structureTreeGrid.addDropHandler(new DropHandler() {
 
             @Override
@@ -228,6 +278,7 @@ public class CreateObjectMenuView
                         return;
                     }
                     for (Record rec : pages) {
+                        addUndoRedo(structureTreeGrid.getData(), true, false);
                         addSubstructure(String.valueOf(getUiHandlers().newId()),
                                         rec.getAttribute(Constants.ATTR_NAME),
                                         rec.getAttribute(Constants.ATTR_PICTURE),
@@ -265,6 +316,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
+                addUndoRedo(structureTreeGrid.getData(), true, false);
                 structureTreeGrid.removeSelectedData();
             }
         });
@@ -291,6 +343,7 @@ public class CreateObjectMenuView
                             root.setAttribute(Constants.ATTR_EXIST, true);
                             root.setAttribute(Constants.ATTR_CREATE, false);
                             root.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
+                            addUndoRedo(structureTreeGrid.getData(), true, false);
                             structureTreeGrid.setData(structureTree);
                         } else {
                             String parentId = selection[0].getAttributeAsString(Constants.ATTR_PARENT);
@@ -324,6 +377,7 @@ public class CreateObjectMenuView
                                     .getSelectedRecords().length && !parentIsTopLvl) {
                                 //parent has no other children (no siblings) and is not top lvl
                                 structureTree.remove(parent);
+                                addUndoRedo(structureTreeGrid.getData(), true, false);
                                 structureTreeGrid.setData(structureTree);
                             }
                         }
@@ -476,6 +530,7 @@ public class CreateObjectMenuView
         structure.setResizeable(true);
         structure.setItems(structureTreeGrid);
         structure.setExpanded(false);
+        //        structure.setControls(undoButton, redoButton);
 
         sectionStack = new SectionStack();
         sectionStack.addSection(createStructure);
@@ -653,6 +708,7 @@ public class CreateObjectMenuView
                                 String parent,
                                 boolean isOpen,
                                 boolean exist) {
+        addUndoRedo(structureTreeGrid.getData(), true, false);
         TreeNode parentNode = structureTree.findById(parent);
         structureTree.add(new SubstructureTreeNode(id, parent, name, uuid, type, typeId, isOpen, exist),
                           parentNode);
@@ -673,5 +729,41 @@ public class CreateObjectMenuView
     @Override
     public void setCreateButtonHasAClickHandler() {
         createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, true);
+    }
+
+    public void addUndoRedo(Tree tree, boolean isUndoList, boolean isRedoOperation) {
+        Tree newTree = tree;
+//        copyOfTree(newTree, null);
+
+        if (isUndoList) {
+            undoList.add(newTree);
+            if (undoList.size() > 1) undoButton.enable();
+            if (!isRedoOperation && redoList.size() > 0) {
+                redoList = new ArrayList<Tree>();
+                redoButton.setDisabled(true);
+            }
+        } else {
+            redoList.add(newTree);
+            redoButton.enable();
+        };
+
+    }
+
+    private void copyOfTree(Tree tree, TreeNode treeNode) {
+        TreeNode[] allNodes = null;
+        if (treeNode == null) {
+            allNodes = tree.getAllNodes();
+        } else {
+            allNodes = tree.getAllNodes(treeNode);
+        }
+        if (allNodes != null) {
+            if (allNodes.length > 0) {
+                for (TreeNode node : allNodes) {
+                    copyOfTree(tree, node);
+                }
+            } else {
+
+            }
+        }
     }
 }
