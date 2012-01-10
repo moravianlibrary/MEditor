@@ -119,6 +119,8 @@ public class RemoveDigitalObjectWindow
     /** List of all depicted ItemImgButtons */
     private static List<ItemImgButton> itemList;
 
+    private static int countOfThreeDots;
+
     private boolean isConflict = false;
 
     private int lowestLevel;
@@ -238,6 +240,7 @@ public class RemoveDigitalObjectWindow
                          final boolean isParentConflict) {
             super();
             final ImgButton img = new ImgButton();
+            countOfThreeDots++;
             img.setSrc(THREE_DOTS);
             img.setShowFocused(false);
             img.setShowDown(false);
@@ -267,6 +270,7 @@ public class RemoveDigitalObjectWindow
                 public void onClick(ClickEvent event) {
                     mw.setLoadingIcon("loadingAnimation.gif");
                     mw.show(true);
+                    countOfThreeDots--;
                     Timer timer = new Timer() {
 
                         @Override
@@ -305,6 +309,7 @@ public class RemoveDigitalObjectWindow
         public ArrowLeftConflict(final Map<String, List<DigitalObjectRelationships>> map) {
             super();
             setSrc(ARROW_LEFT_CONFLICT);
+            countOfThreeDots++;
             setWidth(37);
             setHeight(9);
             setExtraSpace(5);
@@ -677,6 +682,7 @@ public class RemoveDigitalObjectWindow
         this.uuid = uuid;
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
+        this.countOfThreeDots = 0;
         setEdgeOffset(15);
         itemList = new ArrayList<RemoveDigitalObjectWindow.ItemImgButton>();
         lowestLevel = 1;
@@ -740,7 +746,7 @@ public class RemoveDigitalObjectWindow
             setWidth(300);
         } else {
             setWidth100();
-            int newWidth = itemList.size() * 35;
+            int newWidth = (itemList.size() * 20) + (countOfThreeDots * 25) + 30;
             if (newWidth < getWidth()) setWidth(newWidth);
         }
         setHeight100();

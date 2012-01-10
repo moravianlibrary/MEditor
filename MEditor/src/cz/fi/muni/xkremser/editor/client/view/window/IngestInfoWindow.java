@@ -75,6 +75,7 @@ public class IngestInfoWindow
 
         int maxIngest = 0;
         Layout mainLayout = new HLayout(ingestInfoList.size());
+        int lengthOfDirectoryNames = 0;
 
         for (IngestInfo info : ingestInfoList) {
 
@@ -87,6 +88,7 @@ public class IngestInfoWindow
             Layout mainInfoLayout = new VLayout();
             HTMLFlow directoryFlow = new HTMLFlow(HtmlCode.title(info.getDirectory(), 3) + "<br>");
             directoryFlow.setWidth(info.getDirectory().length() * 8);
+            lengthOfDirectoryNames += info.getDirectory().length() * 8;
             mainInfoLayout.addMember(directoryFlow);
 
             for (int i = 0; i < pid.size(); i++) {
@@ -159,7 +161,9 @@ public class IngestInfoWindow
             mainLayout.addMember(mainInfoLayout);
         }
 
-        int newWidth = ingestInfoList.size() * 350;
+        int newWidth =
+                (ingestInfoList.size() * 360) > (lengthOfDirectoryNames + 10) ? (ingestInfoList.size() * 360)
+                        : (lengthOfDirectoryNames + 10);
         setWidth(newWidth);
         int newHeight = 110 + (maxIngest * 100);
         setHeight(newHeight);
@@ -175,7 +179,7 @@ public class IngestInfoWindow
 
         if (newWidth < getWidth()) setWidth(newWidth);
         if (newHeight < getHeight()) setHeight(newHeight);
-        mainLayout.setWidth(getWidth() - (20 * ingestInfoList.size()));
+        mainLayout.setWidth(getWidth() - (40 * ingestInfoList.size()));
 
     }
 }

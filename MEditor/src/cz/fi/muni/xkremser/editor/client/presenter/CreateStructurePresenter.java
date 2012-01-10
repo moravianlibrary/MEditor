@@ -606,7 +606,6 @@ public class CreateStructurePresenter
             Record[] selection = getView().getTileGrid().getSelection();
             if (selection != null && selection.length > 0
                     && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
-                getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 for (int i = 0; i < selection.length; i++) {
                     leftPresenter.getView()
                             .addSubstructure(String.valueOf(leftPresenter.newId()),
@@ -619,6 +618,7 @@ public class CreateStructurePresenter
                                              true,
                                              false);
                     if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
+                        getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                         getView().getTileGrid().removeSelectedData();
                     }
                 }
