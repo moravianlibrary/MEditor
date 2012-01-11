@@ -306,6 +306,7 @@ public class CreateStructurePresenter
                         hBar1.setHeight(24);
                         hBar1.setVertical(false);
                         hBar1.setPercentDone(0);
+                        getView().getPopupPanel().setAutoHideEnabled(false);
                         getView().getPopupPanel().setWidget(hBar1);
                         getView().getPopupPanel().setVisible(true);
                         getView().getPopupPanel().center();
@@ -356,6 +357,7 @@ public class CreateStructurePresenter
                         }
                     });
                 }
+                getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setVisible(false);
                 getView().getPopupPanel().hide();
             }
@@ -396,6 +398,7 @@ public class CreateStructurePresenter
                         }
                     });
                 }
+                getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
                 getView().getPopupPanel().hide();
