@@ -733,7 +733,7 @@ public class CreateObjectMenuView
 
     public void addUndoRedo(Tree tree, boolean isUndoList, boolean isRedoOperation) {
         Tree newTree = tree;
-//        copyOfTree(newTree, null);
+        //        copyOfTree(newTree, null);
 
         if (isUndoList) {
             undoList.add(newTree);

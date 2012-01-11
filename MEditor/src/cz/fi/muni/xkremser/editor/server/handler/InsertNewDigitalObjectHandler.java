@@ -116,9 +116,15 @@ public class InsertNewDigitalObjectHandler
 
         boolean ingestSuccess;
         boolean reindexSuccess;
+        String pid = null;
+        if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
+            pid = object.getUuid();
+        } else {
+            pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
+        }
         try {
             ingestSuccess = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
-            reindexSuccess = ServerUtils.reindex(Constants.FEDORA_UUID_PREFIX + object.getUuid());
+            reindexSuccess = ServerUtils.reindex(pid);
 
             if (ingestSuccess) {
                 String username;
@@ -135,7 +141,7 @@ public class InsertNewDigitalObjectHandler
                     throw new ActionException(e);
                 }
                 createInfoXml(username,
-                              object.getUuid(),
+                              pid.substring(Constants.FEDORA_UUID_PREFIX.length()),
                               config.getScanInputQueuePath() + action.getInputPath());
 
             }
@@ -143,8 +149,7 @@ public class InsertNewDigitalObjectHandler
         } catch (CreateObjectException e) {
             throw new ActionException(e.getMessage());
         }
-        return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, Constants.FEDORA_UUID_PREFIX
-                + object.getUuid());
+        return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, pid);
 
     }
 

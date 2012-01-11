@@ -42,6 +42,7 @@ import org.dom4j.Node;
 import org.dom4j.QName;
 import org.dom4j.XPath;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 
@@ -92,8 +93,22 @@ class PeriodicalBuilder
         dcRootEl.addAttribute(new QName("schemaLocation", xsi),
                               "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd");
 
+        XPath typeXpath = Dom4jUtils.createXPath("/oai_dc:dc/dc:identifier");
+        List<? extends Node> nodes = typeXpath.selectNodes(dcDoc);
+        for (Node node : nodes) {
+            node.detach();
+        }
         Element idUuid = dcRootEl.addElement("dc:identifier");
         idUuid.addText(pid);
+
+        for (Node node : nodes) {
+            if (node.getText() != null && !"".equals(node.getText().trim())
+                    && !node.getText().contains(Constants.FEDORA_UUID_PREFIX)) {
+                Element temp = dcRootEl.addElement("dc:identifier");
+                temp.addText(node.getText());
+            }
+        }
+
         if (signature != null) {
             Element idSignature = dcRootEl.addElement("dc:identifier");
             idSignature.addText("signature:" + signature);
