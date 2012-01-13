@@ -459,6 +459,16 @@ public class Constants {
             put("SP", "Spine");
             put("BS", "BackEndSheet");
             put("BC", "BackCover");
+            put("AD", "Advertisement");
+            put("BL", "Blank");
+            put("IN", "Index");
+            put("LI", "ListOfIllustrations");
+            put("LM", "ListOfMaps");
+            put("LT", "ListOfTables");
+            put("NP", "NormalPage");
+            put("TB", "Table");
+            put("TC", "TableOfContents");
+            put("TP", "TitlePage");
         }
     };
 
