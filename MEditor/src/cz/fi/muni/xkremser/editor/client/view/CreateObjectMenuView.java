@@ -83,6 +83,7 @@ import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -224,12 +225,16 @@ public class CreateObjectMenuView
             @Override
             public void onClick(ClickEvent event) {
                 if (undoList.size() > 0) {
+                    ModalWindow mw = new ModalWindow(structureTreeGrid);
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
                     addUndoRedo(false, false);
                     structureTree = undoList.remove(undoList.size() - 1);
                     structureTreeGrid.setData(structureTree);
                     if (undoList.size() == 0) undoButton.disable();
                     structureTreeGrid.redraw();
                     structureTreeGrid.selectRecord(0);
+                    mw.hide();
                 } else {
                     undoButton.disable();
                 }
@@ -241,12 +246,16 @@ public class CreateObjectMenuView
             @Override
             public void onClick(ClickEvent event) {
                 if (redoList.size() > 0) {
+                    ModalWindow mw = new ModalWindow(structureTreeGrid);
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
                     addUndoRedo(true, true);
                     structureTree = redoList.remove(redoList.size() - 1);
                     structureTreeGrid.setData(structureTree);
                     if (redoList.size() == 0) redoButton.disable();
                     structureTreeGrid.redraw();
                     structureTreeGrid.selectRecord(0);
+                    mw.hide();
                 } else {
                     redoButton.disable();
                 }

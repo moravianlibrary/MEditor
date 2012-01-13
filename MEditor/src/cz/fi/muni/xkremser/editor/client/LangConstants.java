@@ -2608,6 +2608,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String notANumber();
 
   /**
+   * Translated "Structural tree of a new digital object is not empty. Do you want to throw the old one away, and create a new one.".
+   * 
+   * @return translated "Structural tree of a new digital object is not empty. Do you want to throw the old one away, and create a new one."
+   */
+  @DefaultStringValue("Structural tree of a new digital object is not empty. Do you want to throw the old one away, and create a new one.")
+  @Key("notEmptyTree")
+  String notEmptyTree();
+
+  /**
    * Translated "Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used.".
    * 
    * @return translated "Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used."

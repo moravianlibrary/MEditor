@@ -240,7 +240,6 @@ public class CreateStructurePresenter
     @Override
     protected void onUnbind() {
         super.onUnbind();
-        leftPresenter.getView().init();
         // Add unbind functionality here for more complex presenters.
     }
 
@@ -253,9 +252,29 @@ public class CreateStructurePresenter
         super.onReset();
         processImages();
         RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+
         leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
         leftPresenter.getView().getSectionStack().expandSection(1);
         leftPresenter.getView().getSectionStack().expandSection(2);
+
+        if (leftPresenter.getView().getSubelementsGrid().getRecordList().getLength() > 1) {
+            SC.ask(lang.notEmptyTree(), new BooleanCallback() {
+
+                @Override
+                public void execute(Boolean value) {
+                    if (value != null && value) {
+                        initLeftPresenterTree();
+                    }
+                }
+            });
+        } else {
+            initLeftPresenterTree();
+        }
+        ChangeMenuWidthEvent.fire(getEventBus(), "340");
+    }
+
+    private void initLeftPresenterTree() {
+        leftPresenter.getView().init();
         String name = null;
         DublinCore dc = bundle != null ? bundle.getDc() : null;
         if (dc != null && dc.getTitle() != null && dc.getTitle().size() != 0 && dc.getTitle().get(0) != null
@@ -278,7 +297,6 @@ public class CreateStructurePresenter
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
-        ChangeMenuWidthEvent.fire(getEventBus(), "340");
     }
 
     /**
