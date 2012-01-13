@@ -157,7 +157,26 @@ public class ScanFolderHandler
             throw new ActionException(e);
         }
 
+        if (toAdd.size() > 10) {
+            removeOldImages();
+        }
+
         return new ScanFolderResult(result, toAdd);
+    }
+
+    /**
+     * @throws ActionException
+     */
+
+    private void removeOldImages() throws ActionException {
+        try {
+            ArrayList<String> oldImages = imageResolverDAO.cacheAgeingProcess();
+            for (String oldImage : oldImages) {
+                new File(oldImage).delete();
+            }
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
     }
 
     /**

@@ -52,13 +52,15 @@ public class ImageResolverDAOImpl
         extends AbstractDAO
         implements ImageResolverDAO {
 
+    public static final String IMAGE_LIFETIME = "2 day";
+
     /** The Constant DELETE_ITEMS_STATEMENT. */
-    public static final String DELETE_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_NAME
-            + " WHERE shown > (NOW() - INTERVAL '(?) month')";
+    public static final String DELETE_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE_NAME
+            + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + "')";
 
     /** The Constant SELECT_ITEMS_FOR_DELETION_STATEMENT. */
     public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT imageFile FROM "
-            + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE shown > (NOW() - INTERVAL '(?) month')";
+            + Constants.TABLE_IMAGE_NAME + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + "')";
 
     /** The Constant SELECT_ITEM_STATEMENT. */
     public static final String SELECT_ITEM_STATEMENT = "SELECT id, imageFile FROM "
@@ -223,14 +225,12 @@ public class ImageResolverDAOImpl
      */
 
     @Override
-    public ArrayList<String> cacheAgeingProcess(int monthsOld) throws DatabaseException {
-        if (monthsOld < 0) throw new IllegalArgumentException("monthsOld");
+    public ArrayList<String> cacheAgeingProcess() throws DatabaseException {
         PreparedStatement statement = null;
         ArrayList<String> ret = new ArrayList<String>();
         try {
             // TX start
             statement = getConnection().prepareStatement(SELECT_ITEMS_FOR_DELETION_STATEMENT);
-            statement.setInt(1, monthsOld);
             ResultSet rs = statement.executeQuery();
             int i = 0;
             int rowsAffected = 0;
@@ -240,12 +240,12 @@ public class ImageResolverDAOImpl
             }
             if (i > 0) {
                 statement = getConnection().prepareStatement(DELETE_ITEMS_STATEMENT);
-                statement.setInt(1, monthsOld);
                 rowsAffected = statement.executeUpdate();
             }
             if (rowsAffected == i) {
                 getConnection().commit();
                 LOGGER.debug("DB has been updated.");
+                LOGGER.debug(i + " images are going to be removed.");
             } else {
                 getConnection().rollback();
                 LOGGER.error("DB has not been updated -> rollback!");
