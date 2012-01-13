@@ -117,13 +117,16 @@ public class InsertNewDigitalObjectHandler
         boolean ingestSuccess;
         boolean reindexSuccess;
         String pid = null;
-        if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
-            pid = object.getUuid();
-        } else {
-            pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
-        }
+
         try {
             ingestSuccess = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
+
+            if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
+                pid = object.getUuid();
+            } else {
+                pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
+            }
+
             reindexSuccess = ServerUtils.reindex(pid);
 
             if (ingestSuccess) {

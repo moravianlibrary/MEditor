@@ -587,8 +587,8 @@ public class CreateObjectMenuView
 
     @Override
     public void init() {
-        undoButton = new ToolStripButton();
-        redoButton = new ToolStripButton();
+        undoButton.disable();
+        redoButton.disable();
         undoList = new ArrayList<Tree>();
         redoList = new ArrayList<Tree>();
     }
