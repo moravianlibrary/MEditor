@@ -127,30 +127,30 @@ public class CreateObjectMenuView
     /** The input tree. */
     private SideNavInputTree inputTree;
 
-    private final TreeGrid structureTreeGrid;
+    private TreeGrid structureTreeGrid;
 
-    private final Tree structureTree;
+    private Tree structureTree;
 
     /** The section stack. */
-    private final SectionStack sectionStack;
+    private SectionStack sectionStack;
 
-    private final SectionStackSection createStructure;
+    private SectionStackSection createStructure;
 
-    private final SectionStackSection structure;
+    private SectionStackSection structure;
 
     /** The refresh button. */
     private ImgButton refreshButton;
 
-    private final ButtonItem createButton;
+    private ButtonItem createButton;
 
-    private final CheckboxItem keepCheckbox;
+    private CheckboxItem keepCheckbox;
 
-    private final SelectItem selectModel;
+    private SelectItem selectModel;
 
-    private final TextItem name;
+    private TextItem name;
 
     /** The layout. */
-    private final VLayout layout;
+    private VLayout layout;
 
     private boolean connect2ExEnabled;
     private boolean connectEx2Enabled;
@@ -223,11 +223,13 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(ClickEvent event) {
-                if (undoList.size() > 1) {
-                    addUndoRedo(structureTreeGrid.getData(), false, false);
-                    structureTreeGrid.setData(undoList.remove(undoList.size() - 1));
-                    if (undoList.size() == 1) undoButton.disable();
+                if (undoList.size() > 0) {
+                    addUndoRedo(false, false);
+                    structureTree = undoList.remove(undoList.size() - 1);
+                    structureTreeGrid.setData(structureTree);
+                    if (undoList.size() == 0) undoButton.disable();
                     structureTreeGrid.redraw();
+                    structureTreeGrid.selectRecord(0);
                 } else {
                     undoButton.disable();
                 }
@@ -239,10 +241,12 @@ public class CreateObjectMenuView
             @Override
             public void onClick(ClickEvent event) {
                 if (redoList.size() > 0) {
-                    addUndoRedo(structureTreeGrid.getData(), true, true);
-                    structureTreeGrid.setData(redoList.remove(redoList.size() - 1));
+                    addUndoRedo(true, true);
+                    structureTree = redoList.remove(redoList.size() - 1);
+                    structureTreeGrid.setData(structureTree);
                     if (redoList.size() == 0) redoButton.disable();
                     structureTreeGrid.redraw();
+                    structureTreeGrid.selectRecord(0);
                 } else {
                     redoButton.disable();
                 }
@@ -254,42 +258,79 @@ public class CreateObjectMenuView
             @Override
             public void onDrop(DropEvent event) {
                 Object draggable = EventHandler.getDragTarget();
-                if (draggable instanceof TileGrid) {
-                    TileGrid tileGrid = (TileGrid) draggable;
-                    Record[] pages = tileGrid.getSelection();
+
+                TileGrid tileGrid = null;
+                TreeGrid treeGrid = null;
+                if (draggable instanceof TileGrid) tileGrid = (TileGrid) draggable;
+                if (draggable instanceof TreeGrid) treeGrid = (TreeGrid) draggable;
+
+                if (tileGrid != null || treeGrid != null) {
+
+                    Object source = event.getSource();
+                    if (draggable instanceof TreeGrid) treeGrid = (TreeGrid) source;
+                    Record[] selection;
+                    if (treeGrid == null) {
+                        selection = tileGrid.getSelection();
+                    } else {
+                        selection = treeGrid.getSelectedRecords();
+                    }
+
                     Record dropPlace = structureTreeGrid.getRecord(structureTreeGrid.getEventRow());
-                    if (pages == null || pages.length == 0) {
+                    if (selection == null || selection.length == 0) {
                         event.cancel();
                         return;
                     }
+
+                    DigitalObjectModel parentModel;
+                    DigitalObjectModel movedModel;
                     if (dropPlace != null) {
-                        String modelString = dropPlace.getAttribute(Constants.ATTR_TYPE_ID);
+                        parentModel =
+                                DigitalObjectModel.parseString(dropPlace.getAttribute(Constants.ATTR_TYPE_ID));
                         List<DigitalObjectModel> possibleChildModels =
-                                NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelString));
-                        if (possibleChildModels == null
-                                || !possibleChildModels.contains(DigitalObjectModel.PAGE)) {
-                            SC.say(lang.pageNotDropable());
+                                NamedGraphModel.getChildren(parentModel);
+
+                        if (tileGrid == null) {
+                            movedModel =
+                                    DigitalObjectModel.parseString(selection[0]
+                                            .getAttribute(Constants.ATTR_TYPE_ID));
+                        } else {
+                            movedModel = DigitalObjectModel.PAGE;
+                        }
+                        if ((possibleChildModels == null || !possibleChildModels.contains(movedModel))
+                                && (parentModel != DigitalObjectModel.PAGE || parentModel != DigitalObjectModel.PAGE)) {
+                            SC.say(lang.objNotDropable() + ": <code>" + movedModel.getValue() + "</code>");
                             event.cancel();
                             return;
                         }
                     } else {
-                        SC.say(lang.pageNotDropable());
+                        SC.say(lang.dropNotHere());
                         event.cancel();
                         return;
                     }
-                    for (Record rec : pages) {
-                        addUndoRedo(structureTreeGrid.getData(), true, false);
-                        addSubstructure(String.valueOf(getUiHandlers().newId()),
-                                        rec.getAttribute(Constants.ATTR_NAME),
-                                        rec.getAttribute(Constants.ATTR_PICTURE),
-                                        getUiHandlers().getLabelFromModel().get(DigitalObjectModel.PAGE
-                                                .getValue()),
-                                        DigitalObjectModel.PAGE.getValue(),
-                                        dropPlace.getAttribute(Constants.ATTR_ID),
-                                        true,
-                                        false);
+
+                    if (treeGrid == null) {
+                        if (parentModel == DigitalObjectModel.PAGE) {
+                            SC.say(lang.pageNotDropable());
+                            event.cancel();
+                            return;
+                        }
+                        addUndoRedo(true, false);
+                        for (Record rec : selection) {
+                            addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                            rec.getAttribute(Constants.ATTR_NAME),
+                                            rec.getAttribute(Constants.ATTR_PICTURE),
+                                            getUiHandlers().getLabelFromModel().get(DigitalObjectModel.PAGE
+                                                    .getValue()),
+                                            DigitalObjectModel.PAGE.getValue(),
+                                            dropPlace.getAttribute(Constants.ATTR_ID),
+                                            true,
+                                            false);
+                        }
+                        event.cancel();
+                    } else {
+                        addUndoRedo(true, false);
                     }
-                    event.cancel();
+
                 }
             }
         });
@@ -316,7 +357,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                addUndoRedo(structureTreeGrid.getData(), true, false);
+                addUndoRedo(true, false);
                 structureTreeGrid.removeSelectedData();
             }
         });
@@ -338,12 +379,13 @@ public class CreateObjectMenuView
 
                     @Override
                     protected void doActiton(TextItem uuidField) {
+                        addUndoRedo(true, false);
                         if (NamedGraphModel.isTopLvlModel(getModel())) {
                             TreeNode root = structureTree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
                             root.setAttribute(Constants.ATTR_EXIST, true);
                             root.setAttribute(Constants.ATTR_CREATE, false);
                             root.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
-                            addUndoRedo(structureTreeGrid.getData(), true, false);
+                            addUndoRedo(true, false);
                             structureTreeGrid.setData(structureTree);
                         } else {
                             String parentId = selection[0].getAttributeAsString(Constants.ATTR_PARENT);
@@ -377,7 +419,7 @@ public class CreateObjectMenuView
                                     .getSelectedRecords().length && !parentIsTopLvl) {
                                 //parent has no other children (no siblings) and is not top lvl
                                 structureTree.remove(parent);
-                                addUndoRedo(structureTreeGrid.getData(), true, false);
+                                addUndoRedo(true, false);
                                 structureTreeGrid.setData(structureTree);
                             }
                         }
@@ -403,7 +445,7 @@ public class CreateObjectMenuView
 
                     @Override
                     protected void doActiton(TextItem uuidField) {
-
+                        addUndoRedo(true, false);
                         addSubstructure(String.valueOf(getUiHandlers().newId()),
                                         uuidField.getValueAsString(),
                                         uuidField.getValueAsString(),
@@ -530,7 +572,7 @@ public class CreateObjectMenuView
         structure.setResizeable(true);
         structure.setItems(structureTreeGrid);
         structure.setExpanded(false);
-        //        structure.setControls(undoButton, redoButton);
+        structure.setControls(undoButton, redoButton);
 
         sectionStack = new SectionStack();
         sectionStack.addSection(createStructure);
@@ -541,6 +583,14 @@ public class CreateObjectMenuView
         sectionStack.setHeight100();
         sectionStack.setOverflow(Overflow.HIDDEN);
         layout.addMember(sectionStack);
+    }
+
+    @Override
+    public void init() {
+        undoButton = new ToolStripButton();
+        redoButton = new ToolStripButton();
+        undoList = new ArrayList<Tree>();
+        redoList = new ArrayList<Tree>();
     }
 
     /**
@@ -708,7 +758,6 @@ public class CreateObjectMenuView
                                 String parent,
                                 boolean isOpen,
                                 boolean exist) {
-        addUndoRedo(structureTreeGrid.getData(), true, false);
         TreeNode parentNode = structureTree.findById(parent);
         structureTree.add(new SubstructureTreeNode(id, parent, name, uuid, type, typeId, isOpen, exist),
                           parentNode);
@@ -731,39 +780,65 @@ public class CreateObjectMenuView
         createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, true);
     }
 
-    public void addUndoRedo(Tree tree, boolean isUndoList, boolean isRedoOperation) {
-        Tree newTree = tree;
-        //        copyOfTree(newTree, null);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addUndoRedo(boolean isUndoList, boolean isRedoOperation) {
+        Tree tree = structureTreeGrid.getData();
 
-        if (isUndoList) {
-            undoList.add(newTree);
-            if (undoList.size() > 1) undoButton.enable();
-            if (!isRedoOperation && redoList.size() > 0) {
-                redoList = new ArrayList<Tree>();
-                redoButton.setDisabled(true);
-            }
-        } else {
-            redoList.add(newTree);
-            redoButton.enable();
-        };
+        if (tree != null && tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID) != null) {
 
-    }
+            Tree newTree = new Tree();
+            newTree.setModelType(TreeModelType.PARENT);
+            newTree.setRootValue(SubstructureTreeNode.ROOT_ID);
+            newTree.setIdField(Constants.ATTR_ID);
+            newTree.setParentIdField(Constants.ATTR_PARENT);
+            newTree.setOpenProperty("isOpen");
+            newTree.setData(copyOfTree(tree, tree.getChildren(tree.getRoot())));
 
-    private void copyOfTree(Tree tree, TreeNode treeNode) {
-        TreeNode[] allNodes = null;
-        if (treeNode == null) {
-            allNodes = tree.getAllNodes();
-        } else {
-            allNodes = tree.getAllNodes(treeNode);
-        }
-        if (allNodes != null) {
-            if (allNodes.length > 0) {
-                for (TreeNode node : allNodes) {
-                    copyOfTree(tree, node);
+            if (isUndoList) {
+                undoList.add(newTree);
+                if (undoList.size() > 0) undoButton.enable();
+                if (!isRedoOperation && redoList.size() > 0) {
+                    redoList = new ArrayList<Tree>();
+                    redoButton.setDisabled(true);
                 }
             } else {
-
+                redoList.add(newTree);
+                redoButton.enable();
             }
         }
     }
+
+    private TreeNode[] copyOfTree(Tree tree, TreeNode[] childrenTreeNodes) {
+
+        TreeNode[] newTreeNodes = new TreeNode[childrenTreeNodes.length];
+
+        if (childrenTreeNodes != null && childrenTreeNodes.length > 0) {
+            int i = 0;
+            for (TreeNode childNode : childrenTreeNodes) {
+                TreeNode newTreeNode =
+                        new SubstructureTreeNode(childNode.getAttribute(Constants.ATTR_ID),
+                                                 childNode.getAttribute(Constants.ATTR_PARENT),
+                                                 childNode.getAttribute(Constants.ATTR_NAME),
+                                                 childNode.getAttribute(Constants.ATTR_PICTURE),
+                                                 childNode.getAttribute(Constants.ATTR_TYPE),
+                                                 childNode.getAttribute(Constants.ATTR_TYPE_ID),
+                                                 childNode.getAttributeAsBoolean("isOpen"),
+                                                 childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
+                TreeNode[] children = tree.getChildren(childNode);
+                if (children.length > 0) {
+                    newTreeNode.setChildren(copyOfTree(tree, children));
+                }
+                newTreeNodes[i++] = newTreeNode;
+            }
+        }
+        return newTreeNodes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
 }

@@ -308,9 +308,9 @@ public class CreateStructureView
 
             @Override
             public void onDragStop(DragStopEvent event) {
-                tileGrid.getSelection();
                 if (positionBeforeMoving >= 0) {
-                    if (tileGrid.getRecordIndex(tileGrid.getSelection()[0]) == positionBeforeMoving) {
+                    Record[] selection = tileGrid.getSelection();
+                    if (selection.length > 0 && tileGrid.getRecordIndex(selection[0]) == positionBeforeMoving) {
                         undoList.remove(undoList.size() - 1);
                         if (undoList.size() == 0) undoButton.disable();
                     }

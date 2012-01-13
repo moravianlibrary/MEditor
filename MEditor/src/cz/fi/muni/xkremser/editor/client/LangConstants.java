@@ -1321,6 +1321,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String downloadStream();
 
   /**
+   * Translated "You cannot move the object over here.".
+   * 
+   * @return translated "You cannot move the object over here."
+   */
+  @DefaultStringValue("You cannot move the object over here.")
+  @Key("dropNotHere")
+  String dropNotHere();
+
+  /**
    * Translated "Edit metadata".
    * 
    * @return translated "Edit metadata"
@@ -2624,6 +2633,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)")
   @Key("objContext")
   String objContext();
+
+  /**
+   * Translated "You can move this digital object on an object which can contain an object of the type ".
+   * 
+   * @return translated "You can move this digital object on an object which can contain an object of the type "
+   */
+  @DefaultStringValue("You can move this digital object on an object which can contain an object of the type ")
+  @Key("objNotDropable")
+  String objNotDropable();
 
   /**
    * Translated "This digital object is locked".

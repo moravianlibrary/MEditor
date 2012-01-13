@@ -240,6 +240,7 @@ public class CreateStructurePresenter
     @Override
     protected void onUnbind() {
         super.onUnbind();
+        leftPresenter.getView().init();
         // Add unbind functionality here for more complex presenters.
     }
 
@@ -589,6 +590,7 @@ public class CreateStructurePresenter
         DigitalObjectModel model = leftPresenter.getModelFromLabel().get(type);
         List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
         if (model != null) {
+            leftPresenter.getView().addUndoRedo(true, false);
             String possibleParent = "-1";
             if (canContain != null) { //adding selected pages
                 possibleParent = String.valueOf(leftPresenter.newId());
@@ -620,11 +622,12 @@ public class CreateStructurePresenter
                                              possibleParent,
                                              true,
                                              false);
-                    if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
-                        getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
-                        getView().getTileGrid().removeSelectedData();
-                    }
                 }
+                if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
+                    getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+                    getView().getTileGrid().removeSelectedData();
+                }
+
             }
         }
     }

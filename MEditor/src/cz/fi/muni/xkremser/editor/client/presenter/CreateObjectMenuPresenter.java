@@ -121,6 +121,10 @@ public class CreateObjectMenuPresenter
                              boolean exist);
 
         TextItem getNewName();
+
+        void init();
+
+        void addUndoRedo(boolean isUndoList, boolean isRedoOperation);
     }
 
     /**
@@ -201,7 +205,7 @@ public class CreateObjectMenuPresenter
     @Override
     protected void onBind() {
         super.onBind();
-
+        getView().init();
         getView().getSubelementsGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
