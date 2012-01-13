@@ -422,7 +422,7 @@ public class Constants {
     public static final int CODE_KEY_DELETE = 46;
 
     public static final int TILEGRID_ITEM_WIDTH = 90;
-    public static final int TILEGRID_ITEM_HEIGHT = 155;
+    public static final int TILEGRID_ITEM_HEIGHT = 145;
     public static final int IMAGE_THUMBNAIL_WIDTH = 80;
     public static final int IMAGE_THUMBNAIL_HEIGHT = 110;
     public static final int IMAGE_FULL_WIDTH = 750;
