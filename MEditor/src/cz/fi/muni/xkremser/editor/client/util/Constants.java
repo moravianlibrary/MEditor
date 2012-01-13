@@ -187,6 +187,12 @@ public class Constants {
     /** The Constant ATTR_BARCODE. */
     public static final String ATTR_BARCODE = "barcode";
 
+    /** The Constant ATTR_PATH. */
+    public static final String ATTR_PATH = "path";
+
+    /** The Constant ATTR_PAGE_TYPE. */
+    public static final String ATTR_PAGE_TYPE = "pageType";
+
     /** The Constant ATTR_INGEST_INFO. */
     public static final String ATTR_INGEST_INFO = "ingestInfo";
 
@@ -416,7 +422,7 @@ public class Constants {
     public static final int CODE_KEY_DELETE = 46;
 
     public static final int TILEGRID_ITEM_WIDTH = 90;
-    public static final int TILEGRID_ITEM_HEIGHT = 135;
+    public static final int TILEGRID_ITEM_HEIGHT = 155;
     public static final int IMAGE_THUMBNAIL_WIDTH = 80;
     public static final int IMAGE_THUMBNAIL_HEIGHT = 110;
     public static final int IMAGE_FULL_WIDTH = 750;
@@ -426,7 +432,7 @@ public class Constants {
     public static final int PAGE_PREVIEW_HEIGHT_SMALL = 80;
     public static final int PAGE_PREVIEW_HEIGHT_NORMAL = 120;
     public static final int PAGE_PREVIEW_HEIGHT_LARGE = 140;
-    public static final int PAGE_PREVIEW_HEIGHT_XLARGE = 160;
+    public static final int PAGE_PREVIEW_HEIGHT_XLARGE = 180;
 
     /**
      * Fedora FOXML related constants
@@ -450,27 +456,31 @@ public class Constants {
         E, M, R, X
     }
 
-    @SuppressWarnings("serial")
-    public static Map<String, String> SPECIAL_PAGE_TYPE_MAP = new HashMap<String, String>() {
+    public static enum PAGE_TYPES {
+        AD, BC, BS, BL, FC, FS, IN, LI, LM, LT, NP, SP, TB, TC, TP;
 
-        {
-            put("FC", "FrontCover");
-            put("FS", "FrontEndSheet");
-            put("SP", "Spine");
-            put("BS", "BackEndSheet");
-            put("BC", "BackCover");
-            put("AD", "Advertisement");
-            put("BL", "Blank");
-            put("IN", "Index");
-            put("LI", "ListOfIllustrations");
-            put("LM", "ListOfMaps");
-            put("LT", "ListOfTables");
-            put("NP", "NormalPage");
-            put("TB", "Table");
-            put("TC", "TableOfContents");
-            put("TP", "TitlePage");
-        }
-    };
+        @SuppressWarnings("serial")
+        public static Map<String, String> MAP = new HashMap<String, String>() {
+
+            {
+                put(PAGE_TYPES.AD.toString(), "Advertisement");
+                put(PAGE_TYPES.BC.toString(), "BackCover");
+                put(PAGE_TYPES.BS.toString(), "BackEndSheet");
+                put(PAGE_TYPES.BL.toString(), "Blank");
+                put(PAGE_TYPES.FC.toString(), "FrontCover");
+                put(PAGE_TYPES.FS.toString(), "FrontEndSheet");
+                put(PAGE_TYPES.IN.toString(), "Index");
+                put(PAGE_TYPES.LI.toString(), "ListOfIllustrations");
+                put(PAGE_TYPES.LM.toString(), "ListOfMaps");
+                put(PAGE_TYPES.LT.toString(), "ListOfTables");
+                put(PAGE_TYPES.NP.toString(), "NormalPage");
+                put(PAGE_TYPES.SP.toString(), "Spine");
+                put(PAGE_TYPES.TB.toString(), "Table");
+                put(PAGE_TYPES.TC.toString(), "TableOfContents");
+                put(PAGE_TYPES.TP.toString(), "TitlePage");
+            }
+        };
+    }
 
     /** The value of background color of focused tabSet */
     public static final String BG_COLOR_FOCUSED = "#ededed";

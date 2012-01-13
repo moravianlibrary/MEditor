@@ -296,3 +296,7 @@ html>body .gwt-DecoratedPopupPanel {
 	margin-right: 10px;
 }
 
+.pageType {
+	font-size: 10px;
+	color: #404040;
+}

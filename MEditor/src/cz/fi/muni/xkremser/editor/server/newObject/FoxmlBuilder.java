@@ -63,6 +63,7 @@ public abstract class FoxmlBuilder {
     private String signature;
     private String sysno;
     private String label;
+    private String pageType;
     private Policy policy = Policy.PRIVATE;
     private final List<RelsExtRelation> children;
     private MetadataBundle bundle;
@@ -305,6 +306,14 @@ public abstract class FoxmlBuilder {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getPageType() {
+        return pageType;
+    }
+
+    public void setPageType(String pageType) {
+        this.pageType = pageType;
     }
 
     public String getPid() {

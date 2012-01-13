@@ -197,7 +197,7 @@ public class CreateStructureView
 
     private Window winModal;
 
-    private SelectItem specialPageItem;
+    private SelectItem pageTypeItem;
 
     private EditorTabSet topTabSet;
 
@@ -497,9 +497,15 @@ public class CreateStructureView
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
                 if (tileGrid.getSelection() != null) {
-                    specialPageItem.enable();
+                    pageTypeItem.enable();
+                    if (tileGrid.getSelection().length == 1) {
+                        String pageType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PAGE_TYPE);
+                        pageTypeItem.setValue(Constants.PAGE_TYPES.MAP.get(pageType));
+                    } else {
+                        pageTypeItem.setValue("");
+                    }
                 } else {
-                    specialPageItem.disable();
+                    pageTypeItem.disable();
                 }
             }
         });
@@ -517,6 +523,11 @@ public class CreateStructureView
             public String format(Object value, Record record, DetailViewerField field) {
                 StringBuffer sb = new StringBuffer();
                 sb.append(lang.scan()).append(": ").append(value);
+                String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
+                if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)
+                        && !Constants.PAGE_TYPES.BL.toString().equals(pageType)) {
+                    sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
+                }
                 return sb.toString();
             }
         });
@@ -530,15 +541,14 @@ public class CreateStructureView
         ToolStripMenuButton menuButton = getToolStripMenuButton();
         toolStrip.addMenuButton(menuButton);
 
-        specialPageItem = new SelectItem();
-        specialPageItem.setShowTitle(false);
-        specialPageItem.setWidth(100);
-        specialPageItem.setTitle(lang.specialType());
+        pageTypeItem = new SelectItem();
+        pageTypeItem.setShowTitle(false);
+        pageTypeItem.setWidth(100);
+        pageTypeItem.setTitle(lang.specialType());
 
-        LinkedHashMap<String, String> valueMap =
-                new LinkedHashMap<String, String>(Constants.SPECIAL_PAGE_TYPE_MAP);
-        specialPageItem.setValueMap(valueMap);
-        specialPageItem.addChangedHandler(new ChangedHandler() {
+        LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>(Constants.PAGE_TYPES.MAP);
+        pageTypeItem.setValueMap(valueMap);
+        pageTypeItem.addChangedHandler(new ChangedHandler() {
 
             @Override
             public void onChanged(final ChangedEvent event) {
@@ -560,8 +570,7 @@ public class CreateStructureView
 
                         for (Record r : allRecords) {
                             if (r.equals(selectedRecords[index])) {
-                                r.setAttribute(Constants.ATTR_NAME, event.getValue());
-                                //                                System.err.println(index);
+                                r.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
                                 if (++index + 1 > selectedRecords.length) break;
                             }
                         }
@@ -574,7 +583,7 @@ public class CreateStructureView
             }
         });
 
-        toolStrip.addFormItem(specialPageItem);
+        toolStrip.addFormItem(pageTypeItem);
         toolStrip.addResizer();
 
         SelectItem zoomItems = new SelectItem("pageDetail", lang.detailSize());
@@ -732,7 +741,7 @@ public class CreateStructureView
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);
         layout.addMember(tileGridLayout);
-        specialPageItem.disable();
+        pageTypeItem.disable();
     }
 
     private void create() {
@@ -1292,7 +1301,8 @@ public class CreateStructureView
                                    d.getAttribute(Constants.ATTR_MODEL),
                                    d.getAttribute(Constants.ATTR_BARCODE),
                                    d.getAttribute(Constants.ATTR_PICTURE),
-                                   d.getAttribute(Constants.ATTR_DESC));
+                                   d.getAttribute(Constants.ATTR_DESC),
+                                   d.getAttribute(Constants.ATTR_PAGE_TYPE));
             i++;
         }
         if (isUndoList) {

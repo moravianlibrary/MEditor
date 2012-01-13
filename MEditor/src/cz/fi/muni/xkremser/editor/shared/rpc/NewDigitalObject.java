@@ -39,7 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 public class NewDigitalObject
         implements Serializable {
 
-    private static final long serialVersionUID = -1473902336327167367L;
+    private static final long serialVersionUID = -5970975105768290380L;
     private int orderIndex;
     private String name;
     private ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
@@ -50,6 +50,7 @@ public class NewDigitalObject
     private String sysno;
     private String path;
     private boolean visible;
+    private String pageType;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -159,4 +160,13 @@ public class NewDigitalObject
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
+    public String getPageType() {
+        return pageType;
+    }
+
+    public void setPageType(String pageType) {
+        this.pageType = pageType;
+    }
+
 }

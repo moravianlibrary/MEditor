@@ -72,7 +72,7 @@ public class PageBuilder
         Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
         typeOfResource.addText("text");
         Element part = mods.addElement(new QName("part", modsNs));
-        String resolvedPageType = Constants.SPECIAL_PAGE_TYPE_MAP.get(pageLabel);
+        String resolvedPageType = Constants.PAGE_TYPES.MAP.get(getPageType());
         part.addAttribute("type", resolvedPageType == null ? "NormalPage" : resolvedPageType);
         //pageNumber
         Element detail = part.addElement(new QName("detail", modsNs));

@@ -127,6 +127,9 @@ public class ServerUtils {
         String url =
                 host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
                         + "&userName=" + login + "&pswd=" + password;
+        LOGGER.info("Reindexing " + pid + " sending HTTP GET to " + host
+                + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
+                + "&userName=***&pswd=***");
         try {
             RESTHelper.get(url, login, password, false);
         } catch (MalformedURLException e) {

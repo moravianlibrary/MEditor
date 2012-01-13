@@ -111,20 +111,21 @@ public class CreateObjectMenuPresenter
 
         void enableCheckbox(boolean isEnabled);
 
+        TextItem getNewName();
+
+        void init();
+
+        void addUndoRedo(boolean isUndoList, boolean isRedoOperation);
+
         void addSubstructure(String id,
                              String name,
                              String uuid,
                              String type,
                              String typeId,
                              String parent,
+                             String pageType,
                              boolean isOpen,
                              boolean exist);
-
-        TextItem getNewName();
-
-        void init();
-
-        void addUndoRedo(boolean isUndoList, boolean isRedoOperation);
     }
 
     /**

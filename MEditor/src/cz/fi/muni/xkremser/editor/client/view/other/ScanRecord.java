@@ -49,33 +49,20 @@ public class ScanRecord
      * 
      * @param name
      *        the name
-     * @param barcode
-     *        the barcode
-     * @param picture
-     *        the picture
-     */
-    public ScanRecord(String name, String model, String barcode, String picture) {
-        this(name, model, barcode, picture, null);
-    }
-
-    /**
-     * Instantiates a new page record.
-     * 
-     * @param name
-     *        the name
      * @param issn
      *        the issn
      * @param picture
      *        the picture
-     * @param description
-     *        the description
+     * @param path
+     *        the path
      */
-    public ScanRecord(String name, String model, String barcode, String picture, String description) {
+    public ScanRecord(String name, String model, String barcode, String picture, String path, String pageType) {
         setName(name);
         setModel(model);
         setBarcode(barcode);
         setPicture(picture);
-        setDescription(description);
+        setPath(path);
+        setPageType(pageType);
     }
 
     /**
@@ -155,22 +142,41 @@ public class ScanRecord
     }
 
     /**
-     * Set the description.
+     * Set the path.
      * 
-     * @param description
-     *        the description
+     * @param path
+     *        the path
      */
-    public void setDescription(String description) {
-        setAttribute(Constants.ATTR_DESC, description);
+    public void setPath(String path) {
+        setAttribute(Constants.ATTR_PATH, path);
     }
 
     /**
-     * Return the description.
+     * Return the path.
      * 
-     * @return the description
+     * @return the path
      */
-    public String getDescription() {
-        return getAttribute(Constants.ATTR_DESC);
+    public String getPath() {
+        return getAttribute(Constants.ATTR_PATH);
+    }
+
+    /**
+     * Set the pageType.
+     * 
+     * @param pageType
+     *        the pageType
+     */
+    public void setPageType(String pageType) {
+        setAttribute(Constants.ATTR_PAGE_TYPE, pageType);
+    }
+
+    /**
+     * Return the pageType.
+     * 
+     * @return the pageType
+     */
+    public String getPageType() {
+        return getAttribute(Constants.ATTR_PAGE_TYPE);
     }
 
     /**
@@ -179,7 +185,7 @@ public class ScanRecord
      * @return the page record
      */
     public ScanRecord deepCopy() {
-        return new ScanRecord(getName(), getModel(), getBarcode(), getPicture());
+        return new ScanRecord(getName(), getModel(), getBarcode(), getPicture(), getPath(), getPageType());
     }
 
     /*
@@ -189,8 +195,7 @@ public class ScanRecord
     @Override
     public String toString() {
         return "PageRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getBarcode()="
-                + getBarcode() + ", getPicture()=" + getPicture() + ", getDescription()=" + getDescription()
-                + "]";
+                + getBarcode() + ", getPicture()=" + getPicture() + ", getPath()=" + getPath() + "]";
     }
 
 }

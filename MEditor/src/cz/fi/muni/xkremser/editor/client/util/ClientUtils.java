@@ -271,7 +271,7 @@ public class ClientUtils {
             throw new CreateObjectException("unknown name");
         }
         String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
-        if (name == null || "".equals(name)) {
+        if (imgUuid == null || "".equals(imgUuid)) {
             throw new CreateObjectException("unknown uuid");
         }
         String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
@@ -284,7 +284,6 @@ public class ClientUtils {
         } catch (RuntimeException ex) {
             throw new CreateObjectException("unknown type");
         }
-        // TODO: attribute "create"
         NewDigitalObject newObj =
                 new NewDigitalObject(0,
                                      name,
@@ -293,6 +292,7 @@ public class ClientUtils {
                                      null,
                                      node.getAttributeAsBoolean(Constants.ATTR_EXIST));
         newObj.setPath(imgUuid);
+        newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
         TreeNode[] children = tree.getChildren(node);
         for (TreeNode child : children) {
             newObj.getChildren().add(createTheStructure(bundle, tree, child));

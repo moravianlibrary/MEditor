@@ -332,6 +332,7 @@ public class CreateObjectMenuView
                                                     .getValue()),
                                             DigitalObjectModel.PAGE.getValue(),
                                             dropPlace.getAttribute(Constants.ATTR_ID),
+                                            rec.getAttribute(Constants.ATTR_PAGE_TYPE),
                                             true,
                                             false);
                         }
@@ -412,6 +413,7 @@ public class CreateObjectMenuView
                                             getModel().getValue(),
                                             parent.getAttribute(parentIsTopLvl ? Constants.ATTR_ID
                                                     : Constants.ATTR_PARENT),
+                                            "",
                                             true,
                                             true);
                             for (Record rec : selection) {
@@ -421,6 +423,7 @@ public class CreateObjectMenuView
                                                 rec.getAttribute(Constants.ATTR_TYPE),
                                                 rec.getAttribute(Constants.ATTR_TYPE_ID),
                                                 newParentId,
+                                                rec.getAttribute(Constants.ATTR_PAGE_TYPE),
                                                 true,
                                                 false);
                             }
@@ -462,6 +465,8 @@ public class CreateObjectMenuView
                                         getModel().getValue(),
                                         structureTreeGrid.getSelectedRecords()[0]
                                                 .getAttribute(Constants.ATTR_ID),
+                                        getModel() == DigitalObjectModel.PAGE ? Constants.PAGE_TYPES.NP
+                                                .toString() : "",
                                         false,
                                         true);
                     }
@@ -741,6 +746,7 @@ public class CreateObjectMenuView
                                     String uuid,
                                     String type,
                                     String typeId,
+                                    String pageType,
                                     boolean isOpen,
                                     boolean exist) {
             setAttribute(Constants.ATTR_ID, id);
@@ -749,9 +755,11 @@ public class CreateObjectMenuView
             setAttribute(Constants.ATTR_PICTURE, uuid);
             setAttribute(Constants.ATTR_TYPE, type);
             setAttribute(Constants.ATTR_TYPE_ID, typeId);
+            setAttribute(Constants.ATTR_PAGE_TYPE, pageType);
             setAttribute("isOpen", isOpen);
             setAttribute(Constants.ATTR_EXIST, exist);
             setAttribute(Constants.ATTR_CREATE, !exist);
+
         }
     }
 
@@ -765,11 +773,19 @@ public class CreateObjectMenuView
                                 String type,
                                 String typeId,
                                 String parent,
+                                String pageType,
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
-        structureTree.add(new SubstructureTreeNode(id, parent, name, uuid, type, typeId, isOpen, exist),
-                          parentNode);
+        structureTree.add(new SubstructureTreeNode(id,
+                                                   parent,
+                                                   name,
+                                                   uuid,
+                                                   type,
+                                                   typeId,
+                                                   pageType,
+                                                   isOpen,
+                                                   exist), parentNode);
         structureTreeGrid.setData(structureTree);
     }
 
@@ -834,6 +850,7 @@ public class CreateObjectMenuView
                                                  childNode.getAttribute(Constants.ATTR_PICTURE),
                                                  childNode.getAttribute(Constants.ATTR_TYPE),
                                                  childNode.getAttribute(Constants.ATTR_TYPE_ID),
+                                                 childNode.getAttribute(Constants.ATTR_PAGE_TYPE),
                                                  childNode.getAttributeAsBoolean("isOpen"),
                                                  childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
                 TreeNode[] children = tree.getChildren(childNode);

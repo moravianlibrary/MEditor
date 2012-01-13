@@ -294,6 +294,7 @@ public class CreateStructurePresenter
                                                 model,
                                                 model,
                                                 SubstructureTreeNode.ROOT_ID,
+                                                "",
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
@@ -387,8 +388,12 @@ public class CreateStructurePresenter
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
-                                new ScanRecord(String.valueOf(i + 1), model, sysno, itemList.get(i)
-                                        .getIdentifier(), itemList.get(i).getJpgFsPath());
+                                new ScanRecord(String.valueOf(i + 1),
+                                               model,
+                                               sysno,
+                                               itemList.get(i).getIdentifier(),
+                                               itemList.get(i).getJpgFsPath(),
+                                               Constants.PAGE_TYPES.NP.toString());
                     }
 
                     getView().onAddImages(DigitalObjectModel.PAGE.getValue(), sysno, items);
@@ -620,6 +625,7 @@ public class CreateStructurePresenter
                                                         type,
                                                         model.getValue(),
                                                         parent,
+                                                        "",
                                                         true,
                                                         false);
             } else { // adding something and enrich it with selected pages
@@ -638,6 +644,7 @@ public class CreateStructurePresenter
                                                      .getValue()),
                                              DigitalObjectModel.PAGE.getValue(),
                                              possibleParent,
+                                             selection[i].getAttribute(Constants.ATTR_PAGE_TYPE),
                                              true,
                                              false);
                 }
