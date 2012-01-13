@@ -180,7 +180,7 @@ public class ScanFolderHandler
             @Override
             public boolean accept(File pathname) {
                 for (String suffix : imageTypes) {
-                    if (pathname.getName().endsWith("." + suffix)) {
+                    if (pathname.getName().toLowerCase().endsWith("." + suffix.toLowerCase())) {
                         return true;
                     }
                 }
