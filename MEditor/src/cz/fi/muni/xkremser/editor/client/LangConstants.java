@@ -2617,6 +2617,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String notEmptyTree();
 
   /**
+   * Translated "is unavailable due to some error. Please contact the administrator.".
+   * 
+   * @return translated "is unavailable due to some error. Please contact the administrator."
+   */
+  @DefaultStringValue("is unavailable due to some error. Please contact the administrator.")
+  @Key("notRunning")
+  String notRunning();
+
+  /**
    * Translated "Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used.".
    * 
    * @return translated "Includes information that specifies the physical form or medium of material for a resource. Either a controlled list of values or free text may be used."

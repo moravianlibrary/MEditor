@@ -53,6 +53,7 @@ import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.form.fields.events.KeyPressEvent;
 import com.smartgwt.client.widgets.form.fields.events.KeyPressHandler;
 
+import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -166,6 +167,8 @@ public class HomePresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
+    private final LangConstants lang;
+
     /**
      * Instantiates a new home presenter.
      * 
@@ -188,11 +191,13 @@ public class HomePresenter
                          final MyProxy proxy,
                          final DigitalObjectMenuPresenter leftPresenter,
                          final DispatchAsync dispatcher,
-                         final PlaceManager placeManager) {
+                         final PlaceManager placeManager,
+                         final LangConstants lang) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
+        this.lang = lang;
         bind();
     }
 
@@ -293,7 +298,7 @@ public class HomePresenter
 
                                @Override
                                public void callbackError(Throwable t) {
-                                   super.callbackError(t);
+                                   super.callbackError(t, "Kramerius " + lang.notRunning());
                                    getView().refreshKramerius(false, null);
                                }
                            });
@@ -314,7 +319,7 @@ public class HomePresenter
 
                                @Override
                                public void callbackError(Throwable t) {
-                                   SC.warn(t.getMessage());
+                                   super.callbackError(t, "Fedora " + lang.notRunning());
                                    getView().refreshFedora(false, null);
                                }
                            });
