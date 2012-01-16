@@ -109,6 +109,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
+import cz.fi.muni.xkremser.editor.client.view.window.DeleteInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
@@ -429,6 +430,10 @@ public class ModifyView
             modsWindow.hide();
             modsWindow = null;
 
+        } else if (DeleteInfoWindow.isInstanceVisible()) {
+            DeleteInfoWindow.closeInstantiatedWindow();
+            if (RemoveDigitalObjectWindow.isInstanceVisible())
+                RemoveDigitalObjectWindow.closeInstantiatedWindow();
         } else if (RemoveDigitalObjectWindow.isInstanceVisible()) {
             RemoveDigitalObjectWindow.closeInstantiatedWindow();
 

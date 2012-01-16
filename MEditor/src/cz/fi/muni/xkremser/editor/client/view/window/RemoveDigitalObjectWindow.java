@@ -787,12 +787,6 @@ public class RemoveDigitalObjectWindow
                     public void callback(GetRelationshipsResult result) {
                         sharedPages = result.getSharedPages();
                         uuidNotToRemove = result.getUuidNotToRemove();
-
-                        //                        System.err.println("count of uuid not to remove: " + uuidNotToRemove.size());
-                        //                        for (String uuid : uuidNotToRemove) {
-                        //                            System.err.println("shared: " + uuid);
-                        //                        }
-
                         createRelationshipsTree(result.getDigObjRel());
                     }
 
@@ -818,12 +812,8 @@ public class RemoveDigitalObjectWindow
                         mw.hide();
                         RemoveDigitalObjectWindow.this.hide();
                         if (result.getErrorMessage() == null) {
-                            StringBuffer sb = new StringBuffer(lang.removedUuids());
-                            sb.append("<br>");
-                            for (String removedUuid : result.getRemoved()) {
-                                sb.append("<br>").append(removedUuid);
-                            }
-                            EditorSC.operationSuccessful(lang, sb.toString());
+                            DeleteInfoWindow.setInstanceOf(result.getRemoved(), lang);
+
                         } else {
                             EditorSC.operationFailed(lang, result.getErrorMessage());
                         }
