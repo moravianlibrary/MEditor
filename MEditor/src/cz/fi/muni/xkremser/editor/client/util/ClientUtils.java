@@ -270,10 +270,6 @@ public class ClientUtils {
         if (name == null || "".equals(name)) {
             throw new CreateObjectException("unknown name");
         }
-        String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
-        if (imgUuid == null || "".equals(imgUuid)) {
-            throw new CreateObjectException("unknown uuid");
-        }
         String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
         if (modelString == null || "".equals(modelString)) {
             throw new CreateObjectException("unknown type");
@@ -283,6 +279,10 @@ public class ClientUtils {
             model = DigitalObjectModel.parseString(modelString);
         } catch (RuntimeException ex) {
             throw new CreateObjectException("unknown type");
+        }
+        String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
+        if (model == DigitalObjectModel.PAGE && (imgUuid == null || "".equals(imgUuid))) {
+            throw new CreateObjectException("unknown uuid");
         }
         NewDigitalObject newObj =
                 new NewDigitalObject(0,
