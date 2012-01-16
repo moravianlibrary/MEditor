@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.shared.DispatchRequest;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
@@ -282,46 +283,62 @@ public class HomePresenter
      * Check availability.
      */
     private void checkAvailability() {
-        dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID),
-                           new DispatchCallback<CheckAvailabilityResult>() {
+        final DispatchRequest krameriusRequest =
+                dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.KRAMERIUS_ID),
+                                   new DispatchCallback<CheckAvailabilityResult>() {
 
-                               @Override
-                               public void callback(CheckAvailabilityResult result) {
-                                   String krameriusURL = result.getUrl();
-                                   getView().refreshKramerius(result.isAvailability(), krameriusURL);
-                                   if (krameriusURL == null || "".equals(krameriusURL)) {
-                                       SC.warn("Please set "
-                                               + EditorClientConfiguration.Constants.KRAMERIUS_HOST
-                                               + " in system configuration.");
-                                   }
-                               }
+                                       @Override
+                                       public void callback(CheckAvailabilityResult result) {
+                                           String krameriusURL = result.getUrl();
+                                           getView().refreshKramerius(result.isAvailability(), krameriusURL);
+                                           if (krameriusURL == null || "".equals(krameriusURL)) {
+                                               SC.warn("Please set "
+                                                       + EditorClientConfiguration.Constants.KRAMERIUS_HOST
+                                                       + " in system configuration.");
+                                           }
+                                       }
 
-                               @Override
-                               public void callbackError(Throwable t) {
-                                   super.callbackError(t, "Kramerius " + lang.notRunning());
-                                   getView().refreshKramerius(false, null);
-                               }
-                           });
+                                       @Override
+                                       public void callbackError(Throwable t) {
+                                           super.callbackError(t, "Kramerius " + lang.notRunning());
+                                           getView().refreshKramerius(false, null);
+                                       }
+                                   });
+        final DispatchRequest fedoraRequest =
+                dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID),
+                                   new DispatchCallback<CheckAvailabilityResult>() {
 
-        dispatcher.execute(new CheckAvailabilityAction(CheckAvailability.FEDORA_ID),
-                           new DispatchCallback<CheckAvailabilityResult>() {
+                                       @Override
+                                       public void callback(CheckAvailabilityResult result) {
+                                           String fedoraURL = result.getUrl();
+                                           getView().refreshFedora(result.isAvailability(), fedoraURL);
+                                           if (fedoraURL == null || "".equals(fedoraURL)) {
+                                               SC.warn("Please set "
+                                                       + EditorClientConfiguration.Constants.FEDORA_HOST
+                                                       + " in system configuration.");
+                                           }
+                                       }
 
-                               @Override
-                               public void callback(CheckAvailabilityResult result) {
-                                   String fedoraURL = result.getUrl();
-                                   getView().refreshFedora(result.isAvailability(), fedoraURL);
-                                   if (fedoraURL == null || "".equals(fedoraURL)) {
-                                       SC.warn("Please set "
-                                               + EditorClientConfiguration.Constants.FEDORA_HOST
-                                               + " in system configuration.");
-                                   }
-                               }
+                                       @Override
+                                       public void callbackError(Throwable t) {
+                                           super.callbackError(t, "Fedora " + lang.notRunning());
+                                           getView().refreshFedora(false, null);
+                                       }
+                                   });
+        Timer timer = new Timer() {
 
-                               @Override
-                               public void callbackError(Throwable t) {
-                                   super.callbackError(t, "Fedora " + lang.notRunning());
-                                   getView().refreshFedora(false, null);
-                               }
-                           });
+            @Override
+            public void run() {
+                if (krameriusRequest.isPending()) {
+                    krameriusRequest.cancel();
+                    getView().refreshKramerius(false, null);
+                }
+                if (fedoraRequest.isPending()) {
+                    fedoraRequest.cancel();
+                    getView().refreshFedora(false, null);
+                }
+            }
+        };
+        timer.schedule(7000);
     }
 }
