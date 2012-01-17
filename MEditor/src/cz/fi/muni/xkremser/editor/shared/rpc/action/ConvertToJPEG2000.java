@@ -40,7 +40,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
 public class ConvertToJPEG2000
-        extends UnsecuredActionImpl<ScanInputQueueResult> {
+        extends UnsecuredActionImpl<ConvertToJPEG2000Result> {
 
     @In(1)
     private ImageItem item;

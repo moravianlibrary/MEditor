@@ -41,7 +41,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
 public class GetDOModel
-        extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
+        extends UnsecuredActionImpl<GetDOModelResult> {
 
     /** The uuid. */
     @In(1)

@@ -38,7 +38,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
 public class GetLockInformation
-        extends UnsecuredActionImpl<GetLoggedUserResult> {
+        extends UnsecuredActionImpl<GetLockInformationResult> {
 
     /** The uuid of the digital object */
     @In(1)

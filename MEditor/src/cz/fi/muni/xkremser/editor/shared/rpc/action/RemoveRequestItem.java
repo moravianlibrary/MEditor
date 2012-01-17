@@ -38,7 +38,7 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
 public class RemoveRequestItem
-        extends UnsecuredActionImpl<RemoveUserRoleResult> {
+        extends UnsecuredActionImpl<RemoveRequestItemResult> {
 
     /** The id. */
     @In(1)

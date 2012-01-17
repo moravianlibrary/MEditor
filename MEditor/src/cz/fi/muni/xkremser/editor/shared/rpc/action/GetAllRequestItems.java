@@ -42,7 +42,7 @@ import cz.fi.muni.xkremser.editor.common.RequestItem;
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
 public class GetAllRequestItems
-        extends UnsecuredActionImpl<PutUserInfoResult> {
+        extends UnsecuredActionImpl<GetAllRequestItemsResult> {
 
     /** The id. */
     @Out(1)

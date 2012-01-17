@@ -45,7 +45,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 @SuppressWarnings("unused")
 @GenDispatch(isSecure = false)
 public class FindMetadata
-        extends UnsecuredActionImpl<CheckAvailabilityResult> {
+        extends UnsecuredActionImpl<FindMetadataResult> {
 
     @In(1)
     private Constants.SEARCH_FIELD searchType;
