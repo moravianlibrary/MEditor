@@ -118,9 +118,8 @@ public class AppView
         leftContainer = new VLayout();
         leftContainer.setWidth(275);
         leftContainer.setShowResizeBar(true);
-        mainContainer = new VLayout(); // TODO: consider some panel
+        mainContainer = new VLayout();
         widget.setWidth100();
-        // widget.setHeight100();
         widget.setHeight("98%");
         widget.setLeaveScrollbarGap(true);
         widget.setOverflow(Overflow.AUTO);

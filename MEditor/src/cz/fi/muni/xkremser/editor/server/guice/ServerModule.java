@@ -40,6 +40,8 @@ import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.Z3950ClientImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.DBSchemaDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.DBSchemaDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
@@ -63,6 +65,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
+import cz.fi.muni.xkremser.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ConvertToJPEG2000Handler;
 import cz.fi.muni.xkremser.editor.server.handler.DownloadDigitalObjectDetailHandler;
@@ -102,6 +105,7 @@ import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
@@ -186,7 +190,7 @@ public class ServerModule
         bindHandler(GetRelationshipsAction.class, GetRelationshipsHandler.class);
         bindHandler(RemoveDigitalObjectAction.class, RemoveDigitalObjectHandler.class);
         bindHandler(GetIngestInfoAction.class, GetIngestInfoHandler.class);
-
+        bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
         bindHandler(LogoutAction.class, LogoutHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
@@ -200,6 +204,7 @@ public class ServerModule
         bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
         bind(LocksDAO.class).to(LocksDAOImpl.class).asEagerSingleton();
         bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class).asEagerSingleton();
+        bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class).asEagerSingleton();
         // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
         // Fedora

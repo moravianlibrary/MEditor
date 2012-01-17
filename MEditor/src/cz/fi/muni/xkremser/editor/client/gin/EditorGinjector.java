@@ -33,6 +33,7 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 
 import cz.fi.muni.xkremser.editor.client.presenter.AppPresenter;
@@ -86,5 +87,7 @@ public interface EditorGinjector
     Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
 
     Provider<CreateObjectMenuPresenter> getCreateObjectMenuPresenterPresenter();
+
+    DispatchAsync getDispatcher();
 
 }

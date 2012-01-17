@@ -107,6 +107,12 @@ public class Constants {
     public static final String URL_PARAM_BOTTOM = "bottom";
 
     // db
+    /** Path to a file with current DB schema */
+    public static final String SCHEMA_PATH = "WEB-INF/classes/schema.sql";
+
+    /** Path to a file with current DB schema version number */
+    public static final String SCHEMA_VERSION_PATH = "schemaVersion.txt";
+
     /** The Constant TABLE_INPUT_QUEUE_NAME. */
     public static final String TABLE_INPUT_QUEUE_NAME = "input_queue_item";
 
@@ -145,6 +151,9 @@ public class Constants {
 
     /** The Constant TABLE_OPEN_ID_IDENTITY. */
     public static final String TABLE_OPEN_ID_IDENTITY = "open_id_identity";
+
+    /** The Constant TABLE_VERSION_NAME. */
+    public static final String TABLE_VERSION_NAME = "version";
 
     // input queue tree
     /** The Constant ATTR_ID. */

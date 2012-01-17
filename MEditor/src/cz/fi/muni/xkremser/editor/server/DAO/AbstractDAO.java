@@ -43,11 +43,12 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AbstractDAO.
+ * 
+ * @author Jiri Kremser
  */
-public class AbstractDAO {
+public abstract class AbstractDAO {
 
     /** The conn. */
     private Connection conn = null;
