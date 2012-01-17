@@ -95,6 +95,8 @@ public class RemoveDigitalObjectHandler
     /** The list of digital objects which have been removed */
     private List<RemovedDigitalObject> removedDigitalObjects;
 
+    private static final String ROLLBACK_FLAG = "ROLLBACK_FLAG";
+
     /** The recently modified dao */
     @Inject
     private RecentlyModifiedItemDAO recModDao;
@@ -434,7 +436,7 @@ public class RemoveDigitalObjectHandler
             while (!successful && attempt++ < 3) {
                 successful =
                         CreateObjectUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
-                                .getLabel(), removed.getUuid());
+                                .getLabel(), removed.getUuid(), ROLLBACK_FLAG);
             }
 
             if (!successful) {

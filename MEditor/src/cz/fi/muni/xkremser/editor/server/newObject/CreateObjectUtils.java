@@ -154,7 +154,8 @@ public class CreateObjectUtils {
         builder.createDocument();
 
         String foxmlRepresentation = builder.getDocument(false);
-        boolean success = ingest(foxmlRepresentation, node.getName(), node.getUuid());
+        boolean success =
+                ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel().toString());
 
         if (isPage && success) {
             // TODO: StringBuffer
@@ -193,10 +194,10 @@ public class CreateObjectUtils {
         FedoraUtils.putRelsExt(parrent.getUuid(), document.asXML(), false);
     }
 
-    public static boolean ingest(String foxml, String label, String uuid) {
+    public static boolean ingest(String foxml, String label, String uuid, String model) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Ingesting the digital object with PID" + (!uuid.contains("uuid:") ? " uuid:" : " ")
-                    + uuid + " and label " + label);
+                    + uuid + " label:" + label + ", model: " + model);
         }
         String login = config.getFedoraLogin();
         String password = config.getFedoraPassword();
@@ -210,13 +211,13 @@ public class CreateObjectUtils {
         }
 
         if (LOGGER.isInfoEnabled() && success) {
-            LOGGER.info("Object uuid:" + uuid + " [" + label + "] has been successfully ingested.");
+            LOGGER.info("Object ingested -- uuid:" + uuid + " label: " + label + ", model: " + model);
         }
         if (INGEST_LOGGER.isInfoEnabled()) {
-            INGEST_LOGGER.info(uuid);
+            INGEST_LOGGER.info(String.format("%s %16s %s", uuid, model, label));
         }
         if (!success) {
-            LOGGER.error("Unable to ingest object uuid:" + uuid + " [" + label + "]");
+            LOGGER.error("Unable to ingest object uuid:" + uuid + " label: " + label + ", model: " + model);
         }
         return success;
     }
