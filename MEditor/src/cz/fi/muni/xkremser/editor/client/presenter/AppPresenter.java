@@ -61,6 +61,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
@@ -135,6 +136,8 @@ public class AppPresenter
 
     /** The place manager. */
     private final PlaceManager placeManager;
+
+    private boolean isHotKeysEnabled = true;
 
     /**
      * Instantiates a new app presenter.
@@ -213,17 +216,30 @@ public class AppPresenter
                         && keyCode != Constants.CODE_KEY_DELETE && !isKnownCtrlAltHotkey(event)) {
                     return;
                 }
-                if (keyCode == Constants.CODE_KEY_ESC) {
-                    escShortCut();
+                if (isHotKeysEnabled) {
+                    if (keyCode == Constants.CODE_KEY_ESC) {
+                        escShortCut();
 
-                } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
-                    displayEnterPIDWindow();
-                    return;
+                    } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
+                        displayEnterPIDWindow();
+                        return;
+                    }
+                    KeyPressedEvent.fire(AppPresenter.this, keyCode);
+                } else {
+                    event.cancel();
                 }
-                KeyPressedEvent.fire(AppPresenter.this, keyCode);
             }
 
         });
+
+        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
+                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
+
+                                 @Override
+                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
+                                     isHotKeysEnabled = event.isEnable();
+                                 }
+                             });
 
         addRegisteredHandler(ChangeMenuWidthEvent.getType(),
                              new ChangeMenuWidthEvent.ChangeMenuWidthHandler() {

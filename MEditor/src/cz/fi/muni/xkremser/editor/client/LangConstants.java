@@ -3661,6 +3661,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String subtitle();
 
   /**
+   * Translated "Are you sure? Deleting without exploring conflicts may cause formation of an unpredictable errors.".
+   * 
+   * @return translated "Are you sure? Deleting without exploring conflicts may cause formation of an unpredictable errors."
+   */
+  @DefaultStringValue("Are you sure? Deleting without exploring conflicts may cause formation of an unpredictable errors.")
+  @Key("sureDelete")
+  String sureDelete();
+
+  /**
    * Translated "part of a personal name (surname)".
    * 
    * @return translated "part of a personal name (surname)"

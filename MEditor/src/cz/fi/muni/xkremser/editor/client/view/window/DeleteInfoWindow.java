@@ -45,8 +45,6 @@ import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 public class DeleteInfoWindow
         extends UniversalWindow {
 
-    private final LangConstants lang;
-
     private static DeleteInfoWindow deleteInfoWindow = null;
 
     public static void setInstanceOf(List<String> removedUuid, LangConstants lang) {
@@ -73,7 +71,6 @@ public class DeleteInfoWindow
 
     private DeleteInfoWindow(List<String> removedUuid, LangConstants lang) {
         super(170 + (removedUuid.size() * 12), 450, "Delete info");
-        this.lang = lang;
 
         Layout mainLayout = new VLayout();
         mainLayout.setWidth100();
@@ -92,9 +89,6 @@ public class DeleteInfoWindow
 
         IButton closeButton = new IButton("close");
         closeButton.setTitle(lang.close());
-        mainLayout.addMember(closeButton);
-
-        addItem(mainLayout);
 
         closeButton.addClickHandler(new ClickHandler() {
 
@@ -103,8 +97,9 @@ public class DeleteInfoWindow
                 DeleteInfoWindow.this.hide();
             }
         });
-        closeButton.setExtraSpace(10);
-
+        mainLayout.addMember(closeButton);
+        mainLayout.setExtraSpace(10);
+        addItem(mainLayout);
         int newHeight = 170 + (removedUuid.size() * 12);
 
         centerInPage();

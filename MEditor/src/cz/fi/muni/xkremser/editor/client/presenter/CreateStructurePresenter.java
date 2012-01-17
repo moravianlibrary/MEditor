@@ -85,6 +85,7 @@ import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -317,6 +318,7 @@ public class CreateStructurePresenter
                 final List<ImageItem> itemList = result == null ? null : result.getItems();
                 final List<ImageItem> toAdd = result == null ? null : result.getToAdd();
                 if (toAdd != null && !toAdd.isEmpty()) {
+                    SetEnabledHotKeysEvent.fire(CreateStructurePresenter.this, false);
                     int lastItem = toAdd.size();
                     boolean progressbar = lastItem > 5;
                     final Progressbar hBar1 = progressbar ? new Progressbar() : null;
@@ -349,7 +351,6 @@ public class CreateStructurePresenter
                 } else {
                     doTheRest(itemList);
                 }
-
             }
 
             @Override
@@ -426,6 +427,7 @@ public class CreateStructurePresenter
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
                 getView().getPopupPanel().hide();
+                SetEnabledHotKeysEvent.fire(CreateStructurePresenter.this, true);
             }
 
             private void convertItem(ImageItem item, final Progressbar hBar1, final List<ImageItem> itemList) {

@@ -64,6 +64,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants.CONFLICT;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
+import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectRelationships;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsResult;
@@ -90,6 +91,9 @@ public class RemoveDigitalObjectWindow
     private static final String THREE_DOTS = "other/threeDots.png";
     private static final String ARROW_ASKEW_RIGHT_CONFLICT = "other/arrowAskewRightConflict.png";
     private static final String ARROW_ASKEW_LEFT_CONFLICT = "other/arrowAskewLeftConflict.png";
+
+    /** Whether is deleting any object or not */
+    private static boolean isDeleting;
 
     private static LangConstants lang;
 
@@ -164,7 +168,7 @@ public class RemoveDigitalObjectWindow
 
                         @Override
                         public void onClick(MenuItemClickEvent event) {
-                            eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
+                            if (!isDeleting) eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
                         }
                     });
                     menu.addItem(newItem);
@@ -268,36 +272,38 @@ public class RemoveDigitalObjectWindow
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    mw.setLoadingIcon("loadingAnimation.gif");
-                    mw.show(true);
-                    countOfThreeDots--;
-                    Timer timer = new Timer() {
+                    if (!isDeleting) {
+                        mw.setLoadingIcon("loadingAnimation.gif");
+                        mw.show(true);
+                        countOfThreeDots--;
+                        Timer timer = new Timer() {
 
-                        @Override
-                        public void run() {
-                            removeMember(img);
-                            setVertical(false);
-                            for (DigitalObjectRelationships digObj : digObjRelList) {
-                                if (!isParentConflict) {
-                                    Layout createdRelLayout =
-                                            createRelLayout(digObj,
-                                                            2 + digObjRelList.indexOf(digObj),
-                                                            children);
-                                    createdRelLayout.setExtraSpace(5);
-                                    addMember(createdRelLayout);
-                                } else {
+                            @Override
+                            public void run() {
+                                removeMember(img);
+                                setVertical(false);
+                                for (DigitalObjectRelationships digObj : digObjRelList) {
+                                    if (!isParentConflict) {
+                                        Layout createdRelLayout =
+                                                createRelLayout(digObj,
+                                                                2 + digObjRelList.indexOf(digObj),
+                                                                children);
+                                        createdRelLayout.setExtraSpace(5);
+                                        addMember(createdRelLayout);
+                                    } else {
 
-                                    ItemImgButton itemImgButton =
-                                            new ItemImgButton(digObj.getUuid(), RED_CIRCLE, false);
-                                    itemImgButton.setValign(VerticalAlignment.BOTTOM);
-                                    addMember(itemImgButton);
+                                        ItemImgButton itemImgButton =
+                                                new ItemImgButton(digObj.getUuid(), RED_CIRCLE, false);
+                                        itemImgButton.setValign(VerticalAlignment.BOTTOM);
+                                        addMember(itemImgButton);
+                                    }
                                 }
+                                customizeWindow();
+                                mw.hide();
                             }
-                            customizeWindow();
-                            mw.hide();
-                        }
-                    };
-                    timer.schedule(25);
+                        };
+                        timer.schedule(25);
+                    }
                 }
             });
         }
@@ -345,7 +351,7 @@ public class RemoveDigitalObjectWindow
 
                             @Override
                             public void onClick(MenuItemClickEvent event) {
-                                eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
+                                if (!isDeleting) eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
                             }
                         });
                         menu.addItem(newItem);
@@ -597,9 +603,9 @@ public class RemoveDigitalObjectWindow
 
         private final Button close = new Button();
 
-        public ButtonsLayout(String removeTitle) {
+        public ButtonsLayout(final boolean isDeleteWithoutExplore) {
             super(2);
-            remove.setTitle(removeTitle);
+            remove.setTitle(isDeleteWithoutExplore ? lang.deleteAnyway() : lang.removeItem());
             remove.setExtraSpace(5);
             close.setTitle(lang.close());
             setLayoutAlign(Alignment.RIGHT);
@@ -625,27 +631,30 @@ public class RemoveDigitalObjectWindow
                     mw.show(true);
 
                     StringBuffer sb = new StringBuffer("");
-                    if (isConflict) {
-                        sb.append(lang.isConflictsWarning());
-                        if (lowestLevel > 2) sb.append("<br>");
+                    if (!isDeleteWithoutExplore) {
+                        if (isConflict) {
+                            sb.append(lang.isConflictsWarning());
+                            if (lowestLevel > 2) sb.append("<br>");
+                        }
+                        if (lowestLevel > 2) sb.append(lang.abundantTree());
+                        if (isConflict || lowestLevel > 2) sb.append("<br><br>").append(lang.wishContinue());
+                    } else {
+                        sb.append(lang.sureDelete());
                     }
-                    if (lowestLevel > 2) sb.append(lang.abundantTree());
-                    if (isConflict || lowestLevel > 2) sb.append("<br><br>").append(lang.wishContinue());
-
                     if (!"".equals(sb.toString())) {
                         SC.ask(sb.toString(), new BooleanCallback() {
 
                             @Override
                             public void execute(Boolean value) {
                                 if (value) {
-                                    RemoveDigitalObjectWindow.this.remove();
+                                    RemoveDigitalObjectWindow.this.remove(remove, close);
                                 } else {
                                     mw.hide();
                                 }
                             }
                         });
                     } else {
-                        RemoveDigitalObjectWindow.this.remove();
+                        RemoveDigitalObjectWindow.this.remove(remove, close);
                     }
                 }
             });
@@ -683,6 +692,7 @@ public class RemoveDigitalObjectWindow
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
         this.countOfThreeDots = 0;
+        this.isDeleting = false;
         setEdgeOffset(15);
         itemList = new ArrayList<RemoveDigitalObjectWindow.ItemImgButton>();
         lowestLevel = 1;
@@ -720,7 +730,7 @@ public class RemoveDigitalObjectWindow
             }
         });
 
-        warningLayout.addMember(new ButtonsLayout(lang.deleteAnyway()));
+        warningLayout.addMember(new ButtonsLayout(true));
 
         mainLayout.addMember(warningLayout);
         mainLayout.setAutoHeight();
@@ -736,7 +746,7 @@ public class RemoveDigitalObjectWindow
         ItemLayout newLayout = new ItemLayout(digitalObjectRelationships, true, true);
         mainLayout.removeMember(warningLayout);
         mainLayout.addMember(newLayout);
-        addMember(new ButtonsLayout(lang.removeItem()));
+        addMember(new ButtonsLayout(false));
         customizeWindow();
         mw.hide();
     }
@@ -799,17 +809,28 @@ public class RemoveDigitalObjectWindow
     }
 
     /**
-     * 
+     * @param close
+     * @param remove
      */
 
-    protected void remove() {
+    protected void remove(final Button remove, final Button close) {
+        remove.disable();
+        close.disable();
+        isDeleting = true;
+        setShowCloseButton(false);
+        eventBus.fireEvent(new SetEnabledHotKeysEvent(false));
         RemoveDigitalObjectAction removeAction = new RemoveDigitalObjectAction(uuid, uuidNotToRemove);
         DispatchCallback<RemoveDigitalObjectResult> removeCallback =
                 new DispatchCallback<RemoveDigitalObjectResult>() {
 
                     @Override
                     public void callback(RemoveDigitalObjectResult result) {
+                        isDeleting = false;
+                        remove.enable();
+                        close.enable();
+                        setShowCloseButton(true);
                         mw.hide();
+                        eventBus.fireEvent(new SetEnabledHotKeysEvent(true));
                         RemoveDigitalObjectWindow.this.hide();
                         if (result.getErrorMessage() == null) {
                             DeleteInfoWindow.setInstanceOf(result.getRemoved(), lang);
@@ -821,11 +842,21 @@ public class RemoveDigitalObjectWindow
 
                     @Override
                     public void callbackError(Throwable t) {
+                        isDeleting = false;
+                        remove.enable();
+                        close.enable();
+                        setShowCloseButton(true);
+                        eventBus.fireEvent(new SetEnabledHotKeysEvent(true));
                         mw.hide();
                         super.callbackError(t);
                     }
                 };
 
         dispatcher.execute(removeAction, removeCallback);
+    }
+
+    @Override
+    public void hide() {
+        if (!isDeleting) super.hide();
     }
 }
