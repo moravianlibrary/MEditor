@@ -41,6 +41,7 @@ import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.StoredItemsDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
@@ -84,9 +85,8 @@ public class StoredItemsHandler
             throw new ActionException(e);
         }
 
-        List<StoredItem> storedItems = new ArrayList<StoredItem>();
         if (action.getDetail() == null) {
-
+            List<StoredItem> storedItems = new ArrayList<StoredItem>();
             try {
                 storedItems = storeDao.getStoredItem(userId);
             } catch (DatabaseException e) {
@@ -97,9 +97,9 @@ public class StoredItemsHandler
 
         } else {
 
-            //            String workingCopyFoxml =
-            //                    FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
-            return new StoredItemsResult(storedItems);
+            String workingCopyFoxml =
+                    FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
+            return new StoredItemsResult(null);
         }
     }
 
