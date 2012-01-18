@@ -515,8 +515,10 @@ public class CreateStructureView
         pictureField.setImageURLPrefix(Constants.SERVLET_SCANS_PREFIX + '/');
         pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
         pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT);
+        pictureField.setCellStyle("tileGridImg");
 
         DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
+        nameField.setCellStyle("tileGridTitle");
         nameField.setDetailFormatter(new DetailFormatter() {
 
             @Override

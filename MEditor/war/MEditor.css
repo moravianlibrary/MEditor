@@ -300,3 +300,17 @@ html>body .gwt-DecoratedPopupPanel {
 	font-size: 10px;
 	color: #404040;
 }
+
+
+.tileGridImgSelected{
+	background:#8b8b8b;
+}
+.tileGridImgSelectedOver{
+	background:#8b8b8b;
+}
+.tileGridTitleSelected{
+	background-color:#8b8b8b;
+}
+.tileGridTitleSelectedOver{
+	background-color:#8b8b8b;
+}

@@ -108,7 +108,7 @@ public class Constants {
 
     // db
     /** Path to a file with current DB schema */
-    public static final String SCHEMA_PATH = "WEB-INF/classes/schema.sql";
+    public static final String SCHEMA_PATH = "schema.sql";
 
     /** Path to a file with current DB schema version number */
     public static final String SCHEMA_VERSION_PATH = "schemaVersion.txt";
