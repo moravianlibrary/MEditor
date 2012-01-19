@@ -65,8 +65,8 @@ public class PeriodicalVolumeBuilder
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
-        Element idSici = mods.addElement(new QName("identifier", modsNs));
-        idSici.addAttribute("type", "sici");
+        //        Element idSici = mods.addElement(new QName("identifier", modsNs));
+        //        idSici.addAttribute("type", "sici");
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
@@ -79,13 +79,13 @@ public class PeriodicalVolumeBuilder
         Element issuance = originInfo.addElement(new QName("issuance", modsNs));
         issuance.addText("continuing");
 
-        //        Element part = mods.addElement(new QName("part", modsNs));
-        //        Element detail = part.addElement(new QName("detail", modsNs));
-        //        detail.addAttribute("type", "volume");
+        Element part = mods.addElement(new QName("part", modsNs));
+        part.addAttribute("type", "periodicalVolume");
+        Element detail = part.addElement(new QName("detail", modsNs));
+        detail.addAttribute("type", "volume");
         //        Element number = detail.addElement(new QName("number", modsNs));
         //        number.addText(volumeLabel);
 
-        //        number.addText(getLabel());
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 
     }

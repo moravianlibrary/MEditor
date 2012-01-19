@@ -24,6 +24,15 @@
 
 package cz.fi.muni.xkremser.editor.server.newObject;
 
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
+
+import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
+import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
+
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
@@ -47,7 +56,37 @@ public class PeriodicalItemBuilder
      */
     @Override
     protected void decorateMODSStream() {
-        // TODO Auto-generated method stub
+        String volumeLabel = getLabel();
+        Element modsCollection = FoxmlUtils.createModsCollectionEl();
+        Namespace modsNs = Namespaces.mods;
+        Element mods = modsCollection.addElement(new QName("mods", modsNs));
+        mods.addAttribute("version", "3.3");
+        Element idUrn = mods.addElement(new QName("identifier", modsNs));
+        idUrn.addAttribute("type", "urn");
+        idUrn.addText(getUuid());
+
+        //        Element idSici = mods.addElement(new QName("identifier", modsNs));
+        //        idSici.addAttribute("type", "sici");
+
+        Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
+        Element title = titleInfo.addElement(new QName("title", modsNs));
+        title.addText(volumeLabel);
+
+        Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
+        typeOfResource.addText("text");
+
+        Element originInfo = mods.addElement(new QName("originInfo", modsNs));
+        Element issuance = originInfo.addElement(new QName("issuance", modsNs));
+        issuance.addText("continuing");
+
+        Element part = mods.addElement(new QName("part", modsNs));
+        part.addAttribute("type", "periodicalIssue");
+        Element detail = part.addElement(new QName("detail", modsNs));
+        detail.addAttribute("type", "issue");
+        //        Element number = detail.addElement(new QName("number", modsNs));
+        //        number.addText(volumeLabel);
+
+        appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 
     }
 
