@@ -79,10 +79,10 @@ public class PeriodicalItemBuilder
         Element issuance = originInfo.addElement(new QName("issuance", modsNs));
         issuance.addText("continuing");
 
-        Element part = mods.addElement(new QName("part", modsNs));
-        part.addAttribute("type", "periodicalIssue");
-        Element detail = part.addElement(new QName("detail", modsNs));
-        detail.addAttribute("type", "issue");
+        //        Element part = mods.addElement(new QName("part", modsNs));
+        //        part.addAttribute("type", "periodicalIssue");
+        //        Element detail = part.addElement(new QName("detail", modsNs));
+        //        detail.addAttribute("type", "issue");
         //        Element number = detail.addElement(new QName("number", modsNs));
         //        number.addText(volumeLabel);
 

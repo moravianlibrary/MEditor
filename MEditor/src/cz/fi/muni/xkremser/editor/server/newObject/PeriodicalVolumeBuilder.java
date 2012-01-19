@@ -79,10 +79,10 @@ public class PeriodicalVolumeBuilder
         Element issuance = originInfo.addElement(new QName("issuance", modsNs));
         issuance.addText("continuing");
 
-        Element part = mods.addElement(new QName("part", modsNs));
-        part.addAttribute("type", "periodicalVolume");
-        Element detail = part.addElement(new QName("detail", modsNs));
-        detail.addAttribute("type", "volume");
+        //        Element part = mods.addElement(new QName("part", modsNs));
+        //        part.addAttribute("type", "periodicalIssue");
+        //        Element detail = part.addElement(new QName("detail", modsNs));
+        //        detail.addAttribute("type", "volume");
         //        Element number = detail.addElement(new QName("number", modsNs));
         //        number.addText(volumeLabel);
 

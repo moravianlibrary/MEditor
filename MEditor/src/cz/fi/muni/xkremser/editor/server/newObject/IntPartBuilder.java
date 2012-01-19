@@ -65,8 +65,8 @@ public class IntPartBuilder
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
-        Element idSici = mods.addElement(new QName("identifier", modsNs));
-        idSici.addAttribute("type", "sici");
+        //        Element idSici = mods.addElement(new QName("identifier", modsNs));
+        //        idSici.addAttribute("type", "sici");
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
@@ -75,8 +75,8 @@ public class IntPartBuilder
         Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
         typeOfResource.addText("text");
 
-        Element part = mods.addElement(new QName("part", modsNs));
-        part.addAttribute("type", "Chapter");
+        //        Element part = mods.addElement(new QName("part", modsNs));
+        //        part.addAttribute("type", "Chapter");
         //                Element extent = part.addElement(new QName("extent", modsNs));
         //                extent.addAttribute("unit", "pages");
         //                Element start = extent.addElement(new QName("start", modsNs));
