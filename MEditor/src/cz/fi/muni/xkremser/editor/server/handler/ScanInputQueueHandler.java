@@ -34,6 +34,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -212,6 +214,13 @@ public class ScanInputQueueHandler
                 list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
             }
         }
+        Collections.sort(list, new Comparator<InputQueueItem>() {
+
+            @Override
+            public int compare(InputQueueItem o1, InputQueueItem o2) {
+                return o1.getBarcode().compareTo(o2.getBarcode());
+            }
+        });
         inputQueueDAO.updateItems(list);
         return listTopLvl;
 
