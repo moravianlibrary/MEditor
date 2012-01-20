@@ -673,6 +673,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String date();
 
   /**
+   * Translated "Date issued in the form YYYY".
+   * 
+   * @return translated "Date issued in the form YYYY"
+   */
+  @DefaultStringValue("Date issued in the form YYYY")
+  @Key("dateIssuedRRRR")
+  String dateIssuedRRRR();
+
+  /**
    * Translated "There is no MARC equivalent for 'dateLastAccessed'.".
    * 
    * @return translated "There is no MARC equivalent for 'dateLastAccessed'."

@@ -153,13 +153,6 @@ class MonographBuilder
         }
     }
 
-    private String transformLanguage(String originalLang) {
-        if ("d".equals(originalLang)) {
-            return "ger";
-        }
-        return originalLang;
-    }
-
     private void updateModsDoc(Document modsDoc, MarcSpecificMetadata marc, String uuid) {
         //addPhysicalLocation(modsDoc, marc);
         addUdcOrDdc(modsDoc, marc);

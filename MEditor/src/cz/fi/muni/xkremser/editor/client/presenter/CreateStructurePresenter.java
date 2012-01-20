@@ -70,6 +70,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
@@ -271,7 +272,28 @@ public class CreateStructurePresenter
         } else {
             initLeftPresenterTree();
         }
+        leftPresenter.setDefaultDateIssued(getDateIssued());
+
         ChangeMenuWidthEvent.fire(getEventBus(), "340");
+    }
+
+    private String getDateIssued() {
+
+        if (bundle == null || bundle.getMods() == null) return "";
+        if (bundle.getMods().getMods() == null || bundle.getMods().getMods().size() == 0) return "";
+
+        ModsTypeClient mods = bundle.getMods().getMods().get(0);
+        if (mods == null || mods.getOriginInfo() == null || mods.getOriginInfo().size() == 0) return "";
+        if (mods.getOriginInfo().get(0) == null || mods.getOriginInfo().get(0).getDateIssued() == null)
+            return "";
+
+        List<DateTypeClient> dateIssued = mods.getOriginInfo().get(0).getDateIssued();
+        if (dateIssued.size() > 0 && dateIssued.get(0) != null && dateIssued.get(0).getValue() != null) {
+            return dateIssued.get(0).getValue();
+        } else {
+            return "";
+        }
+
     }
 
     private void initLeftPresenterTree() {
@@ -295,6 +317,7 @@ public class CreateStructurePresenter
                                                 model,
                                                 model,
                                                 SubstructureTreeNode.ROOT_ID,
+                                                "",
                                                 "",
                                                 true,
                                                 false);
@@ -616,6 +639,10 @@ public class CreateStructurePresenter
         List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
         if (model != null) {
             leftPresenter.getView().addUndoRedo(true, false);
+            String dateIssued =
+                    (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) ? leftPresenter
+                            .getView().getDateIssued().getValueAsString()
+                            : "";
             String possibleParent = "-1";
             if (canContain != null) { //adding selected pages
                 possibleParent = String.valueOf(leftPresenter.newId());
@@ -628,6 +655,7 @@ public class CreateStructurePresenter
                                                         model.getValue(),
                                                         parent,
                                                         "",
+                                                        dateIssued,
                                                         true,
                                                         false);
             } else { // adding something and enrich it with selected pages
@@ -647,6 +675,7 @@ public class CreateStructurePresenter
                                              DigitalObjectModel.PAGE.getValue(),
                                              possibleParent,
                                              selection[i].getAttribute(Constants.ATTR_PAGE_TYPE),
+                                             "",
                                              true,
                                              false);
                 }

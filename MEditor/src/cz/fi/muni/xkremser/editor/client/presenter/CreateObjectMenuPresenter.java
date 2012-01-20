@@ -124,8 +124,13 @@ public class CreateObjectMenuPresenter
                              String typeId,
                              String parent,
                              String pageType,
+                             String dateIssued,
                              boolean isOpen,
                              boolean exist);
+
+        TextItem getDateIssued();
+
+        void setCreateVolume(boolean setCreateVolume, String defaultDateIssued);
     }
 
     /**
@@ -163,6 +168,8 @@ public class CreateObjectMenuPresenter
     private static final Object LOCK = DigitalObjectMenuPresenter.class;
 
     private static volatile boolean ready = true;
+
+    private String defaultDateIssued = "";
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -245,6 +252,14 @@ public class CreateObjectMenuPresenter
                     getView().getCreateButton().enable();
                 } else {
                     getView().getCreateButton().disable();
+                }
+                if (event.getValue().equals(getLabelFromModel()
+                        .get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
+                        || event.getValue().equals(getLabelFromModel()
+                                .get(DigitalObjectModel.PERIODICALITEM.getValue()))) {
+                    getView().setCreateVolume(true, defaultDateIssued);
+                } else {
+                    getView().setCreateVolume(false, null);
                 }
             }
         }));
@@ -401,6 +416,23 @@ public class CreateObjectMenuPresenter
     @Override
     public int newId() {
         return ++lastId;
+    }
+
+    /**
+     * @return the defaultDateIssued
+     */
+
+    public String getDefaultDateIssued() {
+        return defaultDateIssued;
+    }
+
+    /**
+     * @param defaultDateIssued
+     *        the defaultDateIssued to set
+     */
+
+    public void setDefaultDateIssued(String defaultDateIssued) {
+        this.defaultDateIssued = defaultDateIssued;
     }
 
     /**

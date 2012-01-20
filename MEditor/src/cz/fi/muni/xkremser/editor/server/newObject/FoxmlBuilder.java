@@ -37,6 +37,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.QName;
 
+import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
@@ -77,6 +78,7 @@ public abstract class FoxmlBuilder {
     private String krameriusUrl;
     private String alephUrl;
     private String imageUrl;
+    private String dateIssued;
 
     private static final int MAX_LABEL_LENGTH = 100;
     private static final Boolean VERSIONABLE = true;
@@ -401,8 +403,65 @@ public abstract class FoxmlBuilder {
         return bundle;
     }
 
+    /**
+     * @return the dateIssued
+     */
+
+    public String getDateIssued() {
+        return dateIssued;
+    }
+
+    /**
+     * @param dateIssued
+     *        the dateIssued to set
+     */
+
+    public void setDateIssued(String dateIssued) {
+        this.dateIssued = dateIssued;
+    }
+
     public void setBundle(MetadataBundle bundle) {
         this.bundle = bundle;
         setSysno(getBundle().getMarc().getSysno());
+    }
+
+    protected String transformLanguage(String originalLang) {
+        if ("d".equals(originalLang)) {
+            return "ger";
+        }
+        return originalLang;
+    }
+
+    private ModsTypeClient getFirstMods() {
+        if (getBundle() != null && getBundle().getMods() != null && getBundle().getMods().getMods() != null
+                && getBundle().getMods().getMods().size() > 0) {
+            return getBundle().getMods().getMods().get(0);
+        }
+        return null;
+    }
+
+    protected String getTypeOfResource() {
+        String typeOfResourceValue = null;
+
+        ModsTypeClient mods = getFirstMods();
+        if (mods != null && mods.getTypeOfResource() != null && mods.getTypeOfResource().size() > 0
+                && mods.getTypeOfResource().get(0).getValue() != null) {
+            typeOfResourceValue = mods.getTypeOfResource().get(0).getValue();
+        }
+
+        return typeOfResourceValue;
+    }
+
+    protected String getLanguage() {
+        String language = null;
+
+        ModsTypeClient mods = getFirstMods();
+        if (mods != null && mods.getLanguage() != null && mods.getLanguage().size() > 0
+                && mods.getLanguage().get(0).getLanguageTerm() != null
+                && mods.getLanguage().get(0).getLanguageTerm().size() > 0) {
+            language = mods.getLanguage().get(0).getLanguageTerm().get(0).getValue();
+        }
+
+        return language;
     }
 }

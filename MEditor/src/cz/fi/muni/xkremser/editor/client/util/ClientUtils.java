@@ -291,6 +291,9 @@ public class ClientUtils {
                                      bundle,
                                      null,
                                      node.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        if (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) {
+            newObj.setDateIssued(node.getAttribute(Constants.ATTR_DATE_ISSUED));
+        }
         newObj.setPath(imgUuid);
         newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
         TreeNode[] children = tree.getChildren(node);

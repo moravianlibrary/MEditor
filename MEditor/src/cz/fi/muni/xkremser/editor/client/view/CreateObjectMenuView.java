@@ -38,7 +38,6 @@ import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
@@ -57,6 +56,7 @@ import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -150,6 +150,8 @@ public class CreateObjectMenuView
 
     private TextItem name;
 
+    private TextItem dateIssued;
+
     /** The layout. */
     private VLayout layout;
 
@@ -161,6 +163,20 @@ public class CreateObjectMenuView
     private ToolStripButton undoButton;
     private List<Tree> redoList;
     private ToolStripButton redoButton;
+
+    private final VLayout createLayout;
+
+    private static final class CreateDynamicForm
+            extends DynamicForm {
+
+        public CreateDynamicForm(FormItem item) {
+            super();
+            setItems(item);
+            setRight(5);
+        }
+    }
+
+    private CreateDynamicForm dateIssuedForm;
 
     /**
      * Instantiates a new digital object menu view.
@@ -333,6 +349,7 @@ public class CreateObjectMenuView
                                             DigitalObjectModel.PAGE.getValue(),
                                             dropPlace.getAttribute(Constants.ATTR_ID),
                                             rec.getAttribute(Constants.ATTR_PAGE_TYPE),
+                                            "",
                                             true,
                                             false);
                         }
@@ -414,6 +431,7 @@ public class CreateObjectMenuView
                                             parent.getAttribute(parentIsTopLvl ? Constants.ATTR_ID
                                                     : Constants.ATTR_PARENT),
                                             "",
+                                            "",
                                             true,
                                             true);
                             for (Record rec : selection) {
@@ -424,6 +442,7 @@ public class CreateObjectMenuView
                                                 rec.getAttribute(Constants.ATTR_TYPE_ID),
                                                 newParentId,
                                                 rec.getAttribute(Constants.ATTR_PAGE_TYPE),
+                                                rec.getAttribute(Constants.ATTR_DATE_ISSUED),
                                                 true,
                                                 false);
                             }
@@ -467,6 +486,7 @@ public class CreateObjectMenuView
                                                 .getAttribute(Constants.ATTR_ID),
                                         getModel() == DigitalObjectModel.PAGE ? Constants.PAGE_TYPES.NP
                                                 .toString() : "",
+                                        "",
                                         false,
                                         true);
                     }
@@ -481,6 +501,16 @@ public class CreateObjectMenuView
         final Menu editMenu = new Menu();
         editMenu.setShowShadow(true);
         editMenu.setShadowDepth(10);
+
+        final MenuItem edit = new MenuItem(lang.menuEdit(), "icons/16/edit.png");
+        edit.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                // TODO edit window
+            }
+        });
+
         editMenu.setItems(deleteSelected, new MenuItemSeparator(), connectToExisting, connectExistingTo);
         structureTreeGrid.setContextMenu(editMenu);
         structureTreeGrid.addCellContextClickHandler(new CellContextClickHandler() {
@@ -530,13 +560,6 @@ public class CreateObjectMenuView
         structureTree.setParentIdField(Constants.ATTR_PARENT);
         structureTree.setOpenProperty("isOpen");
 
-        TreeGridField createField = new TreeGridField();
-        createField.setCanFilter(true);
-        createField.setName(Constants.ATTR_CREATE);
-        createField.setTitle("TODO vytvorit");
-        createField.setType(ListGridFieldType.BOOLEAN);
-        createField.setWidth("40");
-
         TreeGridField typeField = new TreeGridField();
         typeField.setCanFilter(true);
         typeField.setCanEdit(false);
@@ -551,7 +574,7 @@ public class CreateObjectMenuView
         nameField.setTitle(lang.name());
         nameField.setWidth("*");
 
-        structureTreeGrid.setFields(typeField, nameField/* , createField */);
+        structureTreeGrid.setFields(typeField, nameField);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
 
         createStructure = new SectionStackSection();
@@ -559,6 +582,11 @@ public class CreateObjectMenuView
         createStructure.setResizeable(true);
         name = new TextItem();
         name.setTitle(lang.name());
+
+        dateIssued = new TextItem();
+        dateIssued.setTitle(lang.dateIssuedRRRR());
+        dateIssuedForm = new CreateDynamicForm(dateIssued);
+
         selectModel = new SelectItem();
         selectModel.setTitle(lang.dcType());
 
@@ -569,16 +597,18 @@ public class CreateObjectMenuView
         createButton.setAlign(Alignment.CENTER);
         createButton.setColSpan(2);
         createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, false);
-        final DynamicForm form = new DynamicForm();
-        form.setNumCols(2);
-        form.setPadding(5);
-        form.setWidth100();
-        form.setExtraSpace(10);
-        form.setTitleWidth("45");
 
-        form.setFields(name, selectModel, keepCheckbox, createButton);
+        createLayout = new VLayout();
+        createLayout.setPadding(5);
+        createLayout.setWidth100();
+        createLayout.setExtraSpace(10);
+        createLayout.addMember(new CreateDynamicForm(name));
+        createLayout.addMember(new CreateDynamicForm(selectModel));
+        createLayout.addMember(new CreateDynamicForm(keepCheckbox));
+        createLayout.addMember(new CreateDynamicForm(createButton));
+        createLayout.setRight(10);
 
-        createStructure.setItems(form);
+        createStructure.setItems(createLayout);
         createStructure.setExpanded(false);
 
         structure = new SectionStackSection();
@@ -597,6 +627,22 @@ public class CreateObjectMenuView
         sectionStack.setHeight100();
         sectionStack.setOverflow(Overflow.HIDDEN);
         layout.addMember(sectionStack);
+    }
+
+    @Override
+    public void setCreateVolume(boolean setCreateVolume, String defaultDateIssued) {
+        boolean contains = createLayout.contains(dateIssuedForm);
+
+        if (setCreateVolume) {
+            dateIssued.setDefaultValue(defaultDateIssued);
+            if (!contains) {
+                createLayout.addMember(dateIssuedForm, 1);
+            }
+        } else {
+            if (contains) {
+                createLayout.removeMember(dateIssuedForm);
+            }
+        }
     }
 
     @Override
@@ -720,6 +766,11 @@ public class CreateObjectMenuView
         return name;
     }
 
+    @Override
+    public TextItem getDateIssued() {
+        return dateIssued;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -747,6 +798,7 @@ public class CreateObjectMenuView
                                     String type,
                                     String typeId,
                                     String pageType,
+                                    String dateIssued,
                                     boolean isOpen,
                                     boolean exist) {
             setAttribute(Constants.ATTR_ID, id);
@@ -756,6 +808,7 @@ public class CreateObjectMenuView
             setAttribute(Constants.ATTR_TYPE, type);
             setAttribute(Constants.ATTR_TYPE_ID, typeId);
             setAttribute(Constants.ATTR_PAGE_TYPE, pageType);
+            setAttribute(Constants.ATTR_DATE_ISSUED, dateIssued);
             setAttribute("isOpen", isOpen);
             setAttribute(Constants.ATTR_EXIST, exist);
             setAttribute(Constants.ATTR_CREATE, !exist);
@@ -774,6 +827,7 @@ public class CreateObjectMenuView
                                 String typeId,
                                 String parent,
                                 String pageType,
+                                String dateIssued,
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
@@ -784,6 +838,7 @@ public class CreateObjectMenuView
                                                    type,
                                                    typeId,
                                                    pageType,
+                                                   dateIssued,
                                                    isOpen,
                                                    exist), parentNode);
         structureTreeGrid.setData(structureTree);
@@ -851,6 +906,7 @@ public class CreateObjectMenuView
                                                  childNode.getAttribute(Constants.ATTR_TYPE),
                                                  childNode.getAttribute(Constants.ATTR_TYPE_ID),
                                                  childNode.getAttribute(Constants.ATTR_PAGE_TYPE),
+                                                 childNode.getAttribute(Constants.ATTR_DATE_ISSUED),
                                                  childNode.getAttributeAsBoolean("isOpen"),
                                                  childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
                 TreeNode[] children = tree.getChildren(childNode);

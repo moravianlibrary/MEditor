@@ -51,6 +51,7 @@ public class NewDigitalObject
     private String path;
     private boolean visible;
     private String pageType;
+    private String dateIssued;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -167,6 +168,23 @@ public class NewDigitalObject
 
     public void setPageType(String pageType) {
         this.pageType = pageType;
+    }
+
+    /**
+     * @return the dateIssued
+     */
+
+    public String getDateIssued() {
+        return dateIssued;
+    }
+
+    /**
+     * @param dateIssued
+     *        the dateIssued to set
+     */
+
+    public void setDateIssued(String dateIssued) {
+        this.dateIssued = dateIssued;
     }
 
 }

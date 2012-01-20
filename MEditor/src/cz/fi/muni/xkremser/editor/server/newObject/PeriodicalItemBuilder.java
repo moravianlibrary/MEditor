@@ -65,26 +65,39 @@ public class PeriodicalItemBuilder
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
-        //        Element idSici = mods.addElement(new QName("identifier", modsNs));
-        //        idSici.addAttribute("type", "sici");
-
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
         title.addText(volumeLabel);
 
-        Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
-        typeOfResource.addText("text");
+        String typeOfResource = getTypeOfResource();
+        if (typeOfResource != null) {
+            Element typeOfResourceEl = mods.addElement(new QName("typeOfResource", modsNs));
+            typeOfResourceEl.addText(getTypeOfResource());
+        }
+
+        Element genre = mods.addElement(new QName("genre", modsNs));
+        genre.addAttribute("type", "issue");
 
         Element originInfo = mods.addElement(new QName("originInfo", modsNs));
+        Element dateIssued = originInfo.addElement(new QName("dateIssued", modsNs));
+        dateIssued.addText(getDateIssued() != null ? getDateIssued() : "");
         Element issuance = originInfo.addElement(new QName("issuance", modsNs));
         issuance.addText("continuing");
 
-        //        Element part = mods.addElement(new QName("part", modsNs));
-        //        part.addAttribute("type", "periodicalIssue");
-        //        Element detail = part.addElement(new QName("detail", modsNs));
-        //        detail.addAttribute("type", "issue");
-        //        Element number = detail.addElement(new QName("number", modsNs));
-        //        number.addText(volumeLabel);
+        String language = getLanguage();
+        if (language != null) {
+            Element languageEl = mods.addElement(new QName("language", modsNs));
+            Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
+            languageTerm.addAttribute("type", "code");
+            languageTerm.addAttribute("authority", "iso639-2b");
+            languageTerm.addText(language);
+        }
+
+        Element part = mods.addElement(new QName("part", modsNs));
+        Element detail = part.addElement(new QName("detail", modsNs));
+        detail.addAttribute("type", "issue");
+        Element number = detail.addElement(new QName("number", modsNs));
+        number.addText(volumeLabel);
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 

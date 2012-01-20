@@ -115,6 +115,11 @@ public class CreateObjectUtils {
         builder.setLabel(node.getName());
         builder.setPageType(node.getPageType());
         builder.setPolicy(node.getVisible() ? Policy.PUBLIC : Policy.PRIVATE);
+        if (node.getModel() == DigitalObjectModel.PERIODICALVOLUME
+                || node.getModel() == DigitalObjectModel.PERIODICALITEM) {
+            builder.setDateIssued(node.getDateIssued());
+
+        }
         List<NewDigitalObject> childrenToAdd = node.getChildren();
         if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
             List<RelsExtRelation> relations = builder.getChildren();

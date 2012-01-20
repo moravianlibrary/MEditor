@@ -202,6 +202,9 @@ public class Constants {
     /** The Constant ATTR_PAGE_TYPE. */
     public static final String ATTR_PAGE_TYPE = "pageType";
 
+    /** The Constant ATTR_DATE_ISSUED. */
+    public static final String ATTR_DATE_ISSUED = "dateIssued";
+
     /** The Constant ATTR_INGEST_INFO. */
     public static final String ATTR_INGEST_INFO = "ingestInfo";
 
