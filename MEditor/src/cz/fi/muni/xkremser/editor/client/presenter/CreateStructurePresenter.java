@@ -79,7 +79,6 @@ import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureT
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
@@ -718,22 +717,22 @@ public class CreateStructurePresenter
         getView().getPopupPanel().center();
         alreadyDone = 0;
 
-        DublinCore newDc = dc == null ? CreateStructurePresenter.this.bundle.getDc() : dc;
+        DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
         ModsCollectionClient newMods;
         if (mods != null) {
             newMods = new ModsCollectionClient();
             newMods.setMods(Arrays.asList(mods));
         } else {
-            newMods = CreateStructurePresenter.this.bundle.getMods();
+            newMods =
+                    bundle != null && bundle.getMods() != null ? bundle.getMods()
+                            : new ModsCollectionClient();
         }
         NewDigitalObject object = null;
         try {
             object =
-                    ClientUtils.createTheStructure(new MetadataBundle(newDc,
-                                                                      newMods,
-                                                                      CreateStructurePresenter.this.bundle
-                                                                              .getMarc()),
-                                                   leftPresenter.getView().getSubelementsGrid().getTree());
+                    ClientUtils.createTheStructure(new MetadataBundle(newDc == null ? new DublinCore()
+                            : newDc, newMods, bundle == null ? null : bundle.getMarc()), leftPresenter
+                            .getView().getSubelementsGrid().getTree());
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();
@@ -801,7 +800,7 @@ public class CreateStructurePresenter
      */
     @Override
     public ModsCollectionClient getMods() {
-        return bundle.getMods();
+        return bundle == null ? null : bundle.getMods();
     }
 
     /**
