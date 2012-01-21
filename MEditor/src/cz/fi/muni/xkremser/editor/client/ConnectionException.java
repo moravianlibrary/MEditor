@@ -36,7 +36,10 @@ import java.io.IOException;
 public class ConnectionException
         extends IOException {
 
-    private static final long serialVersionUID = -8072446224054072263L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5932923648539397259L;
 
     /**
      * Instantiates a new connection exception.
@@ -46,5 +49,9 @@ public class ConnectionException
      */
     public ConnectionException(String msg) {
         super(msg);
+    }
+
+    public ConnectionException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

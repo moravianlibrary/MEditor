@@ -30,21 +30,22 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import javax.inject.Inject;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.apache.log4j.Logger;
-
+import cz.fi.muni.xkremser.editor.client.CreateObjectException;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
-
+import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
@@ -126,6 +127,22 @@ public class ConvertToJPEG2000Handler
     }
 
     private boolean convertToJpeg2000(ImageItem item) throws ActionException {
+        if (item.getJpgFsPath().toLowerCase().endsWith(Constants.JPEG_2000_EXTENSION)) {
+            try {
+                CreateObjectUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());
+                LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + item.getJpgFsPath()
+                        + Constants.JPEG_2000_EXTENSION + "  was copied to  " + item.getJpeg2000FsPath()
+                        + Constants.JPEG_2000_EXTENSION);
+            } catch (CreateObjectException e) {
+                LOGGER.error("Unable to copy image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
+                                     + item.getJpgFsPath() + Constants.JPEG_2000_EXTENSION + " to  "
+                                     + item.getJpeg2000FsPath() + Constants.JPEG_2000_EXTENSION,
+                             e);
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
         StringBuffer sb;
         if (djatokaHome == null) {
             djatokaHome = configuration.getDjatokaHome();

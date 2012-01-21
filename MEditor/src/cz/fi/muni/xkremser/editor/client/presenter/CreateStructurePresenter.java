@@ -69,6 +69,7 @@ import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.MEditor;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.mods.DateTypeClient;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
@@ -79,6 +80,7 @@ import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureT
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
+import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
@@ -125,7 +127,7 @@ public class CreateStructurePresenter
 
         PopupPanel getPopupPanel();
 
-        void onAddImages(String model, String code, ScanRecord[] items);
+        void onAddImages(String model, String code, ScanRecord[] items, String hostname);
 
         void escShortCut();
 
@@ -169,6 +171,8 @@ public class CreateStructurePresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
+    private final EditorClientConfiguration config;
+
     /**
      * Instantiates a new create presenter.
      * 
@@ -192,12 +196,14 @@ public class CreateStructurePresenter
                                     final CreateObjectMenuPresenter leftPresenter,
                                     final DigitalObjectMenuPresenter doMenuPresenter,
                                     final DispatchAsync dispatcher,
-                                    final PlaceManager placeManager) {
+                                    final PlaceManager placeManager,
+                                    final EditorClientConfiguration config) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
         this.doMenuPresenter = doMenuPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
+        this.config = config;
         getView().setUiHandlers(this);
     }
 
@@ -419,7 +425,15 @@ public class CreateStructurePresenter
                                                Constants.PAGE_TYPES.NP.toString());
                     }
 
-                    getView().onAddImages(DigitalObjectModel.PAGE.getValue(), sysno, items);
+                    if (config.getHostname() == null || "".equals(config.getHostname().trim())) {
+                        EditorSC.compulsoryConfigFieldWarn(EditorClientConfiguration.Constants.HOSTNAME,
+                                                           EditorSC.ConfigFieldType.STRING,
+                                                           lang);
+                    }
+                    getView().onAddImages(DigitalObjectModel.PAGE.getValue(),
+                                          sysno,
+                                          items,
+                                          config.getHostname());
                     getView().getTileGrid().addDropHandler(new DropHandler() {
 
                         @Override

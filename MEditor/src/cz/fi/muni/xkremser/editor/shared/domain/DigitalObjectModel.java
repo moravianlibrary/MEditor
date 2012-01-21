@@ -57,11 +57,12 @@ public enum DigitalObjectModel
     /** The INTERNALPART. */
     INTERNALPART("internalpart", Constants.INTERNAL_PART_ICON)/*
                                                                * ,
-                                                               * DONATOR("donator"
-                                                               * )
-                                                               *//**
-     * Instantiates
-     * a new kramerius model.
+                                                               * THESIS("thesis"
+                                                               * , "")
+                                                               */
+
+    /**
+     * Instantiates a new kramerius model.
      * 
      * @param value
      *        the value

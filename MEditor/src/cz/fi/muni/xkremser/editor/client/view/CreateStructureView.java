@@ -114,7 +114,6 @@ import cz.fi.muni.xkremser.editor.client.view.other.PageNumberingManager;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 /**
@@ -277,7 +276,7 @@ public class CreateStructureView
      */
 
     @Override
-    public void onAddImages(String model, String code, ScanRecord[] items) {
+    public void onAddImages(String model, String code, ScanRecord[] items, final String hostname) {
         if (layout.getMembers().length != 0) {
             layout.removeMember(tileGridLayout);
         }
@@ -365,8 +364,7 @@ public class CreateStructureView
                 });
                 HTMLPane viewerPane = new HTMLPane();
                 viewerPane.setPadding(15);
-                //                viewerPane.setContentsURL("http://editor.mzk.cz/meditor/viewer/viewer.html?rft_id=" + uuid);
-                viewerPane.setContentsURL("http://editor.mzk.cz/meditor/viewer/viewer.html");
+                viewerPane.setContentsURL(hostname + "/meditor/viewer/viewer.html");
                 viewerPane.setContentsURLParams(new java.util.HashMap<String, String>() {
 
                     {

@@ -71,6 +71,12 @@ public abstract class EditorClientConfiguration {
         public static final String OAI_PMH_BASES = "oaiBases";
 
         public static final String[] OAI_PMH_BASES_DEFAULT = {"MZK01", "MZK03"};
+
+        public static final String OAI_RECORD_IDENTIFIER_LENGTH = "oaiRecordIdentifierLength";
+
+        public static final String VSUP = "vsup";
+
+        public static final String HOSTNAME = "hostname";
     }
 
     /**
@@ -126,6 +132,18 @@ public abstract class EditorClientConfiguration {
 
     public String[] getOaiPrefixes() {
         return getConfiguration().getStringArray(Constants.OAI_PMH_PREFIXES);
+    }
+
+    public String getOaiRecordIdentifierLength() {
+        return getConfiguration().getString(Constants.OAI_RECORD_IDENTIFIER_LENGTH, "9");
+    }
+
+    public boolean getVsup() {
+        return getConfiguration().getBoolean(Constants.VSUP, false);
+    }
+
+    public String getHostname() {
+        return getConfiguration().getString(Constants.HOSTNAME, null);
     }
 
     /**

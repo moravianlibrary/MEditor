@@ -28,7 +28,6 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.File;
-
 import java.util.ArrayList;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -44,6 +43,8 @@ public interface OAIPMHClient {
     String OAI_METADATA_PREFIX = "oai_dc";
 
     String MARC_TO_MODS_XSLT = File.separator + "xml" + File.separator + "MARC21slim2MODS3.xsl";
+
+    String MARC_TO_DC_XSLT = File.separator + "xml" + File.separator + "MARC21slim2OAIDC.xsl";
 
     ArrayList<MetadataBundle> search(String url);
 }

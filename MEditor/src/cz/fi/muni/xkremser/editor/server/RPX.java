@@ -30,12 +30,10 @@ package cz.fi.muni.xkremser.editor.server;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,8 +51,9 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.SAXException;
+
+import cz.fi.muni.xkremser.editor.client.ConnectionException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -108,8 +107,9 @@ public class RPX {
      * @param token
      *        the token
      * @return the element
+     * @throws ConnectionException
      */
-    public Element authInfo(String token) {
+    public Element authInfo(String token) throws ConnectionException {
         Map query = new HashMap();
         query.put("token", token);
         return apiCall("auth_info", query);
@@ -119,8 +119,9 @@ public class RPX {
      * All mappings.
      * 
      * @return the hash map
+     * @throws ConnectionException
      */
-    public HashMap allMappings() {
+    public HashMap allMappings() throws ConnectionException {
         Element rsp = apiCall("all_mappings", null);
         Element mappings_node = (Element) rsp.getFirstChild();
         HashMap result = new HashMap();
@@ -165,8 +166,9 @@ public class RPX {
      * @param primaryKey
      *        the primary key
      * @return the list
+     * @throws ConnectionException
      */
-    public List mappings(Object primaryKey) {
+    public List mappings(Object primaryKey) throws ConnectionException {
         Map query = new HashMap();
         query.put("primaryKey", primaryKey);
         Element rsp = apiCall("mappings", query);
@@ -187,8 +189,9 @@ public class RPX {
      *        the identifier
      * @param primaryKey
      *        the primary key
+     * @throws ConnectionException
      */
-    public void map(String identifier, Object primaryKey) {
+    public void map(String identifier, Object primaryKey) throws ConnectionException {
         Map query = new HashMap();
         query.put("identifier", identifier);
         query.put("primaryKey", primaryKey);
@@ -202,8 +205,9 @@ public class RPX {
      *        the identifier
      * @param primaryKey
      *        the primary key
+     * @throws ConnectionException
      */
-    public void unmap(String identifier, Object primaryKey) {
+    public void unmap(String identifier, Object primaryKey) throws ConnectionException {
         Map query = new HashMap();
         query.put("identifier", identifier);
         query.put("primaryKey", primaryKey);
@@ -218,8 +222,9 @@ public class RPX {
      * @param partialQuery
      *        the partial query
      * @return the element
+     * @throws ConnectionException
      */
-    private Element apiCall(String methodName, Map partialQuery) {
+    private Element apiCall(String methodName, Map partialQuery) throws ConnectionException {
         Map query = null;
         if (partialQuery == null) {
             query = new HashMap();
@@ -261,10 +266,10 @@ public class RPX {
             }
             return response;
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Unexpected URL error", e);
+            throw new ConnectionException("Unexpected URL error", e);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Unexpected IO error", e);
+            throw new ConnectionException("Unexpected IO error", e);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException("Unexpected XML error", e);
         } catch (SAXException e) {

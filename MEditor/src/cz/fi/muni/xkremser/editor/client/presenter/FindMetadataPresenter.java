@@ -43,6 +43,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -60,7 +61,6 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
@@ -141,6 +141,8 @@ public class FindMetadataPresenter
     private final Map<Integer, MetadataBundle> results = new HashMap<Integer, MetadataBundle>();
 
     public static final String OAI_STRING = "%p/?verb=GetRecord&identifier=%p%p-%s&metadataPrefix=";
+
+    public static final String OAI_STRING_VSUP = "%p/?verb=GetRecord&identifier=%p%s&metadataPrefix=";
 
     /**
      * Instantiates a new home presenter.
@@ -330,19 +332,25 @@ public class FindMetadataPresenter
     private void findPropriateMetadata() {
         String id = getView().getOaiId().getValueAsString();
         if (id != null && !"".equals(id)) {
-
-            if (id.length() == 9) {
+            int oaiIdLength = -1;
+            try {
+                oaiIdLength = Integer.parseInt(config.getOaiRecordIdentifierLength());
+            } catch (NumberFormatException nfe) {
+                SC.warn("V konfiguraci je spatne zadana hodnota pro "
+                        + EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH
+                        + " (musi byt cislo)");
+                return;
+            }
+            if (id.length() == oaiIdLength) {
                 getView().getFindBy().setValue(Constants.SYSNO);
                 getView().getZ39Id().setTitle(Constants.SYSNO);
                 getView().getZ39Id().redraw();
                 findMetadata(null, id, true, getQuery());
-
             } else if (id.length() == 10) {
                 getView().getFindBy().setValue(lang.fbarcode());
                 getView().getZ39Id().setTitle(lang.fbarcode());
                 getView().getZ39Id().redraw();
                 findMetadata(Constants.SEARCH_FIELD.BAR, id, false, getQuery());
-
             } else {
                 getView().getFindBy().setValue(lang.ftitle());
                 getView().getZ39Id().setTitle(lang.ftitle());
@@ -356,7 +364,9 @@ public class FindMetadataPresenter
         String url = getView().getOaiUrl().getValueAsString();
         String prefix = getView().getOaiPrefix().getValueAsString();
         String base = getView().getOaiBase().getValueAsString();
-        String query = ClientUtils.format(OAI_STRING, 'p', url, prefix, base);
+        String query =
+                config.getVsup() ? ClientUtils.format(OAI_STRING, 'p', url, base) : ClientUtils
+                        .format(OAI_STRING, 'p', url, prefix, base);
         return query;
     }
 }

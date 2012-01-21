@@ -57,6 +57,8 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import com.k_int.IR.IRQuery;
 import com.k_int.IR.InformationFragment;
 import com.k_int.IR.SearchException;
@@ -64,14 +66,10 @@ import com.k_int.IR.SearchTask;
 import com.k_int.IR.Searchable;
 import com.k_int.z3950.IRClient.Z3950Origin;
 
-import org.apache.log4j.Logger;
-
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
@@ -181,6 +179,8 @@ public class Z3950ClientImpl
         props.put("service_short_name", "meditor");
         props.put("service_long_name", "meditor");
         props.put("default_record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
+        //        props.put("default_record_syntax", "usmarc");
+        //        props.put("charset", "1250");
         props.put("default_element_set_name", "F");
         Searchable s = new Z3950Origin();
         s.init(props);
@@ -188,6 +188,7 @@ public class Z3950ClientImpl
         IRQuery e = new IRQuery();
         e.collections.add(base);
         e.hints.put("record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
+        //        e.hints.put("record_syntax", "usmarc");
         String query = "@attrset bib-1 ";
         if (field != null) {
             switch (field) {

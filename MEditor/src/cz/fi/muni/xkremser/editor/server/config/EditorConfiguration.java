@@ -50,6 +50,9 @@ public abstract class EditorConfiguration {
         /** The Constant INPUT_QUEUE. */
         public static final String INPUT_QUEUE = "inputQueue";
 
+        /** The Constant IMAGE_SERVER_INTERNAL. */
+        public static final String IMAGE_SERVER_INTERNAL = "imageServer.internal";
+
         /** The Constant IMAGE_SERVER_URL. */
         public static final String IMAGE_SERVER_URL = "imageServer.url";
 
@@ -177,6 +180,8 @@ public abstract class EditorConfiguration {
         // public static final String FEDORA_DEFAULT_HOST = "195.113.155.50"; //
         // freon.mzk.cz
 
+        public static final String HTTP_BASIC_PASS = "httpBasicPass";
+
         /** The Constant FEDORA_LOGIN. */
         public static final String FEDORA_LOGIN = "fedoraLogin";
 
@@ -283,6 +288,10 @@ public abstract class EditorConfiguration {
         return getConfiguration().getString(ServerConstants.INPUT_QUEUE);
     }
 
+    public boolean getImageServerInternal() {
+        return getConfiguration().getBoolean(ServerConstants.IMAGE_SERVER_INTERNAL, false);
+    }
+
     /**
      * Gets the image server url.
      * 
@@ -380,6 +389,8 @@ public abstract class EditorConfiguration {
         String[] foo = getConfiguration().getStringArray(ServerConstants.OAI_PMH_URLS);
         if (foo == null || foo.length == 0) {
             return ServerConstants.OAI_PMH_URLS_DEFAULT;
+        } else if ("no".equals(foo[0])) {
+            return new String[] {""};
         } else
             return foo;
     }
@@ -388,6 +399,8 @@ public abstract class EditorConfiguration {
         String[] foo = getConfiguration().getStringArray(ServerConstants.OAI_PMH_PREFIXES);
         if (foo == null || foo.length == 0) {
             return ServerConstants.OAI_PMH_PREFIXES_DEFAULT;
+        } else if ("no".equals(foo[0])) {
+            return new String[] {""};
         } else
             return foo;
     }
@@ -396,8 +409,22 @@ public abstract class EditorConfiguration {
         String[] foo = getConfiguration().getStringArray(ServerConstants.OAI_PMH_BASES);
         if (foo == null || foo.length == 0) {
             return ServerConstants.OAI_PMH_BASES_DEFAULT;
+        } else if ("no".equals(foo[0])) {
+            return new String[] {""};
         } else
             return foo;
+    }
+
+    public String getOaiRecordIdentifierLength() {
+        return getConfiguration().getString(EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH);
+    }
+
+    public String getHostname() {
+        return getConfiguration().getString(EditorClientConfiguration.Constants.HOSTNAME);
+    }
+
+    public String getVsup() {
+        return getConfiguration().getString(EditorClientConfiguration.Constants.VSUP);
     }
 
     /**
@@ -463,6 +490,10 @@ public abstract class EditorConfiguration {
     public String getFedoraVersion() {
         return getConfiguration().getString(ServerConstants.FEDORA_VERSION,
                                             ServerConstants.FEDORA_VERSION_DEFAULT);
+    }
+
+    public String getHttpBasicPass() {
+        return getConfiguration().getString(ServerConstants.HTTP_BASIC_PASS, null);
     }
 
     /**

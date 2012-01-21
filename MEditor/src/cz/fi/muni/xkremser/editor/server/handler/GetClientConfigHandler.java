@@ -30,20 +30,19 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import javax.inject.Inject;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.apache.log4j.Logger;
-
+import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 
@@ -107,6 +106,10 @@ public class GetClientConfigHandler
         result.put(EditorConfiguration.ServerConstants.OAI_PMH_URLS, configuration.getOaiUrls());
         result.put(EditorConfiguration.ServerConstants.OAI_PMH_PREFIXES, configuration.getOaiPrefixes());
         result.put(EditorConfiguration.ServerConstants.OAI_PMH_BASES, configuration.getOaiBases());
+        result.put(EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH,
+                   configuration.getOaiRecordIdentifierLength());
+        result.put(EditorClientConfiguration.Constants.HOSTNAME, configuration.getHostname());
+        result.put(EditorClientConfiguration.Constants.VSUP, configuration.getVsup());
         return new GetClientConfigResult(result);
     }
 

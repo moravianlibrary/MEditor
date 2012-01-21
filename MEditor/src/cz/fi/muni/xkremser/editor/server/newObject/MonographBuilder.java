@@ -25,9 +25,7 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import java.io.FileNotFoundException;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -45,9 +43,7 @@ import org.dom4j.XPath;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
-
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
@@ -179,6 +175,9 @@ class MonographBuilder
     }
 
     private void addUdcOrDdc(Document modsDoc, MarcSpecificMetadata marc) {
+        if (marc.getUdcs() == null) {
+            return;
+        }
         List<String> udcs = marc.getUdcs();
         for (String udc : udcs) {
             Element modsEl = (Element) modsXpath.selectSingleNode(modsDoc);
@@ -264,6 +263,9 @@ class MonographBuilder
 
     private void updateRecordInfo(Document modsDoc, String uuid) {
         Element recordInfo = (Element) recordInfoXpath.selectSingleNode(modsDoc);
+        if (recordInfo == null) {
+            recordInfo = modsDoc.getRootElement().addElement(new QName("recordInfo", Namespaces.mods));
+        }
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -283,7 +285,9 @@ class MonographBuilder
      */
     @Override
     protected void decorateMODSStream() {
-        updateModsDoc(getModsXmlContent(), getBundle().getMarc(), getUuid());
+        if (getBundle() != null && getBundle().getMarc() != null) {
+            updateModsDoc(getModsXmlContent(), getBundle().getMarc(), getUuid());
+        }
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, getModsXmlContent()
                 .getRootElement(), null, null);
     }

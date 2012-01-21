@@ -27,7 +27,6 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 import com.smartgwt.client.util.SC;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 
 /**
@@ -36,6 +35,10 @@ import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
  */
 
 public final class EditorSC {
+
+    public enum ConfigFieldType {
+        NUMBER, STRING, URL
+    }
 
     public static final void objectIsLock(LangConstants lang, LockInfo lockInfo) {
 
@@ -50,25 +53,25 @@ public final class EditorSC {
 
         if ("".equals(lockInfo.getLockOwner())) {
             objectLockedBuffer.append(lang.lockedByUser());
-            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+            objectLockedBuffer.append(": ").append("<br/>").append("<br/>");
             objectLockedBuffer.append("".equals(lockDescription) ? lang.noDescription() : lockDescription);
 
         } else {
             objectLockedBuffer.append(lang.objectLockedBy());
-            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+            objectLockedBuffer.append(": ").append("<br/>").append("<br/>");
             objectLockedBuffer.append(lockInfo.getLockOwner());
-            objectLockedBuffer.append("<br>").append("<br>");
+            objectLockedBuffer.append("<br/>").append("<br/>");
             objectLockedBuffer.append(lang.withDescription());
-            objectLockedBuffer.append(": ").append("<br>").append("<br>");
+            objectLockedBuffer.append(": ").append("<br/>").append("<br/>");
             objectLockedBuffer.append("".equals(lockDescription.trim()) ? lang.noDescription()
                     : lockDescription);
         }
-        objectLockedBuffer.append("<br>").append("<br>");
+        objectLockedBuffer.append("<br/>").append("<br/>");
         objectLockedBuffer.append(lang.lockExpires() + ": "
-                + createTimeToExpLock(lang, lockInfo.getTimeToExpiration())).append("<br>");
+                + createTimeToExpLock(lang, lockInfo.getTimeToExpiration())).append("<br/>");
 
         if (otherMessage != null) {
-            objectLockedBuffer.append("<br>").append("<br>");
+            objectLockedBuffer.append("<br/>").append("<br/>");
             objectLockedBuffer.append(otherMessage);
         }
 
@@ -101,10 +104,17 @@ public final class EditorSC {
     }
 
     public static final void operationFailed(LangConstants lang, String message) {
-        SC.say(lang.operationFailed() + (message != null ? "<br><br>" + message : ""));
+        SC.say(lang.operationFailed() + (message != null ? "<br/><br/>" + message : ""));
     }
 
     public static final void operationSuccessful(LangConstants lang, String message) {
-        SC.say(lang.operationSuccessful() + (message != null ? "<br><br>" + message : ""));
+        SC.say(lang.operationSuccessful() + (message != null ? "<br/><br/>" + message : ""));
+    }
+
+    public static final void compulsoryConfigFieldWarn(String fieldName,
+                                                       ConfigFieldType type,
+                                                       LangConstants lang) {
+        SC.warn("V konfiguracnim souboru neni zadan povinny atribut " + fieldName
+                + ", nebo jeho hodnota neodpovida typu " + type);
     }
 }

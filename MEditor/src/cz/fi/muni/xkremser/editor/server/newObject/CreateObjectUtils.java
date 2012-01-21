@@ -30,22 +30,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.inject.name.Named;
-
 import org.apache.log4j.Logger;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DOMReader;
 
+import com.google.inject.name.Named;
+
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
@@ -54,7 +51,6 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -132,6 +128,7 @@ public class CreateObjectUtils {
                         .getModel(), child.getModel())));
             }
         }
+        boolean internal = config.getImageServerInternal();
         String imageUrl = null;
         String newFilePath = null;
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
@@ -145,13 +142,21 @@ public class CreateObjectUtils {
                 url = "http://" + url;
             }
             if (!isSysno(sysno)) {
-                imageUrl = url + "meditor/" + getPathFromNonSysno(sysno) + node.getUuid();
-                newFilePath =
-                        addSlash(config.getImageServerUnknown()) + getPathFromNonSysno(sysno)
-                                + node.getUuid();
+                imageUrl =
+                        url + "meditor" + getPathFromNonSysno(sysno)
+                                + (internal ? node.getPath() : node.getUuid());
+                if (!internal) {
+                    newFilePath =
+                            addSlash(config.getImageServerUnknown()) + getPathFromNonSysno(sysno)
+                                    + node.getUuid();
+                }
             } else {
-                imageUrl = url + "mzk03/" + getSysnoPath(sysno) + node.getUuid();
-                newFilePath = addSlash(config.getImageServerKnown()) + getSysnoPath(sysno) + node.getUuid();
+                imageUrl =
+                        url + "mzk03/" + getSysnoPath(sysno) + (internal ? node.getPath() : node.getUuid());
+                if (!internal) {
+                    newFilePath =
+                            addSlash(config.getImageServerKnown()) + getSysnoPath(sysno) + node.getUuid();
+                }
             }
             builder.setImageUrl(imageUrl);
         }
@@ -162,11 +167,12 @@ public class CreateObjectUtils {
         boolean success =
                 ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel().toString());
 
-        if (isPage && success) {
+        if (isPage && success && !internal) {
             // TODO: StringBuffer
             boolean copySuccess =
-                    copyfile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
-                            + Constants.JPEG_2000_EXTENSION, newFilePath + Constants.JPEG_2000_EXTENSION);
+                    internal ? true : copyFile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
+                                                       + node.getPath() + Constants.JPEG_2000_EXTENSION,
+                                               newFilePath + Constants.JPEG_2000_EXTENSION);
             if (copySuccess && LOGGER.isInfoEnabled()) {
                 LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + "."
                         + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
@@ -234,7 +240,7 @@ public class CreateObjectUtils {
      *        to
      * @throws CreateObjectException
      */
-    private static boolean copyfile(String path, String newFilePath) throws CreateObjectException {
+    public static boolean copyFile(String path, String newFilePath) throws CreateObjectException {
 
         File inputFile = new File(path);
         if (!inputFile.exists()) {
@@ -296,20 +302,29 @@ public class CreateObjectUtils {
         String unknown = config.getImageServerUnknown();
         String known = config.getImageServerKnown();
         String url = config.getImageServerUrl();
-        if (unknown == null || "".equals(unknown) || known == null || "".equals(known) || url == null
-                || "".equals(url)) {
+        boolean internal = config.getImageServerInternal();
+        if (url == null || "".equals(url)) {
+            String errorMsg = "URL of the imageserver has not been set in the configuration.";
+            LOGGER.error(errorMsg);
+            throw new CreateObjectException(errorMsg);
+        }
+        if (!internal && (unknown == null || "".equals(unknown) || known == null || "".equals(known))) {
             String errorMsg =
                     "Error, one of folloving compulsory options have not been set ["
                             + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
-                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + " ,"
-                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_URL + "]";
+                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + "]";
             LOGGER.error(errorMsg);
             throw new CreateObjectException(errorMsg);
         }
 
-        File imagesDir =
-                new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + getSysnoPath(sysno)
-                        : config.getImageServerUnknown() + getPathFromNonSysno(sysno));
+        File imagesDir = null;
+        if (internal) {
+            imagesDir = new File(config.getEditorHome() + '/' + ".images");
+        } else {
+            imagesDir =
+                    new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + getSysnoPath(sysno)
+                            : config.getImageServerUnknown() + getPathFromNonSysno(sysno));
+        }
         if (!imagesDir.exists()) {
             boolean mkdirs = imagesDir.mkdirs();
             if (!mkdirs) {

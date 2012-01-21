@@ -30,22 +30,18 @@ package cz.fi.muni.xkremser.editor.server;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 
-import javax.inject.Inject;
-
 import org.apache.log4j.Logger;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.XPath;
-
 import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -57,7 +53,6 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 import cz.fi.muni.xkremser.editor.server.mods.ModsType;
 import cz.fi.muni.xkremser.editor.server.newObject.MarcDocument;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -77,11 +72,15 @@ public class OAIPMHClientImpl
 
     private Document marc2mods;
 
+    private Document marc2dc;
+
     @Override
     public ArrayList<MetadataBundle> search(String url) {
         ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
         try {
-
+            if (!url.startsWith("http")) {
+                url = "http://" + url;
+            }
             if (marc2mods == null) {
                 if (!new File(config.getEditorHome() + MARC_TO_MODS_XSLT).exists()) {
                     LOGGER.error("File " + config.getEditorHome() + MARC_TO_MODS_XSLT + " does not exist.");
@@ -91,6 +90,14 @@ public class OAIPMHClientImpl
                         Dom4jUtils.loadDocument(new File(config.getEditorHome() + MARC_TO_MODS_XSLT), true);
             }
             InputStream marcStream = RESTHelper.get(url + MARC_METADATA_PREFIX, null, null, false);
+
+            if (marc2dc == null) {
+                if (!new File(config.getEditorHome() + MARC_TO_DC_XSLT).exists()) {
+                    LOGGER.error("File " + config.getEditorHome() + MARC_TO_DC_XSLT + " does not exist.");
+                    return retList;
+                }
+                marc2dc = Dom4jUtils.loadDocument(new File(config.getEditorHome() + MARC_TO_DC_XSLT), true);
+            }
 
             //            StringWriter writer = new StringWriter();
             //            IOUtils.copy(marcStream, writer, "UTF-8");
@@ -113,8 +120,16 @@ public class OAIPMHClientImpl
                                              mrc.find260aCorrected(),
                                              mrc.find260bCorrected(),
                                              mrc.find260c());
-            InputStream dcStream = RESTHelper.get(url + OAI_METADATA_PREFIX, null, null, false);
-            Document dcDoc = Dom4jUtils.loadDocument(dcStream, true);
+            InputStream dcStream = null;
+            boolean dcSuccess = true;
+            try {
+                dcStream = RESTHelper.get(url + OAI_METADATA_PREFIX, null, null, false);
+            } catch (IOException e) {
+                LOGGER.warn(e.getMessage());
+                dcSuccess = false;
+            }
+            Document dcDoc = Dom4jUtils.transformDocument(marcDoc, marc2dc);
+            //            Document dcDoc = Dom4jUtils.loadDocument(dcStream, true);
             Document modsDoc = Dom4jUtils.transformDocument(marcDoc, marc2mods);
 
             //            System.out.println("\n\n\n*****\n\n\n");
@@ -128,6 +143,10 @@ public class OAIPMHClientImpl
             Element dcElement = (Element) dcXPath.selectSingleNode(dcDoc);
             final DublinCore dc =
                     DCUtils.getDC(DocumentHelper.createDocument(dcElement.createCopy()).asXML());
+            if (dc != null && dc.getTitle() != null && dc.getTitle().size() != 0
+                    && dc.getTitle().get(0) != null && "".equals(dc.getTitle().get(0).trim())) {
+                dc.addTitle("no title");
+            }
             ModsType mods = BiblioModsUtils.getMods(XMLUtils.parseDocument(modsDoc.asXML(), true));
             final ModsCollection modsC = new ModsCollection();
             modsC.setMods(Arrays.asList(mods));

@@ -25,9 +25,7 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import java.io.ByteArrayOutputStream;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,11 +39,9 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
-
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -422,7 +418,11 @@ public abstract class FoxmlBuilder {
 
     public void setBundle(MetadataBundle bundle) {
         this.bundle = bundle;
-        setSysno(getBundle().getMarc().getSysno());
+        if (getBundle() == null || getBundle().getMarc() == null) {
+            setSysno("-1");
+        } else {
+            setSysno(getBundle().getMarc().getSysno());
+        };
     }
 
     protected String transformLanguage(String originalLang) {

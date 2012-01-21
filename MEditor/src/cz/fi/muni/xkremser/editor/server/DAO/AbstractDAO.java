@@ -31,11 +31,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -95,8 +94,8 @@ public abstract class AbstractDAO {
                 }
             }
         }
-        if (pool == null) { // DI is working and servlet container manages the
-                            // connections
+        if (poolable == POOLABLE_NO || pool == null) { // DI is working and servlet container manages the
+            // connections
             poolable = POOLABLE_NO;
             initConnectionWithoutPool();
         } else {
@@ -105,7 +104,8 @@ public abstract class AbstractDAO {
                 conn = pool.getConnection();
             } catch (SQLException ex) {
                 LOGGER.error("Unable to get a connection from connection pool " + JNDI_DB_POOL_ID, ex);
-                throw new DatabaseException("Unable to connect to database.", ex);
+                poolable = POOLABLE_NO;
+                initConnectionWithoutPool();
             }
         }
     }

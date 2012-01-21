@@ -27,15 +27,6 @@
 
 package cz.fi.muni.xkremser.editor.shared.domain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import static cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel.INTERNALPART;
 import static cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel.MONOGRAPH;
 import static cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel.MONOGRAPHUNIT;
@@ -49,6 +40,15 @@ import static cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship.hasPag
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship.hasUnit;
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship.hasVolume;
 import static cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship.isOnPage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -80,6 +80,9 @@ public class NamedGraphModel
         putRelationship(PERIODICALVOLUME, hasItem, PERIODICALITEM);
         putRelationship(PERIODICALITEM, hasPage, PAGE);
         putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
+
+        //        /** The Thesis */
+        //        putRelationship(THESIS, hasPage, PAGE);
     }
 
     private static void putRelationship(DigitalObjectModel source,

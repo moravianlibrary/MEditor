@@ -28,30 +28,27 @@
 package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import javax.inject.Inject;
-
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
@@ -79,6 +76,8 @@ public class AuthenticationServlet
 
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    private static final String ALLOWED_PREFIX = "administrator:";
+
     /*
      * (non-Javadoc)
      * @see
@@ -90,13 +89,48 @@ public class AuthenticationServlet
             IOException {
         HttpSession session = req.getSession(true);
         String url = (String) session.getAttribute(HttpCookies.TARGET_URL);
+        String root =
+                (URLS.LOCALHOST() ? "http://" : "https://")
+                        + req.getServerName()
+                        + (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? ""
+                                : (":" + req.getServerPort())) : "") + URLS.ROOT()
+                        + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+        String authHeader = req.getHeader("Authorization");
+        if (authHeader != null) {
+            String decodedHeader = decode(req, authHeader);
+            String pass = configuration.getHttpBasicPass();
+            if (pass == null || "".equals(pass.trim()) || pass.length() < 4) {
+                requrireAuthentication(resp);
+            }
+            if (decodedHeader.equals(ALLOWED_PREFIX + pass)) {
+                session.setAttribute(HttpCookies.TARGET_URL, null);
+                session.setAttribute(HttpCookies.SESSION_ID_KEY,
+                                     "https://www.google.com/profiles/109255519115168093543");
+                session.setAttribute(HttpCookies.NAME_KEY, "admin");
+                session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
+                ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] User "
+                        + decodedHeader.substring(0, decodedHeader.indexOf(":"))
+                        + " with openID BASIC_AUTH and IP " + req.getRemoteAddr());
+                URLS.redirect(resp, url == null ? root : url);
+                return;
+            } else {
+                requrireAuthentication(resp);
+                return;
+            }
+        }
         session.setAttribute(HttpCookies.TARGET_URL, null);
         String token = req.getParameter("token");
 
         String appID = configuration.getOpenIDApiKey();
         String openIdurl = configuration.getOpenIDApiURL();
         RPX rpx = new RPX(appID, openIdurl);
-        Element e = rpx.authInfo(token);
+        Element e = null;
+        try {
+            e = rpx.authInfo(token);
+        } catch (ConnectionException connEx) {
+            requrireAuthentication(resp);
+            return;
+        }
         String idXPath = "//identifier";
         String nameXPath = "//displayName";
         XPathFactory xpfactory = XPathFactory.newInstance();
@@ -124,12 +158,6 @@ public class AuthenticationServlet
         } catch (XPathExpressionException e1) {
             e1.printStackTrace();
         }
-        String root =
-                (URLS.LOCALHOST() ? "http://" : "https://")
-                        + req.getServerName()
-                        + (URLS.LOCALHOST() ? (req.getServerPort() == 80 || req.getServerPort() == 443 ? ""
-                                : (":" + req.getServerPort())) : "") + URLS.ROOT()
-                        + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
         if (identifier != null && !"".equals(identifier)) {
             ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] User " + name
                     + " with openID " + identifier + " and IP " + req.getRemoteAddr());
@@ -177,5 +205,20 @@ public class AuthenticationServlet
         // if user is supported redirect to homepage else show him a page that he
         // has to be added to system first by admin
 
+    }
+
+    private String decode(HttpServletRequest req, String authHeader) {
+        //always wise to assert your assumptions
+        assert authHeader.substring(0, 6).equals("Basic ");
+        //will contain "Ym9iOnNlY3JldA=="
+        String basicAuthEncoded = authHeader.substring(6);
+        //will contain "bob:secret"
+        String basicAuthAsString = new String(new Base64().decode(basicAuthEncoded.getBytes()));
+        return basicAuthAsString;
+    }
+
+    private void requrireAuthentication(HttpServletResponse resp) throws IOException {
+        resp.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
+        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
