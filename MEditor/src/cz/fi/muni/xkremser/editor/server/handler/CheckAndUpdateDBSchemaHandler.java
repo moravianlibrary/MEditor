@@ -33,24 +33,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import javax.inject.Inject;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.apache.log4j.Logger;
-
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.DBSchemaDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
@@ -78,6 +76,9 @@ public class CheckAndUpdateDBSchemaHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    @Inject
+    private Provider<ServletContext> contextProvider;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -108,20 +109,22 @@ public class CheckAndUpdateDBSchemaHandler
             }
             HttpSession ses = httpSessionProvider.get();
             ServerUtils.checkExpiredSession(ses);
+            ServletContext servletContext = contextProvider.get();
+            String pathPrefix = servletContext.getRealPath("/WEB-INF/classes/");
             if (dbSchemaDao.canConnect()) {
-                version = getVersion();
+                version = getVersion(pathPrefix);
                 boolean upToDate = false;
                 try {
                     upToDate = dbSchemaDao.checkVersion(version);
                 } catch (DatabaseException e) {
                     LOGGER.error(e.getMessage(), e);
                     e.printStackTrace();
-                    throw new ActionException("Unable to check whether the DB version is up-to-date", e);
+                    upToDate = false;
                 }
 
                 if (!upToDate) {
                     try {
-                        dbSchemaDao.updateSchema(version);
+                        dbSchemaDao.updateSchema(version, pathPrefix);
                         success = true;
                     } catch (DatabaseException e) {
                         LOGGER.error(e.getMessage(), e);
@@ -161,9 +164,8 @@ public class CheckAndUpdateDBSchemaHandler
 
     }
 
-    private int getVersion() throws ActionException {
-        File dbSchema = new File(Constants.SCHEMA_VERSION_PATH);
-        System.out.println("path:  " + dbSchema.getAbsolutePath());
+    private int getVersion(String pathPrefix) throws ActionException {
+        File dbSchema = new File(pathPrefix + File.separator + Constants.SCHEMA_VERSION_PATH);
         if (!dbSchema.exists()) {
             throw new ActionException("Unable to find the file with DB schema version "
                     + dbSchema.getAbsolutePath());

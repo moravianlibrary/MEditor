@@ -35,7 +35,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +42,6 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 /**
@@ -106,9 +104,8 @@ public class DBSchemaDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public void updateSchema(int version) throws DatabaseException {
-        File dbSchema = new File(Constants.SCHEMA_PATH);
-        System.out.println("path:  " + dbSchema.getAbsolutePath());
+    public void updateSchema(int version, String pathPrefix) throws DatabaseException {
+        File dbSchema = new File(pathPrefix + File.separator + Constants.SCHEMA_PATH);
         if (!dbSchema.exists()) {
             throw new DatabaseException("Unable to find the file with DB schema "
                     + dbSchema.getAbsolutePath());
@@ -150,7 +147,9 @@ public class DBSchemaDAOImpl
         }
         Writer writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(Constants.SCHEMA_VERSION_PATH));
+            writer =
+                    new BufferedWriter(new FileWriter(pathPrefix + File.separator
+                            + Constants.SCHEMA_VERSION_PATH));
             writer.write(String.valueOf(version));
             writer.flush();
         } catch (IOException e) {

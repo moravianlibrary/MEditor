@@ -365,7 +365,7 @@ public class FindMetadataPresenter
         String prefix = getView().getOaiPrefix().getValueAsString();
         String base = getView().getOaiBase().getValueAsString();
         String query =
-                config.getVsup() ? ClientUtils.format(OAI_STRING, 'p', url, base) : ClientUtils
+                config.getVsup() ? ClientUtils.format(OAI_STRING_VSUP, 'p', url, base) : ClientUtils
                         .format(OAI_STRING, 'p', url, prefix, base);
         return query;
     }

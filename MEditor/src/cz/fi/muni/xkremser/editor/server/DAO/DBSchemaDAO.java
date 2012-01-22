@@ -58,8 +58,11 @@ public interface DBSchemaDAO {
      * 
      * @param version
      *        version to which should be updated
+     * @param pathPrefix
+     *        the absolute path to the
+     *        $TOMCAT_HOME/webapps/meditor/WEB-INF/classes
      * @throws DatabaseException
      */
-    void updateSchema(int version) throws DatabaseException;
+    void updateSchema(int version, String pathPrefix) throws DatabaseException;
 
 }
