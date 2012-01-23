@@ -218,7 +218,7 @@ public class ScanInputQueueHandler
 
             @Override
             public int compare(InputQueueItem o1, InputQueueItem o2) {
-                return o1.getBarcode().compareTo(o2.getBarcode());
+                return o1.getPath().compareTo(o2.getPath());
             }
         });
         inputQueueDAO.updateItems(list);

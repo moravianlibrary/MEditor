@@ -68,9 +68,13 @@ public class InputQueueItemDAOImpl
             + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('" + File.separator
             + "' IN trim(leading ((?)) FROM path)) = 0";
 
+    /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED. */
+    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED = FIND_ITEMS_ON_TOP_LVL_STATEMENT
+            + " ORDER BY path";
+
     /** The Constant FIND_ITEMS_BY_PATH_STATEMENT. */
     public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT
-            + " AND path LIKE ((?))";
+            + " AND path LIKE ((?)) ORDER BY path";
 
     public static final String UPDATE_INGEST_INFO = "UPDATE " + Constants.TABLE_INPUT_QUEUE_NAME
             + " SET ingested = (?) WHERE path = (?)";
@@ -158,7 +162,7 @@ public class InputQueueItemDAOImpl
         ArrayList<InputQueueItem> retList = new ArrayList<InputQueueItem>();
         try {
             findSt =
-                    getConnection().prepareStatement(top ? FIND_ITEMS_ON_TOP_LVL_STATEMENT
+                    getConnection().prepareStatement(top ? FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED
                             : FIND_ITEMS_BY_PATH_STATEMENT);
         } catch (SQLException e) {
             LOGGER.error("Could not get find items statement " + findSt, e);
