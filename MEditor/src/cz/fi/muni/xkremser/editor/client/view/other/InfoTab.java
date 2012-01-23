@@ -34,6 +34,7 @@ public abstract class InfoTab
                    final LangConstants lang,
                    final DigitalObjectDetail detail,
                    String type,
+                   String pageType,
                    String firstPageURL) {
         super(title, icon);
         this.lang = lang;
@@ -63,9 +64,12 @@ public abstract class InfoTab
                         + (dc.getTitle() != null && dc.getTitle().size() > 0 ? dc.getTitle().get(0)
                                 : lang.noTitle()));
         tit.setExtraSpace(5);
-        HTMLFlow typ = new HTMLFlow(HtmlCode.bold(lang.dcType() + ": ") + type);
-        typ.setExtraSpace(5);
         boolean isPage = DigitalObjectModel.PAGE.equals(model);
+        HTMLFlow typ =
+                new HTMLFlow(HtmlCode.bold(lang.dcType() + ": ") + type
+                        + (isPage ? " (" + pageType + ")" : ""));
+        typ.setExtraSpace(5);
+
         String imgTitle = isPage ? lang.fullImg() : lang.doFirstPage();
         HTMLFlow prev = new HTMLFlow(HtmlCode.bold(imgTitle + ":"));
         prev.setExtraSpace(5);

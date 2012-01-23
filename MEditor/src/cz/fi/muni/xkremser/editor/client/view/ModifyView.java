@@ -551,17 +551,27 @@ public class ModifyView
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         topTabSet.setModsCollection(mods);
         topTabSet.setDc(dc);
-        final Tab infoTab =
+        // grr, defensive
+        String pageType =
+                (DigitalObjectModel.PAGE.equals(model) && mods != null && mods.getMods() != null
+                        && mods.getMods().size() > 0 && mods.getMods().get(0) != null
+                        && mods.getMods().get(0).getPart() != null
+                        && mods.getMods().get(0).getPart().size() > 0
+                        && mods.getMods().get(0).getPart().get(0) != null
+                        && mods.getMods().get(0).getPart().get(0).getType() != null && !"".equals(mods
+                        .getMods().get(0).getPart().get(0).getType().trim())) ? mods.getMods().get(0)
+                        .getPart().get(0).getType() : null;
+        final InfoTab infoTab =
                 new InfoTab("Info", "pieces/16/cubes_all.png", lang, detail, labelsSingular.get(model
-                        .getValue()), previewPID) {
+                        .getValue()), pageType, previewPID) {
 
                     @Override
                     protected void getCurrentLockInfo() {
                         getUiHandlers().getLockDigitalObjectInformation(topTabSet, false);
                     }
                 };
-        topTabSet.setInfoTab((InfoTab) infoTab);
-        ((InfoTab) infoTab).getQuickEdit().addClickHandler(new ClickHandler() {
+        topTabSet.setInfoTab(infoTab);
+        infoTab.getQuickEdit().addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
