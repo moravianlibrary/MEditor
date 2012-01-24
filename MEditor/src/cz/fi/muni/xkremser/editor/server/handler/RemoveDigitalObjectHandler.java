@@ -281,8 +281,16 @@ public class RemoveDigitalObjectHandler
             while (!successful && attempt++ < 3) {
                 LOGGER.debug("Processing action: RemoveDigitalObjectAction the " + attempt
                         + ". attempt of removing digital object with uuid:" + uuid);
-                if (RESTHelper.deleteWithBooleanResult(url, usr, pass, true))
+                if (RESTHelper.deleteWithBooleanResult(url, usr, pass, true)) {
                     successful = getDoModelHandler.getModel(uuid) == null;
+                }
+
+                try {
+                    Thread.sleep(Constants.INGEST_DELAY);
+                } catch (InterruptedException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                }
             }
             if (successful) {
                 removedDigitalObjects.add(new RemovedDigitalObject(uuid, foxml, removedRelationships));
@@ -361,6 +369,12 @@ public class RemoveDigitalObjectHandler
 
         String result = RESTHelper.deleteWithStringResult(url, usr, pass, true);
         successful = result.contains("true");
+        try {
+            Thread.sleep(Constants.INGEST_DELAY);
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
 
         if (successful) {
             removedRelationships.add(parentRel);
@@ -515,7 +529,17 @@ public class RemoveDigitalObjectHandler
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return RESTHelper.post(url, null, usr, pass, true);
+
+        boolean successful = RESTHelper.post(url, null, usr, pass, true);
+
+        try {
+            Thread.sleep(Constants.INGEST_DELAY);
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return successful;
     }
 
     /**
