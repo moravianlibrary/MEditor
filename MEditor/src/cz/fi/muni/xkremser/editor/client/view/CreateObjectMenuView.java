@@ -510,7 +510,17 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                new NewObjectBasicInfo(structureTreeGrid.getSelectedRecords()[0], lang, structureTreeGrid);
+                new NewObjectBasicInfo(structureTreeGrid.getSelectedRecords()[0], lang) {
+
+                    @Override
+                    protected void doSaveAction(ListGridRecord record, String name, String dateIssued) {
+                        addUndoRedo(true, false);
+                        record.setAttribute(Constants.ATTR_NAME, name);
+                        if (dateIssued != null) record.setAttribute(Constants.ATTR_DATE_ISSUED, dateIssued);
+                        structureTreeGrid.redraw();
+                        hide();
+                    }
+                };
             }
         });
         edit.setEnableIfCondition(new MenuItemIfFunction() {
@@ -877,7 +887,7 @@ public class CreateObjectMenuView
      * {@inheritDoc}
      */
     @Override
-    public void addUndoRedo(boolean isUndoList, boolean isRedoOperation) {
+    public void addUndoRedo(boolean useUndoList, boolean isRedoOperation) {
         Tree tree = structureTreeGrid.getData();
 
         if (tree != null && tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID) != null) {
@@ -890,7 +900,7 @@ public class CreateObjectMenuView
             newTree.setOpenProperty("isOpen");
             newTree.setData(copyOfTree(tree, tree.getChildren(tree.getRoot())));
 
-            if (isUndoList) {
+            if (useUndoList) {
                 undoList.add(newTree);
                 if (undoList.size() > 0) undoButton.enable();
                 if (!isRedoOperation && redoList.size() > 0) {

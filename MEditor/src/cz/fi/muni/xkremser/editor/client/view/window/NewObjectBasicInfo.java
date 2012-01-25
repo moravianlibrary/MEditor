@@ -34,7 +34,6 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
@@ -46,7 +45,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
  * @version $Id$
  */
 
-public class NewObjectBasicInfo
+public abstract class NewObjectBasicInfo
         extends UniversalWindow {
 
     /**
@@ -78,9 +77,7 @@ public class NewObjectBasicInfo
      * @param title
      */
 
-    public NewObjectBasicInfo(final ListGridRecord record,
-                              LangConstants lang,
-                              final TreeGrid structureTreeGrid) {
+    public NewObjectBasicInfo(final ListGridRecord record, LangConstants lang) {
         super(120, 350, lang.menuEdit() + " " + record.getAttributeAsString(Constants.ATTR_TYPE) + ": "
                 + record.getAttributeAsString(Constants.ATTR_NAME));
 
@@ -123,11 +120,10 @@ public class NewObjectBasicInfo
 
             @Override
             public void onClick(ClickEvent event) {
-                record.setAttribute(Constants.ATTR_NAME, nameItem.getValue());
-                if (dateIssuedItem != null)
-                    record.setAttribute(Constants.ATTR_DATE_ISSUED, dateIssuedItem.getValue());
-                structureTreeGrid.redraw();
-                hide();
+                String name = nameItem.getValueAsString();
+                String dateIssued = null;
+                if (dateIssuedItem != null) dateIssued = dateIssuedItem.getValueAsString();
+                doSaveAction(record, name, dateIssued);
             }
         });
         okButton.setExtraSpace(5);
@@ -141,4 +137,6 @@ public class NewObjectBasicInfo
         show();
         focus();
     }
+
+    protected abstract void doSaveAction(ListGridRecord record, String name, String dateIssued);
 }
