@@ -41,12 +41,12 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
  * @version $Id$
  */
 
-public class LocksDAOImpl
+public class LockDAOImpl
         extends AbstractDAO
-        implements LocksDAO {
+        implements LockDAO {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(LocksDAOImpl.class.getPackage().toString());
+    private static final Logger LOGGER = Logger.getLogger(LockDAOImpl.class.getPackage().toString());
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     private static final String DURATION_LOCK = "1 week";

@@ -24,9 +24,9 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import java.util.Arrays;
+import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.Arrays;
 
 /**
  * @author Matous Jobanek
@@ -34,7 +34,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 
 public class LockInfo
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = 1701984325741535313L;
 
     /**
      * The name of the lock-owner

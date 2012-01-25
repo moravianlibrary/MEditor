@@ -27,14 +27,16 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecentlyModifiedItem.
  */
 public class OpenIDItem
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = 8562338344074874962L;
 
     /** The identity. */
     private String identity;

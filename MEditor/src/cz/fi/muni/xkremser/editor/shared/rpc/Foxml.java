@@ -27,7 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -36,8 +36,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author xkremser
  */
 public class Foxml
-        implements IsSerializable {
+        implements Serializable {
 
+    private static final long serialVersionUID = 2611047223936243752L;
     private int id;
     private String label;
     private String identifier;

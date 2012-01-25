@@ -24,10 +24,10 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Matous Jobanek
@@ -35,8 +35,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 
 public class IngestInfo
-        implements IsSerializable {
+        implements Serializable {
 
+    private static final long serialVersionUID = -9182753231634245984L;
     private String directory;
     private List<String> pid = new ArrayList<String>();
     private List<String> username = new ArrayList<String>();

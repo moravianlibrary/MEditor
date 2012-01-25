@@ -27,10 +27,10 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
@@ -41,7 +41,9 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
  * The Class AbstractDigitalObjectDetail.
  */
 public class DigitalObjectDetail
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = 6910134164851728568L;
 
     /** The foxml. */
     private String foxmlString;

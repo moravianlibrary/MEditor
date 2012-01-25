@@ -36,7 +36,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.LockDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
@@ -60,7 +60,7 @@ public class UnlockDigitalObjectHandler
 
     /** The locks DAO **/
     @Inject
-    private LocksDAO locksDAO;
+    private LockDAO locksDAO;
 
     /** Instantiate a new unlock digital object handler **/
     @Inject

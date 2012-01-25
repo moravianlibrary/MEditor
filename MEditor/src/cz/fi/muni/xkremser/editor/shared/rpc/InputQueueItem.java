@@ -27,14 +27,16 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class InputQueueItem.
  */
 public class InputQueueItem
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = -5593526588672194451L;
 
     /** The path. */
     private String path;

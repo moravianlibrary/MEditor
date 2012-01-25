@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.LockDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
@@ -61,7 +61,7 @@ public class LockDigitalObjectHandler
 
     /** The locks DAO **/
     @Inject
-    private LocksDAO locksDAO;
+    private LockDAO locksDAO;
 
     /** The user DAO **/
     @Inject

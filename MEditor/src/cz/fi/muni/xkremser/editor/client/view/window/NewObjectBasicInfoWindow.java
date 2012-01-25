@@ -45,7 +45,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
  * @version $Id$
  */
 
-public abstract class NewObjectBasicInfo
+public abstract class NewObjectBasicInfoWindow
         extends UniversalWindow {
 
     /**
@@ -77,7 +77,7 @@ public abstract class NewObjectBasicInfo
      * @param title
      */
 
-    public NewObjectBasicInfo(final ListGridRecord record, LangConstants lang) {
+    public NewObjectBasicInfoWindow(final ListGridRecord record, LangConstants lang) {
         super(120, 350, lang.menuEdit() + " " + record.getAttributeAsString(Constants.ATTR_TYPE) + ": "
                 + record.getAttributeAsString(Constants.ATTR_NAME));
 

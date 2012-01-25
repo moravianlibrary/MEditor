@@ -155,6 +155,12 @@ public class Constants {
     /** The Constant TABLE_VERSION_NAME. */
     public static final String TABLE_VERSION_NAME = "version";
 
+    /** The Constant TABLE_TREE_STRUCTURE_NODE_NAME. */
+    public static final String TABLE_TREE_STRUCTURE_NODE_NAME = "tree_structure_node";
+
+    /** The Constant TABLE_TREE_STRUCTURE_NAME. */
+    public static final String TABLE_TREE_STRUCTURE_NAME = "tree_structure";
+
     // input queue tree
     /** The Constant ATTR_ID. */
     public static final String ATTR_ID = "path"; // path

@@ -27,9 +27,9 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import java.util.Date;
+import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.Date;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
@@ -38,7 +38,9 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
  * The Class RecentlyModifiedItem.
  */
 public class RecentlyModifiedItem
-        implements IsSerializable, Comparable<RecentlyModifiedItem> {
+        implements Serializable, Comparable<RecentlyModifiedItem> {
+
+    private static final long serialVersionUID = 6277003854763995255L;
 
     /** The uuid. */
     private String uuid;

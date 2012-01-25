@@ -30,18 +30,22 @@ package cz.fi.muni.xkremser.editor.server;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.XPath;
+
 import org.xml.sax.SAXException;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -53,6 +57,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 import cz.fi.muni.xkremser.editor.server.mods.ModsType;
 import cz.fi.muni.xkremser.editor.server.newObject.MarcDocument;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -120,7 +125,9 @@ public class OAIPMHClientImpl
                                              mrc.find260aCorrected(),
                                              mrc.find260bCorrected(),
                                              mrc.find260c());
+            @SuppressWarnings("unused")
             InputStream dcStream = null;
+            @SuppressWarnings("unused")
             boolean dcSuccess = true;
             try {
                 dcStream = RESTHelper.get(url + OAI_METADATA_PREFIX, null, null, false);

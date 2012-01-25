@@ -35,7 +35,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.DAO.LocksDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.LockDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
@@ -61,7 +61,7 @@ public class GetLockInformationHandler
 
     /** The locks DAO **/
     @Inject
-    private LocksDAO locksDAO;
+    private LockDAO locksDAO;
 
     /**
      * {@inheritDoc}

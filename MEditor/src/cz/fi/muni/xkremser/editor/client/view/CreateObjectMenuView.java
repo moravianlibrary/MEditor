@@ -84,7 +84,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.NewObjectBasicInfo;
+import cz.fi.muni.xkremser.editor.client.view.window.NewObjectBasicInfoWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -510,7 +510,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                new NewObjectBasicInfo(structureTreeGrid.getSelectedRecords()[0], lang) {
+                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang) {
 
                     @Override
                     protected void doSaveAction(ListGridRecord record, String name, String dateIssued) {

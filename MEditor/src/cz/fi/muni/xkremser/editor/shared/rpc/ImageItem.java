@@ -27,14 +27,16 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ImageItem.
  */
 public class ImageItem
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = -3272785315302745954L;
 
     /** The identifier. */
     private String identifier;

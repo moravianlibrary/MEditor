@@ -31,7 +31,7 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
  * @version $Id$
  */
 
-public interface LocksDAO {
+public interface LockDAO {
 
     /**
      * Tries to lock a digital object with the given

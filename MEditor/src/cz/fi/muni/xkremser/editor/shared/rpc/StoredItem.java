@@ -24,7 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * @author Matous Jobanek
@@ -32,7 +32,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 
 public class StoredItem
-        implements IsSerializable {
+        implements Serializable {
+
+    private static final long serialVersionUID = -8933900314317857197L;
 
     /** The file_name. */
     private String fileName;

@@ -27,11 +27,11 @@
 
 package cz.fi.muni.xkremser.editor.shared.rpc;
 
+import java.io.Serializable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
@@ -40,8 +40,9 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
  * The Class AbstractDigitalObjectDetail.
  */
 public class DigitalObjectRelationships
-        implements IsSerializable, Comparable<DigitalObjectRelationships> {
+        implements Serializable, Comparable<DigitalObjectRelationships> {
 
+    private static final long serialVersionUID = 2599013877503944957L;
     private Map<String, List<DigitalObjectRelationships>> parents;
     private Map<String, List<DigitalObjectRelationships>> children;
     private String uuid;

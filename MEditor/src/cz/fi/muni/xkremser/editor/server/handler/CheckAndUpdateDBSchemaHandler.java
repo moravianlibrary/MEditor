@@ -33,22 +33,25 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import javax.inject.Inject;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.DBSchemaDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
@@ -71,6 +74,7 @@ public class CheckAndUpdateDBSchemaHandler
     private DBSchemaDAO dbSchemaDao;
 
     /** The configuration. */
+    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The http session provider. */
