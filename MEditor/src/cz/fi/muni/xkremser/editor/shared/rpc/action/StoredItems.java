@@ -43,11 +43,23 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 public class StoredItems
         extends UnsecuredActionImpl<StoredItemsResult> {
 
+    /**
+     * The Digital Object Detail of the object being stored;
+     * <code>detail == null</code> when the user asks for the list of the stored
+     * objects
+     */
     @In(1)
     private DigitalObjectDetail detail;
 
-    /** The List of items stored by user */
+    /** The List of the items stored by user */
     @Out(1)
     private List<StoredItem> storedItems;
+
+    /**
+     * The error message in case the storing operation was not successful,
+     * <code>errorMessage == null</code> when was successful
+     */
+    @Out(2)
+    private String errorMessage;
 
 }

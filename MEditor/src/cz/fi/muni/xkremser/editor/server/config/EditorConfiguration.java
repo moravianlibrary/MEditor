@@ -243,6 +243,9 @@ public abstract class EditorConfiguration {
 
         public static final String INGEST_LOG_ID = "cz.fi.muni.xkremser.editor.IngestLog";
 
+        /** The path where are stored user copy of FOXML or other things */
+        public static final String USER_DIRECTORIES = "userDirectories";
+
     }
 
     /**
@@ -635,5 +638,14 @@ public abstract class EditorConfiguration {
 
     public boolean isLocalhost() {
         return getConfiguration().getBoolean(ServerConstants.LOCALHOST, false);
+    }
+
+    /**
+     * Gets the path to the user files
+     * 
+     * return the path to the user files
+     */
+    public String getUserDirectoriesPath() {
+        return getConfiguration().getString(ServerConstants.USER_DIRECTORIES);
     }
 }

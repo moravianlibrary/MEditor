@@ -24,11 +24,10 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import java.util.List;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
-import com.smartgwt.client.data.DSCallback;
-import com.smartgwt.client.data.DSRequest;
-import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.SortDirection;
@@ -50,12 +49,12 @@ import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.gwtrpcds.StoredItemGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsResult;
 
@@ -125,7 +124,6 @@ public class StoreWorkingCopyWindow
         storedFilesGrid.setHoverStyle("interactImageHover");
         storedFilesGrid.setExtraSpace(20);
 
-        storedFilesGrid.setDataSource(new StoredItemGwtRPCDS(dispatcher, lang));
         storedFilesGrid.setAutoFetchData(true);
         storedFilesGrid.setHoverWidth(300);
         storedFilesGrid.setHoverCustomizer(new HoverCustomizer() {
@@ -171,6 +169,7 @@ public class StoreWorkingCopyWindow
                             public void execute(Boolean value) {
                                 if (value) {
                                     store(detail, dispatcher, ts);
+                                    closeInstantiatedWindow();
                                 } else {
                                     fileNameItem.selectValue();
                                 }
@@ -183,8 +182,8 @@ public class StoreWorkingCopyWindow
 
                 if (!nameIsSame) {
                     store(detail, dispatcher, ts);
+                    closeInstantiatedWindow();
                 }
-                closeInstantiatedWindow();
             }
         });
         storeButton.setExtraSpace(8);
@@ -207,7 +206,7 @@ public class StoreWorkingCopyWindow
         addItem(buttonsLayout);
 
         setEdgeOffset(20);
-        fetchStoredItems(storedFilesGrid);
+        setData(dispatcher, storedFilesGrid);
         centerInPage();
         show();
         focus();
@@ -216,21 +215,51 @@ public class StoreWorkingCopyWindow
         modalWindow.destroy();
     }
 
-    private void fetchStoredItems(final ListGrid storedFilesGrid) {
+    protected void setData(final DispatchAsync dispatcher, final ListGrid storedFilesGrid) {
         ListGridField fileNameField = new ListGridField(Constants.ATTR_FILE_NAME, lang.name());
         ListGridField storedField = new ListGridField(Constants.ATTR_STORED, lang.stored());
         storedField.setWidth(120);
         storedFilesGrid.setFields(fileNameField, storedField);
-        storedFilesGrid.getDataSource().fetchData(null, new DSCallback() {
+
+        dispatcher.execute(new StoredItemsAction(null), new DispatchCallback<StoredItemsResult>() {
 
             @Override
-            public void execute(DSResponse response, Object rawData, DSRequest request) {
-                storedFilesGrid.setData(response.getData());
+            public void callbackError(final Throwable cause) {
+                super.callbackError(cause);
+            }
+
+            @Override
+            public void callback(StoredItemsResult result) {
+
+                List<StoredItem> items = result.getStoredItems();
+                ListGridRecord[] records = new ListGridRecord[items.size()];
+                for (int i = 0; i < items.size(); i++) {
+                    ListGridRecord record = new ListGridRecord();
+                    copyValues(items.get(i), record);
+                    records[i] = record;
+                }
+                storedFilesGrid.setData(records);
                 storedFilesGrid.sort(Constants.ATTR_STORED, SortDirection.ASCENDING);
                 storedFilesGrid.selectRecord(0);
                 storedFilesGrid.scrollToRow(0);
             }
         });
+    }
+
+    /**
+     * Copy values.
+     * 
+     * @param from
+     *        the from
+     * @param to
+     *        the to
+     */
+    private static void copyValues(StoredItem from, ListGridRecord to) {
+        to.setAttribute(Constants.ATTR_FILE_NAME, from.getFileName());
+        to.setAttribute(Constants.ATTR_STORED, from.getStoredDate());
+        to.setAttribute(Constants.ATTR_NAME, from.getName());
+        to.setAttribute(Constants.ATTR_UUID, from.getUuid());
+        to.setAttribute(Constants.ATTR_DESC, from.getDescription());
     }
 
     private void store(DigitalObjectDetail detail, final DispatchAsync dispatcher, final EditorTabSet ts) {
@@ -240,7 +269,7 @@ public class StoreWorkingCopyWindow
 
             @Override
             public void callback(StoredItemsResult result) {
-                if (result.getStoredItems() != null) {
+                if (result.getStoredItems() == null && result.getErrorMessage() == null) {
                     SC.ask(lang.operationSuccessful() + "<br/><br/>" + lang.lockStoredObject(),
                            new BooleanCallback() {
 
