@@ -64,6 +64,7 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
@@ -218,16 +219,24 @@ public class CreateObjectMenuPresenter
 
             @Override
             public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-                return record.getAttribute(Constants.ATTR_DESC);
+                StringBuffer sb = new StringBuffer();
+                String nameHover = hoverFactory(lang.name(), record.getAttribute(Constants.ATTR_NAME));
+                int longest = nameHover.length();
+                sb.append(nameHover);
+
+                if (record.getAttribute(Constants.ATTR_TYPE_ID)
+                        .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())
+                        || record.getAttribute(Constants.ATTR_TYPE_ID)
+                                .equals(DigitalObjectModel.PERIODICALITEM.getValue())) {
+                    String dateIssuedHover =
+                            hoverFactory(lang.dateIssued(), record.getAttribute(Constants.ATTR_DATE_ISSUED));
+                    longest = (dateIssuedHover.length() > longest) ? dateIssuedHover.length() : longest;
+                    sb.append(dateIssuedHover);
+                }
+                getView().getSubelementsGrid().setHoverWidth((longest * 5));
+                return sb.toString();
             }
         });
-        //        getView().getSubelementsGrid().addCellClickHandler(new CellClickHandler() {
-        //
-        //            @Override
-        //            public void onCellClick(CellClickEvent event) {
-        //                revealItem(event.getRecord().getAttribute(Constants.ATTR_UUID));
-        //            }
-        //        });
         getView().enableCheckbox(false);
         getView().getCreateButton().disable();
         registerHandler(getView().getSubelementsGrid()
@@ -287,6 +296,10 @@ public class CreateObjectMenuPresenter
         getModelFromLabel().put(lang.periodicalitem(), DigitalObjectModel.PERIODICALITEM);
         getLabelFromModel().put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         getModelFromLabel().put(lang.periodicalvolume(), DigitalObjectModel.PERIODICALVOLUME);
+    }
+
+    private String hoverFactory(String attribut, String value) {
+        return HtmlCode.bold(attribut) + ": " + value + "<br>";
     }
 
     /*

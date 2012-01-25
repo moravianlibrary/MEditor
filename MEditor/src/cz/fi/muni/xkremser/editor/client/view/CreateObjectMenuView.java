@@ -84,6 +84,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.NewObjectBasicInfo;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -158,6 +159,7 @@ public class CreateObjectMenuView
     private boolean connect2ExEnabled;
     private boolean connectEx2Enabled;
     private boolean removeSelectedEnabled;
+    private boolean editSelectedEnabled;
 
     private List<Tree> undoList;
     private ToolStripButton undoButton;
@@ -207,6 +209,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setShowAllRecords(true);
         structureTreeGrid.setCanHover(true);
         structureTreeGrid.setHoverOpacity(75);
+        structureTreeGrid.setHoverWidth(300);
         structureTreeGrid.setCanEdit(true);
         structureTreeGrid.setCanReparentNodes(true);
         structureTreeGrid.setHoverStyle("interactImageHover");
@@ -507,11 +510,18 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                // TODO edit window
+                new NewObjectBasicInfo(structureTreeGrid.getSelectedRecords()[0], lang, structureTreeGrid);
+            }
+        });
+        edit.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return editSelectedEnabled;
             }
         });
 
-        editMenu.setItems(deleteSelected, new MenuItemSeparator(), connectToExisting, connectExistingTo);
+        editMenu.setItems(edit, deleteSelected, new MenuItemSeparator(), connectToExisting, connectExistingTo);
         structureTreeGrid.setContextMenu(editMenu);
         structureTreeGrid.addCellContextClickHandler(new CellContextClickHandler() {
 
@@ -540,6 +550,9 @@ public class CreateObjectMenuView
                 connectEx2Enabled =
                         selection.length == 1
                                 && NamedGraphModel.getChildren(DigitalObjectModel.parseString(modelStr)) != null;
+
+                //only 1 element can be edited
+                editSelectedEnabled = selection.length == 1;
 
                 editMenu.showContextMenu();
             }
@@ -584,7 +597,7 @@ public class CreateObjectMenuView
         name.setTitle(lang.name());
 
         dateIssued = new TextItem();
-        dateIssued.setTitle(lang.dateIssuedRRRR());
+        dateIssued.setTitle(lang.dateIssued() + " " + lang.formYyyy());
         dateIssuedForm = new CreateDynamicForm(dateIssued);
 
         selectModel = new SelectItem();

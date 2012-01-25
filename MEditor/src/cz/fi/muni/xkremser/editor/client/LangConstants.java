@@ -673,13 +673,13 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String date();
 
   /**
-   * Translated "Date issued in the form YYYY".
+   * Translated "Date issued ".
    * 
-   * @return translated "Date issued in the form YYYY"
+   * @return translated "Date issued "
    */
-  @DefaultStringValue("Date issued in the form YYYY")
-  @Key("dateIssuedRRRR")
-  String dateIssuedRRRR();
+  @DefaultStringValue("Date issued ")
+  @Key("dateIssued")
+  String dateIssued();
 
   /**
    * Translated "There is no MARC equivalent for 'dateLastAccessed'.".
@@ -1670,6 +1670,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("No metadata has been found")
   @Key("fnothing")
   String fnothing();
+
+  /**
+   * Translated "in the form YYYY".
+   * 
+   * @return translated "in the form YYYY"
+   */
+  @DefaultStringValue("in the form YYYY")
+  @Key("formYyyy")
+  String formYyyy();
 
   /**
    * Translated "ID prefix".
