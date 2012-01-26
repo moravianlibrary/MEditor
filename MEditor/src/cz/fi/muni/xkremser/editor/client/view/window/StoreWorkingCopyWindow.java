@@ -124,7 +124,6 @@ public class StoreWorkingCopyWindow
         storedFilesGrid.setHoverStyle("interactImageHover");
         storedFilesGrid.setExtraSpace(20);
 
-        storedFilesGrid.setAutoFetchData(true);
         storedFilesGrid.setHoverWidth(300);
         storedFilesGrid.setHoverCustomizer(new HoverCustomizer() {
 

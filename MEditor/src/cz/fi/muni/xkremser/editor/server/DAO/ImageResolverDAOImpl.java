@@ -66,6 +66,10 @@ public class ImageResolverDAOImpl
     public static final String SELECT_ITEM_STATEMENT = "SELECT id, imageFile FROM "
             + Constants.TABLE_IMAGE_NAME + " WHERE old_fs_path = ((?))";
 
+    /** The Constant SELECT_OLD_FS_PATH_STATEMENT. */
+    public static final String SELECT_OLD_FS_PATH_STATEMENT = "SELECT old_fs_path FROM "
+            + Constants.TABLE_IMAGE_NAME + " WHERE imagefile LIKE ((?))";
+
     /** The Constant UPDATE_ITEM_STATEMENT. */
     public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_IMAGE_NAME
             + " SET shown = CURRENT_TIMESTAMP WHERE id = (?)";
@@ -257,5 +261,41 @@ public class ImageResolverDAOImpl
             closeConnection();
         }
         return ret;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public String getOldJpgFsPath(String imageFile) throws DatabaseException {
+        if (imageFile == null || "".equals(imageFile)) throw new NullPointerException("imageFile");
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+        PreparedStatement statement = null;
+        String oldJpgFsPath = null;
+
+        try {
+            // TX start
+            statement = getConnection().prepareStatement(SELECT_OLD_FS_PATH_STATEMENT);
+            String s = "%" + imageFile + "%";
+            statement.setString(1, s);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                oldJpgFsPath = rs.getString("old_fs_path");
+            }
+
+            // TX end
+        } catch (SQLException e) {
+            LOGGER.error(e);
+        } finally {
+            closeConnection();
+        }
+
+        return oldJpgFsPath;
     }
 }

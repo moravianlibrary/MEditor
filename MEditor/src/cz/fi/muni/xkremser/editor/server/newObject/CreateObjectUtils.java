@@ -30,19 +30,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
+import com.google.inject.name.Named;
+
 import org.apache.log4j.Logger;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DOMReader;
 
-import com.google.inject.name.Named;
-
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
@@ -50,7 +53,9 @@ import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.IOUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -167,16 +172,22 @@ public class CreateObjectUtils {
         boolean success =
                 ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel().toString());
 
-        if (isPage && success && !internal) {
-            // TODO: StringBuffer
-            boolean copySuccess =
-                    internal ? true : copyFile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
-                                                       + node.getPath() + Constants.JPEG_2000_EXTENSION,
-                                               newFilePath + Constants.JPEG_2000_EXTENSION);
-            if (copySuccess && LOGGER.isInfoEnabled()) {
-                LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath() + "."
-                        + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
-                        + Constants.JPEG_2000_EXTENSION);
+        if (isPage && success) {
+            if (!internal) {
+                // TODO: StringBuffer
+                boolean copySuccess =
+                        internal ? true : copyFile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
+                                                           + node.getPath() + Constants.JPEG_2000_EXTENSION,
+                                                   newFilePath + Constants.JPEG_2000_EXTENSION);
+                if (copySuccess && LOGGER.isInfoEnabled()) {
+                    LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
+                            + "." + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
+                            + Constants.JPEG_2000_EXTENSION);
+                }
+            }
+            String altoPath = node.getAltoPath();
+            if (altoPath != null) {
+                insertAlto(node.getUuid(), altoPath);
             }
         }
 
@@ -231,6 +242,43 @@ public class CreateObjectUtils {
             LOGGER.error("Unable to ingest object uuid:" + uuid + " label: " + label + ", model: " + model);
         }
         return success;
+    }
+
+    private static boolean insertAlto(String uuid, String altoPath) {
+
+        String prepUrl =
+                "/objects/" + (uuid.contains("uuid:") ? uuid : "uuid:".concat(uuid))
+                        + "/datastreams/ALTO?controlGroup=M&versionable=false&dsState=A&mimeType=text/xml";
+
+        String alto = null;
+        try {
+            alto = new String(IOUtils.bos(new File(altoPath)));
+        } catch (IOException e1) {
+            LOGGER.error("An error occured when an ALTO file: " + altoPath + " was being read. The Error: "
+                    + e1.getMessage());
+            return false;
+        }
+
+        String login = config.getFedoraLogin();
+        String password = config.getFedoraPassword();
+        String url = config.getFedoraHost().concat(prepUrl);
+        boolean success = RESTHelper.post(url, alto, login, password, false);
+        try {
+            Thread.sleep(Constants.INGEST_DELAY);
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+
+        if (success) {
+            LOGGER.info("An ALTO file: " + altoPath + " has been inserted to the digital object: " + uuid);
+            return true;
+
+        } else {
+            LOGGER.error("The operation of inserting an ALTO file: " + altoPath + " to the digital object: "
+                    + uuid + " has failed.");
+            return false;
+        }
     }
 
     /**

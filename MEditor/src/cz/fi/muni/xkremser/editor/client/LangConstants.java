@@ -61,6 +61,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String accessConMARC();
 
   /**
+   * Translated "Add ALTO".
+   * 
+   * @return translated "Add ALTO"
+   */
+  @DefaultStringValue("Add ALTO")
+  @Key("addALTO")
+  String addALTO();
+
+  /**
    * Translated "Add identity".
    * 
    * @return translated "Add identity"
@@ -329,6 +338,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Check availability")
   @Key("checkAvailability")
   String checkAvailability();
+
+  /**
+   * Translated "Choose ALTO".
+   * 
+   * @return translated "Choose ALTO"
+   */
+  @DefaultStringValue("Choose ALTO")
+  @Key("chooseALTO")
+  String chooseALTO();
 
   /**
    * Translated "Choose version".

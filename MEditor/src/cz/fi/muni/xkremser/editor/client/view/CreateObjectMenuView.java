@@ -119,6 +119,9 @@ public class CreateObjectMenuView
 
         void getModel(String valueAsString, ConnectExistingObjectWindow window);
 
+        //Adds an ALTO file to a page
+        void addAlto(ListGridRecord record);
+
         /**
          * @return
          */
@@ -160,6 +163,7 @@ public class CreateObjectMenuView
     private boolean connectEx2Enabled;
     private boolean removeSelectedEnabled;
     private boolean editSelectedEnabled;
+    private boolean addAltoEnabled;
 
     private List<Tree> undoList;
     private ToolStripButton undoButton;
@@ -531,7 +535,28 @@ public class CreateObjectMenuView
             }
         });
 
-        editMenu.setItems(edit, deleteSelected, new MenuItemSeparator(), connectToExisting, connectExistingTo);
+        MenuItem addAlto = new MenuItem(lang.addALTO(), "icons/16/alto.png");
+        addAlto.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                getUiHandlers().addAlto(structureTreeGrid.getSelectedRecords()[0]);
+            }
+        });
+        addAlto.setEnableIfCondition(new MenuItemIfFunction() {
+
+            @Override
+            public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                return addAltoEnabled;
+            }
+        });
+
+        editMenu.setItems(edit,
+                          deleteSelected,
+                          addAlto,
+                          new MenuItemSeparator(),
+                          connectToExisting,
+                          connectExistingTo);
         structureTreeGrid.setContextMenu(editMenu);
         structureTreeGrid.addCellContextClickHandler(new CellContextClickHandler() {
 
@@ -563,6 +588,12 @@ public class CreateObjectMenuView
 
                 //only 1 element can be edited
                 editSelectedEnabled = selection.length == 1;
+
+                //only one and only pages can be selected
+                addAltoEnabled =
+                        editSelectedEnabled
+                                && selection[0].getAttribute(Constants.ATTR_TYPE_ID)
+                                        .equals(DigitalObjectModel.PAGE.getValue());
 
                 editMenu.showContextMenu();
             }
@@ -921,6 +952,7 @@ public class CreateObjectMenuView
         if (childrenTreeNodes != null && childrenTreeNodes.length > 0) {
             int i = 0;
             for (TreeNode childNode : childrenTreeNodes) {
+
                 TreeNode newTreeNode =
                         new SubstructureTreeNode(childNode.getAttribute(Constants.ATTR_ID),
                                                  childNode.getAttribute(Constants.ATTR_PARENT),
@@ -932,6 +964,10 @@ public class CreateObjectMenuView
                                                  childNode.getAttribute(Constants.ATTR_DATE_ISSUED),
                                                  childNode.getAttributeAsBoolean("isOpen"),
                                                  childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
+                String altoPath = childNode.getAttributeAsString(Constants.ATTR_ALTO_PATH);
+                if (altoPath != null) {
+                    newTreeNode.setAttribute(Constants.ATTR_ALTO_PATH, altoPath);
+                }
                 TreeNode[] children = tree.getChildren(childNode);
                 if (children.length > 0) {
                     newTreeNode.setChildren(copyOfTree(tree, children));

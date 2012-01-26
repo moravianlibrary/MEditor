@@ -291,9 +291,16 @@ public class ClientUtils {
                                      bundle,
                                      null,
                                      node.getAttributeAsBoolean(Constants.ATTR_EXIST));
-        if (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) {
-            newObj.setDateIssued(node.getAttribute(Constants.ATTR_DATE_ISSUED));
+        String dateIssued = node.getAttribute(Constants.ATTR_DATE_ISSUED);
+        if (dateIssued != null && !"".equals(dateIssued)) {
+            newObj.setDateIssued(dateIssued);
         }
+
+        String altoPath = node.getAttribute(Constants.ATTR_ALTO_PATH);
+        if (altoPath != null && !"".equals(altoPath)) {
+            newObj.setAltoPath(altoPath);
+        }
+
         newObj.setPath(imgUuid);
         newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
         TreeNode[] children = tree.getChildren(node);

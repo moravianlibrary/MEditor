@@ -1,11 +1,10 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
+ * @author Matous Jobanek
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -25,36 +24,28 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.server.DAO;
+package cz.fi.muni.xkremser.editor.shared.rpc.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
-
-import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
+import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface ImageResolverDAO.
+ * The Class GetClientConfig.
  */
-public interface ImageResolverDAO {
+@GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
+public class FindALTOFiles
+        extends UnsecuredActionImpl<FindALTOFilesResult> {
 
-    void insertItems(List<ImageItem> toInsert) throws DatabaseException;
+    @In(1)
+    private String path;
 
-    ArrayList<String> resolveItems(List<String> identifiers) throws DatabaseException;
+    @Out(2)
+    private List<String> altoFileNames;
 
-    String resolveItem(String identifier) throws DatabaseException;
-
-    ArrayList<String> cacheAgeingProcess() throws DatabaseException;
-
-    /**
-     * Gets the path to an original image.
-     * 
-     * @param imageFile
-     *          The path to the new image file
-     *          
-     * @return OldJpgFsPath
-     */
-    String getOldJpgFsPath(String imageFile) throws DatabaseException;
 }

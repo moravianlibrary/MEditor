@@ -66,6 +66,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.window.AddALTOWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
@@ -465,5 +466,14 @@ public class CreateObjectMenuPresenter
                 window.changeModel(null);
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void addAlto(ListGridRecord record) {
+        new AddALTOWindow(record, lang, dispatcher);
     }
 }

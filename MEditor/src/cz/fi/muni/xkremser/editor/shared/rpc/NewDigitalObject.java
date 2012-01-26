@@ -52,6 +52,7 @@ public class NewDigitalObject
     private boolean visible;
     private String pageType;
     private String dateIssued;
+    private String altoPath;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -185,6 +186,23 @@ public class NewDigitalObject
 
     public void setDateIssued(String dateIssued) {
         this.dateIssued = dateIssued;
+    }
+
+    /**
+     * @return the altoPath
+     */
+
+    public String getAltoPath() {
+        return altoPath;
+    }
+
+    /**
+     * @param altoPath
+     *        the altoPath to set
+     */
+
+    public void setAltoPath(String altoPath) {
+        this.altoPath = altoPath;
     }
 
 }
