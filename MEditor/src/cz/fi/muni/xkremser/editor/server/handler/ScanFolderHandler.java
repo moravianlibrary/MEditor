@@ -157,7 +157,7 @@ public class ScanFolderHandler
             throw new ActionException(e);
         }
 
-        if (toAdd.size() > 10) {
+        if (toAdd.size() > 10 && !configuration.getImageServerInternal()) {
             removeOldImages();
         }
 
@@ -167,7 +167,6 @@ public class ScanFolderHandler
     /**
      * @throws ActionException
      */
-
     private void removeOldImages() throws ActionException {
         try {
             ArrayList<String> oldImages = imageResolverDAO.cacheAgeingProcess();
