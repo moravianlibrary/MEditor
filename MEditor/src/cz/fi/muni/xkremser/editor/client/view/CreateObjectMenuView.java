@@ -73,7 +73,6 @@ import com.smartgwt.client.widgets.menu.MenuItemSeparator;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
-import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
@@ -82,7 +81,7 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.NewObjectBasicInfoWindow;
@@ -131,7 +130,7 @@ public class CreateObjectMenuView
     }
 
     /** The input tree. */
-    private SideNavInputTree inputTree;
+    private InputQueueTree inputTree;
 
     private TreeGrid structureTreeGrid;
 
@@ -167,9 +166,9 @@ public class CreateObjectMenuView
     private boolean addAltoEnabled;
 
     private List<Tree> undoList;
-    private ToolStripButton undoButton;
+    private ImgButton undoButton;
     private List<Tree> redoList;
-    private ToolStripButton redoButton;
+    private ImgButton redoButton;
 
     private final VLayout createLayout;
 
@@ -232,16 +231,37 @@ public class CreateObjectMenuView
         structureTreeGrid.setShowConnectors(true);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
 
-        undoButton = new ToolStripButton();
-        redoButton = new ToolStripButton();
+        undoButton = new ImgButton();
+        redoButton = new ImgButton();
         undoList = new ArrayList<Tree>();
         redoList = new ArrayList<Tree>();
-        undoButton.setIcon("icons/16/undo.png");
-        undoButton.setTitle("Undo");
+
+        ImgButton menuButton = getMenuButton();
+
+        undoButton.setSrc("icons/16/undo.png");
+        undoButton.setSize("16", "16");
+        undoButton.setShowTitle(false);
+        undoButton.setOpacity(75);
+        undoButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                undoButton.setPrompt(lang.undo());
+            }
+        });
         undoButton.disable();
 
-        redoButton.setIcon("icons/16/redo.png");
-        redoButton.setTitle("Redo");
+        redoButton.setSrc("icons/16/redo.png");
+        redoButton.setSize("16", "16");
+        redoButton.setShowTitle(false);
+        redoButton.setOpacity(75);
+        redoButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                redoButton.setPrompt(lang.redo());
+            }
+        });
         redoButton.disable();
 
         undoButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -697,7 +717,8 @@ public class CreateObjectMenuView
         structure.setResizeable(true);
         structure.setItems(structureTreeGrid);
         structure.setExpanded(false);
-        structure.setControls(undoButton, redoButton);
+
+        structure.setControls(undoButton, redoButton, menuButton);
 
         sectionStack = new SectionStack();
         sectionStack.addSection(createStructure);
@@ -762,7 +783,7 @@ public class CreateObjectMenuView
      * MyView#getInputTree()
      */
     @Override
-    public SideNavInputTree getInputTree() {
+    public InputQueueTree getInputTree() {
         return inputTree;
     }
 
@@ -787,7 +808,7 @@ public class CreateObjectMenuView
      */
 
     @Override
-    public void setInputTree(SideNavInputTree tree) {
+    public void setInputTree(InputQueueTree tree) {
         String isInputSection = sectionStack.getSection(0).getAttribute(SECTION_INPUT_ID);
         if (isInputSection != null && "yes".equals(isInputSection)) {
             return;
@@ -809,7 +830,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onHover(HoverEvent event) {
-                refreshButton.setPrompt("Rescan directory structure.");
+                refreshButton.setPrompt(lang.inputQueueRescan());
             }
         });
         refreshButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -1005,8 +1026,52 @@ public class CreateObjectMenuView
         return newTreeNodes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    private ImgButton getMenuButton() {
+        final Menu menu = new Menu();
+        menu.setShowShadow(true);
+        menu.setShadowDepth(3);
 
+        MenuItem saveStructure = new MenuItem(lang.saveStructure());
+        MenuItem loadStructure = new MenuItem(lang.loadStructure());
+        saveStructure.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                SC.say("saving...");
+            }
+        });
+        loadStructure.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                SC.say("loading...");
+            }
+        });
+        menu.setItems(saveStructure, loadStructure);
+        final ImgButton menuButton = new ImgButton();
+        menuButton.setShowTitle(false);
+        menuButton.setSrc("[SKIN]headerIcons/save.png");
+        menuButton.setSize(16);
+        menuButton.setShowRollOver(true);
+        menuButton.setCanHover(true);
+        menuButton.setShowDownIcon(false);
+        menuButton.setShowDown(false);
+        menuButton.setHoverOpacity(75);
+        menuButton.setHoverStyle("interactImageHover");
+        menuButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                menuButton.setPrompt(lang.opensStructureTreeMenu());
+            }
+        });
+        menuButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                menu.showContextMenu();
+            }
+        });
+        return menuButton;
+    }
 }

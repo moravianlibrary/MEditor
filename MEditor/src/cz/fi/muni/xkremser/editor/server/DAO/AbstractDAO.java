@@ -31,14 +31,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
+import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
@@ -78,6 +80,11 @@ public abstract class AbstractDAO {
      */
     private void initConnection() throws DatabaseException {
         if (poolable != POOLABLE_NO && pool == null) {
+            if (URLS.LOCALHOST()) {
+                poolable = POOLABLE_NO;
+                initConnection();
+                return;
+            }
             InitialContext cxt = null;
             try {
                 cxt = new InitialContext();

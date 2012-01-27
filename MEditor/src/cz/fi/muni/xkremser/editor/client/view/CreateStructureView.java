@@ -114,6 +114,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.PageNumberingManager;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 
 /**
@@ -685,11 +686,11 @@ public class CreateStructureView
         redoList = new ArrayList<Record[]>();
 
         undoButton.setIcon("icons/16/undo.png");
-        undoButton.setTitle("Undo");
+        undoButton.setTitle(lang.undo());
         undoButton.disable();
 
         redoButton.setIcon("icons/16/redo.png");
-        redoButton.setTitle("Redo");
+        redoButton.setTitle(lang.redo());
         redoButton.disable();
 
         undoButton.addClickHandler(new ClickHandler() {

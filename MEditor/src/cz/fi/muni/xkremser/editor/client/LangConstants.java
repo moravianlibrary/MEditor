@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -178,11 +178,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String area();
 
   /**
-   * Translated "Do you really want to delete?".
+   * Translated "Do you really want to delete selected objects?".
    * 
-   * @return translated "Do you really want to delete?"
+   * @return translated "Do you really want to delete selected objects?"
    */
-  @DefaultStringValue("Do you really want to delete?")
+  @DefaultStringValue("Do you really want to delete selected objects?")
   @Key("askDelete")
   String askDelete();
 
@@ -331,11 +331,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String change();
 
   /**
-   * Translated "Reflect changes in Dublin Core.".
+   * Translated "Reflect the changes in the Dublin Core.".
    * 
-   * @return translated "Reflect changes in Dublin Core."
+   * @return translated "Reflect the changes in the Dublin Core."
    */
-  @DefaultStringValue("Reflect changes in Dublin Core.")
+  @DefaultStringValue("Reflect the changes in the Dublin Core.")
   @Key("changesInDC")
   String changesInDC();
 
@@ -1447,11 +1447,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String enterLatinNumberForRenumber();
 
   /**
-   * Translated "Please enter the number by which to shift the pages.".
+   * Translated "Please enter the number by which to shift the pages".
    * 
-   * @return translated "Please enter the number by which to shift the pages."
+   * @return translated "Please enter the number by which to shift the pages"
    */
-  @DefaultStringValue("Please enter the number by which to shift the pages.")
+  @DefaultStringValue("Please enter the number by which to shift the pages")
   @Key("enterNumber")
   String enterNumber();
 
@@ -1933,6 +1933,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String inputQueue();
 
   /**
+   * Translated "Rescan directory structure.".
+   * 
+   * @return translated "Rescan directory structure."
+   */
+  @DefaultStringValue("Rescan directory structure.")
+  @Key("inputQueueRescan")
+  String inputQueueRescan();
+
+  /**
    * Translated "Roughly equivalent to MARC 21 field 856 subfield $q, although subfield $q may also contain other designations of electronic format.".
    * 
    * @return translated "Roughly equivalent to MARC 21 field 856 subfield $q, although subfield $q may also contain other designations of electronic format."
@@ -2131,6 +2140,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String linkAsocURL();
 
   /**
+   * Translated "Load...".
+   * 
+   * @return translated "Load..."
+   */
+  @DefaultStringValue("Load...")
+  @Key("loadStructure")
+  String loadStructure();
+
+  /**
    * Translated "loading".
    * 
    * @return translated "loading"
@@ -2194,11 +2212,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String lockItem();
 
   /**
-   * Translated "If you do not update the lock during the next week the digital object will be automatically unlocked. ".
+   * Translated "If you do not update the lock during the next week the digital object will be automatically unlocked.".
    * 
-   * @return translated "If you do not update the lock during the next week the digital object will be automatically unlocked. "
+   * @return translated "If you do not update the lock during the next week the digital object will be automatically unlocked."
    */
-  @DefaultStringValue("If you do not update the lock during the next week the digital object will be automatically unlocked. ")
+  @DefaultStringValue("If you do not update the lock during the next week the digital object will be automatically unlocked.")
   @Key("lockNote")
   String lockNote();
 
@@ -2599,11 +2617,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String noDescription();
 
   /**
-   * Translated "There is no file with the ingest info for this directory or is invalid.".
+   * Translated "There is no file with ingest info or is invalid.".
    * 
-   * @return translated "There is no file with the ingest info for this directory or is invalid."
+   * @return translated "There is no file with ingest info or is invalid."
    */
-  @DefaultStringValue("There is no file with the ingest info for this directory or is invalid.")
+  @DefaultStringValue("There is no file with ingest info or is invalid.")
   @Key("noIngestFile")
   String noIngestFile();
 
@@ -2707,11 +2725,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String objContext();
 
   /**
-   * Translated "You can move this digital object on an object which can contain an object of the type ".
+   * Translated "You can move this digital object on an object which can contain an object of the type".
    * 
-   * @return translated "You can move this digital object on an object which can contain an object of the type "
+   * @return translated "You can move this digital object on an object which can contain an object of the type"
    */
-  @DefaultStringValue("You can move this digital object on an object which can contain an object of the type ")
+  @DefaultStringValue("You can move this digital object on an object which can contain an object of the type")
   @Key("objNotDropable")
   String objNotDropable();
 
@@ -2840,6 +2858,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("OpenID identities")
   @Key("openIds")
   String openIds();
+
+  /**
+   * Translated "Opens the menu for saving/loading stored structures.".
+   * 
+   * @return translated "Opens the menu for saving/loading stored structures."
+   */
+  @DefaultStringValue("Opens the menu for saving/loading stored structures.")
+  @Key("opensStructureTreeMenu")
+  String opensStructureTreeMenu();
 
   /**
    * Translated "The operation has failed.".
@@ -3301,6 +3328,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String recentlyModified();
 
   /**
+   * Translated "Redo".
+   * 
+   * @return translated "Redo"
+   */
+  @DefaultStringValue("Redo")
+  @Key("redo")
+  String redo();
+
+  /**
    * Translated "Referenced by".
    * 
    * @return translated "Referenced by"
@@ -3506,6 +3542,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Save")
   @Key("saveItem")
   String saveItem();
+
+  /**
+   * Translated "Save...".
+   * 
+   * @return translated "Save..."
+   */
+  @DefaultStringValue("Save...")
+  @Key("saveStructure")
+  String saveStructure();
 
   /**
    * Translated "It may include any equivalency statements, vertical scales or vertical exaggeration statements for relief models and other three-dimensional items.".
@@ -3938,6 +3983,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Unable to load image")
   @Key("unableToLoadImg")
   String unableToLoadImg();
+
+  /**
+   * Translated "Undo".
+   * 
+   * @return translated "Undo"
+   */
+  @DefaultStringValue("Undo")
+  @Key("undo")
+  String undo();
 
   /**
    * Translated "equivalent to MARC 21 fields 130, 240, 730".

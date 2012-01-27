@@ -69,7 +69,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
@@ -105,7 +105,7 @@ public class DigitalObjectMenuView
         /**
          * On show input queue.
          */
-        void onShowInputQueue(SideNavInputTree tree);
+        void onShowInputQueue(InputQueueTree tree);
 
         /**
          * On add digital object.
@@ -139,7 +139,7 @@ public class DigitalObjectMenuView
     }
 
     /** The input tree. */
-    private SideNavInputTree inputTree;
+    private InputQueueTree inputTree;
 
     /** The side nav grid. */
     private final ListGrid sideNavGrid;
@@ -373,13 +373,11 @@ public class DigitalObjectMenuView
      * MyView#showInputQueue(com.gwtplatform.dispatch.client.DispatchAsync)
      */
     @Override
-    public void showInputQueue(SideNavInputTree tree,
-                               DispatchAsync dispatcher,
-                               final PlaceManager placeManager) {
+    public void showInputQueue(InputQueueTree tree, DispatchAsync dispatcher, final PlaceManager placeManager) {
         SectionStackSection section1 = new SectionStackSection();
         section1.setTitle(lang.inputQueue());
         if (tree == null) {
-            inputTree = new SideNavInputTree(dispatcher, lang);
+            inputTree = new InputQueueTree(dispatcher, lang);
             inputTree.getCreateMenuItem()
                     .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -413,14 +411,13 @@ public class DigitalObjectMenuView
         refreshButton.setCanHover(true);
         refreshButton.setShowDownIcon(false);
         refreshButton.setShowDown(false);
-        refreshButton.setHoverOpacity(75);
         refreshButton.setHoverStyle("interactImageHover");
         refreshButton.setHoverOpacity(75);
         refreshButton.addHoverHandler(new HoverHandler() {
 
             @Override
             public void onHover(HoverEvent event) {
-                refreshButton.setPrompt("Rescan directory structure.");
+                refreshButton.setPrompt(lang.inputQueueRescan());
             }
         });
 
@@ -449,7 +446,7 @@ public class DigitalObjectMenuView
      * MyView#getInputTree()
      */
     @Override
-    public SideNavInputTree getInputTree() {
+    public InputQueueTree getInputTree() {
         return inputTree;
     }
 

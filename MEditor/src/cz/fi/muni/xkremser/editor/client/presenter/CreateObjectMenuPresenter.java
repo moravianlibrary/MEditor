@@ -65,7 +65,7 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
-import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 import cz.fi.muni.xkremser.editor.client.view.window.AddAltoOcrWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
@@ -93,9 +93,9 @@ public class CreateObjectMenuPresenter
 
         HasClickHandlers getRefreshWidget();
 
-        SideNavInputTree getInputTree();
+        InputQueueTree getInputTree();
 
-        void setInputTree(SideNavInputTree tree);
+        void setInputTree(InputQueueTree tree);
 
         TreeGrid getSubelementsGrid();
 

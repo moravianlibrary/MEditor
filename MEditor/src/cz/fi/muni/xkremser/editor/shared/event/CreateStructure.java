@@ -31,7 +31,7 @@ import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Order;
 
-import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
+import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
@@ -53,7 +53,7 @@ public class CreateStructure {
     private String inputPath;
 
     @Order(4)
-    private SideNavInputTree tree;
+    private InputQueueTree tree;
 
     @Order(5)
     @Optional

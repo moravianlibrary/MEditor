@@ -59,9 +59,9 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoResult;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class SideNavInputTree.
+ * The Class InputQueueTree.
  */
-public class SideNavInputTree
+public class InputQueueTree
         extends TreeGrid {
 
     private final MenuItem createItem;
@@ -75,7 +75,7 @@ public class SideNavInputTree
      *        the dispatcher
      * @param lang
      */
-    public SideNavInputTree(final DispatchAsync dispatcher, final LangConstants lang) {
+    public InputQueueTree(final DispatchAsync dispatcher, final LangConstants lang) {
         this.lang = lang;
         setWidth100();
         setHeight100();
@@ -183,7 +183,7 @@ public class SideNavInputTree
     }
 
     private void getIngestInfo(final String path, final DispatchAsync dispatcher) {
-        final ModalWindow mw = new ModalWindow(SideNavInputTree.this);
+        final ModalWindow mw = new ModalWindow(InputQueueTree.this);
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
         Timer timer = new Timer() {

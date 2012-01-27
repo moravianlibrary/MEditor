@@ -67,8 +67,8 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
+import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
-import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
@@ -114,14 +114,14 @@ public class DigitalObjectMenuPresenter
          * @param dispatcher
          *        the dispatcher
          */
-        void showInputQueue(SideNavInputTree tree, DispatchAsync dispatcher, PlaceManager placeManager);
+        void showInputQueue(InputQueueTree tree, DispatchAsync dispatcher, PlaceManager placeManager);
 
         /**
          * Gets the input tree.
          * 
          * @return the input tree
          */
-        SideNavInputTree getInputTree();
+        InputQueueTree getInputTree();
 
         // TODO: ListGrid -> na nejake rozhrani
         /**
@@ -425,7 +425,7 @@ public class DigitalObjectMenuPresenter
      * #onShowInputQueue()
      */
     @Override
-    public void onShowInputQueue(SideNavInputTree tree) {
+    public void onShowInputQueue(InputQueueTree tree) {
         getView().showInputQueue(tree, dispatcher, placeManager);
         registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
 
