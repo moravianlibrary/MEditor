@@ -301,6 +301,11 @@ public class ClientUtils {
             newObj.setAltoPath(altoPath);
         }
 
+        String ocrPath = node.getAttribute(Constants.ATTR_OCR_PATH);
+        if (ocrPath != null && !"".equals(ocrPath)) {
+            newObj.setOcrPath(ocrPath);
+        }
+
         newObj.setPath(imgUuid);
         newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
         TreeNode[] children = tree.getChildren(node);

@@ -45,6 +45,7 @@ import org.dom4j.io.DOMReader;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
 
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
@@ -185,9 +186,15 @@ public class CreateObjectUtils {
                             + Constants.JPEG_2000_EXTENSION);
                 }
             }
+
+            String ocrPath = node.getOcrPath();
+            if (ocrPath != null && !"".equals(ocrPath)) {
+                insertAltoOcr(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath);
+            }
+
             String altoPath = node.getAltoPath();
-            if (altoPath != null) {
-                insertAlto(node.getUuid(), altoPath);
+            if (altoPath != null && !"".equals(altoPath)) {
+                insertAltoOcr(DATASTREAM_ID.ALTO, node.getUuid(), altoPath);
             }
         }
 
@@ -244,25 +251,25 @@ public class CreateObjectUtils {
         return success;
     }
 
-    private static boolean insertAlto(String uuid, String altoPath) {
+    private static boolean insertAltoOcr(DATASTREAM_ID dsId, String uuid, String filePath) {
 
         String prepUrl =
-                "/objects/" + (uuid.contains("uuid:") ? uuid : "uuid:".concat(uuid))
-                        + "/datastreams/ALTO?controlGroup=M&versionable=false&dsState=A&mimeType=text/xml";
+                "/objects/" + (uuid.contains("uuid:") ? uuid : "uuid:".concat(uuid)) + "/datastreams/"
+                        + dsId.getValue() + "?controlGroup=M&versionable=false&dsState=A&mimeType=text/xml";
 
-        String alto = null;
+        String content = null;
         try {
-            alto = new String(IOUtils.bos(new File(altoPath)));
+            content = new String(IOUtils.bos(new File(filePath)));
         } catch (IOException e1) {
-            LOGGER.error("An error occured when an ALTO file: " + altoPath + " was being read. The Error: "
-                    + e1.getMessage());
+            LOGGER.error("An error occured when an " + dsId.getValue() + " file: " + filePath
+                    + " was being read. The Error: " + e1.getMessage());
             return false;
         }
 
         String login = config.getFedoraLogin();
         String password = config.getFedoraPassword();
         String url = config.getFedoraHost().concat(prepUrl);
-        boolean success = RESTHelper.post(url, alto, login, password, false);
+        boolean success = RESTHelper.post(url, content, login, password, false);
         try {
             Thread.sleep(Constants.INGEST_DELAY);
         } catch (InterruptedException e) {
@@ -271,12 +278,14 @@ public class CreateObjectUtils {
         }
 
         if (success) {
-            LOGGER.info("An ALTO file: " + altoPath + " has been inserted to the digital object: " + uuid);
+            LOGGER.info("An " + dsId.getValue() + " file: " + filePath
+                    + " has been inserted to the digital object: " + uuid + " as a " + dsId.getValue()
+                    + " datastream.");
             return true;
 
         } else {
-            LOGGER.error("The operation of inserting an ALTO file: " + altoPath + " to the digital object: "
-                    + uuid + " has failed.");
+            LOGGER.error("An error occured during inserting an " + dsId.getValue() + " file: " + filePath
+                    + " to the digital object: " + uuid + " as a " + dsId.getValue() + " datastream.");
             return false;
         }
     }

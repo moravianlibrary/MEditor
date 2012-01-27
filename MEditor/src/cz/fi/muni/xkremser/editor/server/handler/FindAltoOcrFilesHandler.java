@@ -46,16 +46,16 @@ import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.action.FindALTOFilesAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.FindALTOFilesResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.FindAltoOcrFilesAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.FindAltoOcrFilesResult;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
 
-public class FindALTOFilesHandler
-        implements ActionHandler<FindALTOFilesAction, FindALTOFilesResult> {
+public class FindAltoOcrFilesHandler
+        implements ActionHandler<FindAltoOcrFilesAction, FindAltoOcrFilesResult> {
 
     /** The http session provider. */
     @Inject
@@ -65,12 +65,15 @@ public class FindALTOFilesHandler
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
+    private static final String ALTO = "ALTO";
+    private static final String TXT = "txt";
+
     /**
      * {@inheritDoc}
      */
 
     @Override
-    public FindALTOFilesResult execute(FindALTOFilesAction action, ExecutionContext context)
+    public FindAltoOcrFilesResult execute(FindAltoOcrFilesAction action, ExecutionContext context)
             throws ActionException {
 
         HttpSession session = httpSessionProvider.get();
@@ -84,10 +87,12 @@ public class FindALTOFilesHandler
         }
 
         if (oldJpgFsPath != null) {
-            return new FindALTOFilesResult(scanDirectoryStructure(oldJpgFsPath.substring(0, oldJpgFsPath
-                    .lastIndexOf("/"))));
+            String dirPath = oldJpgFsPath.substring(0, oldJpgFsPath.lastIndexOf("/"));
+            List<String> foundAltoList = findAltoAndTxt(dirPath, ALTO);
+            List<String> foundTxtList = findAltoAndTxt(dirPath, TXT);
+            return new FindAltoOcrFilesResult(foundAltoList, foundTxtList);
         } else {
-            return new FindALTOFilesResult(null);
+            return new FindAltoOcrFilesResult(null, null);
         }
     }
 
@@ -98,35 +103,39 @@ public class FindALTOFilesHandler
      *        the path
      * @return the list
      */
-    private List<String> scanDirectoryStructure(String path) {
+    private List<String> findAltoAndTxt(String path, final String typeToFind) {
 
-        List<String> altoFileNames = new ArrayList<String>();
-        File pathFile = new File(path + File.separator + "ALTO" + File.separator);
+        List<String> fileNames = new ArrayList<String>();
+        File pathFile = new File(path + File.separator + typeToFind + File.separator);
 
         FileFilter filter = new FileFilter() {
 
             @Override
             public boolean accept(File file) {
-                return file.isFile() && file.getName().toLowerCase().contains("alto")
-                        || file.getName().toLowerCase().endsWith(".xml");
+                if (typeToFind.equals(ALTO)) {
+                    return file.isFile() && file.getName().toLowerCase().contains("alto")
+                            && file.getName().toLowerCase().endsWith(".xml");
+                } else {
+                    return file.isFile() && file.getName().toLowerCase().endsWith(".txt");
+                }
             }
         };
 
         File[] files = pathFile.listFiles(filter);
-        for (int i = 0; i < files.length; i++) {
+        for (int i = 0; (files != null && i < files.length); i++) {
 
-            SAXReader reader = new SAXReader();
-            try {
-                reader.setValidation(true);
-                reader.read(files[i]);
-
-            } catch (DocumentException e) {
+            if (typeToFind.equals(ALTO)) {
+                SAXReader reader = new SAXReader();
+                try {
+                    reader.setValidation(true);
+                    reader.read(files[i]);
+                } catch (DocumentException e) {
+                }
             }
 
-            altoFileNames.add(path + File.separator + "ALTO" + File.separator + files[i].getName());
-
+            fileNames.add(path + File.separator + typeToFind + File.separator + files[i].getName());
         }
-        return altoFileNames;
+        return fileNames;
     }
 
     /**
@@ -134,8 +143,8 @@ public class FindALTOFilesHandler
      */
 
     @Override
-    public Class<FindALTOFilesAction> getActionType() {
-        return FindALTOFilesAction.class;
+    public Class<FindAltoOcrFilesAction> getActionType() {
+        return FindAltoOcrFilesAction.class;
     }
 
     /**
@@ -143,7 +152,7 @@ public class FindALTOFilesHandler
      */
 
     @Override
-    public void undo(FindALTOFilesAction arg0, FindALTOFilesResult arg1, ExecutionContext arg2)
+    public void undo(FindAltoOcrFilesAction arg0, FindAltoOcrFilesResult arg1, ExecutionContext arg2)
             throws ActionException {
         // TODO Auto-generated method stub
     }

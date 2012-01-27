@@ -208,6 +208,9 @@ public class Constants {
     /** The Constant ATTR_ALTO_PATH. */
     public static final String ATTR_ALTO_PATH = "altoPath";
 
+    /** The Constant ATTR_OCR_PATH. */
+    public static final String ATTR_OCR_PATH = "ocrPath";
+
     /** The Constant ATTR_PAGE_TYPE. */
     public static final String ATTR_PAGE_TYPE = "pageType";
 
@@ -460,7 +463,7 @@ public class Constants {
      */
     public static enum DATASTREAM_ID {
         DC("DC"), RELS_EXT("RELS-EXT"), BIBLIO_MODS("BIBLIO_MODS"), POLICY("POLICY"), IMG_FULL("IMG_FULL"),
-        IMG_THUMB("IMG_THUMB"), TEI("TEI"), TEXT_OCR("TEXT_OCR");
+        IMG_THUMB("IMG_THUMB"), TEI("TEI"), TEXT_OCR("TEXT_OCR"), ALTO("ALTO");
 
         private final String value;
 

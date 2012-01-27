@@ -39,13 +39,18 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class FindALTOFiles
-        extends UnsecuredActionImpl<FindALTOFilesResult> {
+public class FindAltoOcrFiles
+        extends UnsecuredActionImpl<FindAltoOcrFilesResult> {
 
+    /** The path to the jp2-image of the digital object */
     @In(1)
     private String path;
 
-    @Out(2)
+    /** A list of the names of the found alto files */
+    @Out(1)
     private List<String> altoFileNames;
 
+    /** A list of the names of the found ocr files */
+    @Out(2)
+    private List<String> ocrFileNames;
 }

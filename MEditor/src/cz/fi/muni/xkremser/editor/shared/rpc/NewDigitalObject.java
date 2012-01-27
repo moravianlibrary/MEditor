@@ -53,6 +53,7 @@ public class NewDigitalObject
     private String pageType;
     private String dateIssued;
     private String altoPath;
+    private String ocrPath;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -205,4 +206,20 @@ public class NewDigitalObject
         this.altoPath = altoPath;
     }
 
+    /**
+     * @return the ocrPath
+     */
+
+    public String getOcrPath() {
+        return ocrPath;
+    }
+
+    /**
+     * @param ocrPath
+     *        the ocrPath to set
+     */
+
+    public void setOcrPath(String ocrPath) {
+        this.ocrPath = ocrPath;
+    }
 }

@@ -59,6 +59,7 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
@@ -535,7 +536,7 @@ public class CreateObjectMenuView
             }
         });
 
-        MenuItem addAlto = new MenuItem(lang.addALTO(), "icons/16/alto.png");
+        final MenuItem addAlto = new MenuItem(lang.add() + " ALTO/OCR", "icons/16/ocrAlto.png");
         addAlto.addClickHandler(new ClickHandler() {
 
             @Override
@@ -590,10 +591,19 @@ public class CreateObjectMenuView
                 editSelectedEnabled = selection.length == 1;
 
                 //only one and only pages can be selected
-                addAltoEnabled =
+                if (addAltoEnabled =
                         editSelectedEnabled
                                 && selection[0].getAttribute(Constants.ATTR_TYPE_ID)
-                                        .equals(DigitalObjectModel.PAGE.getValue());
+                                        .equals(DigitalObjectModel.PAGE.getValue())) {
+
+                    String altoPath = selection[0].getAttributeAsString(Constants.ATTR_ALTO_PATH);
+                    if (altoPath != null && !"".equals(altoPath)) {
+                        addAlto.setTitle(lang.change() + " ALTO/OCR");
+                    } else {
+                        addAlto.setTitle(lang.add() + " ALTO/OCR");
+                    }
+                    editMenu.redraw();
+                }
 
                 editMenu.showContextMenu();
             }
@@ -627,6 +637,23 @@ public class CreateObjectMenuView
         nameField.setName(Constants.ATTR_NAME);
         nameField.setTitle(lang.name());
         nameField.setWidth("*");
+        nameField.setCellFormatter(new CellFormatter() {
+
+            @Override
+            public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+                String altoPath = record.getAttributeAsString(Constants.ATTR_ALTO_PATH);
+                String ocrPath = record.getAttributeAsString(Constants.ATTR_OCR_PATH);
+                if (ocrPath != null && !"".equals(ocrPath)) {
+                    if (altoPath != null && !"".equals(altoPath)) {
+                        return "<img src=\"images/icons/16/ocrAlto.png\">".concat(record
+                                .getAttributeAsString(Constants.ATTR_NAME));
+                    }
+                    return "<img src=\"images/icons/16/ocr.png\">".concat(record
+                            .getAttributeAsString(Constants.ATTR_NAME));
+                }
+                return record.getAttributeAsString(Constants.ATTR_NAME);
+            }
+        });
 
         structureTreeGrid.setFields(typeField, nameField);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);

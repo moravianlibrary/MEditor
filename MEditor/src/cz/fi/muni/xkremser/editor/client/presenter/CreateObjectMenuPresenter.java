@@ -66,7 +66,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.SideNavInputTree;
-import cz.fi.muni.xkremser.editor.client.view.window.AddALTOWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.AddAltoOcrWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
@@ -117,7 +117,7 @@ public class CreateObjectMenuPresenter
 
         void init();
 
-        void addUndoRedo(boolean isUndoList, boolean isRedoOperation);
+        void addUndoRedo(boolean useUndoList, boolean isRedoOperation);
 
         void addSubstructure(String id,
                              String name,
@@ -225,15 +225,27 @@ public class CreateObjectMenuPresenter
                 int longest = nameHover.length();
                 sb.append(nameHover);
 
-                if (record.getAttribute(Constants.ATTR_TYPE_ID)
-                        .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())
-                        || record.getAttribute(Constants.ATTR_TYPE_ID)
-                                .equals(DigitalObjectModel.PERIODICALITEM.getValue())) {
-                    String dateIssuedHover =
-                            hoverFactory(lang.dateIssued(), record.getAttribute(Constants.ATTR_DATE_ISSUED));
+                String dIssued = record.getAttribute(Constants.ATTR_DATE_ISSUED);
+                if (dIssued != null && !"".equals(dIssued)) {
+                    String dateIssuedHover = hoverFactory(lang.dateIssued(), dIssued);
                     longest = (dateIssuedHover.length() > longest) ? dateIssuedHover.length() : longest;
                     sb.append(dateIssuedHover);
                 }
+
+                String alto = record.getAttribute(Constants.ATTR_ALTO_PATH);
+                if (alto != null && !"".equals(alto)) {
+                    String altoHover = hoverFactory("ALTO", alto.substring(alto.lastIndexOf("/") + 1));
+                    longest = (altoHover.length() + 10 > longest) ? altoHover.length() + 10 : longest;
+                    sb.append(altoHover);
+                }
+
+                String ocr = record.getAttribute(Constants.ATTR_OCR_PATH);
+                if (ocr != null && !"".equals(ocr)) {
+                    String ocrHover = hoverFactory("OCR", ocr.substring(ocr.lastIndexOf("/") + 1));
+                    longest = (ocrHover.length() + 10 > longest) ? ocrHover.length() + 10 : longest;
+                    sb.append(ocrHover);
+                }
+
                 getView().getSubelementsGrid().setHoverWidth((longest * 5));
                 return sb.toString();
             }
@@ -474,6 +486,23 @@ public class CreateObjectMenuPresenter
 
     @Override
     public void addAlto(ListGridRecord record) {
-        new AddALTOWindow(record, lang, dispatcher);
+        new AddAltoOcrWindow(record, lang, dispatcher) {
+
+            @Override
+            protected void doSaveAction(ListGridRecord listGridRecord,
+                                        ListGridRecord altoRecord,
+                                        ListGridRecord ocrRecord) {
+
+                getView().addUndoRedo(true, false);
+                listGridRecord.setAttribute(Constants.ATTR_ALTO_PATH,
+                                            (altoRecord != null ? altoRecord
+                                                    .getAttributeAsString(Constants.ATTR_ALTO_PATH) : null));
+                listGridRecord.setAttribute(Constants.ATTR_OCR_PATH,
+                                            (ocrRecord != null ? ocrRecord
+                                                    .getAttributeAsString(Constants.ATTR_OCR_PATH) : null));
+                hide();
+                getView().getSubelementsGrid().redraw();
+            }
+        };
     }
 }

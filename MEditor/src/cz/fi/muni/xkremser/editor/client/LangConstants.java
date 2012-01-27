@@ -61,13 +61,13 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String accessConMARC();
 
   /**
-   * Translated "Add ALTO".
+   * Translated "Add".
    * 
-   * @return translated "Add ALTO"
+   * @return translated "Add"
    */
-  @DefaultStringValue("Add ALTO")
-  @Key("addALTO")
-  String addALTO();
+  @DefaultStringValue("Add")
+  @Key("add")
+  String add();
 
   /**
    * Translated "Add identity".
@@ -322,6 +322,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String cartographicMARC();
 
   /**
+   * Translated "Change".
+   * 
+   * @return translated "Change"
+   */
+  @DefaultStringValue("Change")
+  @Key("change")
+  String change();
+
+  /**
    * Translated "Reflect changes in Dublin Core.".
    * 
    * @return translated "Reflect changes in Dublin Core."
@@ -340,13 +349,13 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String checkAvailability();
 
   /**
-   * Translated "Choose ALTO".
+   * Translated "Choose".
    * 
-   * @return translated "Choose ALTO"
+   * @return translated "Choose"
    */
-  @DefaultStringValue("Choose ALTO")
-  @Key("chooseALTO")
-  String chooseALTO();
+  @DefaultStringValue("Choose")
+  @Key("choose")
+  String choose();
 
   /**
    * Translated "Choose version".
@@ -2570,6 +2579,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Next")
   @Key("next")
   String next();
+
+  /**
+   * Translated "No any".
+   * 
+   * @return translated "No any"
+   */
+  @DefaultStringValue("No any")
+  @Key("noAny")
+  String noAny();
 
   /**
    * Translated "No description".

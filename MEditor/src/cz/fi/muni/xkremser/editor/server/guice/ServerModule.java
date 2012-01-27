@@ -69,7 +69,7 @@ import cz.fi.muni.xkremser.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ConvertToJPEG2000Handler;
 import cz.fi.muni.xkremser.editor.server.handler.DownloadDigitalObjectDetailHandler;
-import cz.fi.muni.xkremser.editor.server.handler.FindALTOFilesHandler;
+import cz.fi.muni.xkremser.editor.server.handler.FindAltoOcrFilesHandler;
 import cz.fi.muni.xkremser.editor.server.handler.FindMetadataHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRequestItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetAllRolesHandler;
@@ -110,7 +110,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.FindALTOFilesAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.FindAltoOcrFilesAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetAllRolesAction;
@@ -194,7 +194,7 @@ public class ServerModule
         bindHandler(GetIngestInfoAction.class, GetIngestInfoHandler.class);
         bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
         bindHandler(LogoutAction.class, LogoutHandler.class);
-        bindHandler(FindALTOFilesAction.class, FindALTOFilesHandler.class);
+        bindHandler(FindAltoOcrFilesAction.class, FindAltoOcrFilesHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
