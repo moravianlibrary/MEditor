@@ -26,6 +26,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
@@ -47,12 +48,12 @@ public class IngestInfoWindow
 
     private static IngestInfoWindow ingestInfoWindow = null;
 
-    public static void setInstanceOf(List<IngestInfo> ingestInfoList, LangConstants lang) {
+    public static void setInstanceOf(List<IngestInfo> ingestInfoList, LangConstants lang, EventBus eventBus) {
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
 
-        ingestInfoWindow = new IngestInfoWindow(ingestInfoList, lang);
+        ingestInfoWindow = new IngestInfoWindow(ingestInfoList, lang, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -70,8 +71,8 @@ public class IngestInfoWindow
      * @param title
      */
 
-    private IngestInfoWindow(List<IngestInfo> ingestInfoList, LangConstants lang) {
-        super(550, 350, lang.ingestInfo());
+    private IngestInfoWindow(List<IngestInfo> ingestInfoList, LangConstants lang, EventBus eventBus) {
+        super(550, 350, lang.ingestInfo(), eventBus, 20);
 
         int maxIngest = 0;
         Layout mainLayout = new HLayout(ingestInfoList.size());

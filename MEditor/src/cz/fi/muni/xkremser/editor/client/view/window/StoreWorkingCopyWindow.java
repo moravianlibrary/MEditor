@@ -27,6 +27,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.SortArrow;
@@ -72,11 +73,12 @@ public class StoreWorkingCopyWindow
     public static void setInstanceOf(DigitalObjectDetail detail,
                                      final LangConstants lang,
                                      DispatchAsync dispatcher,
-                                     EditorTabSet ts) {
+                                     EditorTabSet ts,
+                                     EventBus eventBus) {
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        storingWindow = new StoreWorkingCopyWindow(detail, lang, dispatcher, ts);
+        storingWindow = new StoreWorkingCopyWindow(detail, lang, dispatcher, ts, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -91,8 +93,13 @@ public class StoreWorkingCopyWindow
     private StoreWorkingCopyWindow(final DigitalObjectDetail detail,
                                    final LangConstants lang,
                                    final DispatchAsync dispatcher,
-                                   final EditorTabSet ts) {
-        super(450, 550, lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel());
+                                   final EditorTabSet ts,
+                                   final EventBus eventBus) {
+        super(450,
+              550,
+              lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel(),
+              eventBus,
+              40);
         this.lang = lang;
 
         final ListGrid storedFilesGrid;
@@ -167,7 +174,7 @@ public class StoreWorkingCopyWindow
                             @Override
                             public void execute(Boolean value) {
                                 if (value) {
-                                    store(detail, dispatcher, ts);
+                                    store(detail, dispatcher, ts, eventBus);
                                     closeInstantiatedWindow();
                                 } else {
                                     fileNameItem.selectValue();
@@ -180,7 +187,7 @@ public class StoreWorkingCopyWindow
                 }
 
                 if (!nameIsSame) {
-                    store(detail, dispatcher, ts);
+                    store(detail, dispatcher, ts, eventBus);
                     closeInstantiatedWindow();
                 }
             }
@@ -261,7 +268,10 @@ public class StoreWorkingCopyWindow
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
     }
 
-    private void store(DigitalObjectDetail detail, final DispatchAsync dispatcher, final EditorTabSet ts) {
+    private void store(DigitalObjectDetail detail,
+                       final DispatchAsync dispatcher,
+                       final EditorTabSet ts,
+                       final EventBus eventBus) {
 
         StoredItemsAction storedAction = new StoredItemsAction(detail);
         DispatchCallback<StoredItemsResult> storedCallback = new DispatchCallback<StoredItemsResult>() {
@@ -275,7 +285,7 @@ public class StoreWorkingCopyWindow
                                @Override
                                public void execute(Boolean value) {
                                    if (value) {
-                                       LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
+                                       LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher, eventBus);
                                    }
                                }
                            });

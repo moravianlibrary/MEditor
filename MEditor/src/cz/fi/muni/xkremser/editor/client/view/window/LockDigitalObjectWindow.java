@@ -24,6 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.util.SC;
@@ -56,11 +57,14 @@ public class LockDigitalObjectWindow
     private final LangConstants lang;
     private static LockDigitalObjectWindow lockWindow = null;
 
-    public static void setInstanceOf(LangConstants lang, EditorTabSet ts, DispatchAsync dispatcher) {
+    public static void setInstanceOf(LangConstants lang,
+                                     EditorTabSet ts,
+                                     DispatchAsync dispatcher,
+                                     EventBus eventBus) {
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        lockWindow = new LockDigitalObjectWindow(lang, ts, dispatcher);
+        lockWindow = new LockDigitalObjectWindow(lang, ts, dispatcher, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -74,8 +78,9 @@ public class LockDigitalObjectWindow
 
     private LockDigitalObjectWindow(final LangConstants lang,
                                     final EditorTabSet ts,
-                                    final DispatchAsync dispatcher) {
-        super(310, 510, lang.lockObjectWindow() + ": " + ts.getUuid());
+                                    final DispatchAsync dispatcher,
+                                    EventBus eventBus) {
+        super(310, 510, lang.lockObjectWindow() + ": " + ts.getUuid(), eventBus, 30);
 
         final LockInfo lockInfo = ts.getLockInfo();
         this.lang = lang;

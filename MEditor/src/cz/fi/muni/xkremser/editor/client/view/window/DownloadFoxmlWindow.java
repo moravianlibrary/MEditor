@@ -24,6 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window.Location;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -63,8 +64,8 @@ public class DownloadFoxmlWindow
 
     private String[] stringsWithXml;
 
-    public DownloadFoxmlWindow(final LangConstants lang, final EditorTabSet ts) {
-        super(360, 350, lang.downloadItem());
+    public DownloadFoxmlWindow(final LangConstants lang, final EditorTabSet ts, EventBus eventBus) {
+        super(360, 350, lang.downloadItem(), eventBus, 5);
         this.lang = lang;
 
         mainLayout = new VLayout(5);

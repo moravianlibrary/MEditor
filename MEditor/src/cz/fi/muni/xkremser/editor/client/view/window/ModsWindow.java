@@ -4,6 +4,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.DateDisplayFormat;
 import com.smartgwt.client.widgets.IButton;
@@ -197,8 +198,8 @@ public abstract class ModsWindow
      * @param lang
      *        the lang
      */
-    public ModsWindow(ModsCollectionClient modsCollection, String uuid, LangConstants lang) {
-        super(450, 900, lang.quickEdit() + ": " + uuid);
+    public ModsWindow(ModsCollectionClient modsCollection, String uuid, LangConstants lang, EventBus eventBus) {
+        super(450, 900, lang.quickEdit() + ": " + uuid, eventBus, 100);
         this.lang = lang;
         this.modsCollection = modsCollection;
         if (modsTypeClient != null) {

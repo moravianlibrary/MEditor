@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -212,13 +213,15 @@ public class CreateStructureView
     private List<Record[]> redoList;
     private ToolStripButton redoButton;
     int positionBeforeMoving;
+    private final EventBus eventBus;
 
     /**
      * Instantiates a new create view.
      */
     @Inject
-    public CreateStructureView(LangConstants lang) {
+    public CreateStructureView(LangConstants lang, EventBus eventBus) {
         this.lang = lang;
+        this.eventBus = eventBus;
         layout = new VLayout();
         layout.setOverflow(Overflow.AUTO);
         layout.setLeaveScrollbarGap(true);
@@ -747,7 +750,7 @@ public class CreateStructureView
 
     private void create() {
 
-        universalWindow = new UniversalWindow(160, 350, lang.publishName());
+        universalWindow = new UniversalWindow(160, 350, lang.publishName(), eventBus, 20);
 
         HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
         label.setMargin(5);

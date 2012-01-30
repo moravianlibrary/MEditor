@@ -24,6 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -77,9 +78,9 @@ public abstract class NewObjectBasicInfoWindow
      * @param title
      */
 
-    public NewObjectBasicInfoWindow(final ListGridRecord record, LangConstants lang) {
+    public NewObjectBasicInfoWindow(final ListGridRecord record, LangConstants lang, EventBus eventBus) {
         super(120, 350, lang.menuEdit() + " " + record.getAttributeAsString(Constants.ATTR_TYPE) + ": "
-                + record.getAttributeAsString(Constants.ATTR_NAME));
+                + record.getAttributeAsString(Constants.ATTR_NAME), eventBus, 10);
 
         setAlign(Alignment.LEFT);
 

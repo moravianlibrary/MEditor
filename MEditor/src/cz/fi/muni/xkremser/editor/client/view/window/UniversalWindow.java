@@ -24,6 +24,8 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Window;
@@ -31,6 +33,9 @@ import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
+import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent.EscKeyPressedHandler;
 
 /**
  * @author Matous Jobanek
@@ -40,7 +45,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 public class UniversalWindow
         extends Window {
 
-    public UniversalWindow(int height, int width, String title) {
+    public UniversalWindow(int height, int width, String title, EventBus eventBus, final int milisToWait) {
         setMembersMargin(10);
         setHeight(height);
         setWidth(width);
@@ -55,6 +60,24 @@ public class UniversalWindow
             @Override
             public void onCloseClick(CloseClientEvent event) {
                 hide();
+            }
+        });
+        eventBus.addHandler(EscKeyPressedEvent.getType(), new EscKeyPressedHandler() {
+
+            @Override
+            public void onEscKeyPressed(final EscKeyPressedEvent event) {
+                Timer t = new Timer() {
+
+                    @Override
+                    public void run() {
+                        if (UniversalWindow.this != null && UniversalWindow.this.isCreated()
+                                && !event.isCancelled()) {
+                            UniversalWindow.this.hide();
+                            event.cancel();
+                        }
+                    }
+                };
+                t.schedule(milisToWait);
             }
         });
     }

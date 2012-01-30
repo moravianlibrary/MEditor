@@ -26,6 +26,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
@@ -47,11 +48,11 @@ public class DeleteInfoWindow
 
     private static DeleteInfoWindow deleteInfoWindow = null;
 
-    public static void setInstanceOf(List<String> removedUuid, LangConstants lang) {
+    public static void setInstanceOf(List<String> removedUuid, LangConstants lang, EventBus eventBus) {
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        deleteInfoWindow = new DeleteInfoWindow(removedUuid, lang);
+        deleteInfoWindow = new DeleteInfoWindow(removedUuid, lang, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -69,8 +70,8 @@ public class DeleteInfoWindow
      * @param title
      */
 
-    private DeleteInfoWindow(List<String> removedUuid, LangConstants lang) {
-        super(170 + (removedUuid.size() * 12), 450, "Delete info");
+    private DeleteInfoWindow(List<String> removedUuid, LangConstants lang, EventBus eventBus) {
+        super(170 + (removedUuid.size() * 12), 450, "Delete info", eventBus, 75);
 
         Layout mainLayout = new VLayout();
         mainLayout.setWidth100();

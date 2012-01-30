@@ -29,6 +29,7 @@ package cz.fi.muni.xkremser.editor.client.view.other;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.SortArrow;
@@ -75,7 +76,7 @@ public class InputQueueTree
      *        the dispatcher
      * @param lang
      */
-    public InputQueueTree(final DispatchAsync dispatcher, final LangConstants lang) {
+    public InputQueueTree(final DispatchAsync dispatcher, final LangConstants lang, final EventBus eventBus) {
         this.lang = lang;
         setWidth100();
         setHeight100();
@@ -127,7 +128,7 @@ public class InputQueueTree
 
                             @Override
                             public void onClick(MenuItemClickEvent event) {
-                                getIngestInfo(path, dispatcher);
+                                getIngestInfo(path, dispatcher, eventBus);
                             }
 
                         });
@@ -182,7 +183,7 @@ public class InputQueueTree
         return createItem;
     }
 
-    private void getIngestInfo(final String path, final DispatchAsync dispatcher) {
+    private void getIngestInfo(final String path, final DispatchAsync dispatcher, final EventBus eventBus) {
         final ModalWindow mw = new ModalWindow(InputQueueTree.this);
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
@@ -201,7 +202,7 @@ public class InputQueueTree
                                 if (ingestInfoList.isEmpty()) {
                                     EditorSC.operationFailed(lang, lang.noIngestFile());
                                 } else {
-                                    IngestInfoWindow.setInstanceOf(ingestInfoList, lang);
+                                    IngestInfoWindow.setInstanceOf(ingestInfoList, lang, eventBus);
                                 }
                             }
 

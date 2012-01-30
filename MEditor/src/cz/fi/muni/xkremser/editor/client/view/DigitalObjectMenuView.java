@@ -166,13 +166,16 @@ public class DigitalObjectMenuView
     private final VLayout layout;
 
     private final SelectItem selectItem = new SelectItem();
+    private final EventBus eventBus;
 
     /**
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public DigitalObjectMenuView(final LangConstants lang) {
+    public DigitalObjectMenuView(final LangConstants lang, final EventBus eventBus) {
         this.lang = lang;
+        this.eventBus = eventBus;
+
         layout = new VLayout();
 
         layout.setHeight100();
@@ -377,7 +380,7 @@ public class DigitalObjectMenuView
         SectionStackSection section1 = new SectionStackSection();
         section1.setTitle(lang.inputQueue());
         if (tree == null) {
-            inputTree = new InputQueueTree(dispatcher, lang);
+            inputTree = new InputQueueTree(dispatcher, lang, eventBus);
             inputTree.getCreateMenuItem()
                     .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 

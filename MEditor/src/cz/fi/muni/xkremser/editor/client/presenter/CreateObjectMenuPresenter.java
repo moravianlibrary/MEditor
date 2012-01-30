@@ -486,7 +486,7 @@ public class CreateObjectMenuPresenter
 
     @Override
     public void addAlto(ListGridRecord record) {
-        new AddAltoOcrWindow(record, lang, dispatcher) {
+        new AddAltoOcrWindow(record, lang, dispatcher, getEventBus()) {
 
             @Override
             protected void doSaveAction(ListGridRecord listGridRecord,

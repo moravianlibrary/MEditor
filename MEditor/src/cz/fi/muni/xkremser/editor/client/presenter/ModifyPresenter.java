@@ -795,7 +795,7 @@ public class ModifyPresenter
     @Override
     public void lockDigitalObject(final EditorTabSet ts) {
 
-        LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher);
+        LockDigitalObjectWindow.setInstanceOf(lang, ts, dispatcher, getEventBus());
 
     }
 
@@ -845,7 +845,7 @@ public class ModifyPresenter
 
     @Override
     public void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts) {
-        StoreWorkingCopyWindow.setInstanceOf(detail, lang, dispatcher, ts);
+        StoreWorkingCopyWindow.setInstanceOf(detail, lang, dispatcher, ts, getEventBus());
     }
 
     /**

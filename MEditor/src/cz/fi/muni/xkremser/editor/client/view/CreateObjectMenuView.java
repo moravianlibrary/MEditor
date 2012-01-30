@@ -33,6 +33,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -188,7 +189,7 @@ public class CreateObjectMenuView
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public CreateObjectMenuView(final LangConstants lang) {
+    public CreateObjectMenuView(final LangConstants lang, final EventBus eventBus) {
         this.lang = lang;
 
         layout = new VLayout();
@@ -430,10 +431,10 @@ public class CreateObjectMenuView
                 final Record[] selection = structureTreeGrid.getSelectedRecords();
                 DigitalObjectModel model =
                         DigitalObjectModel.parseString(selection[0].getAttribute(Constants.ATTR_TYPE_ID));
-                new ConnectExistingObjectWindow(lang, true, model) {
+                new ConnectExistingObjectWindow(lang, true, model, eventBus) {
 
                     @Override
-                    protected void doActiton(TextItem uuidField) {
+                    protected void doAction(TextItem uuidField) {
                         addUndoRedo(true, false);
                         if (NamedGraphModel.isTopLvlModel(getModel())) {
                             TreeNode root = structureTree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
@@ -500,10 +501,10 @@ public class CreateObjectMenuView
                         DigitalObjectModel.parseString(structureTreeGrid.getSelectedRecords()[0]
                                 .getAttribute(Constants.ATTR_TYPE_ID));
 
-                new ConnectExistingObjectWindow(lang, false, model) {
+                new ConnectExistingObjectWindow(lang, false, model, eventBus) {
 
                     @Override
-                    protected void doActiton(TextItem uuidField) {
+                    protected void doAction(TextItem uuidField) {
                         addUndoRedo(true, false);
                         addSubstructure(String.valueOf(getUiHandlers().newId()),
                                         uuidField.getValueAsString(),
@@ -535,7 +536,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang) {
+                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang, eventBus) {
 
                     @Override
                     protected void doSaveAction(ListGridRecord record, String name, String dateIssued) {

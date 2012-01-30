@@ -1,6 +1,7 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -24,8 +25,8 @@ public abstract class UuidWindow
      * @param lang
      *        the lang
      */
-    public UuidWindow(LangConstants lang) {
-        super(155, 440, "PID");
+    public UuidWindow(LangConstants lang, EventBus eventBus) {
+        super(155, 440, "PID", eventBus, 10);
 
         setEdgeOffset(15);
 
@@ -44,7 +45,7 @@ public abstract class UuidWindow
             @Override
             public void onKeyPress(com.smartgwt.client.widgets.form.fields.events.KeyPressEvent event) {
                 if (event.getKeyName().equals("Enter") && !open.getDisabled()) {
-                    doActiton(uuidField);
+                    doAction(uuidField);
                 }
             }
         });
@@ -67,7 +68,7 @@ public abstract class UuidWindow
             @Override
             public void onClick(ClickEvent event) {
                 if (uuidField.validate()) {
-                    doActiton(uuidField);
+                    doAction(uuidField);
                 }
             }
         });
@@ -89,5 +90,5 @@ public abstract class UuidWindow
         return uuidField;
     }
 
-    protected abstract void doActiton(TextItem uuidField);
+    protected abstract void doAction(TextItem uuidField);
 }

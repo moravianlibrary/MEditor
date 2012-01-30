@@ -41,6 +41,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Image;
@@ -109,13 +110,9 @@ import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.InfoTab;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
-import cz.fi.muni.xkremser.editor.client.view.window.DeleteInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.RemoveDigitalObjectWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
@@ -280,12 +277,15 @@ public class ModifyView
 
     private EditorClientConfiguration config;
 
+    private final EventBus eventBus;
+
     /**
      * Instantiates a new modify view.
      */
     @Inject
-    public ModifyView(LangConstants lang) {
+    public ModifyView(LangConstants lang, EventBus eventBus) {
         this.lang = lang;
+        this.eventBus = eventBus;
         layout = new VLayout();
         // layout.addMember(new Label("working"));
         layout.setOverflow(Overflow.AUTO);
@@ -300,36 +300,38 @@ public class ModifyView
             modsWindow.hide();
             modsWindow = null;
         }
-        modsWindow = new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang) {
-
-            @Override
-            protected void init() {
-                show();
-                focus();
-                String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
-                if (lockOwner == null || "".equals(lockOwner)) {
-
-                    getPublish().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-
-                        @Override
-                        public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                            publishShortCut(focusedTabSet);
-                        }
-                    });
-                } else {
-                    getPublish().setDisabled(true);
-                }
-
-                getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+        modsWindow =
+                new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang, eventBus) {
 
                     @Override
-                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                        hide();
-                        modsWindow = null;
+                    protected void init() {
+                        show();
+                        focus();
+                        String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
+                        if (lockOwner == null || "".equals(lockOwner)) {
+
+                            getPublish()
+                                    .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                                        @Override
+                                        public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                            publishShortCut(focusedTabSet);
+                                        }
+                                    });
+                        } else {
+                            getPublish().setDisabled(true);
+                        }
+
+                        getClose().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                            @Override
+                            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                hide();
+                                modsWindow = null;
+                            }
+                        });
                     }
-                });
-            }
-        };
+                };
     }
 
     /**
@@ -406,40 +408,6 @@ public class ModifyView
             universalWindow = null;
         }
         tryToPublish(focusedTabSet);
-    }
-
-    /**
-     * Method for close currently displayed window
-     */
-    private void escShortCut() {
-        if (downloadingWindow != null && downloadingWindow.isCreated()) {
-            downloadingWindow.hide();
-            downloadingWindow = null;
-
-        } else if (StoreWorkingCopyWindow.isInstanceVisible()) {
-            StoreWorkingCopyWindow.closeInstantiatedWindow();
-
-        } else if (universalWindow != null && universalWindow.isCreated()) {
-            universalWindow.hide();
-            universalWindow = null;
-
-        } else if (LockDigitalObjectWindow.isInstanceVisible()) {
-            LockDigitalObjectWindow.closeInstantiatedWindow();
-
-        } else if (modsWindow != null && modsWindow.isCreated()) {
-            modsWindow.hide();
-            modsWindow = null;
-
-        } else if (DeleteInfoWindow.isInstanceVisible()) {
-            DeleteInfoWindow.closeInstantiatedWindow();
-            if (RemoveDigitalObjectWindow.isInstanceVisible())
-                RemoveDigitalObjectWindow.closeInstantiatedWindow();
-        } else if (RemoveDigitalObjectWindow.isInstanceVisible()) {
-            RemoveDigitalObjectWindow.closeInstantiatedWindow();
-
-        } else if (imagePopup.isVisible()) {
-            imagePopup.setVisible(false);
-        }
     }
 
     /**
@@ -1360,7 +1328,7 @@ public class ModifyView
     }
 
     private void showPersistentUrl(String uuid) {
-        universalWindow = new UniversalWindow(110, 800, lang.persistentUrl());
+        universalWindow = new UniversalWindow(110, 800, lang.persistentUrl(), eventBus, 25);
 
         TextItem editorUrlItem = new TextItem();
 
@@ -1415,7 +1383,7 @@ public class ModifyView
             downloadingWindow.hide();
             downloadingWindow = null;
         }
-        downloadingWindow = new DownloadFoxmlWindow(lang, ts);
+        downloadingWindow = new DownloadFoxmlWindow(lang, ts, eventBus);
         DigitalObjectDetail detail = createDigitalObjectDetail(ts);
         getUiHandlers().onHandleWorkingCopyDigObj(detail);
 
@@ -1455,7 +1423,7 @@ public class ModifyView
     @Override
     public void publish(final EditorTabSet ts) {
 
-        universalWindow = new UniversalWindow(160, 350, lang.publishName());
+        universalWindow = new UniversalWindow(160, 350, lang.publishName(), eventBus, 2);
 
         HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
         label.setMargin(5);
@@ -1672,7 +1640,9 @@ public class ModifyView
     public void shortcutPressed(int code) {
         if (topTabSet1 != null) {
             if (code == Constants.CODE_KEY_ESC) {
-                escShortCut();
+                if (imagePopup.isVisible()) {
+                    imagePopup.setVisible(false);
+                }
 
             } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_NUM_5.getCode()
                     && topTabSet2 != null) {

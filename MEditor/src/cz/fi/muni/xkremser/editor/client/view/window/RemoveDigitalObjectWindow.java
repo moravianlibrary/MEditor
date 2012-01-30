@@ -686,7 +686,7 @@ public class RemoveDigitalObjectWindow
                                       final LangConstants lang,
                                       final DispatchAsync dispatcher,
                                       EventBus eventBus) {
-        super(180, 570, lang.removeItem() + ": " + uuid);
+        super(180, 570, lang.removeItem() + ": " + uuid, eventBus, 60);
         this.lang = lang;
         this.uuid = uuid;
         this.dispatcher = dispatcher;
@@ -833,7 +833,7 @@ public class RemoveDigitalObjectWindow
                         eventBus.fireEvent(new SetEnabledHotKeysEvent(true));
                         RemoveDigitalObjectWindow.this.hide();
                         if (result.getErrorMessage() == null) {
-                            DeleteInfoWindow.setInstanceOf(result.getRemoved(), lang);
+                            DeleteInfoWindow.setInstanceOf(result.getRemoved(), lang, eventBus);
 
                         } else {
                             EditorSC.operationFailed(lang, result.getErrorMessage());

@@ -3,6 +3,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -46,8 +47,9 @@ public abstract class ConnectExistingObjectWindow
 
     public ConnectExistingObjectWindow(final LangConstants lang,
                                        boolean connectToExisting,
-                                       DigitalObjectModel subject) {
-        super(210, 450, connectToExisting ? lang.connectToExisting() : lang.connectExistingTo());
+                                       DigitalObjectModel subject,
+                                       EventBus eventBus) {
+        super(210, 450, connectToExisting ? lang.connectToExisting() : lang.connectExistingTo(), eventBus, 40);
         this.lang = lang;
         this.subject = subject;
         this.connectToExisting = connectToExisting;
@@ -69,7 +71,7 @@ public abstract class ConnectExistingObjectWindow
             @Override
             public void onKeyPress(com.smartgwt.client.widgets.form.fields.events.KeyPressEvent event) {
                 if (event.getKeyName().equals("Enter") && !connect.getDisabled()) {
-                    doActiton(uuidField);
+                    doAction(uuidField);
                 }
             }
         });
@@ -94,7 +96,7 @@ public abstract class ConnectExistingObjectWindow
             @Override
             public void onClick(ClickEvent event) {
                 if (uuidField.validate()) {
-                    doActiton(uuidField);
+                    doAction(uuidField);
                     hide();
                 }
             }
@@ -204,7 +206,7 @@ public abstract class ConnectExistingObjectWindow
         return this.object;
     }
 
-    protected abstract void doActiton(TextItem uuidField);
+    protected abstract void doAction(TextItem uuidField);
 
     protected abstract void checkAvailability(TextItem uuidField);
 }

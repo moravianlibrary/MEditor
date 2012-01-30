@@ -60,6 +60,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
+import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
@@ -219,6 +220,7 @@ public class AppPresenter
                 if (isHotKeysEnabled) {
                     if (keyCode == Constants.CODE_KEY_ESC) {
                         escShortCut();
+                        EscKeyPressedEvent.fire(AppPresenter.this);
 
                     } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
                         displayEnterPIDWindow();
@@ -299,10 +301,10 @@ public class AppPresenter
      * Method for handle enter-new-object's-PID short-cut
      */
     private void displayEnterPIDWindow() {
-        uuidWindow = new UuidWindow(lang) {
+        uuidWindow = new UuidWindow(lang, getEventBus()) {
 
             @Override
-            protected void doActiton(TextItem uuidField) {
+            protected void doAction(TextItem uuidField) {
                 evaluateUuid(uuidWindow.getUuidField());
             }
 

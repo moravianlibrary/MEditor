@@ -26,6 +26,7 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
@@ -63,28 +64,12 @@ public abstract class AddAltoOcrWindow
     private final ListGrid foundAltoFilesGrid;
     private final ListGrid foundOcrFilesGrid;
 
-    //    private static AddAltoOcrWindow addAltoWindow = null;
-    //
-    //    public static void setInstanceOf(final LangConstants lang, DispatchAsync dispatcher) {
-    //        if (isInstanceVisible()) {
-    //            closeInstantiatedWindow();
-    //        }
-    //        addAltoWindow = new AddAltoOcrWindow(lang, dispatcher);
-    //    }
-    //
-    //    public static boolean isInstanceVisible() {
-    //        return (addAltoWindow != null && addAltoWindow.isCreated());
-    //    }
-    //
-    //    public static void closeInstantiatedWindow() {
-    //        addAltoWindow.hide();
-    //        addAltoWindow = null;
-    //    }
 
     public AddAltoOcrWindow(final ListGridRecord listGridRecord,
                             final LangConstants lang,
-                            final DispatchAsync dispatcher) {
-        super(630, 600, "ALTO");
+                            final DispatchAsync dispatcher,
+                            EventBus eventBus) {
+        super(630, 600, "ALTO", eventBus, 50);
         this.lang = lang;
 
         HLayout mainLayout = new HLayout(2);
