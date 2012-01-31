@@ -41,7 +41,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
-import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
@@ -57,23 +57,10 @@ public class GetDOModelHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(GetDOModelHandler.class.getPackage().toString());
 
-    /** The DigitalObject handler. */
-    private final DigitalObjectHandler objectHandler;
 
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
-
-    /**
-     * Instantiates a new gets the digital object detail handler.
-     * 
-     * @param handler
-     *        the handler
-     */
-    @Inject
-    public GetDOModelHandler(final DigitalObjectHandler objectHandler) {
-        this.objectHandler = objectHandler;
-    }
 
     /*
      * (non-Javadoc)
@@ -95,7 +82,7 @@ public class GetDOModelHandler
 
     public DigitalObjectModel getModel(String uuid) {
         try {
-            DigitalObjectModel model = objectHandler.getModel(uuid);
+            DigitalObjectModel model = FedoraUtils.getModel(uuid);
             return model;
         } catch (IOException e) {
             return null;

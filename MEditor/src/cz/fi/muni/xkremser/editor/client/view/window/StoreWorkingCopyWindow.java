@@ -46,7 +46,12 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
@@ -143,6 +148,26 @@ public class StoreWorkingCopyWindow
                 sb.append("<br/>").append(lang.description()).append(": ").append("<br/>");
                 sb.append(record.getAttribute(Constants.ATTR_DESC));
                 return sb.toString();
+            }
+        });
+        storedFilesGrid.addCellContextClickHandler(new CellContextClickHandler() {
+
+            @Override
+            public void onCellContextClick(CellContextClickEvent event) {
+                Menu menu = new Menu();
+                menu.setShowShadow(true);
+                menu.setShadowDepth(10);
+                MenuItem openItem = new MenuItem("Open", "icons/16/document_plain_new.png");
+
+                openItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+                    @Override
+                    public void onClick(MenuItemClickEvent event) {
+
+                    }
+                });
+                menu.addItem(openItem);
+                setContextMenu(menu);
             }
         });
         storedFilesGrid.addCellClickHandler(new CellClickHandler() {

@@ -61,7 +61,6 @@ import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
-import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
@@ -151,11 +150,10 @@ public class RemoveDigitalObjectHandler
     @Inject
     public RemoveDigitalObjectHandler(final EditorConfiguration configuration,
                                       Provider<HttpSession> httpSessionProvider,
-                                      final DigitalObjectHandler objectHandler,
                                       @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
         this.httpSessionProvider = httpSessionProvider;
-        this.getDoModelHandler = new GetDOModelHandler(objectHandler);
+        this.getDoModelHandler = new GetDOModelHandler();
         this.fedoraAccess = fedoraAccess;
     }
 

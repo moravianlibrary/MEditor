@@ -87,7 +87,7 @@ public class StoredItemsHandler
         if (action.getDetail() == null) {
             List<StoredItem> storedItems = new ArrayList<StoredItem>();
             try {
-                storedItems = storeDao.getStoredItem(userId);
+                storedItems = storeDao.getStoredItems(userId);
             } catch (DatabaseException e) {
                 throw new ActionException(e);
             }

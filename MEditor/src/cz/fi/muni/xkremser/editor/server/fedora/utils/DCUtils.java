@@ -71,9 +71,9 @@ public class DCUtils {
      *        the dc
      * @return the string
      */
-    public static String titleFromDC(org.w3c.dom.Document dc) {
-        Element elm = XMLUtils.findElement(dc.getDocumentElement(), "title", DC_NAMESPACE_URI);
-        if (elm == null) elm = XMLUtils.findElement(dc.getDocumentElement(), "identifier", DC_NAMESPACE_URI);
+    public static String titleFromDC(org.w3c.dom.Element dcElement) {
+        Element elm = XMLUtils.findElement(dcElement, "title", DC_NAMESPACE_URI);
+        if (elm == null) elm = XMLUtils.findElement(dcElement, "identifier", DC_NAMESPACE_URI);
         String title = elm.getTextContent();
         return title;
     }
@@ -326,8 +326,8 @@ public class DCUtils {
             return null;
     }
 
-    public static DublinCore getDC(org.w3c.dom.Document doc) {
-        return getDC(doc.getDocumentElement(), false);
+    public static DublinCore getDC(org.w3c.dom.Element element) {
+        return getDC(element, false);
     }
 
     /**

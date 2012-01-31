@@ -126,7 +126,7 @@ public class GetIngestInfoHandler
             ingestInfoList.add(directoryIngestInfo);
         }
         if (level != 0) {
-            File direcotry = new File(prefix + path);
+            File directory = new File(prefix + path);
             FileFilter filter = new FileFilter() {
 
                 @Override
@@ -136,7 +136,7 @@ public class GetIngestInfoHandler
 
             };
 
-            File[] dirs = direcotry.listFiles(filter);
+            File[] dirs = directory.listFiles(filter);
             for (int i = 0; i < dirs.length; i++) {
                 String rltvpth = path + File.separator + dirs[i].getName();
                 scanDirectoryStructure(rltvpth, ingestInfoList, level - 1);

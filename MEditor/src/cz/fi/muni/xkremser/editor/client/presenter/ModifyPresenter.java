@@ -486,7 +486,7 @@ public class ModifyPresenter
      * @return the object
      */
     private void getObject(final boolean refresh) {
-        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, null);
+        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, null, null);
         final DispatchCallback<GetDigitalObjectDetailResult> callback =
                 new DispatchCallback<GetDigitalObjectDetailResult>() {
 
@@ -660,7 +660,7 @@ public class ModifyPresenter
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
 
-        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, model);
+        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, model, null);
         final DispatchCallback<GetDigitalObjectDetailResult> callback =
                 new DispatchCallback<GetDigitalObjectDetailResult>() {
 

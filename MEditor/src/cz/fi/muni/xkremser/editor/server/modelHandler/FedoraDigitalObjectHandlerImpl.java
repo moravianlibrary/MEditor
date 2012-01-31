@@ -40,15 +40,10 @@ import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
 
-import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
-import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
@@ -58,21 +53,22 @@ import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
 /**
  * The Class IDigitalObjectHandler.
  */
-public class DigitalObjectHandlerImpl
-        implements DigitalObjectHandler {
+public class FedoraDigitalObjectHandlerImpl
+        extends DigitalObjectHandler
+        implements FedoraDigitalObjectHandler {
 
     /** The fedora access. */
     private final FedoraAccess fedoraAccess;
-    private static final Logger LOGGER = Logger.getLogger(DigitalObjectHandlerImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(FedoraDigitalObjectHandlerImpl.class);
 
     /**
-     * Instantiates a new digital object handler.
+     * Instantiates a new fedora digital object handler.
      * 
      * @param fedoraAccess
      *        the fedora access
      */
     @Inject
-    public DigitalObjectHandlerImpl(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+    public FedoraDigitalObjectHandlerImpl(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.fedoraAccess = fedoraAccess;
     }
 
@@ -84,11 +80,11 @@ public class DigitalObjectHandlerImpl
      */
     @Override
     public DigitalObjectDetail getDigitalObject(String uuid) throws IOException {
-        DigitalObjectModel model = getModel(uuid);
+        DigitalObjectModel model = FedoraUtils.getModel(uuid);
         DigitalObjectDetail detail = new DigitalObjectDetail(model, FedoraUtils.getRelated(uuid));
-        detail.setDc(handleDc(uuid, false));
-        detail.setMods(handleMods(uuid));
-        Foxml foxml = FoxmlUtils.handleFoxml(uuid, getFedoraAccess());
+        detail.setDc(getDc(uuid, false));
+        detail.setMods(getMods(uuid));
+        Foxml foxml = handleFoxml(uuid, getFedoraAccess());
         detail.setFoxmlString(foxml.getFoxml());
         detail.setLabel(foxml.getLabel());
         detail.setOcr(handleOCR(uuid));
@@ -99,7 +95,7 @@ public class DigitalObjectHandlerImpl
     @Override
     public DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel)
             throws IOException {
-        DigitalObjectModel parentModel = getModel(uuid);
+        DigitalObjectModel parentModel = FedoraUtils.getModel(uuid);
         DigitalObjectDetail detail = new DigitalObjectDetail();
         List<String> uuids = fedoraAccess.getChildrenUuid(uuid, parentModel, childModel);
         List<DigitalObjectDetail> children = new ArrayList<DigitalObjectDetail>(uuids.size());
@@ -112,23 +108,8 @@ public class DigitalObjectHandlerImpl
 
     private DigitalObjectDetail getDigitalObjectName(String uuid) throws IOException {
         DigitalObjectDetail detail = new DigitalObjectDetail();
-        detail.setDc(handleDc(uuid, true));
+        detail.setDc(getDc(uuid, true));
         return detail;
-    }
-
-    @Override
-    public DigitalObjectModel getModel(String uuid) throws IOException {
-        DigitalObjectModel model = null;
-        try {
-            model = fedoraAccess.getDigitalObjectModel(uuid);
-        } catch (ConnectionException e) {
-            LOGGER.error("Digital object " + uuid + " is not in the repository. " + e.getMessage());
-            throw e;
-        } catch (IOException e) {
-            LOGGER.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);
-            throw e;
-        }
-        return model;
     }
 
     /**
@@ -136,12 +117,12 @@ public class DigitalObjectHandlerImpl
      * 
      * @return the fedora access
      */
-    public FedoraAccess getFedoraAccess() {
+    private FedoraAccess getFedoraAccess() {
         return fedoraAccess;
     }
 
     /**
-     * Handle dc.
+     * Gets dc.
      * 
      * @param uuid
      *        the uuid
@@ -149,22 +130,14 @@ public class DigitalObjectHandlerImpl
      *        the only title and uuid
      * @return the dublin core
      */
-    private DublinCore handleDc(String uuid, boolean onlyTitleAndUuid) {
-        DublinCore dc = null;
+    private DublinCore getDc(String uuid, boolean onlyTitleAndUuid) {
         Document dcDocument = null;
         try {
             dcDocument = getFedoraAccess().getDC(uuid);
-            if (onlyTitleAndUuid) {
-                dc = new DublinCore();
-                dc.addTitle(DCUtils.titleFromDC(dcDocument));
-                dc.addIdentifier(uuid);
-            } else {
-                dc = DCUtils.getDC(dcDocument);
-            }
         } catch (IOException e) {
             LOGGER.error("Unable to get DC metadata for " + uuid + "[" + e.getMessage() + "]", e);
         }
-        return dc;
+        return handleDc(uuid, dcDocument.getDocumentElement(), onlyTitleAndUuid);
     }
 
     /**
@@ -185,35 +158,15 @@ public class DigitalObjectHandlerImpl
      *        the uuid
      * @return the mods collection client
      */
-    private ModsCollectionClient handleMods(String uuid) {
-        ModsCollectionClient modsClient = null;
-        ModsCollection mods = null;
+    private ModsCollectionClient getMods(String uuid) {
         Document modsDocument = null;
         try {
             modsDocument = getFedoraAccess().getBiblioMods(uuid);
-            mods = BiblioModsUtils.getModsCollection(modsDocument);
-            modsClient = BiblioModsUtils.toModsClient(mods);
         } catch (IOException e) {
             LOGGER.error("Unable to get MODS metadata for " + uuid + "[" + e.getMessage() + "]", e);
         } catch (Exception e) {
             LOGGER.error("Unable to get MODS metadata for " + uuid + "[" + e.getMessage() + "]", e);
         }
-        return modsClient;
+        return handleMods(modsDocument);
     }
-
-    //        private DigitalObjectDetail getDigitalObjectFromFoxml(String foxml, String uuid) {
-    //            DigitalObjectModel model = getModel(uuid);
-    //            Foxml originalFoxml = FoxmlUtils.handleFoxml(uuid, getFedoraAccess());
-    //            DigitalObjectDetail detail = new DigitalObjectDetail(model, getRelated(uuid));
-    //            detail.setFoxmlString(originalFoxml.getFoxml());
-    //            detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
-    //            
-    //            detail.setDc(handleDc(uuid, false));
-    //            detail.setMods(handleMods(uuid));      
-    //            detail.setLabel(foxml.getLabel());
-    //            detail.setOcr(handleOCR(uuid));
-    //            
-    //            
-    //            return null;
-    //        }
 }

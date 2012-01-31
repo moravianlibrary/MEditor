@@ -50,7 +50,8 @@ import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
-import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
+import cz.fi.muni.xkremser.editor.server.modelHandler.FedoraDigitalObjectHandler;
+import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandler;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
@@ -71,8 +72,11 @@ public class GetDigitalObjectDetailHandler
     private static final Logger LOGGER = Logger.getLogger(GetDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
-    /** The DigitalObject handler. */
-    private final DigitalObjectHandler objectHandler;
+    /** The Fedora digitalObject handler. */
+    private final FedoraDigitalObjectHandler fedoraObjectHandler;
+
+    /** The Stored digitalObject handler. */
+    private final StoredDigitalObjectHandler storedObjectHandler;
 
     /** The GetDescriptionHandler handler. */
     private final GetDescriptionHandler descritptionHandler;
@@ -95,8 +99,10 @@ public class GetDigitalObjectDetailHandler
      *        the handler
      */
     @Inject
-    public GetDigitalObjectDetailHandler(final DigitalObjectHandler objectHandler) {
-        this.objectHandler = objectHandler;
+    public GetDigitalObjectDetailHandler(final FedoraDigitalObjectHandler fedoraObjectHandler,
+                                         final StoredDigitalObjectHandler storedObjectHandler) {
+        this.fedoraObjectHandler = fedoraObjectHandler;
+        this.storedObjectHandler = storedObjectHandler;
         this.descritptionHandler = new GetDescriptionHandler();
         this.getLockInformationHandler = new GetLockInformationHandler();
     }
@@ -113,7 +119,17 @@ public class GetDigitalObjectDetailHandler
                                                 final ExecutionContext context) throws ActionException {
         // parse input
         String uuid = action.getUuid();
-        LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
+        String storedFOXMLFilePath = null;
+        if (action.getStoredFOXMLFilePath() != null && !action.getStoredFOXMLFilePath().equals("")) {
+            storedFOXMLFilePath = action.getStoredFOXMLFilePath();
+        }
+
+        if (storedFOXMLFilePath == null) {
+            LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
+        } else {
+            LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid()
+                    + " from the file: " + storedFOXMLFilePath);
+        }
 
         try {
             HttpSession ses = httpSessionProvider.get();
@@ -122,16 +138,26 @@ public class GetDigitalObjectDetailHandler
             injector.injectMembers(getLockInformationHandler);
             ServerUtils.checkExpiredSession(ses);
             DigitalObjectDetail obj = null;
-            if (action.getModel() == null) { // lazy
-                obj = objectHandler.getDigitalObject(uuid);
-            } else { // fetch uuids
-                obj = objectHandler.getDigitalObjectItems(uuid, action.getModel());
+            if (storedFOXMLFilePath == null) {
+                if (action.getModel() == null) { // lazy
+                    obj = fedoraObjectHandler.getDigitalObject(uuid);
+                } else { // fetch uuids
+                    obj = fedoraObjectHandler.getDigitalObjectItems(uuid, action.getModel());
+                }
+            } else {
+                obj =
+                        storedObjectHandler.getStoredDigitalObject(uuid,
+                                                                   storedFOXMLFilePath,
+                                                                   action.getModel());
             }
+
+            //TODO storedFOXMLFilePath != null------------------------------------------------------
             GetDescriptionResult result =
                     descritptionHandler.execute(new GetDescriptionAction(uuid), context);
 
             String description = result.getUserDescription();
             Date modified = result.getModified();
+            //--------------------------------------------------------------------------------------
 
             @SuppressWarnings("unused")
             long usersId = 0;

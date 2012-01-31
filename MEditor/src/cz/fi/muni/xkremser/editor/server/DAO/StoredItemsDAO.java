@@ -43,7 +43,7 @@ public interface StoredItemsDAO {
      * @throws DatabaseException
      */
 
-    List<StoredItem> getStoredItem(long userId) throws DatabaseException;
+    List<StoredItem> getStoredItems(long userId) throws DatabaseException;
 
     //    /**
     //     * @param userId

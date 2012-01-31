@@ -31,26 +31,18 @@ package cz.fi.muni.xkremser.editor.server.fedora.utils;
  *
  * @author incad
  */
-import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.DC;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.RELS_EXT;
-import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.TEXT_OCR;
-import static cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils.LABEL_VALUE;
-import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
-import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
-import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.RELS_EXT_NAMESPACE_URI;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+
 import java.nio.charset.Charset;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -64,28 +56,44 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import javax.inject.Inject;
+
+import com.google.inject.name.Named;
+import com.gwtplatform.dispatch.shared.ActionException;
+
 import org.apache.log4j.Logger;
-import org.fedora.api.RelationshipTuple;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.inject.name.Named;
-import com.gwtplatform.dispatch.shared.ActionException;
+import org.fedora.api.RelationshipTuple;
 
+import cz.fi.muni.xkremser.editor.client.ConnectionException;
 import cz.fi.muni.xkremser.editor.client.DublinCoreConstants;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraRelationship;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.DC;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.RELS_EXT;
+import static cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID.TEXT_OCR;
+import static cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils.LABEL_VALUE;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.OAI_DC_NAMESPACE_URI;
+import static cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces.RELS_EXT_NAMESPACE_URI;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -879,5 +887,19 @@ public class FedoraUtils {
             return true;
         }
         return false;
+    }
+
+    public static DigitalObjectModel getModel(String uuid) throws IOException {
+        DigitalObjectModel model = null;
+        try {
+            model = fedoraAccess.getDigitalObjectModel(uuid);
+        } catch (ConnectionException e) {
+            LOGGER.error("Digital object " + uuid + " is not in the repository. " + e.getMessage());
+            throw e;
+        } catch (IOException e) {
+            LOGGER.warn("Could not get model of object " + uuid + ". Using generic model handler.", e);
+            throw e;
+        }
+        return model;
     }
 }

@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -27,20 +24,61 @@
 
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
-import java.io.IOException;
+import org.w3c.dom.Document;
 
-import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
+import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
-// TODO: Auto-generated Javadoc
+import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.BiblioModsUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+import cz.fi.muni.xkremser.editor.server.mods.ModsCollection;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.Foxml;
+
 /**
- * The Class DigitalObjectHandler.
+ * @author Matous Jobanek
+ * @version $Id$
  */
-public interface DigitalObjectHandler {
 
-    DigitalObjectDetail getDigitalObject(String uuid) throws IOException;
+public class DigitalObjectHandler {
 
-    DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel) throws IOException;
+    /**
+     * Handle dc
+     * 
+     * @param uuid
+     * @param dcDocument
+     * @param onlyTitleAndUuid
+     * @return
+     */
+    protected DublinCore handleDc(String uuid, org.w3c.dom.Element dcElement, boolean onlyTitleAndUuid) {
+        DublinCore dc = null;
+        if (onlyTitleAndUuid) {
+            dc = new DublinCore();
+            dc.addTitle(DCUtils.titleFromDC(dcElement));
+            dc.addIdentifier(uuid);
+        } else {
+            dc = DCUtils.getDC(dcElement);
+        }
+        return dc;
+    }
 
-    DigitalObjectModel getModel(String uuid) throws IOException;
+    /**
+     * Handle mods.
+     * 
+     * @param modsDocument
+     *        the mods document
+     * @return the mods collection client
+     */
+    protected ModsCollectionClient handleMods(Document modsDocument) {
+        ModsCollection mods = BiblioModsUtils.getModsCollection(modsDocument);
+        ModsCollectionClient modsClient = BiblioModsUtils.toModsClient(mods);
+        return modsClient;
+    }
+
+    protected Foxml handleFoxml(String uuid, FedoraAccess fedoraAccess) {
+        return FoxmlUtils.handleFoxml(uuid, fedoraAccess);
+    }
+
 }

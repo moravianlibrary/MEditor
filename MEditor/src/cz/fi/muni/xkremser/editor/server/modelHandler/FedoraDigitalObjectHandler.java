@@ -25,51 +25,21 @@
  * 
  */
 
-package cz.fi.muni.xkremser.editor.shared.rpc.action;
+package cz.fi.muni.xkremser.editor.server.modelHandler;
 
-import java.util.Date;
-
-import com.gwtplatform.dispatch.annotation.GenDispatch;
-import com.gwtplatform.dispatch.annotation.In;
-import com.gwtplatform.dispatch.annotation.Out;
-import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
+import java.io.IOException;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class GetDigitalObjectDetail.
+ * The Class FedoraDigitalObjectHandler.
  */
-@GenDispatch(isSecure = false)
-@SuppressWarnings("unused")
-public class GetDigitalObjectDetail
-        extends UnsecuredActionImpl<GetDigitalObjectDetailResult> {
+public interface FedoraDigitalObjectHandler {
 
-    /** The uuid. */
-    @In(1)
-    private String uuid;
+    DigitalObjectDetail getDigitalObject(String uuid) throws IOException;
 
-    @In(2)
-    private DigitalObjectModel model;
-
-    /**
-     * The path to the stored FOXML file,
-     * <code>storedFOXMLFilePath == null</code> when the digital object has to
-     * be obtained from Fedora.
-     */
-    @In(3)
-    private String storedFOXMLFilePath;
-
-    /** The detail. */
-    @Out(1)
-    private DigitalObjectDetail detail;
-
-    /** The description. */
-    @Out(2)
-    private String description;
-
-    @Out(3)
-    private Date modified;
+    DigitalObjectDetail getDigitalObjectItems(String uuid, DigitalObjectModel childModel) throws IOException;
 
 }

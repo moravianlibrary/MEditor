@@ -68,7 +68,7 @@ public class StoredItemsDAOImpl
      */
 
     @Override
-    public List<StoredItem> getStoredItem(long userId) throws DatabaseException {
+    public List<StoredItem> getStoredItems(long userId) throws DatabaseException {
 
         PreparedStatement selectSt = null;
         List<StoredItem> storedItems = new ArrayList<StoredItem>();

@@ -102,8 +102,10 @@ import cz.fi.muni.xkremser.editor.server.handler.ScanFolderHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
 import cz.fi.muni.xkremser.editor.server.handler.StoredItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.UnlockDigitalObjectHandler;
-import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandler;
-import cz.fi.muni.xkremser.editor.server.modelHandler.DigitalObjectHandlerImpl;
+import cz.fi.muni.xkremser.editor.server.modelHandler.FedoraDigitalObjectHandler;
+import cz.fi.muni.xkremser.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
+import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandler;
+import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
@@ -217,7 +219,8 @@ public class ServerModule
                 .to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
         bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
 
-        bind(DigitalObjectHandler.class).to(DigitalObjectHandlerImpl.class);
+        bind(FedoraDigitalObjectHandler.class).to(FedoraDigitalObjectHandlerImpl.class);
+        bind(StoredDigitalObjectHandler.class).to(StoredDigitalObjectHandlerImpl.class);
         bind(Z3950Client.class).to(Z3950ClientImpl.class);
         bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
 
