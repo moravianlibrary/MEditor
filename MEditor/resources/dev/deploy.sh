@@ -25,6 +25,7 @@ SCRIPT=/home/meditor/.meditor/djatoka/bin/tomcat.sh
 
 
 DEPLOY="true"
+#DEPLOY="false"
 echo "getting svn revision number..."
 REVISION=`svn info https://meta-editor.googlecode.com/svn/ |grep '^Revision:' | sed -e 's/^Revision: //'`
 echo "svn revison is $REVISION"
@@ -42,13 +43,15 @@ echo "<h1>Revision $REVISION</h2>" > $MEDITOR_HOME/war2/version.html
 	sleep 1
 	echo "Tomcat is down"
 }
+cd $MEDITOR_HOME/war2
 set +x
 echo "ted to muze vypsat nejake chyby, ale to jsou hodne chyby"
 echo "Packing war file..."
-`zip -r $MEDITOR_HOME/$WAR_NAME.war $MEDITOR_HOME/war2/* &> /dev/null`
+`zip -r ../$WAR_NAME.war * &> /dev/null`
 echo "War file has been made."
 set -x
 echo "konec hodnych chyb"
+cd -
 [ "$DEPLOY" = "true" ] && {
 	echo "Backup.."
 	ssh $USER@$HOST "mv /home/$USER/$TOMCAT/webapps/$WAR_NAME.war_old /home/$USER/$TOMCAT/webapps/$WAR_NAME.war_old_bak"
