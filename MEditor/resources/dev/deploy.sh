@@ -1,20 +1,25 @@
 #!/bin/sh
+#  Deploy script for metadata editor
+#
+#
+#  author: Jiri Kremser
+
 set -x
 #MEDITOR_HOME=~/workspace/MEditor
-MEDITOR_HOME=~/workspace2/MEditor
+MEDITOR_HOME=`dirname $0`/../..
 WAR_NAME=meditor
 
 #vsup setup
-USER=kramerius4
-HOST=192.168.8.9
-TOMCAT=fedora/tomcat
-SCRIPT=/home/kramerius4/.meditor/djatoka/bin/tomcat.sh
+#USER=kramerius4
+#HOST=192.168.8.9
+#TOMCAT=fedora/tomcat
+#SCRIPT=/home/kramerius4/.meditor/djatoka/bin/tomcat.sh
 
 #mzk setup
-#USER=meditor
-#HOST=editor.mzk.cz
-#TOMCAT=apache-tomcat-7.0.2
-#SCRIPT=/home/meditor/.meditor/djatoka/bin/tomcat.sh
+USER=meditor
+HOST=editor.mzk.cz
+TOMCAT=apache-tomcat-7.0.2
+SCRIPT=/home/meditor/.meditor/djatoka/bin/tomcat.sh
 
 
 
@@ -25,12 +30,13 @@ REVISION=`svn info https://meta-editor.googlecode.com/svn/ |grep '^Revision:' | 
 echo "svn revison is $REVISION"
 
 echo "Copying echo ~/workspace/MEditor/war ..."
-cp log4j.properties resources/dev/schemaVersion.txt resources/dev/sqema.sql war/WEB-INF/classes
+cp $MEDITOR_HOME/resources/dev/log4j.properties $MEDITOR_HOME/resources/dev/schemaVersion.txt $MEDITOR_HOME/resources/dev/schema.sql $MEDITOR_HOME/war/WEB-INF/classes
 cp -r $MEDITOR_HOME/war $MEDITOR_HOME/war2
-cd $MEDITOR_HOME/war2
+rm $MEDITOR_HOME/resources/dev/log4j.properties $MEDITOR_HOME/resources/dev/schemaVersion.txt $MEDITOR_HOME/resources/dev/schema.sql
+#cd $MEDITOR_HOME/war2
 echo "Removing .svn directories..."
-rm -Rf `find . -name \.svn`
-echo "<h1>Revision $REVISION</h2>" > version.html
+rm -Rf `find $MEDITOR_HOME/war2 -name \.svn`
+echo "<h1>Revision $REVISION</h2>" > $MEDITOR_HOME/war2/version.html
 [ "$DEPLOY" = "true" ] && {
 	echo "Shutting down Tomcat..."
 	ssh $USER@$HOST $SCRIPT stop -force 
@@ -40,7 +46,7 @@ echo "<h1>Revision $REVISION</h2>" > version.html
 set +x
 echo "ted to muze vypsat nejake chyby, ale to jsou hodne chyby"
 echo "Packing war file..."
-`zip -r ../$WAR_NAME.war * &> /dev/null`
+`zip -r $MEDITOR_HOME/$WAR_NAME.war $MEDITOR_HOME/war2/* &> /dev/null`
 echo "War file has been made."
 set -x
 echo "konec hodnych chyb"
@@ -50,10 +56,10 @@ echo "konec hodnych chyb"
 	ssh $USER@$HOST "mv /home/$USER/$TOMCAT/webapps/$WAR_NAME.war /home/$USER/$TOMCAT/webapps/$WAR_NAME.war_old"
 	ssh $USER@$HOST "rm -Rf /home/$USER/$TOMCAT/webapps/$WAR_NAME"
 	echo "Deploy.."
-	scp ../$WAR_NAME.war $USER@$HOST:/home/$USER/$TOMCAT/webapps/$WAR_NAME.war
+	scp $MEDITOR_HOME/$WAR_NAME.war $USER@$HOST:/home/$USER/$TOMCAT/webapps/$WAR_NAME.war
 	echo "Running server"
 	ssh $USER@$HOST $SCRIPT start	
-	rm ../$WAR_NAME.war
+	rm $MEDITOR_HOME/$WAR_NAME.war
 }
 rm -Rf $MEDITOR_HOME/war2
-cd -
+#cd -
