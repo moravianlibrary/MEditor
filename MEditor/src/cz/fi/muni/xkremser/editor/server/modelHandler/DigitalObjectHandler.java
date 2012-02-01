@@ -24,7 +24,7 @@
 
 package cz.fi.muni.xkremser.editor.server.modelHandler;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 
@@ -67,18 +67,39 @@ public class DigitalObjectHandler {
     /**
      * Handle mods.
      * 
-     * @param modsDocument
+     * @param modsNode
      *        the mods document
      * @return the mods collection client
      */
-    protected ModsCollectionClient handleMods(Document modsDocument) {
-        ModsCollection mods = BiblioModsUtils.getModsCollection(modsDocument);
+    protected ModsCollectionClient handleMods(Node modsNode) {
+        ModsCollection mods = BiblioModsUtils.getModsCollection(modsNode);
         ModsCollectionClient modsClient = BiblioModsUtils.toModsClient(mods);
         return modsClient;
     }
 
+    /**
+     * @param uuid
+     *        the uuid
+     * @param fedoraAccess
+     *        the fedora Access
+     * @return The Foxml
+     */
+
     protected Foxml handleFoxml(String uuid, FedoraAccess fedoraAccess) {
         return FoxmlUtils.handleFoxml(uuid, fedoraAccess);
+    }
+
+    /**
+     * Handle ocr.
+     * 
+     * @param uuid
+     *        the uuid
+     * @param fedoraAccess
+     *        the fedora Access
+     * @return the string
+     */
+    protected String handleOCR(String uuid, FedoraAccess fedoraAccess) {
+        return fedoraAccess.getOcr(uuid);
     }
 
 }

@@ -260,15 +260,15 @@ public final class BiblioModsUtils {
     /**
      * Gets the mods collection
      * 
-     * @param doc
+     * @param node
      *        the doc
      * @return the mods collection
      */
-    public static ModsCollection getModsCollection(org.w3c.dom.Document doc) {
+    public static ModsCollection getModsCollection(org.w3c.dom.Node node) {
         try {
             JAXBContext jc = JAXBContext.newInstance("cz.fi.muni.xkremser.editor.server.mods");
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            return (ModsCollection) unmarshaller.unmarshal(doc);
+            return (ModsCollection) unmarshaller.unmarshal(node);
         } catch (JAXBException e) {
             LOGGER.error(e);
         }

@@ -111,11 +111,11 @@ public class StoredDigitalObjectHandlerImpl
 
         Document foxmlDocument = getFoxmlDocument(filePath);
         detail.setDc(getDcStream(foxmlDocument, uuid, filePath));
-        detail.setMods(getModsStrean(foxmlDocument));
+        detail.setMods(getModsStrean(foxmlDocument, filePath));
         Foxml foxml = getFoxml(uuid, foxmlDocument);
         detail.setFoxmlString(foxml.getFoxml());
         detail.setLabel(foxml.getLabel());
-        detail.setOcr(getOCR(foxmlDocument));
+        detail.setOcr(getOCR(foxmlDocument, filePath, uuid));
         detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
         detail.setItems(getDigitalObjectItems(uuid, foxmlDocument, model));
         return detail;
@@ -211,20 +211,56 @@ public class StoredDigitalObjectHandlerImpl
     /**
      * @param uuid
      * @return
+     * @throws ActionException
      */
 
-    private String getOCR(org.w3c.dom.Document foxml) {
-        return "OCR";
+    private String getOCR(org.w3c.dom.Document foxmlDocument, String filePath, String uuid)
+            throws ActionException {
+
+        String streamXPath =
+                "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.TEXT_OCR.getValue()
+                        + "\']/foxml:datastreamVersion[last()]/foxml:contentLocation";
+
+        try {
+
+            Element ocrElement = XMLUtils.getElement(foxmlDocument, streamXPath);
+            if (ocrElement == null) return null;
+
+            NodeList ocrContentNodes = ocrElement.getElementsByTagName("foxml:content");
+            if (ocrContentNodes == null || ocrContentNodes.getLength() == 0)
+                return handleOCR(uuid, getFedoraAccess());
+
+            return ocrContentNodes.item(0).getTextContent();
+
+        } catch (XPathExpressionException e) {
+            LOGGER.error("An error occured during obtaining the DC stream from the file: " + filePath + " "
+                    + e);
+            throw new ActionException(e);
+        }
     }
 
     /**
      * @param foxml
      * @return
+     * @throws ActionException
      */
 
-    private ModsCollectionClient getModsStrean(org.w3c.dom.Document foxml) {
-        org.w3c.dom.Document modsDocument = null;
-        return handleMods(modsDocument);
+    private ModsCollectionClient getModsStrean(org.w3c.dom.Document foxmlDocument, String filePath)
+            throws ActionException {
+
+        String streamXPath =
+                "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.BIBLIO_MODS.getValue() + "\']";
+
+        try {
+
+            Element modsElement = XMLUtils.getElement(foxmlDocument, streamXPath);
+            return handleMods(modsElement);
+
+        } catch (XPathExpressionException e) {
+            LOGGER.error("An error occured during obtaining the DC stream from the file: " + filePath + " "
+                    + e);
+            throw new ActionException(e);
+        }
     }
 
     /**
@@ -237,7 +273,7 @@ public class StoredDigitalObjectHandlerImpl
     private DublinCore getDcStream(org.w3c.dom.Document foxmlDocument, String uuid, String filePath)
             throws ActionException {
 
-        String streamXPath = "//foxml:datastream[@ID=\'DC\']";
+        String streamXPath = "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.DC.getValue() + "\']";
 
         try {
 

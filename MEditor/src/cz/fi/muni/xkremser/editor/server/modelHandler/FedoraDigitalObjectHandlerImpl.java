@@ -87,7 +87,7 @@ public class FedoraDigitalObjectHandlerImpl
         Foxml foxml = handleFoxml(uuid, getFedoraAccess());
         detail.setFoxmlString(foxml.getFoxml());
         detail.setLabel(foxml.getLabel());
-        detail.setOcr(handleOCR(uuid));
+        detail.setOcr(handleOCR(uuid, getFedoraAccess()));
         detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
         return detail;
     }
@@ -138,17 +138,6 @@ public class FedoraDigitalObjectHandlerImpl
             LOGGER.error("Unable to get DC metadata for " + uuid + "[" + e.getMessage() + "]", e);
         }
         return handleDc(uuid, dcDocument.getDocumentElement(), onlyTitleAndUuid);
-    }
-
-    /**
-     * Handle ocr.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the string
-     */
-    private String handleOCR(String uuid) {
-        return getFedoraAccess().getOcr(uuid);
     }
 
     /**

@@ -24,6 +24,8 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,9 @@ import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.StoredItemsDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
@@ -65,6 +69,13 @@ public class StoredItemsHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    /** The configuration. */
+    private final EditorConfiguration configuration;
+
+    public StoredItemsHandler(EditorConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     /**
      * {@inheritDoc}
@@ -95,9 +106,15 @@ public class StoredItemsHandler
             return new StoredItemsResult(storedItems, null);
 
         } else {
+            String workingCopyFoxml =
+                    FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
+            String userDirsPath = configuration.getUserDirectoriesPath();
+            File userDir = new File(userDirsPath + File.pathSeparator + userId);
+            if (!userDir.exists()) userDir.mkdirs();
+            File foxmlFile =
+                    new File(userDirsPath + File.pathSeparator + userId + File.pathSeparator
+                            + action.getFileName());
 
-            //            String workingCopyFoxml =
-            //                    FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
             return new StoredItemsResult(null, null);
         }
     }

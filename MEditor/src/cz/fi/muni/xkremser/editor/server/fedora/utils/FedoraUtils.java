@@ -709,15 +709,6 @@ public class FedoraUtils {
 
         if (newContent != null) {
             try {
-                String lastStreamXPath =
-                        "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
-                int versionNumber =
-                        getVersionNumber(XMLUtils.getElement(foxmlDocument, lastStreamXPath)
-                                .getAttribute("ID"));
-
-                String streamXPath = "//foxml:datastream[@ID=\'" + streamToModify + "\']";
-                Element parentOfStream = XMLUtils.getElement(foxmlDocument, streamXPath);
-
                 Element versionElement = foxmlDocument.createElement("foxml:datastreamVersion");
 
                 if (streamToModify.equals(RELS_EXT.getValue())) {
@@ -748,6 +739,15 @@ public class FedoraUtils {
                     }
                 }
 
+                String lastStreamXPath =
+                        "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
+                Element element = XMLUtils.getElement(foxmlDocument, lastStreamXPath);
+
+                int versionNumber = 0;
+                if (element != null) {
+                    versionNumber = getVersionNumber(element.getAttribute("ID"));
+                }
+
                 versionElement.setAttribute("ID", streamToModify + "." + (versionNumber + 1));
                 versionElement.setAttribute("CREATED", "NOT YET");
                 versionElement.setAttribute("SIZE", "0");
@@ -767,6 +767,24 @@ public class FedoraUtils {
                 }
 
                 versionElement.appendChild(contentElement);
+
+                String streamXPath = "//foxml:datastream[@ID=\'" + streamToModify + "\']";
+                Element parentOfStream = XMLUtils.getElement(foxmlDocument, streamXPath);
+
+                if (parentOfStream == null) {
+                    String digObjXPath = "//foxml:digitalObject";
+                    Element digObjElement = XMLUtils.getElement(foxmlDocument, digObjXPath);
+
+                    parentOfStream = foxmlDocument.createElement("datastream");
+                    parentOfStream.setAttribute("ID", streamToModify);
+                    parentOfStream.setAttribute("STATE", "A");
+                    //TODO for other streams if necessary
+                    if (streamToModify.equals(TEXT_OCR.getValue()))
+                        parentOfStream.setAttribute("CONTROL_GROUP", "M");
+                    parentOfStream.setAttribute("VERSIONABLE", "false");
+                    digObjElement.appendChild(parentOfStream);
+                }
+
                 parentOfStream.appendChild(versionElement);
 
             } catch (XPathExpressionException e) {

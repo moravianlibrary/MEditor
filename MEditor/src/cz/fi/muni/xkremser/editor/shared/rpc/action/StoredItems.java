@@ -51,6 +51,12 @@ public class StoredItems
     @In(1)
     private DigitalObjectDetail detail;
 
+    /**
+     * The name of the file is going to be stored
+     */
+    @In(2)
+    private String fileName;
+
     /** The List of the items stored by user */
     @Out(1)
     private List<StoredItem> storedItems;

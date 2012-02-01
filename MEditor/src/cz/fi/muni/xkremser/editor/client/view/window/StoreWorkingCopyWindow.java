@@ -252,7 +252,7 @@ public class StoreWorkingCopyWindow
         storedField.setWidth(120);
         storedFilesGrid.setFields(fileNameField, storedField);
 
-        dispatcher.execute(new StoredItemsAction(null), new DispatchCallback<StoredItemsResult>() {
+        dispatcher.execute(new StoredItemsAction(null, null), new DispatchCallback<StoredItemsResult>() {
 
             @Override
             public void callbackError(final Throwable cause) {
@@ -298,7 +298,7 @@ public class StoreWorkingCopyWindow
                        final EditorTabSet ts,
                        final EventBus eventBus) {
 
-        StoredItemsAction storedAction = new StoredItemsAction(detail);
+        StoredItemsAction storedAction = new StoredItemsAction(detail, "path");
         DispatchCallback<StoredItemsResult> storedCallback = new DispatchCallback<StoredItemsResult>() {
 
             @Override
