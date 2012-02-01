@@ -32,8 +32,7 @@ echo "svn revison is $REVISION"
 echo "Copying echo ~/workspace/MEditor/war ..."
 cp $MEDITOR_HOME/resources/dev/log4j.properties $MEDITOR_HOME/resources/dev/schemaVersion.txt $MEDITOR_HOME/resources/dev/schema.sql $MEDITOR_HOME/war/WEB-INF/classes
 cp -r $MEDITOR_HOME/war $MEDITOR_HOME/war2
-rm $MEDITOR_HOME/resources/dev/log4j.properties $MEDITOR_HOME/resources/dev/schemaVersion.txt $MEDITOR_HOME/resources/dev/schema.sql
-#cd $MEDITOR_HOME/war2
+
 echo "Removing .svn directories..."
 rm -Rf `find $MEDITOR_HOME/war2 -name \.svn`
 echo "<h1>Revision $REVISION</h2>" > $MEDITOR_HOME/war2/version.html
@@ -62,4 +61,3 @@ echo "konec hodnych chyb"
 	rm $MEDITOR_HOME/$WAR_NAME.war
 }
 rm -Rf $MEDITOR_HOME/war2
-#cd -
