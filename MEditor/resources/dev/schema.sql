@@ -10,6 +10,11 @@ SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
 
+ALTER TABLE ONLY public.tree_structure_node DROP CONSTRAINT tree_structure_node_fk_editor_user;
+ALTER TABLE ONLY public.tree_structure DROP CONSTRAINT tree_structure_fk_editor_user;
+ALTER TABLE ONLY public.tree_structure DROP CONSTRAINT tree_structure_pkey;
+ALTER TABLE ONLY public.tree_structure_node DROP CONSTRAINT tree_structure_node_pkey;
+
 ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_user_id_fkey;
 ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_role_id_fkey;
 ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_fk_role;
@@ -33,6 +38,11 @@ ALTER TABLE ONLY public.input_queue_item DROP CONSTRAINT input_queue_item_pkey;
 ALTER TABLE ONLY public.image DROP CONSTRAINT image_pkey;
 ALTER TABLE ONLY public.image DROP CONSTRAINT image_identifier_uniq;
 ALTER TABLE ONLY public.editor_user DROP CONSTRAINT editor_user_pkey;
+
+
+
+
+
 DROP TABLE public.version;
 DROP TABLE public.user_in_role;
 DROP TABLE public.stored_files;
@@ -56,6 +66,12 @@ DROP TABLE public.editor_user;
 DROP SEQUENCE public.seq_user;
 DROP TABLE public.description;
 DROP SEQUENCE public.seq_description;
+
+DROP TABLE public.tree_structure_node;
+DROP TABLE public.tree_structure;
+DROP SEQUENCE public.seq_tree_structure_node;
+DROP SEQUENCE public.seq_tree_structure;
+
 DROP SCHEMA public;
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
@@ -436,7 +452,7 @@ CREATE TABLE stored_files (
     id integer DEFAULT nextval('seq_stored_files'::regclass) NOT NULL,
     user_id integer,
     uuid character varying(45),
-    name character varying(300),
+    model integer,
     description character varying(16000),
     stored timestamp without time zone,
     file_name character varying(300)
@@ -854,7 +870,7 @@ INSERT INTO role VALUES (14, 'Can view users, roles, identities', 'view_users');
 -- Data for Name: stored_files; Type: TABLE DATA; Schema: public; Owner: meditor
 --
 
-INSERT INTO stored_files VALUES (1, 68, 'uuid:ad4853eb-b844-11e0-95bd-005056be0007', 'test', 'my desc', '2011-11-07 08:39:34.684651', 'test file name');
+INSERT INTO stored_files VALUES (1, 68, 'uuid:ad4853eb-b844-11e0-95bd-005056be0007', '1', 'my desc', '2011-11-07 08:39:34.684651', 'test file name');
 
 
 --
@@ -1070,9 +1086,6 @@ ALTER TABLE ONLY user_in_role
 
 ALTER TABLE ONLY user_in_role
     ADD CONSTRAINT user_in_role_user_id_fkey FOREIGN KEY (user_id) REFERENCES editor_user(id);
-
-
-
 
 
 
