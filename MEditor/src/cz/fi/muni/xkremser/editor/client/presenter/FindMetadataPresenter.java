@@ -61,6 +61,9 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
+import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
@@ -138,6 +141,8 @@ public class FindMetadataPresenter
 
     private String model = null;
 
+    private boolean findLater = false;
+
     private final Map<Integer, MetadataBundle> results = new HashMap<Integer, MetadataBundle>();
 
     public static final String OAI_STRING = "%p/?verb=GetRecord&identifier=%p%p-%s&metadataPrefix=";
@@ -187,6 +192,24 @@ public class FindMetadataPresenter
     @Override
     protected void onBind() {
         super.onBind();
+        addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
+
+            @Override
+            public void onConfigReceived(ConfigReceivedEvent event) {
+                if (event.isStatusOK()) {
+                    getView().getOaiUrl().setValueMap(config.getOaiUrls());
+                    getView().getOaiUrl().setValue(config.getOaiUrls()[0]);
+                    getView().getOaiPrefix().setValueMap(config.getOaiPrefixes());
+                    getView().getOaiPrefix().setValue(config.getOaiPrefixes()[0]);
+                    getView().getOaiBase().setValueMap(config.getOaiBases());
+                    getView().getOaiBase().setValue(config.getOaiBases()[0]);
+                    if (findLater) {
+                        findLater = false;
+                        findPropriateMetadata();
+                    }
+                }
+            }
+        });
         getView().getFindZ39().addClickHandler(new ClickHandler() {
 
             @Override
@@ -240,12 +263,16 @@ public class FindMetadataPresenter
                 getView().getNext().setDisabled(false);
             }
         });
-        getView().getOaiUrl().setValueMap(config.getOaiUrls());
-        getView().getOaiUrl().setValue(config.getOaiUrls()[0]);
-        getView().getOaiPrefix().setValueMap(config.getOaiPrefixes());
-        getView().getOaiPrefix().setValue(config.getOaiPrefixes()[0]);
-        getView().getOaiBase().setValueMap(config.getOaiBases());
-        getView().getOaiBase().setValue(config.getOaiBases()[0]);
+        if (config != null && config.getConfiguration() != null) {
+            getView().getOaiUrl().setValueMap(config.getOaiUrls());
+            getView().getOaiUrl().setValue(config.getOaiUrls()[0]);
+            getView().getOaiPrefix().setValueMap(config.getOaiPrefixes());
+            getView().getOaiPrefix().setValue(config.getOaiPrefixes()[0]);
+            getView().getOaiBase().setValueMap(config.getOaiBases());
+            getView().getOaiBase().setValue(config.getOaiBases()[0]);
+        } else {
+            findLater = true;
+        }
     }
 
     /*
@@ -277,11 +304,18 @@ public class FindMetadataPresenter
         model = request.getParameter(Constants.ATTR_MODEL, null);
         getView().getZ39Id().setValue(sysno);
         getView().getOaiId().setValue(sysno);
-        findPropriateMetadata();
+        if (config != null && config.getConfiguration() != null) {
+            findPropriateMetadata();
+        } else {
+            findLater = true;
+        }
     }
 
     private void findMetadata(Constants.SEARCH_FIELD field, String id, boolean oai, String query) {
         results.clear();
+        if (query == null || id == null) {
+            return;
+        }
         dispatcher.execute(new FindMetadataAction(field, id, oai, query),
                            new DispatchCallback<FindMetadataResult>() {
 
@@ -364,9 +398,13 @@ public class FindMetadataPresenter
         String url = getView().getOaiUrl().getValueAsString();
         String prefix = getView().getOaiPrefix().getValueAsString();
         String base = getView().getOaiBase().getValueAsString();
+        if (url == null || prefix == null || base == null) {
+            return null;
+        }
         String query =
                 config.getVsup() ? ClientUtils.format(OAI_STRING_VSUP, 'p', url, base) : ClientUtils
                         .format(OAI_STRING, 'p', url, prefix, base);
         return query;
     }
+
 }

@@ -532,7 +532,7 @@ public class CreateObjectMenuPresenter
             SC.warn("Strom je prázdný.");
         } else {
             TreeStructureBundle bundle = new TreeStructureBundle();
-            bundle.setInfo(new TreeStructureInfo(-1, null, null, barcode));
+            bundle.setInfo(new TreeStructureInfo(-1, null, null, barcode, null));
             bundle.setNodes(ClientUtils.toNodes(getView().getSubelementsGrid().getTree()));
             StoreTreeStructureWindow.setInstanceOf(bundle,
                                                    ClientUtils.toStringTree(object),

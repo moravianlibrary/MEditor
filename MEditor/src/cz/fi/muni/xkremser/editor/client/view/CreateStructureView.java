@@ -295,6 +295,11 @@ public class CreateStructureView
         tileGrid.setShowAllRecords(true);
         tileGrid.setShowResizeBar(true);
         positionBeforeMoving = -1;
+        detailPanelShown = false;
+        metadataPanelShown = false;
+        detailPanelImageShown = false;
+        detailPanel = null;
+        metadataPanel = null;
         tileGrid.addDragStartHandler(new DragStartHandler() {
 
             @Override
@@ -615,7 +620,7 @@ public class CreateStructureView
                 showDetail(pageDetailHeight);
             }
         });
-        zoomItems.setDefaultValue("100%");
+        zoomItems.setDefaultValue("M");
         toolStrip.addFormItem(zoomItems);
         final ToolStripButton zoomButton = new ToolStripButton();
         final ToolStripButton editMetadataButton = new ToolStripButton();

@@ -245,6 +245,7 @@ public class CreateObjectMenuView
         undoButton.setSize("16", "16");
         undoButton.setShowTitle(false);
         undoButton.setOpacity(75);
+        undoButton.setCanHover(true);
         undoButton.addHoverHandler(new HoverHandler() {
 
             @Override
@@ -258,6 +259,7 @@ public class CreateObjectMenuView
         redoButton.setSize("16", "16");
         redoButton.setShowTitle(false);
         redoButton.setOpacity(75);
+        redoButton.setCanHover(true);
         redoButton.addHoverHandler(new HoverHandler() {
 
             @Override

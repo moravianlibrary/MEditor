@@ -83,7 +83,8 @@ CREATE TABLE tree_structure (
     user_id integer,
     created timestamp without time zone,
     barcode character varying(30),
-    description character varying(256)
+    description character varying(256), 
+    name character varying(100)
 );
 
 

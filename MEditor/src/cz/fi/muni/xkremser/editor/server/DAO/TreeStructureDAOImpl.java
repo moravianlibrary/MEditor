@@ -65,15 +65,17 @@ public class TreeStructureDAOImpl
     public static final String DELETE_INFO = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NAME
             + " WHERE id = (?)";
 
-    public static final String INSERT_INFO = "INSERT INTO " + Constants.TABLE_TREE_STRUCTURE_NAME
-            + " (user_id, created, description) VALUES ((?), (CURRENT_TIMESTAMP), (?))";
+    public static final String INSERT_INFO =
+            "INSERT INTO "
+                    + Constants.TABLE_TREE_STRUCTURE_NAME
+                    + " (user_id, created, description, barcode, name) VALUES ((?), (CURRENT_TIMESTAMP), (?), (?), (?))";
 
     public static final String INFO_VALUE = "SELECT currval('" + Constants.SEQUENCE_TREE_STRUCTURE + "')";
 
     public static final String INSERT_NODE =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
-                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture, prop_type, prop_type_id, prop_page_type, prop_date_issued, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture, prop_type, prop_type_id, prop_page_type, prop_date_issued, prop_alto_path, prop_ocr_path, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
 
@@ -97,7 +99,8 @@ public class TreeStructureDAOImpl
             while (rs.next()) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
                 retList.add(new TreeStructureInfo(rs.getLong("id"), formatter.format(rs
-                        .getTimestamp("created")), rs.getString("description"), rs.getString("barcode")));
+                        .getTimestamp("created")), rs.getString("description"), rs.getString("barcode"), rs
+                        .getString("name")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -180,7 +183,9 @@ public class TreeStructureDAOImpl
             insertInfoSt = getConnection().prepareStatement(INSERT_INFO);
             insertInfoSt.setLong(1, userId);
             insertInfoSt.setString(2, info.getDescription() != null ? info.getDescription() : "");
-            int modified = insertInfoSt.executeUpdate();
+            insertInfoSt.setString(3, info.getBarcode());
+            insertInfoSt.setString(4, info.getName());
+            insertInfoSt.executeUpdate();
             PreparedStatement seqSt = getConnection().prepareStatement(INFO_VALUE);
             ResultSet rs = seqSt.executeQuery();
             int key = -1;
@@ -204,7 +209,9 @@ public class TreeStructureDAOImpl
                 insSt.setString(7, node.getPropTypeId());
                 insSt.setString(8, node.getPropPageType());
                 insSt.setString(9, node.getPropDateIssued());
-                insSt.setBoolean(10, node.getPropExist());
+                insSt.setString(10, node.getPropAltoPath());
+                insSt.setString(11, node.getPropOcrPath());
+                insSt.setBoolean(12, node.getPropExist());
                 total += insSt.executeUpdate();
             }
             if (total != structure.size()) {
