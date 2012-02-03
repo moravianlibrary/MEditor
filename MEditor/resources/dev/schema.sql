@@ -2,99 +2,20 @@
 -- PostgreSQL database dump
 --
 
+DROP SCHEMA IF EXISTS meditor CASCADE;
+CREATE SCHEMA meditor;
+ALTER SCHEMA meditor OWNER TO meditor;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET escape_string_warning = off;
+SET search_path = meditor, pg_catalog, public;
+SET default_tablespace = '';
+SET default_with_oids = false;
 
-SET search_path = public, pg_catalog;
-
-ALTER TABLE ONLY public.tree_structure_node DROP CONSTRAINT tree_structure_node_fk_editor_user;
-ALTER TABLE ONLY public.tree_structure DROP CONSTRAINT tree_structure_fk_editor_user;
-ALTER TABLE ONLY public.tree_structure DROP CONSTRAINT tree_structure_pkey;
-ALTER TABLE ONLY public.tree_structure_node DROP CONSTRAINT tree_structure_node_pkey;
-
-ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_user_id_fkey;
-ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_role_id_fkey;
-ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_fk_role;
-ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_fk_editor_user;
-ALTER TABLE ONLY public.stored_files DROP CONSTRAINT stored_files_fk_editor_user;
-ALTER TABLE ONLY public.recently_modified_item DROP CONSTRAINT recently_modified_item_fk_editor_user;
-ALTER TABLE ONLY public.open_id_identity DROP CONSTRAINT open_id_identity_fk_editor_user;
-ALTER TABLE ONLY public.lock DROP CONSTRAINT lock_fk_editor_user;
-DROP INDEX public.old_fs_path_idx;
-DROP INDEX public.identifier_idx;
-ALTER TABLE ONLY public.version DROP CONSTRAINT version_pkey;
-ALTER TABLE ONLY public.user_in_role DROP CONSTRAINT user_in_role_pkey;
-ALTER TABLE ONLY public.stored_files DROP CONSTRAINT stored_files_pkey;
-ALTER TABLE ONLY public.role DROP CONSTRAINT role_pkey;
-ALTER TABLE ONLY public.request_for_adding DROP CONSTRAINT request_for_adding_id_key;
-ALTER TABLE ONLY public.recently_modified_item DROP CONSTRAINT recently_modified_item_pkey;
-ALTER TABLE ONLY public.input_queue_item DROP CONSTRAINT path_unique;
-ALTER TABLE ONLY public.open_id_identity DROP CONSTRAINT open_id_identity_pkey;
-ALTER TABLE ONLY public.lock DROP CONSTRAINT lock_pkey;
-ALTER TABLE ONLY public.input_queue_item DROP CONSTRAINT input_queue_item_pkey;
-ALTER TABLE ONLY public.image DROP CONSTRAINT image_pkey;
-ALTER TABLE ONLY public.image DROP CONSTRAINT image_identifier_uniq;
-ALTER TABLE ONLY public.editor_user DROP CONSTRAINT editor_user_pkey;
-
-
-
-
-
-DROP TABLE public.version;
-DROP TABLE public.user_in_role;
-DROP TABLE public.stored_files;
-DROP SEQUENCE public.seq_user_in_role;
-DROP SEQUENCE public.seq_stored_files;
-DROP TABLE public.role;
-DROP SEQUENCE public.seq_role;
-DROP TABLE public.request_for_adding;
-DROP SEQUENCE public.seq_request_for_adding;
-DROP TABLE public.recently_modified_item;
-DROP SEQUENCE public.seq_recently_modified_item;
-DROP TABLE public.open_id_identity;
-DROP SEQUENCE public.seq_open_id_identity;
-DROP TABLE public.lock;
-DROP SEQUENCE public.seq_lock;
-DROP TABLE public.input_queue_item;
-DROP SEQUENCE public.seq_input_queue_item;
-DROP TABLE public.image;
-DROP SEQUENCE public.seq_image;
-DROP TABLE public.editor_user;
-DROP SEQUENCE public.seq_user;
-DROP TABLE public.description;
-DROP SEQUENCE public.seq_description;
-
-DROP TABLE public.tree_structure_node;
-DROP TABLE public.tree_structure;
-DROP SEQUENCE public.seq_tree_structure_node;
-DROP SEQUENCE public.seq_tree_structure;
-
-DROP SCHEMA public;
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
-SET search_path = public, pg_catalog;
-
-
---
--- Name: seq_description; Type: SEQUENCE; Schema: public; Owner: meditor
---
+COMMENT ON SCHEMA meditor IS 'metadata editor schema';
 
 CREATE SEQUENCE seq_description
     INCREMENT BY 1
@@ -103,22 +24,12 @@ CREATE SEQUENCE seq_description
     CACHE 1;
 
 
-ALTER TABLE public.seq_description OWNER TO meditor;
-
---
--- Name: seq_description; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_description OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_description', 5, true);
 
 
-SET default_tablespace = '';
 
-SET default_with_oids = false;
-
---
--- Name: description; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE description (
     id integer DEFAULT nextval('seq_description'::regclass) NOT NULL,
@@ -127,7 +38,7 @@ CREATE TABLE description (
 );
 
 
-ALTER TABLE public.description OWNER TO meditor;
+ALTER TABLE meditor.description OWNER TO meditor;
 
 --
 -- Name: seq_user; Type: SEQUENCE; Schema: public; Owner: meditor
@@ -140,7 +51,7 @@ CREATE SEQUENCE seq_user
     CACHE 1;
 
 
-ALTER TABLE public.seq_user OWNER TO meditor;
+ALTER TABLE meditor.seq_user OWNER TO meditor;
 
 --
 -- Name: seq_user; Type: SEQUENCE SET; Schema: public; Owner: meditor
@@ -149,9 +60,50 @@ ALTER TABLE public.seq_user OWNER TO meditor;
 SELECT pg_catalog.setval('seq_user', 81, true);
 
 
---
--- Name: editor_user; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
+
+CREATE SEQUENCE seq_tree_structure_node
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+CREATE SEQUENCE seq_tree_structure
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE meditor.seq_tree_structure_node OWNER TO meditor;
+
+ALTER TABLE meditor.seq_tree_structure OWNER TO meditor;
+
+CREATE TABLE tree_structure (
+    id integer DEFAULT nextval('seq_tree_structure_node'::regclass) NOT NULL,
+    user_id integer,
+    created timestamp without time zone,
+    barcode character varying(30),
+    description character varying(256)
+);
+
+
+CREATE TABLE tree_structure_node (
+    id integer DEFAULT nextval('seq_tree_structure_node'::regclass) NOT NULL,
+    tree_id integer,
+    prop_id character varying(3),
+    prop_parent character varying(3),
+    prop_name character varying(100),
+    prop_picture character varying(256),
+    prop_type character varying(20),
+    prop_type_id character varying(20),
+    prop_page_type character varying(25),
+    prop_date_issued character varying(10),
+    prop_exist boolean
+);
+
+ALTER TABLE meditor.tree_structure OWNER TO meditor;
+
+ALTER TABLE meditor.tree_structure_node OWNER TO meditor;
 
 CREATE TABLE editor_user (
     id integer DEFAULT nextval('seq_user'::regclass) NOT NULL,
@@ -161,11 +113,7 @@ CREATE TABLE editor_user (
 );
 
 
-ALTER TABLE public.editor_user OWNER TO meditor;
-
---
--- Name: seq_image; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.editor_user OWNER TO meditor;
 
 CREATE SEQUENCE seq_image
     INCREMENT BY 1
@@ -174,18 +122,9 @@ CREATE SEQUENCE seq_image
     CACHE 4;
 
 
-ALTER TABLE public.seq_image OWNER TO meditor;
-
---
--- Name: seq_image; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_image OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_image', 18092, true);
-
-
---
--- Name: image; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE image (
     id integer DEFAULT nextval('seq_image'::regclass) NOT NULL,
@@ -196,11 +135,7 @@ CREATE TABLE image (
 );
 
 
-ALTER TABLE public.image OWNER TO meditor;
-
---
--- Name: seq_input_queue_item; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.image OWNER TO meditor;
 
 CREATE SEQUENCE seq_input_queue_item
     INCREMENT BY 1
@@ -209,18 +144,9 @@ CREATE SEQUENCE seq_input_queue_item
     CACHE 1;
 
 
-ALTER TABLE public.seq_input_queue_item OWNER TO meditor;
-
---
--- Name: seq_input_queue_item; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_input_queue_item OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_input_queue_item', 22286, true);
-
-
---
--- Name: input_queue_item; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE input_queue_item (
     id integer DEFAULT nextval('seq_input_queue_item'::regclass) NOT NULL,
@@ -230,11 +156,8 @@ CREATE TABLE input_queue_item (
 );
 
 
-ALTER TABLE public.input_queue_item OWNER TO meditor;
+ALTER TABLE meditor.input_queue_item OWNER TO meditor;
 
---
--- Name: seq_lock; Type: SEQUENCE; Schema: public; Owner: meditor
---
 
 CREATE SEQUENCE seq_lock
     INCREMENT BY 1
@@ -243,18 +166,9 @@ CREATE SEQUENCE seq_lock
     CACHE 1;
 
 
-ALTER TABLE public.seq_lock OWNER TO meditor;
-
---
--- Name: seq_lock; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_lock OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_lock', 78, true);
-
-
---
--- Name: lock; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE lock (
     id integer DEFAULT nextval('seq_lock'::regclass) NOT NULL,
@@ -264,12 +178,7 @@ CREATE TABLE lock (
     user_id integer
 );
 
-
-ALTER TABLE public.lock OWNER TO meditor;
-
---
--- Name: seq_open_id_identity; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.lock OWNER TO meditor;
 
 CREATE SEQUENCE seq_open_id_identity
     INCREMENT BY 1
@@ -278,18 +187,9 @@ CREATE SEQUENCE seq_open_id_identity
     CACHE 1;
 
 
-ALTER TABLE public.seq_open_id_identity OWNER TO meditor;
-
---
--- Name: seq_open_id_identity; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_open_id_identity OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_open_id_identity', 48, true);
-
-
---
--- Name: open_id_identity; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE open_id_identity (
     id integer DEFAULT nextval('seq_open_id_identity'::regclass) NOT NULL,
@@ -298,11 +198,7 @@ CREATE TABLE open_id_identity (
 );
 
 
-ALTER TABLE public.open_id_identity OWNER TO meditor;
-
---
--- Name: seq_recently_modified_item; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.open_id_identity OWNER TO meditor;
 
 CREATE SEQUENCE seq_recently_modified_item
     INCREMENT BY 1
@@ -311,18 +207,9 @@ CREATE SEQUENCE seq_recently_modified_item
     CACHE 1;
 
 
-ALTER TABLE public.seq_recently_modified_item OWNER TO meditor;
-
---
--- Name: seq_recently_modified_item; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_recently_modified_item OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_recently_modified_item', 1034, true);
-
-
---
--- Name: recently_modified_item; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE recently_modified_item (
     id integer DEFAULT nextval('seq_recently_modified_item'::regclass) NOT NULL,
@@ -335,11 +222,7 @@ CREATE TABLE recently_modified_item (
 );
 
 
-ALTER TABLE public.recently_modified_item OWNER TO meditor;
-
---
--- Name: seq_request_for_adding; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.recently_modified_item OWNER TO meditor;
 
 CREATE SEQUENCE seq_request_for_adding
     INCREMENT BY 1
@@ -348,18 +231,9 @@ CREATE SEQUENCE seq_request_for_adding
     CACHE 1;
 
 
-ALTER TABLE public.seq_request_for_adding OWNER TO meditor;
-
---
--- Name: seq_request_for_adding; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_request_for_adding OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_request_for_adding', 33, true);
-
-
---
--- Name: request_for_adding; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE request_for_adding (
     id integer DEFAULT nextval('seq_request_for_adding'::regclass) NOT NULL,
@@ -369,11 +243,7 @@ CREATE TABLE request_for_adding (
 );
 
 
-ALTER TABLE public.request_for_adding OWNER TO meditor;
-
---
--- Name: seq_role; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.request_for_adding OWNER TO meditor;
 
 CREATE SEQUENCE seq_role
     INCREMENT BY 1
@@ -382,18 +252,9 @@ CREATE SEQUENCE seq_role
     CACHE 1;
 
 
-ALTER TABLE public.seq_role OWNER TO meditor;
-
---
--- Name: seq_role; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_role OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_role', 14, true);
-
-
---
--- Name: role; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE role (
     id integer DEFAULT nextval('seq_role'::regclass) NOT NULL,
@@ -402,11 +263,7 @@ CREATE TABLE role (
 );
 
 
-ALTER TABLE public.role OWNER TO meditor;
-
---
--- Name: seq_stored_files; Type: SEQUENCE; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.role OWNER TO meditor;
 
 CREATE SEQUENCE seq_stored_files
     INCREMENT BY 1
@@ -415,18 +272,9 @@ CREATE SEQUENCE seq_stored_files
     CACHE 1;
 
 
-ALTER TABLE public.seq_stored_files OWNER TO meditor;
-
---
--- Name: seq_stored_files; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_stored_files OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_stored_files', 1, true);
-
-
---
--- Name: seq_user_in_role; Type: SEQUENCE; Schema: public; Owner: meditor
---
 
 CREATE SEQUENCE seq_user_in_role
     INCREMENT BY 1
@@ -434,19 +282,9 @@ CREATE SEQUENCE seq_user_in_role
     NO MINVALUE
     CACHE 1;
 
-
-ALTER TABLE public.seq_user_in_role OWNER TO meditor;
-
---
--- Name: seq_user_in_role; Type: SEQUENCE SET; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.seq_user_in_role OWNER TO meditor;
 
 SELECT pg_catalog.setval('seq_user_in_role', 31, true);
-
-
---
--- Name: stored_files; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
 
 CREATE TABLE stored_files (
     id integer DEFAULT nextval('seq_stored_files'::regclass) NOT NULL,
@@ -458,12 +296,7 @@ CREATE TABLE stored_files (
     file_name character varying(300)
 );
 
-
-ALTER TABLE public.stored_files OWNER TO meditor;
-
---
--- Name: user_in_role; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
+ALTER TABLE meditor.stored_files OWNER TO meditor;
 
 CREATE TABLE user_in_role (
     id integer DEFAULT nextval('seq_user_in_role'::regclass) NOT NULL,
@@ -472,24 +305,14 @@ CREATE TABLE user_in_role (
     date timestamp without time zone
 );
 
-
-ALTER TABLE public.user_in_role OWNER TO meditor;
-
---
--- Name: version; Type: TABLE; Schema: public; Owner: meditor; Tablespace: 
---
+ALTER TABLE meditor.user_in_role OWNER TO meditor;
 
 CREATE TABLE version (
     id integer NOT NULL,
     version integer
 );
 
-
-ALTER TABLE public.version OWNER TO meditor;
-
---
--- Data for Name: description; Type: TABLE DATA; Schema: public; Owner: meditor
---
+ALTER TABLE meditor.version OWNER TO meditor;
 
 INSERT INTO description VALUES (1, 'ca4c04d0-4904-11de-9fdc-000d606f5dc6', 'Common description<br>');
 INSERT INTO description VALUES (2, '5fe0b160-62d5-11dd-bdc7-000d606f5dc6', '<div style="color: rgb(51, 51, 51); "><br></div><div style="color: rgb(51, 51, 51); "><br></div><div><font class="Apple-style-span" color="#800000">Je treba udelat todlenc a pak tamtononc.</font></div>');
@@ -499,7 +322,7 @@ INSERT INTO description VALUES (5, 'uuid:047e0290-6330-11dd-aa0c-000d606f5dc6', 
 
 
 --
--- Data for Name: editor_user; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: editor_user; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO editor_user VALUES (57, 'Václav', 'Rosecký', true);
@@ -507,6 +330,7 @@ INSERT INTO editor_user VALUES (58, 'Pepa', 'Zdepa', true);
 INSERT INTO editor_user VALUES (1, 'Jiří', 'Kremser', true);
 INSERT INTO editor_user VALUES (60, 'Franta', 'Běžný Uživatel', false);
 INSERT INTO editor_user VALUES (61, 'Martin', 'Rehanek', false);
+INSERT INTO editor_user VALUES (62, 'Violka', 'Kucerovic', false);
 INSERT INTO editor_user VALUES (63, 'Pavla', 'Svastova', false);
 INSERT INTO editor_user VALUES (64, 'hiep', 'vannguyen', false);
 INSERT INTO editor_user VALUES (65, 'Jimmy', 'O''Regan', false);
@@ -526,7 +350,7 @@ INSERT INTO editor_user VALUES (81, 'Pavel', 'Pesta', false);
 
 
 --
--- Data for Name: image; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: image; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO image VALUES (17925, '6795da7f-6111-398d-ad7c-736cf9fb5946', '2012-01-17 12:16:36.588041', '/home/job/.meditor/input/periodical/000258273/12-1936-0/0005.jpg', '/home/job/.meditor/images/6795da7f-6111-398d-ad7c-736cf9fb5946.jp2');
@@ -700,7 +524,7 @@ INSERT INTO image VALUES (17965, '8638c91e-9be2-31bd-8722-f34287cbf485', '2012-0
 
 
 --
--- Data for Name: input_queue_item; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: input_queue_item; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO input_queue_item VALUES (22282, '/periodical/000258273/1234', '1234', true);
@@ -717,13 +541,13 @@ INSERT INTO input_queue_item VALUES (22286, '/periodical/123456789', '123456789'
 
 
 --
--- Data for Name: lock; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: lock; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 
 
 --
--- Data for Name: open_id_identity; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: open_id_identity; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO open_id_identity VALUES (16, 1, 'https://www.google.com/profiles/109255519115168093543');
@@ -735,6 +559,7 @@ INSERT INTO open_id_identity VALUES (27, 63, 'https://www.google.com/profiles/11
 INSERT INTO open_id_identity VALUES (28, 64, 'https://www.google.com/profiles/108088542979033146722');
 INSERT INTO open_id_identity VALUES (29, 65, 'https://www.google.com/profiles/114804369744409916883');
 INSERT INTO open_id_identity VALUES (30, 66, 'https://www.google.com/profiles/106800333256714812404');
+INSERT INTO open_id_identity VALUES (31, 62, 'https://www.google.com/profiles/110312070406589750015');
 INSERT INTO open_id_identity VALUES (32, 68, 'https://www.google.com/profiles/109427901142654977833');
 INSERT INTO open_id_identity VALUES (33, 69, 'https://www.google.com/profiles/107158839619798289683');
 INSERT INTO open_id_identity VALUES (34, 70, 'https://www.google.com/profiles/104695347440971724820');
@@ -752,8 +577,10 @@ INSERT INTO open_id_identity VALUES (47, 69, 'https://www.google.com/profiles/11
 INSERT INTO open_id_identity VALUES (48, 1, 'http://www.facebook.com/profile.php?id=1611572776');
 
 
+
+
 --
--- Data for Name: recently_modified_item; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: recently_modified_item; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO recently_modified_item VALUES (793, 'uuid:7ec83962-e7b9-45cd-bef3-dcbb7715fe2f', 'Proti výminečnému stavu v Praze! /', '', '2011-11-30 19:01:12.9102', 0, 1);
@@ -838,7 +665,7 @@ INSERT INTO recently_modified_item VALUES (754, 'uuid:f0d485b7-b382-4d13-8a31-c1
 
 
 --
--- Data for Name: request_for_adding; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: request_for_adding; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO request_for_adding VALUES (23, 'Jiří Herman', 'http://www.facebook.com/profile.php?id=1536979671', '2011-08-16 11:40:36.511668');
@@ -849,7 +676,7 @@ INSERT INTO request_for_adding VALUES (32, 'pesta', 'http://pesta.myopenid.com/'
 
 
 --
--- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: role; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO role VALUES (3, 'Can publish modified documents', 'can_publish');
@@ -867,14 +694,14 @@ INSERT INTO role VALUES (14, 'Can view users, roles, identities', 'view_users');
 
 
 --
--- Data for Name: stored_files; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: stored_files; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO stored_files VALUES (1, 68, 'uuid:ad4853eb-b844-11e0-95bd-005056be0007', '1', 'my desc', '2011-11-07 08:39:34.684651', 'test file name');
 
 
 --
--- Data for Name: user_in_role; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: user_in_role; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO user_in_role VALUES (1, 1, 1, '2010-12-13 18:22:16.482');
@@ -886,6 +713,7 @@ INSERT INTO user_in_role VALUES (15, 60, 7, '2010-12-17 16:20:40.049073');
 INSERT INTO user_in_role VALUES (16, 60, 4, '2010-12-17 16:20:44.651338');
 INSERT INTO user_in_role VALUES (17, 60, 6, '2010-12-17 16:20:48.242028');
 INSERT INTO user_in_role VALUES (19, 58, 13, '2011-01-01 14:56:53.837292');
+INSERT INTO user_in_role VALUES (20, 62, 1, '2012-02-02 13:11:31.433027');
 INSERT INTO user_in_role VALUES (21, 61, 3, '2011-01-10 17:49:22.891444');
 INSERT INTO user_in_role VALUES (22, 63, 3, '2011-03-12 00:36:28.95624');
 INSERT INTO user_in_role VALUES (23, 63, 9, '2011-03-12 00:36:39.874551');
@@ -900,22 +728,36 @@ INSERT INTO user_in_role VALUES (31, 74, 1, '2011-07-19 11:20:34.784693');
 
 
 --
--- Data for Name: version; Type: TABLE DATA; Schema: public; Owner: meditor
+-- Data for Name: version; Type: TABLE DATA; Schema: meditor; Owner: meditor
 --
 
 INSERT INTO version VALUES (1, 1);
 
 
 --
--- Name: editor_user_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: editor_user_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY editor_user
     ADD CONSTRAINT editor_user_pkey PRIMARY KEY (id);
 
 
+
+ALTER TABLE ONLY tree_structure_node
+    ADD CONSTRAINT tree_structure_node_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY tree_structure
+    ADD CONSTRAINT tree_structure_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY tree_structure
+    ADD CONSTRAINT tree_structure_fk_editor_user FOREIGN KEY (user_id) REFERENCES editor_user(id) MATCH FULL;
+
+ALTER TABLE ONLY tree_structure_node
+    ADD CONSTRAINT tree_structure_node_fk_editor_user FOREIGN KEY (tree_id) REFERENCES tree_structure(id) MATCH FULL;
+
+
 --
--- Name: image_identifier_uniq; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: image_identifier_uniq; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY image
@@ -923,7 +765,7 @@ ALTER TABLE ONLY image
 
 
 --
--- Name: image_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: image_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY image
@@ -931,7 +773,7 @@ ALTER TABLE ONLY image
 
 
 --
--- Name: input_queue_item_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: input_queue_item_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY input_queue_item
@@ -939,7 +781,7 @@ ALTER TABLE ONLY input_queue_item
 
 
 --
--- Name: lock_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: lock_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY lock
@@ -947,7 +789,7 @@ ALTER TABLE ONLY lock
 
 
 --
--- Name: open_id_identity_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: open_id_identity_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY open_id_identity
@@ -955,7 +797,7 @@ ALTER TABLE ONLY open_id_identity
 
 
 --
--- Name: path_unique; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: path_unique; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY input_queue_item
@@ -963,7 +805,7 @@ ALTER TABLE ONLY input_queue_item
 
 
 --
--- Name: recently_modified_item_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: recently_modified_item_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY recently_modified_item
@@ -971,7 +813,7 @@ ALTER TABLE ONLY recently_modified_item
 
 
 --
--- Name: request_for_adding_id_key; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: request_for_adding_id_key; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY request_for_adding
@@ -979,7 +821,7 @@ ALTER TABLE ONLY request_for_adding
 
 
 --
--- Name: role_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: role_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY role
@@ -987,7 +829,7 @@ ALTER TABLE ONLY role
 
 
 --
--- Name: stored_files_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: stored_files_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY stored_files
@@ -995,7 +837,7 @@ ALTER TABLE ONLY stored_files
 
 
 --
--- Name: user_in_role_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: user_in_role_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY user_in_role
@@ -1003,7 +845,7 @@ ALTER TABLE ONLY user_in_role
 
 
 --
--- Name: version_pkey; Type: CONSTRAINT; Schema: public; Owner: meditor; Tablespace: 
+-- Name: version_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
 ALTER TABLE ONLY version
@@ -1011,21 +853,27 @@ ALTER TABLE ONLY version
 
 
 --
--- Name: identifier_idx; Type: INDEX; Schema: public; Owner: meditor; Tablespace: 
+-- Name: identifier_idx; Type: INDEX; Schema: meditor; Owner: meditor; Tablespace: 
 --
 
-CREATE UNIQUE INDEX identifier_idx ON image USING btree (identifier);
+CREATE UNIQUE INDEX image_identifier_idx ON image USING btree (identifier);
+
+CREATE INDEX image_old_fs_path_idx ON image USING btree (old_fs_path);
+
+CREATE INDEX recently_modified_item_uuid_idx ON recently_modified_item USING btree (uuid);
+
+CREATE INDEX description_uuid_idx ON description USING btree (uuid);
+
+CREATE INDEX lock_uuid_idx ON lock USING btree (uuid);
+
+CREATE INDEX stored_files_uuid_idx ON lock USING btree (uuid);
+
+CREATE INDEX tree_structure_code_idx ON tree_structure USING btree (barcode);
+
 
 
 --
--- Name: old_fs_path_idx; Type: INDEX; Schema: public; Owner: meditor; Tablespace: 
---
-
-CREATE UNIQUE INDEX old_fs_path_idx ON image USING btree (old_fs_path);
-
-
---
--- Name: lock_fk_editor_user; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: lock_fk_editor_user; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY lock
@@ -1033,7 +881,7 @@ ALTER TABLE ONLY lock
 
 
 --
--- Name: open_id_identity_fk_editor_user; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: open_id_identity_fk_editor_user; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY open_id_identity
@@ -1041,7 +889,7 @@ ALTER TABLE ONLY open_id_identity
 
 
 --
--- Name: recently_modified_item_fk_editor_user; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: recently_modified_item_fk_editor_user; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY recently_modified_item
@@ -1049,7 +897,7 @@ ALTER TABLE ONLY recently_modified_item
 
 
 --
--- Name: stored_files_fk_editor_user; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: stored_files_fk_editor_user; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY stored_files
@@ -1057,7 +905,7 @@ ALTER TABLE ONLY stored_files
 
 
 --
--- Name: user_in_role_fk_editor_user; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: user_in_role_fk_editor_user; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY user_in_role
@@ -1065,7 +913,7 @@ ALTER TABLE ONLY user_in_role
 
 
 --
--- Name: user_in_role_fk_role; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: user_in_role_fk_role; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY user_in_role
@@ -1073,7 +921,7 @@ ALTER TABLE ONLY user_in_role
 
 
 --
--- Name: user_in_role_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: user_in_role_role_id_fkey; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY user_in_role
@@ -1081,7 +929,7 @@ ALTER TABLE ONLY user_in_role
 
 
 --
--- Name: user_in_role_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: meditor
+-- Name: user_in_role_user_id_fkey; Type: FK CONSTRAINT; Schema: meditor; Owner: meditor
 --
 
 ALTER TABLE ONLY user_in_role
@@ -1100,60 +948,7 @@ ALTER TABLE ONLY user_in_role
 --- <Insert changes to previous version here>
 ---**********************************************************************************
 
-CREATE SEQUENCE seq_tree_structure_node
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
 
-CREATE SEQUENCE seq_tree_structure
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.seq_tree_structure_node OWNER TO meditor;
-
-ALTER TABLE public.seq_tree_structure OWNER TO meditor;
-
-CREATE TABLE tree_structure (
-    id integer DEFAULT nextval('seq_tree_structure_node'::regclass) NOT NULL,
-    user_id integer,
-    created timestamp without time zone,
-    description character varying(256)
-);
-
-
-CREATE TABLE tree_structure_node (
-    id integer DEFAULT nextval('seq_tree_structure_node'::regclass) NOT NULL,
-    tree_id integer,
-    prop_id character varying(3),
-    prop_parent character varying(3),
-    prop_name character varying(100),
-    prop_picture character varying(256),
-    prop_type character varying(20),
-    prop_type_id character varying(20),
-    prop_page_type character varying(25),
-    prop_date_issued character varying(10),
-    prop_exist boolean
-);
-
-ALTER TABLE public.tree_structure OWNER TO meditor;
-
-ALTER TABLE public.tree_structure_node OWNER TO meditor;
-
-ALTER TABLE ONLY tree_structure_node
-    ADD CONSTRAINT tree_structure_node_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY tree_structure
-    ADD CONSTRAINT tree_structure_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY tree_structure
-    ADD CONSTRAINT tree_structure_fk_editor_user FOREIGN KEY (user_id) REFERENCES editor_user(id) MATCH FULL;
-
-ALTER TABLE ONLY tree_structure_node
-    ADD CONSTRAINT tree_structure_node_fk_editor_user FOREIGN KEY (tree_id) REFERENCES tree_structure(id) MATCH FULL;
 
 ---**********************************************************************************
 --- </Insert changes to previous version here>
@@ -1171,13 +966,15 @@ ALTER TABLE ONLY tree_structure_node
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: meditor; Type: ACL; Schema: -; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+REVOKE ALL ON SCHEMA meditor FROM PUBLIC;
+REVOKE ALL ON SCHEMA meditor FROM meditor;
+REVOKE ALL ON SCHEMA meditor FROM postgres;
+GRANT ALL ON SCHEMA meditor TO postgres;
+GRANT ALL ON SCHEMA meditor TO meditor;
+GRANT ALL ON SCHEMA meditor TO PUBLIC;
 
 
 --

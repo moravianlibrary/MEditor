@@ -64,3 +64,4 @@ cd -
 	rm $MEDITOR_HOME/$WAR_NAME.war
 }
 rm -Rf $MEDITOR_HOME/war2
+echo "Done."
