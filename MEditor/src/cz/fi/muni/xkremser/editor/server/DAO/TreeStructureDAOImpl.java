@@ -30,11 +30,11 @@ package cz.fi.muni.xkremser.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -42,8 +42,8 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureInfo;
-import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureNode;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 
 /**
  * @author Jiri Kremser
@@ -65,11 +65,13 @@ public class TreeStructureDAOImpl
     public static final String DELETE_INFO = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NAME
             + " WHERE id = (?)";
 
-    public static final String INSERT_INFO = "INSERT INTO" + Constants.TABLE_TREE_STRUCTURE_NAME
+    public static final String INSERT_INFO = "INSERT INTO " + Constants.TABLE_TREE_STRUCTURE_NAME
             + " (user_id, created, description) VALUES ((?), (CURRENT_TIMESTAMP), (?))";
 
+    public static final String INFO_VALUE = "SELECT currval('" + Constants.SEQUENCE_TREE_STRUCTURE + "')";
+
     public static final String INSERT_NODE =
-            "INSERT INTO"
+            "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
                     + " (tree_id, prop_id, prop_parent, prop_name, prop_picture, prop_type, prop_type_id, prop_page_type, prop_date_issued, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
@@ -81,12 +83,12 @@ public class TreeStructureDAOImpl
      * @throws DatabaseException
      */
     @Override
-    public ArrayList<TreeStructureInfo> getSavedStructuresOfUser(int userId) throws DatabaseException {
+    public ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId) throws DatabaseException {
         PreparedStatement selectSt = null;
         ArrayList<TreeStructureInfo> retList = new ArrayList<TreeStructureInfo>();
         try {
             selectSt = getConnection().prepareStatement(SELECT_INFOS);
-            selectSt.setInt(1, userId);
+            selectSt.setLong(1, userId);
         } catch (SQLException e) {
             LOGGER.error("Could not get select infos statement", e);
         }
@@ -95,7 +97,7 @@ public class TreeStructureDAOImpl
             while (rs.next()) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
                 retList.add(new TreeStructureInfo(rs.getLong("id"), formatter.format(rs
-                        .getTimestamp("created")), rs.getString("description")));
+                        .getTimestamp("created")), rs.getString("description"), rs.getString("barcode")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -148,7 +150,8 @@ public class TreeStructureDAOImpl
                 retList.add(new TreeStructureNode(rs.getString("prop_id"), rs.getString("prop_parent"), rs
                         .getString("prop_name"), rs.getString("prop_picture"), rs.getString("prop_type"), rs
                         .getString("prop_type_id"), rs.getString("prop_page_type"), rs
-                        .getString("prop_date_issued"), rs.getBoolean("prop_exist")));
+                        .getString("prop_date_issued"), rs.getString("prop_alto_path"), rs
+                        .getString("prop_ocr_path"), rs.getBoolean("prop_exist")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -162,7 +165,7 @@ public class TreeStructureDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public void saveStructure(int userId, TreeStructureInfo info, ArrayList<TreeStructureNode> structure)
+    public void saveStructure(long userId, TreeStructureInfo info, List<TreeStructureNode> structure)
             throws DatabaseException {
         if (info == null) throw new NullPointerException("info");
         if (structure == null) throw new NullPointerException("structure");
@@ -174,13 +177,14 @@ public class TreeStructureDAOImpl
         PreparedStatement insertInfoSt = null, insSt = null;
         try {
             // TX start
-            insertInfoSt = getConnection().prepareStatement(INSERT_INFO, Statement.RETURN_GENERATED_KEYS);
-            insertInfoSt.setInt(1, userId);
-            insertInfoSt.setString(2, info.getDescription());
-            insertInfoSt.executeQuery();
-            ResultSet rs = insertInfoSt.getGeneratedKeys();
+            insertInfoSt = getConnection().prepareStatement(INSERT_INFO);
+            insertInfoSt.setLong(1, userId);
+            insertInfoSt.setString(2, info.getDescription() != null ? info.getDescription() : "");
+            int modified = insertInfoSt.executeUpdate();
+            PreparedStatement seqSt = getConnection().prepareStatement(INFO_VALUE);
+            ResultSet rs = seqSt.executeQuery();
             int key = -1;
-            if (rs.next()) {
+            while (rs.next()) {
                 key = rs.getInt(1);
             }
             if (key == -1) {

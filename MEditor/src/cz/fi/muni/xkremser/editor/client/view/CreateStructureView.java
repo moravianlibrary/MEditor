@@ -595,20 +595,22 @@ public class CreateStructureView
         zoomItems.setShowTitle(true);
         zoomItems.setWrapTitle(false);
         zoomItems.setWidth(70);
-        zoomItems.setValueMap("75%", "100%", "125%", "150%");
+        zoomItems.setValueMap("S", "M", "L", "XL", "XXL");
         zoomItems.addChangedHandler(new ChangedHandler() {
 
             @Override
             public void onChanged(ChangedEvent event) {
                 String percent = (String) event.getValue();
-                if ("75%".equals(percent)) {
+                if ("S".equals(percent)) {
                     pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_SMALL;
-                } else if ("100%".equals(percent)) {
+                } else if ("M".equals(percent)) {
                     pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
-                } else if ("125%".equals(percent)) {
+                } else if ("L".equals(percent)) {
                     pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_LARGE;
-                } else if ("150%".equals(percent)) {
+                } else if ("XL".equals(percent)) {
                     pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_XLARGE;
+                } else if ("XXL".equals(percent)) {
+                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_XXLARGE;
                 }
                 showDetail(pageDetailHeight);
             }

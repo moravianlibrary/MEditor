@@ -79,7 +79,7 @@ ALTER TABLE meditor.seq_tree_structure_node OWNER TO meditor;
 ALTER TABLE meditor.seq_tree_structure OWNER TO meditor;
 
 CREATE TABLE tree_structure (
-    id integer DEFAULT nextval('seq_tree_structure_node'::regclass) NOT NULL,
+    id integer DEFAULT nextval('seq_tree_structure'::regclass) NOT NULL,
     user_id integer,
     created timestamp without time zone,
     barcode character varying(30),
@@ -98,6 +98,8 @@ CREATE TABLE tree_structure_node (
     prop_type_id character varying(20),
     prop_page_type character varying(25),
     prop_date_issued character varying(10),
+    prop_alto_path character varying(256),
+    prop_ocr_path character varying(256),
     prop_exist boolean
 );
 

@@ -118,6 +118,8 @@ public class CreateObjectMenuView
 
         Map<String, String> getLabelFromModel();
 
+        void saveStructure();
+
         void getModel(String valueAsString, ConnectExistingObjectWindow window);
 
         //Adds an ALTO file to a page
@@ -1032,13 +1034,14 @@ public class CreateObjectMenuView
         menu.setShowShadow(true);
         menu.setShadowDepth(3);
 
-        MenuItem saveStructure = new MenuItem(lang.saveStructure());
-        MenuItem loadStructure = new MenuItem(lang.loadStructure());
+        MenuItem saveStructure = new MenuItem(lang.saveStructure(), "icons/16/save_structure.png");
+        MenuItem loadStructure = new MenuItem(lang.loadStructure(), "icons/16/load_structure.png");
         saveStructure.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                SC.say("saving...");
+                getUiHandlers().saveStructure();
+                //                SC.say("saving...");
             }
         });
         loadStructure.addClickHandler(new ClickHandler() {

@@ -30,22 +30,25 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.io.File;
 import java.io.IOException;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import javax.inject.Inject;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
@@ -127,6 +130,9 @@ public class ConvertToJPEG2000Handler
     }
 
     private boolean convertToJpeg2000(ImageItem item) throws ActionException {
+        if (new File(item.getJpeg2000FsPath()).exists()) {
+            return true;
+        }
         if (item.getJpgFsPath().toLowerCase().endsWith(Constants.JPEG_2000_EXTENSION)) {
             try {
                 CreateObjectUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());

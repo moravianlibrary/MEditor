@@ -1267,11 +1267,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String detailNum();
 
   /**
-   * Translated "Detail size".
+   * Translated "Detail height".
    * 
-   * @return translated "Detail size"
+   * @return translated "Detail height"
    */
-  @DefaultStringValue("Detail size")
+  @DefaultStringValue("Detail height")
   @Key("detailSize")
   String detailSize();
 

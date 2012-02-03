@@ -51,6 +51,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 
 /**
  * @author Jiri Kremser
@@ -436,4 +437,30 @@ public class ClientUtils {
 
     }
 
+    /**
+     * @param tree
+     * @return
+     */
+    public static List<TreeStructureNode> toNodes(Tree tree) {
+        List<TreeStructureNode> retList = new ArrayList<TreeStructureNode>();
+        TreeNode[] nodes = tree.getAllNodes();
+        for (TreeNode node : nodes) {
+            retList.add(toNode(node));
+        }
+        return retList;
+    }
+
+    private static TreeStructureNode toNode(TreeNode treeNode) {
+        return new TreeStructureNode(treeNode.getAttribute(Constants.ATTR_ID),
+                                     treeNode.getAttribute(Constants.ATTR_PARENT),
+                                     treeNode.getAttribute(Constants.ATTR_NAME),
+                                     treeNode.getAttribute(Constants.ATTR_PICTURE),
+                                     treeNode.getAttribute(Constants.ATTR_TYPE),
+                                     treeNode.getAttribute(Constants.ATTR_TYPE_ID),
+                                     treeNode.getAttribute(Constants.ATTR_PAGE_TYPE),
+                                     treeNode.getAttribute(Constants.ATTR_DATE_ISSUED),
+                                     treeNode.getAttribute(Constants.ATTR_ALTO_PATH),
+                                     treeNode.getAttribute(Constants.ATTR_OCR_PATH),
+                                     treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
+    }
 }

@@ -140,6 +140,9 @@ public class Constants {
     /** The Constant SEQUENCE_OPEN_ID_IDENTITY. */
     public static final String SEQUENCE_OPEN_ID_IDENTITY = "seq_open_id_identity";
 
+    /** The Constant SEQUENCE_TREE_STRUCTURE. */
+    public static final String SEQUENCE_TREE_STRUCTURE = "seq_tree_structure";
+
     /** The Constant SEQUENCE_ROLE. */
     public static final String SEQUENCE_ROLE = "seq_user_in_role";
 
@@ -312,6 +315,13 @@ public class Constants {
         TITLE
     }
 
+    /**
+     * Several actions can be aggregated using this enum
+     */
+    public static enum VERB {
+        GET, PUT, DELETE
+    }
+
     public static final String SYSNO = "SYSNO";
 
     /**
@@ -455,8 +465,9 @@ public class Constants {
     public static final String HTTP_CACHE_SECONDS = "7200";
     public static final int PAGE_PREVIEW_HEIGHT_SMALL = 80;
     public static final int PAGE_PREVIEW_HEIGHT_NORMAL = 120;
-    public static final int PAGE_PREVIEW_HEIGHT_LARGE = 140;
-    public static final int PAGE_PREVIEW_HEIGHT_XLARGE = 180;
+    public static final int PAGE_PREVIEW_HEIGHT_LARGE = 160;
+    public static final int PAGE_PREVIEW_HEIGHT_XLARGE = 200;
+    public static final int PAGE_PREVIEW_HEIGHT_XXLARGE = 280;
 
     /**
      * Fedora FOXML related constants

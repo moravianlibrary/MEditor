@@ -54,6 +54,8 @@ import cz.fi.muni.xkremser.editor.server.DAO.RequestDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.RequestDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.StoredItemsDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.StoredItemsDAOImpl;
+import cz.fi.muni.xkremser.editor.server.DAO.TreeStructureDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.TreeStructureDAOImpl;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAOImpl;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -100,6 +102,7 @@ import cz.fi.muni.xkremser.editor.server.handler.RemoveUserInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.RemoveUserRoleHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanFolderHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ScanInputQueueHandler;
+import cz.fi.muni.xkremser.editor.server.handler.StoreTreeStructureHandler;
 import cz.fi.muni.xkremser.editor.server.handler.StoredItemsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.UnlockDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.FedoraDigitalObjectHandler;
@@ -143,6 +146,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.RemoveUserRoleAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.UnlockDigitalObjectAction;
 
@@ -197,6 +201,7 @@ public class ServerModule
         bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
         bindHandler(LogoutAction.class, LogoutHandler.class);
         bindHandler(FindAltoOcrFilesAction.class, FindAltoOcrFilesHandler.class);
+        bindHandler(StoreTreeStructureAction.class, StoreTreeStructureHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
@@ -210,6 +215,7 @@ public class ServerModule
         bind(LockDAO.class).to(LockDAOImpl.class).asEagerSingleton();
         bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class).asEagerSingleton();
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class).asEagerSingleton();
+        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class).asEagerSingleton();
         // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
         // Fedora

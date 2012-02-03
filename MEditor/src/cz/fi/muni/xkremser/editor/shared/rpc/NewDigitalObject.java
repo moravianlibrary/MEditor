@@ -222,4 +222,10 @@ public class NewDigitalObject
     public void setOcrPath(String ocrPath) {
         this.ocrPath = ocrPath;
     }
+
+    @Override
+    public String toString() {
+        return model + "  --  " + name;
+    }
+
 }

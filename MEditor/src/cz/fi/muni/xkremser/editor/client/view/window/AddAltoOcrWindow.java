@@ -64,7 +64,6 @@ public abstract class AddAltoOcrWindow
     private final ListGrid foundAltoFilesGrid;
     private final ListGrid foundOcrFilesGrid;
 
-
     public AddAltoOcrWindow(final ListGridRecord listGridRecord,
                             final LangConstants lang,
                             final DispatchAsync dispatcher,
@@ -150,7 +149,7 @@ public abstract class AddAltoOcrWindow
         buttonsLayout.setAlign(Alignment.RIGHT);
 
         buttonsLayout.setWidth100();
-        Button okButton = new Button("OK");
+        Button okButton = new Button("Ok");
 
         okButton.setExtraSpace(8);
         buttonsLayout.addMember(okButton);

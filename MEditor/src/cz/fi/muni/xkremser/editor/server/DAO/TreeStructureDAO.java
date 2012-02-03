@@ -28,11 +28,12 @@
 package cz.fi.muni.xkremser.editor.server.DAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureInfo;
-import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureNode;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 
 /**
  * @author Jiri Kremser
@@ -48,7 +49,7 @@ public interface TreeStructureDAO {
      * @return list of TreeStructureInfo instances belonging to specified user
      * @throws DatabaseException
      */
-    ArrayList<TreeStructureInfo> getSavedStructuresOfUser(int userId) throws DatabaseException;
+    ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId) throws DatabaseException;
 
     /**
      * Deletes the structure from DB
@@ -80,7 +81,7 @@ public interface TreeStructureDAO {
      *        list with TreeStructureNode instances
      * @throws DatabaseException
      */
-    void saveStructure(int userId, TreeStructureInfo info, ArrayList<TreeStructureNode> structure)
+    void saveStructure(long userId, TreeStructureInfo info, List<TreeStructureNode> structure)
             throws DatabaseException;
 
 }

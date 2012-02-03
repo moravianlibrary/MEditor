@@ -237,6 +237,7 @@ public class CreateStructurePresenter
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
         sysno = request.getParameter(Constants.URL_PARAM_SYSNO, null);
+        leftPresenter.setBarcode(sysno);
         inputPath = request.getParameter(Constants.URL_PARAM_PATH, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
     }
@@ -716,6 +717,7 @@ public class CreateStructurePresenter
     public void onCreateStructure(CreateStructureEvent event) {
         this.model = event.getModel();
         this.sysno = event.getCode();
+        this.leftPresenter.setBarcode(sysno);
         this.inputPath = event.getInputPath();
         this.bundle = event.getBundle();
     }
@@ -775,6 +777,7 @@ public class CreateStructurePresenter
                                                openCreated(result.getNewPid());
                                            }
                                        } else {
+                                           // TODO: i18n
                                            SC.warn("Vložení se nepodařilo.");
                                        }
                                        getView().getPopupPanel().setVisible(false);
@@ -792,7 +795,7 @@ public class CreateStructurePresenter
                                });
         } else {
             // TODO: i18n
-            SC.warn("Objekt neobsahuje žádné podčásti, proto se nebude vytvářet");
+            SC.warn("Objekt neobsahuje žádné podčásti, proto se nebude vytvářet. Přiřaďte alespoň nějaké stránky (z pravé části okna) či podstruktury (vyvráří se v části \"Vytvořit podstruktury\") do části \"Podstruktury\".");
         }
     }
 

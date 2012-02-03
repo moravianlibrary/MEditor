@@ -81,7 +81,7 @@ public class DeleteInfoWindow
 
         StringBuffer sb = new StringBuffer("<center>" + HtmlCode.title(lang.removedUuids() + ":", 3));
         for (String uuid : removedUuid) {
-            sb.append("<br>").append(uuid);
+            sb.append("<br/>").append(uuid);
         }
         sb.append("</center>");
         HTMLFlow htmlFlow = new HTMLFlow(sb.toString());
