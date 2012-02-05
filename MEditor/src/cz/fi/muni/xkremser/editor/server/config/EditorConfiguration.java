@@ -419,7 +419,9 @@ public abstract class EditorConfiguration {
     }
 
     public String getOaiRecordIdentifierLength() {
-        return getConfiguration().getString(EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH);
+        return getConfiguration()
+                .getString(EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH,
+                           EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH_DEFAULT);
     }
 
     public String getHostname() {

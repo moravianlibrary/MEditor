@@ -77,6 +77,8 @@ public abstract class EditorClientConfiguration {
         public static final String VSUP = "vsup";
 
         public static final String HOSTNAME = "hostname";
+
+        public static final String OAI_RECORD_IDENTIFIER_LENGTH_DEFAULT = "9";
     }
 
     /**

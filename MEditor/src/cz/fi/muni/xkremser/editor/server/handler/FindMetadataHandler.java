@@ -29,22 +29,21 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import javax.inject.Inject;
+import org.apache.log4j.Logger;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.apache.log4j.Logger;
-
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.server.OAIPMHClient;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
-
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
@@ -108,6 +107,9 @@ public class FindMetadataHandler
             bundle = oaiClient.search(completeQuery);
         } else {
             bundle = z39Client.search(action.getSearchType(), action.getId());
+            if (ClientUtils.toBoolean(configuration.getVsup())) {
+                return new FindMetadataResult(bundle);
+            }
             // co kdyz to je v Z39.50 a neni to v oai
             enrichedBundle = new ArrayList<MetadataBundle>(bundle.size());
             for (MetadataBundle bun : bundle) {
