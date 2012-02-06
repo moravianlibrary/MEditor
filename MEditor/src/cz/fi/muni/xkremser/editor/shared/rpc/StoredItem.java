@@ -26,6 +26,8 @@ package cz.fi.muni.xkremser.editor.shared.rpc;
 
 import java.io.Serializable;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+
 /**
  * @author Matous Jobanek
  * @version $Id$
@@ -42,8 +44,8 @@ public class StoredItem
     /** The uuid. */
     private String uuid;
 
-    /** The name. */
-    private String name;
+    /** The model. */
+    private DigitalObjectModel model;
 
     /** The description. */
     private String description;
@@ -62,37 +64,52 @@ public class StoredItem
      * Instantiates a new digital object basic inform.
      * 
      * @param fileName
-     *        the file name
+     *        the file model
      * @param uuid
      *        the uuid
-     * @param name
-     *        the name
+     * @param model
+     *        the model
      * @param description
      *        the description
      */
-    public StoredItem(String file_name, String uuid, String name, String description, String storedDate) {
+    public StoredItem(String file_name,
+                      String uuid,
+                      DigitalObjectModel model,
+                      String description,
+                      String storedDate) {
         super();
         this.fileName = file_name;
         this.uuid = uuid;
-        this.name = name;
+        this.model = model;
         this.description = description;
         this.storedDate = storedDate;
     }
 
     /**
-     * Gets the file name.
+     * Instantiates a new digital object basic inform.
      * 
-     * @return the file name
+     * @param fileName
+     */
+
+    public StoredItem(String fileName) {
+        super();
+        this.fileName = fileName;
+    }
+
+    /**
+     * Gets the file model.
+     * 
+     * @return the file model
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
-     * Sets the file name.
+     * Sets the file model.
      * 
      * @param fileName
-     *        the new file name
+     *        the new file model
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
@@ -137,22 +154,22 @@ public class StoredItem
     }
 
     /**
-     * Gets the name.
+     * Gets the model.
      * 
-     * @return the name
+     * @return the model
      */
-    public String getName() {
-        return name;
+    public DigitalObjectModel getModel() {
+        return model;
     }
 
     /**
-     * Sets the name.
+     * Sets the model.
      * 
-     * @param name
-     *        the new name
+     * @param model
+     *        the new model
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setModel(DigitalObjectModel model) {
+        this.model = model;
     }
 
     /**
@@ -196,7 +213,7 @@ public class StoredItem
 
     @Override
     public String toString() {
-        return "StoredItem [uuid=" + uuid + ", name=" + name + ", description=" + description
+        return "StoredItem [uuid=" + uuid + ", model=" + model + ", description=" + description
                 + ", storedDate=" + storedDate + "]";
     }
 }

@@ -53,7 +53,6 @@ import org.xml.sax.SAXException;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
@@ -79,9 +78,6 @@ public class StoredDigitalObjectHandlerImpl
     private final FedoraAccess fedoraAccess;
     private static final Logger LOGGER = Logger.getLogger(StoredDigitalObjectHandlerImpl.class);
 
-    /** The configuration. */
-    private final EditorConfiguration configuration;
-
     /**
      * Instantiates a new fedora digital object handler.
      * 
@@ -89,10 +85,8 @@ public class StoredDigitalObjectHandlerImpl
      *        the fedora access
      */
     @Inject
-    public StoredDigitalObjectHandlerImpl(@Named("securedFedoraAccess") FedoraAccess fedoraAccess,
-                                          final EditorConfiguration configuration) {
+    public StoredDigitalObjectHandlerImpl(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.fedoraAccess = fedoraAccess;
-        this.configuration = configuration;
     }
 
     /**
@@ -102,12 +96,10 @@ public class StoredDigitalObjectHandlerImpl
      */
 
     @Override
-    public DigitalObjectDetail getStoredDigitalObject(String uuid,
-                                                      String rltvFilePath,
-                                                      DigitalObjectModel model) throws ActionException {
+    public DigitalObjectDetail getStoredDigitalObject(String uuid, String filePath, DigitalObjectModel model)
+            throws ActionException {
 
         DigitalObjectDetail detail = new DigitalObjectDetail(model, FedoraUtils.getRelated(uuid));
-        String filePath = configuration.getUserDirectoriesPath() + rltvFilePath;
 
         Document foxmlDocument = getFoxmlDocument(filePath);
         detail.setDc(getDcStream(foxmlDocument, uuid, filePath));
@@ -136,7 +128,7 @@ public class StoredDigitalObjectHandlerImpl
             try {
 
                 foxmlFileStream = new FileInputStream(foxmlFile);
-                foxmlDocument = XMLUtils.parseDocument(foxmlFileStream);
+                foxmlDocument = XMLUtils.parseDocument(foxmlFileStream, true);
 
             } catch (FileNotFoundException e) {
                 LOGGER.error("The file: " + filePath + " has not been found. " + e);
@@ -249,11 +241,15 @@ public class StoredDigitalObjectHandlerImpl
             throws ActionException {
 
         String streamXPath =
-                "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.BIBLIO_MODS.getValue() + "\']";
+                "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.BIBLIO_MODS.getValue()
+                        + "\']/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:modsCollection";
 
         try {
 
             Element modsElement = XMLUtils.getElement(foxmlDocument, streamXPath);
+            //            modsCollectionElement = XMLUtils.findElement(modsElement, "modsCollection", FedoraNamespaces)
+            modsElement.setAttribute("xmlns", "http://www.loc.gov/mods/v3");
+            modsElement.setAttribute("xmlns:ns2", "http://www.w3.org/1999/xlink");
             return handleMods(modsElement);
 
         } catch (XPathExpressionException e) {
@@ -273,7 +269,9 @@ public class StoredDigitalObjectHandlerImpl
     private DublinCore getDcStream(org.w3c.dom.Document foxmlDocument, String uuid, String filePath)
             throws ActionException {
 
-        String streamXPath = "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.DC.getValue() + "\']";
+        String streamXPath =
+                "//foxml:datastream[@ID=\'" + Constants.DATASTREAM_ID.DC.getValue()
+                        + "\']/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc";
 
         try {
 

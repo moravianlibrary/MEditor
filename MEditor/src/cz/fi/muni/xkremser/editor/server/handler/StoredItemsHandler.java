@@ -24,7 +24,10 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,10 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.StoredItemsDAO;
@@ -45,6 +52,7 @@ import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
+import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
@@ -73,6 +81,10 @@ public class StoredItemsHandler
     /** The configuration. */
     private final EditorConfiguration configuration;
 
+    /** The constant LOGGER */
+    private static final Logger LOGGER = Logger.getLogger(StoredDigitalObjectHandlerImpl.class);
+
+    @Inject
     public StoredItemsHandler(EditorConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -95,7 +107,7 @@ public class StoredItemsHandler
             throw new ActionException(e);
         }
 
-        if (action.getDetail() == null) {
+        if (action.getVerb() == Constants.VERB.GET) {
             List<StoredItem> storedItems = new ArrayList<StoredItem>();
             try {
                 storedItems = storeDao.getStoredItems(userId);
@@ -103,20 +115,56 @@ public class StoredItemsHandler
                 throw new ActionException(e);
             }
 
-            return new StoredItemsResult(storedItems, null);
+            return new StoredItemsResult(storedItems);
 
-        } else {
+        } else if (action.getVerb() == Constants.VERB.PUT) {
             String workingCopyFoxml =
                     FedoraUtils.createWorkingCopyFoxmlAndStreams(action.getDetail(), true)[0];
             String userDirsPath = configuration.getUserDirectoriesPath();
-            File userDir = new File(userDirsPath + File.pathSeparator + userId);
+            File userDir = new File(userDirsPath + File.separator + userId);
             if (!userDir.exists()) userDir.mkdirs();
-            File foxmlFile =
-                    new File(userDirsPath + File.pathSeparator + userId + File.pathSeparator
-                            + action.getFileName());
 
-            return new StoredItemsResult(null, null);
+            String foxmlFile = userDirsPath + userId + File.separator + action.getStoredItem().getFileName();
+            try {
+                BufferedWriter out = new BufferedWriter(new FileWriter(foxmlFile));
+                out.write(workingCopyFoxml);
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                LOGGER.error("An error occured when the digital object: " + action.getDetail().getUuid()
+                        + " was storing on the file path: " + foxmlFile + " " + e);
+                throw new ActionException(e);
+            }
+
+            try {
+                action.getStoredItem().setFileName(foxmlFile);
+                if (storeDao.storeDigitalObject(userId, action.getStoredItem())) {
+                    return new StoredItemsResult(new ArrayList<StoredItem>());
+                } else {
+                    return new StoredItemsResult(null);
+                }
+
+            } catch (DatabaseException e) {
+                throw new ActionException(e);
+            }
+
+        } else if (action.getVerb() == Constants.VERB.DELETE) {
+            try {
+                String fileName = action.getStoredItem().getFileName();
+                if (storeDao.deleteItem(fileName)) {
+                    File deleteFile = new File(fileName);
+                    if (deleteFile.exists()) {
+                        deleteFile.delete();
+                    }
+                    return new StoredItemsResult(new ArrayList<StoredItem>());
+                } else {
+                    return new StoredItemsResult(null);
+                }
+            } catch (DatabaseException e) {
+                throw new ActionException(e);
+            }
         }
+        return null;
     }
 
     /**

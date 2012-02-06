@@ -30,6 +30,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.util.BooleanCallback;
@@ -49,6 +50,7 @@ import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
@@ -59,6 +61,9 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
+import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
+import cz.fi.muni.xkremser.editor.shared.event.OpenStoredDigitalObjectAsFirstEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
@@ -72,18 +77,21 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsResult;
 public class StoreWorkingCopyWindow
         extends UniversalWindow {
 
-    private final LangConstants lang;
+    private static LangConstants lang;
     private static StoreWorkingCopyWindow storingWindow = null;
+    private static ListGrid storedFilesGrid;
+    private static Button openButton;
+    private static VLayout storeLayout;
+    private static DispatchAsync dispatcher;
+    private static EventBus eventBus;
+    private static HLayout buttonsLayout;
+    private static boolean modifyIsVisible;
 
-    public static void setInstanceOf(DigitalObjectDetail detail,
-                                     final LangConstants lang,
-                                     DispatchAsync dispatcher,
-                                     EditorTabSet ts,
-                                     EventBus eventBus) {
+    public static void setInstanceOf(final LangConstants lang, DispatchAsync dispatcher, EventBus eventBus) {
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        storingWindow = new StoreWorkingCopyWindow(detail, lang, dispatcher, ts, eventBus);
+        storingWindow = new StoreWorkingCopyWindow(lang, dispatcher, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -95,46 +103,28 @@ public class StoreWorkingCopyWindow
         storingWindow = null;
     }
 
-    private StoreWorkingCopyWindow(final DigitalObjectDetail detail,
-                                   final LangConstants lang,
+    @SuppressWarnings("static-access")
+    private StoreWorkingCopyWindow(final LangConstants lang,
                                    final DispatchAsync dispatcher,
-                                   final EditorTabSet ts,
                                    final EventBus eventBus) {
-        super(450,
-              550,
-              lang.save() + ": " + detail.getUuid() + " " + lang.name() + ": " + detail.getLabel(),
-              eventBus,
-              40);
+        super(450, 550, lang.save(), eventBus, 40);
         this.lang = lang;
+        this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
+        modifyIsVisible = false;
+        storeLayout = new VLayout();
 
-        final ListGrid storedFilesGrid;
         storedFilesGrid = new ListGrid();
-        Label fileNameLabel = new Label();
-        fileNameLabel.setContents(HtmlCode.title(lang.fileNameLabel() + ": ", 3));
-        fileNameLabel.setAutoHeight();
-        fileNameLabel.setExtraSpace(8);
-        Label storedLabel = new Label();
-        storedLabel.setContents(HtmlCode.title(lang.storedFiles() + ": ", 4));
-        storedLabel.setAutoHeight();
-        storedLabel.setExtraSpace(3);
 
-        final TextItem fileNameItem = new TextItem();
-        fileNameItem.setTitle(lang.fileName());
-        fileNameItem.setWidth(350);
-
-        fileNameItem.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
-        DynamicForm saveForm = new DynamicForm();
-        saveForm.setItems(fileNameItem);
-        saveForm.setExtraSpace(12);
-
-        storedFilesGrid.setWidth(500);
-        storedFilesGrid.setHeight(200);
+        storedFilesGrid.setWidth("95%");
+        storedFilesGrid.setHeight("80%");
         storedFilesGrid.setShowSortArrow(SortArrow.CORNER);
         storedFilesGrid.setShowAllRecords(true);
         storedFilesGrid.setCanHover(true);
         storedFilesGrid.setHoverOpacity(75);
         storedFilesGrid.setHoverStyle("interactImageHover");
         storedFilesGrid.setExtraSpace(20);
+        storedFilesGrid.setSelectionType(SelectionStyle.SINGLE);
 
         storedFilesGrid.setHoverWidth(300);
         storedFilesGrid.setHoverCustomizer(new HoverCustomizer() {
@@ -157,32 +147,82 @@ public class StoreWorkingCopyWindow
                 Menu menu = new Menu();
                 menu.setShowShadow(true);
                 menu.setShadowDepth(10);
-                MenuItem openItem = new MenuItem("Open", "icons/16/document_plain_new.png");
 
-                openItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-
-                    @Override
-                    public void onClick(MenuItemClickEvent event) {
-
-                    }
-                });
-                menu.addItem(openItem);
+                menu.addItem(getOpenItem(eventBus));
+                menu.addItem(getDeleteItem(storedFilesGrid, dispatcher));
                 setContextMenu(menu);
             }
         });
-        storedFilesGrid.addCellClickHandler(new CellClickHandler() {
 
-            @Override
-            public void onCellClick(CellClickEvent event) {
-                fileNameItem.setValue(event.getRecord().getAttribute(Constants.ATTR_FILE_NAME));
-            }
-        });
         ModalWindow modalWindow = new ModalWindow(storedFilesGrid);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
 
-        HLayout buttonsLayout = new HLayout(2);
+        buttonsLayout = new HLayout(2);
         buttonsLayout.setAutoWidth();
+        openButton = new Button(lang.open());
+        openButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                open();
+            }
+        });
+        openButton.setExtraSpace(8);
+        buttonsLayout.addMember(openButton);
+
+        Button closeButton = new Button(lang.close());
+        closeButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+        buttonsLayout.addMember(closeButton);
+
+        addItem(storeLayout);
+        addItem(storedFilesGrid);
+        addItem(buttonsLayout);
+
+        setEdgeOffset(20);
+        modalWindow.hide();
+        setData(dispatcher);
+        centerInPage();
+        show();
+        focus();
+        buttonsLayout.setLeft(280);
+
+    }
+
+    public static void setLabelsFieldsButtons(final DigitalObjectDetail detail, final EditorTabSet ts) {
+        modifyIsVisible = true;
+        Label fileNameLabel = new Label();
+        fileNameLabel.setContents(HtmlCode.title(lang.fileNameLabel() + ": ", 3));
+        fileNameLabel.setAutoHeight();
+        fileNameLabel.setExtraSpace(8);
+        Label storedLabel = new Label();
+        storedLabel.setContents(HtmlCode.title(lang.storedFiles() + ": ", 4));
+        storedLabel.setAutoHeight();
+        storedLabel.setExtraSpace(3);
+
+        final TextItem fileNameItem = new TextItem();
+        fileNameItem.setTitle(lang.fileName());
+        fileNameItem.setWidth(350);
+
+        fileNameItem.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
+        DynamicForm saveForm = new DynamicForm();
+        saveForm.setItems(fileNameItem);
+        saveForm.setExtraSpace(12);
+
+        storedFilesGrid.addCellClickHandler(new CellClickHandler() {
+
+            @Override
+            public void onCellClick(CellClickEvent event) {
+                fileNameItem.setValue(event.getRecord().getAttribute(Constants.ATTR_NAME));
+            }
+        });
+        buttonsLayout.removeMember(openButton);
         Button storeButton = new Button(lang.save());
         storeButton.addClickHandler(new ClickHandler() {
 
@@ -190,16 +230,17 @@ public class StoreWorkingCopyWindow
             public void onClick(ClickEvent event) {
                 Record[] records = storedFilesGrid.getRecords();
                 boolean nameIsSame = false;
+                final String fileName = fileNameItem.getValueAsString();
 
                 for (Record record : records) {
-                    if (record.getAttributeAsString(Constants.ATTR_FILE_NAME).equals(fileNameItem.getValue())) {
+                    if (record.getAttributeAsString(Constants.ATTR_NAME).equals(fileName)) {
 
                         SC.ask(lang.fileExists(), new BooleanCallback() {
 
                             @Override
                             public void execute(Boolean value) {
                                 if (value) {
-                                    store(detail, dispatcher, ts, eventBus);
+                                    store(detail, dispatcher, ts, eventBus, fileName, "desc");
                                     closeInstantiatedWindow();
                                 } else {
                                     fileNameItem.selectValue();
@@ -212,69 +253,115 @@ public class StoreWorkingCopyWindow
                 }
 
                 if (!nameIsSame) {
-                    store(detail, dispatcher, ts, eventBus);
+                    store(detail, dispatcher, ts, eventBus, fileName, "desc");
                     closeInstantiatedWindow();
                 }
             }
         });
-        storeButton.setExtraSpace(8);
-        buttonsLayout.addMember(storeButton);
-
-        Button closeButton = new Button(lang.close());
-        closeButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                hide();
-            }
-        });
-        buttonsLayout.addMember(closeButton);
-
-        addItem(fileNameLabel);
-        addItem(saveForm);
-        addItem(storedLabel);
-        addItem(storedFilesGrid);
-        addItem(buttonsLayout);
-
-        setEdgeOffset(20);
-        setData(dispatcher, storedFilesGrid);
-        centerInPage();
-        show();
-        focus();
-        buttonsLayout.setLeft(280);
+        buttonsLayout.addMember(storeButton, 0);
+        storeLayout.addMember(fileNameLabel);
+        storeLayout.addMember(saveForm);
+        storeLayout.addMember(storedLabel);
         fileNameItem.selectValue();
-        modalWindow.destroy();
     }
 
-    protected void setData(final DispatchAsync dispatcher, final ListGrid storedFilesGrid) {
-        ListGridField fileNameField = new ListGridField(Constants.ATTR_FILE_NAME, lang.name());
+    private MenuItem getOpenItem(final EventBus eventBus) {
+        MenuItem openItem = new MenuItem(lang.open(), "icons/16/document_plain_new.png");
+
+        openItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                open();
+            }
+        });
+        return openItem;
+    }
+
+    private static void open() {
+        ListGridRecord record = storedFilesGrid.getSelectedRecord();
+        if (record != null) {
+            String fileName = record.getAttributeAsString(Constants.ATTR_FILE_NAME);
+            DigitalObjectModel model = (DigitalObjectModel) record.getAttributeAsObject(Constants.ATTR_MODEL);
+            String uuid = record.getAttributeAsString(Constants.ATTR_UUID);
+            StoredItem storedItem = new StoredItem(fileName, uuid, model, null, null);
+            if (modifyIsVisible) {
+                eventBus.fireEvent(new OpenDigitalObjectEvent(uuid, storedItem));
+            } else {
+                eventBus.fireEvent(new OpenStoredDigitalObjectAsFirstEvent(uuid, storedItem));
+            }
+        } else {
+            SC.warn(lang.nothingSelected());
+        }
+    }
+
+    private MenuItem getDeleteItem(final ListGrid storedFilesGrid, final DispatchAsync dispatcher) {
+        MenuItem deleteItem = new MenuItem(lang.removeItem(), "icons/16/close.png");
+
+        deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                ListGridRecord record = storedFilesGrid.getSelectedRecord();
+                deleteItem(record.getAttributeAsString(Constants.ATTR_FILE_NAME), dispatcher);
+
+            }
+        });
+        return deleteItem;
+    }
+
+    public static void deleteItem(String fileName, final DispatchAsync dispatcher) {
+        dispatcher.execute(new StoredItemsAction(null, new StoredItem(fileName), Constants.VERB.DELETE),
+                           new DispatchCallback<StoredItemsResult>() {
+
+                               @Override
+                               public void callback(StoredItemsResult result) {
+                                   setData(dispatcher);
+                               }
+
+                               @Override
+                               public void callbackError(final Throwable cause) {
+                                   super.callbackError(cause);
+                               }
+
+                           });
+    }
+
+    protected static void setData(final DispatchAsync dispatcher) {
+        final ModalWindow modalWindow = new ModalWindow(storedFilesGrid);
+        modalWindow.setLoadingIcon("loadingAnimation.gif");
+        modalWindow.show(true);
+        ListGridField fileNameField = new ListGridField(Constants.ATTR_NAME, lang.name());
         ListGridField storedField = new ListGridField(Constants.ATTR_STORED, lang.stored());
         storedField.setWidth(120);
         storedFilesGrid.setFields(fileNameField, storedField);
 
-        dispatcher.execute(new StoredItemsAction(null, null), new DispatchCallback<StoredItemsResult>() {
+        dispatcher.execute(new StoredItemsAction(null, null, Constants.VERB.GET),
+                           new DispatchCallback<StoredItemsResult>() {
 
-            @Override
-            public void callbackError(final Throwable cause) {
-                super.callbackError(cause);
-            }
+                               @Override
+                               public void callbackError(final Throwable cause) {
+                                   super.callbackError(cause);
+                                   modalWindow.hide();
+                               }
 
-            @Override
-            public void callback(StoredItemsResult result) {
+                               @Override
+                               public void callback(StoredItemsResult result) {
 
-                List<StoredItem> items = result.getStoredItems();
-                ListGridRecord[] records = new ListGridRecord[items.size()];
-                for (int i = 0; i < items.size(); i++) {
-                    ListGridRecord record = new ListGridRecord();
-                    copyValues(items.get(i), record);
-                    records[i] = record;
-                }
-                storedFilesGrid.setData(records);
-                storedFilesGrid.sort(Constants.ATTR_STORED, SortDirection.ASCENDING);
-                storedFilesGrid.selectRecord(0);
-                storedFilesGrid.scrollToRow(0);
-            }
-        });
+                                   List<StoredItem> items = result.getStoredItems();
+                                   ListGridRecord[] records = new ListGridRecord[items.size()];
+                                   for (int i = 0; i < items.size(); i++) {
+                                       ListGridRecord record = new ListGridRecord();
+                                       copyValues(items.get(i), record);
+                                       records[i] = record;
+                                   }
+                                   storedFilesGrid.setData(records);
+                                   storedFilesGrid.sort(Constants.ATTR_STORED, SortDirection.ASCENDING);
+                                   storedFilesGrid.selectRecord(0);
+                                   storedFilesGrid.scrollToRow(0);
+                                   modalWindow.hide();
+                               }
+                           });
     }
 
     /**
@@ -286,24 +373,31 @@ public class StoreWorkingCopyWindow
      *        the to
      */
     private static void copyValues(StoredItem from, ListGridRecord to) {
-        to.setAttribute(Constants.ATTR_FILE_NAME, from.getFileName());
+        String fileName = from.getFileName();
+        to.setAttribute(Constants.ATTR_NAME, fileName.substring(fileName.lastIndexOf("/") + 1));
+        to.setAttribute(Constants.ATTR_FILE_NAME, fileName);
         to.setAttribute(Constants.ATTR_STORED, from.getStoredDate());
-        to.setAttribute(Constants.ATTR_NAME, from.getName());
+        to.setAttribute(Constants.ATTR_MODEL, from.getModel());
         to.setAttribute(Constants.ATTR_UUID, from.getUuid());
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
     }
 
-    private void store(DigitalObjectDetail detail,
-                       final DispatchAsync dispatcher,
-                       final EditorTabSet ts,
-                       final EventBus eventBus) {
+    private static void store(DigitalObjectDetail detail,
+                              final DispatchAsync dispatcher,
+                              final EditorTabSet ts,
+                              final EventBus eventBus,
+                              String fileName,
+                              String description) {
 
-        StoredItemsAction storedAction = new StoredItemsAction(detail, "path");
+        StoredItem storedItem =
+                new StoredItem(fileName, detail.getUuid(), detail.getModel(), description, null);
+
+        StoredItemsAction storedAction = new StoredItemsAction(detail, storedItem, Constants.VERB.PUT);
         DispatchCallback<StoredItemsResult> storedCallback = new DispatchCallback<StoredItemsResult>() {
 
             @Override
             public void callback(StoredItemsResult result) {
-                if (result.getStoredItems() == null && result.getErrorMessage() == null) {
+                if (result.getStoredItems() != null) {
                     SC.ask(lang.operationSuccessful() + "<br/><br/>" + lang.lockStoredObject(),
                            new BooleanCallback() {
 

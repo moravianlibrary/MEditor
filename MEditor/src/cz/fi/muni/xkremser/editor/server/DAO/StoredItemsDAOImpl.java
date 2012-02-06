@@ -39,6 +39,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
+import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 
 /**
@@ -55,13 +56,22 @@ public class StoredItemsDAOImpl
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     private static final String SELECT_STORED_ITEM =
-            "SELECT file_name, uuid, name, description, stored FROM " + Constants.TABLE_STORED_FILES
+            "SELECT file_name, uuid, model, description, stored FROM " + Constants.TABLE_STORED_FILES
                     + " WHERE user_id=(?)";
 
-    //    private static final String INSERT_STORED_ITEM =
-    //            "INSERT INTO "
-    //                    + Constants.TABLE_STORED_FILES
-    //                    + " (user_id, file_name, uuid, name, description, stored) VALUES ((?)(?)(?)(?)(?)(CURRENT_TIMESTAMP)) ";
+    private static final String UPDATE_STORED_ITEM = "UPDATE " + Constants.TABLE_STORED_FILES
+            + " SET uuid=(?), model=(?), description=(?), stored=CURRENT_TIMESTAMP WHERE id=(?)";
+
+    private static final String SELECT_STORED_ITEM_WITH_SAME_NAME = "SELECT id FROM "
+            + Constants.TABLE_STORED_FILES + " WHERE file_name=(?)";
+
+    private static final String DELETE_STORED_ITEM = "DELETE FROM " + Constants.TABLE_STORED_FILES
+            + " WHERE file_name=(?)";
+
+    private static final String INSERT_STORED_ITEM =
+            "INSERT INTO "
+                    + Constants.TABLE_STORED_FILES
+                    + " (uuid, model, description, stored, file_name, user_id) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP),(?),(?)) ";
 
     /**
      * {@inheritDoc}
@@ -82,12 +92,12 @@ public class StoredItemsDAOImpl
             while (rs.next()) {
                 String fileName = rs.getString("file_name");
                 String uuid = rs.getString("uuid");
-                String name = rs.getString("name");
+                DigitalObjectModel model = DigitalObjectModel.getModel(rs.getInt("model"));
                 String description = rs.getString("description");
                 java.util.Date date = rs.getDate("stored");
                 String storedDate = FORMATTER.format(date);
 
-                StoredItem storedItem = new StoredItem(fileName, uuid, name, description, storedDate);
+                StoredItem storedItem = new StoredItem(fileName, uuid, model, description, storedDate);
                 storedItems.add(storedItem);
             }
 
@@ -100,26 +110,82 @@ public class StoredItemsDAOImpl
         return storedItems;
     }
 
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //
-    //    @Override
-    //    public boolean storeDigitalObject(String userId, StoredItems storedItem, String foxml)
-    //            throws DatabaseException {
-    //                PreparedStatement updateSt = null;
-    //        
-    //                try {
-    //                    updateSt = getConnection().prepareStatement(INSERT_STORED_ITEM);
-    //                    updateSt.setString(1, userId);
-    //                    updateSt.setString(2, storedItem.);
-    //                    
-    //                    
-    //                } catch (SQLException e) {
-    //                    // TODO Auto-generated method stub
-    //                    e.printStackTrace();
-    //        
-    //                }
-    //        return false;
-    //    }
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public boolean storeDigitalObject(long userId, StoredItem storedItem) throws DatabaseException {
+        PreparedStatement updateSt = null;
+        boolean successful = false;
+
+        int duplicateId = selectDuplicate(userId, storedItem.getFileName());
+
+        try {
+
+            if (duplicateId >= 0) {
+                updateSt = getConnection().prepareStatement(UPDATE_STORED_ITEM);
+            } else {
+                updateSt = getConnection().prepareStatement(INSERT_STORED_ITEM);
+            }
+
+            updateSt.setString(1, storedItem.getUuid());
+            updateSt.setInt(2, storedItem.getModel().ordinal());
+            updateSt.setString(3, storedItem.getDescription());
+            if (duplicateId >= 0) {
+                updateSt.setInt(4, duplicateId);
+            } else {
+                updateSt.setString(4, storedItem.getFileName());
+                updateSt.setLong(5, userId);
+            }
+
+            successful = updateSt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + updateSt, e);
+            successful = false;
+        } finally {
+            closeConnection();
+        }
+        return successful;
+    }
+
+    private int selectDuplicate(long userId, String fileName) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        int id = Integer.MIN_VALUE;
+
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_STORED_ITEM_WITH_SAME_NAME);
+            selectSt.setString(1, fileName);
+
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return id;
+    }
+
+    @Override
+    public boolean deleteItem(String fileName) throws DatabaseException {
+        PreparedStatement deleteSt = null;
+        boolean successful = true;
+        try {
+            deleteSt = getConnection().prepareStatement(DELETE_STORED_ITEM);
+            deleteSt.setString(1, fileName);
+
+            deleteSt.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + deleteSt, e);
+            successful = false;
+        } finally {
+            closeConnection();
+        }
+        return successful;
+    }
 }

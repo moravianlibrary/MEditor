@@ -38,7 +38,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
  */
 @GenEvent
 @SuppressWarnings("unused")
-public class OpenDigitalObject {
+public class OpenStoredDigitalObjectAsFirst {
 
     /** The uuid of the object which is going to be opened. */
     @Order(1)
@@ -50,5 +50,4 @@ public class OpenDigitalObject {
      * opened is not stored.
      */
     private StoredItem storedItem;
-
 }

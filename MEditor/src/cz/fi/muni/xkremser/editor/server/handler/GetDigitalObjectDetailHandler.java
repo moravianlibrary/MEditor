@@ -27,6 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.server.handler;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -50,6 +51,7 @@ import cz.fi.muni.xkremser.editor.server.HttpCookies;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.UserDAO;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
 import cz.fi.muni.xkremser.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandler;
 
@@ -124,14 +126,16 @@ public class GetDigitalObjectDetailHandler
             storedFOXMLFilePath = action.getStoredFOXMLFilePath();
         }
 
-        if (storedFOXMLFilePath == null) {
-            LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
-        } else {
-            LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid()
-                    + " from the file: " + storedFOXMLFilePath);
-        }
-
         try {
+            if (storedFOXMLFilePath == null) {
+                LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
+            } else {
+                LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid()
+                        + " from the file: " + storedFOXMLFilePath);
+                if (!new File(storedFOXMLFilePath).exists() || FedoraUtils.getModel(uuid) == null)
+                    return new GetDigitalObjectDetailResult(null, null, null);
+            }
+
             HttpSession ses = httpSessionProvider.get();
             Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
             injector.injectMembers(descritptionHandler);

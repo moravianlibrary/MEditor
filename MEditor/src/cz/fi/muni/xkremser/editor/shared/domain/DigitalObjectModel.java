@@ -126,4 +126,11 @@ public enum DigitalObjectModel
         throw new RuntimeException("Unsupported type: " + s);
     }
 
+    public static DigitalObjectModel getModel(int ordinal) {
+        for (DigitalObjectModel model : values()) {
+            if (ordinal == model.ordinal()) return model;
+        }
+        return null;
+    }
+
 }

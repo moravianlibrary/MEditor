@@ -168,7 +168,7 @@ public class RemoveDigitalObjectWindow
 
                         @Override
                         public void onClick(MenuItemClickEvent event) {
-                            if (!isDeleting) eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
+                            if (!isDeleting) eventBus.fireEvent(new OpenDigitalObjectEvent(uuid, null));
                         }
                     });
                     menu.addItem(newItem);
@@ -351,7 +351,7 @@ public class RemoveDigitalObjectWindow
 
                             @Override
                             public void onClick(MenuItemClickEvent event) {
-                                if (!isDeleting) eventBus.fireEvent(new OpenDigitalObjectEvent(uuid));
+                                if (!isDeleting) eventBus.fireEvent(new OpenDigitalObjectEvent(uuid, null));
                             }
                         });
                         menu.addItem(newItem);

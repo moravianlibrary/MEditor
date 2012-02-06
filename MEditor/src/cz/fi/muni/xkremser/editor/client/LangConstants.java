@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -2716,6 +2716,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String nothing();
 
   /**
+   * Translated "There is no selected item.".
+   * 
+   * @return translated "There is no selected item."
+   */
+  @DefaultStringValue("There is no selected item.")
+  @Key("nothingSelected")
+  String nothingSelected();
+
+  /**
    * Translated "Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)".
    * 
    * @return translated "Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)"
@@ -3382,6 +3391,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String relation();
 
   /**
+   * Translated "Remove".
+   * 
+   * @return translated "Remove"
+   */
+  @DefaultStringValue("Remove")
+  @Key("remove")
+  String remove();
+
+  /**
    * Translated "Remove object".
    * 
    * @return translated "Remove object"
@@ -3722,6 +3740,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Your stored files")
   @Key("storedFiles")
   String storedFiles();
+
+  /**
+   * Translated "The chosen file has not been found or the digital object is not in the Fedora. Do you want to delete this item from the list?".
+   * 
+   * @return translated "The chosen file has not been found or the digital object is not in the Fedora. Do you want to delete this item from the list?"
+   */
+  @DefaultStringValue("The chosen file has not been found or the digital object is not in the Fedora. Do you want to delete this item from the list?")
+  @Key("storedNotFound")
+  String storedNotFound();
 
   /**
    * Translated "Equivalent to MARC 21 fields 242, 245, 246 subfield $b.".

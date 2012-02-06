@@ -42,6 +42,8 @@ public class EditorTabSet
 
     private LockInfo lockInfo;
 
+    private boolean storedDigitalObject;
+
     /**
      * @return the lockInfo
      */
@@ -146,4 +148,22 @@ public class EditorTabSet
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    /**
+     * @return the storedDigitalObject
+     */
+
+    public boolean isStoredDigitalObject() {
+        return storedDigitalObject;
+    }
+
+    /**
+     * @param storedDigitalObject
+     *        the storedDigitalObject to set
+     */
+
+    public void setStoredDigitalObject(boolean storedDigitalObject) {
+        this.storedDigitalObject = storedDigitalObject;
+    }
+
 }

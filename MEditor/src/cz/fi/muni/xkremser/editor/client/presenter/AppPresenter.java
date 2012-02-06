@@ -57,12 +57,15 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.AppView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.OpenStoredDigitalObjectAsFirstEvent;
 import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.LogoutAction;
@@ -218,6 +221,9 @@ public class AppPresenter
                     return;
                 }
                 if (isHotKeysEnabled) {
+                    if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
+                        StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
+                    }
                     if (keyCode == Constants.CODE_KEY_ESC) {
                         escShortCut();
                         EscKeyPressedEvent.fire(AppPresenter.this);
@@ -233,6 +239,19 @@ public class AppPresenter
             }
 
         });
+
+        addRegisteredHandler(OpenStoredDigitalObjectAsFirstEvent.getType(),
+                             new OpenStoredDigitalObjectAsFirstEvent.OpenStoredDigitalObjectAsFirstHandler() {
+
+                                 @Override
+                                 public void onOpenStoredDigitalObjectAsFirst(OpenStoredDigitalObjectAsFirstEvent event) {
+                                     StoredItem storedItem = event.getStoredItem();
+                                     placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                                             .with(Constants.URL_PARAM_UUID, event.getUuid())
+                                             .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
+                                             .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+                                 }
+                             });
 
         addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
                              new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {

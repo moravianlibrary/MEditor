@@ -39,20 +39,27 @@ public interface StoredItemsDAO {
 
     /**
      * @param userId
-     * @return
+     * @return The list of the stored items
      * @throws DatabaseException
      */
 
     List<StoredItem> getStoredItems(long userId) throws DatabaseException;
 
-    //    /**
-    //     * @param userId
-    //     * @param storedItem
-    //     * @param foxml
-    //     * @return
-    //     * @throws DatabaseException
-    //     */
-    //
-    //    boolean storeDigitalObject(String userId, StoredItems storedItem, String foxml) throws DatabaseException;
+    /**
+     * @param userId
+     * @param storedItem
+     * @return whether the operation was successful
+     * @throws DatabaseException
+     */
+
+    boolean storeDigitalObject(long userId, StoredItem storedItem) throws DatabaseException;
+
+    /**
+     * @param fileName
+     * @return whether the operation was successful
+     * @throws DatabaseException
+     */
+
+    public boolean deleteItem(String fileName) throws DatabaseException;
 
 }

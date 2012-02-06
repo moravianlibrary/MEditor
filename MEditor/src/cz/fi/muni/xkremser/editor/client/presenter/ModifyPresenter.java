@@ -84,6 +84,7 @@ import cz.fi.muni.xkremser.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalObjectClosedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
@@ -91,6 +92,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
@@ -136,7 +138,10 @@ public class ModifyPresenter
 
         public Canvas getEditor(String text, String uuid, boolean common);
 
-        void addDigitalObject(String uuid, DigitalObjectDetail detail, boolean refresh);
+        void addDigitalObject(String uuid,
+                              DigitalObjectDetail detail,
+                              boolean refresh,
+                              boolean storedDigitalObject);
 
         void addStream(Record[] items, String uuid, DigitalObjectModel model);
 
@@ -184,6 +189,15 @@ public class ModifyPresenter
 
     /** The place manager. */
     private final PlaceManager placeManager;
+
+    /**
+     * The name of the file of the stored digital object which is going to be
+     * opened.
+     */
+    private String fileName;
+
+    /** The model of the stored digital object which is going to be opened. */
+    private String modelToOpen;
 
     /**
      * Instantiates a new modify presenter.
@@ -260,7 +274,7 @@ public class ModifyPresenter
 
                                  @Override
                                  public void onOpenDigitalObject(OpenDigitalObjectEvent event) {
-                                     openAnotherObject(event.getUuid());
+                                     openAnotherObject(event.getUuid(), event.getStoredItem());
                                      if (RemoveDigitalObjectWindow.isInstanceVisible())
                                          RemoveDigitalObjectWindow.closeInstantiatedWindow();
                                  }
@@ -277,6 +291,8 @@ public class ModifyPresenter
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
         uuid = request.getParameter(Constants.URL_PARAM_UUID, null);
+        fileName = request.getParameter(Constants.ATTR_FILE_NAME, null);
+        modelToOpen = request.getParameter(Constants.ATTR_MODEL, null);
         forcedRefresh = ClientUtils.toBoolean(request.getParameter(Constants.URL_PARAM_REFRESH, "no"));
 
     }
@@ -486,28 +502,43 @@ public class ModifyPresenter
      * @return the object
      */
     private void getObject(final boolean refresh) {
-        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, null, null);
+        DigitalObjectModel model = (modelToOpen != null ? DigitalObjectModel.parseString(modelToOpen) : null);
+        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, model, fileName);
         final DispatchCallback<GetDigitalObjectDetailResult> callback =
                 new DispatchCallback<GetDigitalObjectDetailResult>() {
 
                     @Override
                     public void callback(GetDigitalObjectDetailResult result) {
                         DigitalObjectDetail detail = result.getDetail();
+                        if (detail != null) {
+                            EscKeyPressedEvent.fire(ModifyPresenter.this);
+                            if (null != detail.getLockInfo().getLockOwner()) {
+                                EditorSC.objectIsLock(lang, detail.getLockInfo());
+                            }
 
-                        if (null != detail.getLockInfo().getLockOwner()) {
-                            EditorSC.objectIsLock(lang, detail.getLockInfo());
+                            getView().addDigitalObject(uuid, detail, refresh, fileName != null);
+                            String title =
+                                    (detail.getDc().getTitle() == null || detail.getDc().getTitle().size() == 0) ? "no title"
+                                            : detail.getDc().getTitle().get(0);
+                            DigitalObjectOpenedEvent.fire(ModifyPresenter.this,
+                                                          true,
+                                                          new RecentlyModifiedItem(uuid,
+                                                                                   title,
+                                                                                   result.getDescription(),
+                                                                                   detail.getModel(),
+                                                                                   result.getModified()),
+                                                          result.getDetail().getRelated());
+                        } else if (fileName != null) {
+                            SC.ask(lang.operationFailed(), lang.storedNotFound(), new BooleanCallback() {
+
+                                @Override
+                                public void execute(Boolean value) {
+                                    if (value != null && value) {
+                                        StoreWorkingCopyWindow.deleteItem(fileName, dispatcher);
+                                    }
+                                }
+                            });
                         }
-
-                        getView().addDigitalObject(uuid, detail, refresh);
-                        String title =
-                                (detail.getDc().getTitle() == null || detail.getDc().getTitle().size() == 0) ? "no title"
-                                        : detail.getDc().getTitle().get(0);
-                        DigitalObjectOpenedEvent.fire(ModifyPresenter.this,
-                                                      true,
-                                                      new RecentlyModifiedItem(uuid, title, result
-                                                              .getDescription(), detail.getModel(), result
-                                                              .getModified()),
-                                                      result.getDetail().getRelated());
                         getView().getPopupPanel().setVisible(false);
                         getView().getPopupPanel().hide();
                     }
@@ -716,12 +747,16 @@ public class ModifyPresenter
 
     /**
      * {@inheritDoc}
+     * 
+     * @param storedItem
      */
 
     @Override
-    public void openAnotherObject(String uuid) {
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
-                                                                                  uuid));
+    public void openAnotherObject(String uuid, StoredItem storedItem) {
+        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                .with(Constants.URL_PARAM_UUID, uuid)
+                .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
+                .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
     }
 
     @Override
@@ -845,7 +880,7 @@ public class ModifyPresenter
 
     @Override
     public void storeFoxmlFile(DigitalObjectDetail detail, EditorTabSet ts) {
-        StoreWorkingCopyWindow.setInstanceOf(detail, lang, dispatcher, ts, getEventBus());
+        StoreWorkingCopyWindow.setLabelsFieldsButtons(detail, ts);
     }
 
     /**

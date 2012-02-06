@@ -119,6 +119,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
+import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 
 /**
  * @author Jiri Kremser
@@ -155,7 +156,7 @@ public class ModifyView
 
         void onChangeFocusedTabSet(final String focusedUuid);
 
-        void openAnotherObject(final String uuid);
+        void openAnotherObject(final String uuid, StoredItem storedItem);
 
         void lockDigitalObject(final EditorTabSet ts);
 
@@ -225,8 +226,8 @@ public class ModifyView
     /** The Constant ID_MENU_ITEM. */
     public static final String ID_MENU_ITEM = "menuItem";
 
-    /** The attributes enum of items influenced by locks */
-    private static enum ATTR_ITEM_INFLUENCED_BY_LOCK {
+    /** The attributes enum of items */
+    private static enum ATTR_MENU_ITEM {
 
         /** The value of publish-item. */
         PUBLISH,
@@ -238,7 +239,10 @@ public class ModifyView
         LOCK,
 
         /** The value of unlock-item. */
-        UNLOCK;
+        UNLOCK,
+
+        /** The value of refresh-item. */
+        REFRESH;
     }
 
     /** The Constant DC_TAB_INDEX. */
@@ -443,7 +447,10 @@ public class ModifyView
      * com.gwtplatform.dispatch.client.DispatchAsync)
      */
     @Override
-    public void addDigitalObject(final String uuid, DigitalObjectDetail detail, boolean refresh) {
+    public void addDigitalObject(final String uuid,
+                                 DigitalObjectDetail detail,
+                                 boolean refresh,
+                                 boolean storedDigitalObject) {
         final DublinCore dc = detail.getDc();
         final ModsCollectionClient mods = detail.getMods();
         String foxmlString = detail.getFoxmlString();
@@ -457,6 +464,7 @@ public class ModifyView
         topTabSet.setAnimateTabScrolling(true);
         topTabSet.setShowPaneContainerEdges(false);
         int insertPosition = -1;
+        topTabSet.setStoredDigitalObject(storedDigitalObject);
 
         topTabSet.addClickHandler(new ClickHandler() {
 
@@ -764,35 +772,40 @@ public class ModifyView
                         ts = (EditorTabSet) item.getAttributeAsObject(ID_TABSET);
                     }
 
-                    if (item.getAttributeAsObject(ID_MENU_ITEM) instanceof ATTR_ITEM_INFLUENCED_BY_LOCK) {
+                    if (item.getAttributeAsObject(ID_MENU_ITEM) instanceof ATTR_MENU_ITEM) {
 
-                        ATTR_ITEM_INFLUENCED_BY_LOCK attrItem =
-                                (ATTR_ITEM_INFLUENCED_BY_LOCK) item.getAttributeAsObject(ID_MENU_ITEM);
+                        ATTR_MENU_ITEM attrItem = (ATTR_MENU_ITEM) item.getAttributeAsObject(ID_MENU_ITEM);
 
                         String lockOwner = ts.getLockInfo().getLockOwner();
                         if (lockOwner != null) {
 
                             if ("".equals(lockOwner)) {
-                                if (ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK == attrItem) {
+                                if (ATTR_MENU_ITEM.LOCK == attrItem) {
                                     item.setTitle(lang.updateLock());
                                 } else
                                     item.setEnabled(true);
                             } else {
-                                if (ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK == attrItem) {
+                                if (ATTR_MENU_ITEM.LOCK == attrItem) {
                                     item.setTitle(lang.lockItem());
                                 }
                                 item.setEnabled(false);
                             }
 
                         } else {
-                            if (ATTR_ITEM_INFLUENCED_BY_LOCK.UNLOCK == attrItem) {
+                            if (ATTR_MENU_ITEM.UNLOCK == attrItem) {
                                 item.setEnabled(false);
                             } else {
-                                if (ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK == attrItem) {
+                                if (ATTR_MENU_ITEM.LOCK == attrItem) {
                                     item.setTitle(lang.lockItem());
                                 }
                                 item.setEnabled(true);
                             }
+                        }
+                        if (ATTR_MENU_ITEM.REFRESH == attrItem) {
+                            if (ts.isStoredDigitalObject()) {
+                                item.setEnabled(false);
+                            } else
+                                item.setEnabled(true);
                         }
                     }
                 }
@@ -1085,7 +1098,7 @@ public class ModifyView
                 } else {
 
                     String uuidToEdit = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID);
-                    getUiHandlers().openAnotherObject(uuidToEdit);
+                    getUiHandlers().openAnotherObject(uuidToEdit, null);
                 }
             }
         });
@@ -1234,7 +1247,7 @@ public class ModifyView
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
 
-        removeItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.REMOVE);
+        removeItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.REMOVE);
         removeItem.setAttribute(ID_UUID, topTabSet.getUuid());
         removeItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -1272,7 +1285,7 @@ public class ModifyView
         });
 
         lockItem.setAttribute(ID_TABSET, topTabSet);
-        lockItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.LOCK);
+        lockItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.LOCK);
         lockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -1282,7 +1295,7 @@ public class ModifyView
         });
 
         unlockItem.setAttribute(ID_TABSET, topTabSet);
-        unlockItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.UNLOCK);
+        unlockItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.UNLOCK);
         unlockItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -1293,6 +1306,7 @@ public class ModifyView
         });
 
         refreshItem.setAttribute(ID_TABSET, topTabSet);
+        refreshItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.REFRESH);
         refreshItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
@@ -1302,7 +1316,7 @@ public class ModifyView
         });
 
         publishItem.setAttribute(ID_TABSET, topTabSet);
-        publishItem.setAttribute(ID_MENU_ITEM, ATTR_ITEM_INFLUENCED_BY_LOCK.PUBLISH);
+        publishItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.PUBLISH);
         publishItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override

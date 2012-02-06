@@ -31,6 +31,8 @@ import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 
@@ -52,20 +54,20 @@ public class StoredItems
     private DigitalObjectDetail detail;
 
     /**
-     * The name of the file is going to be stored
+     * The info about the digital object is going to be stored;
+     * <code>storedItem == null </code>when the user asks for the list of the
+     * stored objects
      */
     @In(2)
-    private String fileName;
+    private StoredItem storedItem;
+
+    /**
+     * The action to do
+     */
+    @In(3)
+    private Constants.VERB verb;
 
     /** The List of the items stored by user */
     @Out(1)
     private List<StoredItem> storedItems;
-
-    /**
-     * The error message in case the storing operation was not successful,
-     * <code>errorMessage == null</code> when was successful
-     */
-    @Out(2)
-    private String errorMessage;
-
 }

@@ -51,6 +51,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.StoreTreeStructureResult;
 public class StoreTreeStructureWindow
         extends UniversalWindow {
 
+    @SuppressWarnings("unused")
     private final LangConstants lang;
     private static StoreTreeStructureWindow storingWindow = null;
 
