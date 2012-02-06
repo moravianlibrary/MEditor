@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -2140,11 +2140,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String linkAsocURL();
 
   /**
-   * Translated "Load...".
+   * Translated "Load".
    * 
-   * @return translated "Load..."
+   * @return translated "Load"
    */
-  @DefaultStringValue("Load...")
+  @DefaultStringValue("Load")
   @Key("loadStructure")
   String loadStructure();
 
@@ -2716,11 +2716,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String nothing();
 
   /**
-   * Translated "There is no selected item.".
+   * Translated "There is no selected item. ".
    * 
-   * @return translated "There is no selected item."
+   * @return translated "There is no selected item. "
    */
-  @DefaultStringValue("There is no selected item.")
+  @DefaultStringValue("There is no selected item. ")
   @Key("nothingSelected")
   String nothingSelected();
 
@@ -3562,11 +3562,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String saveItem();
 
   /**
-   * Translated "Save...".
+   * Translated "Save".
    * 
-   * @return translated "Save..."
+   * @return translated "Save"
    */
-  @DefaultStringValue("Save...")
+  @DefaultStringValue("Save")
   @Key("saveStructure")
   String saveStructure();
 

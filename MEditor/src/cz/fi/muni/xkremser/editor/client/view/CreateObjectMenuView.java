@@ -130,6 +130,8 @@ public class CreateObjectMenuView
          */
         int newId();
 
+        void loadStructure();
+
     }
 
     /** The input tree. */
@@ -244,7 +246,8 @@ public class CreateObjectMenuView
         undoButton.setSrc("icons/16/undo.png");
         undoButton.setSize("16", "16");
         undoButton.setShowTitle(false);
-        undoButton.setOpacity(75);
+        undoButton.setHoverOpacity(75);
+        undoButton.setHoverStyle("interactImageHover");
         undoButton.setCanHover(true);
         undoButton.addHoverHandler(new HoverHandler() {
 
@@ -258,7 +261,8 @@ public class CreateObjectMenuView
         redoButton.setSrc("icons/16/redo.png");
         redoButton.setSize("16", "16");
         redoButton.setShowTitle(false);
-        redoButton.setOpacity(75);
+        redoButton.setHoverOpacity(75);
+        redoButton.setHoverStyle("interactImageHover");
         redoButton.setCanHover(true);
         redoButton.addHoverHandler(new HoverHandler() {
 
@@ -1036,21 +1040,20 @@ public class CreateObjectMenuView
         menu.setShowShadow(true);
         menu.setShadowDepth(3);
 
-        MenuItem saveStructure = new MenuItem(lang.saveStructure(), "icons/16/save_structure.png");
-        MenuItem loadStructure = new MenuItem(lang.loadStructure(), "icons/16/load_structure.png");
+        MenuItem saveStructure = new MenuItem(lang.saveStructure() + "...", "icons/16/save_structure.png");
+        MenuItem loadStructure = new MenuItem(lang.loadStructure() + "...", "icons/16/load_structure.png");
         saveStructure.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
                 getUiHandlers().saveStructure();
-                //                SC.say("saving...");
             }
         });
         loadStructure.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                SC.say("loading...");
+                getUiHandlers().loadStructure();
             }
         });
         menu.setItems(saveStructure, loadStructure);

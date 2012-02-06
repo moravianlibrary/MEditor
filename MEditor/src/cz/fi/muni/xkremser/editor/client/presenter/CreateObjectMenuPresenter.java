@@ -71,6 +71,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 import cz.fi.muni.xkremser.editor.client.view.window.AddAltoOcrWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.LoadTreeStructureWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.StoreTreeStructureWindow;
 
@@ -511,9 +512,6 @@ public class CreateObjectMenuPresenter
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveStructure() {
         NewDigitalObject object = null;
@@ -544,6 +542,11 @@ public class CreateObjectMenuPresenter
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
+    }
+
+    @Override
+    public void loadStructure() {
+        LoadTreeStructureWindow.setInstanceOf(barcode, lang, dispatcher, getEventBus());
     }
 
 }

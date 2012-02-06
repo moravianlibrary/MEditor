@@ -29,17 +29,24 @@ package cz.fi.muni.xkremser.editor.server;
 
 import java.io.IOException;
 
+import java.util.Date;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.inject.Inject;
+
 import com.google.inject.Injector;
+
+import org.apache.commons.lang.time.DateUtils;
 
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
+import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
 // TODO: Auto-generated Javadoc
@@ -50,6 +57,10 @@ public class ScanImgServiceImpl
         extends HttpServlet {
 
     private static final long serialVersionUID = -6110151482519362291L;
+
+    /** The configuration. */
+    @Inject
+    private EditorConfiguration config;
 
     private static final String DJATOKA_URL =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=2&svc.scale="
@@ -85,7 +96,9 @@ public class ScanImgServiceImpl
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
 
+        resp.addDateHeader("Last-Modified", new Date().getTime());
         resp.addHeader("Cache-Control", "max-age=" + Constants.HTTP_CACHE_SECONDS);
+        resp.addDateHeader("Expires", DateUtils.addMonths(new Date(), 1).getTime());
         boolean full = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_FULL));
         boolean top = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_TOP));
         boolean bottom = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_BOTTOM));
@@ -99,7 +112,7 @@ public class ScanImgServiceImpl
         if (req.getProtocol().toLowerCase().contains("https")) {
             baseUrl.append('s');
         }
-        baseUrl.append("://").append(URLS.LOCALHOST() ? "editor.mzk.cz" : req.getServerName());
+        baseUrl.append("://").append(URLS.LOCALHOST() ? config.getHostname() : req.getServerName());
         StringBuffer sb = new StringBuffer();
         if (top || bottom) {
             String metadata =

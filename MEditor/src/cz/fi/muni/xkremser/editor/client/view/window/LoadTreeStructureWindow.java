@@ -26,14 +26,23 @@ package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.smartgwt.client.types.Side;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
+import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.tab.Tab;
+import com.smartgwt.client.widgets.tab.TabSet;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 /**
  * @author Jiri Kremser
@@ -72,42 +81,88 @@ public class LoadTreeStructureWindow
         this.lang = lang;
 
         Layout mainLayout = new VLayout();
+
+        Layout topLayout = new VLayout();
         //        HTMLFlow structureInfo = new HTMLFlow("<pre>" + treeString + "</pre>");
-        mainLayout.setHeight100();
+        topLayout.setHeight100();
         //        mainLayout.addMember(structureInfo);
 
         setEdgeOffset(15);
-        addItem(mainLayout);
+        mainLayout.addMember(topLayout);
+        ListGrid storedStructures = new ListGrid();
+        storedStructures.setHeight(240);
+        storedStructures.setShowAllRecords(true);
+        storedStructures.setAutoFetchData(false);
+        ListGridField dateField = new ListGridField(Constants.ATTR_DATE, lang.date());
+        ListGridField descField = new ListGridField(Constants.ATTR_DESC, lang.description());
+        storedStructures.setFields(dateField, descField);
+        storedStructures.addData(new ListGridRecord() {
+
+            {
+                setAttribute(Constants.ATTR_DESC, "popis");
+                setAttribute(Constants.ATTR_DATE, "datum");
+            }
+        });
+        topLayout.addMember(storedStructures);
+
         DynamicForm form = new DynamicForm();
-        final TextItem description = new TextItem("desc", lang.description());
-        description.setWidth(250);
-        form.setWidth(280);
-        form.setHeight(15);
-        form.setExtraSpace(25);
-        form.setFields(description);
+        final RadioGroupItem radioGroupItem = new RadioGroupItem();
+        radioGroupItem.setTitle("Zobrazit");
+        radioGroupItem.setValueMap("Všechny mé uložené struktury", "Jen pro tento vytvářený objekt (" + code
+                + ")");
+        //        form.setWidth(280);
 
-        Button saveButton = new Button(lang.save());
-        //        saveButton.addClickHandler(new ClickHandler() {
+        form.setExtraSpace(20);
+        form.setFields(radioGroupItem);
 
-        //            @Override
-        //            public void onClick(ClickEvent event) {
-        //                structure.getInfo().setDescription(description.getValueAsString());
-        //                dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.PUT, null, structure),
-        //                                   new DispatchCallback<StoreTreeStructureResult>() {
-        //
-        //                                       @Override
-        //                                       public void callback(StoreTreeStructureResult result) {
-        //                                           hide();
-        //                                       }
-        //                                   });
-        //            }
-        //        });
+        Button loadButton = new Button(lang.save());
+        loadButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
+            @Override
+            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                SC.say("loading..");
+                hide();
+                //                dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.PUT, null, structure),
+                //                                   new DispatchCallback<StoreTreeStructureResult>() {
+                //
+                //                                       @Override
+                //                                       public void callback(StoreTreeStructureResult result) {
+                //                                           hide();
+                //                                       }
+                //                                   });
+
+            }
+        });
+
+        Button deleteButton = new Button(lang.removeSelected());
+        deleteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                SC.say("deleting..");
+                hide();
+            }
+        });
+
+        mainLayout.addMember(form);
         Layout bottomLayout = new HLayout();
         bottomLayout.setExtraSpace(10);
-        bottomLayout.addMember(form);
-        bottomLayout.addMember(saveButton);
-        addItem(bottomLayout);
+        bottomLayout.addMember(loadButton);
+        bottomLayout.addMember(deleteButton);
+        mainLayout.addMember(bottomLayout);
+
+        final TabSet mainTabSet = new TabSet();
+        mainTabSet.setTabBarPosition(Side.RIGHT);
+        mainTabSet.setWidth100();
+        mainTabSet.setHeight100();
+        Tab commonStoredStructures = new Tab("", "other/more_people.png");
+        commonStoredStructures.setPane(new Label("under construction..."));
+        Tab userStoredStructures = new Tab("", "other/loner.png");
+        userStoredStructures.setPane(mainLayout);
+        mainTabSet.setTabs(userStoredStructures, commonStoredStructures);
+        //        mainTabSet.setTabPane(tabId, mainTabSet);
+        addItem(mainTabSet);
+
         centerInPage();
         show();
         focus();
@@ -115,5 +170,4 @@ public class LoadTreeStructureWindow
         //setWidth100();
         //setHeight100();
     }
-
 }
