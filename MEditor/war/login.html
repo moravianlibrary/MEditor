@@ -1,32 +1,35 @@
 <html>
 <head>
 <script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-19922555-1' ]);
+	_gaq.push([ '_trackPageview' ]);
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-19922555-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
+	(function() {
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+				: 'http://www')
+				+ '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(ga, s);
+	})();
 </script>
 <title>Login</title>
 </head>
 <body>
-<center>
-<a href="http://code.google.com/p/meta-editor/">Project page</a> (<a href="./version.html">version</a>)<br />
-<!--
-<iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=https%3A%2F%2Feditor.mzk.cz%2Fauth" scrolling="no" frameBorder="no" allowtransparency="true" style="width:400px;height:240px"></iframe>
--->
+	<center>
+		<a href="http://code.google.com/p/meta-editor/"><img
+			src="http://code.google.com/p/meta-editor/logo?cct=1328135294"
+			alt="editor logo" />
+		</a> <br /> <a href="http://code.google.com/p/meta-editor/">Project
+			page</a> (<a href="./version.html">revision</a>)<br /> <br /> <br /> <br />
+		<iframe
+			src="https://metaeditor.rpxnow.com/openid/embed?token_url=https%3A%2F%2F<<<hostname>>>%2Fmeditor%2Fauth"
+			scrolling="no" frameBorder="no" allowtransparency="true"
+			style="width: 400px; height: 240px"></iframe>
 
-<!-- <iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=https%3A%2F%2Feditor.mzk.cz%2Fmeditor%2Fauth" scrolling="no" frameBorder="no" allowtransparency="true" style="width:400px;height:240px"></iframe>-->
-<iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=https%3A%2F%2Feditor-devel.mzk.cz%2Fmeditor%2Fauth" scrolling="no" frameBorder="no" allowtransparency="true" style="width:400px;height:240px"></iframe>
-<!--
-<iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=http%3A%2F%2F127.0.0.1:8888%2Fauth%2F?gwt.codesvr=127.0.0.1%3A9997" scrolling="no" frameBorder="no" allowtransparency="true" style="width:400px;height:240px"></iframe> 
--->
-</center> 
+	</center>
 </body>
 </html>

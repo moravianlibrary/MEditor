@@ -1,83 +1,110 @@
 /** Metadata editor css */
-
-
+.noJavaScript {
+	width: 22em;
+	position: absolute;
+	left: 50%;
+	margin-left: -11em;
+	color: red;
+	background-color: white;
+	border: 1px solid red;
+	padding: 4px;
+	font-family: sans-serif "
+}
 
 /** Xml syntax highliter */
 .xml_plain {
-color: rgb(0,0,0);
-}
-.xml_tag_name {
-color: rgb(0,55,255);
-}
-.xml_comment {
-color: rgb(147,147,147); background-color: rgb(247,247,247);
-}
-.xml_tag_symbols {
-color: rgb(0,59,255);
-}
-.xml_rife_tag {
-color: rgb(0,0,0); background-color: rgb(228,230,160);
-}
-.xml_attribute_value {
-color: rgb(193,0,0);
-}
-.xml_attribute_name {
-color: rgb(0,0,0); font-weight: bold;
-}
-.xml_char_data {
-color: rgb(0,0,0);
-}
-code {
-color: rgb(0,0,0); font-family: monospace; font-size: 12px; white-space: nowrap;
-}
-.xml_rife_name {
-color: rgb(0,0,196); background-color: rgb(228,230,160);
-}
-.xml_processing_instruction {
-color: rgb(0,0,0); font-weight: bold; font-style: italic;
+	color: rgb(0, 0, 0);
 }
 
-.infoTabImg{
+.xml_tag_name {
+	color: rgb(0, 55, 255);
+}
+
+.xml_comment {
+	color: rgb(147, 147, 147);
+	background-color: rgb(247, 247, 247);
+}
+
+.xml_tag_symbols {
+	color: rgb(0, 59, 255);
+}
+
+.xml_rife_tag {
+	color: rgb(0, 0, 0);
+	background-color: rgb(228, 230, 160);
+}
+
+.xml_attribute_value {
+	color: rgb(193, 0, 0);
+}
+
+.xml_attribute_name {
+	color: rgb(0, 0, 0);
+	font-weight: bold;
+}
+
+.xml_char_data {
+	color: rgb(0, 0, 0);
+}
+
+code {
+	color: rgb(0, 0, 0);
+	font-family: monospace;
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.xml_rife_name {
+	color: rgb(0, 0, 196);
+	background-color: rgb(228, 230, 160);
+}
+
+.xml_processing_instruction {
+	color: rgb(0, 0, 0);
+	font-weight: bold;
+	font-style: italic;
+}
+
+.infoTabImg {
 	border: 3px solid;
 	max-height: 300px;
 	max-width: 300px;
 }
 
-input{
+input {
 	font-size: 13px;
 	width: 150px;
 }
 
 .interactImageHover {
-    font-family:Verdana,Bitstream Vera Sans,sans-serif;
-    font-size:11px;
-    border:1px solid #808080;
-    padding:5px;
-    background-color:#bad4ee;
-    color:black;
+	font-family: Verdana, Bitstream Vera Sans, sans-serif;
+	font-size: 11px;
+	border: 1px solid #808080;
+	padding: 5px;
+	background-color: #bad4ee;
+	color: black;
 }
 
 .greenFont {
-    font-family:Verdana,Bitstream Vera Sans,sans-serif;
-    color:green;
-    width: 100px;
+	font-family: Verdana, Bitstream Vera Sans, sans-serif;
+	color: green;
+	width: 100px;
 }
 
 .loading {
-	font-family:Verdana,Bitstream Vera Sans,sans-serif;
-    color:black;
-    width: 100px;
+	font-family: Verdana, Bitstream Vera Sans, sans-serif;
+	color: black;
+	width: 100px;
 }
 
 .noFx {
-    border: none;
+	border: none;
 }
 
-
 .redFont {
-    font-family:Verdana,Bitstream Vera Sans,sans-serif;
-    color:red;
-    width: 100px;
+	font-family: Verdana, Bitstream Vera Sans, sans-serif;
+	color: red;
+	width: 100px;
 }
 
 .username {
@@ -89,7 +116,6 @@ input{
 	text-decoration: underline;
 	color: blue;
 }
-
 
 .pseudolink:active {
 	color: red;
@@ -121,7 +147,6 @@ a {
 	color: blue;
 }
 
-
 a:active {
 	color: red;
 	text-decoration: none;
@@ -147,8 +172,6 @@ a:hover {
 	text-decoration: none;
 }
 
-
-
 .metadata-elements {
 	padding-left: 30px;
 	padding-right: 15px;
@@ -167,130 +190,155 @@ a:hover {
 	padding-right: 15px;
 }
 
-
 .no-style {
-  border: 0px;
-  padding: 3px;
-  background: #000;
-  opacity: 0.5;
-  filter: alpha(opacity=50);
-  z-index: 800001;
+	border: 0px;
+	padding: 3px;
+	background: #000;
+	opacity: 0.5;
+	filter: alpha(opacity =   50);
+	z-index: 800001;
 }
-
 
 .gwt-PopupPanel {
-  border: 3px solid #888888;
-  padding: 3px;
-  background: #000;
-  z-index: 800001;
+	border: 3px solid #888888;
+	padding: 3px;
+	background: #000;
+	z-index: 800001;
 }
+
 .gwt-PopupPanelGlass {
-  background-color: #000;
-  opacity: 0.5;
-  filter: alpha(opacity=50);
-  z-index: 800001;
+	background-color: #000;
+	opacity: 0.5;
+	filter: alpha(opacity =   50);
+	z-index: 800001;
 }
+
 html>body .gwt-PopupPanel {
+	
 }
+
 * html .gwt-PopupPanel {
+	
 }
+
 .gwt-DecoratedPopupPanel .popupContent {
+	
 }
+
 .gwt-DecoratedPopupPanel .popupMiddleCenter {
-  padding: 3px;
-  background: #d0e4f6;
+	padding: 3px;
+	background: #d0e4f6;
 }
+
 .gwt-DecoratedPopupPanel .popupTopCenter {
-  background: url(images/hborder.png) repeat-x;
+	background: url(images/hborder.png) repeat-x;
 }
+
 .gwt-DecoratedPopupPanel .popupBottomCenter {
-  background: url(images/hborder.png) repeat-x 0px -4px;
-  -background: url(images/hborder_ie6.png) repeat-x 0px -4px;
+	background: url(images/hborder.png) repeat-x 0px -4px;
+	-background: url(images/hborder_ie6.png) repeat-x 0px -4px;
 }
+
 .gwt-DecoratedPopupPanel .popupMiddleLeft {
-  background: url(images/vborder.png) repeat-y;
+	background: url(images/vborder.png) repeat-y;
 }
+
 .gwt-DecoratedPopupPanel .popupMiddleRight {
-  background: url(images/vborder.png) repeat-y -4px 0px;
-  -background: url(images/vborder_ie6.png) repeat-y -4px 0px;
+	background: url(images/vborder.png) repeat-y -4px 0px;
+	-background: url(images/vborder_ie6.png) repeat-y -4px 0px;
 }
+
 .gwt-DecoratedPopupPanel .popupTopLeftInner {
-  width: 5px;
-  height: 5px;
-  zoom: 1;
+	width: 5px;
+	height: 5px;
+	zoom: 1;
 }
+
 .gwt-DecoratedPopupPanel .popupTopRightInner {
-  width: 8px;
-  height: 5px;
-  zoom: 1;
+	width: 8px;
+	height: 5px;
+	zoom: 1;
 }
+
 .gwt-DecoratedPopupPanel .popupBottomLeftInner {
-  width: 5px;
-  height: 8px;
-  zoom: 1;
+	width: 5px;
+	height: 8px;
+	zoom: 1;
 }
+
 .gwt-DecoratedPopupPanel .popupBottomRightInner {
-  width: 8px;
-  height: 8px;
-  zoom: 1;
+	width: 8px;
+	height: 8px;
+	zoom: 1;
 }
+
 .gwt-DecoratedPopupPanel .popupTopLeft {
-  background: url(images/corner.png) no-repeat 0px -10px;
-  -background: url(images/corner_ie6.png) no-repeat 0px -10px;
+	background: url(images/corner.png) no-repeat 0px -10px;
+	-background: url(images/corner_ie6.png) no-repeat 0px -10px;
 }
+
 .gwt-DecoratedPopupPanel .popupTopRight {
-  background: url(images/corner.png) no-repeat -5px -10px;
-  -background: url(images/corner_ie6.png) no-repeat -5px -10px;
+	background: url(images/corner.png) no-repeat -5px -10px;
+	-background: url(images/corner_ie6.png) no-repeat -5px -10px;
 }
+
 .gwt-DecoratedPopupPanel .popupBottomLeft {
-  background: url(images/corner.png) no-repeat 0px -15px;
-  -background: url(images/corner_ie6.png) no-repeat 0px -15px;
+	background: url(images/corner.png) no-repeat 0px -15px;
+	-background: url(images/corner_ie6.png) no-repeat 0px -15px;
 }
+
 .gwt-DecoratedPopupPanel .popupBottomRight {
-  background: url(images/corner.png) no-repeat -5px -15px;
-  -background: url(images/corner_ie6.png) no-repeat -5px -15px;
+	background: url(images/corner.png) no-repeat -5px -15px;
+	-background: url(images/corner_ie6.png) no-repeat -5px -15px;
 }
+
 html>body .gwt-DecoratedPopupPanel {
+	
 }
+
 * html .gwt-DecoratedPopupPanel .popupTopLeftInner {
-  width: 5px;
-  height: 5px;
-  overflow: hidden;
+	width: 5px;
+	height: 5px;
+	overflow: hidden;
 }
+
 * html .gwt-DecoratedPopupPanel .popupTopRightInner {
-  width: 8px;
-  height: 5px;
-  overflow: hidden;
+	width: 8px;
+	height: 5px;
+	overflow: hidden;
 }
+
 * html .gwt-DecoratedPopupPanel .popupBottomLeftInner {
-  width: 5px;
-  height: 8px;
-  overflow: hidden;
+	width: 5px;
+	height: 8px;
+	overflow: hidden;
 }
+
 * html .gwt-DecoratedPopupPanel .popupBottomRightInner {
-  width: 8px;
-  height: 8px;
-  overflow: hidden;
+	width: 8px;
+	height: 8px;
+	overflow: hidden;
 }
 
 .checkButton {
 	margin-bottom: 15px;
 }
 
-
 .langSelectionCZ {
 	background: url(./flags.gif) 0 0 no-repeat;
 	margin-right: 10px;
 }
+
 .langSelectionCZ:hover {
 	background: url(./flags.gif) 0 -18px no-repeat;
 	margin-right: 10px;
 }
- 
+
 .langSelectionEN {
 	background: url(./flags.gif) 0 -18px no-repeat;
 	margin-right: 10px;
 }
+
 .langSelectionEN:hover {
 	background: url(./flags.gif) 0 0 no-repeat;
 	margin-right: 10px;
@@ -301,16 +349,50 @@ html>body .gwt-DecoratedPopupPanel {
 	color: #404040;
 }
 
+.tileGridImgSelected {
+	background: #8b8b8b;
+}
 
-.tileGridImgSelected{
-	background:#8b8b8b;
+.tileGridImgSelectedOver {
+	background: #8b8b8b;
 }
-.tileGridImgSelectedOver{
-	background:#8b8b8b;
+
+.tileGridTitleSelected {
+	background-color: #8b8b8b;
 }
-.tileGridTitleSelected{
-	background-color:#8b8b8b;
+
+.tileGridTitleSelectedOver {
+	background-color: #8b8b8b;
 }
-.tileGridTitleSelectedOver{
-	background-color:#8b8b8b;
+
+/** Loader */
+body {
+	overflow: hidden
+}
+
+#loading {
+	border: 1px solid #ccc;
+	position: absolute;
+	left: 45%;
+	top: 40%;
+	padding: 2px;
+	z-index: 20001;
+	height: auto;
+}
+
+#loading a {
+	color: #225588;
+}
+
+#loading .loadingIndicator {
+	background: white;
+	font: bold 13px tahoma, arial, helvetica;
+	padding: 10px;
+	margin: 0;
+	height: auto;
+	color: #444;
+}
+
+#loadingMsg {
+	font: normal 10px arial, tahoma, sans-serif;
 }

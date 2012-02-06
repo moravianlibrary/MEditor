@@ -1,10 +1,4 @@
 <!doctype html>
-<!-- The DOCTYPE declaration above will set the    -->
-<!-- browser's rendering engine into               -->
-<!-- "Standards Mode". Replacing this declaration  -->
-<!-- with a "Quirks Mode" doctype may lead to some -->
-<!-- differences in layout.                        -->
-
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -13,48 +7,7 @@
 
 
 
-<!--                                           -->
-<!-- Any title is fine                         -->
-<!--                                           -->
 <title>Metadata Editor</title>
-
-<!--
-<script>window.isomorphicDir='sc/'</script>
--->
-<!--add loading indicator while the app is being loaded-->
-<style type="text/css">
-body {
-	overflow: hidden
-}
-
-#loading {
-	border: 1px solid #ccc;
-	position: absolute;
-	left: 45%;
-	top: 40%;
-	padding: 2px;
-	z-index: 20001;
-	height: auto;
-}
-
-#loading a {
-	color: #225588;
-}
-
-#loading .loadingIndicator {
-	background: white;
-	font: bold 13px tahoma, arial, helvetica;
-	padding: 10px;
-	margin: 0;
-	height: auto;
-	color: #444;
-}
-
-#loadingMsg {
-	font: normal 10px arial, tahoma, sans-serif;
-}
-</style>
-
 <script type="text/javascript">
 	var _gaq = _gaq || [];
 	_gaq.push([ '_setAccount', 'UA-19922555-1' ]);
@@ -76,8 +29,6 @@ body {
 
 
 
-	<!-- <a href="meditor/single.jpg" title="add a caption to title attribute / or leave blank" class="thickbox"><img src="meditor/single_t.jpg" alt="Single Image"/></a> -->
-	<!-- OPTIONAL: include this if you want history support -->
 	<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
 		style="position: absolute; width: 0; height: 0; border: 0"></iframe>
 
@@ -100,12 +51,9 @@ body {
 	<script type="text/javascript" language="javascript"
 		src="meditor/meditor.nocache.js"></script>
 
-	<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
 	<noscript>
-		<div
-			style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-			Your web browser must have JavaScript enabled in order for this
-			application to display correctly.</div>
+		<div class="noJavaScript">Your web browser must have JavaScript
+			enabled in order for this application to display correctly.</div>
 	</noscript>
 </body>
 </html>
