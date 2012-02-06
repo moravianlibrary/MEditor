@@ -202,7 +202,7 @@ public abstract class ModsWindow
         super(450, 900, lang.quickEdit() + ": " + uuid, eventBus, 100);
         this.lang = lang;
         this.modsCollection = modsCollection;
-        if (modsTypeClient != null) {
+        if (modsCollection != null) {
             modsTypeClient = modsCollection.getMods().get(0);
         } else {
             modsTypeClient = new ModsTypeClient();
