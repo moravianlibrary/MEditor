@@ -109,7 +109,7 @@ public class StoredDigitalObjectHandlerImpl
         detail.setLabel(foxml.getLabel());
         detail.setOcr(getOCR(foxmlDocument, filePath, uuid));
         detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
-        detail.setItems(getDigitalObjectItems(uuid, foxmlDocument, model));
+        detail.setAllItems(getDigitalObjectItems(uuid, foxmlDocument, model));
         return detail;
     }
 
@@ -150,16 +150,16 @@ public class StoredDigitalObjectHandlerImpl
         return foxmlDocument;
     }
 
-    public List<DigitalObjectDetail> getDigitalObjectItems(String uuid,
-                                                           org.w3c.dom.Document foxmlDocument,
-                                                           DigitalObjectModel parentModel) {
+    public List<List<DigitalObjectDetail>> getDigitalObjectItems(String uuid,
+                                                                 org.w3c.dom.Document foxmlDocument,
+                                                                 DigitalObjectModel parentModel) {
 
         List<DigitalObjectModel> childrenModel = NamedGraphModel.getChildren(parentModel);
-        List<DigitalObjectDetail> children = new ArrayList<DigitalObjectDetail>();
+        List<List<DigitalObjectDetail>> children = new ArrayList<List<DigitalObjectDetail>>();
 
         for (DigitalObjectModel childModel : childrenModel) {
             FedoraRelationship relation = NamedGraphModel.getRelationship(parentModel, childModel);
-            children.addAll(getChildren(uuid, foxmlDocument, relation));
+            children.add(getChildren(uuid, foxmlDocument, relation, childModel));
         }
 
         return children;
@@ -167,13 +167,15 @@ public class StoredDigitalObjectHandlerImpl
 
     /**
      * @param relation
+     * @param childModel
      * @return
      */
 
     private List<DigitalObjectDetail> getChildren(String uuid,
                                                   org.w3c.dom.Document foxmlDocument,
-                                                  FedoraRelationship relation) {
-        List<DigitalObjectDetail> children = null;
+                                                  FedoraRelationship relation,
+                                                  DigitalObjectModel childModel) {
+        List<DigitalObjectDetail> children = new ArrayList<DigitalObjectDetail>(0);
         String xPath =
                 "//foxml:datastream[@ID=\'RELS-EXT\']/foxml:datastreamVersion[last()]"
                         + "/foxml:xmlContent/rdf:RDF/rdf:Description//kramerius:"
@@ -194,6 +196,7 @@ public class StoredDigitalObjectHandlerImpl
                                 .substring((Constants.FEDORA_INFO_PREFIX).length());
                 DigitalObjectDetail detail = new DigitalObjectDetail();
                 detail.setDc(getDc(childUuid, true));
+                detail.setModel(childModel);
                 children.add(detail);
             }
         }

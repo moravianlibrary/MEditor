@@ -509,7 +509,7 @@ public class ModifyView
                                     + (i == 0 ? "green" : i == 1 ? "blue" : "yellow") + ".png");
                     containerTab.setWidth(((labels.get(md.getValue())).length() * 6) + 30);
                 }
-                containerTab.setAttribute(TAB_INITIALIZED, false);
+                containerTab.setAttribute(TAB_INITIALIZED, topTabSet.isStoredDigitalObject());
                 containerTab.setAttribute(ID_MODEL, md.getValue());
                 containerTabs.add(containerTab);
                 i++;
@@ -556,12 +556,12 @@ public class ModifyView
         });
 
         final Tab dublinTab = new DCTab("DC", "pieces/16/piece_green.png");
-        dublinTab.setAttribute(TAB_INITIALIZED, false);
+        dublinTab.setAttribute(TAB_INITIALIZED, topTabSet.isStoredDigitalObject());
         dublinTab.setAttribute(ID_TAB, ID_DC);
         topTabSet.setDcTab((DCTab) dublinTab);
 
         final Tab moTab = new Tab("MODS", "pieces/16/piece_blue.png");
-        moTab.setAttribute(TAB_INITIALIZED, false);
+        moTab.setAttribute(TAB_INITIALIZED, topTabSet.isStoredDigitalObject());
         moTab.setAttribute(ID_TAB, ID_MODS);
         topTabSet.setModsTab(moTab);
 
@@ -692,10 +692,12 @@ public class ModifyView
 
                         @Override
                         public void run() {
-                            getUiHandlers().getStream(uuid,
-                                                      DigitalObjectModel.parseString(event.getTab()
-                                                              .getAttribute(ID_MODEL)),
-                                                      event.getTab().getTabSet());
+                            if (!((EditorTabSet) event.getTab().getTabSet()).isStoredDigitalObject()) {
+                                getUiHandlers().getStream(uuid,
+                                                          DigitalObjectModel.parseString(event.getTab()
+                                                                  .getAttribute(ID_MODEL)),
+                                                          event.getTab().getTabSet());
+                            }
                             mw.hide();
                         }
                     };
@@ -877,8 +879,38 @@ public class ModifyView
                 layout.addMember(topTabSet2, 1);
             }
         }
+        if (storedDigitalObject) {
+            for (List<DigitalObjectDetail> childrenDetails : detail.getAllItems()) {
+                addAllStreams(childrenDetails, uuid);
+            }
+        }
         layout.redraw();
         getUiHandlers().onAddDigitalObject(uuid, closeButton);
+    }
+
+    private void addAllStreams(List<DigitalObjectDetail> itemList, String uuid) {
+        Record[] items = null;
+        if (itemList.size() > 0) {
+            DigitalObjectModel model = itemList.get(0).getModel();
+            items = new Record[itemList.size()];
+            for (int i = 0, total = itemList.size(); i < total; i++) {
+                DublinCore dc = itemList.get(i).getDc();
+                if (dc != null) {
+                    String title = dc.getTitle() == null ? lang.noTitle() : dc.getTitle().get(0);
+                    String id = dc.getIdentifier() == null ? lang.noTitle() : dc.getIdentifier().get(0);
+                    items[i] =
+                            new ContainerRecord(title, id, DigitalObjectModel.PAGE.equals(model) ? id
+                                    : model.getIcon());
+                } else {
+                    items[i] =
+                            new ContainerRecord(lang.objectNotFound(),
+                                                lang.objectNotFound(),
+                                                DigitalObjectModel.PAGE.equals(model) ? Constants.MISSING
+                                                        : "icons/128/folder_not_found.png");
+                }
+            }
+            addStream(items, uuid, model);
+        }
     }
 
     /**
