@@ -753,10 +753,15 @@ public class ModifyPresenter
 
     @Override
     public void openAnotherObject(String uuid, StoredItem storedItem) {
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                .with(Constants.URL_PARAM_UUID, uuid)
-                .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
-                .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+        if (storedItem != null) {
+            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, uuid)
+                    .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
+                    .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+        } else {
+            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, uuid));
+        }
     }
 
     @Override

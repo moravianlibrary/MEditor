@@ -599,4 +599,10 @@ public class Constants {
 
     /** The MISSING constant */
     public static final String MISSING = "missing";
+
+    /** The suffix after some String which was longer than was allowed */
+    public static final String OVER_MAX_LENGTH_SUFFIX = "...";
+
+    /** The maximum of the length of a label */
+    public static final int MAX_LABEL_LENGTH = 100;
 }

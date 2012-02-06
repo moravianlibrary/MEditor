@@ -114,7 +114,6 @@ public class CreateObjectUtils {
         builder.setDcXmlContent(dc);
         builder.setModsXmlContent(mods);
         builder.setBundle(node.getBundle());
-        builder.setLabel(node.getName());
         builder.setPageType(node.getPageType());
         builder.setPolicy(node.getVisible() ? Policy.PUBLIC : Policy.PRIVATE);
         if (node.getModel() == DigitalObjectModel.PERIODICALVOLUME

@@ -231,31 +231,27 @@ public class CreateObjectMenuPresenter
             public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
                 StringBuffer sb = new StringBuffer();
                 String nameHover = hoverFactory(lang.name(), record.getAttribute(Constants.ATTR_NAME));
-                int longest = nameHover.length();
                 sb.append(nameHover);
 
                 String dIssued = record.getAttribute(Constants.ATTR_DATE_ISSUED);
                 if (dIssued != null && !"".equals(dIssued)) {
                     String dateIssuedHover = hoverFactory(lang.dateIssued(), dIssued);
-                    longest = (dateIssuedHover.length() > longest) ? dateIssuedHover.length() : longest;
                     sb.append(dateIssuedHover);
                 }
 
                 String alto = record.getAttribute(Constants.ATTR_ALTO_PATH);
                 if (alto != null && !"".equals(alto)) {
                     String altoHover = hoverFactory("ALTO", alto.substring(alto.lastIndexOf("/") + 1));
-                    longest = (altoHover.length() + 10 > longest) ? altoHover.length() + 10 : longest;
                     sb.append(altoHover);
                 }
 
                 String ocr = record.getAttribute(Constants.ATTR_OCR_PATH);
                 if (ocr != null && !"".equals(ocr)) {
                     String ocrHover = hoverFactory("OCR", ocr.substring(ocr.lastIndexOf("/") + 1));
-                    longest = (ocrHover.length() + 10 > longest) ? ocrHover.length() + 10 : longest;
                     sb.append(ocrHover);
                 }
 
-                getView().getSubelementsGrid().setHoverWidth((longest * 5));
+                getView().getSubelementsGrid().setHoverWidth(350);
                 return sb.toString();
             }
         });

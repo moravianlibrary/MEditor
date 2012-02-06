@@ -25,7 +25,9 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import java.io.ByteArrayOutputStream;
+
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,9 +41,11 @@ import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
+
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -70,13 +74,12 @@ public abstract class FoxmlBuilder {
     private Document modsXmlContent;
     private Document relsExtXmlContent;
     private Element policyContentLocation;
-    private static final String OVER_MAX_LENGTH_SUFFIX = "...";
+
     private String krameriusUrl;
     private String alephUrl;
     private String imageUrl;
     private String dateIssued;
 
-    private static final int MAX_LABEL_LENGTH = 100;
     private static final Boolean VERSIONABLE = true;
 
     public FoxmlBuilder(NewDigitalObject object) {
@@ -84,7 +87,7 @@ public abstract class FoxmlBuilder {
     }
 
     public FoxmlBuilder(NewDigitalObject object, Policy policy) {
-        this.label = trim(object.getName(), MAX_LABEL_LENGTH);
+        this.label = FoxmlUtils.trim(object.getName(), Constants.MAX_LABEL_LENGTH);
         this.children = new ArrayList<RelsExtRelation>();
         this.policy = policy;
     }
@@ -160,15 +163,6 @@ public abstract class FoxmlBuilder {
         Element property = properties.addElement(new QName("property", Namespaces.foxml));
         property.addAttribute("NAME", name);
         property.addAttribute("VALUE", value);
-    }
-
-    private String trim(String originalString, int maxLength) {
-        if (originalString.length() <= maxLength) {
-            return originalString;
-        } else {
-            return originalString.substring(0, maxLength - OVER_MAX_LENGTH_SUFFIX.length())
-                    + OVER_MAX_LENGTH_SUFFIX;
-        }
     }
 
     protected void decorateDCStream() {

@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
@@ -146,7 +147,9 @@ public class RecentlyModifiedItemDAOImpl
             } else {
                 statement = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
                 statement.setString(1, toPut.getUuid());
-                statement.setString(2, toPut.getName() == null ? "" : toPut.getName());
+                statement.setString(2,
+                                    toPut.getName() == null ? ""
+                                            : FoxmlUtils.trim(toPut.getName(), Constants.MAX_LABEL_LENGTH));
                 statement.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
                 statement.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model
                 statement.setString(5, openID);
