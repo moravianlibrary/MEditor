@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,6 +43,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 
 /**
@@ -71,6 +73,8 @@ public class DBSchemaDAOImpl
             LOGGER.error(e.getMessage(), e);
             e.printStackTrace();
             return false;
+        } finally {
+            closeConnection();
         }
         return true;
     }
@@ -114,59 +118,63 @@ public class DBSchemaDAOImpl
             throw new DatabaseException("Unable to read from the file with DB schema "
                     + dbSchema.getAbsolutePath());
         }
-        ScriptRunner runner = new ScriptRunner(getConnection(), false, true);
-        runner.setLogger(LOGGER);
-        Reader reader = null;
         try {
-            reader = new FileReader(dbSchema);
-            runner.runScript(reader);
-        } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new DatabaseException("Unable to find the file with DB schema "
-                    + dbSchema.getAbsolutePath(), e);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new DatabaseException("Unable to read from file with DB schema "
-                    + dbSchema.getAbsolutePath(), e);
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new DatabaseException("Unable to run SQL command: ", e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage(), e);
-                    e.printStackTrace();
-                    reader = null;
+            ScriptRunner runner = new ScriptRunner(getConnection(), false, true);
+            runner.setLogger(LOGGER);
+            Reader reader = null;
+            try {
+                reader = new FileReader(dbSchema);
+                runner.runScript(reader);
+            } catch (FileNotFoundException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new DatabaseException("Unable to find the file with DB schema "
+                        + dbSchema.getAbsolutePath(), e);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new DatabaseException("Unable to read from file with DB schema "
+                        + dbSchema.getAbsolutePath(), e);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new DatabaseException("Unable to run SQL command: ", e);
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        LOGGER.error(e.getMessage(), e);
+                        e.printStackTrace();
+                        reader = null;
+                    }
                 }
             }
-        }
-        Writer writer = null;
-        try {
-            writer =
-                    new BufferedWriter(new FileWriter(pathPrefix + File.separator
-                            + Constants.SCHEMA_VERSION_PATH));
-            writer.write(String.valueOf(version));
-            writer.flush();
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new DatabaseException("Unable to write to file with DB schema version "
-                    + dbSchema.getAbsolutePath(), e);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage(), e);
-                    e.printStackTrace();
-                    writer = null;
+            Writer writer = null;
+            try {
+                writer =
+                        new BufferedWriter(new FileWriter(pathPrefix + File.separator
+                                + Constants.SCHEMA_VERSION_PATH));
+                writer.write(String.valueOf(version));
+                writer.flush();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new DatabaseException("Unable to write to file with DB schema version "
+                        + dbSchema.getAbsolutePath(), e);
+            } finally {
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        LOGGER.error(e.getMessage(), e);
+                        e.printStackTrace();
+                        writer = null;
+                    }
                 }
             }
+        } finally {
+            closeConnection();
         }
         updateVersionInDb(version);
     }
@@ -180,6 +188,8 @@ public class DBSchemaDAOImpl
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new DatabaseException("unable to update version number of the DB", e);
+        } finally {
+            closeConnection();
         }
     }
 }
