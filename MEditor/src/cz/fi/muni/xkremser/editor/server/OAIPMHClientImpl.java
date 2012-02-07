@@ -150,6 +150,7 @@ public class OAIPMHClientImpl
             Element dcElement = (Element) dcXPath.selectSingleNode(dcDoc);
             final DublinCore dc =
                     DCUtils.getDC(DocumentHelper.createDocument(dcElement.createCopy()).asXML());
+            dc.removeTrailingSlash();
             if (dc != null && dc.getTitle() != null && dc.getTitle().size() != 0
                     && dc.getTitle().get(0) != null && "".equals(dc.getTitle().get(0).trim())) {
                 dc.addTitle("no title");

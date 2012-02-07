@@ -427,6 +427,20 @@ public class DublinCore
         this.source = source;
     }
 
+    public void removeTrailingSlash() {
+        if (title != null && !title.isEmpty()) {
+            for (int i = 0; i < title.size(); i++) {
+                String tit = title.get(i);
+                if (tit != null && tit.endsWith("/")) {
+                    title.set(i, tit.substring(0, tit.length() - 1));
+                    if (tit.endsWith(" ")) {
+                        title.set(i, tit.substring(0, tit.length() - 1));
+                    }
+                }
+            }
+        }
+    }
+
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()

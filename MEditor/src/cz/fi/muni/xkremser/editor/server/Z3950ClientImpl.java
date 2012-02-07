@@ -57,8 +57,6 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
-
 import com.k_int.IR.IRQuery;
 import com.k_int.IR.InformationFragment;
 import com.k_int.IR.SearchException;
@@ -66,10 +64,15 @@ import com.k_int.IR.SearchTask;
 import com.k_int.IR.Searchable;
 import com.k_int.z3950.IRClient.Z3950Origin;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.DCUtils;
+
+import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.MarcSpecificMetadata;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 
@@ -128,17 +131,17 @@ public class Z3950ClientImpl
         }
         ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
         for (int i = 0; i < dcStrings.size(); i++) {
+            DublinCore dc = DCUtils.getDC(dcStrings.get(i));
+            dc.removeTrailingSlash();
             MetadataBundle bundle =
-                    new MetadataBundle(DCUtils.getDC(dcStrings.get(i)),
-                                       null,
-                                       new MarcSpecificMetadata(sysnos.get(i),
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                null));
+                    new MetadataBundle(dc, null, new MarcSpecificMetadata(sysnos.get(i),
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null));
             retList.add(bundle);
         }
         //        try {
