@@ -99,6 +99,8 @@ public class LockDAOImpl
             }
         } catch (SQLException e) {
             LOGGER.error("Could not get insert statement", e);
+        } finally {
+            closeConnection();
         }
 
         int modified = 0;
@@ -165,6 +167,8 @@ public class LockDAOImpl
             deleteSt.setString(1, uuid);
         } catch (SQLException e) {
             LOGGER.error("Could not get delete statement", e);
+        } finally {
+            closeConnection();
         }
 
         int modified;
