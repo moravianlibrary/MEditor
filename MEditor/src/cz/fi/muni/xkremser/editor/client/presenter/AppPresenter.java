@@ -63,7 +63,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.UuidWindow;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.OpenStoredDigitalObjectAsFirstEvent;
+import cz.fi.muni.xkremser.editor.shared.event.OpenFirstDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
@@ -240,16 +240,20 @@ public class AppPresenter
 
         });
 
-        addRegisteredHandler(OpenStoredDigitalObjectAsFirstEvent.getType(),
-                             new OpenStoredDigitalObjectAsFirstEvent.OpenStoredDigitalObjectAsFirstHandler() {
+        addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
+                             new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
 
                                  @Override
-                                 public void onOpenStoredDigitalObjectAsFirst(OpenStoredDigitalObjectAsFirstEvent event) {
+                                 public void onOpenFirstDigitalObject(OpenFirstDigitalObjectEvent event) {
                                      StoredItem storedItem = event.getStoredItem();
-                                     placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                                             .with(Constants.URL_PARAM_UUID, event.getUuid())
-                                             .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
-                                             .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+                                     if (storedItem != null) {
+                                         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                                                 .with(Constants.URL_PARAM_UUID, event.getUuid())
+                                                 .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
+                                                 .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+                                     } else {
+                                         openObject(event.getUuid());
+                                     }
                                  }
                              });
 
@@ -345,11 +349,14 @@ public class AppPresenter
     private void evaluateUuid(TextItem uuidField) {
         if (uuidField.validate()) {
             uuidWindow.hide();
-            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                    .with(Constants.URL_PARAM_UUID, (String) uuidField.getValue()));
+            openObject(uuidField.getValueAsString());
             uuidWindow = null;
         }
+    }
 
+    private void openObject(String uuid) {
+        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
+                                                                                  uuid));
     }
 
     /*

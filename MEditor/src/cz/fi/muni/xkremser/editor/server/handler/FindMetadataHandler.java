@@ -29,21 +29,24 @@ package cz.fi.muni.xkremser.editor.server.handler;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import javax.inject.Inject;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
+
 import cz.fi.muni.xkremser.editor.server.OAIPMHClient;
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.Z3950Client;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.FindMetadataResult;
@@ -59,7 +62,6 @@ public class FindMetadataHandler
     private static final Logger LOGGER = Logger.getLogger(FindMetadataHandler.class.getPackage().toString());
 
     /** The configuration. */
-    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The http session provider. */

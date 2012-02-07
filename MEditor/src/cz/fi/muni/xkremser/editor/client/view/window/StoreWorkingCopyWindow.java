@@ -63,7 +63,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
-import cz.fi.muni.xkremser.editor.shared.event.OpenStoredDigitalObjectAsFirstEvent;
+import cz.fi.muni.xkremser.editor.shared.event.OpenFirstDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.StoredItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoredItemsAction;
@@ -288,7 +288,7 @@ public class StoreWorkingCopyWindow
             if (modifyIsVisible) {
                 eventBus.fireEvent(new OpenDigitalObjectEvent(uuid, storedItem));
             } else {
-                eventBus.fireEvent(new OpenStoredDigitalObjectAsFirstEvent(uuid, storedItem));
+                eventBus.fireEvent(new OpenFirstDigitalObjectEvent(uuid, storedItem));
             }
         } else {
             SC.warn(lang.nothingSelected());

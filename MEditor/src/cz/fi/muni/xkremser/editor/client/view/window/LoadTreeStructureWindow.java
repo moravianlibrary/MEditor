@@ -51,6 +51,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 public class LoadTreeStructureWindow
         extends UniversalWindow {
 
+    @SuppressWarnings("unused")
     private final LangConstants lang;
     private static LoadTreeStructureWindow storingWindow = null;
 

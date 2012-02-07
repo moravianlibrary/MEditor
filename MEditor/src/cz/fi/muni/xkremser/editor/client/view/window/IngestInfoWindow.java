@@ -28,6 +28,11 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -36,6 +41,7 @@ import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 
+import cz.fi.muni.xkremser.editor.shared.event.OpenFirstDigitalObjectEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.IngestInfo;
 
 /**
@@ -71,7 +77,9 @@ public class IngestInfoWindow
      * @param title
      */
 
-    private IngestInfoWindow(List<IngestInfo> ingestInfoList, LangConstants lang, EventBus eventBus) {
+    private IngestInfoWindow(List<IngestInfo> ingestInfoList,
+                             final LangConstants lang,
+                             final EventBus eventBus) {
         super(550, 350, lang.ingestInfo(), eventBus, 20);
 
         int maxIngest = 0;
@@ -99,46 +107,42 @@ public class IngestInfoWindow
                                 + "<br><br>");
                 mainInfoLayout.addMember(titleFlow);
 
-                final String pidString = pid.get(i);
+                final String pidString = (pid.get(i).contains("uuid:") ? "" : "uuid:") + pid.get(i);
                 Layout pidLayout = new HLayout(2);
                 HTMLFlow pidFlow;
                 if (!pidString.equals(Constants.MISSING)) {
-                    pidFlow =
-                            new HTMLFlow(HtmlCode.bold("PID: ")
-                                    + (pidString.contains("uuid:") ? "" : "uuid:") + pidString);
+                    pidFlow = new HTMLFlow(HtmlCode.bold("PID: ") + pidString);
                 } else {
                     pidFlow = new HTMLFlow(HtmlCode.bold("PID: ") + HtmlCode.redFont(lang.noTitle()));
                 }
                 pidFlow.setWidth(280);
 
-                //            ImgButton editButton = new ImgButton();
-                //            editButton.setSrc(Constants.PATH_IMG_EDIT);
-                //            editButton.setWidth(16);
-                //            editButton.setHeight(16);
-                //            editButton.setShowRollOver(false);
-                //            editButton.setShowDown(false);
-                //            editButton.addClickHandler(new ClickHandler() {
-                //
-                //                @Override
-                //                public void onClick(ClickEvent event) {
-                //                    Menu menu = new Menu();
-                //                    menu.setShowShadow(true);
-                //                    menu.setShadowDepth(10);
-                //                    MenuItem newItem = new MenuItem(lang.menuEdit());
-                //                    newItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-                //
-                //                        @Override
-                //                        public void onClick(MenuItemClickEvent event) {
-                //                            eventBus.fireEvent(new OpenDigitalObjectEvent(pidString));
-                //                        }
-                //                    });
-                //                    menu.addItem(newItem);
-                //                    setContextMenu(menu);
-                //                }
-                //            });
+                final ImgButton editButton = new ImgButton();
+                editButton.setSrc(Constants.PATH_IMG_EDIT);
+                editButton.setHoverStyle("interactImageHover");
+                editButton.setCanHover(true);
+                editButton.setHoverOpacity(85);
+                editButton.setWidth(16);
+                editButton.setHeight(16);
+                editButton.setShowRollOver(false);
+                editButton.setShowDown(false);
+                editButton.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        eventBus.fireEvent(new OpenFirstDigitalObjectEvent(pidString, null));
+                    }
+                });
+                editButton.addHoverHandler(new HoverHandler() {
+
+                    @Override
+                    public void onHover(HoverEvent event) {
+                        editButton.setPrompt(lang.menuEdit());
+                    }
+                });
 
                 pidLayout.addMember(pidFlow);
-                //            pidLayout.addMember(editButton);
+                pidLayout.addMember(editButton);
                 pidLayout.setExtraSpace(3);
                 pidLayout.setAutoHeight();
                 mainInfoLayout.addMember(pidLayout);
