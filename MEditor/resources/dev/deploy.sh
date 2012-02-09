@@ -10,7 +10,7 @@ WAR_NAME=meditor
 #mzk setup
 MZK_USER=meditor
 MZK_HOST=editor.mzk.cz
-MZK_TOMCAT=apache-tomcat-7.0.2
+MZK_TOMCAT=apache-tomcat-7.0.25
 MZK_SCRIPT=.meditor/djatoka/bin/tomcat.sh
 
 #dev setup
