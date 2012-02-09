@@ -60,7 +60,7 @@ for line in `ls -1 $LIBPATH | grep '.jar'`
 done
 #DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
 CLASSPATH=.:../build/:$classpath
-JAVA_OPTS="$DEBUG -Djava.awt.headless=true  -Xmx512M -Xms64M -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/$PLATFORM $KAKADU_LIBRARY_PATH"
+JAVA_OPTS="$DEBUG -Djava.awt.headless=true -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/$PLATFORM $KAKADU_LIBRARY_PATH"
 
 # If a proxy server is used in your institution... uncomment and set the following:
 #proxySet=true
