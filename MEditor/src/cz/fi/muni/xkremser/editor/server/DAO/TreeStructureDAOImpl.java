@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -53,8 +54,13 @@ public class TreeStructureDAOImpl
         extends AbstractDAO
         implements TreeStructureDAO {
 
-    public static final String SELECT_INFOS = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NAME
-            + " WHERE user_id = (?)";
+    public static final String SELECT_INFOS = "SELECT eu.surname || ', ' || eu.name as full_name, ts.* FROM "
+            + Constants.TABLE_TREE_STRUCTURE_NAME + " ts LEFT JOIN " + Constants.TABLE_EDITOR_USER
+            + " eu ON eu.id = ts.user_id";
+
+    public static final String SELECT_INFOS_BY_USER = SELECT_INFOS + " WHERE eu.id = (?)";
+
+    public static final String SELECT_INFOS_BY_USER_AND_CODE = SELECT_INFOS_BY_USER + " AND ts.barcode = (?)";
 
     public static final String SELECT_NODES = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
             + " WHERE tree_id = (?)";
@@ -79,28 +85,74 @@ public class TreeStructureDAOImpl
 
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
 
+    private static enum DISCRIMINATOR {
+        ALL, ALL_OF_USER, BARCODE_OF_USER
+    }
+
     /**
      * {@inheritDoc}
      * 
      * @throws DatabaseException
      */
     @Override
-    public ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId) throws DatabaseException {
+    public ArrayList<TreeStructureInfo> getAllSavedStructuresOfUser(long userId) throws DatabaseException {
+        return getSavedStructures(DISCRIMINATOR.ALL_OF_USER, userId, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ArrayList<TreeStructureInfo> getAllSavedStructures() throws DatabaseException {
+        return getSavedStructures(DISCRIMINATOR.ALL, -1, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId, String code)
+            throws DatabaseException {
+        return getSavedStructures(DISCRIMINATOR.ALL_OF_USER, userId, code);
+    }
+
+    private ArrayList<TreeStructureInfo> getSavedStructures(DISCRIMINATOR what, long userId, String code)
+            throws DatabaseException {
         PreparedStatement selectSt = null;
         ArrayList<TreeStructureInfo> retList = new ArrayList<TreeStructureInfo>();
         try {
-            selectSt = getConnection().prepareStatement(SELECT_INFOS);
-            selectSt.setLong(1, userId);
+            switch (what) {
+                case ALL:
+                    selectSt = getConnection().prepareStatement(SELECT_INFOS);
+                    break;
+                case ALL_OF_USER:
+                    selectSt = getConnection().prepareStatement(SELECT_INFOS_BY_USER);
+                    selectSt.setLong(1, userId);
+                    break;
+                case BARCODE_OF_USER:
+                    selectSt = getConnection().prepareStatement(SELECT_INFOS_BY_USER_AND_CODE);
+                    selectSt.setLong(1, userId);
+                    selectSt.setString(2, code);
+                    break;
+                default:
+                    throw new IllegalStateException(what.toString());
+            }
+
         } catch (SQLException e) {
             LOGGER.error("Could not get select infos statement", e);
         }
+        //        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, new Locale("cs", "CZ"));
+        //        dateFormatter.format(new Date());
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                retList.add(new TreeStructureInfo(rs.getLong("id"), formatter.format(rs
-                        .getTimestamp("created")), rs.getString("description"), rs.getString("barcode"), rs
-                        .getString("name")));
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = rs.getTimestamp("created");
+                if (date != null) {
+                    retList.add(new TreeStructureInfo(rs.getLong("id"), formatter.format(date), rs
+                            .getString("description"), rs.getString("barcode"), rs.getString("name"), rs
+                            .getString("full_name")));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);

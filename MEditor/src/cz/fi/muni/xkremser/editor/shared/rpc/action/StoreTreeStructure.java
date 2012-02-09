@@ -56,6 +56,9 @@ public class StoreTreeStructure
     private String id;
 
     @In(3)
+    private boolean all;
+
+    @In(4)
     private TreeStructureBundle bundle;
 
     @Out(1)

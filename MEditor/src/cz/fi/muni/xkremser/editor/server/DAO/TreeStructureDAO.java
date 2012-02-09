@@ -42,14 +42,34 @@ import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureNo
 public interface TreeStructureDAO {
 
     /**
-     * Returns saved structure of user
+     * Returns all saved structures of user
      * 
      * @param userId
      *        id of the user
      * @return list of TreeStructureInfo instances belonging to specified user
      * @throws DatabaseException
      */
-    ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId) throws DatabaseException;
+    ArrayList<TreeStructureInfo> getAllSavedStructuresOfUser(long userId) throws DatabaseException;
+
+    /**
+     * Returns saved structures of user of an object
+     * 
+     * @param userId
+     *        id of the user
+     * @param code
+     *        code
+     * @return list of TreeStructureInfo instances belonging to specified user
+     * @throws DatabaseException
+     */
+    ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId, String code) throws DatabaseException;
+
+    /**
+     * Returns all saved structures
+     * 
+     * @return list of TreeStructureInfo instances belonging to specified user
+     * @throws DatabaseException
+     */
+    ArrayList<TreeStructureInfo> getAllSavedStructures() throws DatabaseException;
 
     /**
      * Deletes the structure from DB

@@ -105,7 +105,7 @@ public class StoreTreeStructureWindow
             @Override
             public void onClick(ClickEvent event) {
                 structure.getInfo().setDescription(description.getValueAsString());
-                dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.PUT, null, structure),
+                dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.PUT, null, false, structure),
                                    new DispatchCallback<StoreTreeStructureResult>() {
 
                                        @Override

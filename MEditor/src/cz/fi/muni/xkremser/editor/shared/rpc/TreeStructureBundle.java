@@ -70,7 +70,7 @@ public class TreeStructureBundle
     public static class TreeStructureInfo
             implements Serializable {
 
-        private static final long serialVersionUID = 1084117854904893291L;
+        private static final long serialVersionUID = 5822811602881095676L;
 
         private long id;
 
@@ -82,17 +82,25 @@ public class TreeStructureBundle
 
         private String name;
 
+        private String owner;
+
         public TreeStructureInfo() {
 
         }
 
-        public TreeStructureInfo(long id, String created, String description, String barcode, String name) {
+        public TreeStructureInfo(long id,
+                                 String created,
+                                 String description,
+                                 String barcode,
+                                 String name,
+                                 String owner) {
             super();
             this.id = id;
             this.created = created;
             this.description = description;
             this.barcode = barcode;
             this.name = name;
+            this.owner = owner;
         }
 
         public long getId() {
@@ -133,6 +141,14 @@ public class TreeStructureBundle
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getOwner() {
+            return owner;
+        }
+
+        public void setOwner(String owner) {
+            this.owner = owner;
         }
 
     }

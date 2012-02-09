@@ -318,7 +318,7 @@ public class CreateObjectMenuPresenter
     }
 
     private String hoverFactory(String attribut, String value) {
-        return HtmlCode.bold(attribut) + ": " + value + "<br>";
+        return HtmlCode.bold(attribut) + ": " + value + "<br />";
     }
 
     /*
@@ -526,7 +526,7 @@ public class CreateObjectMenuPresenter
             SC.warn("Strom je prázdný.");
         } else {
             TreeStructureBundle bundle = new TreeStructureBundle();
-            bundle.setInfo(new TreeStructureInfo(-1, null, null, barcode, null));
+            bundle.setInfo(new TreeStructureInfo(-1, null, null, barcode, object.getName(), null));
             bundle.setNodes(ClientUtils.toNodes(getView().getSubelementsGrid().getTree()));
             StoreTreeStructureWindow.setInstanceOf(bundle,
                                                    ClientUtils.toStringTree(object),

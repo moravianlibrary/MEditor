@@ -96,7 +96,7 @@ public class StoreTreeStructureHandler
                 break;
             case DELETE:
             case GET:
-                if (action.getId() == null) {
+                if (action.getId() == null && action.isAll()) {
                     throw new NullPointerException("id");
                 }
                 break;
@@ -115,24 +115,36 @@ public class StoreTreeStructureHandler
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
-        switch (action.getVerb()) {
-            case PUT:
-                try {
+        try {
+            switch (action.getVerb()) {
+                case PUT:
+
                     DateFormat dateFormatter =
                             DateFormat.getDateInstance(DateFormat.DEFAULT, new Locale("cs", "CZ"));
                     action.getBundle().getInfo().setCreated(dateFormatter.format(new Date()));
                     treeDAO.saveStructure(userId, action.getBundle().getInfo(), action.getBundle().getNodes());
                     return new StoreTreeStructureResult(null, null);
-                } catch (DatabaseException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                    throw new ActionException(e.getMessage(), e);
-                }
-            case GET:
-                break;
-            case DELETE:
-                break;
+                case GET:
+                    if (action.isAll()) {
+                        // for all users
+                        return new StoreTreeStructureResult(treeDAO.getAllSavedStructures(), null);
+                    } else if (action.getId() == null) {
+                        // for all objects of particular user
+                        return new StoreTreeStructureResult(treeDAO.getAllSavedStructuresOfUser(userId), null);
+                    } else {
+                        // for user's objects of particular user
+                        return new StoreTreeStructureResult(treeDAO.getSavedStructuresOfUser(userId,
+                                                                                             action.getId()),
+                                                            null);
+                    }
+                case DELETE:
+                    break;
 
+            }
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e.getMessage(), e);
         }
         return new StoreTreeStructureResult(null, null);
     }

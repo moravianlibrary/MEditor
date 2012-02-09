@@ -223,6 +223,9 @@ public class Constants {
     /** The Constant ATTR_INGEST_INFO. */
     public static final String ATTR_INGEST_INFO = "ingestInfo";
 
+    /** The Constant ATTR_OWNER. */
+    public static final String ATTR_OWNER = "owner";
+
     /** The Constant DIR_MAX_DEPTH. */
     public static final int DIR_MAX_DEPTH = 5;
 
