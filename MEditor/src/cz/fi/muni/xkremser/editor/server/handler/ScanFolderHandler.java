@@ -118,9 +118,10 @@ public class ScanFolderHandler
         try {
             String name = action.getName();
             if (name != null && !"".equals(name)) {
-                inputQueueDAO.updateName(File.separator + model + File.separator
-                                                 + code.substring(0, code.indexOf("/")),
-                                         name);
+                String path =
+                        File.separator + model + File.separator
+                                + ((code.contains("/")) ? code.substring(0, code.indexOf("/")) : code);
+                inputQueueDAO.updateName(path, name);
             }
         } catch (DatabaseException e) {
             throw new ActionException(e);
