@@ -27,15 +27,22 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.smartgwt.client.data.Criteria;
+import com.smartgwt.client.data.DSCallback;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
 import com.smartgwt.client.widgets.grid.CellFormatter;
+import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
@@ -45,15 +52,18 @@ import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.NAME_OF_TREE;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.IngestInfoWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
+import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.IngestInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoResult;
@@ -95,6 +105,7 @@ public class InputQueueTree
         setCanSort(true);
         setAutoFetchData(true);
         setShowRoot(false);
+        setSelectionType(SelectionStyle.SINGLE);
 
         MenuItem showItem = new MenuItem(lang.show(), "icons/16/structure.png");
         final Menu showMenu = new Menu();
@@ -153,6 +164,14 @@ public class InputQueueTree
             }
         });
 
+        eventBus.addHandler(RefreshTreeEvent.getType(), new RefreshTreeEvent.RefreshTreeHandler() {
+
+            @Override
+            public void onRefreshTree(RefreshTreeEvent event) {
+                if (event.getTree() == NAME_OF_TREE.INPUT_QUEUE) refreshTree();
+            }
+        });
+
         TreeGridField field1 = new TreeGridField();
         field1.setCanFilter(true);
         field1.setName(Constants.ATTR_BARCODE);
@@ -170,13 +189,66 @@ public class InputQueueTree
                 }
             }
         });
+        ListGridField nameField = new ListGridField();
+        nameField.setCanFilter(true);
+        nameField.setName(Constants.ATTR_NAME);
+        nameField.setTitle(lang.name());
 
-        setFields(field1);
+        setFields(field1, nameField);
         setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
     }
 
     public void refreshTree() {
-        fetchData();
+        final List<String> openedNodes = new ArrayList<String>();
+        TreeNode[] allNodes = getData().getAllNodes();
+        for (int i = 0; i < allNodes.length; i++) {
+            if (getData().isOpen(allNodes[i])) {
+                openedNodes.add(allNodes[i].getAttributeAsString("path"));
+            }
+        }
+        final ListGridRecord selectedRecord = getSelectedRecord();
+        fetchData(null, new DSCallback() {
+
+            @Override
+            public void execute(DSResponse response, Object rawData, DSRequest request) {
+                openSubfolders(openedNodes, null, selectedRecord);
+            }
+        });
+    }
+
+    private void openFolder(final List<String> openedNodes,
+                            final TreeNode node,
+                            final ListGridRecord selectedRecord) {
+        getData().openFolder(node);
+        getDataSource().fetchData(new Criteria() {
+
+            {
+                addCriteria(Constants.ATTR_PARENT, node.getAttributeAsString("path"));
+            }
+        }, new DSCallback() {
+
+            @Override
+            public void execute(DSResponse response, Object rawData, DSRequest request) {
+                openSubfolders(openedNodes, node, selectedRecord);
+            }
+        });
+    }
+
+    private void openSubfolders(final List<String> openedNodes,
+                                final TreeNode node,
+                                final ListGridRecord selectedRecord) {
+        TreeNode[] allNewNodes = (node != null) ? getData().getAllNodes(node) : getData().getAllNodes();
+        for (int i = 0; i < allNewNodes.length; i++) {
+            String newNodeAttribute = allNewNodes[i].getAttributeAsString("path");
+            if (selectedRecord != null
+                    && selectedRecord.getAttributeAsString("path").equals(newNodeAttribute)) {
+                selectRecord(allNewNodes[i]);
+            }
+            if ((node == null || !node.getAttributeAsString("path").equals(newNodeAttribute))
+                    && openedNodes.contains(newNodeAttribute)) {
+                openFolder(openedNodes, allNewNodes[i], selectedRecord);
+            }
+        }
     }
 
     public MenuItem getCreateMenuItem() {

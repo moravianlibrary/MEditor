@@ -162,6 +162,26 @@ CREATE TABLE input_queue_item (
 ALTER TABLE meditor.input_queue_item OWNER TO meditor;
 
 
+CREATE SEQUENCE seq_input_queue_item_name
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE meditor.seq_input_queue_item_name OWNER TO meditor;
+
+SELECT pg_catalog.setval('seq_input_queue_item_name', 0, true);
+
+CREATE TABLE input_queue_item_name (
+    id integer DEFAULT nextval('seq_input_queue_item_name'::regclass) NOT NULL,
+    path character varying(50),
+    name character varying(300)
+);
+
+
+ALTER TABLE meditor.input_queue_item_name OWNER TO meditor;
+
 CREATE SEQUENCE seq_lock
     INCREMENT BY 1
     NO MAXVALUE
@@ -782,6 +802,12 @@ ALTER TABLE ONLY image
 ALTER TABLE ONLY input_queue_item
     ADD CONSTRAINT input_queue_item_pkey PRIMARY KEY (id);
 
+--
+-- Name: input_queue_item_name_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
+--
+
+ALTER TABLE ONLY input_queue_item_name
+    ADD CONSTRAINT input_queue_item_name_pkey PRIMARY KEY (id);
 
 --
 -- Name: lock_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
@@ -806,6 +832,12 @@ ALTER TABLE ONLY open_id_identity
 ALTER TABLE ONLY input_queue_item
     ADD CONSTRAINT path_unique UNIQUE (path);
 
+--
+-- Name: path_unique; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 
+--
+
+ALTER TABLE ONLY input_queue_item_name
+    ADD CONSTRAINT path_name_unique UNIQUE (path);
 
 --
 -- Name: recently_modified_item_pkey; Type: CONSTRAINT; Schema: meditor; Owner: meditor; Tablespace: 

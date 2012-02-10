@@ -101,6 +101,9 @@ public class InputTreeGwtRPCDS
     @Override
     protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
         String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
+        if (id == null) {
+            id = request.getCriteria().getAttributeAsString(Constants.ATTR_PARENT);
+        }
         dispatcher.execute(new ScanInputQueueAction(id, false), new DispatchCallback<ScanInputQueueResult>() {
 
             @Override
@@ -178,6 +181,7 @@ public class InputTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_ID, from.getPath());
         to.setAttribute(Constants.ATTR_BARCODE, from.getBarcode());
         to.setAttribute(Constants.ATTR_INGEST_INFO, from.getIngestInfo());
+        to.setAttribute(Constants.ATTR_NAME, from.getName());
     }
 
 }

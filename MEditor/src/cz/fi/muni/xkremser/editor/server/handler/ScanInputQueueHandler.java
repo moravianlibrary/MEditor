@@ -208,7 +208,7 @@ public class ScanInputQueueHandler
                 if (!test.exists()) {
                     test.mkdir(); // create if not exists
                 }
-                InputQueueItem topLvl = new InputQueueItem(File.separator + types[i], types[i], false);
+                InputQueueItem topLvl = new InputQueueItem(File.separator + types[i], types[i], false, null);
                 listTopLvl.add(topLvl);
                 list.add(topLvl);
                 list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
@@ -277,7 +277,7 @@ public class ScanInputQueueHandler
 
             boolean lowerLevelIngested = scanDirectoryStructure(pathPrefix, rltvpth, list, level - 1);
             list.add(new InputQueueItem(rltvpth, dirs[i].getName(), hasBeenIngested(rltvpth)
-                    || lowerLevelIngested));
+                    || lowerLevelIngested, null));
 
             hasBeenIngested =
                     list.get(i > 0 ? list.size() - 2 : list.size() - 1).getIngestInfo()

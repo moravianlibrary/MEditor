@@ -53,6 +53,10 @@ public class ScanFolder
     @In(2)
     private String code;
 
+    /** The name */
+    @In(3)
+    private String name;
+
     /** The items. */
     @Out(1)
     private ArrayList<ImageItem> items;

@@ -50,6 +50,7 @@ import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.ImageResolverDAO;
+import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
@@ -77,6 +78,10 @@ public class ScanFolderHandler
 
     @Inject
     private Provider<HttpServletRequest> requestProvider;
+
+    /** The input queue dao. */
+    @Inject
+    private InputQueueItemDAO inputQueueDAO;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -109,6 +114,17 @@ public class ScanFolderHandler
         LOGGER.debug("Scanning folder: (model = " + model + ", code = " + code + ")");
         HttpServletRequest req = requestProvider.get();
         ServerUtils.checkExpiredSession(req.getSession());
+
+        try {
+            String name = action.getName();
+            if (name != null && !"".equals(name)) {
+                inputQueueDAO.updateName(File.separator + model + File.separator
+                                                 + code.substring(0, code.indexOf("/")),
+                                         name);
+            }
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
 
         if (base == null || "".equals(base)) {
             LOGGER.error("Scanning folder: Action failed because attribut "

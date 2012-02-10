@@ -46,9 +46,10 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.NAME_OF_TREE;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRecentlyModifiedAction;
@@ -189,7 +190,7 @@ public class RecentlyTreeGwtRPCDS
                                        response.setData(list);
                                    }
                                    processResponse(requestId, response);
-                                   RefreshRecentlyTreeEvent.fire(bus);
+                                   RefreshTreeEvent.fire(bus, NAME_OF_TREE.INPUT_QUEUE);
                                }
                            });
 
@@ -228,7 +229,7 @@ public class RecentlyTreeGwtRPCDS
                                        processResponse(requestId, response);
                                    }
                                    processResponse(requestId, response);
-                                   RefreshRecentlyTreeEvent.fire(bus);
+                                   RefreshTreeEvent.fire(bus, NAME_OF_TREE.INPUT_QUEUE);
                                }
                            });
     }

@@ -113,8 +113,11 @@ public class Constants {
     /** Path to a file with current DB schema version number */
     public static final String SCHEMA_VERSION_PATH = "schemaVersion.txt";
 
-    /** The Constant TABLE_INPUT_QUEUE_NAME. */
-    public static final String TABLE_INPUT_QUEUE_NAME = "input_queue_item";
+    /** The Constant TABLE_INPUT_QUEUE_ITEM. */
+    public static final String TABLE_INPUT_QUEUE_ITEM = "input_queue_item";
+
+    /** The Constant TABLE_INPUT_QUEUE_ITEM_NAME. */
+    public static final String TABLE_INPUT_QUEUE_ITEM_NAME = "input_queue_item_name";
 
     /** The Constant TABLE_IMAGE_NAME. */
     public static final String TABLE_IMAGE_NAME = "image";
@@ -608,4 +611,10 @@ public class Constants {
 
     /** The maximum of the length of a label */
     public static final int MAX_LABEL_LENGTH = 100;
+
+    public static enum NAME_OF_TREE {
+
+        RECENTLY_MODIFIED, INPUT_QUEUE;
+
+    }
 }

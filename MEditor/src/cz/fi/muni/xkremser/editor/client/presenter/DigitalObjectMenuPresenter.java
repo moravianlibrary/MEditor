@@ -66,6 +66,7 @@ import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.NAME_OF_TREE;
 import cz.fi.muni.xkremser.editor.client.view.DigitalObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
@@ -81,8 +82,8 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectClosedEvent.DigitalO
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent.DigitalObjectOpenedHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent.RefreshRecentlyTreeHandler;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent.RefreshTreeHandler;
 import cz.fi.muni.xkremser.editor.shared.rpc.RecentlyModifiedItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
@@ -311,11 +312,11 @@ public class DigitalObjectMenuPresenter
             }
         });
 
-        addRegisteredHandler(RefreshRecentlyTreeEvent.getType(), new RefreshRecentlyTreeHandler() {
+        addRegisteredHandler(RefreshTreeEvent.getType(), new RefreshTreeHandler() {
 
             @Override
-            public void onRefreshRecentlyTree(RefreshRecentlyTreeEvent event) {
-                refreshRecentlyModified();
+            public void onRefreshTree(RefreshTreeEvent event) {
+                if (event.getTree() == NAME_OF_TREE.RECENTLY_MODIFIED) refreshRecentlyModified();
             }
         });
     }

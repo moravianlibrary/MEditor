@@ -88,6 +88,7 @@ import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
@@ -336,7 +337,13 @@ public class CreateStructurePresenter
       */
 
     private void processImages() {
-        final ScanFolderAction action = new ScanFolderAction(model, inputPath);
+        String title = null;
+        if (bundle != null && bundle.getDc() != null && bundle.getDc().getTitle() != null
+                && bundle.getDc().getTitle().size() > 0) {
+            title = bundle.getDc().getTitle().get(0);
+        }
+
+        final ScanFolderAction action = new ScanFolderAction(model, inputPath, title);
         final DispatchCallback<ScanFolderResult> callback = new DispatchCallback<ScanFolderResult>() {
 
             private volatile int done = 0;
@@ -345,6 +352,7 @@ public class CreateStructurePresenter
 
             @Override
             public void callback(ScanFolderResult result) {
+                getEventBus().fireEvent(new RefreshTreeEvent(Constants.NAME_OF_TREE.INPUT_QUEUE));
                 final List<ImageItem> itemList = result == null ? null : result.getItems();
                 final List<ImageItem> toAdd = result == null ? null : result.getToAdd();
                 if (toAdd != null && !toAdd.isEmpty()) {

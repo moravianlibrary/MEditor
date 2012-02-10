@@ -64,6 +64,19 @@ public interface InputQueueItemDAO {
      *        the info about a possible ingest
      * @param path
      *        the path to the (non)ingested images
+     * @throws DatabaseException
      */
     void updateIngestInfo(boolean ingested, String path) throws DatabaseException;
+
+    /**
+     * Updates the name of a digital object
+     * 
+     * @param path
+     *        The path to the digital object
+     * @param name
+     *        The name
+     * @throws DatabaseException
+     */
+
+    public void updateName(String path, String name) throws DatabaseException;
 }

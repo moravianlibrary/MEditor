@@ -47,6 +47,8 @@ public class InputQueueItem
     /** The ingest info */
     private boolean ingestInfo = false;
 
+    private String name;
+
     /**
      * Instantiates a new input queue item.
      */
@@ -59,17 +61,17 @@ public class InputQueueItem
      * Instantiates a new input queue item.
      * 
      * @param path
-     *        the path
      * @param barcode
-     *        the barcode
+     * @param ingestInfo
      * @param name
-     *        the name
      */
-    public InputQueueItem(String path, String barcode, boolean ingestInfo) {
+
+    public InputQueueItem(String path, String barcode, boolean ingestInfo, String name) {
         super();
         this.path = path;
         this.barcode = barcode;
         this.ingestInfo = ingestInfo;
+        this.name = name;
     }
 
     /**
@@ -136,4 +138,20 @@ public class InputQueueItem
         this.ingestInfo = ingestInfo;
     }
 
+    /**
+     * @return the name
+     */
+
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     *        the name to set
+     */
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

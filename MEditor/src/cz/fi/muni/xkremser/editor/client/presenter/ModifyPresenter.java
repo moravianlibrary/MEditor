@@ -68,6 +68,7 @@ import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.dispatcher.TryAgainCallbackError;
 import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.NAME_OF_TREE;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
@@ -87,7 +88,7 @@ import cz.fi.muni.xkremser.editor.shared.event.DigitalObjectOpenedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
 import cz.fi.muni.xkremser.editor.shared.event.OpenDigitalObjectEvent;
-import cz.fi.muni.xkremser.editor.shared.event.RefreshRecentlyTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DigitalObjectDetail;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.LockInfo;
@@ -601,7 +602,7 @@ public class ModifyPresenter
                                @Override
                                public void callback(PutDescriptionResult result) {
                                    if (!common) {
-                                       RefreshRecentlyTreeEvent.fire(ModifyPresenter.this);
+                                       RefreshTreeEvent.fire(ModifyPresenter.this, NAME_OF_TREE.INPUT_QUEUE);
                                    }
                                }
                            });

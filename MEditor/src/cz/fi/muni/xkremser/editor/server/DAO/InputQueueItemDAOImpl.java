@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 
@@ -53,31 +54,41 @@ public class InputQueueItemDAOImpl
         implements InputQueueItemDAO {
 
     /** The Constant DELETE_ALL_ITEMS_STATEMENT. */
-    public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_NAME;
+    public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_ITEM;
 
     /** The Constant SELECT_NUMBER_ITEMS_STATEMENT. */
     public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(id) FROM "
-            + Constants.TABLE_INPUT_QUEUE_NAME;
+            + Constants.TABLE_INPUT_QUEUE_ITEM;
 
     /** The Constant INSERT_ITEM_STATEMENT. */
-    public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_NAME
+    public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM
             + " (path, barcode, ingested) VALUES ((?),(?),(?))";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT. */
-    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT = "SELECT path, barcode, ingested FROM "
-            + Constants.TABLE_INPUT_QUEUE_NAME + " WHERE position('" + File.separator
-            + "' IN trim(leading ((?)) FROM path)) = 0";
+    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT =
+            "SELECT p.path, p.barcode, p.ingested, n.name FROM " + Constants.TABLE_INPUT_QUEUE_ITEM
+                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " n ON(p.path=n.path) "
+                    + "WHERE position('" + File.separator + "' IN trim(leading ((?)) FROM p.path)) = 0";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED. */
     public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED = FIND_ITEMS_ON_TOP_LVL_STATEMENT
-            + " ORDER BY path";
+            + " ORDER BY p.path";
 
     /** The Constant FIND_ITEMS_BY_PATH_STATEMENT. */
     public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT
-            + " AND path LIKE ((?)) ORDER BY path";
+            + " AND p.path LIKE ((?)) ORDER BY p.path";
 
-    public static final String UPDATE_INGEST_INFO = "UPDATE " + Constants.TABLE_INPUT_QUEUE_NAME
+    public static final String UPDATE_INGEST_INFO = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM
             + " SET ingested = (?) WHERE path = (?)";
+
+    public static final String SELECT_NAME_ITEM_ID = "SELECT id FROM "
+            + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " WHERE path=(?)";
+
+    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
+            + " (name, path) VALUES ((?),(?))";
+
+    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
+            + " SET name = (?) WHERE path = (?)";
 
     private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
 
@@ -176,7 +187,7 @@ public class InputQueueItemDAOImpl
             ResultSet rs = findSt.executeQuery();
             while (rs.next()) {
                 retList.add(new InputQueueItem(rs.getString("path"), rs.getString("barcode"), rs
-                        .getBoolean("ingested")));
+                        .getBoolean("ingested"), rs.getString("name")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + findSt, e);
@@ -217,5 +228,61 @@ public class InputQueueItemDAOImpl
         } finally {
             closeConnection();
         }
+    }
+
+    @Override
+    public void updateName(String path, String name) throws DatabaseException {
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+        int duplicate = selectName(path);
+        try {
+
+            PreparedStatement updateSt =
+                    getConnection().prepareStatement((duplicate < 0) ? INSERT_NAME : UPDATE_NAME);
+            updateSt.setString(1, FoxmlUtils.trim(name, Constants.MAX_LABEL_LENGTH));
+            updateSt.setString(2, path);
+            int updated = updateSt.executeUpdate();
+            getConnection().commit();
+
+            if (updated == 1) {
+                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
+            } else {
+                LOGGER.error("DB has been updated, with unexpected count of updated lines: " + updated
+                        + ". Queries: \"" + updateSt + "\".");
+            }
+            // TX end
+        } catch (SQLException e) {
+            LOGGER.error(e);
+        } finally {
+            closeConnection();
+        }
+    }
+
+    private int selectName(String path) throws DatabaseException {
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+        PreparedStatement selectSt = null;
+        int id = Integer.MIN_VALUE;
+        try {
+
+            selectSt = getConnection().prepareStatement(SELECT_NAME_ITEM_ID);
+            selectSt.setString(1, path);
+            ResultSet rs = selectSt.executeQuery();
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return id;
     }
 }
