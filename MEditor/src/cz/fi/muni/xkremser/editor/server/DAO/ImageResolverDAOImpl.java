@@ -52,15 +52,15 @@ public class ImageResolverDAOImpl
         extends AbstractDAO
         implements ImageResolverDAO {
 
-    public static final String IMAGE_LIFETIME = "2 day";
+    public static int IMAGE_LIFETIME = 2;
 
     /** The Constant DELETE_ITEMS_STATEMENT. */
     public static final String DELETE_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE_NAME
-            + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + "')";
+            + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + " day')";
 
     /** The Constant SELECT_ITEMS_FOR_DELETION_STATEMENT. */
     public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT imageFile FROM "
-            + Constants.TABLE_IMAGE_NAME + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + "')";
+            + Constants.TABLE_IMAGE_NAME + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + " day')";
 
     /** The Constant SELECT_ITEM_STATEMENT. */
     public static final String SELECT_ITEM_STATEMENT = "SELECT id, imageFile FROM "
@@ -229,7 +229,8 @@ public class ImageResolverDAOImpl
      */
 
     @Override
-    public ArrayList<String> cacheAgeingProcess() throws DatabaseException {
+    public ArrayList<String> cacheAgeingProcess(int numberOfDays) throws DatabaseException {
+        IMAGE_LIFETIME = numberOfDays;
         PreparedStatement statement = null;
         ArrayList<String> ret = new ArrayList<String>();
         try {

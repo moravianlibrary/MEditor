@@ -171,7 +171,7 @@ CREATE SEQUENCE seq_input_queue_item_name
 
 ALTER TABLE meditor.seq_input_queue_item_name OWNER TO meditor;
 
-SELECT pg_catalog.setval('seq_input_queue_item_name', 0, true);
+SELECT pg_catalog.setval('seq_input_queue_item_name', 1, true);
 
 CREATE TABLE input_queue_item_name (
     id integer DEFAULT nextval('seq_input_queue_item_name'::regclass) NOT NULL,

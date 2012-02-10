@@ -246,6 +246,8 @@ public abstract class EditorConfiguration {
         /** The path where are stored user copy of FOXML or other things */
         public static final String USER_DIRECTORIES = "userDirectories";
 
+        /** The number of days after which will be the generated images removed */
+        public static final String GEN_IMAGES_LIFETIME = "genImagesLifetime";
     }
 
     /**
@@ -649,5 +651,12 @@ public abstract class EditorConfiguration {
      */
     public String getUserDirectoriesPath() {
         return getConfiguration().getString(ServerConstants.USER_DIRECTORIES);
+    }
+
+    /**
+     * Gets the number of days after which will be the generated images removed
+     */
+    public String getGenImagesLifetime() {
+        return getConfiguration().getString(ServerConstants.GEN_IMAGES_LIFETIME);
     }
 }

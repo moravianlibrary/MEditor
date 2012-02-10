@@ -184,13 +184,27 @@ public class ScanFolderHandler
      * @throws ActionException
      */
     private void removeOldImages() throws ActionException {
-        try {
-            ArrayList<String> oldImages = imageResolverDAO.cacheAgeingProcess();
-            for (String oldImage : oldImages) {
-                new File(oldImage).delete();
+
+        int numberOfDays = Integer.MIN_VALUE;
+        String numberString = configuration.getGenImagesLifetime();
+
+        if (numberString != null) {
+            try {
+                numberOfDays = Integer.parseInt(numberString);
+                if (numberOfDays > 0) {
+                    try {
+
+                        ArrayList<String> oldImages = imageResolverDAO.cacheAgeingProcess(numberOfDays);
+                        for (String oldImage : oldImages) {
+                            new File(oldImage).delete();
+                        }
+
+                    } catch (DatabaseException e) {
+                        throw new ActionException(e);
+                    }
+                }
+            } catch (NumberFormatException nfe) {
             }
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
         }
     }
 

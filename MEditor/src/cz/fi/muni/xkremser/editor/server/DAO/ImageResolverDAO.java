@@ -46,7 +46,7 @@ public interface ImageResolverDAO {
 
     String resolveItem(String identifier) throws DatabaseException;
 
-    ArrayList<String> cacheAgeingProcess() throws DatabaseException;
+    ArrayList<String> cacheAgeingProcess(int numberOfDays) throws DatabaseException;
 
     /**
      * Gets the path to an original image.
