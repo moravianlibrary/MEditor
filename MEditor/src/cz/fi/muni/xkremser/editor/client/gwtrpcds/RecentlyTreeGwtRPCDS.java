@@ -229,7 +229,7 @@ public class RecentlyTreeGwtRPCDS
                                        processResponse(requestId, response);
                                    }
                                    processResponse(requestId, response);
-                                   RefreshTreeEvent.fire(bus, NAME_OF_TREE.INPUT_QUEUE);
+                                   RefreshTreeEvent.fire(bus, NAME_OF_TREE.RECENTLY_MODIFIED);
                                }
                            });
     }
