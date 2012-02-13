@@ -34,10 +34,12 @@ public class RelsExtRelation {
 
     private String targetUuid;
     private FedoraRelationship relationName;
+    private String targetName;
 
-    public RelsExtRelation(String targetUuid, FedoraRelationship relationName) {
+    public RelsExtRelation(String targetUuid, FedoraRelationship relationName, String targetName) {
         this.targetUuid = targetUuid;
         this.relationName = relationName;
+        this.targetName = targetName;
     }
 
     public String getTargetUuid() {
@@ -55,4 +57,22 @@ public class RelsExtRelation {
     public void setRelationName(FedoraRelationship relationName) {
         this.relationName = relationName;
     }
+
+    /**
+     * @return the targetName
+     */
+
+    public String getTargetName() {
+        return targetName;
+    }
+
+    /**
+     * @param targetName
+     *        the targetName to set
+     */
+
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
+    }
+
 }

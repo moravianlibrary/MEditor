@@ -130,7 +130,7 @@ public class CreateObjectUtils {
                     child.setUuid(uuid);
                 }
                 relations.add(new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(node
-                        .getModel(), child.getModel())));
+                        .getModel(), child.getModel()), child.getName()));
             }
         }
         boolean internal = config.getImageServerInternal();
@@ -216,8 +216,9 @@ public class CreateObjectUtils {
         DOMReader domReader = new DOMReader();
         Document document = domReader.read(doc);
         RelsExtRelation rel =
-                new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(parrent.getModel(),
-                                                                                     child.getModel()));
+                new RelsExtRelation(child.getUuid(),
+                                    NamedGraphModel.getRelationship(parrent.getModel(), child.getModel()),
+                                    child.getName());
         FoxmlUtils.addRelationshipToRelsExt(document, rel);
         FedoraUtils.putRelsExt(parrent.getUuid(), document.asXML(), false);
     }

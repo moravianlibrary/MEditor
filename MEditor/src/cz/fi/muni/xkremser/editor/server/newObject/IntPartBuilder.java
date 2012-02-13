@@ -24,6 +24,8 @@
 
 package cz.fi.muni.xkremser.editor.server.newObject;
 
+import java.util.List;
+
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -65,9 +67,6 @@ public class IntPartBuilder
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
-        //        Element idSici = mods.addElement(new QName("identifier", modsNs));
-        //        idSici.addAttribute("type", "sici");
-
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
         title.addText(volumeLabel);
@@ -75,23 +74,25 @@ public class IntPartBuilder
         Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
         typeOfResource.addText("text");
 
-        //        Element part = mods.addElement(new QName("part", modsNs));
-        //        part.addAttribute("type", "Chapter");
-        //                Element extent = part.addElement(new QName("extent", modsNs));
-        //                extent.addAttribute("unit", "pages");
-        //                Element start = extent.addElement(new QName("start", modsNs));
-        //                start.addText("");
-        //                Element end = extent.addElement(new QName("end", modsNs));
-        //                end.addText("");
-        //                Element total = extent.addElement(new QName("total", modsNs));
-        //                total.addText("");
-        //                Element list = extent.addElement(new QName("list", modsNs));
-        //                list.addText("");
-        //        
-        //                Element detail = part.addElement(new QName("detail", modsNs));
-        //                detail.addAttribute("type", "pageNumber");
-        //                Element number = detail.addElement(new QName("number", modsNs));
-        //                number.addText("");
+        Element part = mods.addElement(new QName("part", modsNs));
+        part.addAttribute("type", "Chapter");
+
+        Element extent = part.addElement(new QName("extent", modsNs));
+        extent.addAttribute("unit", "pages");
+
+        List<RelsExtRelation> children = getChildren();
+
+        Element start = extent.addElement(new QName("start", modsNs));
+        start.addText(children.get(0).getTargetName());
+        Element end = extent.addElement(new QName("end", modsNs));
+        end.addText(children.get(children.size() - 1).getTargetName());
+        Element total = extent.addElement(new QName("total", modsNs));
+        total.addText(String.valueOf(children.size()));
+
+//        Element detail = part.addElement(new QName("detail", modsNs));
+//        detail.addAttribute("type", "pageNumber");
+//        Element number = detail.addElement(new QName("number", modsNs));
+//        number.addText("");
 
         Element accessCondition = mods.addElement(new QName("accessCondition", modsNs));
         accessCondition.addAttribute("type", "restrictionOnAccess");
