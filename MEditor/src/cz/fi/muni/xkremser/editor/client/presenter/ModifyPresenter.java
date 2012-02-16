@@ -602,7 +602,8 @@ public class ModifyPresenter
                                @Override
                                public void callback(PutDescriptionResult result) {
                                    if (!common) {
-                                       RefreshTreeEvent.fire(ModifyPresenter.this, NAME_OF_TREE.INPUT_QUEUE);
+                                       RefreshTreeEvent.fire(ModifyPresenter.this,
+                                                             NAME_OF_TREE.RECENTLY_MODIFIED);
                                    }
                                }
                            });

@@ -113,8 +113,9 @@ public class FindAltoOcrFilesHandler
             @Override
             public boolean accept(File file) {
                 if (typeToFind.equals(ALTO)) {
-                    return file.isFile() && file.getName().toLowerCase().contains("alto")
-                            && file.getName().toLowerCase().endsWith(".xml");
+                    //                    return file.isFile() && file.getName().toLowerCase().contains("alto")
+                    //&& 
+                    return file.isFile() && file.getName().toLowerCase().endsWith(".xml");
                 } else {
                     return file.isFile() && file.getName().toLowerCase().endsWith(".txt");
                 }
