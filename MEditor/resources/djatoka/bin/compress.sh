@@ -14,7 +14,7 @@ if [ $# -ne 3 ] ; then
 fi
 
 if [ `uname` = 'Linux' ] ; then
-  if [ `uname -p` = "x86_64" ] ; then
+  if [ `uname -m` = "x86_64" ] ; then
     # Assume Linux AMD 64 has 64-bit Java
     PLATFORM="Linux-x86-64"
     LD_LIBRARY_PATH="$LIBPATH/$PLATFORM"
@@ -30,7 +30,7 @@ elif [ `uname` = 'Darwin' ] ; then
   PLATFORM="Mac-x86"
   export LD_LIBRARY_PATH="$LIBPATH/$PLATFORM"
 elif [ `uname` = 'SunOS' ] ; then
-  if [ `uname -p` = "i386" ] ; then
+  if [ `uname -m` = "i386" ] ; then
     # Assume Solaris x86
     PLATFORM="Solaris-x86"
     LD_LIBRARY_PATH="$LIBPATH/$PLATFORM"

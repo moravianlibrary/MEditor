@@ -8,7 +8,7 @@ then
 fi
 
 if [ `uname` = 'Linux' ] ; then
-  if [ `uname -p` = "x86_64" ] ; then
+  if [ `uname -m` = "x86_64" ] ; then
     # Assume Linux AMD 64 has 64-bit Java
     mkdir jni-native
     cd jni-native
