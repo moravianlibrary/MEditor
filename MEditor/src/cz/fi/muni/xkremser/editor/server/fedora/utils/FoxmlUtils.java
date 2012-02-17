@@ -231,13 +231,4 @@ public class FoxmlUtils {
     public static String getRandomUuid() {
         return UUID.randomUUID().toString();
     }
-
-    public static String trim(String originalString, int maxLength) {
-        if (originalString.length() <= maxLength) {
-            return originalString;
-        } else {
-            return originalString.substring(0, maxLength - Constants.OVER_MAX_LENGTH_SUFFIX.length())
-                    + Constants.OVER_MAX_LENGTH_SUFFIX;
-        }
-    }
 }

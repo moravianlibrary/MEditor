@@ -28,8 +28,9 @@ import java.util.ArrayList;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Side;
-import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
@@ -38,6 +39,8 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -45,12 +48,17 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
 import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
+import cz.fi.muni.xkremser.editor.shared.event.LoadStructureEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.StoreTreeStructureResult;
 
@@ -66,6 +74,7 @@ public class LoadTreeStructureWindow
     private static LoadTreeStructureWindow storingWindow = null;
     private final ListGrid storedStructures;
     private final ListGrid storedStructuresByAll;
+    private final DispatchAsync dispatcher;
 
     public static void setInstanceOf(String code,
                                      final LangConstants lang,
@@ -92,6 +101,7 @@ public class LoadTreeStructureWindow
                                     final EventBus eventBus) {
         super(550, 620, lang.loadStructure() + ": " + code, eventBus, 40);
         this.lang = lang;
+        this.dispatcher = dispatcher;
 
         Layout userMainLayout = new VLayout();
         Layout commonMainLayout = new VLayout();
@@ -140,69 +150,98 @@ public class LoadTreeStructureWindow
             @Override
             public void onChanged(ChangedEvent event) {
                 if (forObj.equals(event.getValue())) {
-                    fetchData(dispatcher, code, false);
+                    fetchData(code, false);
                 } else {
-                    fetchData(dispatcher, null, false);
+                    fetchData(null, false);
                 }
 
             }
         });
 
-        Button userLoadButton = new Button(lang.save());
+        final Button userLoadButton = new Button(lang.loadStructure());
+        userLoadButton.setExtraSpace(5);
+        userLoadButton.setDisabled(true);
         userLoadButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                SC.say("loading..");
-                hide();
-                //                dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.PUT, null, structure),
-                //                                   new DispatchCallback<StoreTreeStructureResult>() {
-                //
-                //                                       @Override
-                //                                       public void callback(StoreTreeStructureResult result) {
-                //                                           hide();
-                //                                       }
-                //                                   });
-
+                Record rec = storedStructures.getSelectedRecord();
+                if (rec != null) {
+                    load(rec.getAttribute(Constants.ATTR_ID));
+                }
             }
         });
 
-        Button userDeleteButton = new Button(lang.removeSelected());
+        final Button userDeleteButton = new Button(lang.removeSelected());
+        userDeleteButton.setDisabled(true);
         userDeleteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                SC.say("deleting..");
-                hide();
+                deleteSelected(storedStructures.getSelectedRecords());
+                storedStructures.removeSelectedData();
+            }
+        });
+        storedStructures.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    userDeleteButton.setDisabled(false);
+                    if (selection.length == 1 && forObj.equals(radioGroupItem.getValue())) {
+                        userLoadButton.setDisabled(false);
+                    } else {
+                        userLoadButton.setDisabled(true);
+                    }
+                } else {
+                    userDeleteButton.setDisabled(true);
+                    userLoadButton.setDisabled(true);
+                }
             }
         });
 
-        Button commonLoadButton = new Button(lang.save());
+        final Button commonLoadButton = new Button(lang.loadStructure());
+        commonLoadButton.setExtraSpace(5);
+        commonLoadButton.setDisabled(true);
         commonLoadButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                SC.say("loading..");
-                hide();
-                //                dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.PUT, null, structure),
-                //                                   new DispatchCallback<StoreTreeStructureResult>() {
-                //
-                //                                       @Override
-                //                                       public void callback(StoreTreeStructureResult result) {
-                //                                           hide();
-                //                                       }
-                //                                   });
-
+                Record rec = storedStructuresByAll.getSelectedRecord();
+                if (rec != null) {
+                    load(rec.getAttribute(Constants.ATTR_ID));
+                }
             }
         });
 
-        Button commonDeleteButton = new Button(lang.removeSelected());
+        final Button commonDeleteButton = new Button(lang.removeSelected());
+        commonDeleteButton.setDisabled(true);
         commonDeleteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                SC.say("deleting..");
-                hide();
+                deleteSelected(storedStructuresByAll.getSelectedRecords());
+                storedStructuresByAll.removeSelectedData();
+            }
+        });
+
+        storedStructuresByAll.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    commonDeleteButton.setDisabled(false);
+                    if (selection.length == 1) {
+                        commonLoadButton.setDisabled(false);
+                    } else {
+                        commonLoadButton.setDisabled(true);
+                    }
+                } else {
+                    commonDeleteButton.setDisabled(true);
+                    commonLoadButton.setDisabled(true);
+                }
             }
         });
 
@@ -225,25 +264,32 @@ public class LoadTreeStructureWindow
         mainTabSet.setHeight100();
         Tab commonStoredStructures = new Tab("", "other/more_people.png");
         commonStoredStructures.setPane(commonMainLayout);
-        Tab userStoredStructures = new Tab("", "other/loner.png");
-        userStoredStructures.setPane(userMainLayout);
-        userStoredStructures.addTabSelectedHandler(new TabSelectedHandler() {
+        commonStoredStructures.addTabSelectedHandler(new TabSelectedHandler() {
 
             @Override
             public void onTabSelected(TabSelectedEvent event) {
-                fetchData(dispatcher, code, true);
+                fetchData(code, true);
             }
         });
+        Tab userStoredStructures = new Tab("", "other/loner.png");
+        userStoredStructures.setPane(userMainLayout);
         mainTabSet.setTabs(userStoredStructures, commonStoredStructures);
         addItem(mainTabSet);
         centerInPage();
-        show();
+        show(new AnimationCallback() {
+
+            @Override
+            public void execute(boolean earlyFinish) {
+                fetchData(code, false);
+            }
+        });
         focus();
         radioGroupItem.setValue(forObj);
 
     }
 
-    private void fetchData(final DispatchAsync dispatcher, final String code, boolean ownedByAll) {
+    private void fetchData(final String code, final boolean ownedByAll) {
+
         final ListGrid gridToFetch = ownedByAll ? storedStructuresByAll : storedStructures;
         final ModalWindow mw = new ModalWindow(gridToFetch);
         mw.setLoadingIcon("loadingAnimation.gif");
@@ -281,5 +327,49 @@ public class LoadTreeStructureWindow
                                }
                            });
 
+    }
+
+    private void deleteSelected(ListGridRecord[] selection) {
+        for (ListGridRecord rec : selection) {
+            delete(rec.getAttribute(Constants.ATTR_ID));
+        }
+    }
+
+    private void delete(final String id) {
+        dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.DELETE, id, false, null),
+                           new DispatchCallback<StoreTreeStructureResult>() {
+
+                               @Override
+                               public void callback(StoreTreeStructureResult result) {
+                               }
+                           });
+    }
+
+    private void load(final String id) {
+        dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.GET,
+                                                        id,
+                                                        false,
+                                                        new TreeStructureBundle()),
+                           new DispatchCallback<StoreTreeStructureResult>() {
+
+                               @Override
+                               public void callback(StoreTreeStructureResult result) {
+                                   ArrayList<TreeStructureNode> nodes = result.getNodes();
+                                   if (nodes != null) {
+                                       TreeNode[] tree = new TreeNode[nodes.size()];
+                                       Record[] pages = new Record[nodes.size()];
+                                       int i = 0, j = 0;
+                                       for (TreeStructureNode node : nodes) {
+                                           if (node.getPropParent() == null) {
+                                               pages[j++] = ClientUtils.toRecord(node, true);
+                                           } else {
+                                               tree[i++] = ClientUtils.toRecord(node, false);
+                                           }
+                                       }
+                                       LoadStructureEvent.fire(getEventBus(), tree, pages);
+                                       hide();
+                                   }
+                               }
+                           });
     }
 }

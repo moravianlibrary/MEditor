@@ -95,6 +95,10 @@ public class StoreTreeStructureHandler
                 }
                 break;
             case DELETE:
+                if (action.getId() == null) {
+                    throw new NullPointerException("id");
+                }
+                break;
             case GET:
                 if (action.getId() == null && action.isAll()) {
                     throw new NullPointerException("id");
@@ -131,13 +135,18 @@ public class StoreTreeStructureHandler
                     } else if (action.getId() == null) {
                         // for all objects of particular user
                         return new StoreTreeStructureResult(treeDAO.getAllSavedStructuresOfUser(userId), null);
-                    } else {
+                    } else if (action.getBundle() == null) {
                         // for user's objects of particular user
                         return new StoreTreeStructureResult(treeDAO.getSavedStructuresOfUser(userId,
                                                                                              action.getId()),
                                                             null);
+                    } else {
+                        // tree nodes
+                        return new StoreTreeStructureResult(null, treeDAO.loadStructure(Long.parseLong(action
+                                .getId())));
                     }
                 case DELETE:
+                    treeDAO.removeSavedStructure(Long.parseLong(action.getId()));
                     break;
 
             }

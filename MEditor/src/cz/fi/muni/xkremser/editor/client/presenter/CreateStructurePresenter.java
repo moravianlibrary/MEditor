@@ -27,6 +27,7 @@
 
 package cz.fi.muni.xkremser.editor.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +49,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
@@ -63,6 +65,7 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
@@ -81,6 +84,7 @@ import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
+import cz.fi.muni.xkremser.editor.client.view.window.StoreTreeStructureWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
@@ -88,12 +92,16 @@ import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.event.LoadStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.RefreshTreeEvent;
+import cz.fi.muni.xkremser.editor.shared.event.SaveStructureEvent;
 import cz.fi.muni.xkremser.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle;
+import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.InsertNewDigitalObjectAction;
@@ -228,7 +236,68 @@ public class CreateStructurePresenter
                     getView().resizeThumbnails(false);
                 }
             }
+        });
 
+        addRegisteredHandler(SaveStructureEvent.getType(), new SaveStructureEvent.SaveStructureHandler() {
+
+            @Override
+            public void onSaveStructure(SaveStructureEvent event) {
+                NewDigitalObject object = null;
+                try {
+                    object =
+                            ClientUtils.createTheStructure(null, leftPresenter.getView().getSubelementsGrid()
+                                    .getTree());
+                } catch (CreateObjectException e) {
+                    SC.warn(e.getMessage());
+                    e.printStackTrace();
+                }
+                Record[] tilegridData = getView().getTileGrid().getData();
+                boolean emptyTree = object == null || object.getModel() == null;
+                boolean emptyPages = tilegridData == null || tilegridData.length == 0;
+                if (emptyTree && emptyPages) {
+                    // TODO" i18n
+                    SC.warn("Není co ukládat.");
+                } else {
+                    object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+                    TreeStructureBundle bundle = new TreeStructureBundle();
+                    bundle.setInfo(new TreeStructureInfo(-1, null, null, leftPresenter.getBarcode(), object
+                            .getName(), null));
+                    bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
+                    if (!emptyTree) {
+                        bundle.getNodes().addAll(ClientUtils.toNodes(leftPresenter.getView()
+                                .getSubelementsGrid().getTree().getAllNodes()));
+                    }
+                    if (!emptyPages) {
+                        bundle.getNodes().addAll(ClientUtils.toNodes(tilegridData));
+                    }
+                    StoreTreeStructureWindow.setInstanceOf(bundle,
+                                                           emptyTree ? null : ClientUtils
+                                                                   .toStringTree(object),
+                                                           emptyPages ? null : ClientUtils
+                                                                   .recordsToString(tilegridData),
+                                                           lang,
+                                                           dispatcher,
+                                                           getEventBus());
+                }
+            }
+        });
+
+        addRegisteredHandler(LoadStructureEvent.getType(), new LoadStructureEvent.LoadStructureHandler() {
+
+            @Override
+            public void onLoadStructure(LoadStructureEvent event) {
+                Tree tree = new Tree();
+                tree.setModelType(TreeModelType.PARENT);
+                tree.setRootValue(SubstructureTreeNode.ROOT_ID);
+                tree.setIdField(Constants.ATTR_ID);
+                tree.setParentIdField(Constants.ATTR_PARENT);
+                tree.setOpenProperty("isOpen");
+                tree.setData(event.getTree());
+                leftPresenter.getView().getSubelementsGrid().setData(tree);
+                leftPresenter.getView().getSubelementsGrid().selectRecord(0);
+                leftPresenter.getView().getSubelementsGrid().redraw();
+                getView().getTileGrid().setData(event.getPages());
+            }
         });
     };
 

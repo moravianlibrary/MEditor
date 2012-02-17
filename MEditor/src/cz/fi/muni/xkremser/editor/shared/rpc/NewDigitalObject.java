@@ -39,7 +39,7 @@ import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 public class NewDigitalObject
         implements Serializable {
 
-    private static final long serialVersionUID = -5970975105768290380L;
+    private static final long serialVersionUID = -8145898237441105426L;
     private int orderIndex;
     private String name;
     private ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
@@ -58,6 +58,11 @@ public class NewDigitalObject
     @SuppressWarnings("unused")
     private NewDigitalObject() {
         // because of serialization
+    }
+
+    public NewDigitalObject(String name) {
+        super();
+        this.name = name;
     }
 
     public NewDigitalObject(int orderIndex,

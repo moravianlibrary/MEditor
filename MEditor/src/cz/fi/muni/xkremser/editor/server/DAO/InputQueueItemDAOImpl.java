@@ -38,10 +38,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
-import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 
@@ -242,7 +242,7 @@ public class InputQueueItemDAOImpl
 
             PreparedStatement updateSt =
                     getConnection().prepareStatement((duplicate < 0) ? INSERT_NAME : UPDATE_NAME);
-            updateSt.setString(1, FoxmlUtils.trim(name, Constants.MAX_LABEL_LENGTH));
+            updateSt.setString(1, ClientUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
             updateSt.setString(2, path);
             int updated = updateSt.executeUpdate();
             getConnection().commit();

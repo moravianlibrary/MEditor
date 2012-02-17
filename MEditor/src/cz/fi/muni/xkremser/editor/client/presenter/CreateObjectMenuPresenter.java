@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HasHandlers;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -43,7 +44,6 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -59,12 +59,10 @@ import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 
-import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
-import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
@@ -73,14 +71,10 @@ import cz.fi.muni.xkremser.editor.client.view.window.AddAltoOcrWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.LoadTreeStructureWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
-import cz.fi.muni.xkremser.editor.client.view.window.StoreTreeStructureWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
-import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
-import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle;
-import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
@@ -512,30 +506,6 @@ public class CreateObjectMenuPresenter
         };
     }
 
-    @Override
-    public void saveStructure() {
-        NewDigitalObject object = null;
-        try {
-            object = ClientUtils.createTheStructure(null, getView().getSubelementsGrid().getTree());
-        } catch (CreateObjectException e) {
-            SC.warn(e.getMessage());
-            e.printStackTrace();
-        }
-        if (object == null) {
-            // TODO" i18n
-            SC.warn("Strom je prázdný.");
-        } else {
-            TreeStructureBundle bundle = new TreeStructureBundle();
-            bundle.setInfo(new TreeStructureInfo(-1, null, null, barcode, object.getName(), null));
-            bundle.setNodes(ClientUtils.toNodes(getView().getSubelementsGrid().getTree()));
-            StoreTreeStructureWindow.setInstanceOf(bundle,
-                                                   ClientUtils.toStringTree(object),
-                                                   lang,
-                                                   dispatcher,
-                                                   getEventBus());
-        }
-    }
-
     public String getBarcode() {
         return barcode;
     }
@@ -547,6 +517,11 @@ public class CreateObjectMenuPresenter
     @Override
     public void loadStructure() {
         LoadTreeStructureWindow.setInstanceOf(barcode, lang, dispatcher, getEventBus());
+    }
+
+    @Override
+    public HasHandlers getBus() {
+        return getEventBus();
     }
 
 }

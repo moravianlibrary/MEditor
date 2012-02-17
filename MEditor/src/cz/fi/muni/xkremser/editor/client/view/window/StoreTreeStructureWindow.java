@@ -57,13 +57,15 @@ public class StoreTreeStructureWindow
 
     public static void setInstanceOf(TreeStructureBundle structure,
                                      String treeString,
+                                     String pagesString,
                                      final LangConstants lang,
                                      DispatchAsync dispatcher,
                                      EventBus eventBus) {
         if (isInstanceVisible()) {
             closeInstantiatedWindow();
         }
-        storingWindow = new StoreTreeStructureWindow(structure, treeString, lang, dispatcher, eventBus);
+        storingWindow =
+                new StoreTreeStructureWindow(structure, treeString, pagesString, lang, dispatcher, eventBus);
     }
 
     public static boolean isInstanceVisible() {
@@ -77,6 +79,7 @@ public class StoreTreeStructureWindow
 
     private StoreTreeStructureWindow(final TreeStructureBundle structure,
                                      final String treeString,
+                                     final String pagesString,
                                      final LangConstants lang,
                                      final DispatchAsync dispatcher,
                                      final EventBus eventBus) {
@@ -85,9 +88,16 @@ public class StoreTreeStructureWindow
         this.lang = lang;
 
         Layout mainLayout = new VLayout();
-        HTMLFlow structureInfo = new HTMLFlow("<pre>" + treeString + "</pre>");
+        HTMLFlow structureInfo =
+                new HTMLFlow("Tree:<pre>" + (treeString == null ? "empty tree" : treeString) + "</pre>");
+        structureInfo.setExtraSpace(25);
+
+        HTMLFlow pageInfo =
+                new HTMLFlow("Pages:<pre>" + (pagesString == null ? "no pages" : pagesString) + "</pre>");
+        pageInfo.setExtraSpace(10);
         mainLayout.setHeight100();
         mainLayout.addMember(structureInfo);
+        mainLayout.addMember(pageInfo);
 
         setEdgeOffset(15);
         addItem(mainLayout);

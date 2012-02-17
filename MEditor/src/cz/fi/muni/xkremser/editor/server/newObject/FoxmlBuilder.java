@@ -38,6 +38,7 @@ import org.dom4j.Element;
 import org.dom4j.QName;
 
 import cz.fi.muni.xkremser.editor.client.mods.ModsTypeClient;
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
@@ -87,7 +88,7 @@ public abstract class FoxmlBuilder {
     }
 
     public FoxmlBuilder(NewDigitalObject object, Policy policy) {
-        this.label = FoxmlUtils.trim(object.getName(), Constants.MAX_LABEL_LENGTH);
+        this.label = ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH);
         this.children = new ArrayList<RelsExtRelation>();
         this.policy = policy;
     }

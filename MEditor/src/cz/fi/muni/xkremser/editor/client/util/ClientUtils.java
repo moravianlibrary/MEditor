@@ -37,6 +37,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.DOM;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeNode;
@@ -238,14 +239,14 @@ public class ClientUtils {
         if (root == null) {
             return null;
         }
-        TreeNode[] children = tree.getChildren(root);
-        if (children.length == 0) {
-            return null;
-        }
 
         String name = root.getAttribute(Constants.ATTR_NAME);
         if (name == null || "".equals(name)) {
             throw new CreateObjectException("unknown name");
+        }
+        TreeNode[] children = tree.getChildren(root);
+        if (children.length == 0) {
+            return new NewDigitalObject(name);
         }
         String modelString = root.getAttribute(Constants.ATTR_TYPE_ID);
         if (modelString == null || "".equals(modelString)) {
@@ -437,30 +438,73 @@ public class ClientUtils {
 
     }
 
-    /**
-     * @param tree
-     * @return
-     */
-    public static List<TreeStructureNode> toNodes(Tree tree) {
+    public static List<TreeStructureNode> toNodes(Record[] records) {
         List<TreeStructureNode> retList = new ArrayList<TreeStructureNode>();
-        TreeNode[] nodes = tree.getAllNodes();
-        for (TreeNode node : nodes) {
-            retList.add(toNode(node));
+        for (int i = 0; i < records.length; i++) {
+            retList.add(toNode(records[i], i));
         }
         return retList;
     }
 
-    private static TreeStructureNode toNode(TreeNode treeNode) {
-        return new TreeStructureNode(treeNode.getAttribute(Constants.ATTR_ID),
+    private static TreeStructureNode toNode(Record treeNode, int order) {
+        String type = treeNode.getAttribute(Constants.ATTR_TYPE);
+        return new TreeStructureNode(type == null ? null : treeNode.getAttribute(Constants.ATTR_ID),
                                      treeNode.getAttribute(Constants.ATTR_PARENT),
                                      treeNode.getAttribute(Constants.ATTR_NAME),
                                      treeNode.getAttribute(Constants.ATTR_PICTURE),
-                                     treeNode.getAttribute(Constants.ATTR_TYPE),
-                                     treeNode.getAttribute(Constants.ATTR_TYPE_ID),
+                                     type == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : type,
+                                     type == null ? String.valueOf(order) : treeNode
+                                             .getAttribute(Constants.ATTR_TYPE_ID),
                                      treeNode.getAttribute(Constants.ATTR_PAGE_TYPE),
                                      treeNode.getAttribute(Constants.ATTR_DATE_ISSUED),
                                      treeNode.getAttribute(Constants.ATTR_ALTO_PATH),
-                                     treeNode.getAttribute(Constants.ATTR_OCR_PATH),
+                                     type == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
+                                             .getAttribute(Constants.ATTR_OCR_PATH),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
+    }
+
+    public static TreeNode toRecord(TreeStructureNode node, boolean page) {
+        TreeNode rec = new TreeNode();
+        if (!page) rec.setAttribute(Constants.ATTR_ID, node.getPropId());
+        rec.setAttribute(Constants.ATTR_PARENT, node.getPropParent());
+        rec.setAttribute(Constants.ATTR_NAME, node.getPropName());
+        rec.setAttribute(Constants.ATTR_PICTURE, node.getPropPicture());
+        rec.setAttribute(page ? Constants.ATTR_MODEL : Constants.ATTR_TYPE, node.getPropType());
+        if (!page) rec.setAttribute(Constants.ATTR_TYPE_ID, node.getPropTypeId());
+        rec.setAttribute(Constants.ATTR_PAGE_TYPE, node.getPropPageType());
+        rec.setAttribute(Constants.ATTR_DATE_ISSUED, node.getPropDateIssued());
+        rec.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
+        rec.setAttribute(page ? Constants.ATTR_ID : Constants.ATTR_OCR_PATH, node.getPropOcrPath());
+        rec.setAttribute(Constants.ATTR_EXIST, toBoolean(node.getPropName()));
+        return rec;
+    }
+
+    public static String recordsToString(Record[] records) {
+        if (records == null || records.length == 0) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < records.length; i++) {
+            sb.append(" ");
+            String fyzNum = String.valueOf(i + 1);
+            for (int j = fyzNum.length(); j < 3; j++) {
+                sb.append(' ');
+            }
+            sb.append(fyzNum);
+            sb.append(records[i].getAttribute(Constants.ATTR_PAGE_TYPE));
+            sb.append("  --  ");
+            sb.append(records[i].getAttribute(Constants.ATTR_NAME));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static String trimLabel(String originalString, int maxLength) {
+        if (originalString.length() <= maxLength) {
+            return originalString;
+        } else {
+            return originalString.substring(0, maxLength - Constants.OVER_MAX_LENGTH_SUFFIX.length())
+                    + Constants.OVER_MAX_LENGTH_SUFFIX;
+        }
     }
 }

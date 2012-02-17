@@ -194,7 +194,7 @@ public class ScanRecord
      */
     @Override
     public String toString() {
-        return "PageRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getBarcode()="
+        return "ScanRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getBarcode()="
                 + getBarcode() + ", getPicture()=" + getPicture() + ", getPath()=" + getPath() + "]";
     }
 

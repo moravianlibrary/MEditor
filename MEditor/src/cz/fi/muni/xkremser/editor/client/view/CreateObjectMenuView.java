@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -89,6 +90,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.NewObjectBasicInfoWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
+import cz.fi.muni.xkremser.editor.shared.event.SaveStructureEvent;
 
 /**
  * @author Jiri Kremser
@@ -118,19 +120,16 @@ public class CreateObjectMenuView
 
         Map<String, String> getLabelFromModel();
 
-        void saveStructure();
-
         void getModel(String valueAsString, ConnectExistingObjectWindow window);
 
         //Adds an ALTO file to a page
         void addAlto(ListGridRecord record);
 
-        /**
-         * @return
-         */
         int newId();
 
         void loadStructure();
+
+        HasHandlers getBus();
 
     }
 
@@ -1046,7 +1045,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                getUiHandlers().saveStructure();
+                SaveStructureEvent.fire(getUiHandlers().getBus());
             }
         });
         loadStructure.addClickHandler(new ClickHandler() {

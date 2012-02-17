@@ -25,6 +25,7 @@
 package cz.fi.muni.xkremser.editor.client.view.window;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.widgets.AnimationCallback;
@@ -45,7 +46,10 @@ import cz.fi.muni.xkremser.editor.shared.event.EscKeyPressedEvent.EscKeyPressedH
 public class UniversalWindow
         extends Window {
 
+    private final HasHandlers eventBus;
+
     public UniversalWindow(int height, int width, String title, EventBus eventBus, final int milisToWait) {
+        this.eventBus = eventBus;
         setMembersMargin(10);
         setHeight(height);
         setWidth(width);
@@ -95,7 +99,15 @@ public class UniversalWindow
 
     @Override
     public void show() {
-        animateShow(AnimationEffect.FLY, null, Constants.WINDOW_ANIMATION_DELAY_IN_MILLIS);
+        show(null);
+    }
+
+    public void show(AnimationCallback callback) {
+        animateShow(AnimationEffect.FLY, callback, Constants.WINDOW_ANIMATION_DELAY_IN_MILLIS);
+    }
+
+    public HasHandlers getEventBus() {
+        return eventBus;
     }
 
 }

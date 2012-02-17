@@ -173,6 +173,8 @@ public class CreateStructureView
     /** The Constant ID_DELETE. */
     public static final String ID_DELETE = "delete";
 
+    public static final int MANY = 100;
+
     /** The clipboard. */
     private Record[] clipboard;
 
@@ -588,35 +590,30 @@ public class CreateStructureView
 
             @Override
             public void onChanged(final ChangedEvent event) {
-                final ModalWindow mw = new ModalWindow(tileGrid);
-                mw.setLoadingIcon("loadingAnimation.gif");
-                mw.show(true);
+                addUndoRedo(tileGrid.getData(), true, false);
+                Record[] selectedRecords = tileGrid.getSelection();
+                if (tileGrid.getData().length < MANY) {
+                    tileGrid.selectAllRecords();
+                    Record[] allRecords = tileGrid.getSelection();
+                    tileGrid.selectRecords(selectedRecords);
+                    tileGrid.removeSelectedData();
+                    int index = 0;
 
-                Timer timer = new Timer() {
-
-                    @Override
-                    public void run() {
-                        addUndoRedo(tileGrid.getData(), true, false);
-                        Record[] selectedRecords = tileGrid.getSelection();
-                        tileGrid.selectAllRecords();
-                        Record[] allRecords = tileGrid.getSelection();
-                        tileGrid.selectRecords(selectedRecords);
-                        tileGrid.removeSelectedData();
-                        int index = 0;
-
-                        for (Record r : allRecords) {
-                            if (r.equals(selectedRecords[index])) {
-                                r.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
-                                if (++index + 1 > selectedRecords.length) break;
-                            }
+                    for (Record r : allRecords) {
+                        if (r.equals(selectedRecords[index])) {
+                            r.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
+                            if (++index + 1 > selectedRecords.length) break;
                         }
-                        tileGrid.setData(allRecords);
-                        tileGrid.selectRecords(selectedRecords);
                     }
-                };
-                timer.schedule(25);
-                mw.hide();
+                    tileGrid.setData(allRecords);
+                    tileGrid.selectRecords(selectedRecords);
+                } else {
+                    for (Record rec : selectedRecords) {
+                        rec.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
+                    }
+                }
             }
+
         });
 
         toolStrip.addFormItem(pageTypeItem);
@@ -1125,6 +1122,9 @@ public class CreateStructureView
     }
 
     private void updateTileGrid() {
+        if (tileGrid.getData().length > MANY) {
+            return;
+        }
         final ModalWindow mw = new ModalWindow(layout);
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
