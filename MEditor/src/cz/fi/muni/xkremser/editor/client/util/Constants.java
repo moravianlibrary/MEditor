@@ -403,7 +403,8 @@ public class Constants {
 
         /**
          * The value of nativeEvent-keyCode of button O (not zero) - used for
-         * unlock digital object
+         * unlock digital object in the editing perspective, for reduce a
+         * thumbnails in the create-new-object perspective
          */
         CODE_KEY_O(79),
 
@@ -429,7 +430,13 @@ public class Constants {
          * The value of nativeEvent-keyCode of button W - used for display
          * persistent url
          */
-        CODE_KEY_W(87);
+        CODE_KEY_W(87),
+
+        /**
+         * The value of nativeEvent-keyCode of button i - used for larger a
+         * thumbnails
+         */
+        CODE_KEY_I(73);
 
         private final int code;
 

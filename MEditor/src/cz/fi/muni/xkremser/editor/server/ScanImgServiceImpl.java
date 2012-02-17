@@ -63,8 +63,9 @@ public class ScanImgServiceImpl
     private EditorConfiguration config;
 
     private static final String DJATOKA_URL =
-            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=2&svc.scale="
-                    + Constants.IMAGE_THUMBNAIL_HEIGHT + "&rft_id=";
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=2&svc.scale=";
+
+    private static final String DJATOKA_URL_SUFFIX = "&rft_id=";
 
     private static final String DJATOKA_URL_FULL_IMG =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.scale="
@@ -102,10 +103,15 @@ public class ScanImgServiceImpl
         boolean full = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_FULL));
         boolean top = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_TOP));
         boolean bottom = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_BOTTOM));
-        String detailHeight = req.getParameter(Constants.URL_PARAM_HEIGHT);
-        String uuid =
-                req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_SCANS_PREFIX)
-                        + Constants.SERVLET_SCANS_PREFIX.length() + 1);
+        String urlHeight = req.getParameter(Constants.URL_PARAM_HEIGHT);
+
+        String uuid = req.getParameter(Constants.URL_PARAM_UUID);
+
+        if (uuid == null || "".equals(uuid)) {
+            uuid =
+                    req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_SCANS_PREFIX)
+                            + Constants.SERVLET_SCANS_PREFIX.length() + 1);
+        }
 
         StringBuffer baseUrl = new StringBuffer();
         baseUrl.append("http");
@@ -125,14 +131,16 @@ public class ScanImgServiceImpl
             String width =
                     metadata.substring(metadata.indexOf("dth\": \"") + 7, metadata.indexOf("\",\n\"he"));
             String region =
-                    (bottom ? Integer.parseInt(height) - Integer.parseInt(detailHeight) : "1") + ",1,"
-                            + detailHeight + "," + width;
+                    (bottom ? Integer.parseInt(height) - Integer.parseInt(urlHeight) : "1") + ",1,"
+                            + urlHeight + "," + width;
 
             sb.append(baseUrl.toString()).append(DJATOKA_URL_FULL_PAGE_DETAIL).append(uuid)
                     .append(DJATOKA_URL_REGION).append(region);
 
         } else {
-            sb.append(baseUrl.toString()).append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL).append(uuid);
+            sb.append(baseUrl.toString())
+                    .append(full ? DJATOKA_URL_FULL_IMG : DJATOKA_URL + urlHeight + DJATOKA_URL_SUFFIX)
+                    .append(uuid);
         }
         resp.setContentType("image/jpeg");
         resp.sendRedirect(resp.encodeRedirectURL(sb.toString()));

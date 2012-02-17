@@ -204,9 +204,15 @@ public class CreateStructureView
 
     private int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
 
+    private int imageThumbnailHeight = Constants.IMAGE_THUMBNAIL_HEIGHT;
+
+    private int imageThumbnailWidth = Constants.IMAGE_THUMBNAIL_WIDTH;
+
     private UniversalWindow universalWindow = null;
 
     private PageNumberingManager numbering;
+
+    private ToolStrip toolStrip;
 
     private List<Record[]> undoList;
     private ToolStripButton undoButton;
@@ -214,6 +220,8 @@ public class CreateStructureView
     private ToolStripButton redoButton;
     int positionBeforeMoving;
     private final EventBus eventBus;
+    private String model;
+    private String hostname;
 
     /**
      * Instantiates a new create view.
@@ -280,14 +288,16 @@ public class CreateStructureView
      */
 
     @Override
-    public void onAddImages(String model, String code, ScanRecord[] items, final String hostname) {
+    public void onAddImages(String model, Record[] items, final String hostname, boolean resize) {
         if (layout.getMembers().length != 0) {
             layout.removeMember(tileGridLayout);
         }
+        this.model = model;
+        this.hostname = hostname;
         tileGridLayout = new VLayout();
         tileGrid = new TileGrid();
-        tileGrid.setTileWidth(Constants.TILEGRID_ITEM_WIDTH);
-        tileGrid.setTileHeight(Constants.TILEGRID_ITEM_HEIGHT);
+        tileGrid.setTileWidth(imageThumbnailWidth + 10);
+        tileGrid.setTileHeight(imageThumbnailHeight + 35);
         tileGrid.setHeight100();
         tileGrid.setWidth100();
         tileGrid.setCanDrag(true);
@@ -519,9 +529,11 @@ public class CreateStructureView
 
         final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
         pictureField.setType("image");
-        pictureField.setImageURLPrefix(Constants.SERVLET_SCANS_PREFIX + '/');
-        pictureField.setImageWidth(Constants.IMAGE_THUMBNAIL_WIDTH);
-        pictureField.setImageHeight(Constants.IMAGE_THUMBNAIL_HEIGHT);
+        pictureField.setImageURLPrefix(Constants.SERVLET_SCANS_PREFIX + '/' + "?"
+                + Constants.URL_PARAM_HEIGHT + "=" + imageThumbnailHeight + "&" + Constants.URL_PARAM_UUID
+                + "=");
+        pictureField.setImageWidth(imageThumbnailWidth);
+        pictureField.setImageHeight(imageThumbnailHeight);
         pictureField.setCellStyle("tileGridImg");
 
         DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
@@ -545,10 +557,25 @@ public class CreateStructureView
         tileGrid.setData(items);
         getUiHandlers().onAddImages(tileGrid, menu);
 
+        if (!resize) toolStrip = getToolStrip();
+
+        tileGridLayout.addMember(toolStrip);
+        tileGridLayout.addMember(tileGrid);
+        layout.addMember(tileGridLayout);
+    }
+
+    /**
+     * @return
+     */
+
+    private ToolStrip getToolStrip() {
         ToolStrip toolStrip = new ToolStrip();
         toolStrip.setWidth100();
         ToolStripMenuButton menuButton = getToolStripMenuButton();
         toolStrip.addMenuButton(menuButton);
+
+        imageThumbnailHeight = Constants.IMAGE_THUMBNAIL_HEIGHT;
+        imageThumbnailWidth = Constants.IMAGE_THUMBNAIL_WIDTH;
 
         pageTypeItem = new SelectItem();
         pageTypeItem.setShowTitle(false);
@@ -656,6 +683,29 @@ public class CreateStructureView
         });
         toolStrip.addButton(zoomButton);
 
+        ToolStripButton zoomIn = new ToolStripButton();
+        zoomIn.setIcon("icons/16/zoomIn.png");
+        zoomIn.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                resizeThumbnails(true);
+            }
+        });
+        toolStrip.addButton(zoomIn);
+
+        ToolStripButton zoomOut = new ToolStripButton();
+        zoomOut.setIcon("icons/16/zoomOut.png");
+        zoomOut.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                resizeThumbnails(false);
+            }
+        });
+        toolStrip.addButton(zoomOut);
+        toolStrip.addSeparator();
+
         editMetadataButton.setIcon("silk/metadata_edit.png");
         editMetadataButton.setTitle(lang.editMeta());
         editMetadataButton.setActionType(SelectionType.CHECKBOX);
@@ -749,10 +799,8 @@ public class CreateStructureView
         });
         toolStrip.addButton(createButton);
 
-        tileGridLayout.addMember(toolStrip);
-        tileGridLayout.addMember(tileGrid);
-        layout.addMember(tileGridLayout);
         pageTypeItem.disable();
+        return toolStrip;
     }
 
     private void create() {
@@ -1328,5 +1376,32 @@ public class CreateStructureView
             redoButton.enable();
         };
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void resizeThumbnails(boolean larger) {
+
+        final ModalWindow mw = new ModalWindow(layout);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+
+        if (larger) {
+            imageThumbnailWidth = (imageThumbnailWidth * 110) / 100;
+            imageThumbnailHeight = (imageThumbnailHeight * 110) / 100;
+        } else {
+            if (imageThumbnailHeight > 60) {
+                imageThumbnailWidth = (imageThumbnailWidth * 100) / 110;
+                imageThumbnailHeight = (imageThumbnailHeight * 100) / 110;
+            }
+        }
+
+        Record[] selection = tileGrid.getSelection();
+        onAddImages(model, tileGrid.getData(), hostname, true);
+        tileGrid.selectRecords(selection);
+        mw.hide();
     }
 }

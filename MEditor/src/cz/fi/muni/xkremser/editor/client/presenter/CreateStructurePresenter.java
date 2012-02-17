@@ -129,13 +129,15 @@ public class CreateStructurePresenter
 
         PopupPanel getPopupPanel();
 
-        void onAddImages(String model, String code, ScanRecord[] items, String hostname);
+        void onAddImages(String model, Record[] items, String hostname, boolean resize);
 
         void escShortCut();
 
         TileGrid getTileGrid();
 
         void addUndoRedo(Record[] data, boolean isUndoList, boolean isRedoOperation);
+
+        void resizeThumbnails(boolean larger);
     }
 
     /**
@@ -220,8 +222,10 @@ public class CreateStructurePresenter
 
             @Override
             public void onKeyPressed(KeyPressedEvent event) {
-                if (event.getCode() == Constants.CODE_KEY_ESC) {
-                    getView().escShortCut();
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_I.getCode()) {
+                    getView().resizeThumbnails(true);
+                } else if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_O.getCode()) {
+                    getView().resizeThumbnails(false);
                 }
             }
 
@@ -441,9 +445,9 @@ public class CreateStructurePresenter
                                                            lang);
                     }
                     getView().onAddImages(DigitalObjectModel.PAGE.getValue(),
-                                          sysno,
                                           items,
-                                          config.getHostname());
+                                          config.getHostname(),
+                                          false);
                     getView().getTileGrid().addDropHandler(new DropHandler() {
 
                         @Override
