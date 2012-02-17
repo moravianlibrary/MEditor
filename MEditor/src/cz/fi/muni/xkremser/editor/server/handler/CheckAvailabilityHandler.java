@@ -59,6 +59,8 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityResult;
 public class CheckAvailabilityHandler
         implements ActionHandler<CheckAvailabilityAction, CheckAvailabilityResult> {
 
+    private static String SOME_STATIC_KRAMERIUS_PAGE = "/inc/home/info.jsp";
+
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(CheckAvailabilityHandler.class.getPackage()
             .toString());
@@ -111,7 +113,7 @@ public class CheckAvailabilityHandler
             usr = configuration.getFedoraLogin();
             pass = configuration.getFedoraPassword();
         } else if (action.getServerId() == CheckAvailability.KRAMERIUS_ID) {
-            url = configuration.getKrameriusHost();
+            url = configuration.getKrameriusHost() + SOME_STATIC_KRAMERIUS_PAGE;
         } else {
             throw new ActionException("Unknown server id");
         }
