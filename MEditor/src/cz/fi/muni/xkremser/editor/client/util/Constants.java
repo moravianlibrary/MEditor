@@ -510,27 +510,24 @@ public class Constants {
     public static enum PAGE_TYPES {
         AD, BC, BS, BL, FC, FS, IN, LI, LM, LT, NP, SP, TB, TC, TP;
 
-        @SuppressWarnings("serial")
-        public static Map<String, String> MAP = new HashMap<String, String>() {
-
-            {
-                put(PAGE_TYPES.AD.toString(), "Advertisement");
-                put(PAGE_TYPES.BC.toString(), "BackCover");
-                put(PAGE_TYPES.BS.toString(), "BackEndSheet");
-                put(PAGE_TYPES.BL.toString(), "Blank");
-                put(PAGE_TYPES.FC.toString(), "FrontCover");
-                put(PAGE_TYPES.FS.toString(), "FrontEndSheet");
-                put(PAGE_TYPES.IN.toString(), "Index");
-                put(PAGE_TYPES.LI.toString(), "ListOfIllustrations");
-                put(PAGE_TYPES.LM.toString(), "ListOfMaps");
-                put(PAGE_TYPES.LT.toString(), "ListOfTables");
-                put(PAGE_TYPES.NP.toString(), "NormalPage");
-                put(PAGE_TYPES.SP.toString(), "Spine");
-                put(PAGE_TYPES.TB.toString(), "Table");
-                put(PAGE_TYPES.TC.toString(), "TableOfContents");
-                put(PAGE_TYPES.TP.toString(), "TitlePage");
-            }
-        };
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+            MAP.put(PAGE_TYPES.AD.toString(), "Advertisement");
+            MAP.put(PAGE_TYPES.BC.toString(), "BackCover");
+            MAP.put(PAGE_TYPES.BS.toString(), "BackEndSheet");
+            MAP.put(PAGE_TYPES.BL.toString(), "Blank");
+            MAP.put(PAGE_TYPES.FC.toString(), "FrontCover");
+            MAP.put(PAGE_TYPES.FS.toString(), "FrontEndSheet");
+            MAP.put(PAGE_TYPES.IN.toString(), "Index");
+            MAP.put(PAGE_TYPES.LI.toString(), "ListOfIllustrations");
+            MAP.put(PAGE_TYPES.LM.toString(), "ListOfMaps");
+            MAP.put(PAGE_TYPES.LT.toString(), "ListOfTables");
+            MAP.put(PAGE_TYPES.NP.toString(), "NormalPage");
+            MAP.put(PAGE_TYPES.SP.toString(), "Spine");
+            MAP.put(PAGE_TYPES.TB.toString(), "Table");
+            MAP.put(PAGE_TYPES.TC.toString(), "TableOfContents");
+            MAP.put(PAGE_TYPES.TP.toString(), "TitlePage");
+        }
     }
 
     /** The value of background color of focused tabSet */

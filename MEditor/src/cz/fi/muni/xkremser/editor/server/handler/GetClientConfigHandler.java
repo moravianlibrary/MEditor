@@ -30,19 +30,22 @@ package cz.fi.muni.xkremser.editor.server.handler;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import javax.inject.Inject;
 
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.log4j.Logger;
+
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
+
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
+
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigResult;
 

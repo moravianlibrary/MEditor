@@ -30,6 +30,7 @@ package cz.fi.muni.xkremser.editor.client.view.other;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.types.Overflow;
@@ -370,37 +371,31 @@ public class ModsTab
 
         if (attributePresent) {
             modsTypeClient_ = relatedItem == null ? null : relatedItem.getMods();
-            @SuppressWarnings("serial")
+            Map<String, String> tooltips = new HashMap<String, String>();
+            tooltips.put("", "This attribute will be omitted.");
+            tooltips.put("preceding",
+                         "Information concerning a predecessor to the resource (Equivalent to MARC 21 field 780).");
+            tooltips.put("succeeding",
+                         "Information concerning a successor to the resource (Equivalent to MARC 21 field 785).");
+            tooltips.put("original",
+                         "Information concerning an original form of the resource (Equivalent to MARC 21 fields 534, 786).");
+            tooltips.put("host",
+                         "Information concerning a host or parent resource for the resource described; this may be a parent collection (Equivalent to MARC 21 fields 760, 772, 773).");
+            tooltips.put("constituent",
+                         "Information concerning a constituent unit of the resource. This allows for more specific parsed information than may be used in <tableOfContents>. (Equivalent to MARC 21 fields 762, 770, 774; fields 700, 710, 711 with subfield $t).");
+            tooltips.put("series", "Information concerning the series in which a resource is issued.");
+            tooltips.put("otherVersion",
+                         "Information concerning another version (i.e. change in intellectual content) of the resource (Equivalent to MARC 21 field 775).");
+            tooltips.put("otherFormat",
+                         "Information concerning another format (i.e. change in physical format) of the resource (Equivalent to MARC 21 field 776). ");
+            tooltips.put("isReferencedBy",
+                         "Citations or references to published bibliographic descriptions, reviews, abstracts, or indexes of the content of the resource (Roughly equivalent to MARC 21 field 510, but allows for additional parsing of data).");
+
             Attribute[] attributes =
                     new Attribute[] {
-                            new Attribute(SelectItem.class,
-                                          ModsConstants.TYPE,
-                                          "Type",
-                                          new HashMap<String, String>() {
+                            new Attribute(SelectItem.class, ModsConstants.TYPE, "Type", tooltips,
 
-                                              {
-                                                  put("", "This attribute will be omitted.");
-                                                  put("preceding",
-                                                      "Information concerning a predecessor to the resource (Equivalent to MARC 21 field 780).");
-                                                  put("succeeding",
-                                                      "Information concerning a successor to the resource (Equivalent to MARC 21 field 785).");
-                                                  put("original",
-                                                      "Information concerning an original form of the resource (Equivalent to MARC 21 fields 534, 786).");
-                                                  put("host",
-                                                      "Information concerning a host or parent resource for the resource described; this may be a parent collection (Equivalent to MARC 21 fields 760, 772, 773).");
-                                                  put("constituent",
-                                                      "Information concerning a constituent unit of the resource. This allows for more specific parsed information than may be used in <tableOfContents>. (Equivalent to MARC 21 fields 762, 770, 774; fields 700, 710, 711 with subfield $t).");
-                                                  put("series",
-                                                      "Information concerning the series in which a resource is issued.");
-                                                  put("otherVersion",
-                                                      "Information concerning another version (i.e. change in intellectual content) of the resource (Equivalent to MARC 21 field 775).");
-                                                  put("otherFormat",
-                                                      "Information concerning another format (i.e. change in physical format) of the resource (Equivalent to MARC 21 field 776). ");
-                                                  put("isReferencedBy",
-                                                      "Citations or references to published bibliographic descriptions, reviews, abstracts, or indexes of the content of the resource (Roughly equivalent to MARC 21 field 510, but allows for additional parsing of data).");
-                                              }
-                                          },
-                                          relatedItem == null ? "" : relatedItem.getType()),
+                            relatedItem == null ? "" : relatedItem.getType()),
                             TabUtils.ATTR_XLINK(relatedItem == null ? "" : relatedItem.getXlink()),
                             TabUtils.getDisplayLabel("Equivalent to MARC 21 fields 76X-78X subfields $i and $3.",
                                                      (relatedItem == null ? "" : relatedItem

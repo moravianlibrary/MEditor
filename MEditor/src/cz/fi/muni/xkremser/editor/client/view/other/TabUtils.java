@@ -129,7 +129,7 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 /**
  * The Class TabUtils.
  */
-@SuppressWarnings({"unchecked", "serial"})
+@SuppressWarnings({"unchecked"})
 public final class TabUtils {
 
     private static LangConstants lang;
@@ -142,58 +142,45 @@ public final class TabUtils {
     private static final String W3C_ENCODING = "w3cdtf";
 
     /** The Constant LANG_AUTHORITY_TOOLTIPS. */
-    private static final Map<String, String> LANG_AUTHORITY_TOOLTIPS = new HashMap<String, String>() {
-
-        {
-            put("", lang.nothing());
-            put("iso639-2b", lang.iso6392b());
-            put("rfc3066", lang.rfc3066());
-            put("iso639-3", lang.iso6393());
-            put("rfc4646", lang.rfc4646());
-        }
-    };
+    private static final Map<String, String> LANG_AUTHORITY_TOOLTIPS = new HashMap<String, String>();
 
     /** The Constant TYPE_TEXT_CODE_TOOLTIPS. */
-    private static final Map<String, String> TYPE_TEXT_CODE_TOOLTIPS = new HashMap<String, String>() {
-
-        {
-            put("", lang.attributeOmitted());
-            put("text", lang.attributeInText());
-            put("code", lang.attributeInCode());
-        }
-    };
+    private static final Map<String, String> TYPE_TEXT_CODE_TOOLTIPS = new HashMap<String, String>();
 
     /** The Constant ENCODING_TOOLTIPS. */
-    private static final Map<String, String> ENCODING_TOOLTIPS = new HashMap<String, String>() {
-
-        {
-            put("", lang.attributeOmitted());
-            put(W3C_ENCODING, lang.W3CencodingDatePattern());
-            put("iso8601", lang.iso8601DatePatern());
-            put("marc", lang.marcDate());
-        }
-    };
+    private static final Map<String, String> ENCODING_TOOLTIPS = new HashMap<String, String>();
 
     /** The Constant POINT_TOOLTIPS. */
-    private static final Map<String, String> POINT_TOOLTIPS = new HashMap<String, String>() {
-
-        {
-            put("", lang.attributeOmitted());
-            put("start", lang.startValue());
-            put("end", lang.endValue());
-        }
-    };
+    private static final Map<String, String> POINT_TOOLTIPS = new HashMap<String, String>();
 
     /** The Constant QUALIFIER_TOOLTIPS. */
-    private static final Map<String, String> QUALIFIER_TOOLTIPS = new HashMap<String, String>() {
+    private static final Map<String, String> QUALIFIER_TOOLTIPS = new HashMap<String, String>();
 
-        {
-            put("", lang.attributeOmitted());
-            put("approximate", lang.approximateValue());
-            put("inferred", lang.inferredValue());
-            put("questionable", lang.questionableValue());
-        }
-    };
+    static {
+        LANG_AUTHORITY_TOOLTIPS.put("", lang.nothing());
+        LANG_AUTHORITY_TOOLTIPS.put("iso639-2b", lang.iso6392b());
+        LANG_AUTHORITY_TOOLTIPS.put("rfc3066", lang.rfc3066());
+        LANG_AUTHORITY_TOOLTIPS.put("iso639-3", lang.iso6393());
+        LANG_AUTHORITY_TOOLTIPS.put("rfc4646", lang.rfc4646());
+
+        TYPE_TEXT_CODE_TOOLTIPS.put("", lang.attributeOmitted());
+        TYPE_TEXT_CODE_TOOLTIPS.put("text", lang.attributeInText());
+        TYPE_TEXT_CODE_TOOLTIPS.put("code", lang.attributeInCode());
+
+        ENCODING_TOOLTIPS.put("", lang.attributeOmitted());
+        ENCODING_TOOLTIPS.put(W3C_ENCODING, lang.W3CencodingDatePattern());
+        ENCODING_TOOLTIPS.put("iso8601", lang.iso8601DatePatern());
+        ENCODING_TOOLTIPS.put("marc", lang.marcDate());
+
+        POINT_TOOLTIPS.put("", lang.attributeOmitted());
+        POINT_TOOLTIPS.put("start", lang.startValue());
+        POINT_TOOLTIPS.put("end", lang.endValue());
+
+        QUALIFIER_TOOLTIPS.put("", lang.attributeOmitted());
+        QUALIFIER_TOOLTIPS.put("approximate", lang.approximateValue());
+        QUALIFIER_TOOLTIPS.put("inferred", lang.inferredValue());
+        QUALIFIER_TOOLTIPS.put("questionable", lang.questionableValue());
+    }
 
     /**
      * ATT r_ authority.
@@ -218,7 +205,7 @@ public final class TabUtils {
      * @return the attribute
      */
     public static final Attribute ATTR_LANG(String value) {
-        return new Attribute(TextItem.class, ModsConstants.LANG, "Lang", lang.iso6392b());
+        return new Attribute(TextItem.class, ModsConstants.LANG, "Lang", lang.iso6392b(), value);
     }
 
     /**
@@ -1134,12 +1121,7 @@ public final class TabUtils {
                                              attribute,
                                              expanded,
                                              null,
-                                             new ArrayList<List<String>>() {
-
-                                                 {
-                                                     add(values);
-                                                 }
-                                             },
+                                             Arrays.asList(values),
                                              holder,
                                              true);
     }
@@ -1192,12 +1174,7 @@ public final class TabUtils {
                                              tooltip,
                                              expanded,
                                              null,
-                                             new ArrayList<List<String>>() {
-
-                                                 {
-                                                     add(values);
-                                                 }
-                                             },
+                                             Arrays.asList(values),
                                              holder,
                                              true);
     }
@@ -2847,27 +2824,23 @@ public final class TabUtils {
         // final Attribute[] attributes, final List<List<String>> values,
         // MetadataHolder holder, boolean flat)
 
-        sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class,
-                                                                             ModsConstants.ISSUANCE,
-                                                                             "Issuance",
-                                                                             new HashMap<String, String>() {
+        Map<String, String> tooltips = new HashMap<String, String>();
+        tooltips.put("", lang.elementOmitted());
+        tooltips.put("continuing", lang.continuingMARC());
+        tooltips.put("monographic", lang.monographicMARC());
 
-                                                                                 {
-                                                                                     put("",
-                                                                                         lang.elementOmitted());
-                                                                                     put("continuing",
-                                                                                         lang.continuingMARC());
-                                                                                     put("monographic",
-                                                                                         lang.monographicMARC());
-                                                                                 }
-                                                                             },
-                                                                             values == null ? null
-                                                                                     : values.getIssuance() == null ? null
-                                                                                             : values.getIssuance()
-                                                                                                     .get(0)),
-                                                               false,
-                                                               null,
-                                                               holder.getIssuances()));
+        sectionStack
+                .addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class,
+                                                                         ModsConstants.ISSUANCE,
+                                                                         "Issuance",
+                                                                         tooltips,
+                                                                         values == null ? null
+                                                                                 : values.getIssuance() == null ? null
+                                                                                         : values.getIssuance()
+                                                                                                 .get(0)),
+                                                           false,
+                                                           null,
+                                                           holder.getIssuances()));
         sectionStack.addSection(getStackSectionWithAttributes("Frequencies",
                                                               "Frequency",
                                                               lang.frequency(),
@@ -2931,33 +2904,27 @@ public final class TabUtils {
                                                                                       .getForm(), false),
                                                               holder.getForms(),
                                                               false));
-        sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class,
-                                                                             ModsConstants.REFORMATTING,
-                                                                             "Reformatting Quality",
-                                                                             new HashMap<String, String>() {
-
-                                                                                 {
-                                                                                     put("",
-                                                                                         lang.elementOmitted());
-                                                                                     put("access",
-                                                                                         lang.access());
-                                                                                     put("preservation",
-                                                                                         lang.preservation());
-                                                                                     put("replacement",
-                                                                                         lang.replacement());
-                                                                                 }
-                                                                             },
-                                                                             values == null
-                                                                                     || values
-                                                                                             .getReformattingQuality() == null
-                                                                                     || values
-                                                                                             .getReformattingQuality()
-                                                                                             .size() == 0 ? ""
-                                                                                     : values.getReformattingQuality()
-                                                                                             .get(0)),
-                                                               false,
-                                                               null,
-                                                               holder.getReformattingQuality()));
+        Map<String, String> tooltips = new HashMap<String, String>();
+        tooltips.put("", lang.elementOmitted());
+        tooltips.put("access", lang.access());
+        tooltips.put("preservation", lang.preservation());
+        tooltips.put("replacement", lang.replacement());
+        sectionStack
+                .addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class,
+                                                                         ModsConstants.REFORMATTING,
+                                                                         "Reformatting Quality",
+                                                                         tooltips,
+                                                                         values == null
+                                                                                 || values
+                                                                                         .getReformattingQuality() == null
+                                                                                 || values
+                                                                                         .getReformattingQuality()
+                                                                                         .size() == 0 ? ""
+                                                                                 : values.getReformattingQuality()
+                                                                                         .get(0)),
+                                                           false,
+                                                           null,
+                                                           holder.getReformattingQuality()));
         sectionStack.addSection(getStackSection("Internet Media Types",
                                                 "Internet Media Type",
                                                 lang.intMedTypeMARC(),
@@ -2970,35 +2937,26 @@ public final class TabUtils {
                                                 false,
                                                 values == null ? null : values.getExtent(),
                                                 holder.getExtents()));
-        sectionStack.addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class,
-                                                                             ModsConstants.DIGITAL_ORIGIN,
-                                                                             "Digital Origin",
-                                                                             new HashMap<String, String>() {
-
-                                                                                 {
-                                                                                     put("",
-                                                                                         lang.elementOmitted());
-                                                                                     put("born digital",
-                                                                                         lang.bornDigital());
-                                                                                     put("reformatted digital",
-                                                                                         lang.rDigital());
-                                                                                     put("digitized microfilm",
-                                                                                         lang.microfilm());
-                                                                                     put("digitized other analog",
-                                                                                         lang.analog());
-                                                                                 }
-                                                                             },
-                                                                             values == null
-                                                                                     || values
-                                                                                             .getDigitalOrigin() == null
-                                                                                     || values
-                                                                                             .getDigitalOrigin()
-                                                                                             .size() == 0 ? ""
-                                                                                     : values.getDigitalOrigin()
-                                                                                             .get(0)),
-                                                               false,
-                                                               null,
-                                                               holder.getDigitalOrigin()));
+        tooltips = new HashMap<String, String>();
+        tooltips.put("", lang.elementOmitted());
+        tooltips.put("born digital", lang.bornDigital());
+        tooltips.put("reformatted digital", lang.rDigital());
+        tooltips.put("digitized microfilm", lang.microfilm());
+        tooltips.put("digitized other analog", lang.analog());
+        sectionStack
+                .addSection(getSimpleSectionWithAttributes(new Attribute(SelectItem.class,
+                                                                         ModsConstants.DIGITAL_ORIGIN,
+                                                                         "Digital Origin",
+                                                                         tooltips,
+                                                                         values == null
+                                                                                 || values.getDigitalOrigin() == null
+                                                                                 || values.getDigitalOrigin()
+                                                                                         .size() == 0 ? ""
+                                                                                 : values.getDigitalOrigin()
+                                                                                         .get(0)),
+                                                           false,
+                                                           null,
+                                                           holder.getDigitalOrigin()));
         attributes =
                 new Attribute[] {
                         new Attribute(TextItem.class, ModsConstants.TYPE, "Type", lang.typeMARC340()),
@@ -3250,6 +3208,11 @@ public final class TabUtils {
                 }
             }
         }
+        Map<String, String> tooltips = new HashMap<String, String>();
+        tooltips.put("", lang.attributeOmitted());
+        tooltips.put("1", lang.inf1());
+        tooltips.put("2", lang.inf2());
+        tooltips.put("3", lang.inf3());
         sectionStack
                 .addSection(getStackSectionWithAttributes("Enumeration and Chronology",
                                                           new Attribute(TextItem.class,
@@ -3260,19 +3223,7 @@ public final class TabUtils {
                                                           new Attribute[] {new Attribute(SelectItem.class,
                                                                                          ModsConstants.UNIT_TYPE,
                                                                                          "Unit Type",
-                                                                                         new HashMap<String, String>() {
-
-                                                                                             {
-                                                                                                 put("",
-                                                                                                     lang.attributeOmitted());
-                                                                                                 put("1",
-                                                                                                     lang.inf1());
-                                                                                                 put("2",
-                                                                                                     lang.inf2());
-                                                                                                 put("3",
-                                                                                                     lang.inf3());
-                                                                                             }
-                                                                                         })},
+                                                                                         tooltips)},
                                                           vals,
                                                           holder.getEnumChrono(),
                                                           false));
@@ -3388,6 +3339,12 @@ public final class TabUtils {
                 }
             }
         }
+
+        Map<String, String> tooltips = new HashMap<String, String>();
+        tooltips.put("", lang.attributeOmitted());
+        tooltips.put("marcgac", "marcgac");
+        tooltips.put("marccountry", "marccountry");
+        tooltips.put("iso3166", "iso3166");
         sectionStack
                 .addSection(getStackSectionWithAttributes("Geographic Code",
                                                           new Attribute(TextItem.class,
@@ -3398,19 +3355,7 @@ public final class TabUtils {
                                                           new Attribute[] {new Attribute(SelectItem.class,
                                                                                          ModsConstants.AUTHORITY,
                                                                                          "Authority",
-                                                                                         new HashMap<String, String>() {
-
-                                                                                             {
-                                                                                                 put("",
-                                                                                                     lang.attributeOmitted());
-                                                                                                 put("marcgac",
-                                                                                                     "marcgac");
-                                                                                                 put("marccountry",
-                                                                                                     "marccountry");
-                                                                                                 put("iso3166",
-                                                                                                     "iso3166");
-                                                                                             }
-                                                                                         })},
+                                                                                         tooltips)},
                                                           vals,
                                                           holder.getGeoCodes(),
                                                           false));
@@ -3486,6 +3431,14 @@ public final class TabUtils {
                                                 false,
                                                 values == null ? null : values.getShelfLocator(),
                                                 holder.getShelfLocators()));
+        Map<String, String> tooltips1 = new HashMap<String, String>();
+        tooltips1.put("", lang.attributeOmitted());
+        tooltips1.put("preview", lang.preview());
+        tooltips1.put("raw object", lang.rawObject());
+        tooltips1.put("object in context", lang.objContext());
+        Map<String, String> tooltips2 = new HashMap<String, String>();
+        tooltips2.put("", lang.attributeOmitted());
+        tooltips2.put("primary display", lang.primDisplay());
         attributes =
                 new Attribute[] {
                         getDisplayLabel(lang.shelfLocMARC(), ""),
@@ -3494,28 +3447,9 @@ public final class TabUtils {
                                       "Date Last Accessed",
                                       lang.dateLastAcc()),
                         new Attribute(TextAreaItem.class, ModsConstants.NOTE, "Note", lang.linkAsocURL()),
-                        new Attribute(SelectItem.class,
-                                      ModsConstants.ACCESS,
-                                      "Access",
-                                      new HashMap<String, String>() {
 
-                                          {
-                                              put("", lang.attributeOmitted());
-                                              put("preview", lang.preview());
-                                              put("raw object", lang.rawObject());
-                                              put("object in context", lang.objContext());
-                                          }
-                                      }),
-                        new Attribute(SelectItem.class,
-                                      ModsConstants.USAGE,
-                                      "Usage",
-                                      new HashMap<String, String>() {
-
-                                          {
-                                              put("", lang.attributeOmitted());
-                                              put("primary display", lang.primDisplay());
-                                          }
-                                      })};
+                        new Attribute(SelectItem.class, ModsConstants.ACCESS, "Access", tooltips1),
+                        new Attribute(SelectItem.class, ModsConstants.USAGE, "Usage", tooltips2)};
         vals = null;
         if (values != null && values.getUrl() != null && values.getUrl().size() > 0) {
             vals = new ArrayList<List<String>>();

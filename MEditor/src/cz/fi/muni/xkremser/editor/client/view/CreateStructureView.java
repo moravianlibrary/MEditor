@@ -386,12 +386,9 @@ public class CreateStructureView
                 HTMLPane viewerPane = new HTMLPane();
                 viewerPane.setPadding(15);
                 viewerPane.setContentsURL(hostname + "/meditor/viewer/viewer.html");
-                viewerPane.setContentsURLParams(new java.util.HashMap<String, String>() {
-
-                    {
-                        put("rft_id", uuid);
-                    }
-                });
+                java.util.Map<String, String> params = new java.util.HashMap<String, String>();
+                params.put("rft_id", uuid);
+                viewerPane.setContentsURLParams(params);
                 viewerPane.setContentsType(ContentsType.PAGE);
                 winModal.addItem(viewerPane);
                 winModal.show();
