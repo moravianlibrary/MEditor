@@ -20,9 +20,9 @@ DEV_TOMCAT=apache-tomcat-7.0.2
 DEV_SCRIPT=.meditor/djatoka/bin/tomcat.sh
 
 #vsup setup
-VSUP_USER=kramerius4
-VSUP_HOST=192.168.8.9
-VSUP_TOMCAT=fedora/tomcat
+VSUP_USER=kramerius
+VSUP_HOST=editor.vsup.cz
+VSUP_TOMCAT=tomcat
 VSUP_SCRIPT=.meditor/djatoka/bin/tomcat.sh
 
 #prints usage

@@ -320,10 +320,6 @@ html>body .gwt-DecoratedPopupPanel {
 	overflow: hidden;
 }
 
-.checkButton {
-	margin-bottom: 15px;
-}
-
 .langSelectionCZ {
 	background: url(./flags.gif) 0 0 no-repeat;
 	margin-right: 10px;
@@ -365,9 +361,11 @@ html>body .gwt-DecoratedPopupPanel {
 	background-color: #8b8b8b;
 }
 
-/** Loader */
+
 body {
-	overflow: hidden
+	overflow: hidden;
+	margin: 6px;
+	margin-left: 4px;
 }
 
 #loading {

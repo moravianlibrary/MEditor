@@ -119,7 +119,6 @@ public class HomeView
         checkButton = new IButton(lang.checkAvailability());
         checkButton.setAutoFit(true);
         checkButton.setExtraSpace(60);
-        checkButton.setStylePrimaryName("checkButton");
 
         HTMLFlow html2 = new HTMLFlow();
         html2.setContents(HtmlCode.title(lang.openDigitalObject(), 2));
