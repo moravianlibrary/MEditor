@@ -67,6 +67,7 @@ import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.CreateObjectException;
 import cz.fi.muni.xkremser.editor.client.LangConstants;
@@ -255,13 +256,12 @@ public class CreateStructurePresenter
                 boolean emptyTree = object == null || object.getModel() == null;
                 boolean emptyPages = tilegridData == null || tilegridData.length == 0;
                 if (emptyTree && emptyPages) {
-                    // TODO" i18n
-                    SC.warn("Není co ukládat.");
+                    SC.warn(lang.nothingToSave());
                 } else {
                     object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
                     TreeStructureBundle bundle = new TreeStructureBundle();
                     bundle.setInfo(new TreeStructureInfo(-1, null, null, leftPresenter.getBarcode(), object
-                            .getName(), null));
+                            .getName(), null, inputPath, model));
                     bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
                     if (!emptyTree) {
                         bundle.getNodes().addAll(ClientUtils.toNodes(leftPresenter.getView()
@@ -286,17 +286,7 @@ public class CreateStructurePresenter
 
             @Override
             public void onLoadStructure(LoadStructureEvent event) {
-                Tree tree = new Tree();
-                tree.setModelType(TreeModelType.PARENT);
-                tree.setRootValue(SubstructureTreeNode.ROOT_ID);
-                tree.setIdField(Constants.ATTR_ID);
-                tree.setParentIdField(Constants.ATTR_PARENT);
-                tree.setOpenProperty("isOpen");
-                tree.setData(event.getTree());
-                leftPresenter.getView().getSubelementsGrid().setData(tree);
-                leftPresenter.getView().getSubelementsGrid().selectRecord(0);
-                leftPresenter.getView().getSubelementsGrid().redraw();
-                getView().getTileGrid().setData(event.getPages());
+                load(event.getTree(), event.getPages());
             }
         });
     };
@@ -468,16 +458,15 @@ public class CreateStructurePresenter
             public void callbackError(final Throwable t) {
                 if (t.getMessage() != null && t.getMessage().length() > 0
                         && t.getMessage().charAt(0) == Constants.SESSION_EXPIRED_FLAG) {
-                    SC.confirm("Session has expired. Do you want to be redirected to login page?",
-                               new BooleanCallback() {
+                    SC.confirm(lang.sessionExpired(), new BooleanCallback() {
 
-                                   @Override
-                                   public void execute(Boolean value) {
-                                       if (value != null && value) {
-                                           MEditor.redirect(t.getMessage().substring(1));
-                                       }
-                                   }
-                               });
+                        @Override
+                        public void execute(Boolean value) {
+                            if (value != null && value) {
+                                MEditor.redirect(t.getMessage().substring(1));
+                            }
+                        }
+                    });
                 } else {
                     SC.ask(t.getMessage() + " " + lang.mesTryAgain(), new BooleanCallback() {
 
@@ -846,8 +835,7 @@ public class CreateStructurePresenter
                                    public void callback(final InsertNewDigitalObjectResult result) {
                                        if (result.isIngestSuccess()) {
                                            if (!result.isReindexSuccess()) {
-                                               // TODO: i18n
-                                               SC.warn("Reindexace se nepodařila.", new BooleanCallback() {
+                                               SC.warn(lang.reindexFail(), new BooleanCallback() {
 
                                                    @Override
                                                    public void execute(Boolean value) {
@@ -858,8 +846,7 @@ public class CreateStructurePresenter
                                                openCreated(result.getNewPid());
                                            }
                                        } else {
-                                           // TODO: i18n
-                                           SC.warn("Vložení se nepodařilo.");
+                                           SC.warn(lang.ingestFail());
                                        }
                                        getView().getPopupPanel().setVisible(false);
                                        getView().getPopupPanel().hide();
@@ -868,21 +855,18 @@ public class CreateStructurePresenter
                                    @Override
                                    public void callbackError(Throwable t) {
                                        System.out.println(t);
-                                       // TODO: i18n
-                                       SC.warn("Vložení se nepodařilo. Chyba: " + t.getMessage());
+                                       SC.warn(lang.ingestFail() + " " + lang.error() + ": " + t.getMessage());
                                        getView().getPopupPanel().setVisible(false);
                                        getView().getPopupPanel().hide();
                                    }
                                });
         } else {
-            // TODO: i18n
-            SC.warn("Objekt neobsahuje žádné podčásti, proto se nebude vytvářet. Přiřaďte alespoň nějaké stránky (z pravé části okna) či podstruktury (vyvráří se v části \"Vytvořit podstruktury\") do části \"Podstruktury\".");
+            SC.warn(lang.emptyObj());
         }
     }
 
     private void openCreated(final String pid) {
-        // TODO: i18n
-        SC.ask("Vložení proběhlo v pořádku, přejete si otevřít nový objekt?", new BooleanCallback() {
+        SC.ask(lang.ingestOk(), new BooleanCallback() {
 
             @Override
             public void execute(Boolean value) {
@@ -909,4 +893,19 @@ public class CreateStructurePresenter
     public DublinCore getDc() {
         return bundle == null || bundle.getDc() == null ? new DublinCore() : bundle.getDc();
     }
+
+    public void load(TreeNode[] treeData, Record[] pagesData) {
+        Tree tree = new Tree();
+        tree.setModelType(TreeModelType.PARENT);
+        tree.setRootValue(SubstructureTreeNode.ROOT_ID);
+        tree.setIdField(Constants.ATTR_ID);
+        tree.setParentIdField(Constants.ATTR_PARENT);
+        tree.setOpenProperty("isOpen");
+        tree.setData(treeData);
+        leftPresenter.getView().getSubelementsGrid().setData(tree);
+        leftPresenter.getView().getSubelementsGrid().selectRecord(0);
+        leftPresenter.getView().getSubelementsGrid().redraw();
+        getView().getTileGrid().setData(pagesData);
+    }
+
 }

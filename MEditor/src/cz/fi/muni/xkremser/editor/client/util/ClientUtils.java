@@ -448,9 +448,10 @@ public class ClientUtils {
 
     private static TreeStructureNode toNode(Record treeNode, int order) {
         String type = treeNode.getAttribute(Constants.ATTR_TYPE);
+
         return new TreeStructureNode(type == null ? null : treeNode.getAttribute(Constants.ATTR_ID),
                                      treeNode.getAttribute(Constants.ATTR_PARENT),
-                                     treeNode.getAttribute(Constants.ATTR_NAME),
+                                     trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
                                      treeNode.getAttribute(Constants.ATTR_PICTURE),
                                      type == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : type,
                                      type == null ? String.valueOf(order) : treeNode

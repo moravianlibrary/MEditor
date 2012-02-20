@@ -89,15 +89,18 @@ public class StoreTreeStructureWindow
 
         Layout mainLayout = new VLayout();
         HTMLFlow structureInfo =
-                new HTMLFlow("Tree:<pre>" + (treeString == null ? "empty tree" : treeString) + "</pre>");
+                new HTMLFlow(lang.tree() + ":<pre>" + (treeString == null ? lang.emptyTree() : treeString)
+                        + "</pre>");
         structureInfo.setExtraSpace(25);
 
         HTMLFlow pageInfo =
-                new HTMLFlow("Pages:<pre>" + (pagesString == null ? "no pages" : pagesString) + "</pre>");
+                new HTMLFlow(lang.pages() + ":<pre>" + (pagesString == null ? lang.noPages() : pagesString)
+                        + "</pre>");
         pageInfo.setExtraSpace(10);
         mainLayout.setHeight100();
         mainLayout.addMember(structureInfo);
         mainLayout.addMember(pageInfo);
+        mainLayout.setExtraSpace(15);
 
         setEdgeOffset(15);
         addItem(mainLayout);

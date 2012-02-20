@@ -74,7 +74,7 @@ public class TreeStructureDAOImpl
     public static final String INSERT_INFO =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NAME
-                    + " (user_id, created, description, barcode, name) VALUES ((?), (CURRENT_TIMESTAMP), (?), (?), (?))";
+                    + " (user_id, created, description, barcode, name, input_path, model) VALUES ((?), (CURRENT_TIMESTAMP), (?), (?), (?), (?), (?))";
 
     public static final String INFO_VALUE = "SELECT currval('" + Constants.SEQUENCE_TREE_STRUCTURE + "')";
 
@@ -113,7 +113,7 @@ public class TreeStructureDAOImpl
     @Override
     public ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId, String code)
             throws DatabaseException {
-        return getSavedStructures(DISCRIMINATOR.ALL_OF_USER, userId, code);
+        return getSavedStructures(DISCRIMINATOR.BARCODE_OF_USER, userId, code);
     }
 
     private ArrayList<TreeStructureInfo> getSavedStructures(DISCRIMINATOR what, long userId, String code)
@@ -151,7 +151,7 @@ public class TreeStructureDAOImpl
                 if (date != null) {
                     retList.add(new TreeStructureInfo(rs.getLong("id"), formatter.format(date), rs
                             .getString("description"), rs.getString("barcode"), rs.getString("name"), rs
-                            .getString("full_name")));
+                            .getString("full_name"), rs.getString("input_path"), rs.getString("model")));
                 }
             }
         } catch (SQLException e) {
@@ -237,6 +237,8 @@ public class TreeStructureDAOImpl
             insertInfoSt.setString(2, info.getDescription() != null ? info.getDescription() : "");
             insertInfoSt.setString(3, info.getBarcode());
             insertInfoSt.setString(4, info.getName());
+            insertInfoSt.setString(5, info.getInputPath());
+            insertInfoSt.setString(6, info.getModel());
             insertInfoSt.executeUpdate();
             PreparedStatement seqSt = getConnection().prepareStatement(INFO_VALUE);
             ResultSet rs = seqSt.executeQuery();

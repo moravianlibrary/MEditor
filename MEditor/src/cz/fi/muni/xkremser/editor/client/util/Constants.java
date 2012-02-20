@@ -229,6 +229,9 @@ public class Constants {
     /** The Constant ATTR_OWNER. */
     public static final String ATTR_OWNER = "owner";
 
+    /** The Constant ATTR_INPUT_PATH. */
+    public static final String ATTR_INPUT_PATH = "inputPath";
+
     /** The Constant DIR_MAX_DEPTH. */
     public static final int DIR_MAX_DEPTH = 5;
 

@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -673,11 +673,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String createdDate();
 
   /**
-   * Translated "Created by Jiri Kremser.".
+   * Translated "Created by Jiri Kremser and Matous Jobanek (Moravian Library in Brno).".
    * 
-   * @return translated "Created by Jiri Kremser."
+   * @return translated "Created by Jiri Kremser and Matous Jobanek (Moravian Library in Brno)."
    */
-  @DefaultStringValue("Created by Jiri Kremser.")
+  @DefaultStringValue("Created by Jiri Kremser and Matous Jobanek (Moravian Library in Brno).")
   @Key("credits")
   String credits();
 
@@ -1438,6 +1438,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String elementOmitted();
 
   /**
+   * Translated "Object is empty (no sub-structures), therefore it will not be created. Assign at least few pages (from right part) or sub-structures (can be created in \"Create substructure\") into part \"Substructures\" ".
+   * 
+   * @return translated "Object is empty (no sub-structures), therefore it will not be created. Assign at least few pages (from right part) or sub-structures (can be created in \"Create substructure\") into part \"Substructures\" "
+   */
+  @DefaultStringValue("Object is empty (no sub-structures), therefore it will not be created. Assign at least few pages (from right part) or sub-structures (can be created in \"Create substructure\") into part \"Substructures\" ")
+  @Key("emptyObj")
+  String emptyObj();
+
+  /**
+   * Translated "empty tree".
+   * 
+   * @return translated "empty tree"
+   */
+  @DefaultStringValue("empty tree")
+  @Key("emptyTree")
+  String emptyTree();
+
+  /**
    * Translated "This value is used for the end date of a range.".
    * 
    * @return translated "This value is used for the end date of a range."
@@ -1508,6 +1526,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Unparsed string that comprises a summary holdings statement. If more granularity is needed, a parsed statement using an external schema may be used within <holdingExternal>.")
   @Key("enumAndChron")
   String enumAndChron();
+
+  /**
+   * Translated "Error".
+   * 
+   * @return translated "Error"
+   */
+  @DefaultStringValue("Error")
+  @Key("error")
+  String error();
 
   /**
    * Translated "Explore".
@@ -1706,6 +1733,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("No metadata has been found")
   @Key("fnothing")
   String fnothing();
+
+  /**
+   * Translated "All my stored structures".
+   * 
+   * @return translated "All my stored structures"
+   */
+  @DefaultStringValue("All my stored structures")
+  @Key("forAll")
+  String forAll();
+
+  /**
+   * Translated "Just for this object".
+   * 
+   * @return translated "Just for this object"
+   */
+  @DefaultStringValue("Just for this object")
+  @Key("forObj")
+  String forObj();
 
   /**
    * Translated "in the form YYYY".
@@ -1924,6 +1969,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String inferredValue();
 
   /**
+   * Translated "Ingest was not successful.".
+   * 
+   * @return translated "Ingest was not successful."
+   */
+  @DefaultStringValue("Ingest was not successful.")
+  @Key("ingestFail")
+  String ingestFail();
+
+  /**
    * Translated "Ingest info".
    * 
    * @return translated "Ingest info"
@@ -1940,6 +1994,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Ingest number")
   @Key("ingestNumber")
   String ingestNumber();
+
+  /**
+   * Translated "Ingest has been successful, do you want to open the new object?".
+   * 
+   * @return translated "Ingest has been successful, do you want to open the new object?"
+   */
+  @DefaultStringValue("Ingest has been successful, do you want to open the new object?")
+  @Key("ingestOk")
+  String ingestOk();
 
   /**
    * Translated "Input queue".
@@ -1987,11 +2050,11 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String internalparts();
 
   /**
-   * Translated "<h1>Metadata Editor</h1>Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>.<br/><br/><h2>Availability of cooperating systems</h2>".
+   * Translated "<h1>Metadata Editor</h1>Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4, however, it is possible to open the digital object directly by entering it's identifier below on the page, or by clicking to one of recently modified (left bottom). For creating a new digital object from prepared scanned pages click with right mouse button on the directory with scans in the Input queue section (left top) and select Create. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>.<br/><br/><h2>Availability of cooperating systems</h2>".
    * 
-   * @return translated "<h1>Metadata Editor</h1>Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>.<br/><br/><h2>Availability of cooperating systems</h2>"
+   * @return translated "<h1>Metadata Editor</h1>Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4, however, it is possible to open the digital object directly by entering it's identifier below on the page, or by clicking to one of recently modified (left bottom). For creating a new digital object from prepared scanned pages click with right mouse button on the directory with scans in the Input queue section (left top) and select Create. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>.<br/><br/><h2>Availability of cooperating systems</h2>"
    */
-  @DefaultStringValue("<h1>Metadata Editor</h1>Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>.<br/><br/><h2>Availability of cooperating systems</h2>")
+  @DefaultStringValue("<h1>Metadata Editor</h1>Rich Internet application used for modification of metadata stored in <a href='http://fedora-commons.org'>Fedora Commons repository</a>. Editor should be primarily run by link from Kramerius 4, however, it is possible to open the digital object directly by entering it's identifier below on the page, or by clicking to one of recently modified (left bottom). For creating a new digital object from prepared scanned pages click with right mouse button on the directory with scans in the Input queue section (left top) and select Create. The licence of Metadata Editor is GNU GPL and system itself can be downloaded from <a href='http://code.google.com/p/meta-editor/'> google code</a>.<br/><br/><h2>Availability of cooperating systems</h2>")
   @Key("introduction")
   String introduction();
 
@@ -2653,6 +2716,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String noLocked();
 
   /**
+   * Translated "no pages".
+   * 
+   * @return translated "no pages"
+   */
+  @DefaultStringValue("no pages")
+  @Key("noPages")
+  String noPages();
+
+  /**
    * Translated "missing".
    * 
    * @return translated "missing"
@@ -2741,6 +2813,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("There is no selected item. ")
   @Key("nothingSelected")
   String nothingSelected();
+
+  /**
+   * Translated "There is nothing to be saved.".
+   * 
+   * @return translated "There is nothing to be saved."
+   */
+  @DefaultStringValue("There is nothing to be saved.")
+  @Key("nothingToSave")
+  String nothingToSave();
 
   /**
    * Translated "Indicates a link to the object within the context of its environment (with associated metadata, navigation, etc.)".
@@ -2948,6 +3029,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This attribute allows for extensiblity of date types so that other specific date types may be designated if not given a separate element in MODS.")
   @Key("otherDateType")
   String otherDateType();
+
+  /**
+   * Translated "Owner".
+   * 
+   * @return translated "Owner"
+   */
+  @DefaultStringValue("Owner")
+  @Key("owner")
+  String owner();
 
   /**
    * Translated "Page".
@@ -3400,6 +3490,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String region();
 
   /**
+   * Translated "Reindex process failed.".
+   * 
+   * @return translated "Reindex process failed."
+   */
+  @DefaultStringValue("Reindex process failed.")
+  @Key("reindexFail")
+  String reindexFail();
+
+  /**
    * Translated "Relation".
    * 
    * @return translated "Relation"
@@ -3623,6 +3722,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Session has expired. Do you want to be redirected to login page?")
   @Key("sesExp")
   String sesExp();
+
+  /**
+   * Translated "Session has expired. Do you want to be redirected to login page?".
+   * 
+   * @return translated "Session has expired. Do you want to be redirected to login page?"
+   */
+  @DefaultStringValue("Session has expired. Do you want to be redirected to login page?")
+  @Key("sessionExpired")
+  String sessionExpired();
 
   /**
    * Translated "Equivalent to MARC 21 field 856 subfields $y and $3.".
@@ -3974,6 +4082,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("It specifies the transliteration technique used within individual elements. There is no MARC 21 equivalent for this attribute. ")
   @Key("transliterationAttr")
   String transliterationAttr();
+
+  /**
+   * Translated "Tree".
+   * 
+   * @return translated "Tree"
+   */
+  @DefaultStringValue("Tree")
+  @Key("tree")
+  String tree();
 
   /**
    * Translated "This attribute may be used if desired to distinguish different aspects of genre, such as class, work type, or style.".

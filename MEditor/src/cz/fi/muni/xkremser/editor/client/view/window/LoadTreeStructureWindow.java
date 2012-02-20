@@ -120,10 +120,11 @@ public class LoadTreeStructureWindow
         storedStructures.setAutoFetchData(false);
         ListGridField dateField = new ListGridField(Constants.ATTR_DATE, lang.date());
         ListGridField nameField = new ListGridField(Constants.ATTR_NAME, lang.name());
+        ListGridField modelField = new ListGridField(Constants.ATTR_MODEL, lang.dcType());
         ListGridField descField = new ListGridField(Constants.ATTR_DESC, lang.description());
         //        storedStructures.sort(Constants.ATTR_DATE, SortDirection.DESCENDING);
         storedStructures.setSortField(Constants.ATTR_DATE);
-        storedStructures.setFields(dateField, nameField, descField);
+        storedStructures.setFields(dateField, modelField, nameField, descField);
         userTopLayout.addMember(storedStructures);
 
         storedStructuresByAll = new ListGrid();
@@ -132,15 +133,15 @@ public class LoadTreeStructureWindow
         storedStructuresByAll.setAutoFetchData(false);
         //        storedStructures.sort(Constants.ATTR_DATE, SortDirection.DESCENDING);
         storedStructuresByAll.setSortField(Constants.ATTR_DATE);
-        ListGridField ownerField = new ListGridField(Constants.ATTR_OWNER, "vlastnik");
-        storedStructuresByAll.setFields(dateField, nameField, ownerField, descField);
+        ListGridField ownerField = new ListGridField(Constants.ATTR_OWNER, lang.owner());
+        storedStructuresByAll.setFields(dateField, modelField, nameField, ownerField, descField);
         commonTopLayout.addMember(storedStructuresByAll);
 
         DynamicForm form = new DynamicForm();
         final RadioGroupItem radioGroupItem = new RadioGroupItem();
-        radioGroupItem.setTitle("Zobrazit");
-        final String forObj = "Jen pro tento vytvářený objekt (" + code + ")";
-        final String forAll = "Všechny mé uložené struktury";
+        radioGroupItem.setTitle(lang.show());
+        final String forObj = lang.forObj() + " (" + code + ")";
+        final String forAll = lang.forAll();
         radioGroupItem.setValueMap(forObj, forAll);
 
         form.setExtraSpace(20);
@@ -233,7 +234,8 @@ public class LoadTreeStructureWindow
                 ListGridRecord[] selection = event.getSelection();
                 if (selection != null && selection.length > 0) {
                     commonDeleteButton.setDisabled(false);
-                    if (selection.length == 1) {
+                    if (selection.length == 1
+                            && selection[0].getAttribute(Constants.ATTR_BARCODE).equals(code)) {
                         commonLoadButton.setDisabled(false);
                     } else {
                         commonLoadButton.setDisabled(true);
@@ -311,6 +313,9 @@ public class LoadTreeStructureWindow
                                            records[i].setAttribute(Constants.ATTR_BARCODE, info.getBarcode());
                                            records[i].setAttribute(Constants.ATTR_NAME, info.getName());
                                            records[i].setAttribute(Constants.ATTR_OWNER, info.getOwner());
+                                           records[i].setAttribute(Constants.ATTR_INPUT_PATH,
+                                                                   info.getInputPath());
+                                           records[i].setAttribute(Constants.ATTR_MODEL, info.getModel());
                                            i++;
                                        }
                                        gridToFetch.setData(records);

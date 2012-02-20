@@ -237,7 +237,6 @@ public class FindMetadataPresenter
                                           model,
                                           bundle.getMarc().getSysno(),
                                           inputPath,
-                                          leftPresenter.getView().getInputTree(),
                                           bundle);
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model)
@@ -249,8 +248,7 @@ public class FindMetadataPresenter
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                CreateStructureEvent.fire(getEventBus(), model, sysno, inputPath, leftPresenter.getView()
-                        .getInputTree());
+                CreateStructureEvent.fire(getEventBus(), model, sysno, inputPath);
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, sysno)
                         .with(Constants.URL_PARAM_PATH, inputPath));

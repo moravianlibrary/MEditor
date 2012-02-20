@@ -70,7 +70,7 @@ public class TreeStructureBundle
     public static class TreeStructureInfo
             implements Serializable {
 
-        private static final long serialVersionUID = 5822811602881095676L;
+        private static final long serialVersionUID = 1289274899533718432L;
 
         private long id;
 
@@ -84,6 +84,10 @@ public class TreeStructureBundle
 
         private String owner;
 
+        private String inputPath;
+
+        private String model;
+
         public TreeStructureInfo() {
 
         }
@@ -93,7 +97,9 @@ public class TreeStructureBundle
                                  String description,
                                  String barcode,
                                  String name,
-                                 String owner) {
+                                 String owner,
+                                 String inputPath,
+                                 String model) {
             super();
             this.id = id;
             this.created = created;
@@ -101,6 +107,8 @@ public class TreeStructureBundle
             this.barcode = barcode;
             this.name = name;
             this.owner = owner;
+            this.inputPath = inputPath;
+            this.model = model;
         }
 
         public long getId() {
@@ -149,6 +157,22 @@ public class TreeStructureBundle
 
         public void setOwner(String owner) {
             this.owner = owner;
+        }
+
+        public String getInputPath() {
+            return inputPath;
+        }
+
+        public void setInputPath(String inputPath) {
+            this.inputPath = inputPath;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
         }
 
     }

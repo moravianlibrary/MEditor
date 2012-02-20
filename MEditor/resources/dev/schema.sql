@@ -84,18 +84,20 @@ CREATE TABLE tree_structure (
     created timestamp without time zone,
     barcode character varying(30),
     description character varying(256), 
-    name character varying(100)
+    name character varying(101),
+    input_path character varying(256),
+    model character varying(20)
 );
 
 
 CREATE TABLE tree_structure_node (
     id integer DEFAULT nextval('seq_tree_structure_node'::regclass) NOT NULL,
     tree_id integer,
-    prop_id character varying(3),
-    prop_parent character varying(3),
-    prop_name character varying(100),
+    prop_id character varying(4),
+    prop_parent character varying(4),
+    prop_name character varying(256),
     prop_picture character varying(256),
-    prop_type character varying(20),
+    prop_type character varying(40),
     prop_type_id character varying(20),
     prop_page_type character varying(25),
     prop_date_issued character varying(10),

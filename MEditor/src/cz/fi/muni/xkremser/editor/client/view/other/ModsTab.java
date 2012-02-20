@@ -98,8 +98,6 @@ public class ModsTab
         extends Tab
         implements RelatedItemHolder {
 
-    // TODO: dat do konstanty, nebo resource bundlu
-    /** The Constant MAX_DEEP. */
     private static final String TAB_TYPE = "type";
 
     /** The Constant MODS_TITLE. */
