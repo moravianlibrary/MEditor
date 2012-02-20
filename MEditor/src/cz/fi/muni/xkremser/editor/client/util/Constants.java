@@ -624,4 +624,8 @@ public class Constants {
         RECENTLY_MODIFIED, INPUT_QUEUE;
 
     }
+
+    /** An array of the illegal characters in the file names */
+    public static final String[] ILLEGAL_CHARACTERS = {"/", "`", "?", "*", "\\", "<", ">", "|", "\"", ":",
+            "%", "\'", "[", "]", "{", "}", "(", ")"};
 }

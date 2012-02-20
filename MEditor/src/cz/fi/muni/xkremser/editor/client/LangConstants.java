@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -617,6 +617,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("equivalent to MARC 21 fields 110, 710")
   @Key("corporateMARC")
   String corporateMARC();
+
+  /**
+   * Translated "This name contains illegal character(s). Please correct it.".
+   * 
+   * @return translated "This name contains illegal character(s). Please correct it."
+   */
+  @DefaultStringValue("This name contains illegal character(s). Please correct it.")
+  @Key("correctFileName")
+  String correctFileName();
 
   /**
    * Translated "Name of a country, i.e. a political entity considered a country.".
@@ -1868,6 +1877,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Identity")
   @Key("identity")
   String identity();
+
+  /**
+   * Translated "Illegal characters".
+   * 
+   * @return translated "Illegal characters"
+   */
+  @DefaultStringValue("Illegal characters")
+  @Key("illegalCharacters")
+  String illegalCharacters();
 
   /**
    * Translated "Information is about the basic bibliographic unit. (863 or 866)".

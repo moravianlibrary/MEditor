@@ -36,6 +36,7 @@ import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -201,6 +202,7 @@ public class StoreWorkingCopyWindow
         fileNameLabel.setContents(HtmlCode.title(lang.fileNameLabel() + ": ", 3));
         fileNameLabel.setAutoHeight();
         fileNameLabel.setExtraSpace(8);
+
         Label storedLabel = new Label();
         storedLabel.setContents(HtmlCode.title(lang.storedFiles() + ": ", 4));
         storedLabel.setAutoHeight();
@@ -210,10 +212,23 @@ public class StoreWorkingCopyWindow
         fileNameItem.setTitle(lang.fileName());
         fileNameItem.setWidth(350);
 
-        fileNameItem.setDefaultValue(detail.getUuid() + "_" + detail.getLabel());
+        String fileName =
+                (detail.getUuid() + "_" + detail.getLabel()).replaceAll("[\\\\/:*?\\\"\\\'<>|\\[\\](){}%]",
+                                                                        "");;
+
+        fileNameItem.setDefaultValue(fileName);
         DynamicForm saveForm = new DynamicForm();
         saveForm.setItems(fileNameItem);
-        saveForm.setExtraSpace(12);
+
+        HTMLFlow illegalCharsLabel = new HTMLFlow();
+        StringBuffer sb = new StringBuffer("");
+        for (String s : Constants.ILLEGAL_CHARACTERS) {
+            sb.append(", " + s);
+        }
+        illegalCharsLabel.setContents(HtmlCode.italic("\t" + lang.illegalCharacters() + ": ")
+                + sb.toString().substring(1));
+
+        illegalCharsLabel.setExtraSpace(12);
 
         storedFilesGrid.addCellClickHandler(new CellClickHandler() {
 
@@ -228,41 +243,54 @@ public class StoreWorkingCopyWindow
 
             @Override
             public void onClick(ClickEvent event) {
-                Record[] records = storedFilesGrid.getRecords();
-                boolean nameIsSame = false;
                 final String fileName = fileNameItem.getValueAsString();
+                if (!containsIllegalCharacter(fileName)) {
 
-                for (Record record : records) {
-                    if (record.getAttributeAsString(Constants.ATTR_NAME).equals(fileName)) {
+                    Record[] records = storedFilesGrid.getRecords();
+                    boolean nameIsSame = false;
 
-                        SC.ask(lang.fileExists(), new BooleanCallback() {
+                    for (Record record : records) {
+                        if (record.getAttributeAsString(Constants.ATTR_NAME).equals(fileName)) {
 
-                            @Override
-                            public void execute(Boolean value) {
-                                if (value) {
-                                    store(detail, dispatcher, ts, eventBus, fileName, "desc");
-                                    closeInstantiatedWindow();
-                                } else {
-                                    fileNameItem.selectValue();
+                            SC.ask(lang.fileExists(), new BooleanCallback() {
+
+                                @Override
+                                public void execute(Boolean value) {
+                                    if (value) {
+                                        store(detail, dispatcher, ts, eventBus, fileName, "desc");
+                                        closeInstantiatedWindow();
+                                    } else {
+                                        fileNameItem.selectValue();
+                                    }
                                 }
-                            }
-                        });
-                        nameIsSame = true;
-                        break;
+                            });
+                            nameIsSame = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!nameIsSame) {
-                    store(detail, dispatcher, ts, eventBus, fileName, "desc");
-                    closeInstantiatedWindow();
+                    if (!nameIsSame) {
+                        store(detail, dispatcher, ts, eventBus, fileName, "desc");
+                        closeInstantiatedWindow();
+                    }
+                } else {
+                    SC.warn(lang.correctFileName());
                 }
             }
         });
         buttonsLayout.addMember(storeButton, 0);
         storeLayout.addMember(fileNameLabel);
         storeLayout.addMember(saveForm);
+        storeLayout.addMember(illegalCharsLabel);
         storeLayout.addMember(storedLabel);
         fileNameItem.selectValue();
+    }
+
+    private static boolean containsIllegalCharacter(String string) {
+        for (String s : Constants.ILLEGAL_CHARACTERS) {
+            if (string.contains(s)) return true;
+        }
+        return false;
     }
 
     private MenuItem getOpenItem(final EventBus eventBus) {
