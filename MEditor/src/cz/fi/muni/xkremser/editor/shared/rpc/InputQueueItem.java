@@ -52,8 +52,7 @@ public class InputQueueItem
     /**
      * Instantiates a new input queue item.
      */
-    @SuppressWarnings("unused")
-    private InputQueueItem() {
+    public InputQueueItem() {
 
     }
 

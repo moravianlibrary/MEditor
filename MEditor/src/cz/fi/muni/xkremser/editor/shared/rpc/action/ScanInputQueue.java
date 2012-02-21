@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -56,4 +57,8 @@ public class ScanInputQueue
     /** The items. */
     @Out(1)
     private ArrayList<InputQueueItem> items;
+
+    /** The result of the scanning folders */
+    @Out(2)
+    private ServerActionResult serverActionResult;
 }

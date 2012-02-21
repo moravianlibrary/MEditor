@@ -4291,11 +4291,20 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String workingCopy();
 
   /**
-   * Translated "There are some images which contain illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:".
+   * Translated "There are directories which contain some illegal character(s) in its name. With these directories you will not be able to work. Problematic directories:".
    * 
-   * @return translated "There are some images which contain illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:"
+   * @return translated "There are directories which contain some illegal character(s) in its name. With these directories you will not be able to work. Problematic directories:"
    */
-  @DefaultStringValue("There are some images which contain illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:")
+  @DefaultStringValue("There are directories which contain some illegal character(s) in its name. With these directories you will not be able to work. Problematic directories:")
+  @Key("wrongDirName")
+  String wrongDirName();
+
+  /**
+   * Translated "There are images which contain some illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:".
+   * 
+   * @return translated "There are images which contain some illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:"
+   */
+  @DefaultStringValue("There are images which contain some illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:")
   @Key("wrongFileName")
   String wrongFileName();
 

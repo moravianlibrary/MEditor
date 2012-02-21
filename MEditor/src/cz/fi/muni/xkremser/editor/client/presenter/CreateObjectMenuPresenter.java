@@ -44,6 +44,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -64,6 +65,7 @@ import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
+import cz.fi.muni.xkremser.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.InputQueueTree;
@@ -75,6 +77,7 @@ import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.KeyPressedEvent;
+import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
@@ -345,9 +348,17 @@ public class CreateObjectMenuPresenter
 
                                            @Override
                                            public void callback(ScanInputQueueResult result) {
-                                               mw.hide();
-                                               getView().getInputTree().refreshTree();
-                                               ready = true;
+                                               ServerActionResult serverActionResult =
+                                                       result.getServerActionResult();
+                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
+                                                   mw.hide();
+                                                   getView().getInputTree().refreshTree();
+                                                   ready = true;
+                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
+                                                   mw.hide();
+                                                   SC.warn(lang.wrongDirName()
+                                                           + serverActionResult.getMessage());
+                                               }
                                            }
 
                                            @Override

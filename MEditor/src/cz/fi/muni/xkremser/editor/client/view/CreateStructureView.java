@@ -359,7 +359,6 @@ public class CreateStructureView
         viewItem.setEnableIfCondition(isSelected(true));
         viewItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
-            @SuppressWarnings("serial")
             @Override
             public void onClick(MenuItemClickEvent event) {
                 final String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE);

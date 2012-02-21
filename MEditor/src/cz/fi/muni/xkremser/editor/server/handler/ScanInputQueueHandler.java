@@ -65,10 +65,12 @@ import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.IOUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanInputQueueResult;
 
@@ -144,12 +146,19 @@ public class ScanInputQueueHandler
                 if (id == null || "".equals(id)) { // top level
 
                     if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
-                        result = new ScanInputQueueResult(updateDb(base));
+                        ArrayList<ArrayList<InputQueueItem>> completeScanResult = updateDb(base);
+                        result =
+                                new ScanInputQueueResult(completeScanResult.get(0),
+                                                         createServerActionResult(completeScanResult.get(1)));
                     } else {
-                        result = new ScanInputQueueResult(list);
+                        result =
+                                new ScanInputQueueResult(list,
+                                                         new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
                     }
                 } else {
-                    result = new ScanInputQueueResult(inputQueueDAO.getItems(id));
+                    result =
+                            new ScanInputQueueResult(inputQueueDAO.getItems(id),
+                                                     new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
                 }
             } catch (DatabaseException e) {
                 throw new ActionException(e);
@@ -158,12 +167,33 @@ public class ScanInputQueueHandler
 
         if (refresh) {
             try {
-                result = new ScanInputQueueResult(updateDb(base));
+                ArrayList<ArrayList<InputQueueItem>> completeScanResult = updateDb(base);
+                result =
+                        new ScanInputQueueResult(completeScanResult.get(0),
+                                                 createServerActionResult(completeScanResult.get(1)));
             } catch (DatabaseException e) {
                 throw new ActionException(e);
             }
         }
         return result;
+    }
+
+    private ServerActionResult createServerActionResult(List<InputQueueItem> inputQueueItems) {
+        if (inputQueueItems.size() == 0) {
+            return new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK);
+
+        } else {
+            StringBuffer sb = new StringBuffer("");
+            for (int i = 0; i < inputQueueItems.size() && i < 10; i++) {
+                sb.append("<br>" + inputQueueItems.get(i).getPath());
+                if (i < 9) {
+                    if (i < inputQueueItems.size() - 1) sb.append(",");
+                } else {
+                    sb.append(",...");
+                }
+            }
+            return new ServerActionResult(Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME, sb.toString());
+        }
     }
 
     /**
@@ -192,7 +222,7 @@ public class ScanInputQueueHandler
      * @return the array list
      * @throws DatabaseException
      */
-    private ArrayList<InputQueueItem> updateDb(String base) throws DatabaseException {
+    private ArrayList<ArrayList<InputQueueItem>> updateDb(String base) throws DatabaseException {
 
         String[] types = configuration.getDocumentTypes();
         try {
@@ -201,6 +231,7 @@ public class ScanInputQueueHandler
             LOGGER.warn("Unsupported fedora model, check your configuration.properties for documentTypes. They have to be the same as models in Fedora Commons repository.");
         }
         ArrayList<InputQueueItem> list = new ArrayList<InputQueueItem>();
+        ArrayList<InputQueueItem> wrongList = new ArrayList<InputQueueItem>();
         ArrayList<InputQueueItem> listTopLvl = new ArrayList<InputQueueItem>(types.length);
         synchronized (LOCK) {
             for (int i = 0; i < types.length; i++) {
@@ -211,7 +242,10 @@ public class ScanInputQueueHandler
                 InputQueueItem topLvl = new InputQueueItem(File.separator + types[i], types[i], false, null);
                 listTopLvl.add(topLvl);
                 list.add(topLvl);
-                list.addAll(scanDirectoryStructure(base, File.separator + types[i]));
+                List<List<InputQueueItem>> scanResult =
+                        scanDirectoryStructure(base, File.separator + types[i]);
+                list.addAll(scanResult.get(0));
+                wrongList.addAll(scanResult.get(1));
             }
         }
         Collections.sort(list, new Comparator<InputQueueItem>() {
@@ -222,7 +256,10 @@ public class ScanInputQueueHandler
             }
         });
         inputQueueDAO.updateItems(list);
-        return listTopLvl;
+        ArrayList<ArrayList<InputQueueItem>> completeScanResult = new ArrayList<ArrayList<InputQueueItem>>();
+        completeScanResult.add(list);
+        completeScanResult.add(wrongList);
+        return completeScanResult;
 
     }
 
@@ -237,8 +274,10 @@ public class ScanInputQueueHandler
      *        the relative path
      * @return the list
      */
-    private List<InputQueueItem> scanDirectoryStructure(String pathPrefix, String relativePath) {
-        ArrayList<InputQueueItem> inputQueueList = new ArrayList<InputQueueItem>();
+    private List<List<InputQueueItem>> scanDirectoryStructure(String pathPrefix, String relativePath) {
+        List<List<InputQueueItem>> inputQueueList = new ArrayList<List<InputQueueItem>>();
+        inputQueueList.add(new ArrayList<InputQueueItem>());
+        inputQueueList.add(new ArrayList<InputQueueItem>());
         scanDirectoryStructure(pathPrefix, relativePath, inputQueueList, Constants.DIR_MAX_DEPTH);
         return inputQueueList;
     }
@@ -258,8 +297,9 @@ public class ScanInputQueueHandler
      */
     private boolean scanDirectoryStructure(String pathPrefix,
                                            String relativePath,
-                                           final List<InputQueueItem> list,
+                                           final List<List<InputQueueItem>> inputQueueList,
                                            int level) {
+        List<InputQueueItem> list = inputQueueList.get(0);
         if (level == 0) return false;
         File path = new File(pathPrefix + relativePath);
         FileFilter filter = new FileFilter() {
@@ -273,15 +313,24 @@ public class ScanInputQueueHandler
         File[] dirs = path.listFiles(filter);
         boolean hasBeenIngested = dirs.length > 0;
         for (int i = 0; i < dirs.length; i++) {
-            String rltvpth = relativePath + File.separator + dirs[i].getName();
+            String name = dirs[i].getName();
+            String rltvpth = relativePath + File.separator + name;
 
-            boolean lowerLevelIngested = scanDirectoryStructure(pathPrefix, rltvpth, list, level - 1);
-            list.add(new InputQueueItem(rltvpth, dirs[i].getName(), hasBeenIngested(rltvpth)
-                    || lowerLevelIngested, null));
+            if (!IOUtils.containsIllegalCharacter(name)) {
+                boolean lowerLevelIngested =
+                        scanDirectoryStructure(pathPrefix, rltvpth, inputQueueList, level - 1);
+                list.add(new InputQueueItem(rltvpth, dirs[i].getName(), hasBeenIngested(rltvpth)
+                        || lowerLevelIngested, null));
 
-            hasBeenIngested =
-                    list.get(i > 0 ? list.size() - 2 : list.size() - 1).getIngestInfo()
-                            && list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
+                hasBeenIngested =
+                        list.get(i > 0 ? list.size() - 2 : list.size() - 1).getIngestInfo()
+                                && list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
+            } else {
+                LOGGER.error("This directory contains some illegal character(s) in its name: " + rltvpth);
+                InputQueueItem inputQueueItem = new InputQueueItem();
+                inputQueueItem.setPath(rltvpth);
+                inputQueueList.get(1).add(inputQueueItem);
+            }
         }
         return hasBeenIngested;
     }
