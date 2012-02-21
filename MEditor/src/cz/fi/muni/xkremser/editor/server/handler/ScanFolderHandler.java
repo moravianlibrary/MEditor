@@ -54,8 +54,10 @@ import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfigurationImpl;
 import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
+import cz.fi.muni.xkremser.editor.server.fedora.utils.IOUtils;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ScanFolderResult;
 
@@ -135,7 +137,8 @@ public class ScanFolderHandler
         }
         String[] imageTypes = configuration.getImageExtensions();
         String prefix = base + File.separator + model + File.separator + code + File.separator;
-        List<String> imgFileNames = scanDirectoryStructure(prefix, imageTypes);
+        List<String> wrongNames = new ArrayList<String>();
+        List<String> imgFileNames = scanDirectoryStructure(prefix, imageTypes, wrongNames);
         if (imgFileNames == null) {
             throw new ActionException("No images found in " + prefix);
         }
@@ -178,7 +181,25 @@ public class ScanFolderHandler
             removeOldImages();
         }
 
-        return new ScanFolderResult(result, toAdd);
+        if (wrongNames.size() == 0) {
+            return new ScanFolderResult(result,
+                                        toAdd,
+                                        new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
+        } else {
+            StringBuffer sb = new StringBuffer("");
+            for (int i = 0; i < wrongNames.size() && i < 10; i++) {
+                sb.append("<br>" + wrongNames.get(i));
+                if (i < 9) {
+                    if (i < wrongNames.size() - 1) sb.append(",");
+                } else {
+                    sb.append(",...");
+                }
+            }
+            return new ScanFolderResult(result,
+                                        toAdd,
+                                        new ServerActionResult(Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME,
+                                                               sb.toString()));
+        }
     }
 
     /**
@@ -212,6 +233,7 @@ public class ScanFolderHandler
     /**
      * Scan directory structure.
      * 
+     * @param wrongNames
      * @param pathPrefix
      *        the path prefix
      * @param relativePath
@@ -222,7 +244,9 @@ public class ScanFolderHandler
      *        the level
      * @return the list
      */
-    private List<String> scanDirectoryStructure(String path, final String[] imageTypes) {
+    private List<String> scanDirectoryStructure(String path,
+                                                final String[] imageTypes,
+                                                List<String> wrongNames) {
         File dir = new File(path);
         FileFilter filter = new FileFilter() {
 
@@ -243,7 +267,14 @@ public class ScanFolderHandler
         }
         ArrayList<String> list = new ArrayList<String>(imgs != null ? imgs.length : 0);
         for (int i = 0; i < imgs.length; i++) {
-            list.add(path + imgs[i].getName());
+
+            String name = imgs[i].getName();
+            if (!IOUtils.containsIllegalCharacter(name)) {
+                list.add(path + name);
+            } else {
+                wrongNames.add(name);
+                LOGGER.error("This image contains some illegal character(s): " + path + name);
+            }
         }
         return list;
     }

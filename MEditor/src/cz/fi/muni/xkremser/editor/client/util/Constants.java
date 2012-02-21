@@ -436,10 +436,16 @@ public class Constants {
         CODE_KEY_W(87),
 
         /**
-         * The value of nativeEvent-keyCode of button i - used for larger a
+         * The value of nativeEvent-keyCode of button I - used for larger a
          * thumbnails
          */
-        CODE_KEY_I(73);
+        CODE_KEY_I(73),
+
+        /**
+         * The value of nativeEvent-keyCode of button A - used for display a
+         * window to change rights
+         */
+        CODE_KEY_A(65);
 
         private final int code;
 
@@ -628,4 +634,8 @@ public class Constants {
     /** An array of the illegal characters in the file names */
     public static final String[] ILLEGAL_CHARACTERS = {"/", "`", "?", "*", "\\", "<", ">", "|", "\"", ":",
             "%", "\'", "[", "]", "{", "}", "(", ")"};
+
+    public static enum SERVER_ACTION_RESULT {
+        OK, WRONG_FILE_NAME;
+    }
 }

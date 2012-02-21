@@ -2,7 +2,7 @@ package cz.fi.muni.xkremser.editor.client;
 
 /**
  * Interface to represent the constants contained in resource bundle:
- * 	'/home/kremser/workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
+ * 	'/home/job/eclipseWork-workspace/MEditor/src/cz/fi/muni/xkremser/editor/client/LangConstants.properties'.
  */
 public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   
@@ -329,6 +329,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Change")
   @Key("change")
   String change();
+
+  /**
+   * Translated "Change rights".
+   * 
+   * @return translated "Change rights"
+   */
+  @DefaultStringValue("Change rights")
+  @Key("changeRights")
+  String changeRights();
 
   /**
    * Translated "Reflect the changes in the Dublin Core.".
@@ -4280,6 +4289,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Working copy")
   @Key("workingCopy")
   String workingCopy();
+
+  /**
+   * Translated "There are some images which contain illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:".
+   * 
+   * @return translated "There are some images which contain illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:"
+   */
+  @DefaultStringValue("There are some images which contain illegal character(s) in its name. These images could not be converted and you will not be able to work with them. Do you want to continue? Problematic files:")
+  @Key("wrongFileName")
+  String wrongFileName();
 
   /**
    * Translated "This attribute is used for an external link. It is defined in the MODS schema as xlink:simpleLink.".

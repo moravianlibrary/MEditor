@@ -42,6 +42,8 @@ import java.security.MessageDigest;
 
 import org.apache.log4j.Logger;
 
+import cz.fi.muni.xkremser.editor.client.util.Constants;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class IOUtils.
@@ -243,5 +245,20 @@ public class IOUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Detects whether the string contains some of the illegal characters
+     * (illegal for filenames)
+     * 
+     * @param string
+     * @return whether the string contains illegal characters
+     */
+
+    public static boolean containsIllegalCharacter(String string) {
+        for (String s : Constants.ILLEGAL_CHARACTERS) {
+            if (string.contains(s)) return true;
+        }
+        return false;
     }
 }

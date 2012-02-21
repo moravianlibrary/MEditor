@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.annotation.Out;
 import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
 
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
+import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -63,4 +64,7 @@ public class ScanFolder
 
     @Out(2)
     private ArrayList<ImageItem> toAdd;
+
+    @Out(3)
+    private ServerActionResult serverActionResult;
 }

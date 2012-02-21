@@ -101,6 +101,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.DublinCore;
 import cz.fi.muni.xkremser.editor.shared.rpc.ImageItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
+import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
 import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
@@ -414,8 +415,29 @@ public class CreateStructurePresenter
             private volatile boolean isDone = false;
 
             @Override
-            public void callback(ScanFolderResult result) {
+            public void callback(final ScanFolderResult result) {
                 getEventBus().fireEvent(new RefreshTreeEvent(Constants.NAME_OF_TREE.INPUT_QUEUE));
+
+                ServerActionResult serverActionResult = result.getServerActionResult();
+                if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK) {
+                    convert(result);
+                } else {
+                    if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
+                        SC.ask(lang.wrongFileName() + serverActionResult.getMessage(), new BooleanCallback() {
+
+                            @Override
+                            public void execute(Boolean value) {
+                                if (value != null && value) {
+                                    convert(result);
+                                }
+                            }
+                        });
+                    }
+                }
+
+            }
+
+            private void convert(ScanFolderResult result) {
                 final List<ImageItem> itemList = result == null ? null : result.getItems();
                 final List<ImageItem> toAdd = result == null ? null : result.getToAdd();
                 if (toAdd != null && !toAdd.isEmpty()) {
