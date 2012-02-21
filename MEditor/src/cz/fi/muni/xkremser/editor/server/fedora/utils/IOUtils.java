@@ -42,8 +42,6 @@ import java.security.MessageDigest;
 
 import org.apache.log4j.Logger;
 
-import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class IOUtils.
@@ -256,9 +254,6 @@ public class IOUtils {
      */
 
     public static boolean containsIllegalCharacter(String string) {
-        for (String s : Constants.ILLEGAL_CHARACTERS) {
-            if (string.contains(s)) return true;
-        }
-        return false;
+        return (!string.matches("[a-zA-Z0-9._\\-]*"));
     }
 }
