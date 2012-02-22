@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+    ServerName kramerius.mzk.cz
+    RewriteEngine On
+    RewriteRule  ^/$ /search/ [R]
+    RewriteRule  ^/search$ /search/ [R]
+    RewriteRule  ^/solr$ /solr/ [R]  
+    RewriteRule  ^/kramerius$ /kramerius/ [R]  
+    RewriteRule  ^/oaiprovider$ /oaiprovider/ [R]  
+    RewriteRule  ^/rightseditor$ /rightseditor/ [R]  
+    RewriteRule  ^/fedoragsearch$ /fedoragsearch/ [R]  
+
+        ErrorLog /var/log/apache2/kramerius-error.log
+        LogLevel warn
+
+        CustomLog /var/log/apache2/kramerius.log combined
+        ServerSignature On
+
+        <IfModule jk_module>
+            JkMount /search/* search
+            JkMount /solr/* solr
+            JkMount /kramerius/* kramerius
+            JkMount /oaiprovider/* oaiprovider
+            JkMount /rightseditor/* rightseditor
+            JkMount /fedoragsearch/* fedoragsearch
+        </IfModule>
+</VirtualHost>
+

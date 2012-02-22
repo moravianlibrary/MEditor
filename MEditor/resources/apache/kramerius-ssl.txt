@@ -1,0 +1,29 @@
+<VirtualHost *:443>
+    ServerName kramerius.mzk.cz
+    RewriteEngine On
+    RewriteRule  ^/$ http://kramerius-fe.mzk.cz/search [R]
+
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    SSLEngine on
+    SSLProxyEngine On
+    SSLCertificateFile    secretPath
+    SSLCertificateKeyFile secretPath
+
+    ProxyRequests Off
+    ProxyPreserveHost Off
+    ProxyPass / https://kramerius-fe.mzk.cz:8443/
+    ProxyPassReverse / https://kramerius-fe.mzk.cz:8443/
+
+        ErrorLog /var/log/apache2/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog /var/log/apache2/ssl_access.log combined
+</VirtualHost>
+
