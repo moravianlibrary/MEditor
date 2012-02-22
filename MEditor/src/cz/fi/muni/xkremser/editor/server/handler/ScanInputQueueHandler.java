@@ -32,18 +32,20 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import javax.inject.Inject;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
@@ -51,15 +53,7 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import org.xml.sax.SAXException;
-
 import cz.fi.muni.xkremser.editor.client.util.Constants;
-
 import cz.fi.muni.xkremser.editor.server.ServerUtils;
 import cz.fi.muni.xkremser.editor.server.DAO.InputQueueItemDAO;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
@@ -67,7 +61,6 @@ import cz.fi.muni.xkremser.editor.server.exception.DatabaseException;
 import cz.fi.muni.xkremser.editor.server.fedora.FedoraAccess;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.IOUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.XMLUtils;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.InputQueueItem;
 import cz.fi.muni.xkremser.editor.shared.rpc.ServerActionResult;
@@ -311,6 +304,9 @@ public class ScanInputQueueHandler
 
         };
         File[] dirs = path.listFiles(filter);
+        if (dirs == null) {
+            return false;
+        }
         boolean hasBeenIngested = dirs.length > 0;
         for (int i = 0; i < dirs.length; i++) {
             String name = dirs[i].getName();
