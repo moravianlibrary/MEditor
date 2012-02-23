@@ -115,6 +115,7 @@ public class HomeView
         html1.setExtraSpace(15);
 
         status = new HTMLFlow(getStatusString());
+        status.setExtraSpace(35);
 
         checkButton = new IButton(lang.checkAvailability());
         checkButton.setAutoFit(true);

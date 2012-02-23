@@ -25,9 +25,7 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import java.io.ByteArrayOutputStream;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,11 +40,9 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
-
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -84,7 +80,7 @@ public abstract class FoxmlBuilder {
     private static final Boolean VERSIONABLE = true;
 
     public FoxmlBuilder(NewDigitalObject object) {
-        this(object, Policy.PUBLIC);
+        this(object, Policy.PRIVATE);
     }
 
     public FoxmlBuilder(NewDigitalObject object, Policy policy) {
@@ -228,8 +224,12 @@ public abstract class FoxmlBuilder {
                 addXmlContent(content, dataStreamVersion);
                 break;
             case E:
+            case R:
                 addContentLocation(name, reference, dataStreamVersion);
                 break;
+            default:
+                throw new IllegalArgumentException("Unable to add Fedora managed content");
+
         }
     }
 

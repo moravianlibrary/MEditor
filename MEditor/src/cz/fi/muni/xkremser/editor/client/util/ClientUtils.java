@@ -47,7 +47,6 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureTreeNode;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -233,7 +232,7 @@ public class ClientUtils {
         return list.toArray(new ListGridRecord[] {});
     }
 
-    public static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree)
+    public static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree, boolean visible)
             throws CreateObjectException {
         TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
         if (root == null) {
@@ -260,14 +259,17 @@ public class ClientUtils {
         }
         boolean exists = root.getAttributeAsBoolean(Constants.ATTR_EXIST);
         NewDigitalObject newObj = new NewDigitalObject(0, name, model, bundle, exists ? name : null, exists);
+        newObj.setVisible(visible);
         for (TreeNode child : children) {
-            newObj.getChildren().add(createTheStructure(bundle, tree, child));
+            newObj.getChildren().add(createTheStructure(bundle, tree, child, visible));
         }
         return newObj;
     }
 
-    private static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree, TreeNode node)
-            throws CreateObjectException {
+    private static NewDigitalObject createTheStructure(MetadataBundle bundle,
+                                                       Tree tree,
+                                                       TreeNode node,
+                                                       boolean visible) throws CreateObjectException {
         String name = node.getAttribute(Constants.ATTR_NAME);
         if (name == null || "".equals(name)) {
             throw new CreateObjectException("unknown name");
@@ -293,6 +295,7 @@ public class ClientUtils {
                                      bundle,
                                      null,
                                      node.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        newObj.setVisible(visible);
         String dateIssued = node.getAttribute(Constants.ATTR_DATE_ISSUED);
         if (dateIssued != null && !"".equals(dateIssued)) {
             newObj.setDateIssued(dateIssued);
@@ -312,7 +315,7 @@ public class ClientUtils {
         newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
         TreeNode[] children = tree.getChildren(node);
         for (TreeNode child : children) {
-            newObj.getChildren().add(createTheStructure(bundle, tree, child));
+            newObj.getChildren().add(createTheStructure(bundle, tree, child, visible));
         }
         return newObj;
     }

@@ -86,7 +86,6 @@ import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.StoreTreeStructureWindow;
-
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
@@ -248,7 +247,7 @@ public class CreateStructurePresenter
                 try {
                     object =
                             ClientUtils.createTheStructure(null, leftPresenter.getView().getSubelementsGrid()
-                                    .getTree());
+                                    .getTree(), true);
                 } catch (CreateObjectException e) {
                     SC.warn(e.getMessage());
                     e.printStackTrace();
@@ -841,13 +840,12 @@ public class CreateStructurePresenter
             object =
                     ClientUtils.createTheStructure(new MetadataBundle(newDc == null ? new DublinCore()
                             : newDc, newMods, bundle == null ? null : bundle.getMarc()), leftPresenter
-                            .getView().getSubelementsGrid().getTree());
+                            .getView().getSubelementsGrid().getTree(), visible);
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();
         }
         if (object != null) {
-            object.setVisible(visible);
             object.setSysno(sysno);
             //            System.out.println(ClientUtils.toStringTree(object));
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),

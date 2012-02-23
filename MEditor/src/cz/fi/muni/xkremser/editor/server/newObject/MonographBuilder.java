@@ -54,7 +54,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
  * @version 14.11.2011
  */
 @SuppressWarnings("unused")
-class MonographBuilder
+public class MonographBuilder
         extends FoxmlBuilder {
 
     final Logger logger = Logger.getLogger(MonographBuilder.class.getName());

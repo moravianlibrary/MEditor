@@ -54,7 +54,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
  * @version 17.11.2011
  */
 @SuppressWarnings("unused")
-class PeriodicalBuilder
+public class PeriodicalBuilder
         extends FoxmlBuilder {
 
     final Logger logger = Logger.getLogger(PeriodicalBuilder.class.getName());
