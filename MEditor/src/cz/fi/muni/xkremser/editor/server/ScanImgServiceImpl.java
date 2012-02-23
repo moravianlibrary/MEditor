@@ -118,7 +118,17 @@ public class ScanImgServiceImpl
         if (req.getProtocol().toLowerCase().contains("https")) {
             baseUrl.append('s');
         }
-        baseUrl.append("://").append(URLS.LOCALHOST() ? config.getHostname() : req.getServerName());
+        baseUrl.append("://");
+        if (!URLS.LOCALHOST()) {
+            baseUrl.append(req.getServerName());
+        } else {
+            String hostname = config.getHostname();
+            if (hostname.contains("://")) {
+                baseUrl.append(hostname.substring(hostname.indexOf("://") + "://".length()));
+            } else {
+                baseUrl.append(hostname);
+            }
+        }
         StringBuffer sb = new StringBuffer();
         if (top || bottom) {
             String metadata =
