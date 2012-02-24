@@ -73,6 +73,7 @@ import cz.fi.muni.xkremser.editor.client.view.ModifyView;
 import cz.fi.muni.xkremser.editor.client.view.ModifyView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ContainerRecord;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
+import cz.fi.muni.xkremser.editor.client.view.window.ChangeRightsWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.LockDigitalObjectWindow;
@@ -897,5 +898,14 @@ public class ModifyPresenter
     @Override
     public void removeDigitalObject(String uuid) {
         RemoveDigitalObjectWindow.setInstanceOf(uuid, lang, dispatcher, getEventBus());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void changeRights(String uuid, String oldRight) {
+        new ChangeRightsWindow(uuid, getEventBus(), oldRight, lang, dispatcher);
     }
 }

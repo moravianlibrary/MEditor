@@ -167,6 +167,8 @@ public class ModifyView
         void getLockDigitalObjectInformation(final EditorTabSet ts, final boolean calledDuringPublishing);
 
         void removeDigitalObject(String uuid);
+
+        void changeRights(String uuid, String oldRight);
     }
 
     /** The Constant ID_DC. */
@@ -1089,7 +1091,7 @@ public class ModifyView
                             final Image full =
                                     new Image(Constants.SERVLET_IMAGES_PREFIX + Constants.SERVLET_FULL_PREFIX
                                             + '/' + event.getRecord().getAttribute(Constants.ATTR_UUID));
-                            full.setHeight(Constants.IMAGE_FULL_WIDTH + "px");
+                            full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
                             full.addLoadHandler(new LoadHandler() {
 
                                 @Override
@@ -1278,6 +1280,7 @@ public class ModifyView
         MenuItem refreshItem = new MenuItem(lang.refreshItem(), "icons/16/refresh.png", "Ctrl+Alt+R");
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
+        MenuItem changeRightsItem = new MenuItem(lang.changeRight(), "icons/16/door.png", "Ctrl+Alt+A");
 
         removeItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.REMOVE);
         removeItem.setAttribute(ID_UUID, topTabSet.getUuid());
@@ -1295,6 +1298,18 @@ public class ModifyView
             @Override
             public void onClick(MenuItemClickEvent event) {
                 showPersistentUrl(event.getItem().getAttributeAsString(ID_UUID));
+            }
+        });
+
+        List<String> rights = dc.getRights();
+        changeRightsItem.setAttribute(ID_UUID, topTabSet.getUuid());
+        changeRightsItem.setAttribute("right", (rights != null && rights.size() > 0) ? rights.get(0) : "");
+        changeRightsItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                getUiHandlers().changeRights(event.getItem().getAttributeAsString(ID_UUID),
+                                             event.getItem().getAttributeAsString("right"));
             }
         });
 
@@ -1365,7 +1380,8 @@ public class ModifyView
                       downloadItem,
                       removeItem,
                       publishItem,
-                      persistentUrlItem);
+                      persistentUrlItem,
+                      changeRightsItem);
         return menu;
     }
 
@@ -1735,6 +1751,10 @@ public class ModifyView
                     showPersistentUrl(focusedTabSet.getUuid());
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_D.getCode()) {
                     removeDigitalObject(focusedTabSet.getUuid());
+                } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_A.getCode()) {
+                    List<String> rights = focusedTabSet.getDc().getRights();
+                    getUiHandlers().changeRights(focusedTabSet.getUuid(),
+                                                 (rights != null && rights.size() > 0) ? rights.get(0) : "");
                 }
             }
         }

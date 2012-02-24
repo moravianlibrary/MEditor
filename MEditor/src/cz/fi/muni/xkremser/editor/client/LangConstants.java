@@ -331,13 +331,22 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String change();
 
   /**
-   * Translated "Change rights".
+   * Translated "Change right".
    * 
-   * @return translated "Change rights"
+   * @return translated "Change right"
    */
-  @DefaultStringValue("Change rights")
-  @Key("changeRights")
-  String changeRights();
+  @DefaultStringValue("Change right")
+  @Key("changeRight")
+  String changeRight();
+
+  /**
+   * Translated "Change rights for all offsprings".
+   * 
+   * @return translated "Change rights for all offsprings"
+   */
+  @DefaultStringValue("Change rights for all offsprings")
+  @Key("changeRightsOffsprings")
+  String changeRightsOffsprings();
 
   /**
    * Translated "Reflect the changes in the Dublin Core.".
@@ -383,6 +392,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Choose the detail of the top of the site")
   @Key("chooseDetailTop")
   String chooseDetailTop();
+
+  /**
+   * Translated "Choose right".
+   * 
+   * @return translated "Choose right"
+   */
+  @DefaultStringValue("Choose right")
+  @Key("chooseRight")
+  String chooseRight();
 
   /**
    * Translated "Choose version".
@@ -1562,6 +1580,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Error")
   @Key("error")
   String error();
+
+  /**
+   * Translated "Execute".
+   * 
+   * @return translated "Execute"
+   */
+  @DefaultStringValue("Execute")
+  @Key("execute")
+  String execute();
 
   /**
    * Translated "Explore".
