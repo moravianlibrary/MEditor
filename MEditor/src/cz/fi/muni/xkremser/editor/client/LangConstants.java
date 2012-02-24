@@ -367,6 +367,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String choose();
 
   /**
+   * Translated "Choose the detail of the bottom of the site".
+   * 
+   * @return translated "Choose the detail of the bottom of the site"
+   */
+  @DefaultStringValue("Choose the detail of the bottom of the site")
+  @Key("chooseDetailBottom")
+  String chooseDetailBottom();
+
+  /**
+   * Translated "Choose the detail of the top of the site".
+   * 
+   * @return translated "Choose the detail of the top of the site"
+   */
+  @DefaultStringValue("Choose the detail of the top of the site")
+  @Key("chooseDetailTop")
+  String chooseDetailTop();
+
+  /**
    * Translated "Choose version".
    * 
    * @return translated "Choose version"

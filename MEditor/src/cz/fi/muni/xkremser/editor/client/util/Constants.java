@@ -102,9 +102,7 @@ public class Constants {
 
     public static final String URL_PARAM_HEIGHT = "height";
 
-    public static final String URL_PARAM_TOP = "top";
-
-    public static final String URL_PARAM_BOTTOM = "bottom";
+    public static final String URL_PARAM_TOP_SPACE = "topSpace";
 
     // db
     /** Path to a file with current DB schema */
@@ -481,7 +479,7 @@ public class Constants {
     public static final int TILEGRID_ITEM_HEIGHT = 145;
     public static final int IMAGE_THUMBNAIL_WIDTH = 80;
     public static final int IMAGE_THUMBNAIL_HEIGHT = 110;
-    public static final int IMAGE_FULL_WIDTH = 750;
+    public static final int IMAGE_FULL_HEIGHT = 750;
     public static final String RANGE = "range";
 
     public static final String HTTP_CACHE_SECONDS = "7200";
@@ -489,7 +487,7 @@ public class Constants {
     public static final int PAGE_PREVIEW_HEIGHT_NORMAL = 120;
     public static final int PAGE_PREVIEW_HEIGHT_LARGE = 160;
     public static final int PAGE_PREVIEW_HEIGHT_XLARGE = 200;
-    public static final int PAGE_PREVIEW_HEIGHT_XXLARGE = 280;
+    public static final int PAGE_PREVIEW_HEIGHT_MAX = 280;
 
     /**
      * Fedora FOXML related constants

@@ -67,6 +67,7 @@ import cz.fi.muni.xkremser.editor.server.fedora.IPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.RequestIPaddressChecker;
 import cz.fi.muni.xkremser.editor.server.fedora.SecuredFedoraAccessImpl;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FedoraUtils;
+import cz.fi.muni.xkremser.editor.server.handler.ChangeRightsHandler;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.fi.muni.xkremser.editor.server.handler.CheckAvailabilityHandler;
 import cz.fi.muni.xkremser.editor.server.handler.ConvertToJPEG2000Handler;
@@ -79,6 +80,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDOModelHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetFullImgHeightHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetIngestInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetLockInformationHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetLoggedUserHandler;
@@ -111,6 +113,7 @@ import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandler
 import cz.fi.muni.xkremser.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
 import cz.fi.muni.xkremser.editor.server.newObject.CreateObjectUtils;
 
+import cz.fi.muni.xkremser.editor.shared.rpc.action.ChangeRightsAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.ConvertToJPEG2000Action;
@@ -123,6 +126,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
@@ -202,6 +206,8 @@ public class ServerModule
         bindHandler(LogoutAction.class, LogoutHandler.class);
         bindHandler(FindAltoOcrFilesAction.class, FindAltoOcrFilesHandler.class);
         bindHandler(StoreTreeStructureAction.class, StoreTreeStructureHandler.class);
+        bindHandler(ChangeRightsAction.class, ChangeRightsHandler.class);
+        bindHandler(GetFullImgHeightAction.class, GetFullImgHeightHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();

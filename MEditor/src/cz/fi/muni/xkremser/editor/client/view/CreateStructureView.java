@@ -66,6 +66,8 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
+import com.smartgwt.client.widgets.events.DoubleClickEvent;
+import com.smartgwt.client.widgets.events.DoubleClickHandler;
 import com.smartgwt.client.widgets.events.DragStartEvent;
 import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DragStopEvent;
@@ -141,6 +143,8 @@ public class CreateStructureView
 
         DublinCore getDc();
 
+        void chooseDetail(String pathToImg, int detailHeight, String uuid, boolean isTop, int topSpace);
+
     }
 
     /** The Constant ID_MODEL. */
@@ -204,7 +208,7 @@ public class CreateStructureView
 
     private EditorTabSet topTabSet;
 
-    private int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+    private final int pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
 
     private int imageThumbnailHeight = Constants.IMAGE_THUMBNAIL_HEIGHT;
 
@@ -224,6 +228,10 @@ public class CreateStructureView
     private final EventBus eventBus;
     private String model;
     private String hostname;
+    private int topSpaceTop = Integer.MIN_VALUE;
+    private int topSpaceBottom = Integer.MAX_VALUE;
+    private int detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;;
+    private int detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;;
 
     /**
      * Instantiates a new create view.
@@ -468,7 +476,7 @@ public class CreateStructureView
                                 .append('/').append(event.getRecord().getAttribute(Constants.ATTR_PICTURE))
                                 .append("?" + Constants.URL_PARAM_FULL + "=yes");
                         final Image full = new Image(sb.toString());
-                        full.setHeight(Constants.IMAGE_FULL_WIDTH + "px");
+                        full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
                         full.addLoadHandler(new LoadHandler() {
 
                             @Override
@@ -503,7 +511,7 @@ public class CreateStructureView
             @Override
             public void onRecordClick(RecordClickEvent event) {
                 if (detailPanelShown) {
-                    showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE), pageDetailHeight);
+                    showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE));
                 }
             }
         });
@@ -615,33 +623,33 @@ public class CreateStructureView
         toolStrip.addFormItem(pageTypeItem);
         toolStrip.addResizer();
 
-        SelectItem zoomItems = new SelectItem("pageDetail", lang.detailSize());
-        zoomItems.setName("selectName");
-        zoomItems.setShowTitle(true);
-        zoomItems.setWrapTitle(false);
-        zoomItems.setWidth(70);
-        zoomItems.setValueMap("S", "M", "L", "XL", "XXL");
-        zoomItems.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                String percent = (String) event.getValue();
-                if ("S".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_SMALL;
-                } else if ("M".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
-                } else if ("L".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_LARGE;
-                } else if ("XL".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_XLARGE;
-                } else if ("XXL".equals(percent)) {
-                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_XXLARGE;
-                }
-                showDetail(pageDetailHeight);
-            }
-        });
-        zoomItems.setDefaultValue("M");
-        toolStrip.addFormItem(zoomItems);
+        //        SelectItem zoomItems = new SelectItem("pageDetail", lang.detailSize());
+        //        zoomItems.setName("selectName");
+        //        zoomItems.setShowTitle(true);
+        //        zoomItems.setWrapTitle(false);
+        //        zoomItems.setWidth(70);
+        //        zoomItems.setValueMap("S", "M", "L", "XL", "XXL");
+        //        zoomItems.addChangedHandler(new ChangedHandler() {
+        //
+        //            @Override
+        //            public void onChanged(ChangedEvent event) {
+        //                String percent = (String) event.getValue();
+        //                if ("S".equals(percent)) {
+        //                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_SMALL;
+        //                } else if ("M".equals(percent)) {
+        //                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+        //                } else if ("L".equals(percent)) {
+        //                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_LARGE;
+        //                } else if ("XL".equals(percent)) {
+        //                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_XLARGE;
+        //                } else if ("XXL".equals(percent)) {
+        //                    pageDetailHeight = Constants.PAGE_PREVIEW_HEIGHT_MAX;
+        //                }
+        //                showDetail(pageDetailHeight, true, Integer.MIN_VALUE);
+        //            }
+        //        });
+        //        zoomItems.setDefaultValue("M");
+        //        toolStrip.addFormItem(zoomItems);
         final ToolStripButton zoomButton = new ToolStripButton();
         final ToolStripButton editMetadataButton = new ToolStripButton();
         zoomButton.setIcon("silk/zoom.png");
@@ -664,13 +672,11 @@ public class CreateStructureView
                     detailPanel.setAnimateShowTime(200);
                     tileGridLayout.addMember(detailPanel);
                     detailPanelShown = true;
-                    showDetail(pageDetailHeight);
-                } else if (detailPanelShown) {
+                    showDetail(pageDetailHeight, true, Integer.MIN_VALUE);
+                } else {
                     detailPanelShown = false;
                     tileGridLayout.removeMember(detailPanel);
-                } else {
-                    tileGridLayout.addMember(detailPanel);
-                    detailPanelShown = true;
+                    detailPanel = null;
                 }
             }
         });
@@ -709,6 +715,7 @@ public class CreateStructureView
                 if (detailPanelShown) {
                     detailPanelShown = false;
                     tileGridLayout.removeMember(detailPanel);
+                    detailPanel = null;
                     zoomButton.setSelected(false);
                 }
                 if (metadataPanel == null) {
@@ -1220,41 +1227,83 @@ public class CreateStructureView
         }
     }
 
-    private void showDetail(int height) {
+    @Override
+    public void showDetail(int height, boolean isTop, int topSpace) {
+        if (topSpace >= 0) {
+            if (isTop) {
+                detailHeightTop = height;
+                topSpaceTop = topSpace;
+            } else {
+                detailHeightBottom = height;
+                topSpaceBottom = topSpace;
+            }
+        }
         TileRecord record = tileGrid.getSelectedRecord();
-        showDetail(record == null ? null : record.getAttribute(Constants.ATTR_PICTURE), height);
+        showDetail(record == null ? null : record.getAttribute(Constants.ATTR_PICTURE));
     }
 
-    private void showDetail(String pid, int height) {
+    private void showDetail(final String pid) {
         if (detailPanelShown) {
-            detailPanel.setHeight((height * 2) + 52);
+            detailPanel.setHeight((detailHeightTop + detailHeightBottom) + 52);
             if (detailPanelImageShown) {
                 detailPanel.removeMembers(detailPanel.getMembers());
             }
             if (pid != null) {
                 StringBuffer sb = new StringBuffer();
                 sb.append(Constants.SERVLET_SCANS_PREFIX).append('/').append(pid).append("?")
-                        .append(Constants.URL_PARAM_HEIGHT).append('=').append(String.valueOf(height))
-                        .append("&").append(Constants.URL_PARAM_TOP).append("=yes");
+                        .append(Constants.URL_PARAM_HEIGHT).append('=')
+                        .append(String.valueOf(detailHeightTop)).append("&")
+                        .append(Constants.URL_PARAM_TOP_SPACE).append("=").append(topSpaceTop);
 
-                Img top = new Img(sb.toString(), 900, height);
+                Img top = new Img(sb.toString(), 900, detailHeightTop);
                 top.setAnimateTime(400);
                 top.setImageWidth(900);
-                top.setImageHeight(height);
+                top.setImageHeight(detailHeightTop);
                 top.setImageType(ImageStyle.NORMAL);
                 top.setBorder("1px solid gray");
+                top.addDoubleClickHandler(new DoubleClickHandler() {
+
+                    @Override
+                    public void onDoubleClick(DoubleClickEvent event) {
+                        getUiHandlers()
+                                .chooseDetail(Constants.SERVLET_IMAGES_PREFIX
+                                                      .concat(Constants.SERVLET_SCANS_PREFIX).concat("/")
+                                                      .concat(pid)
+                                                      .concat("?" + Constants.URL_PARAM_FULL + "=yes"),
+                                              detailHeightTop,
+                                              pid,
+                                              true,
+                                              topSpaceTop);
+                    }
+                });
 
                 sb = new StringBuffer();
                 sb.append(Constants.SERVLET_SCANS_PREFIX).append('/').append(pid).append("?")
-                        .append(Constants.URL_PARAM_HEIGHT).append('=').append(String.valueOf(height))
-                        .append("&").append(Constants.URL_PARAM_BOTTOM).append("=yes");
+                        .append(Constants.URL_PARAM_HEIGHT).append('=')
+                        .append(String.valueOf(detailHeightBottom)).append("&")
+                        .append(Constants.URL_PARAM_TOP_SPACE).append("=").append(topSpaceBottom);
 
-                Img bottom = new Img(sb.toString(), 900, height);
+                Img bottom = new Img(sb.toString(), 900, detailHeightBottom);
                 bottom.setAnimateTime(400);
                 bottom.setImageWidth(900);
-                bottom.setImageHeight(height);
+                bottom.setImageHeight(detailHeightBottom);
                 bottom.setImageType(ImageStyle.NORMAL);
                 bottom.setBorder("1px solid gray");
+                bottom.addDoubleClickHandler(new DoubleClickHandler() {
+
+                    @Override
+                    public void onDoubleClick(DoubleClickEvent event) {
+                        getUiHandlers()
+                                .chooseDetail(Constants.SERVLET_IMAGES_PREFIX
+                                                      .concat(Constants.SERVLET_SCANS_PREFIX).concat("/")
+                                                      .concat(pid)
+                                                      .concat("?" + Constants.URL_PARAM_FULL + "=yes"),
+                                              detailHeightBottom,
+                                              pid,
+                                              false,
+                                              topSpaceBottom);
+                    }
+                });
                 Label topL = new Label(lang.top());
                 topL.setHeight(12);
                 detailPanel.setAlign(Alignment.CENTER);

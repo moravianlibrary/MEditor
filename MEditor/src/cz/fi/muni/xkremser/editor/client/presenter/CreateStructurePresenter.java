@@ -84,6 +84,7 @@ import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureT
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
+import cz.fi.muni.xkremser.editor.client.view.window.ChooseDetailWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
 import cz.fi.muni.xkremser.editor.client.view.window.StoreTreeStructureWindow;
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
@@ -147,6 +148,8 @@ public class CreateStructurePresenter
         void addUndoRedo(Record[] data, boolean isUndoList, boolean isRedoOperation);
 
         void resizeThumbnails(boolean larger);
+
+        void showDetail(int height, boolean isTop, int topSpace);
     }
 
     /**
@@ -926,6 +929,28 @@ public class CreateStructurePresenter
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
         leftPresenter.getView().getSubelementsGrid().redraw();
         getView().getTileGrid().setData(pagesData);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public void chooseDetail(String pathToImg, int detailHeight, String uuid, boolean isTop, int topSpace) {
+        new ChooseDetailWindow(detailHeight,
+                               getEventBus(),
+                               dispatcher,
+                               pathToImg,
+                               uuid,
+                               lang,
+                               isTop,
+                               topSpace) {
+
+            @Override
+            protected void setDetail(int recentHeight, boolean isTop, int topSpace) {
+                getView().showDetail(recentHeight, isTop, topSpace);
+            }
+        };
     }
 
 }

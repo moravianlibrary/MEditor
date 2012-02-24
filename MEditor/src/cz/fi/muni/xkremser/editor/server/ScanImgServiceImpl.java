@@ -69,14 +69,14 @@ public class ScanImgServiceImpl
 
     private static final String DJATOKA_URL_FULL_IMG =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.scale="
-                    + Constants.IMAGE_FULL_WIDTH + "&rft_id=";
+                    + Constants.IMAGE_FULL_HEIGHT + "&rft_id=";
 
     private static final String DJATOKA_URL_FULL_PAGE_DETAIL =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.format=image/jpeg&svc.scale=900,0&rft_id=";
 
     private static final String DJATOKA_URL_REGION = "&svc.region=";
 
-    private static final String DJATOKA_URL_GET_METADATA =
+    public static final String DJATOKA_URL_GET_METADATA =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getMetadata&rft_id=";
 
     //    /** The config. */
@@ -101,8 +101,7 @@ public class ScanImgServiceImpl
         resp.addHeader("Cache-Control", "max-age=" + Constants.HTTP_CACHE_SECONDS);
         resp.addDateHeader("Expires", DateUtils.addMonths(new Date(), 1).getTime());
         boolean full = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_FULL));
-        boolean top = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_TOP));
-        boolean bottom = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_BOTTOM));
+        String topSpace = req.getParameter(Constants.URL_PARAM_TOP_SPACE);
         String urlHeight = req.getParameter(Constants.URL_PARAM_HEIGHT);
 
         String uuid = req.getParameter(Constants.URL_PARAM_UUID);
@@ -130,18 +129,21 @@ public class ScanImgServiceImpl
             }
         }
         StringBuffer sb = new StringBuffer();
-        if (top || bottom) {
+        if (topSpace != null) {
             String metadata =
                     RESTHelper.convertStreamToString(RESTHelper
                             .get(baseUrl + DJATOKA_URL_GET_METADATA + uuid, null, null, true));
             String height = null;
-            if (bottom) {
-                height = metadata.substring(metadata.indexOf("ght\": \"") + 7, metadata.indexOf("\",\n\"dw"));
-            }
+            height = metadata.substring(metadata.indexOf("ght\": \"") + 7, metadata.indexOf("\",\n\"dw"));
             String width =
                     metadata.substring(metadata.indexOf("dth\": \"") + 7, metadata.indexOf("\",\n\"he"));
+
+            int intHeight = Integer.parseInt(height);
+            int intUrlHeight = Integer.parseInt(urlHeight);
+            int intTopSpace = Integer.parseInt(topSpace);
+            boolean isLower = intTopSpace > 0 && ((intHeight - intUrlHeight) < intTopSpace);
             String region =
-                    (bottom ? Integer.parseInt(height) - Integer.parseInt(urlHeight) : "1") + ",1,"
+                    (isLower ? intHeight - intUrlHeight : (intTopSpace < 0 ? 0 : topSpace)) + ",1,"
                             + urlHeight + "," + width;
 
             sb.append(baseUrl.toString()).append(DJATOKA_URL_FULL_PAGE_DETAIL).append(uuid)
