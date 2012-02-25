@@ -60,6 +60,7 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -72,12 +73,15 @@ import com.smartgwt.client.widgets.events.DragStartEvent;
 import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DragStopEvent;
 import com.smartgwt.client.widgets.events.DragStopHandler;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -232,6 +236,8 @@ public class CreateStructureView
     private int topSpaceBottom = Integer.MAX_VALUE;
     private int detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;;
     private int detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;;
+    private boolean topIsWraped = false;
+    private boolean bottomIsWraped = false;
 
     /**
      * Instantiates a new create view.
@@ -1244,7 +1250,8 @@ public class CreateStructureView
 
     private void showDetail(final String pid) {
         if (detailPanelShown) {
-            detailPanel.setHeight((detailHeightTop + detailHeightBottom) + 52);
+            detailPanel.setHeight(((bottomIsWraped ? 16 : detailHeightTop) + (topIsWraped ? 16
+                    : detailHeightBottom)) + 52);
             if (detailPanelImageShown) {
                 detailPanel.removeMembers(detailPanel.getMembers());
             }
@@ -1255,7 +1262,8 @@ public class CreateStructureView
                         .append(String.valueOf(detailHeightTop)).append("&")
                         .append(Constants.URL_PARAM_TOP_SPACE).append("=").append(topSpaceTop);
 
-                Img top = new Img(sb.toString(), 900, detailHeightTop);
+                final Img top = new Img(sb.toString(), 900, detailHeightTop);
+
                 top.setAnimateTime(400);
                 top.setImageWidth(900);
                 top.setImageHeight(detailHeightTop);
@@ -1283,7 +1291,7 @@ public class CreateStructureView
                         .append(String.valueOf(detailHeightBottom)).append("&")
                         .append(Constants.URL_PARAM_TOP_SPACE).append("=").append(topSpaceBottom);
 
-                Img bottom = new Img(sb.toString(), 900, detailHeightBottom);
+                final Img bottom = new Img(sb.toString(), 900, detailHeightBottom);
                 bottom.setAnimateTime(400);
                 bottom.setImageWidth(900);
                 bottom.setImageHeight(detailHeightBottom);
@@ -1304,16 +1312,87 @@ public class CreateStructureView
                                               topSpaceBottom);
                     }
                 });
+
                 Label topL = new Label(lang.top());
                 topL.setHeight(12);
+                final ImgButton wrapTop = new ImgButton();
+                wrapTop.setShowRollOver(false);
+                wrapTop.setShowDown(false);
+                wrapTop.setHeight(16);
+                wrapTop.setWidth(16);
+                if (!topIsWraped) {
+                    wrapTop.setSrc("icons/16/wrap.png");
+                } else {
+                    wrapTop.setSrc("icons/16/unwrap.png");
+                }
+                wrapTop.setHoverStyle("interactImageHover");
+                wrapTop.setCanHover(true);
+                wrapTop.setHoverOpacity(85);
+                wrapTop.addHoverHandler(new HoverHandler() {
+
+                    @Override
+                    public void onHover(HoverEvent event) {
+                        wrapTop.setPrompt(topIsWraped ? lang.show() : lang.hide());
+                    }
+                });
+
+                wrapTop.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        topIsWraped = !topIsWraped;
+                        showDetail(pid);
+                    }
+                });
+
+                final ImgButton wrapBottom = new ImgButton();
+                wrapBottom.setShowRollOver(false);
+                wrapBottom.setShowDown(false);
+                wrapBottom.setHeight(16);
+                wrapBottom.setWidth(16);
+                if (!bottomIsWraped) {
+                    wrapBottom.setSrc("icons/16/wrap.png");
+                } else {
+                    wrapBottom.setSrc("icons/16/unwrap.png");
+                }
+                wrapBottom.setHoverStyle("interactImageHover");
+                wrapBottom.setCanHover(true);
+                wrapBottom.setHoverOpacity(85);
+                wrapBottom.addHoverHandler(new HoverHandler() {
+
+                    @Override
+                    public void onHover(HoverEvent event) {
+                        wrapBottom.setPrompt(bottomIsWraped ? lang.show() : lang.hide());
+                    }
+                });
+
+                wrapBottom.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        bottomIsWraped = !bottomIsWraped;
+                        showDetail(pid);
+                    }
+                });
+
                 detailPanel.setAlign(Alignment.CENTER);
                 detailPanel.setAlign(VerticalAlignment.CENTER);
-                detailPanel.addMember(topL);
-                detailPanel.addMember(top);
+
+                Layout topLayout = new HLayout(2);
+                topLayout.setHeight(16);
+                topLayout.addMember(topL);
+                topLayout.addMember(wrapTop);
+                detailPanel.addMember(topLayout);
+                if (!topIsWraped) detailPanel.addMember(top);
+
                 Label botL = new Label(lang.bottom());
                 botL.setHeight(12);
-                detailPanel.addMember(botL);
-                detailPanel.addMember(bottom);
+                Layout bottomLayout = new HLayout(2);
+                bottomLayout.setHeight(16);
+                bottomLayout.addMember(botL);
+                bottomLayout.addMember(wrapBottom);
+                detailPanel.addMember(bottomLayout);
+                if (!bottomIsWraped) detailPanel.addMember(bottom);
                 detailPanelImageShown = true;
             }
         }
