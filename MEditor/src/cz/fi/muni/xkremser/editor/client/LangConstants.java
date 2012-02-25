@@ -1915,15 +1915,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String help();
 
   /**
-   * Translated "Hide".
-   * 
-   * @return translated "Hide"
-   */
-  @DefaultStringValue("Hide")
-  @Key("hide")
-  String hide();
-
-  /**
    * Translated "Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema.".
    * 
    * @return translated "Holdings information that uses a schema defined externally to MODS. <holdingExternal> may include more detailed holdings information than that accommodated by the MODS schema. An example is ISO 20775 and its accompanying schema."
@@ -4255,6 +4246,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String unroll();
 
   /**
+   * Translated "Unwrap".
+   * 
+   * @return translated "Unwrap"
+   */
+  @DefaultStringValue("Unwrap")
+  @Key("unwrap")
+  String unwrap();
+
+  /**
    * Translated "Update lock".
    * 
    * @return translated "Update lock"
@@ -4343,6 +4343,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("Working copy")
   @Key("workingCopy")
   String workingCopy();
+
+  /**
+   * Translated "Wrap".
+   * 
+   * @return translated "Wrap"
+   */
+  @DefaultStringValue("Wrap")
+  @Key("wrap")
+  String wrap();
 
   /**
    * Translated "There are directories which contain some illegal character(s) in its name. With these directories you will not be able to work. Problematic directories:".

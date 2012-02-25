@@ -1250,7 +1250,7 @@ public class CreateStructureView
 
     private void showDetail(final String pid) {
         if (detailPanelShown) {
-            detailPanel.setHeight(((bottomIsWraped ? 16 : detailHeightTop) + (topIsWraped ? 16
+            detailPanel.setHeight(((topIsWraped ? 16 : detailHeightTop) + (bottomIsWraped ? 16
                     : detailHeightBottom)) + 52);
             if (detailPanelImageShown) {
                 detailPanel.removeMembers(detailPanel.getMembers());
@@ -1332,7 +1332,7 @@ public class CreateStructureView
 
                     @Override
                     public void onHover(HoverEvent event) {
-                        wrapTop.setPrompt(topIsWraped ? lang.show() : lang.hide());
+                        wrapTop.setPrompt(topIsWraped ? lang.unwrap() : lang.wrap());
                     }
                 });
 
@@ -1362,7 +1362,7 @@ public class CreateStructureView
 
                     @Override
                     public void onHover(HoverEvent event) {
-                        wrapBottom.setPrompt(bottomIsWraped ? lang.show() : lang.hide());
+                        wrapBottom.setPrompt(bottomIsWraped ? lang.unwrap() : lang.wrap());
                     }
                 });
 
