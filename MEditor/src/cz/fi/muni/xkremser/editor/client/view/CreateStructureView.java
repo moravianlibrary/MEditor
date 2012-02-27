@@ -53,6 +53,7 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionType;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.Button;
@@ -917,32 +918,48 @@ public class CreateStructureView
             @Override
             public void onClick(MenuItemClickEvent event) {
 
-                SC.askforValue(lang.renumber(), lang.enterNumberForRenumber(), "1", new ValueCallback() {
+                SC.ask(lang.sureRenAll(), new BooleanCallback() {
 
                     @Override
-                    public void execute(String value) {
-                        if (value == null) {
-                            return;
-                        }
-                        try {
-                            int n = Integer.parseInt(value);
-                            addUndoRedo(tileGrid.getData(), true, false);
-                            Record[] data = tileGrid.getData();
-                            int i = 0;
-                            if (data != null && data.length > 0) {
-                                for (Record rec : data) {
-                                    rec.setAttribute(Constants.ATTR_NAME, n + i++);
-                                }
-                            }
-                            updateTileGrid();
-                        } catch (NumberFormatException nfe) {
-                            SC.say(lang.notANumber());
+                    public void execute(Boolean value) {
+                        if (value != null && value) {
+                            askForValue();
                         }
                     }
-                }, new com.smartgwt.client.widgets.Dialog() {
 
-                    {
-                        setWidth(300);
+                    private void askForValue() {
+                        SC.askforValue(lang.renumber(),
+                                       lang.enterNumberForRenumber(),
+                                       "1",
+                                       new ValueCallback() {
+
+                                           @Override
+                                           public void execute(String value) {
+                                               if (value == null) {
+                                                   return;
+                                               }
+                                               try {
+                                                   int n = Integer.parseInt(value);
+                                                   addUndoRedo(tileGrid.getData(), true, false);
+                                                   Record[] data = tileGrid.getData();
+                                                   int i = 0;
+                                                   if (data != null && data.length > 0) {
+                                                       for (Record rec : data) {
+                                                           rec.setAttribute(Constants.ATTR_NAME, n + i++);
+                                                       }
+                                                   }
+                                                   updateTileGrid();
+                                               } catch (NumberFormatException nfe) {
+                                                   SC.say(lang.notANumber());
+                                               }
+                                           }
+                                       },
+                                       new com.smartgwt.client.widgets.Dialog() {
+
+                                           {
+                                               setWidth(300);
+                                           }
+                                       });
                     }
                 });
             }
@@ -1142,26 +1159,31 @@ public class CreateStructureView
     }
 
     private void updateTileGrid() {
-        if (tileGrid.getData().length > MANY) {
-            return;
-        }
-        final ModalWindow mw = new ModalWindow(layout);
-        mw.setLoadingIcon("loadingAnimation.gif");
-        mw.show(true);
-        Timer timer = new Timer() {
+        Record[] selection = tileGrid.getSelection();
+        tileGrid.selectAllRecords();
+        tileGrid.deselectAllRecords();
+        tileGrid.selectRecords(selection);
 
-            @Override
-            public void run() {
-                Record[] selection = tileGrid.getSelection();
-                tileGrid.selectAllRecords();
-                Record[] all = tileGrid.getSelection();
-                tileGrid.removeSelectedData();
-                tileGrid.setData(all);
-                tileGrid.selectRecords(selection);
-            }
-        };
-        timer.schedule(25);
-        mw.hide();
+        //        if (tileGrid.getData().length > MANY) {
+        //            return;
+        //        }
+        //        final ModalWindow mw = new ModalWindow(layout);
+        //        mw.setLoadingIcon("loadingAnimation.gif");
+        //        mw.show(true);
+        //        Timer timer = new Timer() {
+        //
+        //            @Override
+        //            public void run() {
+        //                Record[] selection = tileGrid.getSelection();
+        //                tileGrid.selectAllRecords();
+        //                Record[] all = tileGrid.getSelection();
+        //                tileGrid.removeSelectedData();
+        //                tileGrid.setData(all);
+        //                tileGrid.selectRecords(selection);
+        //            }
+        //        };
+        //        timer.schedule(25);
+        //        mw.hide();
     }
 
     private Menu getAbcSubmenu() {

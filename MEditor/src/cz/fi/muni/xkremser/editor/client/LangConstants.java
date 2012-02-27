@@ -3976,6 +3976,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String sureDelete();
 
   /**
+   * Translated "Are you sure to renumber all pages?".
+   * 
+   * @return translated "Are you sure to renumber all pages?"
+   */
+  @DefaultStringValue("Are you sure to renumber all pages?")
+  @Key("sureRenAll")
+  String sureRenAll();
+
+  /**
    * Translated "part of a personal name (surname)".
    * 
    * @return translated "part of a personal name (surname)"
