@@ -42,16 +42,16 @@ import cz.fi.muni.xkremser.editor.server.URLS;
 import cz.fi.muni.xkremser.editor.server.config.EditorConfiguration;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.RESTHelper;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgMetadataAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgMetadataResult;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
 
-public class GetFullImgHeightHandler
-        implements ActionHandler<GetFullImgHeightAction, GetFullImgHeightResult> {
+public class GetFullImgMetadataHandler
+        implements ActionHandler<GetFullImgMetadataAction, GetFullImgMetadataResult> {
 
     /** The http session provider. */
     @Inject
@@ -70,7 +70,7 @@ public class GetFullImgHeightHandler
      */
 
     @Override
-    public GetFullImgHeightResult execute(GetFullImgHeightAction action, ExecutionContext context)
+    public GetFullImgMetadataResult execute(GetFullImgMetadataAction action, ExecutionContext context)
             throws ActionException {
 
         HttpSession ses = httpSessionProvider.get();
@@ -110,7 +110,10 @@ public class GetFullImgHeightHandler
         Integer height =
                 Integer.valueOf(metadata.substring(metadata.indexOf("ght\": \"") + 7,
                                                    metadata.indexOf("\",\n\"dw")));
-        return new GetFullImgHeightResult(height);
+        Integer width =
+                Integer.valueOf(metadata.substring(metadata.indexOf("dth\": \"") + 7,
+                                                   metadata.indexOf("\",\n\"he")));
+        return new GetFullImgMetadataResult(height, width);
     }
 
     /**
@@ -118,8 +121,8 @@ public class GetFullImgHeightHandler
      */
 
     @Override
-    public Class<GetFullImgHeightAction> getActionType() {
-        return GetFullImgHeightAction.class;
+    public Class<GetFullImgMetadataAction> getActionType() {
+        return GetFullImgMetadataAction.class;
     }
 
     /**
@@ -127,7 +130,7 @@ public class GetFullImgHeightHandler
      */
 
     @Override
-    public void undo(GetFullImgHeightAction arg0, GetFullImgHeightResult arg1, ExecutionContext arg2)
+    public void undo(GetFullImgMetadataAction arg0, GetFullImgMetadataResult arg1, ExecutionContext arg2)
             throws ActionException {
         // TODO Auto-generated method stub
     }

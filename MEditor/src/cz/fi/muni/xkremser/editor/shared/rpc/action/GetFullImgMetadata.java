@@ -35,8 +35,8 @@ import com.gwtplatform.dispatch.shared.UnsecuredActionImpl;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetFullImgHeight
-        extends UnsecuredActionImpl<GetFullImgHeightResult> {
+public class GetFullImgMetadata
+        extends UnsecuredActionImpl<GetFullImgMetadataResult> {
 
     /** The uuid of the image */
     @In(1)
@@ -45,4 +45,8 @@ public class GetFullImgHeight
     /** The height of the image */
     @Out(1)
     private int height;
+
+    /** The width of the image */
+    @Out(2)
+    private int width;
 }

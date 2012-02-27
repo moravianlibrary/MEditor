@@ -86,7 +86,9 @@ import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.ScanRecord;
 import cz.fi.muni.xkremser.editor.client.view.window.ChooseDetailWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.EditorSC;
+import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.StoreTreeStructureWindow;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.NamedGraphModel;
 import cz.fi.muni.xkremser.editor.shared.event.ChangeMenuWidthEvent;
@@ -936,7 +938,12 @@ public class CreateStructurePresenter
      */
 
     @Override
-    public void chooseDetail(String pathToImg, int detailHeight, String uuid, boolean isTop, int topSpace) {
+    public void chooseDetail(String pathToImg,
+                             int detailHeight,
+                             String uuid,
+                             boolean isTop,
+                             int topSpace,
+                             ModalWindow mw) {
         new ChooseDetailWindow(detailHeight,
                                getEventBus(),
                                dispatcher,
@@ -944,7 +951,8 @@ public class CreateStructurePresenter
                                uuid,
                                lang,
                                isTop,
-                               topSpace) {
+                               topSpace,
+                               mw) {
 
             @Override
             protected void setDetail(int recentHeight, boolean isTop, int topSpace) {

@@ -31,6 +31,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
@@ -42,13 +43,14 @@ import com.smartgwt.client.widgets.events.DragResizeMoveEvent;
 import com.smartgwt.client.widgets.events.DragResizeMoveHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
+import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.dispatcher.DispatchCallback;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightResult;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgMetadataAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgMetadataResult;
 
 /**
  * @author Matous Jobanek
@@ -58,9 +60,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightResult;
 public abstract class ChooseDetailWindow
         extends UniversalWindow {
 
-    private int imgHeight = Constants.IMAGE_FULL_HEIGHT;
     private double ratio;
-
 
     /**
      * @param imgHeight
@@ -78,21 +78,19 @@ public abstract class ChooseDetailWindow
                               String uuid,
                               LangConstants lang,
                               final boolean isTop,
-                              final int topSpace) {
+                              final int topSpace,
+                              final ModalWindow mw) {
         super(Constants.IMAGE_FULL_HEIGHT + 100, 550, isTop ? lang.chooseDetailTop() : lang
                 .chooseDetailBottom(), eventBus, 20);
         setMargin(1);
-
-        final ModalWindow mw = new ModalWindow(ChooseDetailWindow.this);
-        mw.setLoadingIcon("loadingAnimation.gif");
-        mw.show(true);
+        setLayoutAlign(Alignment.CENTER);
         Image testImg = new Image(pathToImg);
-        Layout imgLayout = new Layout();
+        final Layout mainLayout = new VLayout(2);
+        final Layout imgLayout = new Layout();
         imgLayout.setLayoutAlign(Alignment.CENTER);
 
-        imgLayout.setAutoWidth();
         imgLayout.setCanDragResize(false);
-        imgLayout.setMargin(10);
+        imgLayout.setMargin(8);
         setAlign(Alignment.CENTER);
 
         final Canvas extract = new Img("other/extraction.png");
@@ -117,9 +115,9 @@ public abstract class ChooseDetailWindow
                     event.cancel();
                     extract.setTop(0);
                 }
-                if (extract.getTop() > imgHeight - extract.getHeight()) {
+                if (extract.getTop() > Constants.IMAGE_FULL_HEIGHT - extract.getHeight()) {
                     event.cancel();
-                    extract.setTop(imgHeight - extract.getHeight());
+                    extract.setTop(Constants.IMAGE_FULL_HEIGHT - extract.getHeight());
                 }
             }
         });
@@ -158,46 +156,60 @@ public abstract class ChooseDetailWindow
                 hide();
             }
         });
-        imgLayout.setExtraSpace(8);
-        addItem(imgLayout);
+
         imgLayout.addChild(extract);
         imgLayout.addMember(testImg);
 
-        Layout buttonsLayout = new HLayout(2);
+        final Layout buttonsLayout = new HLayout(2);
         buttonsLayout.setWidth(220);
         buttonsLayout.setLayoutAlign(Alignment.RIGHT);
         buttonsLayout.addMember(okButton);
         buttonsLayout.addMember(closeButton);
+        buttonsLayout.setLayoutAlign(VerticalAlignment.BOTTOM);
+        buttonsLayout.setMargin(12);
+        mainLayout.addMember(imgLayout);
+        addItem(mainLayout);
         addItem(buttonsLayout);
 
-        centerInPage();
-        show();
-        focus();
+        //        buttonsLayout.addMovedHandler(new MovedHandler() {
+        //
+        //            @Override
+        //            public void onMoved(MovedEvent event) {
+        //                if (buttonsLayoutBottom == 0) {
+        //                    if (buttonsLayout.getBottom() > 0) buttonsLayoutBottom = buttonsLayout.getBottom();
+        //                } else {
+        //                    buttonsLayout.setBottom(buttonsLayoutBottom);
+        //                }
+        //                System.err.println("bottom " + buttonsLayout.getBottom());
+        //                System.err.println("setbottom " + buttonsLayoutBottom);
+        //            }
+        //        });
 
-        Integer width = testImg.getWidth();
-        imgHeight = testImg.getHeight();
-        setWidth(width + 70);
-        setHeight(imgHeight + 100);
-        imgLayout.setWidth(width);
-        imgLayout.setHeight(imgHeight);
-        extract.setTop(isTop ? 0 : imgHeight - extract.getHeight());
-
-        extract.setWidth(width + "px");
-
-        GetFullImgHeightAction heightAction = new GetFullImgHeightAction(uuid);
-        DispatchCallback<GetFullImgHeightResult> dispatchCallback =
-                new DispatchCallback<GetFullImgHeightResult>() {
+        GetFullImgMetadataAction heightAction = new GetFullImgMetadataAction(uuid);
+        DispatchCallback<GetFullImgMetadataResult> dispatchCallback =
+                new DispatchCallback<GetFullImgMetadataResult>() {
 
                     @Override
-                    public void callback(GetFullImgHeightResult result) {
+                    public void callback(GetFullImgMetadataResult result) {
                         int fullHeight = result.getHeight();
-                        ratio = new Integer(imgHeight).doubleValue() / new Integer(fullHeight).doubleValue();
-                        int newHeight = (int) (detailHeight * ratio);
-                        extract.setHeight(newHeight);
+                        ratio =
+                                new Integer(Constants.IMAGE_FULL_HEIGHT).doubleValue()
+                                        / new Integer(fullHeight).doubleValue();
+                        int newExtHeight = (int) (detailHeight * ratio);
+                        extract.setHeight(newExtHeight);
                         extract.setTop((int) ((topSpace < 0) ? (0)
-                                : (((fullHeight - newHeight) < topSpace) ? imgHeight - extract.getHeight()
-                                        : new Integer(topSpace).doubleValue() * ratio)));
+                                : (((fullHeight - newExtHeight) < topSpace) ? Constants.IMAGE_FULL_HEIGHT
+                                        - extract.getHeight() : new Integer(topSpace).doubleValue() * ratio)));
+
+                        int newWidth = (int) (result.getWidth() * ratio);
+                        setWidth(newWidth + 100);
+                        imgLayout.setWidth(newWidth);
+                        imgLayout.setHeight(Constants.IMAGE_FULL_HEIGHT);
+                        extract.setWidth(newWidth + "px");
                         mw.hide();
+                        centerInPage();
+                        show();
+                        focus();
                     }
 
                     @Override
@@ -207,7 +219,6 @@ public abstract class ChooseDetailWindow
                 };
         dispatcher.execute(heightAction, dispatchCallback);
 
-        imgLayout.redraw();
     }
 
     protected abstract void setDetail(int recentHeight, boolean isTop, int topSpace);

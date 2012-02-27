@@ -147,7 +147,12 @@ public class CreateStructureView
 
         DublinCore getDc();
 
-        void chooseDetail(String pathToImg, int detailHeight, String uuid, boolean isTop, int topSpace);
+        void chooseDetail(String pathToImg,
+                          int detailHeight,
+                          String uuid,
+                          boolean isTop,
+                          int topSpace,
+                          ModalWindow mw);
 
     }
 
@@ -234,8 +239,8 @@ public class CreateStructureView
     private String hostname;
     private int topSpaceTop = Integer.MIN_VALUE;
     private int topSpaceBottom = Integer.MAX_VALUE;
-    private int detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;;
-    private int detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;;
+    private int detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+    private int detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
     private boolean topIsWraped = false;
     private boolean bottomIsWraped = false;
 
@@ -326,6 +331,12 @@ public class CreateStructureView
         detailPanelImageShown = false;
         detailPanel = null;
         metadataPanel = null;
+        topSpaceTop = Integer.MIN_VALUE;
+        topSpaceBottom = Integer.MAX_VALUE;
+        detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+        detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+        topIsWraped = false;
+        bottomIsWraped = false;
         tileGrid.addDragStartHandler(new DragStartHandler() {
 
             @Override
@@ -1253,7 +1264,9 @@ public class CreateStructureView
             detailPanel.setHeight(((topIsWraped ? 16 : detailHeightTop) + (bottomIsWraped ? 16
                     : detailHeightBottom)) + 52);
             if (detailPanelImageShown) {
+                tileGridLayout.removeMember(detailPanel);
                 detailPanel.removeMembers(detailPanel.getMembers());
+                tileGridLayout.redraw();
             }
             if (pid != null) {
                 StringBuffer sb = new StringBuffer();
@@ -1273,6 +1286,9 @@ public class CreateStructureView
 
                     @Override
                     public void onDoubleClick(DoubleClickEvent event) {
+                        final ModalWindow mw = new ModalWindow(top);
+                        mw.setLoadingIcon("loadingAnimation.gif");
+                        mw.show(true);
                         getUiHandlers()
                                 .chooseDetail(Constants.SERVLET_IMAGES_PREFIX
                                                       .concat(Constants.SERVLET_SCANS_PREFIX).concat("/")
@@ -1281,7 +1297,8 @@ public class CreateStructureView
                                               detailHeightTop,
                                               pid,
                                               true,
-                                              topSpaceTop);
+                                              topSpaceTop,
+                                              mw);
                     }
                 });
 
@@ -1301,6 +1318,9 @@ public class CreateStructureView
 
                     @Override
                     public void onDoubleClick(DoubleClickEvent event) {
+                        final ModalWindow mw = new ModalWindow(bottom);
+                        mw.setLoadingIcon("loadingAnimation.gif");
+                        mw.show(true);
                         getUiHandlers()
                                 .chooseDetail(Constants.SERVLET_IMAGES_PREFIX
                                                       .concat(Constants.SERVLET_SCANS_PREFIX).concat("/")
@@ -1309,7 +1329,8 @@ public class CreateStructureView
                                               detailHeightBottom,
                                               pid,
                                               false,
-                                              topSpaceBottom);
+                                              topSpaceBottom,
+                                              mw);
                     }
                 });
 
@@ -1394,6 +1415,8 @@ public class CreateStructureView
                 detailPanel.addMember(bottomLayout);
                 if (!bottomIsWraped) detailPanel.addMember(bottom);
                 detailPanelImageShown = true;
+                tileGridLayout.addMember(detailPanel);
+                tileGridLayout.redraw();
             }
         }
     }

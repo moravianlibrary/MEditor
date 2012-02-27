@@ -80,7 +80,7 @@ import cz.fi.muni.xkremser.editor.server.handler.GetClientConfigHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDOModelHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDescriptionHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetDigitalObjectDetailHandler;
-import cz.fi.muni.xkremser.editor.server.handler.GetFullImgHeightHandler;
+import cz.fi.muni.xkremser.editor.server.handler.GetFullImgMetadataHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetIngestInfoHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetLockInformationHandler;
 import cz.fi.muni.xkremser.editor.server.handler.GetLoggedUserHandler;
@@ -126,7 +126,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetClientConfigAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDOModelAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDescriptionAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetDigitalObjectDetailAction;
-import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgHeightAction;
+import cz.fi.muni.xkremser.editor.shared.rpc.action.GetFullImgMetadataAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLockInformationAction;
 import cz.fi.muni.xkremser.editor.shared.rpc.action.GetLoggedUserAction;
@@ -207,7 +207,7 @@ public class ServerModule
         bindHandler(FindAltoOcrFilesAction.class, FindAltoOcrFilesHandler.class);
         bindHandler(StoreTreeStructureAction.class, StoreTreeStructureHandler.class);
         bindHandler(ChangeRightsAction.class, ChangeRightsHandler.class);
-        bindHandler(GetFullImgHeightAction.class, GetFullImgHeightHandler.class);
+        bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
