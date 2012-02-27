@@ -187,8 +187,6 @@ public class CreateStructureView
     /** The Constant ID_DELETE. */
     public static final String ID_DELETE = "delete";
 
-    public static final int MANY = 100;
-
     /** The clipboard. */
     private Record[] clipboard;
 
@@ -614,26 +612,12 @@ public class CreateStructureView
             public void onChanged(final ChangedEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 Record[] selectedRecords = tileGrid.getSelection();
-                if (tileGrid.getData().length < MANY) {
-                    tileGrid.selectAllRecords();
-                    Record[] allRecords = tileGrid.getSelection();
-                    tileGrid.selectRecords(selectedRecords);
-                    tileGrid.removeSelectedData();
-                    int index = 0;
-
-                    for (Record r : allRecords) {
-                        if (r.equals(selectedRecords[index])) {
-                            r.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
-                            if (++index + 1 > selectedRecords.length) break;
-                        }
-                    }
-                    tileGrid.setData(allRecords);
-                    tileGrid.selectRecords(selectedRecords);
-                } else {
-                    for (Record rec : selectedRecords) {
-                        rec.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
-                    }
+                for (Record rec : selectedRecords) {
+                    rec.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
                 }
+                tileGrid.deselectRecords(selectedRecords);
+                tileGrid.selectRecords(selectedRecords);
+                updateSelectedTileGrid();
             }
 
         });
@@ -986,7 +970,7 @@ public class CreateStructureView
                                     rec.setAttribute(Constants.ATTR_NAME, n + i);
                                 }
                             }
-                            updateTileGrid();
+                            updateSelectedTileGrid();
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
@@ -1026,7 +1010,7 @@ public class CreateStructureView
                                     + "]");
                     }
                 }
-                updateTileGrid();
+                updateSelectedTileGrid();
             }
         });
 
@@ -1047,6 +1031,7 @@ public class CreateStructureView
                             int n = Integer.parseInt(value);
                             addUndoRedo(tileGrid.getData(), true, false);
                             numbering.shift(-n, false, layout);
+                            updateTileGrid();
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
@@ -1144,7 +1129,7 @@ public class CreateStructureView
                                                             ClientUtils.decimalToRoman(n + i++, toRomanOld));
                                        }
                                    }
-                                   updateTileGrid();
+                                   updateSelectedTileGrid();
                                } catch (NumberFormatException nfe) {
                                    SC.say(lang.notANumber());
                                }
@@ -1158,32 +1143,17 @@ public class CreateStructureView
                        });
     }
 
+    private void updateSelectedTileGrid() {
+        Record[] selection = tileGrid.getSelection();
+        tileGrid.deselectRecords(selection);
+        tileGrid.selectRecords(selection);
+    }
+
     private void updateTileGrid() {
         Record[] selection = tileGrid.getSelection();
         tileGrid.selectAllRecords();
         tileGrid.deselectAllRecords();
         tileGrid.selectRecords(selection);
-
-        //        if (tileGrid.getData().length > MANY) {
-        //            return;
-        //        }
-        //        final ModalWindow mw = new ModalWindow(layout);
-        //        mw.setLoadingIcon("loadingAnimation.gif");
-        //        mw.show(true);
-        //        Timer timer = new Timer() {
-        //
-        //            @Override
-        //            public void run() {
-        //                Record[] selection = tileGrid.getSelection();
-        //                tileGrid.selectAllRecords();
-        //                Record[] all = tileGrid.getSelection();
-        //                tileGrid.removeSelectedData();
-        //                tileGrid.setData(all);
-        //                tileGrid.selectRecords(selection);
-        //            }
-        //        };
-        //        timer.schedule(25);
-        //        mw.hide();
     }
 
     private Menu getAbcSubmenu() {
@@ -1203,7 +1173,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 numbering.foliation();
-                updateTileGrid();
+                updateSelectedTileGrid();
             }
         });
         abc2.addClickHandler(getAbcHandler(2));
@@ -1228,7 +1198,7 @@ public class CreateStructureView
                         }
                     }
                 });
-                updateTileGrid();
+                updateSelectedTileGrid();
             }
         });
         rv.setEnableIfCondition(isSelected(false));
@@ -1248,7 +1218,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 numbering.toAbcN(n);
-                updateTileGrid();
+                updateSelectedTileGrid();
             }
         };
     }

@@ -237,6 +237,12 @@ public class CreateObjectMenuPresenter
                     sb.append(dateIssuedHover);
                 }
 
+                String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
+                if (pageType != null && !"".equals(pageType)) {
+                    String pageTypeHover = hoverFactory(lang.specialType(), pageType);
+                    sb.append(pageTypeHover);
+                }
+
                 String alto = record.getAttribute(Constants.ATTR_ALTO_PATH);
                 if (alto != null && !"".equals(alto)) {
                     String altoHover = hoverFactory("ALTO", alto.substring(alto.lastIndexOf("/") + 1));

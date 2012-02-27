@@ -24,6 +24,8 @@
 
 package cz.fi.muni.xkremser.editor.client.view.window;
 
+import java.util.LinkedHashMap;
+
 import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
@@ -31,6 +33,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -70,6 +73,7 @@ public abstract class NewObjectBasicInfoWindow
     }
 
     private TextItem dateIssuedItem = null;
+    SelectItem pageTypeItem = null;
 
     /**
      * @param structureTreeGrid
@@ -97,6 +101,21 @@ public abstract class NewObjectBasicInfoWindow
             dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
             mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem));
             setHeight(160);
+        } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                .equals(DigitalObjectModel.PAGE.getValue())) {
+            pageTypeItem = new SelectItem();
+            pageTypeItem.setWidth(100);
+            pageTypeItem.setTitle(lang.specialType());
+
+            LinkedHashMap<String, String> valueMap =
+                    new LinkedHashMap<String, String>(Constants.PAGE_TYPES.MAP);
+            pageTypeItem.setValueMap(valueMap);
+            String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
+            if (pageType != null && !"".equals(pageType)) {
+                pageTypeItem.setDefaultValue(pageType);
+            }
+            mainLayout.addMember(new MyDynamicForm(nameItem, pageTypeItem));
+            setHeight(160);
         } else {
             mainLayout.addMember(new MyDynamicForm(nameItem));
         }
@@ -122,9 +141,7 @@ public abstract class NewObjectBasicInfoWindow
             @Override
             public void onClick(ClickEvent event) {
                 String name = nameItem.getValueAsString();
-                String dateIssued = null;
-                if (dateIssuedItem != null) dateIssued = dateIssuedItem.getValueAsString();
-                doSaveAction(record, name, dateIssued);
+                doSaveAction(record, name);
             }
         });
         okButton.setExtraSpace(5);
@@ -139,5 +156,15 @@ public abstract class NewObjectBasicInfoWindow
         focus();
     }
 
-    protected abstract void doSaveAction(ListGridRecord record, String name, String dateIssued);
+    protected abstract void doSaveAction(ListGridRecord record, String name);
+
+    protected String getDateIssued() {
+        if (dateIssuedItem != null) return dateIssuedItem.getValueAsString();
+        return null;
+    }
+
+    protected String getPageType() {
+        if (pageTypeItem != null) return pageTypeItem.getValueAsString();
+        return null;
+    }
 }

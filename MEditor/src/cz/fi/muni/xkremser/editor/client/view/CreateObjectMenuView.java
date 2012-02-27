@@ -546,10 +546,13 @@ public class CreateObjectMenuView
                 new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang, eventBus) {
 
                     @Override
-                    protected void doSaveAction(ListGridRecord record, String name, String dateIssued) {
+                    protected void doSaveAction(ListGridRecord record, String name) {
                         addUndoRedo(true, false);
                         record.setAttribute(Constants.ATTR_NAME, name);
-                        if (dateIssued != null) record.setAttribute(Constants.ATTR_DATE_ISSUED, dateIssued);
+                        if (getDateIssued() != null)
+                            record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
+                        if (getPageType() != null)
+                            record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
                         structureTreeGrid.redraw();
                         hide();
                     }
