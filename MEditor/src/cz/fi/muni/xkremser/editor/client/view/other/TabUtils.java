@@ -1470,7 +1470,6 @@ public final class TabUtils {
                     final DynamicForm form = new DynamicForm();
                     FormItem item = newItem(mainAttr);
                     item.setValue(valueVector == null ? "" : valueVector.get(0));
-                    item.setWidth(550);
                     if (isAttribPresent) {
                         FormItem[] items = getAttributes(false, attributes).getFields();
                         FormItem[] itemsToAdd = new FormItem[items.length + 1];
@@ -1500,7 +1499,6 @@ public final class TabUtils {
             } else {
                 final DynamicForm form = new DynamicForm();
                 FormItem item = newItem(mainAttr);
-                item.setWidth(550);
                 if (isAttribPresent) {
                     FormItem[] items = getAttributes(false, attributes).getFields();
                     FormItem[] itemsToAdd = new FormItem[items.length + 1];
