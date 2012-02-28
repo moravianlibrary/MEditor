@@ -80,8 +80,8 @@ public abstract class ChooseDetailWindow
                               final boolean isTop,
                               final int topSpace,
                               final ModalWindow mw) {
-        super(Constants.IMAGE_FULL_HEIGHT + 100, 550, isTop ? lang.chooseDetailTop() : lang
-                .chooseDetailBottom(), eventBus, 20);
+        super(Constants.IMAGE_FULL_HEIGHT + 100, 550, isTop ? lang.modifyDetailTop() : lang
+                .modifyDetailBottom(), eventBus, 20);
         setMargin(1);
         setLayoutAlign(Alignment.CENTER);
         Image testImg = new Image(pathToImg);

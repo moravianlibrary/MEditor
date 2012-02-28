@@ -376,24 +376,6 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String choose();
 
   /**
-   * Translated "Choose the detail of the bottom of the site".
-   * 
-   * @return translated "Choose the detail of the bottom of the site"
-   */
-  @DefaultStringValue("Choose the detail of the bottom of the site")
-  @Key("chooseDetailBottom")
-  String chooseDetailBottom();
-
-  /**
-   * Translated "Choose the detail of the top of the site".
-   * 
-   * @return translated "Choose the detail of the top of the site"
-   */
-  @DefaultStringValue("Choose the detail of the top of the site")
-  @Key("chooseDetailTop")
-  String chooseDetailTop();
-
-  /**
    * Translated "Choose right".
    * 
    * @return translated "Choose right"
@@ -2606,6 +2588,24 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   @DefaultStringValue("This is roughly equivalent to MARC 21 Leader/06 value 'p'.")
   @Key("mixMatMARC")
   String mixMatMARC();
+
+  /**
+   * Translated "Modify the detail of the bottom of the site".
+   * 
+   * @return translated "Modify the detail of the bottom of the site"
+   */
+  @DefaultStringValue("Modify the detail of the bottom of the site")
+  @Key("modifyDetailBottom")
+  String modifyDetailBottom();
+
+  /**
+   * Translated "Modify the detail of the top of the site".
+   * 
+   * @return translated "Modify the detail of the top of the site"
+   */
+  @DefaultStringValue("Modify the detail of the top of the site")
+  @Key("modifyDetailTop")
+  String modifyDetailTop();
 
   /**
    * Translated "Monograph".

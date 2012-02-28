@@ -1309,16 +1309,12 @@ public class CreateStructureView
                         final ModalWindow mw = new ModalWindow(top);
                         mw.setLoadingIcon("loadingAnimation.gif");
                         mw.show(true);
-                        getUiHandlers()
-                                .chooseDetail(Constants.SERVLET_IMAGES_PREFIX
-                                                      .concat(Constants.SERVLET_SCANS_PREFIX).concat("/")
-                                                      .concat(pid)
-                                                      .concat("?" + Constants.URL_PARAM_FULL + "=yes"),
-                                              detailHeightTop,
-                                              pid,
-                                              true,
-                                              topSpaceTop,
-                                              mw);
+                        getUiHandlers().chooseDetail(getPathToFullImg(pid),
+                                                     detailHeightTop,
+                                                     pid,
+                                                     true,
+                                                     topSpaceTop,
+                                                     mw);
                     }
                 });
 
@@ -1341,97 +1337,36 @@ public class CreateStructureView
                         final ModalWindow mw = new ModalWindow(bottom);
                         mw.setLoadingIcon("loadingAnimation.gif");
                         mw.show(true);
-                        getUiHandlers()
-                                .chooseDetail(Constants.SERVLET_IMAGES_PREFIX
-                                                      .concat(Constants.SERVLET_SCANS_PREFIX).concat("/")
-                                                      .concat(pid)
-                                                      .concat("?" + Constants.URL_PARAM_FULL + "=yes"),
-                                              detailHeightBottom,
-                                              pid,
-                                              false,
-                                              topSpaceBottom,
-                                              mw);
+                        getUiHandlers().chooseDetail(getPathToFullImg(pid),
+                                                     detailHeightBottom,
+                                                     pid,
+                                                     false,
+                                                     topSpaceBottom,
+                                                     mw);
                     }
                 });
 
                 Label topL = new Label(lang.top());
                 topL.setHeight(12);
-                final ImgButton wrapTop = new ImgButton();
-                wrapTop.setShowRollOver(false);
-                wrapTop.setShowDown(false);
-                wrapTop.setHeight(16);
-                wrapTop.setWidth(16);
-                if (!topIsWraped) {
-                    wrapTop.setSrc("icons/16/wrap.png");
-                } else {
-                    wrapTop.setSrc("icons/16/unwrap.png");
-                }
-                wrapTop.setHoverStyle("interactImageHover");
-                wrapTop.setCanHover(true);
-                wrapTop.setHoverOpacity(85);
-                wrapTop.addHoverHandler(new HoverHandler() {
-
-                    @Override
-                    public void onHover(HoverEvent event) {
-                        wrapTop.setPrompt(topIsWraped ? lang.unwrap() : lang.wrap());
-                    }
-                });
-
-                wrapTop.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        topIsWraped = !topIsWraped;
-                        showDetail(pid);
-                    }
-                });
-
-                final ImgButton wrapBottom = new ImgButton();
-                wrapBottom.setShowRollOver(false);
-                wrapBottom.setShowDown(false);
-                wrapBottom.setHeight(16);
-                wrapBottom.setWidth(16);
-                if (!bottomIsWraped) {
-                    wrapBottom.setSrc("icons/16/wrap.png");
-                } else {
-                    wrapBottom.setSrc("icons/16/unwrap.png");
-                }
-                wrapBottom.setHoverStyle("interactImageHover");
-                wrapBottom.setCanHover(true);
-                wrapBottom.setHoverOpacity(85);
-                wrapBottom.addHoverHandler(new HoverHandler() {
-
-                    @Override
-                    public void onHover(HoverEvent event) {
-                        wrapBottom.setPrompt(bottomIsWraped ? lang.unwrap() : lang.wrap());
-                    }
-                });
-
-                wrapBottom.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        bottomIsWraped = !bottomIsWraped;
-                        showDetail(pid);
-                    }
-                });
 
                 detailPanel.setAlign(Alignment.CENTER);
                 detailPanel.setAlign(VerticalAlignment.CENTER);
 
-                Layout topLayout = new HLayout(2);
+                Layout topLayout = new HLayout(3);
                 topLayout.setHeight(16);
                 topLayout.addMember(topL);
-                topLayout.addMember(wrapTop);
+                topLayout.addMember(getWrapButton(true, pid));
+                topLayout.addMember(getModifyDetailButton(pid, true, top));
                 detailPanel.addMember(topLayout);
                 if (!topIsWraped) detailPanel.addMember(top);
 
                 Label botL = new Label(lang.bottom());
                 botL.setHeight(12);
-                Layout bottomLayout = new HLayout(2);
+                Layout bottomLayout = new HLayout(3);
                 bottomLayout.setHeight(16);
                 bottomLayout.addMember(botL);
-                bottomLayout.addMember(wrapBottom);
+                bottomLayout.addMember(getWrapButton(false, pid));
+                bottomLayout.addMember(getModifyDetailButton(pid, false, bottom));
                 detailPanel.addMember(bottomLayout);
                 if (!bottomIsWraped) detailPanel.addMember(bottom);
                 detailPanelImageShown = true;
@@ -1439,6 +1374,85 @@ public class CreateStructureView
                 tileGridLayout.redraw();
             }
         }
+    }
+
+    private ImgButton getWrapButton(final boolean isTop, final String pid) {
+        final ImgButton wrapButton = new ImgButton();
+        wrapButton.setShowRollOver(false);
+        wrapButton.setShowDown(false);
+        wrapButton.setHeight(16);
+        wrapButton.setWidth(16);
+        if ((isTop && !topIsWraped) || (!isTop && !bottomIsWraped)) {
+            wrapButton.setSrc("icons/16/wrap.png");
+        } else {
+            wrapButton.setSrc("icons/16/unwrap.png");
+        }
+        wrapButton.setHoverStyle("interactImageHover");
+        wrapButton.setCanHover(true);
+        wrapButton.setHoverOpacity(85);
+        wrapButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                wrapButton.setPrompt(((isTop && topIsWraped) || (!isTop && bottomIsWraped)) ? lang.unwrap()
+                        : lang.wrap());
+            }
+        });
+
+        wrapButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (isTop) {
+                    topIsWraped = !topIsWraped;
+                } else {
+                    bottomIsWraped = !bottomIsWraped;
+                }
+                showDetail(pid);
+            }
+        });
+        return wrapButton;
+    }
+
+    private ImgButton getModifyDetailButton(final String pid, final boolean isTop, final Img topOrBottom) {
+        final ImgButton modifyDetail = new ImgButton();
+        modifyDetail.setSrc("icons/16/editDetail.png");
+        modifyDetail.setShowRollOver(false);
+        modifyDetail.setShowDown(false);
+        modifyDetail.setHeight(16);
+        modifyDetail.setWidth(16);
+        modifyDetail.setHoverStyle("interactImageHover");
+        modifyDetail.setCanHover(true);
+        modifyDetail.setHoverOpacity(85);
+        modifyDetail.setHoverWidth(150);
+        modifyDetail.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                modifyDetail.setPrompt(isTop ? lang.modifyDetailTop() : lang.modifyDetailBottom());
+            }
+        });
+        modifyDetail.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final ModalWindow mw = new ModalWindow(topOrBottom);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
+                getUiHandlers().chooseDetail(getPathToFullImg(pid),
+                                             isTop ? detailHeightTop : detailHeightBottom,
+                                             pid,
+                                             isTop,
+                                             isTop ? topSpaceTop : topSpaceBottom,
+                                             mw);
+            }
+        });
+        return modifyDetail;
+    }
+
+    private String getPathToFullImg(String pid) {
+        return Constants.SERVLET_IMAGES_PREFIX.concat(Constants.SERVLET_SCANS_PREFIX).concat("/").concat(pid)
+                .concat("?" + Constants.URL_PARAM_FULL + "=yes");
     }
 
     private void editPageTitle() {
