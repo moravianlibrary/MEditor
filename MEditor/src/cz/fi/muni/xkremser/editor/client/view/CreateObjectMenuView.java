@@ -393,7 +393,9 @@ public class CreateObjectMenuView
                     } else {
                         addUndoRedo(true, false);
                     }
-
+                    if (!event.isCtrlKeyDown()) {
+                        tileGrid.removeSelectedData();
+                    }
                 }
             }
         });

@@ -70,6 +70,8 @@ import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.events.DoubleClickEvent;
 import com.smartgwt.client.widgets.events.DoubleClickHandler;
+import com.smartgwt.client.widgets.events.DragMoveEvent;
+import com.smartgwt.client.widgets.events.DragMoveHandler;
 import com.smartgwt.client.widgets.events.DragStartEvent;
 import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DragStopEvent;
@@ -115,6 +117,7 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.CreateStructureView.MyUiHandlers;
 import cz.fi.muni.xkremser.editor.client.view.other.DCTab;
+import cz.fi.muni.xkremser.editor.client.view.other.EditorDragMoveHandler;
 import cz.fi.muni.xkremser.editor.client.view.other.EditorTabSet;
 import cz.fi.muni.xkremser.editor.client.view.other.HtmlCode;
 import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
@@ -336,6 +339,9 @@ public class CreateStructureView
         detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
         topIsWraped = false;
         bottomIsWraped = false;
+        final EditorDragMoveHandler dragHandler = new EditorDragMoveHandler(tileGrid);
+        tileGrid.addDragMoveHandler(dragHandler);
+
         tileGrid.addDragStartHandler(new DragStartHandler() {
 
             @Override
@@ -344,6 +350,25 @@ public class CreateStructureView
                 if (selection != null && selection.length > 0) {
                     positionBeforeMoving = tileGrid.getRecordIndex(selection[0]);
                     addUndoRedo(tileGrid.getData(), true, false);
+                }
+            }
+        });
+
+        tileGrid.addDragMoveHandler(new DragMoveHandler() {
+
+            @Override
+            public void onDragMove(DragMoveEvent event) {
+                if (tileGrid.getSelectedRecord() != null) {
+                    tileGrid.setDragAppearance(DragAppearance.TRACKER);
+                    String pageIcon =
+                            Canvas.imgHTML(getImageURLPrefix()
+                                                   + tileGrid.getSelectedRecord()
+                                                           .getAttributeAsString(Constants.ATTR_PICTURE),
+                                           25,
+                                           35);
+                    dragHandler.setMoveTracker(pageIcon);
+                } else {
+                    tileGrid.setDragAppearance(DragAppearance.NONE);
                 }
             }
         });
@@ -551,9 +576,7 @@ public class CreateStructureView
 
         final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
         pictureField.setType("image");
-        pictureField.setImageURLPrefix(Constants.SERVLET_SCANS_PREFIX + '/' + "?"
-                + Constants.URL_PARAM_HEIGHT + "=" + imageThumbnailHeight + "&" + Constants.URL_PARAM_UUID
-                + "=");
+        pictureField.setImageURLPrefix(getImageURLPrefix());
         pictureField.setImageWidth(imageThumbnailWidth);
         pictureField.setImageHeight(imageThumbnailHeight);
         pictureField.setCellStyle("tileGridImg");
@@ -584,6 +607,11 @@ public class CreateStructureView
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);
         layout.addMember(tileGridLayout);
+    }
+
+    private String getImageURLPrefix() {
+        return Constants.SERVLET_SCANS_PREFIX + '/' + "?" + Constants.URL_PARAM_HEIGHT + "="
+                + imageThumbnailHeight + "&" + Constants.URL_PARAM_UUID + "=";
     }
 
     /**

@@ -1044,8 +1044,7 @@ public class ModifyView
         tileGrid.setDropTypes(model);
         tileGrid.setDragType(model);
         tileGrid.setDragAppearance(DragAppearance.TRACKER);
-        final EditorDragMoveHandler dragHandler =
-                new EditorDragMoveHandler(tileGrid, DigitalObjectModel.parseString(model));
+        final EditorDragMoveHandler dragHandler = new EditorDragMoveHandler(tileGrid);
         final DigitalObjectModel mod = DigitalObjectModel.parseString(model);
         final boolean isPage = DigitalObjectModel.PAGE.equals(mod);
         final String modelIcon = Canvas.imgHTML(mod.getIcon(), 25, 25);

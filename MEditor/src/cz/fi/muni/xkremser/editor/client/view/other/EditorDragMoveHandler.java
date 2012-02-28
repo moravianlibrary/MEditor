@@ -31,8 +31,6 @@ import com.smartgwt.client.widgets.events.DragMoveEvent;
 import com.smartgwt.client.widgets.events.DragMoveHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
-import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
-
 /**
  * @author Jiri Kremser
  * @version $Id$
@@ -45,7 +43,7 @@ public class EditorDragMoveHandler
     private String moveTracker;
     private final String copySymbol = Canvas.imgHTML("icons/16/copy.png", 16, 16);
 
-    public EditorDragMoveHandler(TileGrid tileGrid, DigitalObjectModel model) {
+    public EditorDragMoveHandler(TileGrid tileGrid) {
         this.tileGrid = tileGrid;
     }
 

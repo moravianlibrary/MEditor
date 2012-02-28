@@ -1316,7 +1316,7 @@ public final class TabUtils {
 
         final DynamicForm form = new DynamicForm();
         FormItem item = newItem(mainAttr);
-        item.setWidth(200);
+        //        item.setWidth(200);
         form.setFields(item);
         form.setPadding(5);
         if (isAttribPresent) {
@@ -1417,7 +1417,7 @@ public final class TabUtils {
             public void onClick(ClickEvent event) {
                 final DynamicForm form = new DynamicForm();
                 FormItem item = newItem(mainAttr);
-                item.setWidth(200);
+                item.setWidth(550);
                 if (isAttribPresent) {
                     FormItem[] items = getAttributes(false, attributes).getFields();
                     FormItem[] itemsToAdd = new FormItem[items.length + 1];
@@ -1470,7 +1470,7 @@ public final class TabUtils {
                     final DynamicForm form = new DynamicForm();
                     FormItem item = newItem(mainAttr);
                     item.setValue(valueVector == null ? "" : valueVector.get(0));
-                    item.setWidth(200);
+                    item.setWidth(550);
                     if (isAttribPresent) {
                         FormItem[] items = getAttributes(false, attributes).getFields();
                         FormItem[] itemsToAdd = new FormItem[items.length + 1];
@@ -1500,7 +1500,7 @@ public final class TabUtils {
             } else {
                 final DynamicForm form = new DynamicForm();
                 FormItem item = newItem(mainAttr);
-                item.setWidth(200);
+                item.setWidth(550);
                 if (isAttribPresent) {
                     FormItem[] items = getAttributes(false, attributes).getFields();
                     FormItem[] itemsToAdd = new FormItem[items.length + 1];
@@ -1524,7 +1524,7 @@ public final class TabUtils {
                 final DynamicForm form = new DynamicForm();
                 FormItem item = newItem(mainAttr);
                 item.setValue(isVals ? values.get(0).get(j) : "");
-                item.setWidth(200);
+                item.setWidth(550);
                 if (isAttribPresent) {
                     FormItem[] items = getAttributes(false, attributes).getFields();
                     FormItem[] itemsToAdd = new FormItem[items.length + 1];
@@ -1575,7 +1575,7 @@ public final class TabUtils {
         for (final Attribute attr : attributes) {
             FormItem item = newItem(attr);
             if (item != null) {
-                item.setWidth(200);
+                //                item.setWidth(200);
                 item.setTitle(attr.getLabel());
                 fields[i++] = item;
             }
@@ -1637,6 +1637,7 @@ public final class TabUtils {
             item.setTooltip(attr.getTooltip());
         }
         item.setTitle(attr.getLabel());
+        item.setWidth(280);
         return item;
     }
 
