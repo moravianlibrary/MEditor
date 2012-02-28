@@ -172,6 +172,9 @@ public class Constants {
     /** The Constant ATTR_PARENT. */
     public static final String ATTR_PARENT = "parent";
 
+    /** The Constant ATTR_SCAN_INDEX. */
+    public static final String ATTR_SCAN_INDEX = "scanIndex";
+
     /** The Constant ATTR_NAME. */
     public static final String ATTR_NAME = "atName";
 

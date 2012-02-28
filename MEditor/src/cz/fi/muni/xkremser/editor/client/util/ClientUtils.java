@@ -47,6 +47,7 @@ import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityClient;
 import cz.fi.muni.xkremser.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.fi.muni.xkremser.editor.client.view.CreateObjectMenuView.SubstructureTreeNode;
 import cz.fi.muni.xkremser.editor.client.view.other.RecentlyModifiedRecord;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
@@ -288,17 +289,26 @@ public class ClientUtils {
         if (model == DigitalObjectModel.PAGE && (imgUuid == null || "".equals(imgUuid))) {
             throw new CreateObjectException("unknown uuid");
         }
-        NewDigitalObject newObj =
-                new NewDigitalObject(0,
-                                     name,
-                                     model,
-                                     bundle,
-                                     null,
-                                     node.getAttributeAsBoolean(Constants.ATTR_EXIST));
+        int scanIndex = node.getAttributeAsInt(Constants.ATTR_SCAN_INDEX);
+        if (model == DigitalObjectModel.PAGE && (scanIndex < 0)) {
+            throw new CreateObjectException("negative scanIndex of the page");
+        }
+        Boolean exists = node.getAttributeAsBoolean(Constants.ATTR_EXIST);
+
+        NewDigitalObject newObj = new NewDigitalObject(scanIndex, name, model, bundle, null, exists);
+
         newObj.setVisible(visible);
         String dateIssued = node.getAttribute(Constants.ATTR_DATE_ISSUED);
         if (dateIssued != null && !"".equals(dateIssued)) {
             newObj.setDateIssued(dateIssued);
+        }
+
+        if (exists) {
+            if (imgUuid != null && !"".equals(imgUuid)) {
+                newObj.setUuid(imgUuid.startsWith("uuid:") ? imgUuid.substring("uuid:".length()) : imgUuid);
+            } else {
+                throw new CreateObjectException("unknown uuid of an existing object");
+            }
         }
 
         String altoPath = node.getAttribute(Constants.ATTR_ALTO_PATH);

@@ -47,6 +47,8 @@ public class ScanRecord
     /**
      * Instantiates a new page record.
      * 
+     * @param scanIndex
+     *        the scanIndex
      * @param name
      *        the name
      * @param issn
@@ -56,13 +58,39 @@ public class ScanRecord
      * @param path
      *        the path
      */
-    public ScanRecord(String name, String model, String barcode, String picture, String path, String pageType) {
+    public ScanRecord(int scanIndex,
+                      String name,
+                      String model,
+                      String barcode,
+                      String picture,
+                      String path,
+                      String pageType) {
+        setScanIndex(scanIndex);
         setName(name);
         setModel(model);
         setBarcode(barcode);
         setPicture(picture);
         setPath(path);
         setPageType(pageType);
+    }
+
+    /**
+     * Set the scanIndex.
+     * 
+     * @param scanIndex
+     *        the scanIndex
+     */
+    public void setScanIndex(int scanIndex) {
+        setAttribute(Constants.ATTR_SCAN_INDEX, scanIndex);
+    }
+
+    /**
+     * Return the scanIndex.
+     * 
+     * @return the scanIndex
+     */
+    public int getScanIndex() {
+        return getAttributeAsInt(Constants.ATTR_SCAN_INDEX);
     }
 
     /**
@@ -185,17 +213,24 @@ public class ScanRecord
      * @return the page record
      */
     public ScanRecord deepCopy() {
-        return new ScanRecord(getName(), getModel(), getBarcode(), getPicture(), getPath(), getPageType());
+        return new ScanRecord(getScanIndex(),
+                              getName(),
+                              getModel(),
+                              getBarcode(),
+                              getPicture(),
+                              getPath(),
+                              getPageType());
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * {@inheritDoc}
      */
+
     @Override
     public String toString() {
-        return "ScanRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getBarcode()="
-                + getBarcode() + ", getPicture()=" + getPicture() + ", getPath()=" + getPath() + "]";
+        return "ScanRecord [getScanIndex()=" + getScanIndex() + ", getName()=" + getName() + ", getModel()="
+                + getModel() + ", getBarcode()=" + getBarcode() + ", getPicture()=" + getPicture()
+                + ", getPath()=" + getPath() + ", getPageType()=" + getPageType() + "]";
     }
 
 }

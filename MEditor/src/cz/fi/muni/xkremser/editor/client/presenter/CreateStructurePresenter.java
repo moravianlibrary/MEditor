@@ -388,6 +388,7 @@ public class CreateStructurePresenter
         leftPresenter.getView().getSubelementsGrid().enable();
         leftPresenter.getView().getSubelementsGrid().redraw();
         leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
+                                                -1,
                                                 name,
                                                 null,
                                                 model,
@@ -515,7 +516,8 @@ public class CreateStructurePresenter
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
-                                new ScanRecord(String.valueOf(i + 1),
+                                new ScanRecord(i + 1,
+                                               String.valueOf(i + 1),
                                                model,
                                                sysno,
                                                itemList.get(i).getIdentifier(),
@@ -760,6 +762,7 @@ public class CreateStructurePresenter
                 String name = leftPresenter.getView().getNewName().getValueAsString();
                 name = name == null || "".equals(name) ? possibleParent : name;
                 leftPresenter.getView().addSubstructure(possibleParent,
+                                                        -1,
                                                         name,
                                                         null,
                                                         type,
@@ -779,6 +782,7 @@ public class CreateStructurePresenter
                 for (int i = 0; i < selection.length; i++) {
                     leftPresenter.getView()
                             .addSubstructure(String.valueOf(leftPresenter.newId()),
+                                             selection[i].getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
                                              selection[i].getAttribute(Constants.ATTR_NAME),
                                              selection[i].getAttribute(Constants.ATTR_PICTURE),
                                              leftPresenter.getLabelFromModel().get(DigitalObjectModel.PAGE

@@ -40,7 +40,7 @@ public class NewDigitalObject
         implements Serializable {
 
     private static final long serialVersionUID = -8145898237441105426L;
-    private int orderIndex;
+    private int scanIndex;
     private String name;
     private ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
     private DigitalObjectModel model;
@@ -65,14 +65,14 @@ public class NewDigitalObject
         this.name = name;
     }
 
-    public NewDigitalObject(int orderIndex,
+    public NewDigitalObject(int scanIndex,
                             String name,
                             DigitalObjectModel model,
                             MetadataBundle bundle,
                             String uuid,
                             boolean exist) {
         super();
-        this.orderIndex = orderIndex;
+        this.scanIndex = scanIndex;
         this.name = name;
         this.model = model;
         this.bundle = bundle;
@@ -97,12 +97,12 @@ public class NewDigitalObject
         this.sysno = sysno;
     }
 
-    public int getOrderIndex() {
-        return orderIndex;
+    public int getScanIndex() {
+        return scanIndex;
     }
 
-    public void setOrderIndex(int orderIndex) {
-        this.orderIndex = orderIndex;
+    public void setScanIndex(int scanIndex) {
+        this.scanIndex = scanIndex;
     }
 
     public DigitalObjectModel getModel() {

@@ -121,6 +121,11 @@ public class CreateObjectUtils {
             builder.setDateIssued(node.getDateIssued());
 
         }
+
+        if (node.getModel() == DigitalObjectModel.PAGE) {
+            builder.setPageScanIndex(node.getScanIndex());
+        }
+
         List<NewDigitalObject> childrenToAdd = node.getChildren();
         if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
             List<RelsExtRelation> relations = builder.getChildren();

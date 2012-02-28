@@ -378,6 +378,7 @@ public class CreateObjectMenuView
                         addUndoRedo(true, false);
                         for (Record rec : selection) {
                             addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                            rec.getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
                                             rec.getAttribute(Constants.ATTR_NAME),
                                             rec.getAttribute(Constants.ATTR_PICTURE),
                                             getUiHandlers().getLabelFromModel().get(DigitalObjectModel.PAGE
@@ -393,7 +394,7 @@ public class CreateObjectMenuView
                     } else {
                         addUndoRedo(true, false);
                     }
-                    if (!event.isCtrlKeyDown()) {
+                    if (tileGrid != null && !event.isCtrlKeyDown()) {
                         tileGrid.removeSelectedData();
                     }
                 }
@@ -462,6 +463,7 @@ public class CreateObjectMenuView
 
                             // add new parent
                             addSubstructure(newParentId,
+                                            -1,
                                             uuidField.getValueAsString(),
                                             uuidField.getValueAsString(),
                                             getUiHandlers().getLabelFromModel().get(getModel().getValue()),
@@ -474,6 +476,7 @@ public class CreateObjectMenuView
                                             true);
                             for (Record rec : selection) {
                                 addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                                rec.getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
                                                 rec.getAttribute(Constants.ATTR_NAME),
                                                 rec.getAttribute(Constants.ATTR_PICTURE),
                                                 rec.getAttribute(Constants.ATTR_TYPE),
@@ -516,6 +519,7 @@ public class CreateObjectMenuView
                     protected void doAction(TextItem uuidField) {
                         addUndoRedo(true, false);
                         addSubstructure(String.valueOf(getUiHandlers().newId()),
+                                        -1,
                                         uuidField.getValueAsString(),
                                         uuidField.getValueAsString(),
                                         getUiHandlers().getLabelFromModel().get(getModel().getValue()),
@@ -908,6 +912,7 @@ public class CreateObjectMenuView
 
         public SubstructureTreeNode(String id,
                                     String parent,
+                                    int scanIndex,
                                     String name,
                                     String uuid,
                                     String type,
@@ -918,6 +923,7 @@ public class CreateObjectMenuView
                                     boolean exist) {
             setAttribute(Constants.ATTR_ID, id);
             setAttribute(Constants.ATTR_PARENT, parent);
+            setAttribute(Constants.ATTR_SCAN_INDEX, scanIndex);
             setAttribute(Constants.ATTR_NAME, name);
             setAttribute(Constants.ATTR_PICTURE, uuid);
             setAttribute(Constants.ATTR_TYPE, type);
@@ -936,6 +942,7 @@ public class CreateObjectMenuView
      */
     @Override
     public void addSubstructure(String id,
+                                int scanIndex,
                                 String name,
                                 String uuid,
                                 String type,
@@ -948,6 +955,7 @@ public class CreateObjectMenuView
         TreeNode parentNode = structureTree.findById(parent);
         structureTree.add(new SubstructureTreeNode(id,
                                                    parent,
+                                                   scanIndex,
                                                    name,
                                                    uuid,
                                                    type,
@@ -1017,6 +1025,7 @@ public class CreateObjectMenuView
                 TreeNode newTreeNode =
                         new SubstructureTreeNode(childNode.getAttribute(Constants.ATTR_ID),
                                                  childNode.getAttribute(Constants.ATTR_PARENT),
+                                                 childNode.getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
                                                  childNode.getAttribute(Constants.ATTR_NAME),
                                                  childNode.getAttribute(Constants.ATTR_PICTURE),
                                                  childNode.getAttribute(Constants.ATTR_TYPE),

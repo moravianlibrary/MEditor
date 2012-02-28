@@ -31,7 +31,9 @@ import org.dom4j.QName;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
+
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.rpc.NewDigitalObject;
 
@@ -81,7 +83,7 @@ public class PageBuilder
         detail = part.addElement(new QName("detail", modsNs));
         detail.addAttribute("type", "pageIndex");
         number = detail.addElement(new QName("number", modsNs));
-        number.addText(getLabel());
+        number.addText(String.valueOf(getPageScanIndex()));
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
     }
 

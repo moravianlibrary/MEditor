@@ -1522,13 +1522,7 @@ public class CreateStructureView
         Record[] newData = new Record[data.length];
         int i = 0;
         for (Record d : data) {
-            newData[i] =
-                    new ScanRecord(d.getAttribute(Constants.ATTR_NAME),
-                                   d.getAttribute(Constants.ATTR_MODEL),
-                                   d.getAttribute(Constants.ATTR_BARCODE),
-                                   d.getAttribute(Constants.ATTR_PICTURE),
-                                   d.getAttribute(Constants.ATTR_DESC),
-                                   d.getAttribute(Constants.ATTR_PAGE_TYPE));
+            newData[i] = ((ScanRecord) d).deepCopy();
             i++;
         }
         if (isUndoList) {

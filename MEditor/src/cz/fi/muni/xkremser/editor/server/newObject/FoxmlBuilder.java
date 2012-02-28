@@ -25,7 +25,9 @@
 package cz.fi.muni.xkremser.editor.server.newObject;
 
 import java.io.ByteArrayOutputStream;
+
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,9 +42,11 @@ import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.fi.muni.xkremser.editor.client.util.Constants.DATASTREAM_ID;
+
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.fi.muni.xkremser.editor.server.fedora.utils.FoxmlUtils;
+
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 import cz.fi.muni.xkremser.editor.shared.domain.FedoraNamespaces;
 import cz.fi.muni.xkremser.editor.shared.rpc.MetadataBundle;
@@ -62,6 +66,7 @@ public abstract class FoxmlBuilder {
     private String sysno;
     private String label;
     private String pageType;
+    private int pageScanIndex;
     private Policy policy = Policy.PRIVATE;
     private final List<RelsExtRelation> children;
     private MetadataBundle bundle;
@@ -409,6 +414,23 @@ public abstract class FoxmlBuilder {
 
     public void setDateIssued(String dateIssued) {
         this.dateIssued = dateIssued;
+    }
+
+    /**
+     * @return the pageScanIndex
+     */
+
+    public int getPageScanIndex() {
+        return pageScanIndex;
+    }
+
+    /**
+     * @param pageScanIndex
+     *        the pageScanIndex to set
+     */
+
+    public void setPageScanIndex(int pageScanIndex) {
+        this.pageScanIndex = pageScanIndex;
     }
 
     public void setBundle(MetadataBundle bundle) {

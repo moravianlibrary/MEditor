@@ -125,6 +125,7 @@ public class CreateObjectMenuPresenter
         void addUndoRedo(boolean useUndoList, boolean isRedoOperation);
 
         void addSubstructure(String id,
+                             int scanIndex,
                              String name,
                              String uuid,
                              String type,
