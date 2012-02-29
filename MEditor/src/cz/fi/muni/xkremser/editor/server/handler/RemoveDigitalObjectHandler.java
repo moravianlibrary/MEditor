@@ -283,12 +283,6 @@ public class RemoveDigitalObjectHandler
                     successful = getDoModelHandler.getModel(uuid) == null;
                 }
 
-                try {
-                    Thread.sleep(Constants.INGEST_DELAY);
-                } catch (InterruptedException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                }
             }
             if (successful) {
                 removedDigitalObjects.add(new RemovedDigitalObject(uuid, foxml, removedRelationships));
@@ -367,12 +361,6 @@ public class RemoveDigitalObjectHandler
 
         String result = RESTHelper.deleteWithStringResult(url, usr, pass, true);
         successful = result.contains("true");
-        try {
-            Thread.sleep(Constants.INGEST_DELAY);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
 
         if (successful) {
             removedRelationships.add(parentRel);
@@ -529,13 +517,6 @@ public class RemoveDigitalObjectHandler
         }
 
         boolean successful = RESTHelper.post(url, null, usr, pass, true);
-
-        try {
-            Thread.sleep(Constants.INGEST_DELAY);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
 
         return successful;
     }

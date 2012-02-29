@@ -237,12 +237,6 @@ public class CreateObjectUtils {
         String password = config.getFedoraPassword();
         String url = config.getFedoraHost() + "/objects/new";
         boolean success = RESTHelper.post(url, foxml, login, password, false);
-        try {
-            Thread.sleep(Constants.INGEST_DELAY);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
 
         if (LOGGER.isInfoEnabled() && success) {
             LOGGER.info("Object ingested -- uuid:" + uuid + " label: " + label + ", model: " + model);
@@ -275,12 +269,6 @@ public class CreateObjectUtils {
         String password = config.getFedoraPassword();
         String url = config.getFedoraHost().concat(prepUrl);
         boolean success = RESTHelper.post(url, content, login, password, false);
-        try {
-            Thread.sleep(Constants.INGEST_DELAY);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
 
         if (success) {
             LOGGER.info("An " + dsId.getValue() + " file: " + filePath

@@ -369,13 +369,14 @@ public class CreateObjectMenuView
                         return;
                     }
 
+                    addUndoRedo(true, false);
                     if (treeGrid == null) {
                         if (parentModel == DigitalObjectModel.PAGE) {
                             SC.say(lang.pageNotDropable());
                             event.cancel();
                             return;
                         }
-                        addUndoRedo(true, false);
+
                         for (Record rec : selection) {
                             addSubstructure(String.valueOf(getUiHandlers().newId()),
                                             rec.getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
@@ -391,9 +392,8 @@ public class CreateObjectMenuView
                                             false);
                         }
                         event.cancel();
-                    } else {
-                        addUndoRedo(true, false);
                     }
+
                     if (tileGrid != null && !event.isCtrlKeyDown()) {
                         tileGrid.removeSelectedData();
                     }
@@ -451,7 +451,6 @@ public class CreateObjectMenuView
                             root.setAttribute(Constants.ATTR_EXIST, true);
                             root.setAttribute(Constants.ATTR_CREATE, false);
                             root.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
-                            addUndoRedo(true, false);
                             structureTreeGrid.setData(structureTree);
                         } else {
                             String parentId = selection[0].getAttributeAsString(Constants.ATTR_PARENT);
@@ -491,7 +490,6 @@ public class CreateObjectMenuView
                                     .getSelectedRecords().length && !parentIsTopLvl) {
                                 //parent has no other children (no siblings) and is not top lvl
                                 structureTree.remove(parent);
-                                addUndoRedo(true, false);
                                 structureTreeGrid.setData(structureTree);
                             }
                         }

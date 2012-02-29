@@ -46,6 +46,7 @@ import com.google.gwt.user.server.Base64Utils;
 import org.apache.log4j.Logger;
 
 import cz.fi.muni.xkremser.editor.client.ConnectionException;
+import cz.fi.muni.xkremser.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
 public class RESTHelper {
@@ -130,6 +131,12 @@ public class RESTHelper {
                                                 final int method,
                                                 String content,
                                                 boolean robustMode) throws MalformedURLException, IOException {
+        try {
+            Thread.sleep(Constants.REST_DELAY);
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
         URL url = new URL(urlString);
         boolean auth = false;
         String encoded = null;

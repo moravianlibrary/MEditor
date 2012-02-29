@@ -59,6 +59,7 @@ import cz.fi.muni.xkremser.editor.shared.rpc.action.GetRelationshipsResult;
 public class GetRelationshipsHandler
         implements ActionHandler<GetRelationshipsAction, GetRelationshipsResult> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(GetRelationshipsHandler.class.getPackage()
             .toString());
 
@@ -104,12 +105,6 @@ public class GetRelationshipsHandler
         //        System.err.println(digObjRel.getUuid());
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(digObjRel.getUuid());
-        try {
-            Thread.sleep(Constants.INGEST_DELAY);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
 
         if (children != null) {
             for (ArrayList<String> child : children) {
@@ -142,12 +137,6 @@ public class GetRelationshipsHandler
         List<String> parentsUuid = new ArrayList<String>();
 
         ArrayList<ArrayList<String>> related = FedoraUtils.getRelated(digObjRel.getUuid());
-        try {
-            Thread.sleep(Constants.INGEST_DELAY);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
 
         if (related != null) {
             for (ArrayList<String> subject : related) {
@@ -174,12 +163,6 @@ public class GetRelationshipsHandler
     private void detectParentsConflicts(final DigitalObjectRelationships digObjRel, List<String> parentsUuid) {
         for (String parentUuid : parentsUuid) {
             ArrayList<ArrayList<String>> grandParents = FedoraUtils.getRelated(parentUuid);
-            try {
-                Thread.sleep(Constants.INGEST_DELAY);
-            } catch (InterruptedException e) {
-                LOGGER.error(e.getMessage());
-                e.printStackTrace();
-            }
 
             for (ArrayList<String> grandParent : grandParents) {
 
@@ -196,12 +179,6 @@ public class GetRelationshipsHandler
 
                     } else {
                         ArrayList<ArrayList<String>> cousins = FedoraUtils.getAllChildren(parentUuid);
-                        try {
-                            Thread.sleep(Constants.INGEST_DELAY);
-                        } catch (InterruptedException e) {
-                            LOGGER.error(e.getMessage());
-                            e.printStackTrace();
-                        }
 
                         if (cousins.size() > 1) {
                             parentConflict.setConflict(Constants.CONFLICT.COUSIN);
@@ -250,12 +227,6 @@ public class GetRelationshipsHandler
         if (!childHasConflict) {
             if (!isRoot) {
                 ArrayList<ArrayList<String>> related = FedoraUtils.getRelated(digObjRel.getUuid());
-                try {
-                    Thread.sleep(Constants.INGEST_DELAY);
-                } catch (InterruptedException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                }
 
                 test++;
                 for (ArrayList<String> subject : related) {
