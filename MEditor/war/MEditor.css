@@ -394,3 +394,7 @@ body {
 #loadingMsg {
 	font: normal 10px arial, tahoma, sans-serif;
 }
+
+.hotKey {
+	font-family: monospace;
+}
