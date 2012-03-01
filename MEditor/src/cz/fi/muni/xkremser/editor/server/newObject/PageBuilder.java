@@ -101,6 +101,17 @@ public class PageBuilder
      * {@inheritDoc}
      */
     @Override
+    protected void decorateRelsExtStream() {
+        super.decorateRelsExtStream();
+        Element description = FoxmlUtils.findDescriptionElement(getRelsExtXmlContent());
+        Element url = description.addElement(new QName("tiles-url", Namespaces.kramerius));
+        url.addText(getImageUrl() + ".jp2");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected DigitalObjectModel getModel() {
         return DigitalObjectModel.PAGE;
     }

@@ -209,6 +209,11 @@ public class FoxmlUtils {
         return (org.dom4j.Element) descriptionXPath.selectSingleNode(relsExt);
     }
 
+    public static org.dom4j.Element findDescriptionElement(org.dom4j.Document relsExt) {
+        XPath descriptionXPath = Dom4jUtils.createXPath("//rdf:Description");
+        return (org.dom4j.Element) descriptionXPath.selectSingleNode(relsExt);
+    }
+
     public static org.dom4j.Document createRelsExtSkeleton(String uuid, String model, Policy policy) {
         Namespace rdfNs = Namespaces.rdf;
         Namespace krameriusNs = Namespaces.kramerius;
