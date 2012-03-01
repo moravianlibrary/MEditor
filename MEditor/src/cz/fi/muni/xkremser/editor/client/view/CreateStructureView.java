@@ -904,6 +904,7 @@ public class CreateStructureView
         MenuItem toRomanOld = new MenuItem(lang.convertToRomanOld(), "icons/16/roman.png");
         MenuItem surround = new MenuItem("1, 2, ...   ⇨   [1], [2], ...", "icons/16/surround.png");
         MenuItem abc = new MenuItem("1, 2, ...   ⇨   1a, 1b, ...", "icons/16/abc.png");
+        MenuItem toCollumn = new MenuItem("1, 2, ...   ⇨   1|2, ...", "icons/16/collumns.png");
         MenuItem toLeft = new MenuItem(lang.leftShift() + "...", "icons/16/arrow_left.png");
         MenuItem toRight = new MenuItem(lang.rightShift() + "...", "icons/16/arrow_right.png");
         MenuItem shiftTo = new MenuItem(lang.shiftTo() + "...", "icons/16/arrow_in.png");
@@ -913,6 +914,7 @@ public class CreateStructureView
         toRomanOld.setEnableIfCondition(isSelected(false));
         surround.setEnableIfCondition(isSelected(false));
         abc.setEnableIfCondition(isSelected(false));
+        toCollumn.setEnableIfCondition(isSelected(false));
         toLeft.setEnableIfCondition(isSelected(false));
         toRight.setEnableIfCondition(isSelected(false));
         shiftTo.setEnableIfCondition(isSelected(false));
@@ -1043,6 +1045,25 @@ public class CreateStructureView
         });
 
         abc.setSubmenu(getAbcSubmenu());
+        toCollumn.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                final ModalWindow mw = new ModalWindow(tileGrid);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
+                Timer timer = new Timer() {
+
+                    @Override
+                    public void run() {
+                        numbering.toColumn();
+                        updateTileGrid();
+                        mw.hide();
+                    }
+                };
+                timer.schedule(25);
+            }
+        });
 
         toLeft.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -1125,6 +1146,7 @@ public class CreateStructureView
                       separator,
                       surround,
                       abc,
+                      toCollumn,
                       separator,
                       toLeft,
                       toRight,

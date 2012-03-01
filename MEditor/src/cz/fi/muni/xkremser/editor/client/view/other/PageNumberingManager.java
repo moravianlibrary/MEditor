@@ -24,11 +24,14 @@
 
 package cz.fi.muni.xkremser.editor.client.view.other;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
@@ -306,6 +309,34 @@ public final class PageNumberingManager {
             for (Record rec : data) {
                 rec.setAttribute(Constants.ATTR_NAME, (i + (j / 2)) + "" + (j % 2 == 0 ? 'r' : 'v'));
                 j++;
+            }
+        }
+    }
+
+    public void toColumn() {
+        List<Record> selection = Arrays.asList(tileGrid.getSelection());
+        RecordList allRecords = tileGrid.getRecordList();
+        String name = selection.get(0).getAttributeAsString(Constants.ATTR_NAME);
+        int number = getPageNumberFromText(name);
+        if (number < 0) {
+            if (name.contains(Constants.TWO_PAGES_SEPARATOR)) {
+                String[] splitedName = name.split("\\" + Constants.TWO_PAGES_SEPARATOR);
+                if ((number = getPageNumberFromText(splitedName[0].replaceAll(" ", ""))) < 0)
+                    number = allRecords.indexOf(selection.get(0)) + 1;
+            } else {
+                number = allRecords.indexOf(selection.get(0)) + 1;
+            }
+        }
+        number--;
+
+        for (int i = allRecords.indexOf(selection.get(0)); i < allRecords.getLength(); i++) {
+            if (selection.contains(allRecords.get(i))
+                    || allRecords.get(i).getAttributeAsString(Constants.ATTR_NAME)
+                            .contains(Constants.TWO_PAGES_SEPARATOR)) {
+                allRecords.get(i).setAttribute(Constants.ATTR_NAME,
+                                               ++number + Constants.TWO_PAGES_SEPARATOR + ++number);
+            } else {
+                allRecords.get(i).setAttribute(Constants.ATTR_NAME, ++number);
             }
         }
     }

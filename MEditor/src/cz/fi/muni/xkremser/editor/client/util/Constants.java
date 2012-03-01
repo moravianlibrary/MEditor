@@ -639,4 +639,7 @@ public class Constants {
     public static enum SERVER_ACTION_RESULT {
         OK, WRONG_FILE_NAME;
     }
+
+    /** The separator for two pages on one page, or for columns one a page */
+    public static final String TWO_PAGES_SEPARATOR = "|";
 }

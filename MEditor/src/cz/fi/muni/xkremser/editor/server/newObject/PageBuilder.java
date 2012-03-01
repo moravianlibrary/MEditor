@@ -77,8 +77,18 @@ public class PageBuilder
         //pageNumber
         Element detail = part.addElement(new QName("detail", modsNs));
         detail.addAttribute("type", "pageNumber");
-        Element number = detail.addElement(new QName("number", modsNs));
-        number.addText(pageLabel);
+
+        Element number = null;
+        if (pageLabel.contains(Constants.TWO_PAGES_SEPARATOR)) {
+            String[] splitedLabel = pageLabel.split("\\" + Constants.TWO_PAGES_SEPARATOR);
+            number = detail.addElement(new QName("number", modsNs));
+            number.addText(splitedLabel[0]);
+            number = detail.addElement(new QName("number", modsNs));
+            number.addText(splitedLabel[1]);
+        } else {
+            number = detail.addElement(new QName("number", modsNs));
+            number.addText(pageLabel);
+        }
         //page index
         detail = part.addElement(new QName("detail", modsNs));
         detail.addAttribute("type", "pageIndex");
