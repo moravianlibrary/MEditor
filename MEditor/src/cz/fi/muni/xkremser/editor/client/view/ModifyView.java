@@ -43,7 +43,6 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -75,7 +74,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -97,7 +95,6 @@ import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
-import cz.fi.muni.xkremser.editor.client.NameTokens;
 import cz.fi.muni.xkremser.editor.client.config.EditorClientConfiguration;
 import cz.fi.muni.xkremser.editor.client.mods.ModsCollectionClient;
 import cz.fi.muni.xkremser.editor.client.presenter.ModifyPresenter.MyView;
@@ -113,6 +110,7 @@ import cz.fi.muni.xkremser.editor.client.view.other.ModsTab;
 import cz.fi.muni.xkremser.editor.client.view.window.DownloadFoxmlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.ModsWindow;
+import cz.fi.muni.xkremser.editor.client.view.window.PersistentUrlWindow;
 import cz.fi.muni.xkremser.editor.client.view.window.UniversalWindow;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
@@ -1389,47 +1387,7 @@ public class ModifyView
     }
 
     private void showPersistentUrl(String uuid) {
-        universalWindow = new UniversalWindow(110, 800, lang.persistentUrl(), eventBus, 25);
-
-        TextItem editorUrlItem = new TextItem();
-
-        StringBuffer sbEditor = new StringBuffer();
-        sbEditor.append(Location.getProtocol()).append("//");
-        sbEditor.append(Location.getHost());
-        sbEditor.append(Location.getPath());
-        sbEditor.append(Location.getQueryString());
-        sbEditor.append('?');
-        sbEditor.append(NameTokens.MODIFY);
-        sbEditor.append('&');
-        sbEditor.append(Constants.URL_PARAM_UUID);
-        sbEditor.append('=');
-        sbEditor.append(uuid);
-        editorUrlItem.setDefaultValue(sbEditor.toString());
-        editorUrlItem.setWidth(660);
-        editorUrlItem.setTitle("<a href=\"" + sbEditor.toString() + "\" target=\"_blank\">Editor URL</a> ");
-
-        TextItem krameriusUrlItem = new TextItem();
-
-        StringBuffer sbKram = new StringBuffer();
-        sbKram.append(config.getKrameriusHost());
-        sbKram.append("/handle/");
-        sbKram.append(uuid);
-        krameriusUrlItem.setDefaultValue(sbKram.toString());
-        krameriusUrlItem.setWidth(660);
-        krameriusUrlItem.setTitle("<a href=\"" + sbKram.toString()
-                + "\" target=\"_blank\">Kramerius URL</a> ");
-
-        DynamicForm editorUrlForm = new DynamicForm();
-        editorUrlForm.setItems(editorUrlItem);
-        editorUrlForm.setExtraSpace(5);
-        DynamicForm kramUrlForm = new DynamicForm();
-        kramUrlForm.setItems(krameriusUrlItem);
-
-        universalWindow.addItem(editorUrlForm);
-        universalWindow.addItem(kramUrlForm);
-        universalWindow.centerInPage();
-        universalWindow.show();
-        universalWindow.focus();
+        new PersistentUrlWindow(uuid, config, eventBus, lang);
     }
 
     @Override

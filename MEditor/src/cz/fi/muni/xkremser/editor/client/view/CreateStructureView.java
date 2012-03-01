@@ -1049,19 +1049,8 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                final ModalWindow mw = new ModalWindow(tileGrid);
-                mw.setLoadingIcon("loadingAnimation.gif");
-                mw.show(true);
-                Timer timer = new Timer() {
-
-                    @Override
-                    public void run() {
-                        numbering.toColumn();
-                        updateTileGrid();
-                        mw.hide();
-                    }
-                };
-                timer.schedule(25);
+                numbering.toColumn();
+                updateTileGrid();
             }
         });
 
