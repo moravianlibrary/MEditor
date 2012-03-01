@@ -372,6 +372,7 @@ INSERT INTO editor_user VALUES (77, 'Ivan', 'Chappel', false);
 INSERT INTO editor_user VALUES (79, 'Leos', 'Junek', false);
 INSERT INTO editor_user VALUES (80, 'Blanka', 'Sapáková', false);
 INSERT INTO editor_user VALUES (81, 'Pavel', 'Pesta', false);
+INSERT INTO editor_user VALUES (59, 'Martin', 'Rumanek', false);
 
 
 --
@@ -600,6 +601,7 @@ INSERT INTO open_id_identity VALUES (45, 63, 'http://pavluska.myopenid.com/');
 INSERT INTO open_id_identity VALUES (46, 81, 'http://pesta.myopenid.com/');
 INSERT INTO open_id_identity VALUES (47, 69, 'https://www.google.com/profiles/112339578258292421280');
 INSERT INTO open_id_identity VALUES (48, 1, 'http://www.facebook.com/profile.php?id=1611572776');
+INSERT INTO open_id_identity VALUES (26, 59, 'https://www.google.com/profiles/103895332427778311042');
 
 
 
