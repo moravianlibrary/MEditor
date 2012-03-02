@@ -176,9 +176,13 @@ public class ConvertToJPEG2000Handler
             }
 
             if (processTimeout(p, 100, 20000)) {
-                if (p.exitValue() != 0) {
+                int exitValue = p.exitValue();
+                p.getErrorStream().close();
+                p.getInputStream().close();
+                p.getOutputStream().close();
+                if (exitValue != 0) {
                     LOGGER.warn("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath()
-                            + " returns non-zero exitValue: " + p.exitValue());
+                            + " returns non-zero exitValue: " + exitValue);
                     return false;
                 } else {
                     return true;
