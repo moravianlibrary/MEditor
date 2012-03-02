@@ -178,6 +178,9 @@ public class Constants {
     /** The Constant ATTR_NAME. */
     public static final String ATTR_NAME = "atName";
 
+    /** The Constant ATTR_ORDER. */
+    public static final String ATTR_ORDER = "order";
+
     /** The Constant ATTR_SURNAME. */
     public static final String ATTR_SURNAME = "surname";
 

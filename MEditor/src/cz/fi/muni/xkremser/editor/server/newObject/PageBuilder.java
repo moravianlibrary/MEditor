@@ -93,7 +93,7 @@ public class PageBuilder
         detail = part.addElement(new QName("detail", modsNs));
         detail.addAttribute("type", "pageIndex");
         number = detail.addElement(new QName("number", modsNs));
-        number.addText(String.valueOf(getPageScanIndex()));
+        number.addText(String.valueOf(getPageIndex()));
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
     }
 

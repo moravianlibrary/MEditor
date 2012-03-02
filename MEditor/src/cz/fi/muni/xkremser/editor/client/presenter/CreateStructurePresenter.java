@@ -846,10 +846,15 @@ public class CreateStructurePresenter
         }
         NewDigitalObject object = null;
         try {
+            TreeGrid treeGrid = leftPresenter.getView().getSubelementsGrid();
+            treeGrid.setSortState("({fieldName:null,sortDir:false,sortSpecifiers:[{property:\"order\",direction:\"descending\"}]})");
             object =
                     ClientUtils.createTheStructure(new MetadataBundle(newDc == null ? new DublinCore()
-                            : newDc, newMods, bundle == null ? null : bundle.getMarc()), leftPresenter
-                            .getView().getSubelementsGrid().getTree(), visible);
+                                                           : newDc, newMods, bundle == null ? null : bundle
+                                                           .getMarc()),
+                                                   treeGrid.getTree(),
+                                                   visible);
+            treeGrid.setSortState("({fieldName:null,sortDir:false,sortSpecifiers:[{property:\"order\",direction:\"ascending\"}]})");
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();

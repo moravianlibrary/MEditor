@@ -27,7 +27,6 @@ package cz.fi.muni.xkremser.editor.shared.rpc;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.fi.muni.xkremser.editor.shared.domain.DigitalObjectModel;
 
@@ -40,7 +39,7 @@ public class NewDigitalObject
         implements Serializable {
 
     private static final long serialVersionUID = -8145898237441105426L;
-    private int scanIndex;
+    private int pageIndex;
     private String name;
     private ArrayList<NewDigitalObject> children = new ArrayList<NewDigitalObject>();
     private DigitalObjectModel model;
@@ -65,19 +64,37 @@ public class NewDigitalObject
         this.name = name;
     }
 
-    public NewDigitalObject(int scanIndex,
+    public NewDigitalObject(int pageIndex,
                             String name,
                             DigitalObjectModel model,
                             MetadataBundle bundle,
                             String uuid,
                             boolean exist) {
         super();
-        this.scanIndex = scanIndex;
+        this.pageIndex = pageIndex;
         this.name = name;
         this.model = model;
         this.bundle = bundle;
         this.uuid = uuid;
         this.exist = exist;
+    }
+
+    public NewDigitalObject(NewDigitalObject newDigitalObject) {
+        super();
+        this.pageIndex = newDigitalObject.getPageIndex();
+        this.name = newDigitalObject.getName();
+        this.children = newDigitalObject.getChildren();
+        this.model = newDigitalObject.getModel();
+        this.bundle = newDigitalObject.getBundle();
+        this.uuid = newDigitalObject.getUuid();
+        this.exist = newDigitalObject.getExist();
+        this.sysno = newDigitalObject.getSysno();
+        this.path = newDigitalObject.getPath();
+        this.visible = newDigitalObject.getVisible();
+        this.pageType = newDigitalObject.getPageType();
+        this.dateIssued = newDigitalObject.getDateIssued();
+        this.altoPath = newDigitalObject.getAltoPath();
+        this.ocrPath = newDigitalObject.getOcrPath();
     }
 
     /**
@@ -97,12 +114,12 @@ public class NewDigitalObject
         this.sysno = sysno;
     }
 
-    public int getScanIndex() {
-        return scanIndex;
+    public int getPageIndex() {
+        return pageIndex;
     }
 
-    public void setScanIndex(int scanIndex) {
-        this.scanIndex = scanIndex;
+    public void setPageIndex(int pageIndex) {
+        this.pageIndex = pageIndex;
     }
 
     public DigitalObjectModel getModel() {
@@ -121,7 +138,7 @@ public class NewDigitalObject
         this.uuid = uuid;
     }
 
-    public List<NewDigitalObject> getChildren() {
+    public ArrayList<NewDigitalObject> getChildren() {
         return children;
     }
 

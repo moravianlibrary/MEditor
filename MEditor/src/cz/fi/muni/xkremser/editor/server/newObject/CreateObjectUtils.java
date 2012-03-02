@@ -32,9 +32,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.gwt.dev.util.collect.HashMap;
 import com.google.inject.name.Named;
 
 import org.apache.log4j.Logger;
@@ -76,18 +78,27 @@ public class CreateObjectUtils {
     @Inject
     private static EditorConfiguration config;
 
-    private static String insertFOXML(NewDigitalObject node, Document mods, Document dc, String sysno)
-            throws CreateObjectException {
-        return insertFOXML(node, mods, dc, Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS, sysno);
+    private static String insertFOXML(NewDigitalObject node,
+                                      Document mods,
+                                      Document dc,
+                                      String sysno,
+                                      Map<String, String> processedPages) throws CreateObjectException {
+        if (processedPages == null) processedPages = new HashMap<String, String>();
+        return insertFOXML(node, mods, dc, Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS, sysno, processedPages);
     }
 
     private static String insertFOXML(NewDigitalObject node,
                                       Document mods,
                                       Document dc,
                                       int attempt,
-                                      String sysno) throws CreateObjectException {
+                                      String sysno,
+                                      Map<String, String> processedPages) throws CreateObjectException {
         if (attempt == 0) {
             throw new CreateObjectException("max number of attempts has been reached");
+        }
+        if (processedPages.containsKey(node.getPath())) {
+            node.setExist(true);
+            node.setUuid(processedPages.get(node.getPath()));
         }
         if (node.getExist()) {
             // do not create, but append only 
@@ -95,7 +106,7 @@ public class CreateObjectUtils {
             if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
                 for (NewDigitalObject child : childrenToAdd) {
                     if (!child.getExist()) {
-                        String uuid = insertFOXML(child, mods, dc, sysno);
+                        String uuid = insertFOXML(child, mods, dc, sysno, processedPages);
                         child.setUuid(uuid);
                         append(node, child);
                     }
@@ -123,7 +134,7 @@ public class CreateObjectUtils {
         }
 
         if (node.getModel() == DigitalObjectModel.PAGE) {
-            builder.setPageScanIndex(node.getScanIndex());
+            builder.setPageIndex(node.getPageIndex());
         }
 
         List<NewDigitalObject> childrenToAdd = node.getChildren();
@@ -131,7 +142,7 @@ public class CreateObjectUtils {
             List<RelsExtRelation> relations = builder.getChildren();
             for (NewDigitalObject child : childrenToAdd) {
                 if (!child.getExist()) {
-                    String uuid = insertFOXML(child, mods, dc, sysno);
+                    String uuid = insertFOXML(child, mods, dc, sysno, processedPages);
                     child.setUuid(uuid);
                 }
                 relations.add(new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(node
@@ -203,8 +214,9 @@ public class CreateObjectUtils {
         }
 
         if (!success) {
-            insertFOXML(node, mods, dc, attempt - 1, sysno);
+            insertFOXML(node, mods, dc, attempt - 1, sysno, processedPages);
         }
+        if (node.getModel() == DigitalObjectModel.PAGE) processedPages.put(node.getPath(), node.getUuid());
         return node.getUuid();
     }
 
@@ -408,7 +420,7 @@ public class CreateObjectUtils {
         }
 
         checkAccessRightsAndCreateDirectories(node.getSysno());
-        insertFOXML(node, mods, dc, node.getSysno());
+        insertFOXML(node, mods, dc, node.getSysno(), null);
         return true;
     }
 }

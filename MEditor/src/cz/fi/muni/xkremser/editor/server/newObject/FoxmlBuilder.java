@@ -66,7 +66,7 @@ public abstract class FoxmlBuilder {
     private String sysno;
     private String label;
     private String pageType;
-    private int pageScanIndex;
+    private int pageIndex;
     private Policy policy = Policy.PRIVATE;
     private final List<RelsExtRelation> children;
     private MetadataBundle bundle;
@@ -417,20 +417,20 @@ public abstract class FoxmlBuilder {
     }
 
     /**
-     * @return the pageScanIndex
+     * @return the pageIndex
      */
 
-    public int getPageScanIndex() {
-        return pageScanIndex;
+    public int getPageIndex() {
+        return pageIndex;
     }
 
     /**
-     * @param pageScanIndex
-     *        the pageScanIndex to set
+     * @param pageIndex
+     *        the pageIndex to set
      */
 
-    public void setPageScanIndex(int pageScanIndex) {
-        this.pageScanIndex = pageScanIndex;
+    public void setPageIndex(int pageIndex) {
+        this.pageIndex = pageIndex;
     }
 
     public void setBundle(MetadataBundle bundle) {

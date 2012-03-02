@@ -29,9 +29,11 @@ package cz.fi.muni.xkremser.editor.client.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.regexp.shared.RegExp;
@@ -235,6 +237,9 @@ public class ClientUtils {
 
     public static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree, boolean visible)
             throws CreateObjectException {
+
+        Map<String, NewDigitalObject> processedPages = new HashMap<String, NewDigitalObject>();
+
         TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
         if (root == null) {
             return null;
@@ -261,8 +266,12 @@ public class ClientUtils {
         boolean exists = root.getAttributeAsBoolean(Constants.ATTR_EXIST);
         NewDigitalObject newObj = new NewDigitalObject(0, name, model, bundle, exists ? name : null, exists);
         newObj.setVisible(visible);
+        int lastPageIndex = -1;
         for (TreeNode child : children) {
-            newObj.getChildren().add(createTheStructure(bundle, tree, child, visible));
+            NewDigitalObject newChild =
+                    createTheStructure(bundle, tree, child, visible, lastPageIndex, processedPages);
+            newObj.getChildren().add(newChild);
+            lastPageIndex = newChild.getPageIndex();
         }
         return newObj;
     }
@@ -270,11 +279,11 @@ public class ClientUtils {
     private static NewDigitalObject createTheStructure(MetadataBundle bundle,
                                                        Tree tree,
                                                        TreeNode node,
-                                                       boolean visible) throws CreateObjectException {
-        String name = node.getAttribute(Constants.ATTR_NAME);
-        if (name == null || "".equals(name)) {
-            throw new CreateObjectException("unknown name");
-        }
+                                                       boolean visible,
+                                                       int lastPageIndex,
+                                                       Map<String, NewDigitalObject> processedPages)
+            throws CreateObjectException {
+
         String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
         if (modelString == null || "".equals(modelString)) {
             throw new CreateObjectException("unknown type");
@@ -286,48 +295,78 @@ public class ClientUtils {
             throw new CreateObjectException("unknown type");
         }
         String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
-        if (model == DigitalObjectModel.PAGE && (imgUuid == null || "".equals(imgUuid))) {
-            throw new CreateObjectException("unknown uuid");
-        }
-        int scanIndex = node.getAttributeAsInt(Constants.ATTR_SCAN_INDEX);
-        if (model == DigitalObjectModel.PAGE && (scanIndex < 0)) {
-            throw new CreateObjectException("negative scanIndex of the page");
-        }
-        Boolean exists = node.getAttributeAsBoolean(Constants.ATTR_EXIST);
 
-        NewDigitalObject newObj = new NewDigitalObject(scanIndex, name, model, bundle, null, exists);
+        if (!processedPages.containsKey(imgUuid)) {
 
-        newObj.setVisible(visible);
-        String dateIssued = node.getAttribute(Constants.ATTR_DATE_ISSUED);
-        if (dateIssued != null && !"".equals(dateIssued)) {
-            newObj.setDateIssued(dateIssued);
-        }
-
-        if (exists) {
-            if (imgUuid != null && !"".equals(imgUuid)) {
-                newObj.setUuid(imgUuid.startsWith("uuid:") ? imgUuid.substring("uuid:".length()) : imgUuid);
-            } else {
-                throw new CreateObjectException("unknown uuid of an existing object");
+            int pageIndex = -1;
+            if (model == DigitalObjectModel.PAGE) {
+                if (imgUuid == null || "".equals(imgUuid)) {
+                    throw new CreateObjectException("unknown uuid");
+                }
+                if (lastPageIndex < 0) {
+                    lastPageIndex = 0;
+                }
+                pageIndex = ++lastPageIndex;
             }
-        }
 
-        String altoPath = node.getAttribute(Constants.ATTR_ALTO_PATH);
-        if (altoPath != null && !"".equals(altoPath)) {
-            newObj.setAltoPath(altoPath);
-        }
+            String name = node.getAttribute(Constants.ATTR_NAME);
+            if (name == null || "".equals(name)) {
+                throw new CreateObjectException("unknown name");
+            }
 
-        String ocrPath = node.getAttribute(Constants.ATTR_OCR_PATH);
-        if (ocrPath != null && !"".equals(ocrPath)) {
-            newObj.setOcrPath(ocrPath);
-        }
+            Boolean exists = node.getAttributeAsBoolean(Constants.ATTR_EXIST);
 
-        newObj.setPath(imgUuid);
-        newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
-        TreeNode[] children = tree.getChildren(node);
-        for (TreeNode child : children) {
-            newObj.getChildren().add(createTheStructure(bundle, tree, child, visible));
+            NewDigitalObject newObj = new NewDigitalObject(pageIndex, name, model, bundle, null, exists);
+
+            newObj.setVisible(visible);
+            String dateIssued = node.getAttribute(Constants.ATTR_DATE_ISSUED);
+            if (dateIssued != null && !"".equals(dateIssued)) {
+                newObj.setDateIssued(dateIssued);
+            }
+
+            if (exists) {
+                if (imgUuid != null && !"".equals(imgUuid)) {
+                    newObj.setUuid(imgUuid.startsWith("uuid:") ? imgUuid.substring("uuid:".length())
+                            : imgUuid);
+                } else {
+                    throw new CreateObjectException("unknown uuid of an existing object");
+                }
+            }
+
+            String altoPath = node.getAttribute(Constants.ATTR_ALTO_PATH);
+            if (altoPath != null && !"".equals(altoPath)) {
+                newObj.setAltoPath(altoPath);
+            }
+
+            String ocrPath = node.getAttribute(Constants.ATTR_OCR_PATH);
+            if (ocrPath != null && !"".equals(ocrPath)) {
+                newObj.setOcrPath(ocrPath);
+            }
+
+            newObj.setPath(imgUuid);
+            newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
+            TreeNode[] children = tree.getChildren(node);
+
+            int childrenLastPageIndex = -1;
+            for (TreeNode child : children) {
+                NewDigitalObject newChild =
+                        createTheStructure(bundle,
+                                           tree,
+                                           child,
+                                           visible,
+                                           childrenLastPageIndex,
+                                           processedPages);
+                newObj.getChildren().add(newChild);
+                childrenLastPageIndex = newChild.getPageIndex();
+            }
+
+            if (model == DigitalObjectModel.PAGE) {
+                processedPages.put(imgUuid, newObj);
+            }
+            return newObj;
+        } else {
+            return new NewDigitalObject(processedPages.get(imgUuid));
         }
-        return newObj;
     }
 
     public static String toStringTree(NewDigitalObject node) {

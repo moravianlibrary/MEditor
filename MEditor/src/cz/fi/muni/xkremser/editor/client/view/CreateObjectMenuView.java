@@ -41,6 +41,7 @@ import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.EventHandler;
@@ -63,6 +64,7 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.SortNormalizer;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.layout.SectionStack;
@@ -212,8 +214,6 @@ public class CreateObjectMenuView
         };
         structureTreeGrid.setWidth100();
         structureTreeGrid.setHeight100();
-        //        structureTreeGrid.setShowSortArrow(SortArrow.CORNER);
-        structureTreeGrid.setCanSort(false);
         structureTreeGrid.setShowAllRecords(true);
         structureTreeGrid.setCanHover(true);
         structureTreeGrid.setHoverOpacity(75);
@@ -234,6 +234,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setFolderIcon("icons/16/structure.png");
         structureTreeGrid.setShowConnectors(true);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
+        structureTreeGrid.setCanSort(true);
 
         undoButton = new ImgButton();
         redoButton = new ImgButton();
@@ -665,11 +666,13 @@ public class CreateObjectMenuView
         typeField.setName(Constants.ATTR_TYPE);
         typeField.setTitle(lang.dcType());
         typeField.setWidth("40%");
+        typeField.setCanSort(false);
 
         TreeGridField nameField = new TreeGridField();
         nameField.setCanFilter(true);
         nameField.setCanEdit(true);
         nameField.setName(Constants.ATTR_NAME);
+        nameField.setCanSort(false);
         nameField.setTitle(lang.name());
         nameField.setWidth("*");
         nameField.setCellFormatter(new CellFormatter() {
@@ -690,7 +693,30 @@ public class CreateObjectMenuView
             }
         });
 
-        structureTreeGrid.setFields(typeField, nameField);
+        TreeGridField orderField = new TreeGridField();
+        orderField.setCanReorder(true);
+        orderField.setHidden(true);
+        orderField.setName(Constants.ATTR_ORDER);
+        orderField.setSortByDisplayField(true);
+        orderField.setSortNormalizer(new SortNormalizer() {
+
+            @Override
+            public Object normalize(ListGridRecord record, String fieldName) {
+                DigitalObjectModel model =
+                        DigitalObjectModel.parseString(record.getAttributeAsString(Constants.ATTR_TYPE_ID));
+                if (model.equals(DigitalObjectModel.PERIODICAL)) return "0";
+                if (model.equals(DigitalObjectModel.MONOGRAPH)) return "0";
+                if (model.equals(DigitalObjectModel.PERIODICALVOLUME)) return "1";
+                if (model.equals(DigitalObjectModel.MONOGRAPHUNIT)) return "1";
+                if (model.equals(DigitalObjectModel.PERIODICALITEM)) return "2";
+                if (model.equals(DigitalObjectModel.INTERNALPART)) return "3";
+                if (model.equals(DigitalObjectModel.PAGE)) return "4";
+                return "10";
+            }
+        });
+
+        structureTreeGrid.setFields(typeField, nameField, orderField);
+        structureTreeGrid.sort(Constants.ATTR_ORDER, SortDirection.ASCENDING);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
 
         createStructure = new SectionStackSection();
