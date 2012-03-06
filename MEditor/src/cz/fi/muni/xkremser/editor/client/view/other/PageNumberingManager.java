@@ -35,6 +35,7 @@ import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
+import cz.fi.muni.xkremser.editor.client.util.ClientUtils;
 import cz.fi.muni.xkremser.editor.client.util.Constants;
 import cz.fi.muni.xkremser.editor.client.view.window.ModalWindow;
 
@@ -286,12 +287,19 @@ public final class PageNumberingManager {
         if (data != null && data.length > 0) {
             String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
             int i = getPageNumberFromText(startingNumber);
+            boolean isRoman = false;
             if (i == Integer.MIN_VALUE) {
-                i = tileGrid.getRecordIndex(data[0]) + 1;
+                i = ClientUtils.romanToDecimal(data[0].getAttributeAsString(Constants.ATTR_NAME));
+                if (!(isRoman = i > 0)) {
+                    i = tileGrid.getRecordIndex(data[0]) + 1;
+                }
             }
             int j = 0;
             for (Record rec : data) {
-                rec.setAttribute(Constants.ATTR_NAME, (i + (j / n)) + "" + alphabet[j % n]);
+                String number =
+                        !isRoman ? String.valueOf(i + (j / n)) : ClientUtils.decimalToRoman((i + (j / n)),
+                                                                                            false);
+                rec.setAttribute(Constants.ATTR_NAME, number + "" + alphabet[j % n]);
                 j++;
             }
         }

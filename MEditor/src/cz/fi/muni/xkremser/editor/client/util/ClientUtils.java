@@ -438,6 +438,27 @@ public class ClientUtils {
         return roman;
     }
 
+    public static int romanToDecimal(String roman) {
+        int number = 0;
+        String romanSubstring = roman;
+        for (int i = 0; i < RCODE_1.length && !"".equals(romanSubstring); i++) {
+            if (romanSubstring.startsWith(RCODE_1[i])) {
+                number += BVAL[i];
+                romanSubstring = romanSubstring.substring(RCODE_1[i].length());
+                i--;
+            }
+        }
+        for (int i = 0; i < RCODE_2.length && !"".equals(romanSubstring); i++) {
+            if (romanSubstring.startsWith(RCODE_2[i])) {
+                number += BVAL[i];
+                romanSubstring = romanSubstring.substring(RCODE_2[i].length());
+                i--;
+            }
+        }
+        if ("".equals(romanSubstring)) return number;
+        return Integer.MIN_VALUE;
+    }
+
     /**
      * String.format is not accessible on the gwt client-side
      * 

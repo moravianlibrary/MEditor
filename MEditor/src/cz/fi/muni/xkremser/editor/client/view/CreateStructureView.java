@@ -1223,6 +1223,9 @@ public class CreateStructureView
 
                     @Override
                     public void execute(String value) {
+                        if (value == null) {
+                            return;
+                        }
                         try {
                             int n = Integer.parseInt(value);
                             addUndoRedo(tileGrid.getData(), true, false);
@@ -1230,9 +1233,9 @@ public class CreateStructureView
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
+                        updateSelectedTileGrid();
                     }
                 });
-                updateSelectedTileGrid();
             }
         });
         rv.setEnableIfCondition(isSelected(false));

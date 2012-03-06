@@ -1268,7 +1268,6 @@ public class ModifyView
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
 
-        MenuItem newItem = new MenuItem(lang.newItem(), "icons/16/document_plain_new.png", "Ctrl+Alt+N");
         MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
         MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+Alt+S");
@@ -1369,8 +1368,7 @@ public class ModifyView
             }
         });
 
-        menu.setItems(newItem,
-                      lockItem,
+        menu.setItems(lockItem,
                       unlockItem,
                       saveItem,
                       refreshItem,
