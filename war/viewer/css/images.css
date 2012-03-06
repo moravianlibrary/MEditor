@@ -1,0 +1,86 @@
+body {
+  background-color:#000000; 
+}
+
+.images{
+  width:98%;
+  height:98%;
+  background-color:#000000; 
+  padding: 10px; 
+  float:left
+}
+.images .imageSingle {
+  float: left; 
+  margin: 5px; 
+  width:176px; 
+  text-align:center; 
+  border:solid 1px #333
+}
+.images .imageSingle .image {
+  width:150px; 
+  height:115px; 
+  margin:3px;
+}
+.images .caption {
+  text-align:center;
+  width: 176px;
+  height: 25px;
+  border-top:solid 1px #000000; 
+  color:#999; 
+  font-size:9pt; 
+  padding-top: 7px; 
+  margin-top: 10px;
+}
+
+.images .copyright {
+  text-align:center;
+  width: 176px;
+  height: 10px;
+  border-top:solid 1px #000000; 
+  color:#999; 
+  font-size:9pt; 
+  padding-bottom:7px; 
+}
+
+.images .newImage {
+  float: left; 
+  margin: 5px; 
+  text-align: left;
+  color:#999; 
+  font-size:9pt;
+  height: 25px;
+  width: 100%;
+}
+
+a.button {
+    background: transparent url('../images/button.gif') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    float: left;
+    font: normal 12px arial, sans-serif;
+    height: 24px;
+    margin-right: 6px;
+    padding-right: 18px;
+    text-decoration: none;
+}
+
+a.button span {
+    background: transparent url('../images/button_span.gif') no-repeat;
+    display: block;
+    line-height: 14px;
+    padding: 5px 0 5px 18px;
+}
+
+a.button:active {
+    background-position: bottom right;
+    color: #000;
+    outline: none;
+}
+
+a.button:active span {
+    background-position: bottom left;
+    padding: 6px 0 4px 18px;
+}
+
+A:link img, A:visited img {border-color: #000;}
+A:hover img {border-color: #333333;}

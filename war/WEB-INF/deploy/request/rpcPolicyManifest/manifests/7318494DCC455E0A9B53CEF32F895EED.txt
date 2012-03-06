@@ -1,0 +1,2 @@
+serviceClass: cz.fi.muni.xkremser.editor.request4Adding.client.RequestForAddingService
+path: 67C03F1A25EEF0409E5D95BCAEB1F7D4.gwt.rpc

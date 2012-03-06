@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+
+ <head>
+  <link rel="stylesheet" type="text/css" media="all" href="css/images.css" />
+  <link rel="shortcut icon" href="images/djatoka.16x16.png" />
+  <title>djatoka Viewer</title>
+</head>
+<body>
+	  <div class="images">
+	    <div class="imageSingle">
+		   <div class="image"><a target="djarokaImage" href="viewer.html?rft_id=..."><img src="images/sample.png" width="165" height="115"/></a></div>
+		   <div class="caption">Label Here</div>
+		   <div class="copyright">Label Here</div>
+		</div>
+		<div class="newImage">
+		   <p>Enter a Remote URI to view the image in the djatoka viewer:</p>
+	      <input type='text' id='input_addUrl' name='addUrl' size='50'>
+	      <br/><br/>
+	      <a class='button' href='#' onclick='window.open("viewer.html?rft_id=" + document.getElementById("input_addUrl").value,"djarokaImage");this.blur();'><span>View Image</span></a>
+	    </div>
+	  </div>
+</body>
+</html>
+
