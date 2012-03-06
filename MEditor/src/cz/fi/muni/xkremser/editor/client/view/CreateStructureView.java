@@ -905,7 +905,7 @@ public class CreateStructureView
         MenuItem toRomanOld = new MenuItem(lang.convertToRomanOld(), "icons/16/roman.png");
         MenuItem surround = new MenuItem("1, 2, ...   ⇨   [1], [2], ...", "icons/16/surround.png");
         MenuItem abc = new MenuItem("1, 2, ...   ⇨   1a, 1b, ...", "icons/16/abc.png");
-        MenuItem toCollumn = new MenuItem("1, 2, ...   ⇨   1|2, ...", "icons/16/collumns.png");
+        MenuItem toCollumn = new MenuItem("1, 2, ...   ⇨   1|2, ...", "icons/16/columns.png");
         MenuItem toLeft = new MenuItem(lang.leftShift() + "...", "icons/16/arrow_left.png");
         MenuItem toRight = new MenuItem(lang.rightShift() + "...", "icons/16/arrow_right.png");
         MenuItem shiftTo = new MenuItem(lang.shiftTo() + "...", "icons/16/arrow_in.png");
