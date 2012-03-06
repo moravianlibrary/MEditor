@@ -15,7 +15,7 @@
 
 	<filter>
 		<filter-name>auth-filter</filter-name>
-		<filter-class>cz.fi.muni.xkremser.editor.server.AuthenticationFilter</filter-class>
+		<filter-class>cz.mzk.editor.server.AuthenticationFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>auth-filter</filter-name>
@@ -23,17 +23,17 @@
 	</filter-mapping>
 
 	<listener>
-		<listener-class>cz.fi.muni.xkremser.editor.server.guice.MyGuiceServletConfig</listener-class>
+		<listener-class>cz.mzk.editor.server.guice.MyGuiceServletConfig</listener-class>
 	</listener>
 
 	<listener>
-		<listener-class>cz.fi.muni.xkremser.editor.server.SessionListener</listener-class>
+		<listener-class>cz.mzk.editor.server.SessionListener</listener-class>
 	</listener>
 
 	<!-- authentication servlet -->
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<servlet-class>cz.fi.muni.xkremser.editor.server.AuthenticationServlet</servlet-class>
+		<servlet-class>cz.mzk.editor.server.AuthenticationServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -44,7 +44,7 @@
 	<!-- request 4 adding servlet -->
 	<servlet>
 		<servlet-name>request4adding</servlet-name>
-		<servlet-class>cz.fi.muni.xkremser.editor.server.RequestForAddingServiceImpl</servlet-class>
+		<servlet-class>cz.mzk.editor.server.RequestForAddingServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -67,7 +67,7 @@
 	<!-- Servlet for generating thumbnails -->
 	<servlet>
 		<servlet-name>ThumbnailService</servlet-name>
-		<servlet-class>cz.fi.muni.xkremser.editor.server.ThumbnailServiceImpl</servlet-class>
+		<servlet-class>cz.mzk.editor.server.ThumbnailServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ThumbnailService</servlet-name>
@@ -77,7 +77,7 @@
 	<!-- Servlet for downloading foxml and datastreams -->
 	<servlet>
 		<servlet-name>DownloadFoxmlServlet</servlet-name>
-		<servlet-class>cz.fi.muni.xkremser.editor.server.DownloadFoxmlServlet</servlet-class>
+		<servlet-class>cz.mzk.editor.server.DownloadFoxmlServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DownloadFoxmlServlet</servlet-name>
@@ -87,7 +87,7 @@
 	<!-- Servlet for generating full images -->
 	<servlet>
 		<servlet-name>FullImgService</servlet-name>
-		<servlet-class>cz.fi.muni.xkremser.editor.server.FullImgServiceImpl</servlet-class>
+		<servlet-class>cz.mzk.editor.server.FullImgServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>FullImgService</servlet-name>
@@ -97,7 +97,7 @@
 	<!-- Servlet for images of scans -->
 	<servlet>
 		<servlet-name>ScanImgService</servlet-name>
-		<servlet-class>cz.fi.muni.xkremser.editor.server.ScanImgServiceImpl</servlet-class>
+		<servlet-class>cz.mzk.editor.server.ScanImgServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ScanImgService</servlet-name>

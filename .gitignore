@@ -3,7 +3,7 @@
 /.classpath
 /.gwt
 
-/generated/
+#/generated/
 
 /src/org
 
