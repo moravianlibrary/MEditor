@@ -6,6 +6,7 @@
 
 MEDITOR_HOME=`dirname $0`/../..
 WAR_NAME=meditor
+#SVN="true"
 
 #mzk setup
 MZK_USER=meditor
@@ -77,7 +78,13 @@ fi
 
 set -x
 echo -n "\n\ngetting svn revision number..."
-REVISION=`svn info https://meta-editor.googlecode.com/svn/ |grep '^Revision:' | sed -e 's/^Revision: //'`
+if [ "$SVN" = "true" ]  ; then
+	REVISION=`svn info https://meta-editor.googlecode.com/svn/ |grep '^Revision:' | sed -e 's/^Revision: //'`
+else
+	#REVISION=`git describe --all --abbrev=4 HEAD^`
+	REVISION=`git describe --all --abbrev=4 origin/HEAD`
+fi 
+
 echo -n "\nsvn revison is $REVISION"
 
 echo -n "\nCopying echo ~/workspace/MEditor/war ..."
@@ -88,8 +95,8 @@ echo -n "Substitution of <<<hostname>>> for $HOST"
 sed -i "s/<<<hostname>>>/$HOST/g" $MEDITOR_HOME/war2/login.html
 sed -i "s/<<<hostname>>>/$HOST/g" $MEDITOR_HOME/war2/viewer/viewer.html
 
-echo -n "\nRemoving .svn directories..."
-rm -Rf `find $MEDITOR_HOME/war2 -name \.svn`
+[ "$SVN" = "true" ] && echo -n "\nRemoving .svn directories..."
+[ "$SVN" = "true" ] && rm -Rf `find $MEDITOR_HOME/war2 -name \.svn`
 echo "<h1>Revision $REVISION</h2>" > $MEDITOR_HOME/war2/version.html
 [ "$DEPLOY" = "true" ] && {
 	echo -n "\nShutting down Tomcat..."
