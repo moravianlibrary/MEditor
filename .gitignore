@@ -1,56 +1,17 @@
 
-# /MEditor/
-/MEditor/deploy.sh
-/MEditor/test-classes
-/MEditor/.settings
-/MEditor/.classpath
-/MEditor/.gwt
+/.settings
+/.classpath
+/.gwt
 
-# /MEditor/.settings/
-/MEditor/.settings/com.google.gwt.eclipse.core.prefs
-/MEditor/.settings/org.eclipse.jdt.apt.core.prefs
-/MEditor/.settings/com.google.gdt.eclipse.core.prefs
+/generated/
 
-# /MEditor/generated/
-/MEditor/generated/
-
-# /MEditor/generated/cz/
-/MEditor/generated/cz/
-
-# /MEditor/generated/cz/fi/
-/MEditor/generated/cz/fi/
-
-# /MEditor/generated/cz/fi/muni/
-/MEditor/generated/cz/fi/muni/
-
-# /MEditor/generated/cz/fi/muni/xkremser/
-/MEditor/generated/cz/fi/muni/xkremser/
-
-# /MEditor/generated/cz/fi/muni/xkremser/editor/
-/MEditor/generated/cz/fi/muni/xkremser/editor/
-
-# /MEditor/generated/cz/fi/muni/xkremser/editor/client/
-/MEditor/generated/cz/fi/muni/xkremser/editor/client/
-
-# /MEditor/generated/cz/fi/muni/xkremser/editor/client/mods/
-/MEditor/generated/cz/fi/muni/xkremser/editor/client/mods/
-
-# /MEditor/generated/cz/fi/muni/xkremser/editor/server/
-/MEditor/generated/cz/fi/muni/xkremser/editor/server/
-
-# /MEditor/generated/cz/fi/muni/xkremser/editor/server/mods/
-/MEditor/generated/cz/fi/muni/xkremser/editor/server/mods/
-
-# /MEditor/src/
-/MEditor/src/org
+/src/org
 
 # /MEditor/war/
-/MEditor/war/meditor
-/MEditor/war/request
+/war/meditor
+/war/request
 
 # /MEditor/war/WEB-INF/
-/MEditor/war/WEB-INF/*.class
-/MEditor/war/WEB-INF/classes
-
-# /MEditor/war/WEB-INF/classes/
-/MEditor/war/WEB-INF/classes/*
+/war/WEB-INF/*.class
+/war/WEB-INF/classes
+/war/WEB-INF/classes/*
