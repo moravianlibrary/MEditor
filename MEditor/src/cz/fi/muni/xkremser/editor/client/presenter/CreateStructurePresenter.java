@@ -744,61 +744,93 @@ public class CreateStructurePresenter
     }
 
     private void addNewStructure() {
-        String parent =
-                leftPresenter.getView().getSubelementsGrid().getSelectedRecord()
-                        .getAttribute(Constants.ATTR_ID);
-        String type = leftPresenter.getView().getSelectModel().getValueAsString();
-        DigitalObjectModel model = leftPresenter.getModelFromLabel().get(type);
-        List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
+        final String type = leftPresenter.getView().getSelectModel().getValueAsString();
+        final DigitalObjectModel model = leftPresenter.getModelFromLabel().get(type);
+
         if (model != null) {
-            leftPresenter.getView().addUndoRedo(true, false);
-            String dateIssued =
-                    (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) ? leftPresenter
-                            .getView().getDateIssued().getValueAsString()
-                            : "";
-            String possibleParent = "-1";
-            if (canContain != null) { //adding selected pages
-                possibleParent = String.valueOf(leftPresenter.newId());
-                String name = leftPresenter.getView().getNewName().getValueAsString();
-                name = name == null || "".equals(name) ? possibleParent : name;
-                leftPresenter.getView().addSubstructure(possibleParent,
-                                                        -1,
-                                                        name,
-                                                        null,
-                                                        type,
-                                                        model.getValue(),
-                                                        parent,
-                                                        "",
-                                                        dateIssued,
-                                                        true,
-                                                        false);
-            } else { // adding something and enrich it with selected pages
-                possibleParent = parent;
+            final String parent =
+                    leftPresenter.getView().getSubelementsGrid().getSelectedRecord()
+                            .getAttribute(Constants.ATTR_ID);
+            final Record[] selection = getView().getTileGrid().getSelection();
+            TreeNode parentNode = leftPresenter.getView().getSubelementsGrid().getTree().findById(parent);
+            String parentModelString = parentNode.getAttribute(Constants.ATTR_TYPE_ID);
+            DigitalObjectModel parentModel = null;
+            if (parentModelString != null && !"".equals(parentModelString))
+                parentModel = DigitalObjectModel.parseString(parentModelString);
+
+            if (model == DigitalObjectModel.INTERNALPART
+                    || (model == DigitalObjectModel.PAGE && parentModel != null && parentModel == DigitalObjectModel.INTERNALPART)) {
+
+                final List<Record> missing = leftPresenter.getView().getMissingPages(parentNode, selection);
+
+                String grandpaPom = null;
+
+                if (model == DigitalObjectModel.PAGE) {
+                    grandpaPom =
+                            leftPresenter.getView().getSubelementsGrid().getTree().getParent(parentNode)
+                                    .getAttribute(Constants.ATTR_ID);
+                }
+                final String grandpa = grandpaPom;
+                if (!missing.isEmpty()) {
+                    SC.ask(lang.missingPages(), new BooleanCallback() {
+
+                        @Override
+                        public void execute(Boolean value) {
+                            if (value != null && value) {
+                                addNewStructure(model, type, parent, selection, missing);
+                                leftPresenter.addPages(missing, model != DigitalObjectModel.PAGE ? parent
+                                        : grandpa);
+                            }
+                        }
+                    });
+                } else {
+                    addNewStructure(model, type, parent, selection, new ArrayList<Record>());
+                }
+            } else {
+                addNewStructure(model, type, parent, selection, new ArrayList<Record>());
             }
+        }
+    }
 
-            Record[] selection = getView().getTileGrid().getSelection();
-            if (selection != null && selection.length > 0
-                    && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
-                for (int i = 0; i < selection.length; i++) {
-                    leftPresenter.getView()
-                            .addSubstructure(String.valueOf(leftPresenter.newId()),
-                                             selection[i].getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
-                                             selection[i].getAttribute(Constants.ATTR_NAME),
-                                             selection[i].getAttribute(Constants.ATTR_PICTURE),
-                                             leftPresenter.getLabelFromModel().get(DigitalObjectModel.PAGE
-                                                     .getValue()),
-                                             DigitalObjectModel.PAGE.getValue(),
-                                             possibleParent,
-                                             selection[i].getAttribute(Constants.ATTR_PAGE_TYPE),
-                                             "",
-                                             true,
-                                             false);
-                }
-                if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
-                    getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
-                    getView().getTileGrid().removeSelectedData();
-                }
+    private void addNewStructure(DigitalObjectModel model,
+                                 String type,
+                                 final String parent,
+                                 Record[] selection,
+                                 final List<Record> missing) {
+        List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
 
+        leftPresenter.getView().addUndoRedo(true, false);
+        String dateIssued =
+                (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) ? leftPresenter
+                        .getView().getDateIssued().getValueAsString()
+                        : "";
+        String possibleParent = "-1";
+        if (canContain != null) { //adding selected pages
+            possibleParent = String.valueOf(leftPresenter.newId());
+            String name = leftPresenter.getView().getNewName().getValueAsString();
+            name = name == null || "".equals(name) ? possibleParent : name;
+            leftPresenter.getView().addSubstructure(possibleParent,
+                                                    -1,
+                                                    name,
+                                                    null,
+                                                    type,
+                                                    model.getValue(),
+                                                    parent,
+                                                    "",
+                                                    dateIssued,
+                                                    true,
+                                                    false);
+        } else { // adding something and enrich it with selected pages
+            possibleParent = parent;
+        }
+
+        if (selection != null && selection.length > 0
+                && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
+            leftPresenter.addPages(Arrays.asList(selection), possibleParent);
+
+            if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
+                getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+                getView().getTileGrid().removeSelectedData();
             }
         }
     }

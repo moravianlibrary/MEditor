@@ -28,6 +28,7 @@
 package cz.fi.muni.xkremser.editor.client.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
+import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -132,6 +134,8 @@ public class CreateObjectMenuView
         void loadStructure();
 
         HasHandlers getBus();
+
+        void addPages(List<Record> pages, String parent);
 
     }
 
@@ -277,20 +281,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(ClickEvent event) {
-                if (undoList.size() > 0) {
-                    ModalWindow mw = new ModalWindow(structureTreeGrid);
-                    mw.setLoadingIcon("loadingAnimation.gif");
-                    mw.show(true);
-                    addUndoRedo(false, false);
-                    structureTree = undoList.remove(undoList.size() - 1);
-                    structureTreeGrid.setData(structureTree);
-                    if (undoList.size() == 0) undoButton.disable();
-                    structureTreeGrid.redraw();
-                    structureTreeGrid.selectRecord(0);
-                    mw.hide();
-                } else {
-                    undoButton.disable();
-                }
+                undo();
             }
         });
 
@@ -330,7 +321,7 @@ public class CreateObjectMenuView
 
                     Object source = event.getSource();
                     if (draggable instanceof TreeGrid) treeGrid = (TreeGrid) source;
-                    Record[] selection;
+                    final Record[] selection;
                     if (treeGrid == null) {
                         selection = tileGrid.getSelection();
                     } else {
@@ -343,13 +334,14 @@ public class CreateObjectMenuView
                         return;
                     }
 
-                    DigitalObjectModel parentModel;
+                    final DigitalObjectModel targetModel;
                     DigitalObjectModel movedModel;
+
                     if (dropPlace != null) {
-                        parentModel =
+                        targetModel =
                                 DigitalObjectModel.parseString(dropPlace.getAttribute(Constants.ATTR_TYPE_ID));
                         List<DigitalObjectModel> possibleChildModels =
-                                NamedGraphModel.getChildren(parentModel);
+                                NamedGraphModel.getChildren(targetModel);
 
                         if (tileGrid == null) {
                             movedModel =
@@ -359,7 +351,7 @@ public class CreateObjectMenuView
                             movedModel = DigitalObjectModel.PAGE;
                         }
                         if ((possibleChildModels == null || !possibleChildModels.contains(movedModel))
-                                && (parentModel != DigitalObjectModel.PAGE || parentModel != DigitalObjectModel.PAGE)) {
+                                && (targetModel != DigitalObjectModel.PAGE || targetModel != DigitalObjectModel.PAGE)) {
                             SC.say(lang.objNotDropable() + ": <code>" + movedModel.getValue() + "</code>");
                             event.cancel();
                             return;
@@ -370,31 +362,84 @@ public class CreateObjectMenuView
                         return;
                     }
 
-                    addUndoRedo(true, false);
+                    final String targetId = dropPlace.getAttribute(Constants.ATTR_ID);
                     if (treeGrid == null) {
-                        if (parentModel == DigitalObjectModel.PAGE) {
+                        if (targetModel == DigitalObjectModel.PAGE) {
                             SC.say(lang.pageNotDropable());
                             event.cancel();
                             return;
                         }
-
-                        for (Record rec : selection) {
-                            addSubstructure(String.valueOf(getUiHandlers().newId()),
-                                            rec.getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
-                                            rec.getAttribute(Constants.ATTR_NAME),
-                                            rec.getAttribute(Constants.ATTR_PICTURE),
-                                            getUiHandlers().getLabelFromModel().get(DigitalObjectModel.PAGE
-                                                    .getValue()),
-                                            DigitalObjectModel.PAGE.getValue(),
-                                            dropPlace.getAttribute(Constants.ATTR_ID),
-                                            rec.getAttribute(Constants.ATTR_PAGE_TYPE),
-                                            "",
-                                            true,
-                                            false);
-                        }
                         event.cancel();
                     }
+                    addUndoRedo(true, false);
+                    TreeNode targetNode = structureTreeGrid.getTree().findById(targetId);
+                    final TreeNode parentNode =
+                            targetModel == DigitalObjectModel.PAGE ? structureTreeGrid.getTree()
+                                    .getParent(targetNode) : targetNode;
+                    final DigitalObjectModel parentModel =
+                            DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_TYPE_ID));
 
+                    if ((movedModel == DigitalObjectModel.PAGE
+                            && targetModel == DigitalObjectModel.INTERNALPART || parentModel == DigitalObjectModel.INTERNALPART)) {
+
+                        final TreeNode intParNodeId =
+                                parentModel == DigitalObjectModel.INTERNALPART ? structureTreeGrid.getTree()
+                                        .getParent(parentNode) : parentNode;
+
+                        final List<Record> missingPages = getMissingPages(intParNodeId, selection);
+                        if (treeGrid != null) {
+                            for (ListGridRecord record : treeGrid.getSelectedRecords()) {
+                                TreeNode recordParent =
+                                        structureTreeGrid.getTree().getParent(structureTreeGrid.getTree()
+                                                .findById(record.getAttributeAsString(Constants.ATTR_ID)));
+                                if (DigitalObjectModel.parseString(recordParent
+                                        .getAttribute(Constants.ATTR_TYPE_ID)) != DigitalObjectModel.INTERNALPART) {
+                                    String uuidRecord = record.getAttributeAsString(Constants.ATTR_PICTURE);
+                                    boolean found = false;
+                                    for (Record misRecord : missingPages) {
+                                        if (misRecord.getAttributeAsString(Constants.ATTR_PICTURE)
+                                                .equals(uuidRecord)) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!found) missingPages.add(record);
+                                }
+                            }
+                        }
+
+                        if (missingPages != null && !missingPages.isEmpty()) {
+                            final TreeGrid finalTreeGrid = treeGrid;
+                            SC.ask(lang.missingPages(), new BooleanCallback() {
+
+                                @Override
+                                public void execute(Boolean value) {
+                                    if (value != null && value) {
+                                        if (finalTreeGrid == null) {
+                                            addUndoRedo(true, false);
+                                            getUiHandlers().addPages(Arrays.asList(selection), targetId);
+                                        }
+                                        getUiHandlers()
+                                                .addPages(missingPages,
+                                                          intParNodeId.getAttribute(Constants.ATTR_ID));
+                                    } else {
+                                        if (finalTreeGrid != null) undo();
+                                    }
+                                }
+
+                            });
+                        } else {
+                            if (treeGrid == null) {
+                                addUndoRedo(true, false);
+                                getUiHandlers().addPages(Arrays.asList(selection), targetId);
+                            }
+                        }
+                    } else {
+                        if (treeGrid == null) {
+                            addUndoRedo(true, false);
+                            getUiHandlers().addPages(Arrays.asList(selection), targetId);
+                        }
+                    }
                     if (tileGrid != null && !event.isCtrlKeyDown()) {
                         tileGrid.removeSelectedData();
                     }
@@ -770,6 +815,49 @@ public class CreateObjectMenuView
         sectionStack.setHeight100();
         sectionStack.setOverflow(Overflow.HIDDEN);
         layout.addMember(sectionStack);
+    }
+
+    private void undo() {
+        if (undoList.size() > 0) {
+            ModalWindow mw = new ModalWindow(structureTreeGrid);
+            mw.setLoadingIcon("loadingAnimation.gif");
+            mw.show(true);
+            addUndoRedo(false, false);
+            structureTree = undoList.remove(undoList.size() - 1);
+            structureTreeGrid.setData(structureTree);
+            if (undoList.size() == 0) undoButton.disable();
+            structureTreeGrid.redraw();
+            structureTreeGrid.selectRecord(0);
+            mw.hide();
+        } else {
+            undoButton.disable();
+        }
+    }
+
+    @Override
+    public List<Record> getMissingPages(TreeNode parentNode, Record[] selection) {
+
+        List<Record> missing = new ArrayList<Record>();
+
+        TreeNode[] allNodes = structureTreeGrid.getTree().getChildren(parentNode);
+
+        for (int i = 0; i < selection.length; i++) {
+            boolean found = false;
+            String selPicture = selection[i].getAttribute(Constants.ATTR_PICTURE);
+            if (selPicture != null && !"".equals(selPicture)) {
+                for (int j = 0; j < allNodes.length; j++) {
+                    String childPicture = allNodes[j].getAttribute(Constants.ATTR_PICTURE);
+                    if (childPicture != null && childPicture.equals(selPicture)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    missing.add(selection[i]);
+                }
+            }
+        }
+        return missing;
     }
 
     @Override

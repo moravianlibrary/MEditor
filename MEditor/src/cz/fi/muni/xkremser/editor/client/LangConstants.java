@@ -2581,6 +2581,15 @@ public interface LangConstants extends com.google.gwt.i18n.client.Constants {
   String minutes5_();
 
   /**
+   * Translated "The parent object does not have the same pages as the new added one, nevertheless according to domain model it is a must. So, the missing pages will be added. Do you want to continue?".
+   * 
+   * @return translated "The parent object does not have the same pages as the new added one, nevertheless according to domain model it is a must. So, the missing pages will be added. Do you want to continue?"
+   */
+  @DefaultStringValue("The parent object does not have the same pages as the new added one, nevertheless according to domain model it is a must. So, the missing pages will be added. Do you want to continue?")
+  @Key("missingPages")
+  String missingPages();
+
+  /**
    * Translated "This is roughly equivalent to MARC 21 Leader/06 value 'p'.".
    * 
    * @return translated "This is roughly equivalent to MARC 21 Leader/06 value 'p'."

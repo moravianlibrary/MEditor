@@ -44,6 +44,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.HasClickHandlers;
@@ -59,6 +60,7 @@ import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.tree.TreeGrid;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.fi.muni.xkremser.editor.client.LangConstants;
 import cz.fi.muni.xkremser.editor.client.NameTokens;
@@ -139,6 +141,8 @@ public class CreateObjectMenuPresenter
         TextItem getDateIssued();
 
         void setCreateVolume(boolean setCreateVolume, String defaultDateIssued);
+
+        List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
     }
 
     /**
@@ -542,4 +546,20 @@ public class CreateObjectMenuPresenter
         return getEventBus();
     }
 
+    @Override
+    public void addPages(List<Record> pages, String parent) {
+        for (int i = 0; i < pages.size(); i++) {
+            getView().addSubstructure(String.valueOf(newId()),
+                                      pages.get(i).getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
+                                      pages.get(i).getAttribute(Constants.ATTR_NAME),
+                                      pages.get(i).getAttribute(Constants.ATTR_PICTURE),
+                                      getLabelFromModel().get(DigitalObjectModel.PAGE.getValue()),
+                                      DigitalObjectModel.PAGE.getValue(),
+                                      parent,
+                                      pages.get(i).getAttribute(Constants.ATTR_PAGE_TYPE),
+                                      "",
+                                      true,
+                                      false);
+        }
+    }
 }
