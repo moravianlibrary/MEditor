@@ -58,6 +58,7 @@ import com.smartgwt.client.util.SC;
 import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Dialog;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
@@ -399,7 +400,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                editPageTitle();
+                editPageTitle(tileGrid.getSelectedRecord());
             }
         });
 
@@ -923,7 +924,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                editPageTitle();
+                editPageTitle(tileGrid.getSelectedRecord());
             }
         });
 
@@ -942,6 +943,8 @@ public class CreateStructureView
                     }
 
                     private void askForValue() {
+                        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
+                        dialog.setWidth(330);
                         SC.askforValue(lang.renumber(),
                                        lang.enterNumberForRenumber(),
                                        "1",
@@ -968,12 +971,7 @@ public class CreateStructureView
                                                }
                                            }
                                        },
-                                       new com.smartgwt.client.widgets.Dialog() {
-
-                                           {
-                                               setWidth(300);
-                                           }
-                                       });
+                                       dialog);
                     }
                 });
             }
@@ -1147,6 +1145,8 @@ public class CreateStructureView
     }
 
     private void romanRenumber(final boolean toRomanOld) {
+        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
+        dialog.setWidth(330);
         SC.askforValue(toRomanOld ? lang.convertToRomanOld() : lang.convertToRoman(),
                        lang.enterLatinNumberForRenumber(),
                        String.valueOf(tileGrid.getDataAsRecordList().indexOf(tileGrid.getSelection()[0]) + 1),
@@ -1174,12 +1174,7 @@ public class CreateStructureView
                                }
                            }
                        },
-                       new com.smartgwt.client.widgets.Dialog() {
-
-                           {
-                               setWidth(330);
-                           }
-                       });
+                       dialog);
     }
 
     private void updateSelectedTileGrid() {
@@ -1466,17 +1461,24 @@ public class CreateStructureView
                 .concat("?" + Constants.URL_PARAM_FULL + "=yes");
     }
 
-    private void editPageTitle() {
-        SC.askforValue(lang.editPageName(), lang.editPageNewName(), new ValueCallback() {
+    private void editPageTitle(final TileRecord selectedRecord) {
+        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
+        dialog.setWidth(330);
+        SC.askforValue(lang.editPageName(),
+                       lang.editPageNewName(),
+                       selectedRecord.getAttributeAsString(Constants.ATTR_NAME),
+                       new ValueCallback() {
 
-            @Override
-            public void execute(String value) {
-                if (value != null && !"".equals(value.trim())) {
-                    addUndoRedo(tileGrid.getData(), true, false);
-                    tileGrid.getSelection()[0].setAttribute(Constants.ATTR_NAME, value);
-                }
-            }
-        });
+                           @Override
+                           public void execute(String value) {
+                               if (value != null && !"".equals(value.trim())) {
+                                   addUndoRedo(tileGrid.getData(), true, false);
+                                   selectedRecord.setAttribute(Constants.ATTR_NAME, value);
+                                   updateSelectedTileGrid();
+                               }
+                           }
+                       },
+                       dialog);
     }
 
     private MenuItemIfFunction isSelected(final boolean justOne) {

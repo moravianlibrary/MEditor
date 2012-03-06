@@ -920,7 +920,6 @@ public class CreateStructurePresenter
 
                                    @Override
                                    public void callbackError(Throwable t) {
-                                       System.out.println(t);
                                        SC.warn(lang.ingestFail() + " " + lang.error() + ": " + t.getMessage());
                                        getView().getPopupPanel().setVisible(false);
                                        getView().getPopupPanel().hide();

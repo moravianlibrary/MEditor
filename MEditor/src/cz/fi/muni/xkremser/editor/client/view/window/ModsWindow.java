@@ -357,7 +357,6 @@ public abstract class ModsWindow
                                 || roleTerm.getValue().trim().equals("autor")
                                 || roleTerm.getValue().trim().equals("cre")) {
 
-                            System.err.println("role value: " + roleTerm.getValue());
                             roleItem.setTitle(roleTerm.getValue());
                             ((MyStaticTextItem) roleItem).setDefaultTitle();
 
