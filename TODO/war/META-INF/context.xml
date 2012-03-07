@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/meditor">
+    <Resource name="jdbc/editor" auth="Container" type="javax.sql.DataSource"
+            driverClassName="org.postgresql.Driver"
+            maxActive="40" maxIdle="20" maxWait="7500"
+            removeAbandoned="true" removeAbandonedTimeout="100" logAbandoned="true"
+            username="meditor" password="JsedoLV;tszLO"
+            url="jdbc:postgresql://localhost:5432/meditor"
+            
+    />
+</Context>

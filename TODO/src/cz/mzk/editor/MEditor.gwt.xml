@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='meditor'>
+  <inherits name='cz.mzk.editor.Common'/> 
+  
+  <define-configuration-property name="gin.ginjector" is-multi-valued="false" />
+  <set-configuration-property name="gin.ginjector"
+       value="cz.mzk.editor.client.gin.EditorGinjector" />
+  
+  <entry-point class='cz.mzk.editor.client.MEditor'/>
+
+  
+  <!-- Specify the paths for translatable code                    -->
+  <source path='client'/>
+  <source path='shared'/>
+
+
+</module>

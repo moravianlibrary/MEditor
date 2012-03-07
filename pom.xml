@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- POM file generated with GWT webAppCreator -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cz.mzk</groupId>
+	<artifactId>MEditor</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Metadata Editor</name>
+
+
+	<organization>
+		<name>Moravian Library in Brno</name>
+		<url>http://www.mzk.cz/</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 2.0</name>
+			<url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/meta-editor/issues/</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:git://github.com/moravianlibrary/fcrepo.git</connection>
+		<developerConnection>scm:git:git@github.com:fcrepo/fcrepo.git</developerConnection>
+		<url>https://github.com/fcrepo/fcrepo</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Kremser, Jiri</name>
+			<email>jiri.kremser@gmail.com</email>
+		</developer>
+
+		<developer>
+			<name>Jobanek, Matous</name>
+			<email>matousjobanek@gmail.com</email>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>fcrepo-generate</module>
+		<module>fcrepo-common</module>
+		<module>fcrepo-server</module>
+		<module>fcrepo-client</module>
+		<module>fcrepo-integrationtest</module>
+		<module>fcrepo-installer</module>
+		<module>fcrepo-security</module>
+		<module>fcrepo-webapp</module>
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<unitTests>**/*Test.class</unitTests>
+		<integrationTests>**/*Integration*.class</integrationTests>
+		<instrumentedTests>**/*Test*__*.class</instrumentedTests>
+		<nestedClassTests>**/*Test*$*.class</nestedClassTests>
+		<integration.test.skip>false</integration.test.skip>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss 'UTC'Z</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
+
+		<gwt.version>2.4.0</gwt.version>
+		<smartGwt.version>3.0</smartGwt.version>
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+	</properties>
+
+	<!-- <dependencies> <dependency> <groupId>${project.groupId}</groupId> <artifactId>EditMods</artifactId> 
+		<version>0.0.1-SNAPSHOT</version> </dependency> <dependency> <groupId>com.google.gwt</groupId> 
+		<artifactId>gwt-servlet</artifactId> <version>${gwtVersion}</version> <scope>runtime</scope> 
+		</dependency> <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId> 
+		<version>${gwtVersion}</version> <scope>provided</scope> </dependency> <dependency> 
+		<groupId>com.smartgwt</groupId> <artifactId>smartgwt</artifactId> <version>${smartGwtVersion}</version> 
+		<scope>provided</scope> </dependency> <dependency> <groupId>com.smartgwt</groupId> 
+		<artifactId>smartgwt-skins</artifactId> <version>${smartGwtVersion}</version> 
+		<scope>provided</scope> </dependency> <dependency> <groupId>junit</groupId> 
+		<artifactId>junit</artifactId> <version>4.7</version> <scope>test</scope> 
+		</dependency> </dependencies> -->
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Central Maven Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>smartclient.com</id>
+			<name>Smartclient Repository</name>
+			<url>http://www.smartclient.com/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>apache-snapshots</id>
+			<name>Apache Release Repository</name>
+			<url>https://repository.apache.org/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>apache-incubating</id>
+			<name>Apache Incubating Repository</name>
+			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.com/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<build>
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.4.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<debug>true</debug>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.8.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.1.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+
+		<plugins>
+
+			<!-- GWT Maven Plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.4.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- <goal>test</goal> -->
+							<!-- <goal>i18n</goal> -->
+							<goal>generateAsync</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
+					documentation at codehaus.org -->
+				<configuration>
+					<runTarget>ModsEditorDemo.html</runTarget>
+					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<compileSourcesArtifacts>
+						<artifact>cz.mzk:EditMods</artifact>
+					</compileSourcesArtifacts>
+					<!-- <i18nMessagesBundle>cz.mzk.modseditordemo.client.Messages</i18nMessagesBundle> -->
+				</configuration>
+			</plugin>
+
+			<!-- Copy static web files before executing gwt:run -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

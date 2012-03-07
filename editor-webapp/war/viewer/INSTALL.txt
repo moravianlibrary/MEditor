@@ -1,0 +1,9 @@
+aDORe djatoka Viewer - Reference Implementation
+
+1. Ensure adore-djatoka is installed and functioning properly, see adore-djatoka installation notes to verify installation.
+
+2. Place aDORe djatoka Viewer files in the adore-djatoka Tomcat webapp dir.3. Update viewer.html# Change the server javascript variable to your server hostname# var server = 'http://localhost:8080/adore-djatoka/resolver';4. Go to index.html5. Enter an identifier or image URL into the input box and click 'View Image'
+6. Create thumbnail references and copy the 'Image Here' example to create a page of reference images that open to the viewer page.
+
+
+
