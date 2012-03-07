@@ -1,8 +1,9 @@
-/target/
+target
 
-/.settings
-/.classpath
-/.gwt
+.settings
+.classpath
+.project
+.gwt
 
 #/generated/
 
@@ -13,6 +14,8 @@
 /war/request
 
 # /MEditor/war/WEB-INF/
+/MEditor/war/META-INF/
 /war/WEB-INF/*.class
 /war/WEB-INF/classes
 /war/WEB-INF/classes/*
+classes
