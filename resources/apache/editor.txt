@@ -1,0 +1,39 @@
+<VirtualHost *:80>
+    ServerName editor.mzk.cz
+
+    RewriteEngine on
+    RewriteCond     %{SERVER_PORT} ^80$
+    RewriteRule  ^/$ /meditor [L,R]
+    DefaultType text/html
+
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+        ErrorLog /var/log/apache2/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog /var/log/apache2/access.log combined
+        ServerSignature On
+
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+    ProxyPass / http://editor.mzk.cz:8081/
+    ProxyPassReverse / http://editor.mzk.cz:8081/
+
+    <IfModule mod_rewrite.c>
+        RewriteEngine on
+        RewriteLog "/var/log/apache2/rewrite.log"
+        RewriteLogLevel 9
+        Options +FollowSymlinks
+
+        RewriteRule ^[a-zA-Z0-9_\/\.\-]*\/([a-zA-Z0-9_\.\-]*)\/preview.jpg$ http://editor.mzk.cz/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=2&svc.scale=150&rft_id=$1& [L]
+        RewriteRule ^[a-zA-Z0-9_\/\.\-]*\/([a-zA-Z0-9_\.\-]*)\/large.jpg$ http://editor.mzk.cz/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=4&svc.scale=975&rft_id=$1& [L]
+        RewriteRule ^[a-zA-Z0-9_\/\.\-]*\/([a-zA-Z0-9_\.\-]*)\/big.jpg$ http://editor.mzk.cz/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.level=5&svc.scale=1500&rft_id=$1& [L]
+    </IfModule>
+</VirtualHost>
