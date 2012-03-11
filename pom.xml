@@ -9,7 +9,10 @@
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>Metadata Editor</name>
-
+	<description>RIA web application developed for purposes of digitization
+		of old cultural assets.</description>
+	<url>http://code.google.com/p/meta-editor</url>
+	<inceptionYear>2010</inceptionYear>
 
 	<organization>
 		<name>Moravian Library in Brno</name>
@@ -38,51 +41,68 @@
 		<developer>
 			<name>Kremser, Jiri</name>
 			<email>jiri.kremser@gmail.com</email>
+			<timezone>+1</timezone>
 		</developer>
 
 		<developer>
 			<name>Jobanek, Matous</name>
 			<email>matousjobanek@gmail.com</email>
+			<timezone>+1</timezone>
 		</developer>
 	</developers>
 
 	<modules>
-		<module>fcrepo-generate</module>
-		<module>fcrepo-common</module>
-		<module>fcrepo-server</module>
-		<module>fcrepo-client</module>
-		<module>fcrepo-integrationtest</module>
-		<module>fcrepo-installer</module>
-		<module>fcrepo-security</module>
-		<module>fcrepo-webapp</module>
+		<module>editor-common</module>
+		<module>editor-dao</module>
+		<module>editor-editation</module>
+		<module>editor-creation</module>
+		<module>editor-user</module>
+		<module>editor-request</module>
+		<module>editor-webapp</module>
 	</modules>
 
 	<properties>
+		<gwtp.version>0.6</gwtp.version>
+		<generatedGwtpSources>target/generated/apt</generatedGwtpSources>
+		<webappDirectory>${project.build.directory}/webapp</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<unitTests>**/*Test.class</unitTests>
-		<integrationTests>**/*Integration*.class</integrationTests>
-		<instrumentedTests>**/*Test*__*.class</instrumentedTests>
-		<nestedClassTests>**/*Test*$*.class</nestedClassTests>
-		<integration.test.skip>false</integration.test.skip>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss 'UTC'Z</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 
 		<gwt.version>2.4.0</gwt.version>
 		<smartGwt.version>3.0</smartGwt.version>
-		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<gwt-plugin.localWorkers>2</gwt-plugin.localWorkers>
+		<!-- The default value results in these GWT modules being compiled into 
+			JavaScript for all supported browsers. To speed up compile time by only compiling 
+			for your preferred browser(s), specify the gwt.userAgent property on the 
+			mvn command line (e.g. -Dgwt.userAgent=gecko1_8) or in your ~/.m2/settings.xml 
+			As of GWT 2.4.0, the recognized agents (defined in gwt-user.jar:com/google/gwt/user/UserAgent.gwt.xml) 
+			are as follows: ie9: IE9 (although for smartgwt we fallback to IE8) ie8: 
+			IE8 gecko: FF1 (NOTE: Support for this was dropped in GWT 2.1.) gecko1_8: 
+			FF2 and later safari: Safari/Chrome opera: Opera *NOTE*: Since we specify 
+			the meta "X-UA-Compatible: IE=IE8" HTTP header in CoreGUI.html, IE9 and later 
+			will emulate IE8. Multiple agents can be specified as a comma-delimited list, 
+			as demonstrated by the default value below. -->
+		<gwt.userAgent>ie8,ie9,gecko1_8,safari,opera</gwt.userAgent>
+		<!-- Change this to "true" via the mvn command line or your ~/.m2/settings.xml 
+			to speed up gwt compilation. -->
+		<gwt.draftCompile>false</gwt.draftCompile>
+		<!-- Change this to "false" via the mvn command line or your ~/.m2/settings.xml 
+			to speed up gwt compilation and reduce memory consumption by avoiding report 
+			generation. -->
+		<gwt.soyc>true</gwt.soyc>
+		<!-- Comma-separated list of the locales that should be included during 
+			GWT compilation. -->
+		<gwt.locale>en,cs</gwt.locale>
+		<!-- The locale that GWT should fallback to if the user specified an unsupported 
+			locale via the 'locale' query string parameter. -->
+		<gwt.fallback.locale>en</gwt.fallback.locale>
 	</properties>
 
-	<!-- <dependencies> <dependency> <groupId>${project.groupId}</groupId> <artifactId>EditMods</artifactId> 
-		<version>0.0.1-SNAPSHOT</version> </dependency> <dependency> <groupId>com.google.gwt</groupId> 
-		<artifactId>gwt-servlet</artifactId> <version>${gwtVersion}</version> <scope>runtime</scope> 
-		</dependency> <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId> 
-		<version>${gwtVersion}</version> <scope>provided</scope> </dependency> <dependency> 
-		<groupId>com.smartgwt</groupId> <artifactId>smartgwt</artifactId> <version>${smartGwtVersion}</version> 
-		<scope>provided</scope> </dependency> <dependency> <groupId>com.smartgwt</groupId> 
-		<artifactId>smartgwt-skins</artifactId> <version>${smartGwtVersion}</version> 
-		<scope>provided</scope> </dependency> <dependency> <groupId>junit</groupId> 
-		<artifactId>junit</artifactId> <version>4.7</version> <scope>test</scope> 
-		</dependency> </dependencies> -->
+
+
+
+
 	<repositories>
 		<repository>
 			<id>central</id>
@@ -99,6 +119,11 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<id>guice-maven</id>
+			<name>guice maven</name>
+			<url>http://guice-maven.googlecode.com/svn/trunk</url>
 		</repository>
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
@@ -143,15 +168,228 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>duraspace-releases</id>
+			<name>DuraSpace Releases Maven Repository</name>
+			<url>https://m2.duraspace.org/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>thirdparty-uploads</id>
+			<name>JBoss Thirdparty Uploads</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+		</repository>
 	</repositories>
 
+
+
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-editation</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-creation</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-user</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-request</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-common-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-common-server</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-servlet</artifactId>
+				<version>2.4.0</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-user</artifactId>
+				<version>2.4.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.smartgwt</groupId>
+				<artifactId>smartgwt</artifactId>
+				<version>3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.12</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.gwtplatform</groupId>
+				<artifactId>gwtp-all</artifactId>
+				<version>${gwtp.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.gwtplatform</groupId>
+						<artifactId>gwtp-crawler</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.gwtplatform</groupId>
+						<artifactId>gwtp-dispatch-server-spring</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.inject.extensions</groupId>
+				<artifactId>guice-servlet</artifactId>
+				<version>3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.inject.extensions</groupId>
+				<artifactId>guice-assistedinject</artifactId>
+				<version>3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>aopalliance</groupId>
+				<artifactId>aopalliance</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt.inject</groupId>
+				<artifactId>gin</artifactId>
+				<version>1.5.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.allen-sauer.gwt.log</groupId>
+				<artifactId>gwt-log</artifactId>
+				<version>3.1.6</version>
+			</dependency>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-configuration</groupId>
+				<artifactId>commons-configuration</artifactId>
+				<version>1.8</version>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>ki-jzkit-z3950</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>ki-jzkit-iface</artifactId>
+				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jvnet.jaxb2_commons</groupId>
+				<artifactId>runtime</artifactId>
+				<version>0.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.uwyn</groupId>
+				<artifactId>jhighlight</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>pdfbox</artifactId>
+				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+				<!-- Not present in any Maven repo, please download it from http://sourceforge.net/projects/javadjvu/files/ 
+					and install to local maven repository -->
+				<groupId>com.foxtrottechnologies</groupId>
+				<artifactId>javadjvu</artifactId>
+				<version>0.8.09</version>
+			</dependency>
+			<dependency>
+				<groupId>com.reveregroup.gwt</groupId>
+				<artifactId>gwt-image-loader</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<build>
-		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jvnet.jaxb2.maven2</groupId>
+					<artifactId>maven-jaxb2-plugin</artifactId>
+					<version>0.7.3</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+				<plugin>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.bsc.maven</groupId>
+					<artifactId>maven-processor-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -190,74 +428,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
-
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-
-
-		<plugins>
-
-			<!-- GWT Maven Plugin -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.4.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<!-- <goal>test</goal> -->
-							<!-- <goal>i18n</goal> -->
-							<goal>generateAsync</goal>
-						</goals>
-					</execution>
-				</executions>
-
-				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
-					documentation at codehaus.org -->
-				<configuration>
-					<runTarget>ModsEditorDemo.html</runTarget>
-					<hostedWebapp>${webappDirectory}</hostedWebapp>
-					<compileSourcesArtifacts>
-						<artifact>cz.mzk:EditMods</artifact>
-					</compileSourcesArtifacts>
-					<!-- <i18nMessagesBundle>cz.mzk.modseditordemo.client.Messages</i18nMessagesBundle> -->
-				</configuration>
-			</plugin>
-
-			<!-- Copy static web files before executing gwt:run -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>exploded</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<webappDirectory>${webappDirectory}</webappDirectory>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
-
 </project>
