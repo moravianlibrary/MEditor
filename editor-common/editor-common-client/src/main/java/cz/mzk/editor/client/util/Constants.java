@@ -30,10 +30,26 @@ package cz.mzk.editor.client.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.gwtplatform.mvp.client.annotations.ContentSlot;
+import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
+
 /**
  * @author Jiri Kremser
  */
 public class Constants {
+
+    /**
+     * Use this in leaf presenters, inside their {@link #revealInParent} method.
+     */
+    @ContentSlot
+    public static final Type<RevealContentHandler<?>> TYPE_SetMainContent =
+            new Type<RevealContentHandler<?>>();
+
+    /** The Constant TYPE_SetLeftContent. */
+    @ContentSlot
+    public static final Type<RevealContentHandler<?>> TYPE_SetLeftContent =
+            new Type<RevealContentHandler<?>>();
 
     /** The Constant SERVLET_IMAGES_PREFIX. */
     public static final String SERVLET_IMAGES_PREFIX = "images/";

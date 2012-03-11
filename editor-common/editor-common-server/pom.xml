@@ -2,75 +2,22 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<name>Editor common module (server)</name>
 	<groupId>cz.mzk</groupId>
 	<artifactId>editor-common-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<parent>
+		<groupId>cz.mzk</groupId>
+		<artifactId>editor-common</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<gwtp.version>0.6</gwtp.version>
-		<generated-sources>target/generated/</generated-sources>
+		<generatedSources>target/generated/</generatedSources>
 	</properties>
-	<pluginRepositories>
-
-		<!-- THIS REPOSITORY IS NOT LONGER VALID <pluginRepository> <id>maven2-repository.dev.java.net</id> 
-			<name>Java.net Repository for Maven</name> <url>http://download.java.net/maven/2/</url> 
-			<layout>default</layout> </pluginRepository> -->
-
-		<!-- IF YOU WANT STAY TUNED ON UPDATE REMOVE COMMENT -->
-
-		<pluginRepository>
-			<id>sonatype-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-
-	</pluginRepositories>
-
-
-	<repositories>
-		<repository>
-			<id>central</id>
-			<name>Central Maven Repository</name>
-			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>guice-maven</id>
-			<name>guice maven</name>
-			<url>http://guice-maven.googlecode.com/svn/trunk</url>
-		</repository>
-		<repository>
-			<id>sonatype</id>
-			<name>Sonatype</name>
-			<url>http://apps.geomajas.org/nexus/content/groups/latest/</url>
-		</repository>
-		<repository>
-			<id>duraspace-releases</id>
-			<name>DuraSpace Releases Maven Repository</name>
-			<url>https://m2.duraspace.org/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>maven2-repository.dev.java.net</id>
-			<name>Java.net Repository for Maven 2</name>
-			<url>http://download.java.net/maven/2/</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -86,73 +33,55 @@
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.12</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<version>1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>ki</groupId>
 			<artifactId>ki-jzkit-z3950</artifactId>
-			<version>1.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>ki</groupId>
 			<artifactId>ki-jzkit-iface</artifactId>
-			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>runtime</artifactId>
-			<version>0.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.uwyn</groupId>
 			<artifactId>jhighlight</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
-			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.foxtrottechnologies</groupId>
 			<artifactId>javadjvu</artifactId>
-			<version>0.8.09</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.foxtrottechnologies</groupId> <artifactId>javadjvu</artifactId> 
-			<version>0.8.09</version> </dependency> -->
-
-		<!-- <dependency> <groupId>aopalliance</groupId> <artifactId>aopalliance</artifactId> 
-			<version>1.0</version> </dependency> -->
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>
@@ -161,7 +90,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/${generated-sources}</outputDirectory>
+							<outputDirectory>${basedir}/${generatedSources}</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}/../../resources/xml</directory>
@@ -178,7 +107,6 @@
 			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
-				<version>0.7.3</version>
 				<executions>
 					<execution>
 						<goals>
@@ -187,15 +115,15 @@
 					</execution>
 				</executions>
 				<configuration>
-					<schemaDirectory>${basedir}/${generated-sources}</schemaDirectory>
+					<schemaDirectory>${basedir}/${generatedSources}</schemaDirectory>
 					<schemaIncludes>
 						<include>mods-3-3.xsd</include>
 					</schemaIncludes>
-					<bindingDirectory>${basedir}/${generated-sources}</bindingDirectory>
+					<bindingDirectory>${basedir}/${generatedSources}</bindingDirectory>
 					<bindingIncludes>
 						<include>mods-binding.xjb</include>
 					</bindingIncludes>
-					<generateDirectory>${basedir}/${generated-sources}/xjc</generateDirectory>
+					<generateDirectory>${basedir}/${generatedSources}/xjc</generateDirectory>
 					<generatePackage>cz.mzk.editor.server.mods</generatePackage>
 					<extension>true</extension>
 					<args>
@@ -213,10 +141,9 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.3</version>
 				<configuration>
 					<sources>
-						<source>${basedir}/${generated-sources}/xjc</source>
+						<source>${basedir}/${generatedSources}/xjc</source>
 					</sources>
 				</configuration>
 				<executions>
@@ -232,11 +159,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -36,7 +36,6 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.mzk.editor.server.ScanImgServiceImpl;
 import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -96,13 +95,11 @@ public class GetFullImgMetadataHandler
         String metadata = null;
         try {
             metadata =
-                    RESTHelper
-                            .convertStreamToString(RESTHelper.get(baseUrl
-                                                                          + ScanImgServiceImpl.DJATOKA_URL_GET_METADATA
-                                                                          + action.getUuid(),
-                                                                  null,
-                                                                  null,
-                                                                  true));
+                    RESTHelper.convertStreamToString(RESTHelper.get(baseUrl + URLS.DJATOKA_METADATA
+                                                                            + action.getUuid(),
+                                                                    null,
+                                                                    null,
+                                                                    true));
         } catch (IOException e) {
             throw new ActionException(e);
         }

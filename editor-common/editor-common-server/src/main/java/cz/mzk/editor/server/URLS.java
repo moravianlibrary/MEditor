@@ -93,6 +93,9 @@ public class URLS {
 
     public static final String DOWNLOAD_SERVLET = "/download";
 
+    public static final String DJATOKA_METADATA =
+            "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getMetadata&rft_id=";
+
     @SuppressWarnings("serial")
     public static Set<String> nonRestricted = new HashSet<String>() {
 

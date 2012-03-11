@@ -1,0 +1,178 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>Editor web application</name>
+	<groupId>cz.mzk</groupId>
+	<artifactId>editor-webapp</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+
+	<parent>
+		<groupId>cz.mzk</groupId>
+		<artifactId>MEditor</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-editation</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-creation</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-user</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-request</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-common-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-common-server</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.smartgwt</groupId>
+			<artifactId>smartgwt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.gwtplatform</groupId>
+			<artifactId>gwtp-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-assistedinject</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.allen-sauer.gwt.log</groupId>
+			<artifactId>gwt-log</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<noServer>true</noServer>
+					<inplace>false</inplace>
+					<!-- <logLevel>INFO' -bindAddress 0.0.0.0 -logLevel 'INFO</logLevel> -->
+					<logLevel>INFO</logLevel>
+					<runTarget>${coreGuiRunTarget}</runTarget>
+					<!--<extraJvmArgs>${gwt-plugin.extraJvmArgs}</extraJvmArgs> -->
+					<localWorkers>${gwt-plugin.localWorkers}</localWorkers>
+					<draftCompile>${gwt.draftCompile}</draftCompile>
+					<soyc>${gwt.soyc}</soyc>
+					<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+					<hostedWebapp>target/hostedWar</hostedWebapp>
+					<debugSuspend>false</debugSuspend>
+					<!--<servicePattern>**/gwt/*GWTService.java</servicePattern> -->
+					<!-- <i18nMessagesBundle>cz.mzk.editor.client.LangConstants</i18nMessagesBundle> -->
+					<style>OBF</style>
+					<strict>true</strict>
+				</configuration>
+				<executions>
+					<execution>
+						<configuration>
+							<module>cz.mzk.editor.MEditor</module>
+						</configuration>
+						<id>gwt-goals</id>
+						<goals>
+							<goal>compile</goal>
+							<!--<goal>generateAsync</goal> <goal>i18n</goal> -->
+						</goals>
+					</execution>
+					<execution>
+						<id>default-cli</id>
+						<goals>
+							<goal>debug</goal>
+						</goals>
+						<configuration>
+							<module>cz.mzk.editor.MEditor</module>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Build-Number>${buildNumber}</Build-Number>
+						</manifestEntries>
+					</archive>
+					<webResources>
+						<resource>
+							<filtering>false</filtering>
+							<directory>${basedir}/src/main/webapp</directory>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
