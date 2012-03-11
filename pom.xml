@@ -62,15 +62,19 @@
 	</modules>
 
 	<properties>
+		<!-- Versions -->
+		<gwt.version>2.4.0</gwt.version>
 		<gwtp.version>0.6</gwtp.version>
+		<smartGwt.version>3.0</smartGwt.version>
+		<guice.version>3.0</guice.version>
+		<gin.version>1.5.0</gin.version>
+		
 		<generatedGwtpSources>target/generated/apt</generatedGwtpSources>
 		<webappDirectory>${project.build.directory}/webapp</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss 'UTC'Z</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
-
-		<gwt.version>2.4.0</gwt.version>
-		<smartGwt.version>3.0</smartGwt.version>
+		
 		<gwt-plugin.localWorkers>2</gwt-plugin.localWorkers>
 		<!-- The default value results in these GWT modules being compiled into 
 			JavaScript for all supported browsers. To speed up compile time by only compiling 
@@ -98,10 +102,6 @@
 			locale via the 'locale' query string parameter. -->
 		<gwt.fallback.locale>en</gwt.fallback.locale>
 	</properties>
-
-
-
-
 
 	<repositories>
 		<repository>
@@ -186,10 +186,6 @@
 		</repository>
 	</repositories>
 
-
-
-
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -225,19 +221,19 @@
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-servlet</artifactId>
-				<version>2.4.0</version>
+				<version>${gwt.version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
-				<version>2.4.0</version>
+				<version>${gwt.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.smartgwt</groupId>
 				<artifactId>smartgwt</artifactId>
-				<version>3.0</version>
+				<version>${smartGwt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -270,17 +266,17 @@
 			<dependency>
 				<groupId>com.google.inject</groupId>
 				<artifactId>guice</artifactId>
-				<version>3.0</version>
+				<version>${guice.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.inject.extensions</groupId>
 				<artifactId>guice-servlet</artifactId>
-				<version>3.0</version>
+				<version>${guice.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.inject.extensions</groupId>
 				<artifactId>guice-assistedinject</artifactId>
-				<version>3.0</version>
+				<version>${guice.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>aopalliance</groupId>
@@ -290,7 +286,7 @@
 			<dependency>
 				<groupId>com.google.gwt.inject</groupId>
 				<artifactId>gin</artifactId>
-				<version>1.5.0</version>
+				<version>${guice.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.allen-sauer.gwt.log</groupId>
@@ -346,7 +342,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 
 	<pluginRepositories>
 		<pluginRepository>
