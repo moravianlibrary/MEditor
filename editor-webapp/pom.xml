@@ -98,41 +98,49 @@
 			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 		<plugins>
+		
+			<!-- Compile GWT modules 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
 					<noServer>true</noServer>
 					<inplace>false</inplace>
-					<!-- <logLevel>INFO' -bindAddress 0.0.0.0 -logLevel 'INFO</logLevel> -->
 					<logLevel>INFO</logLevel>
 					<runTarget>${coreGuiRunTarget}</runTarget>
-					<!--<extraJvmArgs>${gwt-plugin.extraJvmArgs}</extraJvmArgs> -->
 					<localWorkers>${gwt-plugin.localWorkers}</localWorkers>
 					<draftCompile>${gwt.draftCompile}</draftCompile>
 					<soyc>${gwt.soyc}</soyc>
 					<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
 					<hostedWebapp>target/hostedWar</hostedWebapp>
 					<debugSuspend>false</debugSuspend>
-					<!--<servicePattern>**/gwt/*GWTService.java</servicePattern> -->
-					<!-- <i18nMessagesBundle>cz.mzk.editor.client.LangConstants</i18nMessagesBundle> -->
 					<style>OBF</style>
 					<strict>true</strict>
 				</configuration>
 				<executions>
 					<execution>
 						<configuration>
-							<module>cz.mzk.editor.MEditor</module>
+							<modules>
+								<module>cz.mzk.editor.MEditor</module>
+								<module>cz.mzk.editor.RequestForAdding</module>
+							</modules>
 						</configuration>
 						<id>gwt-goals</id>
 						<goals>
 							<goal>compile</goal>
-							<!--<goal>generateAsync</goal> <goal>i18n</goal> -->
 						</goals>
 					</execution>
 					<execution>
@@ -146,10 +154,38 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+-->
+
+			<!-- Replace $HOSTNAME$ with real hostname -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>maven-replacer-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>src/main/webapp/loginTemplate</file>
+					<outputFile>src/main/webapp/login.html</outputFile>
+					<replacements>
+						<replacement>
+							<token>&lt;&lt;HOSTNAME&gt;&gt;</token>
+							<value>${hostname}</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+
+			<!-- Pack war file -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+					<warName>${warName}</warName>
+					<outputDirectory>${basedir}/../target</outputDirectory>
 					<archive>
 						<manifest>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>

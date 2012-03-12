@@ -15,6 +15,11 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+
+	<properties>
+		<gwt.generated></gwt.generated>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -72,12 +77,37 @@
 
 	<build>
 		<plugins>
+			<!-- Add new directory (target/generated) to the classpath -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<configuration>
+					<sources>
+						<source>${generatedGwtpSources}</source>
+						<source>target/generated-sources/gwt</source>
+					</sources>
+				</configuration>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<i18nConstantsBundle>cz.mzk.editor.client.LangConstants</i18nConstantsBundle>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
+							<goal>i18n</goal>
 							<goal>resources</goal>
 						</goals>
 					</execution>
@@ -153,25 +183,8 @@ enabled="true" runInBatchMode="false" />
 				</dependencies>
 			</plugin>
 
-			<!-- Add new directory (target/generated) to the classpath -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<configuration>
-					<sources>
-						<source>${generatedGwtpSources}</source>
-					</sources>
-				</configuration>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
+
 		</plugins>
 	</build>
 

@@ -16,7 +16,7 @@
 	</parent>
 
 	<properties>
-		<generatedSources>target/generated/</generatedSources>
+		<generatedSources>target/generated-sources/</generatedSources>
 	</properties>
 
 	<repositories>

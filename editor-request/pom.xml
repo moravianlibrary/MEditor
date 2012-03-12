@@ -27,14 +27,21 @@
 		</dependency>
 	</dependencies>
 
+
+
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<i18nConstantsBundle>cz.mzk.editor.request4Adding.client.RequestConstants</i18nConstantsBundle>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
+							<goal>i18n</goal>
 							<goal>resources</goal>
 						</goals>
 					</execution>

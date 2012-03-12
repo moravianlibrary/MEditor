@@ -67,13 +67,17 @@
 		<smartGwt.version>3.0</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>1.5.0</gin.version>
-		
-		<generatedGwtpSources>target/generated/apt</generatedGwtpSources>
+
+		<warName>meditor</warName>
+		<hostname>editor-devel.mzk.cz</hostname>
+		<!-- <hostname>editor.mzk.cz</hostname> -->
+		<!-- <hostname>editor.vsup.cz</hostname> -->
+		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
 		<webappDirectory>${project.build.directory}/webapp</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss 'UTC'Z</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
-		
+
 		<gwt-plugin.localWorkers>2</gwt-plugin.localWorkers>
 		<!-- The default value results in these GWT modules being compiled into 
 			JavaScript for all supported browsers. To speed up compile time by only compiling 
@@ -254,12 +258,17 @@
 				<exclusions>
 					<exclusion>
 						<groupId>com.gwtplatform</groupId>
+						<artifactId>gwtp-crawler-service</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.gwtplatform</groupId>
 						<artifactId>gwtp-crawler</artifactId>
 					</exclusion>
 					<exclusion>
 						<groupId>com.gwtplatform</groupId>
 						<artifactId>gwtp-dispatch-server-spring</artifactId>
 					</exclusion>
+
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -285,7 +294,7 @@
 			<dependency>
 				<groupId>com.google.gwt.inject</groupId>
 				<artifactId>gin</artifactId>
-				<version>${guice.version}</version>
+				<version>${gin.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.allen-sauer.gwt.log</groupId>
@@ -301,6 +310,11 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>1.8</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.6</version>
 			</dependency>
 			<dependency>
 				<groupId>ki</groupId>
@@ -321,6 +335,12 @@
 				<groupId>com.uwyn</groupId>
 				<artifactId>jhighlight</artifactId>
 				<version>1.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>servlet-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.pdfbox</groupId>
@@ -338,6 +358,11 @@
 				<groupId>com.reveregroup.gwt</groupId>
 				<artifactId>gwt-image-loader</artifactId>
 				<version>1.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>9.1-901.jdbc4</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -420,7 +445,21 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>2.1.1</version>
 				</plugin>
+				<plugin>
+					<groupId>com.google.code.maven-replacer-plugin</groupId>
+					<artifactId>maven-replacer-plugin</artifactId>
+					<version>1.4.1</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+
+		<!-- <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-enforcer-plugin</artifactId> 
+			<executions> <execution> <goals> <goal>enforce</goal> </goals> <configuration> 
+			<rules> <bannedDependencies> <searchTransitive>true</searchTransitive> <excludes> 
+			<exclude>commons-logging</exclude> <exclude>log4j:log4j</exclude> <exclude>org.slf4j:slf4j-jcl</exclude> 
+			<exclude>org.slf4j:slf4j-jdk14</exclude> <exclude>org.slf4j:slf4j-log4j12</exclude> 
+			<exclude>org.slf4j:slf4j-log4j13</exclude> <exclude>org.slf4j:slf4j-nop</exclude> 
+			<exclude>org.slf4j:slf4j-simple</exclude> </excludes> </bannedDependencies> 
+			</rules> </configuration> </execution> </executions> </plugin> </plugins> -->
 	</build>
 </project>
