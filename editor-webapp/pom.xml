@@ -111,8 +111,13 @@
 	<build>
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 		<plugins>
-		
-			<!-- Compile GWT modules 
+			<!-- Compile -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<!-- Compile GWT modules -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -154,7 +159,6 @@
 					</execution>
 				</executions>
 			</plugin>
--->
 
 			<!-- Replace $HOSTNAME$ with real hostname -->
 			<plugin>
@@ -202,11 +206,6 @@
 						</resource>
 					</webResources>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
