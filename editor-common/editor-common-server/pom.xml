@@ -19,6 +19,14 @@
 		<generatedSources>target/generated/</generatedSources>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>sonatype</id>
+			<name>Sonatype</name>
+			<url>http://apps.geomajas.org/nexus/content/groups/latest/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
