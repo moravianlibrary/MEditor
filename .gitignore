@@ -6,17 +6,6 @@ target
 .gwt
 .project
 
-#/generated/
+META-INF
 
-/src/org
-
-# /MEditor/war/
-/war/meditor
-/war/request
-
-# /MEditor/war/WEB-INF/
-/MEditor/war/META-INF/
-/war/WEB-INF/*.class
-/war/WEB-INF/classes
-/war/WEB-INF/classes/*
-classes
+login.html
