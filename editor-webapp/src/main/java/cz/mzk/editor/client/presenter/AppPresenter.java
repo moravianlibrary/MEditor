@@ -78,6 +78,12 @@ public class AppPresenter
         extends Presenter<AppPresenter.MyView, AppPresenter.MyProxy>
         implements MyUiHandlers {
 
+    @ContentSlot
+    public static final Type<RevealContentHandler<?>> TYPE_MAIN_CONTENT = Constants.TYPE_MAIN_CONTENT;
+
+    @ContentSlot
+    public static final Type<RevealContentHandler<?>> TYPE_LEFT_CONTENT = Constants.TYPE_LEFT_CONTENT;
+
     private LangConstants lang;
     private volatile boolean unknown = true;
 
@@ -88,22 +94,6 @@ public class AppPresenter
     public void setLang(LangConstants lang) {
         this.lang = lang;
     }
-
-    /**
-     * Use this in leaf presenters, inside their {@link #revealInParent} method.
-     */
-    @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_SetMainContent =
-            new Type<RevealContentHandler<?>>();
-
-    // @ContentSlot
-    // public static final Type<RevealContentHandler<?>> TYPE_SetTopContent = new
-    // Type<RevealContentHandler<?>>();
-
-    /** The Constant TYPE_SetLeftContent. */
-    @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_SetLeftContent =
-            new Type<RevealContentHandler<?>>();
 
     /**
      * The Interface MyProxy.

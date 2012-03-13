@@ -757,7 +757,7 @@ public class UserPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_SetMainContent, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
     }
 
     /**

@@ -276,7 +276,7 @@ public class FindMetadataPresenter
      */
     @Override
     protected void onReset() {
-        RevealContentEvent.fire(this, Constants.TYPE_SetLeftContent, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
         //        leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
         getView().getNext().setDisabled(true);
     }
@@ -287,7 +287,7 @@ public class FindMetadataPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_SetMainContent, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
     }
 
     @Override

@@ -184,6 +184,30 @@
 				</configuration>
 			</plugin>
 
+			<!-- Replace $HOSTNAME$ with real hostname -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>maven-replacer-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>src/main/webapp/viewer/viewerTemplate</file>
+					<outputFile>src/main/webapp/viewer/viewer.html</outputFile>
+					<replacements>
+						<replacement>
+							<token>&lt;&lt;HOSTNAME&gt;&gt;</token>
+							<value>${hostname}</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+
 			<!-- Pack war file -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>

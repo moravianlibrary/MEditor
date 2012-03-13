@@ -425,7 +425,7 @@ public class DigitalObjectMenuPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_SetLeftContent, this);
+        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, this);
     }
 
     /*

@@ -266,7 +266,7 @@ public class HomePresenter
      */
     @Override
     protected void onReset() {
-        RevealContentEvent.fire(this, AppPresenter.TYPE_SetLeftContent, leftPresenter);
+        RevealContentEvent.fire(this, AppPresenter.TYPE_LEFT_CONTENT, leftPresenter);
     }
 
     /*
@@ -275,7 +275,7 @@ public class HomePresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, AppPresenter.TYPE_SetMainContent, this);
+        RevealContentEvent.fire(this, AppPresenter.TYPE_MAIN_CONTENT, this);
     }
 
     /**

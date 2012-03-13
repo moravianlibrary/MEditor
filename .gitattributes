@@ -1,2 +1,0 @@
-#detect text files, and normalize to LF at each commit
-*       text=auto

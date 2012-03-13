@@ -322,7 +322,7 @@ public class CreateStructurePresenter
     protected void onReset() {
         super.onReset();
         processImages();
-        RevealContentEvent.fire(this, Constants.TYPE_SetLeftContent, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
 
         //                leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
         leftPresenter.getView().getSectionStack().expandSection(1);
@@ -834,7 +834,7 @@ public class CreateStructurePresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_SetMainContent, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
     }
 
     @ProxyEvent
