@@ -740,7 +740,7 @@ public class CreateObjectMenuView
         name.setTitle(lang.name());
 
         dateIssued = new TextItem();
-        dateIssued.setTitle(lang.dateIssued() + " " + lang.formYyyy());
+        dateIssued.setTitle(lang.dateIssued());
         dateIssuedForm = new CreateDynamicForm(dateIssued);
 
         selectModel = new SelectItem();
@@ -837,7 +837,7 @@ public class CreateObjectMenuView
             dateIssued.setDefaultValue(defaultDateIssued);
             if (!contains) {
                 createLayout.addMember(dateIssuedForm, 1);
-                name.setTitle("issue Number");
+                name.setTitle(lang.issueNumber());
             }
         } else {
             if (contains) {

@@ -96,7 +96,7 @@ public abstract class NewObjectBasicInfoWindow
                 || record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                         .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())) {
 
-            dateIssuedItem = new TextItem("dateIssued", lang.dateIssued() + " " + lang.formYyyy());
+            dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
             dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
             mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem));
             setHeight(160);
