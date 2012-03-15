@@ -139,7 +139,7 @@ public class CreateObjectMenuPresenter
 
         TextItem getDateIssued();
 
-        void setCreateVolume(boolean setCreateVolume, String defaultDateIssued);
+        void setCreateVolumeItem(boolean setCreateVolumeItem, String defaultDateIssued);
 
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
     }
@@ -292,9 +292,9 @@ public class CreateObjectMenuPresenter
                         .get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
                         || event.getValue().equals(getLabelFromModel()
                                 .get(DigitalObjectModel.PERIODICALITEM.getValue()))) {
-                    getView().setCreateVolume(true, defaultDateIssued);
+                    getView().setCreateVolumeItem(true, defaultDateIssued);
                 } else {
-                    getView().setCreateVolume(false, null);
+                    getView().setCreateVolumeItem(false, null);
                 }
             }
         }));

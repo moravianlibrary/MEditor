@@ -830,17 +830,19 @@ public class CreateObjectMenuView
     }
 
     @Override
-    public void setCreateVolume(boolean setCreateVolume, String defaultDateIssued) {
+    public void setCreateVolumeItem(boolean setCreateVolumeItem, String defaultDateIssued) {
         boolean contains = createLayout.contains(dateIssuedForm);
 
-        if (setCreateVolume) {
+        if (setCreateVolumeItem) {
             dateIssued.setDefaultValue(defaultDateIssued);
             if (!contains) {
                 createLayout.addMember(dateIssuedForm, 1);
+                name.setTitle("issue Number");
             }
         } else {
             if (contains) {
                 createLayout.removeMember(dateIssuedForm);
+                name.setTitle(lang.name());
             }
         }
     }
