@@ -35,7 +35,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
@@ -50,7 +52,6 @@ import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
-import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
@@ -102,8 +103,6 @@ public class CreateObjectMenuView
         extends ViewWithUiHandlers<CreateObjectMenuUiHandlers>
         implements CreateObjectMenuPresenter.MyView {
 
-    private static final String SECTION_INPUT_ID = "input";
-
     public static final String CREATE_BUTTON_HAS_A_HANDLER = "CREATE_BUTTON_HAS_A_HANDLER";
 
     private final LangConstants lang;
@@ -121,9 +120,6 @@ public class CreateObjectMenuView
     private SectionStackSection createStructure;
 
     private SectionStackSection structure;
-
-    /** The refresh button. */
-    private ImgButton refreshButton;
 
     private ButtonItem createButton;
 
@@ -151,6 +147,8 @@ public class CreateObjectMenuView
 
     private final VLayout createLayout;
 
+    private final EventBus eventBus;
+
     private static final class CreateDynamicForm
             extends DynamicForm {
 
@@ -169,6 +167,7 @@ public class CreateObjectMenuView
     @Inject
     public CreateObjectMenuView(final LangConstants lang, final EventBus eventBus) {
         this.lang = lang;
+        this.eventBus = eventBus;
 
         layout = new VLayout();
 
@@ -765,13 +764,13 @@ public class CreateObjectMenuView
         createLayout.setRight(10);
 
         createStructure.setItems(createLayout);
-        createStructure.setExpanded(false);
+        createStructure.setExpanded(true);
 
         structure = new SectionStackSection();
         structure.setTitle(lang.substructures());
         structure.setResizeable(true);
         structure.setItems(structureTreeGrid);
-        structure.setExpanded(false);
+        structure.setExpanded(true);
 
         structure.setControls(undoButton, redoButton, menuButton);
 
@@ -868,16 +867,6 @@ public class CreateObjectMenuView
     /*
      * (non-Javadoc)
      * @see cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getRefreshWidget()
-     */
-    @Override
-    public HasClickHandlers getRefreshWidget() {
-        return refreshButton;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter.
      * MyView#getInputTree()
      */
     @Override
@@ -905,44 +894,8 @@ public class CreateObjectMenuView
      */
 
     @Override
-    public void setInputTree(InputQueueTree tree) {
-        String isInputSection = sectionStack.getSection(0).getAttribute(SECTION_INPUT_ID);
-        if (isInputSection != null && "yes".equals(isInputSection)) {
-            return;
-        }
-        inputTree = tree;
-        SectionStackSection section1 = new SectionStackSection();
-        section1.setTitle(lang.inputQueue());
-        section1.setItems(inputTree);
-        refreshButton = new ImgButton();
-        refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
-        refreshButton.setSize(16);
-        refreshButton.setShowRollOver(true);
-        refreshButton.setCanHover(true);
-        refreshButton.setShowDownIcon(false);
-        refreshButton.setShowDown(false);
-        refreshButton.setHoverOpacity(75);
-        refreshButton.setHoverStyle("interactImageHover");
-        refreshButton.addHoverHandler(new HoverHandler() {
-
-            @Override
-            public void onHover(HoverEvent event) {
-                refreshButton.setPrompt(lang.inputQueueRescan());
-            }
-        });
-        refreshButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                getUiHandlers().onRefresh();
-            }
-        });
-
-        section1.setControls(refreshButton);
-        section1.setResizeable(true);
-        section1.setExpanded(true);
-        sectionStack.addSection(section1, 0);
-        section1.setAttribute(SECTION_INPUT_ID, "yes");
+    public void setInputTree(DispatchAsync dispatcher, final PlaceManager placeManager) {
+        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager);
     }
 
     @Override

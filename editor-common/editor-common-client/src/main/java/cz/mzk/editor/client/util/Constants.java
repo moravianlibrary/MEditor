@@ -652,4 +652,6 @@ public class Constants {
 
     /** The separator for two pages on one page, or for columns one a page */
     public static final String TWO_PAGES_SEPARATOR = "|";
+
+    public static final String SECTION_INPUT_ID = "input";
 }

@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
@@ -44,9 +43,6 @@ import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
-import com.smartgwt.client.widgets.events.HasClickHandlers;
-import com.smartgwt.client.widgets.events.HoverEvent;
-import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
@@ -61,10 +57,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.gwtrpcds.RecentlyTreeGwtRPCDS;
 import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.mzk.editor.client.uihandlers.DigitalObjectMenuUiHandlers;
@@ -83,8 +77,6 @@ public class DigitalObjectMenuView
     /** The Constant SECTION_RELATED_ID. */
     private static final String SECTION_RELATED_ID = "related";
 
-    private static final String SECTION_INPUT_ID = "input";
-
     private final LangConstants lang;
 
     /**
@@ -97,9 +89,6 @@ public class DigitalObjectMenuView
          */
         void refreshTree();
     }
-
-    /** The input tree. */
-    private InputQueueTree inputTree;
 
     /** The side nav grid. */
     private final ListGrid sideNavGrid;
@@ -118,9 +107,6 @@ public class DigitalObjectMenuView
 
     /** The section related. */
     private final ListGrid relatedGrid;
-
-    /** The refresh button. */
-    private ImgButton refreshButton;
 
     /** The layout. */
     private final VLayout layout;
@@ -334,79 +320,8 @@ public class DigitalObjectMenuView
      * MyView#showInputQueue(com.gwtplatform.dispatch.client.DispatchAsync)
      */
     @Override
-    public void showInputQueue(InputQueueTree tree, DispatchAsync dispatcher, final PlaceManager placeManager) {
-        SectionStackSection section1 = new SectionStackSection();
-        section1.setTitle(lang.inputQueue());
-        if (tree == null) {
-            inputTree = new InputQueueTree(dispatcher, lang, eventBus);
-            inputTree.getCreateMenuItem()
-                    .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-
-                        @Override
-                        public void onClick(final MenuItemClickEvent event) {
-                            String msg = event.getMenu().getEmptyMessage();
-                            String model = msg.substring(0, msg.indexOf("/"));
-                            String path = msg.substring(msg.indexOf("/") + 1);
-                            String id = path;
-                            if (path.contains("/")) {
-                                id = path.substring(0, path.indexOf("/"));
-                            }
-
-                            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
-                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, id)
-                                    .with(Constants.URL_PARAM_PATH, path));
-                        }
-                    });
-        } else {
-            String isInputSection = sectionStack.getSection(0).getAttribute(SECTION_INPUT_ID);
-            if (isInputSection != null && "yes".equals(isInputSection)) {
-                sectionStack.removeSection(0);
-            }
-            inputTree = tree;
-        }
-        section1.setItems(inputTree);
-        refreshButton = new ImgButton();
-        refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
-        refreshButton.setSize(16);
-        refreshButton.setShowRollOver(true);
-        refreshButton.setCanHover(true);
-        refreshButton.setShowDownIcon(false);
-        refreshButton.setShowDown(false);
-        refreshButton.setHoverStyle("interactImageHover");
-        refreshButton.setHoverOpacity(75);
-        refreshButton.addHoverHandler(new HoverHandler() {
-
-            @Override
-            public void onHover(HoverEvent event) {
-                refreshButton.setPrompt(lang.inputQueueRescan());
-            }
-        });
-
-        section1.setControls(refreshButton);
-        section1.setResizeable(true);
-        section1.setExpanded(true);
-        sectionStack.addSection(section1, 0);
-        section1.setAttribute(SECTION_INPUT_ID, "yes");
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getRefreshWidget()
-     */
-    @Override
-    public HasClickHandlers getRefreshWidget() {
-        return refreshButton;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getInputTree()
-     */
-    @Override
-    public InputQueueTree getInputTree() {
-        return inputTree;
+    public void showInputQueue(DispatchAsync dispatcher, final PlaceManager placeManager) {
+        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager);
     }
 
     /*

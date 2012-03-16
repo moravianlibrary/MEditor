@@ -324,7 +324,8 @@ public class CreateStructurePresenter
         processImages();
         RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
 
-        //                leftPresenter.getView().setInputTree(doMenuPresenter.getView().getInputTree());
+        leftPresenter.getView().setInputTree(dispatcher, placeManager);
+        leftPresenter.getView().getSectionStack().collapseSection(0);
         leftPresenter.getView().getSectionStack().expandSection(1);
         leftPresenter.getView().getSectionStack().expandSection(2);
 
