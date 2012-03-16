@@ -90,8 +90,6 @@ public class CreateObjectMenuPresenter
     public interface MyView
             extends View, HasUiHandlers<CreateObjectMenuUiHandlers> {
 
-        //        HasClickHandlers getRefreshWidget();
-
         InputQueueTree getInputTree();
 
         void setInputTree(DispatchAsync dispatcher, final PlaceManager placeManager);

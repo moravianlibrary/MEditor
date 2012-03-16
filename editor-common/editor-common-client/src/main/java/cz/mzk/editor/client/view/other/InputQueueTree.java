@@ -104,39 +104,38 @@ public class InputQueueTree
 
         SectionStackSection section1 = new SectionStackSection();
         section1.setTitle(lang.inputQueue());
-        if (inputQueueTree == null) {
-            inputQueueTree = new InputQueueTree(dispatcher, lang, eventBus);
-            inputQueueTree.getCreateMenuItem()
-                    .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+        String isInputSection = sectionStack.getSection(0).getAttribute(Constants.SECTION_INPUT_ID);
+        if (isInputSection == null || !"yes".equals(isInputSection)) {
+            if (inputQueueTree == null) {
+                inputQueueTree = new InputQueueTree(dispatcher, lang, eventBus);
+                inputQueueTree.getCreateMenuItem()
+                        .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
-                        @Override
-                        public void onClick(final MenuItemClickEvent event) {
-                            String msg = event.getMenu().getEmptyMessage();
-                            String model = msg.substring(0, msg.indexOf("/"));
-                            String path = msg.substring(msg.indexOf("/") + 1);
-                            String id = path;
-                            if (path.contains("/")) {
-                                id = path.substring(0, path.indexOf("/"));
+                            @Override
+                            public void onClick(final MenuItemClickEvent event) {
+                                String msg = event.getMenu().getEmptyMessage();
+                                String model = msg.substring(0, msg.indexOf("/"));
+                                String path = msg.substring(msg.indexOf("/") + 1);
+                                String id = path;
+                                if (path.contains("/")) {
+                                    id = path.substring(0, path.indexOf("/"));
+                                }
+
+                                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
+                                        .with(Constants.ATTR_MODEL, model)
+                                        .with(Constants.URL_PARAM_SYSNO, id)
+                                        .with(Constants.URL_PARAM_PATH, path));
                             }
-
-                            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
-                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, id)
-                                    .with(Constants.URL_PARAM_PATH, path));
-                        }
-                    });
-        } else {
-            String isInputSection = sectionStack.getSection(0).getAttribute(Constants.SECTION_INPUT_ID);
-            if (isInputSection != null && "yes".equals(isInputSection)) {
-                sectionStack.removeSection(0);
+                        });
             }
-        }
-        section1.setItems(inputQueueTree);
 
-        section1.setControls(getRefreshButton(lang, eventBus, dispatcher));
-        section1.setResizeable(true);
-        section1.setExpanded(true);
-        sectionStack.addSection(section1, 0);
-        section1.setAttribute(Constants.SECTION_INPUT_ID, "yes");
+            section1.setItems(inputQueueTree);
+            section1.setControls(getRefreshButton(lang, eventBus, dispatcher));
+            section1.setResizeable(true);
+            section1.setExpanded(true);
+            sectionStack.addSection(section1, 0);
+            section1.setAttribute(Constants.SECTION_INPUT_ID, "yes");
+        }
     }
 
     private static ImgButton getRefreshButton(final LangConstants lang,

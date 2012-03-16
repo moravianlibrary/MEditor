@@ -38,11 +38,6 @@ import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
 public interface DigitalObjectMenuUiHandlers
         extends UiHandlers {
 
-    /**
-     * On refresh.
-     */
-    //    void onRefresh();
-
     void refreshRecentlyModified();
 
     /**

@@ -42,8 +42,6 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 public interface CreateObjectMenuUiHandlers
         extends UiHandlers {
 
-    //    void onRefresh();
-
     void revealItem(String uuid);
 
     Map<String, DigitalObjectModel> getModelFromLabel();
