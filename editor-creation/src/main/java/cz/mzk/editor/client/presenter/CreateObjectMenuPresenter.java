@@ -45,9 +45,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -68,21 +66,16 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.window.AddAltoOcrWindow;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.LoadTreeStructureWindow;
-import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
-import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
 import cz.mzk.editor.shared.rpc.action.GetDOModelResult;
-import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
-import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
 
 /**
  * @author Jiri Kremser
@@ -97,11 +90,11 @@ public class CreateObjectMenuPresenter
     public interface MyView
             extends View, HasUiHandlers<CreateObjectMenuUiHandlers> {
 
-        HasClickHandlers getRefreshWidget();
+        //        HasClickHandlers getRefreshWidget();
 
         InputQueueTree getInputTree();
 
-        void setInputTree(InputQueueTree tree);
+        void setInputTree(DispatchAsync dispatcher, final PlaceManager placeManager);
 
         TreeGrid getSubelementsGrid();
 
@@ -343,44 +336,44 @@ public class CreateObjectMenuPresenter
      * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
      * #onRefresh()
      */
-    @Override
-    public void onRefresh() {
-        if (ready) {
-            synchronized (LOCK) {
-                if (ready) { // double-lock idiom
-                    ready = false;
-                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
-                    mw.setLoadingIcon("loadingAnimation.gif");
-                    mw.show(true);
-                    dispatcher.execute(new ScanInputQueueAction(null, true),
-                                       new DispatchCallback<ScanInputQueueResult>() {
-
-                                           @Override
-                                           public void callback(ScanInputQueueResult result) {
-                                               ServerActionResult serverActionResult =
-                                                       result.getServerActionResult();
-                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
-                                                   mw.hide();
-                                                   getView().getInputTree().refreshTree();
-                                                   ready = true;
-                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
-                                                   mw.hide();
-                                                   SC.warn(lang.wrongDirName()
-                                                           + serverActionResult.getMessage());
-                                               }
-                                           }
-
-                                           @Override
-                                           public void callbackError(final Throwable t) {
-                                               mw.hide();
-                                               super.callbackError(t);
-                                               ready = true;
-                                           }
-                                       });
-                }
-            }
-        }
-    }
+    //    @Override
+    //    public void onRefresh() {
+    //        if (ready) {
+    //            synchronized (LOCK) {
+    //                if (ready) { // double-lock idiom
+    //                    ready = false;
+    //                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
+    //                    mw.setLoadingIcon("loadingAnimation.gif");
+    //                    mw.show(true);
+    //                    dispatcher.execute(new ScanInputQueueAction(null, true),
+    //                                       new DispatchCallback<ScanInputQueueResult>() {
+    //
+    //                                           @Override
+    //                                           public void callback(ScanInputQueueResult result) {
+    //                                               ServerActionResult serverActionResult =
+    //                                                       result.getServerActionResult();
+    //                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
+    //                                                   mw.hide();
+    //                                                   getView().getInputTree().refreshTree();
+    //                                                   ready = true;
+    //                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
+    //                                                   mw.hide();
+    //                                                   SC.warn(lang.wrongDirName()
+    //                                                           + serverActionResult.getMessage());
+    //                                               }
+    //                                           }
+    //
+    //                                           @Override
+    //                                           public void callbackError(final Throwable t) {
+    //                                               mw.hide();
+    //                                               super.callbackError(t);
+    //                                               ready = true;
+    //                                           }
+    //                                       });
+    //                }
+    //            }
+    //        }
+    //    }
 
     /*
      * (non-Javadoc)

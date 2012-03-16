@@ -42,7 +42,7 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 public interface CreateObjectMenuUiHandlers
         extends UiHandlers {
 
-    void onRefresh();
+    //    void onRefresh();
 
     void revealItem(String uuid);
 

@@ -41,7 +41,7 @@ public interface DigitalObjectMenuUiHandlers
     /**
      * On refresh.
      */
-    void onRefresh();
+    //    void onRefresh();
 
     void refreshRecentlyModified();
 

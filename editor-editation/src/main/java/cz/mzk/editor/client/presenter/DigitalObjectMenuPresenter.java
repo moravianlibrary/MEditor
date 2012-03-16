@@ -48,11 +48,7 @@ import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.types.SortDirection;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.HasClickHandlers;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -64,15 +60,12 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
-import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.DigitalObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.NAME_OF_TREE;
-import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.other.RecentlyModifiedRecord;
-import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
@@ -86,9 +79,6 @@ import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.event.RefreshTreeEvent;
 import cz.mzk.editor.shared.event.RefreshTreeEvent.RefreshTreeHandler;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
-import cz.mzk.editor.shared.rpc.ServerActionResult;
-import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
-import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -109,7 +99,7 @@ public class DigitalObjectMenuPresenter
          * 
          * @return the refresh widget
          */
-        HasClickHandlers getRefreshWidget();
+        //        HasClickHandlers getRefreshWidget();
 
         /**
          * Show input queue.
@@ -117,7 +107,7 @@ public class DigitalObjectMenuPresenter
          * @param dispatcher
          *        the dispatcher
          */
-        void showInputQueue(InputQueueTree tree, DispatchAsync dispatcher, PlaceManager placeManager);
+        void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager);
 
         /**
          * Gets the input tree.
@@ -380,44 +370,44 @@ public class DigitalObjectMenuPresenter
      * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
      * #onRefresh()
      */
-    @Override
-    public void onRefresh() {
-        if (ready) {
-            synchronized (LOCK) {
-                if (ready) { // double-lock idiom
-                    ready = false;
-                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
-                    mw.setLoadingIcon("loadingAnimation.gif");
-                    mw.show(true);
-                    dispatcher.execute(new ScanInputQueueAction(null, true),
-                                       new DispatchCallback<ScanInputQueueResult>() {
-
-                                           @Override
-                                           public void callback(ScanInputQueueResult result) {
-                                               ServerActionResult serverActionResult =
-                                                       result.getServerActionResult();
-                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
-                                                   mw.hide();
-                                                   getView().getInputTree().refreshTree();
-                                                   ready = true;
-                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
-                                                   mw.hide();
-                                                   SC.warn(lang.wrongDirName()
-                                                           + serverActionResult.getMessage());
-                                               }
-                                           }
-
-                                           @Override
-                                           public void callbackError(final Throwable t) {
-                                               mw.hide();
-                                               super.callbackError(t);
-                                               ready = true;
-                                           }
-                                       });
-                }
-            }
-        }
-    }
+    //    @Override
+    //    public void onRefresh() {
+    //        if (ready) {
+    //            synchronized (LOCK) {
+    //                if (ready) { // double-lock idiom
+    //                    ready = false;
+    //                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
+    //                    mw.setLoadingIcon("loadingAnimation.gif");
+    //                    mw.show(true);
+    //                    dispatcher.execute(new ScanInputQueueAction(null, true),
+    //                                       new DispatchCallback<ScanInputQueueResult>() {
+    //
+    //                                           @Override
+    //                                           public void callback(ScanInputQueueResult result) {
+    //                                               ServerActionResult serverActionResult =
+    //                                                       result.getServerActionResult();
+    //                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
+    //                                                   mw.hide();
+    //                                                   getView().getInputTree().refreshTree();
+    //                                                   ready = true;
+    //                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
+    //                                                   mw.hide();
+    //                                                   SC.warn(lang.wrongDirName()
+    //                                                           + serverActionResult.getMessage());
+    //                                               }
+    //                                           }
+    //
+    //                                           @Override
+    //                                           public void callbackError(final Throwable t) {
+    //                                               mw.hide();
+    //                                               super.callbackError(t);
+    //                                               ready = true;
+    //                                           }
+    //                                       });
+    //                }
+    //            }
+    //        }
+    //    }
 
     /*
      * (non-Javadoc)
@@ -428,21 +418,21 @@ public class DigitalObjectMenuPresenter
         RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, this);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-     * #onShowInputQueue()
-     */
+    //    /*
+    //     * (non-Javadoc)
+    //     * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+    //     * #onShowInputQueue()
+    //     */
     @Override
     public void onShowInputQueue(InputQueueTree tree) {
-        getView().showInputQueue(tree, dispatcher, placeManager);
-        registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                onRefresh();
-            }
-        }));
+        getView().showInputQueue(dispatcher, placeManager);
+        //            registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
+        //    
+        //                @Override
+        //                public void onClick(ClickEvent event) {
+        //                        onRefresh();
+        //                }
+        //            }));
     }
 
     /*

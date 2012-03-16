@@ -33,12 +33,19 @@ import java.util.List;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.SortArrow;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
 import com.smartgwt.client.widgets.grid.CellFormatter;
@@ -46,6 +53,8 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
+import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
@@ -55,17 +64,22 @@ import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.NAME_OF_TREE;
+import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.client.view.window.IngestInfoWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.event.RefreshTreeEvent;
 import cz.mzk.editor.shared.rpc.IngestInfo;
+import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;
+import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
+import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -77,6 +91,124 @@ public class InputQueueTree
     private final MenuItem createItem;
     private static final String HTML_TICK_CODE = "<img src=\"images/silk/tick.png\">";
     private final LangConstants lang;
+    private static volatile boolean ready = true;
+    // this is not a mistake (the lock should be shared with another presenter)
+    private static final Object LOCK = Constants.class;
+    private static InputQueueTree inputQueueTree = null;
+
+    public static void setInputTreeToSection(final DispatchAsync dispatcher,
+                                             final LangConstants lang,
+                                             final EventBus eventBus,
+                                             SectionStack sectionStack,
+                                             final PlaceManager placeManager) {
+
+        SectionStackSection section1 = new SectionStackSection();
+        section1.setTitle(lang.inputQueue());
+        if (inputQueueTree == null) {
+            inputQueueTree = new InputQueueTree(dispatcher, lang, eventBus);
+            inputQueueTree.getCreateMenuItem()
+                    .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+                        @Override
+                        public void onClick(final MenuItemClickEvent event) {
+                            String msg = event.getMenu().getEmptyMessage();
+                            String model = msg.substring(0, msg.indexOf("/"));
+                            String path = msg.substring(msg.indexOf("/") + 1);
+                            String id = path;
+                            if (path.contains("/")) {
+                                id = path.substring(0, path.indexOf("/"));
+                            }
+
+                            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
+                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, id)
+                                    .with(Constants.URL_PARAM_PATH, path));
+                        }
+                    });
+        } else {
+            String isInputSection = sectionStack.getSection(0).getAttribute(Constants.SECTION_INPUT_ID);
+            if (isInputSection != null && "yes".equals(isInputSection)) {
+                sectionStack.removeSection(0);
+            }
+        }
+        section1.setItems(inputQueueTree);
+
+        section1.setControls(getRefreshButton(lang, eventBus, dispatcher));
+        section1.setResizeable(true);
+        section1.setExpanded(true);
+        sectionStack.addSection(section1, 0);
+        section1.setAttribute(Constants.SECTION_INPUT_ID, "yes");
+    }
+
+    private static ImgButton getRefreshButton(final LangConstants lang,
+                                              EventBus eventBus,
+                                              final DispatchAsync dispatcher) {
+        final ImgButton refreshButton;
+
+        refreshButton = new ImgButton();
+        refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
+        refreshButton.setSize(16);
+        refreshButton.setShowRollOver(true);
+        refreshButton.setCanHover(true);
+        refreshButton.setShowDownIcon(false);
+        refreshButton.setShowDown(false);
+        refreshButton.setHoverStyle("interactImageHover");
+        refreshButton.setHoverOpacity(75);
+        refreshButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                refreshButton.setPrompt(lang.inputQueueRescan());
+            }
+        });
+
+        refreshButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                onRefresh(dispatcher, lang);
+
+            }
+        });
+        return refreshButton;
+    }
+
+    private static void onRefresh(DispatchAsync dispatcher, final LangConstants lang) {
+        if (ready) {
+            synchronized (LOCK) {
+                if (ready) { // double-lock idiom
+                    ready = false;
+                    final ModalWindow mw = new ModalWindow(inputQueueTree);
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+                    dispatcher.execute(new ScanInputQueueAction(null, true),
+                                       new DispatchCallback<ScanInputQueueResult>() {
+
+                                           @Override
+                                           public void callback(ScanInputQueueResult result) {
+                                               ServerActionResult serverActionResult =
+                                                       result.getServerActionResult();
+                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
+                                                   mw.hide();
+                                                   refreshTree();
+                                                   ready = true;
+                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
+                                                   mw.hide();
+                                                   SC.warn(lang.wrongDirName()
+                                                           + serverActionResult.getMessage());
+                                               }
+                                           }
+
+                                           @Override
+                                           public void callbackError(final Throwable t) {
+                                               mw.hide();
+                                               super.callbackError(t);
+                                               ready = true;
+                                           }
+                                       });
+                }
+            }
+        }
+    }
 
     /**
      * Instantiates a new side nav input tree.
@@ -85,7 +217,7 @@ public class InputQueueTree
      *        the dispatcher
      * @param lang
      */
-    public InputQueueTree(final DispatchAsync dispatcher, final LangConstants lang, final EventBus eventBus) {
+    private InputQueueTree(final DispatchAsync dispatcher, final LangConstants lang, final EventBus eventBus) {
         this.lang = lang;
         setWidth100();
         setHeight100();
@@ -197,20 +329,20 @@ public class InputQueueTree
         setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
     }
 
-    public void refreshTree() {
+    private static void refreshTree() {
         final List<String> openedNodes = new ArrayList<String>();
-        TreeNode[] allNodes = getData().getAllNodes();
+        TreeNode[] allNodes = inputQueueTree.getData().getAllNodes();
         for (int i = 0; i < allNodes.length; i++) {
-            if (getData().isOpen(allNodes[i])) {
+            if (inputQueueTree.getData().isOpen(allNodes[i])) {
                 openedNodes.add(allNodes[i].getAttributeAsString("path"));
             }
         }
-        final ListGridRecord selectedRecord = getSelectedRecord();
-        fetchData(null, new DSCallback() {
+        final ListGridRecord selectedRecord = inputQueueTree.getSelectedRecord();
+        inputQueueTree.fetchData(null, new DSCallback() {
 
             @Override
             public void execute(DSResponse response, Object rawData, DSRequest request) {
-                openSubfolders(openedNodes, null, selectedRecord);
+                inputQueueTree.openSubfolders(openedNodes, null, selectedRecord);
             }
         });
     }
