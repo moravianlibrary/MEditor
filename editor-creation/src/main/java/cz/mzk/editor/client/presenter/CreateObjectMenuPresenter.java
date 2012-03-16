@@ -170,11 +170,6 @@ public class CreateObjectMenuPresenter
 
     private final Map<String, String> labelsFromModels = new HashMap<String, String>();
 
-    // this is not a mistake (the lock should be shared with another presenter)
-    private static final Object LOCK = Constants.class;
-
-    private static volatile boolean ready = true;
-
     private String defaultDateIssued = "";
 
     /**
@@ -330,50 +325,6 @@ public class CreateObjectMenuPresenter
         super.onUnbind();
         //        getView().getSubelementGrid().setHoverCustomizer(null);
     }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-     * #onRefresh()
-     */
-    //    @Override
-    //    public void onRefresh() {
-    //        if (ready) {
-    //            synchronized (LOCK) {
-    //                if (ready) { // double-lock idiom
-    //                    ready = false;
-    //                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
-    //                    mw.setLoadingIcon("loadingAnimation.gif");
-    //                    mw.show(true);
-    //                    dispatcher.execute(new ScanInputQueueAction(null, true),
-    //                                       new DispatchCallback<ScanInputQueueResult>() {
-    //
-    //                                           @Override
-    //                                           public void callback(ScanInputQueueResult result) {
-    //                                               ServerActionResult serverActionResult =
-    //                                                       result.getServerActionResult();
-    //                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
-    //                                                   mw.hide();
-    //                                                   getView().getInputTree().refreshTree();
-    //                                                   ready = true;
-    //                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
-    //                                                   mw.hide();
-    //                                                   SC.warn(lang.wrongDirName()
-    //                                                           + serverActionResult.getMessage());
-    //                                               }
-    //                                           }
-    //
-    //                                           @Override
-    //                                           public void callbackError(final Throwable t) {
-    //                                               mw.hide();
-    //                                               super.callbackError(t);
-    //                                               ready = true;
-    //                                           }
-    //                                       });
-    //                }
-    //            }
-    //        }
-    //    }
 
     /*
      * (non-Javadoc)

@@ -90,9 +90,6 @@ public class DigitalObjectMenuView
         void refreshTree();
     }
 
-    /** The input tree. */
-    private InputQueueTree inputTree;
-
     /** The side nav grid. */
     private final ListGrid sideNavGrid;
 
@@ -110,9 +107,6 @@ public class DigitalObjectMenuView
 
     /** The section related. */
     private final ListGrid relatedGrid;
-
-    /** The refresh button. */
-    private ImgButton refreshButton;
 
     /** The layout. */
     private final VLayout layout;
@@ -327,79 +321,7 @@ public class DigitalObjectMenuView
      */
     @Override
     public void showInputQueue(DispatchAsync dispatcher, final PlaceManager placeManager) {
-        //        SectionStackSection section1 = new SectionStackSection();
-        //        section1.setTitle(lang.inputQueue());
-        //        if (tree == null) {
-        //            inputTree = new InputQueueTree(dispatcher, lang, eventBus);
-        //            inputTree.getCreateMenuItem()
-        //                    .addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-        //
-        //                        @Override
-        //                        public void onClick(final MenuItemClickEvent event) {
-        //                            String msg = event.getMenu().getEmptyMessage();
-        //                            String model = msg.substring(0, msg.indexOf("/"));
-        //                            String path = msg.substring(msg.indexOf("/") + 1);
-        //                            String id = path;
-        //                            if (path.contains("/")) {
-        //                                id = path.substring(0, path.indexOf("/"));
-        //                            }
-        //
-        //                            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.FIND_METADATA)
-        //                                    .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, id)
-        //                                    .with(Constants.URL_PARAM_PATH, path));
-        //                        }
-        //                    });
-        //        } else {
-        //            String isInputSection = sectionStack.getSection(0).getAttribute(SECTION_INPUT_ID);
-        //            if (isInputSection != null && "yes".equals(isInputSection)) {
-        //                sectionStack.removeSection(0);
-        //            }
-        //            inputTree = tree;
-        //        }
-        //        section1.setItems(inputTree);
-        //        refreshButton = new ImgButton();
-        //        refreshButton.setSrc("[SKIN]headerIcons/refresh.png");
-        //        refreshButton.setSize(16);
-        //        refreshButton.setShowRollOver(true);
-        //        refreshButton.setCanHover(true);
-        //        refreshButton.setShowDownIcon(false);
-        //        refreshButton.setShowDown(false);
-        //        refreshButton.setHoverStyle("interactImageHover");
-        //        refreshButton.setHoverOpacity(75);
-        //        refreshButton.addHoverHandler(new HoverHandler() {
-        //
-        //            @Override
-        //            public void onHover(HoverEvent event) {
-        //                refreshButton.setPrompt(lang.inputQueueRescan());
-        //            }
-        //        });
-        //
-        //        section1.setControls(refreshButton);
-        //        section1.setResizeable(true);
-        //        section1.setExpanded(true);
-        //        sectionStack.addSection(section1, 0);
-        //        section1.setAttribute(SECTION_INPUT_ID, "yes");
         InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getRefreshWidget()
-     */
-    //    @Override
-    //    public HasClickHandlers getRefreshWidget() {
-    //        return refreshButton;
-    //    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter.
-     * MyView#getInputTree()
-     */
-    @Override
-    public InputQueueTree getInputTree() {
-        return inputTree;
     }
 
     /*

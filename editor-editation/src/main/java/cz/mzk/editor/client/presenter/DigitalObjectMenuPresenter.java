@@ -95,26 +95,12 @@ public class DigitalObjectMenuPresenter
             extends View, HasUiHandlers<DigitalObjectMenuUiHandlers> {
 
         /**
-         * Gets the refresh widget.
-         * 
-         * @return the refresh widget
-         */
-        //        HasClickHandlers getRefreshWidget();
-
-        /**
          * Show input queue.
          * 
          * @param dispatcher
          *        the dispatcher
          */
         void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager);
-
-        /**
-         * Gets the input tree.
-         * 
-         * @return the input tree
-         */
-        InputQueueTree getInputTree();
 
         // TODO: ListGrid -> na nejake rozhrani
         /**
@@ -185,10 +171,6 @@ public class DigitalObjectMenuPresenter
 
     private final Map<String, List<? extends List<String>>> openedObjectsUuidAndRelated =
             new HashMap<String, List<? extends List<String>>>();
-
-    private static final Object LOCK = Constants.class;
-
-    private static volatile boolean ready = true;
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -367,50 +349,6 @@ public class DigitalObjectMenuPresenter
 
     /*
      * (non-Javadoc)
-     * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-     * #onRefresh()
-     */
-    //    @Override
-    //    public void onRefresh() {
-    //        if (ready) {
-    //            synchronized (LOCK) {
-    //                if (ready) { // double-lock idiom
-    //                    ready = false;
-    //                    final ModalWindow mw = new ModalWindow(getView().getInputTree());
-    //                    mw.setLoadingIcon("loadingAnimation.gif");
-    //                    mw.show(true);
-    //                    dispatcher.execute(new ScanInputQueueAction(null, true),
-    //                                       new DispatchCallback<ScanInputQueueResult>() {
-    //
-    //                                           @Override
-    //                                           public void callback(ScanInputQueueResult result) {
-    //                                               ServerActionResult serverActionResult =
-    //                                                       result.getServerActionResult();
-    //                                               if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.OK) {
-    //                                                   mw.hide();
-    //                                                   getView().getInputTree().refreshTree();
-    //                                                   ready = true;
-    //                                               } else if (serverActionResult.getServerActionResult() == SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
-    //                                                   mw.hide();
-    //                                                   SC.warn(lang.wrongDirName()
-    //                                                           + serverActionResult.getMessage());
-    //                                               }
-    //                                           }
-    //
-    //                                           @Override
-    //                                           public void callbackError(final Throwable t) {
-    //                                               mw.hide();
-    //                                               super.callbackError(t);
-    //                                               ready = true;
-    //                                           }
-    //                                       });
-    //                }
-    //            }
-    //        }
-    //    }
-
-    /*
-     * (non-Javadoc)
      * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
      */
     @Override
@@ -418,21 +356,14 @@ public class DigitalObjectMenuPresenter
         RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, this);
     }
 
-    //    /*
-    //     * (non-Javadoc)
-    //     * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
-    //     * #onShowInputQueue()
-    //     */
+    /*
+     * (non-Javadoc)
+     * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
+     * #onShowInputQueue()
+     */
     @Override
     public void onShowInputQueue(InputQueueTree tree) {
         getView().showInputQueue(dispatcher, placeManager);
-        //            registerHandler(getView().getRefreshWidget().addClickHandler(new ClickHandler() {
-        //    
-        //                @Override
-        //                public void onClick(ClickEvent event) {
-        //                        onRefresh();
-        //                }
-        //            }));
     }
 
     /*
