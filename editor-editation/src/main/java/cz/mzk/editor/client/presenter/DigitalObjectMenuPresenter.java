@@ -64,7 +64,6 @@ import cz.mzk.editor.client.uihandlers.DigitalObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.NAME_OF_TREE;
-import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.other.RecentlyModifiedRecord;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
@@ -247,7 +246,7 @@ public class DigitalObjectMenuPresenter
                     setInputQueueCanShow(EditorClientConfiguration.Constants.GUI_SHOW_INPUT_QUEUE_DEFAULT);
                 }
                 if (getInputQueueCanShow()) {
-                    onShowInputQueue(null);
+                    onShowInputQueue();
                 }
             }
         });
@@ -362,7 +361,7 @@ public class DigitalObjectMenuPresenter
      * #onShowInputQueue()
      */
     @Override
-    public void onShowInputQueue(InputQueueTree tree) {
+    public void onShowInputQueue() {
         getView().showInputQueue(dispatcher, placeManager);
     }
 

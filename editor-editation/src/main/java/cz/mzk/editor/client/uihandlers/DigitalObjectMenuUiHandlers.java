@@ -28,7 +28,6 @@ import java.util.List;
 
 import com.gwtplatform.mvp.client.UiHandlers;
 
-import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
 
 /**
@@ -43,7 +42,7 @@ public interface DigitalObjectMenuUiHandlers
     /**
      * On show input queue.
      */
-    void onShowInputQueue(InputQueueTree tree);
+    void onShowInputQueue();
 
     /**
      * On add digital object.
