@@ -5,6 +5,7 @@ target
 .project
 .gwt
 .project
+*.launch
 
 META-INF
 
