@@ -36,6 +36,7 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -227,14 +228,19 @@ public class InsertNewDigitalObjectHandler
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(ingestInfoFile);
+            Result result = new StreamResult(ingestInfoFile.toURI().getPath());
+            //            StreamResult result = new StreamResult(ingestInfoFile);
+            ingestInfoFile.exists();
             transformer.transform(source, result);
 
         } catch (TransformerException e) {
+            LOGGER.error(e);
             e.printStackTrace();
-        } catch (ParserConfigurationException e1) {
-            e1.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            LOGGER.error(e);
+            e.printStackTrace();
         } catch (XPathExpressionException e) {
+            LOGGER.error(e);
             e.printStackTrace();
         }
     }
