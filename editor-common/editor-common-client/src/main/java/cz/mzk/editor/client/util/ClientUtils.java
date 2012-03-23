@@ -266,9 +266,20 @@ public class ClientUtils {
         NewDigitalObject newObj = new NewDigitalObject(0, name, model, bundle, exists ? name : null, exists);
         newObj.setVisible(visible);
         int lastPageIndex = -1;
+        List<TreeNode> folders = new ArrayList<TreeNode>();
         for (TreeNode child : children) {
+            if (child.getAttribute(tree.getIsFolderProperty()) != null) {
+                NewDigitalObject newChild =
+                        createTheStructure(bundle, tree, child, visible, lastPageIndex, processedPages);
+                newObj.getChildren().add(newChild);
+                lastPageIndex = newChild.getPageIndex();
+            } else {
+                folders.add(child);
+            }
+        }
+        for (TreeNode folder : folders) {
             NewDigitalObject newChild =
-                    createTheStructure(bundle, tree, child, visible, lastPageIndex, processedPages);
+                    createTheStructure(bundle, tree, folder, visible, lastPageIndex, processedPages);
             newObj.getChildren().add(newChild);
             lastPageIndex = newChild.getPageIndex();
         }
@@ -347,18 +358,33 @@ public class ClientUtils {
             TreeNode[] children = tree.getChildren(node);
 
             int childrenLastPageIndex = -1;
+            List<TreeNode> folders = new ArrayList<TreeNode>();
             for (TreeNode child : children) {
+                if (child.getAttribute(tree.getIsFolderProperty()) != null) {
+                    NewDigitalObject newChild =
+                            createTheStructure(bundle,
+                                               tree,
+                                               child,
+                                               visible,
+                                               childrenLastPageIndex,
+                                               processedPages);
+                    newObj.getChildren().add(newChild);
+                    childrenLastPageIndex = newChild.getPageIndex();
+                } else {
+                    folders.add(child);
+                }
+            }
+            for (TreeNode folder : folders) {
                 NewDigitalObject newChild =
                         createTheStructure(bundle,
                                            tree,
-                                           child,
+                                           folder,
                                            visible,
                                            childrenLastPageIndex,
                                            processedPages);
                 newObj.getChildren().add(newChild);
                 childrenLastPageIndex = newChild.getPageIndex();
             }
-
             if (model == DigitalObjectModel.PAGE) {
                 processedPages.put(imgUuid, newObj);
             }

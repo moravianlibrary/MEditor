@@ -41,7 +41,6 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.BooleanCallback;
@@ -64,7 +63,6 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.SortNormalizer;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.layout.SectionStack;
@@ -706,31 +704,7 @@ public class CreateObjectMenuView
             }
         });
 
-        TreeGridField orderField = new TreeGridField();
-        orderField.setCanReorder(true);
-        orderField.setHidden(true);
-        orderField.setName(Constants.ATTR_ORDER);
-        orderField.setSortByDisplayField(true);
-        orderField.setSortNormalizer(new SortNormalizer() {
-
-            @Override
-            public Object normalize(ListGridRecord record, String fieldName) {
-                DigitalObjectModel model =
-                        DigitalObjectModel.parseString(record.getAttributeAsString(Constants.ATTR_TYPE_ID));
-                if (model.equals(DigitalObjectModel.PERIODICAL)) return "0";
-                if (model.equals(DigitalObjectModel.MONOGRAPH)) return "0";
-                if (model.equals(DigitalObjectModel.PERIODICALVOLUME)) return "1";
-                if (model.equals(DigitalObjectModel.MONOGRAPHUNIT)) return "1";
-                if (model.equals(DigitalObjectModel.PERIODICALITEM)) return "2";
-                if (model.equals(DigitalObjectModel.INTERNALPART)) return "3";
-                if (model.equals(DigitalObjectModel.PAGE)) return "4";
-                return "10";
-            }
-        });
-
-        structureTreeGrid.setFields(typeField, nameField, orderField);
-        structureTreeGrid.sort(Constants.ATTR_ORDER, SortDirection.ASCENDING);
-        structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
+        structureTreeGrid.setFields(typeField, nameField);
 
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
