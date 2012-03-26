@@ -46,6 +46,7 @@ import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -131,9 +132,9 @@ public class CreateObjectMenuPresenter
 
         TextItem getDateIssued();
 
-        String getNote();
+        IButton getNoteButton();
 
-        void setCreateVolumeItem(boolean setCreateVolumeItem, String defaultDateIssued);
+        void setCreateVolumeItem(boolean setCreateVolumeItem, boolean setCreateItem, String defaultDateIssued);
 
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
     }
@@ -283,13 +284,15 @@ public class CreateObjectMenuPresenter
                 } else {
                     getView().getCreateButton().disable();
                 }
+                boolean isPeriodicalItem =
+                        event.getValue().equals(getLabelFromModel()
+                                .get(DigitalObjectModel.PERIODICALITEM.getValue()));
                 if (event.getValue().equals(getLabelFromModel()
                         .get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
-                        || event.getValue().equals(getLabelFromModel()
-                                .get(DigitalObjectModel.PERIODICALITEM.getValue()))) {
-                    getView().setCreateVolumeItem(true, defaultDateIssued);
+                        || isPeriodicalItem) {
+                    getView().setCreateVolumeItem(true, isPeriodicalItem, defaultDateIssued);
                 } else {
-                    getView().setCreateVolumeItem(false, null);
+                    getView().setCreateVolumeItem(false, false, null);
                 }
             }
         }));

@@ -34,6 +34,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -65,14 +66,14 @@ public abstract class NewObjectBasicInfoWindow
         MyDynamicForm(FormItem... items) {
             this.setItems(items);
             for (FormItem item : items) {
-                item.setWidth(220);
+                item.setWidth(300);
             }
             setExtraSpace(15);
         }
     }
 
     private TextItem dateIssuedItem = null;
-    private TextItem noteItem = null;
+    private TextAreaItem noteItem = null;
     SelectItem pageTypeItem = null;
 
     /**
@@ -83,7 +84,7 @@ public abstract class NewObjectBasicInfoWindow
      */
 
     public NewObjectBasicInfoWindow(final ListGridRecord record, LangConstants lang, EventBus eventBus) {
-        super(120, 350, lang.menuEdit() + " " + record.getAttributeAsString(Constants.ATTR_TYPE) + ": "
+        super(120, 420, lang.menuEdit() + " " + record.getAttributeAsString(Constants.ATTR_TYPE) + ": "
                 + record.getAttributeAsString(Constants.ATTR_NAME), eventBus, 10);
 
         setAlign(Alignment.LEFT);
@@ -91,20 +92,28 @@ public abstract class NewObjectBasicInfoWindow
         VLayout mainLayout = new VLayout();
         final TextItem nameItem = new TextItem("name", lang.name());
         nameItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NAME));
+        boolean isPeriodicalItem =
+                record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                        .equals(DigitalObjectModel.PERIODICALITEM.getValue());
 
-        if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
-                .equals(DigitalObjectModel.PERIODICALITEM.getValue())
+        if (isPeriodicalItem
                 || record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                         .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())) {
 
             dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
             dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
 
-            noteItem = new TextItem("note", lang.note());
-            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+            if (isPeriodicalItem) {
+                noteItem = new TextAreaItem("note", lang.note());
+                noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+                noteItem.setHeight(60);
+                mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem, noteItem));
+                setHeight(220);
+            } else {
+                mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem));
+                setHeight(160);
+            }
 
-            mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem, noteItem));
-            setHeight(160);
         } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                 .equals(DigitalObjectModel.PAGE.getValue())) {
             pageTypeItem = new SelectItem();

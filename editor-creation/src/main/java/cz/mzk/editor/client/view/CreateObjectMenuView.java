@@ -815,41 +815,45 @@ public class CreateObjectMenuView
     }
 
     @Override
-    public void setCreateVolumeItem(boolean setCreateVolumeItem, String defaultDateIssued) {
+    public void setCreateVolumeItem(boolean setCreateVolumeItem,
+                                    boolean setCreateItem,
+                                    String defaultDateIssued) {
         boolean contains = createLayout.contains(otherLayout);
 
         if (setCreateVolumeItem) {
             if (addNoteButton != null && otherLayout.contains(addNoteButton)) {
                 otherLayout.removeMember(addNoteButton);
             }
-            addNoteButton = new IButton();
-            addNoteButton.setTitle(lang.addNote());
-            addNoteButton.setHeight(18);
-            addNoteButton.setWidth(140);
-            addNoteButton.setLayoutAlign(Alignment.CENTER);
-            addNoteButton.setExtraSpace(3);
-            otherLayout.addMember(addNoteButton);
+            if (setCreateItem) {
+                addNoteButton = new IButton();
+                addNoteButton.setTitle(lang.addNote());
+                addNoteButton.setHeight(18);
+                addNoteButton.setWidth(140);
+                addNoteButton.setLayoutAlign(Alignment.CENTER);
+                addNoteButton.setExtraSpace(3);
+                otherLayout.addMember(addNoteButton);
 
-            dateIssued.setDefaultValue(defaultDateIssued);
-            addNoteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+                addNoteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                @Override
-                public void onClick(ClickEvent event) {
-                    new AddNoteWindow(addNoteButton.getTitle(), eventBus, lang, addNoteButton.getPrompt()) {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        new AddNoteWindow(addNoteButton.getTitle(), eventBus, lang, addNoteButton.getPrompt()) {
 
-                        @Override
-                        protected void doSave(String note) {
-                            if (note != null && !"".equals(note)) {
-                                addNoteButton.setTitle(lang.modifyNote());
-                            } else {
-                                addNoteButton.setTitle(lang.addNote());
+                            @Override
+                            protected void doSave(String note) {
+                                if (note != null && !"".equals(note)) {
+                                    addNoteButton.setTitle(lang.modifyNote());
+                                } else {
+                                    addNoteButton.setTitle(lang.addNote());
+                                }
+                                addNoteButton.setTooltip(note);
+                                hide();
                             }
-                            addNoteButton.setTooltip(note);
-                            hide();
-                        }
-                    };
-                }
-            });
+                        };
+                    }
+                });
+            }
+            dateIssued.setDefaultValue(defaultDateIssued);
             if (!contains) {
                 createLayout.addMember(otherLayout, 1);
                 name.setTitle(lang.issueNumber());
@@ -940,8 +944,8 @@ public class CreateObjectMenuView
     }
 
     @Override
-    public String getNote() {
-        return addNoteButton.getPrompt();
+    public IButton getNoteButton() {
+        return addNoteButton;
     }
 
     /**
