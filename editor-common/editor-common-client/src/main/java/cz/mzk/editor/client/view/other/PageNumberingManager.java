@@ -310,12 +310,19 @@ public final class PageNumberingManager {
         if (data != null && data.length > 0) {
             String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
             int i = getPageNumberFromText(startingNumber);
+            boolean isRoman = false;
             if (i == Integer.MIN_VALUE) {
-                i = tileGrid.getRecordIndex(data[0]) + 1;
+                i = ClientUtils.romanToDecimal(data[0].getAttributeAsString(Constants.ATTR_NAME));
+                if (!(isRoman = i > 0)) {
+                    i = tileGrid.getRecordIndex(data[0]) + 1;
+                }
             }
             int j = 0;
             for (Record rec : data) {
-                rec.setAttribute(Constants.ATTR_NAME, (i + (j / 2)) + "" + (j % 2 == 0 ? 'r' : 'v'));
+                String number =
+                        !isRoman ? String.valueOf(i + (j / 2)) : ClientUtils.decimalToRoman((i + (j / 2)),
+                                                                                            false);
+                rec.setAttribute(Constants.ATTR_NAME, number + "" + (j % 2 == 0 ? 'r' : 'v'));
                 j++;
             }
         }
