@@ -100,12 +100,17 @@ public class InputQueueTree
                                              final LangConstants lang,
                                              final EventBus eventBus,
                                              SectionStack sectionStack,
-                                             final PlaceManager placeManager) {
+                                             final PlaceManager placeManager,
+                                             boolean force) {
 
         SectionStackSection section1 = new SectionStackSection();
         section1.setTitle(lang.inputQueue());
         String isInputSection = sectionStack.getSection(0).getAttribute(Constants.SECTION_INPUT_ID);
-        if (isInputSection == null || !"yes".equals(isInputSection)) {
+        boolean notContains = isInputSection == null || !"yes".equals(isInputSection);
+        if (notContains || force) {
+            if (!notContains) {
+                sectionStack.removeSection(0);
+            }
             if (inputQueueTree == null) {
                 inputQueueTree = new InputQueueTree(dispatcher, lang, eventBus);
                 inputQueueTree.getCreateMenuItem()

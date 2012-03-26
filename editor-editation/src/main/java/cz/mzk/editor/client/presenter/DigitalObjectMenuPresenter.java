@@ -99,7 +99,7 @@ public class DigitalObjectMenuPresenter
          * @param dispatcher
          *        the dispatcher
          */
-        void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager);
+        void showInputQueue(DispatchAsync dispatcher, PlaceManager placeManager, boolean force);
 
         // TODO: ListGrid -> na nejake rozhrani
         /**
@@ -362,7 +362,7 @@ public class DigitalObjectMenuPresenter
      */
     @Override
     public void onShowInputQueue() {
-        getView().showInputQueue(dispatcher, placeManager);
+        getView().showInputQueue(dispatcher, placeManager, false);
     }
 
     /*

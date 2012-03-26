@@ -895,7 +895,7 @@ public class CreateObjectMenuView
 
     @Override
     public void setInputTree(DispatchAsync dispatcher, final PlaceManager placeManager) {
-        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager);
+        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, false);
     }
 
     @Override
