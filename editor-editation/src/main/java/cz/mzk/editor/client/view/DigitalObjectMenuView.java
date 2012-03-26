@@ -320,8 +320,8 @@ public class DigitalObjectMenuView
      * MyView#showInputQueue(com.gwtplatform.dispatch.client.DispatchAsync)
      */
     @Override
-    public void showInputQueue(DispatchAsync dispatcher, final PlaceManager placeManager) {
-        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager);
+    public void showInputQueue(DispatchAsync dispatcher, final PlaceManager placeManager, boolean force) {
+        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, force);
     }
 
     /*

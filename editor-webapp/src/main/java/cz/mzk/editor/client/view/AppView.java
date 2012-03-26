@@ -274,8 +274,7 @@ public class AppView
             if (leftWidget != null) {
                 if (leftWidget != content) {
                     if (getUiHandlers().getDoPresenter().getView().asWidget() == content) {
-                        getUiHandlers().getDoPresenter().onShowInputQueue(getUiHandlers()
-                                .getCreatePresenter().getView().getInputTree());
+                        getUiHandlers().getDoPresenter().onShowInputQueue();
                     }
                     leftContainer.removeMember(leftContainer.getMember(0));
 

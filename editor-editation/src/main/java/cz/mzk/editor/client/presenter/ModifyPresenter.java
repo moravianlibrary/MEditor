@@ -230,6 +230,7 @@ public class ModifyPresenter
         this.placeManager = placeManager;
         getView().setUiHandlers(this);
         this.config = config;
+        leftPresenter.getView().showInputQueue(dispatcher, placeManager, true);
     }
 
     /*
