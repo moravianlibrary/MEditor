@@ -390,6 +390,7 @@ public class CreateStructurePresenter
                                                 SubstructureTreeNode.ROOT_ID,
                                                 "",
                                                 "",
+                                                "",
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
@@ -794,10 +795,18 @@ public class CreateStructurePresenter
         List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
 
         leftPresenter.getView().addUndoRedo(true, false);
-        String dateIssued =
-                (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) ? leftPresenter
-                        .getView().getDateIssued().getValueAsString()
-                        : "";
+        String dateIssued = "";
+        String note = "";
+        boolean isPeriodicalItem = model == DigitalObjectModel.PERIODICALITEM;
+
+        if (model == DigitalObjectModel.PERIODICALVOLUME || isPeriodicalItem) {
+            dateIssued = leftPresenter.getView().getDateIssued().getValueAsString();
+            if (isPeriodicalItem) {
+                note = leftPresenter.getView().getNoteButton().getPrompt();
+                leftPresenter.getView().getNoteButton().setPrompt("");
+                leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
+            }
+        }
         String possibleParent = "-1";
         if (canContain != null) { //adding selected pages
             possibleParent = String.valueOf(leftPresenter.newId());
@@ -812,6 +821,7 @@ public class CreateStructurePresenter
                                                     parent,
                                                     "",
                                                     dateIssued,
+                                                    note,
                                                     true,
                                                     false);
         } else { // adding something and enrich it with selected pages
@@ -873,14 +883,16 @@ public class CreateStructurePresenter
         NewDigitalObject object = null;
         try {
             TreeGrid treeGrid = leftPresenter.getView().getSubelementsGrid();
-            treeGrid.setSortState("({fieldName:null,sortDir:false,sortSpecifiers:[{property:\"order\",direction:\"descending\"}]})");
+            int index = 0;
+            for (ListGridRecord rec : treeGrid.getTree().getData()) {
+                rec.setAttribute(Constants.ATTR_SCAN_INDEX, index++);
+            }
             object =
                     ClientUtils.createTheStructure(new MetadataBundle(newDc == null ? new DublinCore()
                                                            : newDc, newMods, bundle == null ? null : bundle
                                                            .getMarc()),
                                                    treeGrid.getTree(),
                                                    visible);
-            treeGrid.setSortState("({fieldName:null,sortDir:false,sortSpecifiers:[{property:\"order\",direction:\"ascending\"}]})");
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();

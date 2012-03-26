@@ -128,7 +128,7 @@ public class CreateObjectUtils {
         if (node.getModel() == DigitalObjectModel.PERIODICALVOLUME
                 || node.getModel() == DigitalObjectModel.PERIODICALITEM) {
             builder.setDateIssued(node.getDateIssued());
-
+            builder.setNote(node.getNote());
         }
 
         if (node.getModel() == DigitalObjectModel.PAGE) {

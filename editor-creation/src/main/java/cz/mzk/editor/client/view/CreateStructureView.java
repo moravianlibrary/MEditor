@@ -536,10 +536,10 @@ public class CreateStructureView
 
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                if (tileGrid.getSelection() != null) {
+                if (event.getState()) {
                     pageTypeItem.enable();
                     if (tileGrid.getSelection().length == 1) {
-                        String pageType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PAGE_TYPE);
+                        String pageType = event.getRecord().getAttribute(Constants.ATTR_PAGE_TYPE);
                         pageTypeItem.setValue(Constants.PAGE_TYPES.MAP.get(pageType));
                     } else {
                         pageTypeItem.setValue("");
