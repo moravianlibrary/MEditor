@@ -47,6 +47,7 @@ import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.DropEvent;
@@ -86,6 +87,7 @@ import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
+import cz.mzk.editor.client.view.window.AddNoteWindow;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.NewObjectBasicInfoWindow;
@@ -120,6 +122,8 @@ public class CreateObjectMenuView
     private SectionStackSection structure;
 
     private ButtonItem createButton;
+
+    private IButton addNoteButton;
 
     private CheckboxItem keepCheckbox;
 
@@ -157,7 +161,7 @@ public class CreateObjectMenuView
         }
     }
 
-    private CreateDynamicForm dateIssuedForm;
+    private VLayout otherLayout;
 
     /**
      * Instantiates a new digital object menu view.
@@ -483,6 +487,7 @@ public class CreateObjectMenuView
                                                     : Constants.ATTR_PARENT),
                                             "",
                                             "",
+                                            "",
                                             true,
                                             true);
                             for (Record rec : selection) {
@@ -495,6 +500,7 @@ public class CreateObjectMenuView
                                                 newParentId,
                                                 rec.getAttribute(Constants.ATTR_PAGE_TYPE),
                                                 rec.getAttribute(Constants.ATTR_DATE_ISSUED),
+                                                rec.getAttribute(Constants.ATTR_NOTE),
                                                 true,
                                                 false);
                             }
@@ -539,6 +545,7 @@ public class CreateObjectMenuView
                                         getModel() == DigitalObjectModel.PAGE ? Constants.PAGE_TYPES.NP
                                                 .toString() : "",
                                         "",
+                                        "",
                                         false,
                                         true);
                     }
@@ -567,6 +574,7 @@ public class CreateObjectMenuView
                         record.setAttribute(Constants.ATTR_NAME, name);
                         if (getDateIssued() != null)
                             record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
+                        if (getNote() != null) record.setAttribute(Constants.ATTR_NOTE, getNote());
                         if (getPageType() != null)
                             record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
                         structureTreeGrid.redraw();
@@ -712,9 +720,13 @@ public class CreateObjectMenuView
         name = new TextItem();
         name.setTitle(lang.name());
 
+        otherLayout = new VLayout(2);
+        otherLayout.setWidth100();
+
         dateIssued = new TextItem();
         dateIssued.setTitle(lang.dateIssued());
-        dateIssuedForm = new CreateDynamicForm(dateIssued);
+        dateIssued.setWidth(100);
+        otherLayout.addMember(new CreateDynamicForm(dateIssued));
 
         selectModel = new SelectItem();
         selectModel.setTitle(lang.dcType());
@@ -804,17 +816,47 @@ public class CreateObjectMenuView
 
     @Override
     public void setCreateVolumeItem(boolean setCreateVolumeItem, String defaultDateIssued) {
-        boolean contains = createLayout.contains(dateIssuedForm);
+        boolean contains = createLayout.contains(otherLayout);
 
         if (setCreateVolumeItem) {
+            if (addNoteButton != null && otherLayout.contains(addNoteButton)) {
+                otherLayout.removeMember(addNoteButton);
+            }
+            addNoteButton = new IButton();
+            addNoteButton.setTitle(lang.addNote());
+            addNoteButton.setHeight(18);
+            addNoteButton.setWidth(140);
+            addNoteButton.setLayoutAlign(Alignment.CENTER);
+            addNoteButton.setExtraSpace(3);
+            otherLayout.addMember(addNoteButton);
+
             dateIssued.setDefaultValue(defaultDateIssued);
+            addNoteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+                    new AddNoteWindow(addNoteButton.getTitle(), eventBus, lang, addNoteButton.getPrompt()) {
+
+                        @Override
+                        protected void doSave(String note) {
+                            if (note != null && !"".equals(note)) {
+                                addNoteButton.setTitle(lang.modifyNote());
+                            } else {
+                                addNoteButton.setTitle(lang.addNote());
+                            }
+                            addNoteButton.setTooltip(note);
+                            hide();
+                        }
+                    };
+                }
+            });
             if (!contains) {
-                createLayout.addMember(dateIssuedForm, 1);
+                createLayout.addMember(otherLayout, 1);
                 name.setTitle(lang.issueNumber());
             }
         } else {
             if (contains) {
-                createLayout.removeMember(dateIssuedForm);
+                createLayout.removeMember(otherLayout);
                 name.setTitle(lang.name());
             }
         }
@@ -897,6 +939,11 @@ public class CreateObjectMenuView
         return dateIssued;
     }
 
+    @Override
+    public String getNote() {
+        return addNoteButton.getPrompt();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -923,6 +970,7 @@ public class CreateObjectMenuView
                                 String parent,
                                 String pageType,
                                 String dateIssued,
+                                String note,
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
@@ -935,6 +983,7 @@ public class CreateObjectMenuView
                                                    typeId,
                                                    pageType,
                                                    dateIssued,
+                                                   note,
                                                    isOpen,
                                                    exist), parentNode);
         structureTreeGrid.setData(structureTree);
@@ -1005,6 +1054,7 @@ public class CreateObjectMenuView
                                                  childNode.getAttribute(Constants.ATTR_TYPE_ID),
                                                  childNode.getAttribute(Constants.ATTR_PAGE_TYPE),
                                                  childNode.getAttribute(Constants.ATTR_DATE_ISSUED),
+                                                 childNode.getAttribute(Constants.ATTR_NOTE),
                                                  childNode.getAttributeAsBoolean("isOpen"),
                                                  childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
                 String altoPath = childNode.getAttributeAsString(Constants.ATTR_ALTO_PATH);

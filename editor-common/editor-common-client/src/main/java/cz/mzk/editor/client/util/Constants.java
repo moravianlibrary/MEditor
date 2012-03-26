@@ -234,6 +234,9 @@ public class Constants {
     /** The Constant ATTR_DATE_ISSUED. */
     public static final String ATTR_DATE_ISSUED = "dateIssued";
 
+    /** The Constant ATTR_NOTE. */
+    public static final String ATTR_NOTE = "note";
+
     /** The Constant ATTR_INGEST_INFO. */
     public static final String ATTR_INGEST_INFO = "ingestInfo";
 

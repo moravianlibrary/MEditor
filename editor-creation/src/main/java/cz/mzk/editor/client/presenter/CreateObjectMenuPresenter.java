@@ -125,10 +125,13 @@ public class CreateObjectMenuPresenter
                              String parent,
                              String pageType,
                              String dateIssued,
+                             String note,
                              boolean isOpen,
                              boolean exist);
 
         TextItem getDateIssued();
+
+        String getNote();
 
         void setCreateVolumeItem(boolean setCreateVolumeItem, String defaultDateIssued);
 
@@ -225,6 +228,12 @@ public class CreateObjectMenuPresenter
                 if (dIssued != null && !"".equals(dIssued)) {
                     String dateIssuedHover = hoverFactory(lang.dateIssued(), dIssued);
                     sb.append(dateIssuedHover);
+                }
+
+                String note = record.getAttribute(Constants.ATTR_NOTE);
+                if (note != null && !"".equals(note)) {
+                    String noteHover = hoverFactory(lang.note(), note);
+                    sb.append(noteHover);
                 }
 
                 String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
@@ -496,6 +505,7 @@ public class CreateObjectMenuPresenter
                                       DigitalObjectModel.PAGE.getValue(),
                                       parent,
                                       pages.get(i).getAttribute(Constants.ATTR_PAGE_TYPE),
+                                      "",
                                       "",
                                       true,
                                       false);

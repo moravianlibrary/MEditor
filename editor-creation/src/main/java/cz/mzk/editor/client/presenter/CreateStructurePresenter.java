@@ -390,6 +390,7 @@ public class CreateStructurePresenter
                                                 SubstructureTreeNode.ROOT_ID,
                                                 "",
                                                 "",
+                                                "",
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
@@ -794,10 +795,12 @@ public class CreateStructurePresenter
         List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
 
         leftPresenter.getView().addUndoRedo(true, false);
-        String dateIssued =
-                (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) ? leftPresenter
-                        .getView().getDateIssued().getValueAsString()
-                        : "";
+        String dateIssued = "";
+        String note = "";
+        if (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) {
+            dateIssued = leftPresenter.getView().getDateIssued().getValueAsString();
+            note = leftPresenter.getView().getNote();
+        }
         String possibleParent = "-1";
         if (canContain != null) { //adding selected pages
             possibleParent = String.valueOf(leftPresenter.newId());
@@ -812,6 +815,7 @@ public class CreateStructurePresenter
                                                     parent,
                                                     "",
                                                     dateIssued,
+                                                    note,
                                                     true,
                                                     false);
         } else { // adding something and enrich it with selected pages

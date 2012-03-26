@@ -91,6 +91,12 @@ public class PeriodicalVolumeBuilder
             languageTerm.addText(language);
         }
 
+        if (getNote() != null && !"".equals(getNote())) {
+            Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
+            Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
+            noteEl.addText(getNote());
+        }
+
         Element part = mods.addElement(new QName("part", modsNs));
         Element detail = part.addElement(new QName("detail", modsNs));
         detail.addAttribute("type", "volume");

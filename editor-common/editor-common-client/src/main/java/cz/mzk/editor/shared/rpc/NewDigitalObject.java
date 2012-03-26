@@ -51,6 +51,7 @@ public class NewDigitalObject
     private boolean visible;
     private String pageType;
     private String dateIssued;
+    private String note;
     private String altoPath;
     private String ocrPath;
 
@@ -93,6 +94,7 @@ public class NewDigitalObject
         this.visible = newDigitalObject.getVisible();
         this.pageType = newDigitalObject.getPageType();
         this.dateIssued = newDigitalObject.getDateIssued();
+        this.note = newDigitalObject.getNote();
         this.altoPath = newDigitalObject.getAltoPath();
         this.ocrPath = newDigitalObject.getOcrPath();
     }
@@ -209,6 +211,21 @@ public class NewDigitalObject
 
     public void setDateIssued(String dateIssued) {
         this.dateIssued = dateIssued;
+    }
+
+    /**
+     * @return the note
+     */
+    public String getNote() {
+        return note;
+    }
+
+    /**
+     * @param note
+     *        the note to set
+     */
+    public void setNote(String note) {
+        this.note = note;
     }
 
     /**

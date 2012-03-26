@@ -334,6 +334,11 @@ public class ClientUtils {
                 newObj.setDateIssued(dateIssued);
             }
 
+            String note = node.getAttribute(Constants.ATTR_NOTE);
+            if (note != null && !"".equals(note)) {
+                newObj.setNote(note);
+            }
+
             if (exists) {
                 if (imgUuid != null && !"".equals(imgUuid)) {
                     newObj.setUuid(imgUuid.startsWith("uuid:") ? imgUuid.substring("uuid:".length())

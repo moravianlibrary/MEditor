@@ -79,6 +79,7 @@ public abstract class FoxmlBuilder {
     private String alephUrl;
     private String imageUrl;
     private String dateIssued;
+    private String note;
 
     private static final Boolean VERSIONABLE = true;
 
@@ -412,6 +413,21 @@ public abstract class FoxmlBuilder {
 
     public void setDateIssued(String dateIssued) {
         this.dateIssued = dateIssued;
+    }
+
+    /**
+     * @return the note
+     */
+    public String getNote() {
+        return note;
+    }
+
+    /**
+     * @param note
+     *        the note to set
+     */
+    public void setNote(String note) {
+        this.note = note;
     }
 
     /**

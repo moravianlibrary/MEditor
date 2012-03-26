@@ -72,6 +72,7 @@ public abstract class NewObjectBasicInfoWindow
     }
 
     private TextItem dateIssuedItem = null;
+    private TextItem noteItem = null;
     SelectItem pageTypeItem = null;
 
     /**
@@ -98,7 +99,11 @@ public abstract class NewObjectBasicInfoWindow
 
             dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
             dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
-            mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem));
+
+            noteItem = new TextItem("note", lang.note());
+            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+
+            mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem, noteItem));
             setHeight(160);
         } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                 .equals(DigitalObjectModel.PAGE.getValue())) {
@@ -159,6 +164,11 @@ public abstract class NewObjectBasicInfoWindow
 
     protected String getDateIssued() {
         if (dateIssuedItem != null) return dateIssuedItem.getValueAsString();
+        return null;
+    }
+
+    protected String getNote() {
+        if (noteItem != null) return noteItem.getValueAsString();
         return null;
     }
 
