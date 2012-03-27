@@ -343,6 +343,18 @@
 				<version>1.2.1</version>
 			</dependency>
 			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>ki-util</artifactId>
+				<version>1.0</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>ki</groupId>
+				<artifactId>a2jruntime</artifactId>
+				<version>1.1.1</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
 				<groupId>org.jvnet.jaxb2_commons</groupId>
 				<artifactId>runtime</artifactId>
 				<version>0.4.1</version>

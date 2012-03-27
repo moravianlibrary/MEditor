@@ -68,6 +68,14 @@
 			<artifactId>ki-jzkit-iface</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>ki</groupId>
+			<artifactId>ki-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ki</groupId>
+			<artifactId>a2jruntime</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>runtime</artifactId>
 		</dependency>
