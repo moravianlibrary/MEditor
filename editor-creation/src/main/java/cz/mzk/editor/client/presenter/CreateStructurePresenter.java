@@ -382,7 +382,6 @@ public class CreateStructurePresenter
         leftPresenter.getView().getSubelementsGrid().enable();
         leftPresenter.getView().getSubelementsGrid().redraw();
         leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
-                                                -1,
                                                 name,
                                                 null,
                                                 model,
@@ -511,8 +510,7 @@ public class CreateStructurePresenter
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
                         items[i] =
-                                new ScanRecord(i + 1,
-                                               String.valueOf(i + 1),
+                                new ScanRecord(String.valueOf(i + 1),
                                                model,
                                                sysno,
                                                itemList.get(i).getIdentifier(),
@@ -813,7 +811,6 @@ public class CreateStructurePresenter
             String name = leftPresenter.getView().getNewName().getValueAsString();
             name = name == null || "".equals(name) ? possibleParent : name;
             leftPresenter.getView().addSubstructure(possibleParent,
-                                                    -1,
                                                     name,
                                                     null,
                                                     type,
@@ -883,10 +880,6 @@ public class CreateStructurePresenter
         NewDigitalObject object = null;
         try {
             TreeGrid treeGrid = leftPresenter.getView().getSubelementsGrid();
-            int index = 0;
-            for (ListGridRecord rec : treeGrid.getTree().getData()) {
-                rec.setAttribute(Constants.ATTR_SCAN_INDEX, index++);
-            }
             object =
                     ClientUtils.createTheStructure(new MetadataBundle(newDc == null ? new DublinCore()
                                                            : newDc, newMods, bundle == null ? null : bundle

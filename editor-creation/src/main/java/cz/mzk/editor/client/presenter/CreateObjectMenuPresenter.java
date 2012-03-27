@@ -118,7 +118,6 @@ public class CreateObjectMenuPresenter
         void addUndoRedo(boolean useUndoList, boolean isRedoOperation);
 
         void addSubstructure(String id,
-                             int scanIndex,
                              String name,
                              String uuid,
                              String type,
@@ -501,7 +500,6 @@ public class CreateObjectMenuPresenter
     public void addPages(List<Record> pages, String parent) {
         for (int i = 0; i < pages.size(); i++) {
             getView().addSubstructure(String.valueOf(newId()),
-                                      pages.get(i).getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
                                       pages.get(i).getAttribute(Constants.ATTR_NAME),
                                       pages.get(i).getAttribute(Constants.ATTR_PICTURE),
                                       getLabelFromModel().get(DigitalObjectModel.PAGE.getValue()),
