@@ -230,7 +230,6 @@ public class ModifyPresenter
         this.placeManager = placeManager;
         getView().setUiHandlers(this);
         this.config = config;
-        leftPresenter.getView().showInputQueue(dispatcher, placeManager, true);
     }
 
     /*
@@ -296,7 +295,7 @@ public class ModifyPresenter
         fileName = request.getParameter(Constants.ATTR_FILE_NAME, null);
         modelToOpen = request.getParameter(Constants.ATTR_MODEL, null);
         forcedRefresh = ClientUtils.toBoolean(request.getParameter(Constants.URL_PARAM_REFRESH, "no"));
-
+        leftPresenter.getView().showInputQueue(dispatcher, placeManager, true);
     }
 
     /*

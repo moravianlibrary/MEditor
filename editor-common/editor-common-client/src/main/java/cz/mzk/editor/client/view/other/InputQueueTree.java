@@ -109,7 +109,9 @@ public class InputQueueTree
         boolean notContains = isInputSection == null || !"yes".equals(isInputSection);
         if (notContains || force) {
             if (!notContains) {
+                sectionStack.collapseSection(0);
                 sectionStack.removeSection(0);
+
             }
             if (inputQueueTree == null) {
                 inputQueueTree = new InputQueueTree(dispatcher, lang, eventBus);
