@@ -512,7 +512,6 @@ public class CreateStructurePresenter
                         items[i] =
                                 new ScanRecord(String.valueOf(i + 1),
                                                model,
-                                               sysno,
                                                itemList.get(i).getIdentifier(),
                                                itemList.get(i).getJpgFsPath(),
                                                Constants.PAGE_TYPES.NP.toString());

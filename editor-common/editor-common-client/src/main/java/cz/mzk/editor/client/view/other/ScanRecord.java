@@ -56,10 +56,9 @@ public class ScanRecord
      * @param path
      *        the path
      */
-    public ScanRecord(String name, String model, String barcode, String picture, String path, String pageType) {
+    public ScanRecord(String name, String model, String picture, String path, String pageType) {
         setName(name);
         setModel(model);
-        setBarcode(barcode);
         setPicture(picture);
         setPath(path);
         setPageType(pageType);
@@ -101,25 +100,6 @@ public class ScanRecord
      */
     public String getModel() {
         return getAttribute(Constants.ATTR_MODEL);
-    }
-
-    /**
-     * Set the barcode.
-     * 
-     * @param barcode
-     *        the barcode
-     */
-    public void setBarcode(String barcode) {
-        setAttribute(Constants.ATTR_BARCODE, barcode);
-    }
-
-    /**
-     * Return the barcode.
-     * 
-     * @return the barcode
-     */
-    public String getBarcode() {
-        return getAttribute(Constants.ATTR_BARCODE);
     }
 
     /**
@@ -185,7 +165,7 @@ public class ScanRecord
      * @return the page record
      */
     public ScanRecord deepCopy() {
-        return new ScanRecord(getName(), getModel(), getBarcode(), getPicture(), getPath(), getPageType());
+        return new ScanRecord(getName(), getModel(), getPicture(), getPath(), getPageType());
     }
 
     /**
@@ -194,9 +174,8 @@ public class ScanRecord
 
     @Override
     public String toString() {
-        return "ScanRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getBarcode()="
-                + getBarcode() + ", getPicture()=" + getPicture() + ", getPath()=" + getPath()
-                + ", getPageType()=" + getPageType() + "]";
+        return "ScanRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getPicture()="
+                + getPicture() + ", getPath()=" + getPath() + ", getPageType()=" + getPageType() + "]";
     }
 
 }

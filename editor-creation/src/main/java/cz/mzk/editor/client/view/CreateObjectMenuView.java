@@ -974,6 +974,10 @@ public class CreateObjectMenuView
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
+        TreeNode[] allNodes = structureTree.getAllNodes();
+        for (TreeNode node : allNodes) {
+            System.err.println(node.getAttribute(Constants.ATTR_ID));
+        }
         structureTree.add(new SubstructureTreeNode(id,
                                                    parent,
                                                    name,
@@ -1058,6 +1062,10 @@ public class CreateObjectMenuView
                 String altoPath = childNode.getAttributeAsString(Constants.ATTR_ALTO_PATH);
                 if (altoPath != null) {
                     newTreeNode.setAttribute(Constants.ATTR_ALTO_PATH, altoPath);
+                }
+                String ocrPath = childNode.getAttributeAsString(Constants.ATTR_OCR_PATH);
+                if (ocrPath != null) {
+                    newTreeNode.setAttribute(Constants.ATTR_OCR_PATH, ocrPath);
                 }
                 TreeNode[] children = tree.getChildren(childNode);
                 if (children.length > 0) {

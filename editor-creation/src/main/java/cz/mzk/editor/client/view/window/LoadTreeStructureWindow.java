@@ -365,9 +365,9 @@ public class LoadTreeStructureWindow
                                        int i = 0, j = 0;
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
-                                               pages[j++] = ClientUtils.toRecord(node, true);
+                                               pages[j++] = ClientUtils.toScanRecord(node, true);
                                            } else {
-                                               tree[i++] = ClientUtils.toRecord(node, false);
+                                               tree[i++] = ClientUtils.toTreeNode(node, false);
                                            }
                                        }
                                        LoadStructureEvent.fire(getEventBus(), tree, pages);
