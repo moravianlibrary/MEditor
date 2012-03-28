@@ -902,6 +902,11 @@ public class CreateObjectMenuView
     }
 
     @Override
+    public void setStructureTree(Tree tree) {
+        structureTree = tree;
+    }
+
+    @Override
     public SectionStack getSectionStack() {
         return sectionStack;
     }
@@ -973,6 +978,9 @@ public class CreateObjectMenuView
                                 String note,
                                 boolean isOpen,
                                 boolean exist) {
+        //        if (structureTreeGrid.getTree() != null) {
+        //
+        //        }
         TreeNode parentNode = structureTree.findById(parent);
         TreeNode[] allNodes = structureTree.getAllNodes();
         for (TreeNode node : allNodes) {

@@ -284,7 +284,7 @@ public class CreateStructurePresenter
 
             @Override
             public void onLoadStructure(LoadStructureEvent event) {
-                load(event.getTree(), event.getPages());
+                load(event.getTree(), event.getPages(), event.getLastId());
             }
         });
     };
@@ -957,7 +957,7 @@ public class CreateStructurePresenter
         return bundle == null || bundle.getDc() == null ? new DublinCore() : bundle.getDc();
     }
 
-    public void load(TreeNode[] treeData, Record[] pagesData) {
+    public void load(TreeNode[] treeData, Record[] pagesData, int lastId) {
         Tree tree = new Tree();
         tree.setModelType(TreeModelType.PARENT);
         tree.setRootValue(SubstructureTreeNode.ROOT_ID);
@@ -965,9 +965,11 @@ public class CreateStructurePresenter
         tree.setParentIdField(Constants.ATTR_PARENT);
         tree.setOpenProperty("isOpen");
         tree.setData(treeData);
+        leftPresenter.getView().setStructureTree(tree);
         leftPresenter.getView().getSubelementsGrid().setData(tree);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
         leftPresenter.getView().getSubelementsGrid().redraw();
+        leftPresenter.setLastId(lastId);
         getView().getTileGrid().setData(pagesData);
     }
 

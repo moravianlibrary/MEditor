@@ -58,6 +58,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
@@ -96,6 +97,8 @@ public class CreateObjectMenuPresenter
         void setInputTree(DispatchAsync dispatcher, final PlaceManager placeManager);
 
         TreeGrid getSubelementsGrid();
+
+        void setStructureTree(Tree tree);
 
         SectionStack getSectionStack();
 
@@ -414,6 +417,10 @@ public class CreateObjectMenuPresenter
     @Override
     public int newId() {
         return ++lastId;
+    }
+
+    public void setLastId(int lastId) {
+        this.lastId = lastId;
     }
 
     /**
