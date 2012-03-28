@@ -45,4 +45,7 @@ public class LoadStructure {
 
     @Order(2)
     private Record[] pages;
+
+    @Order(3)
+    private int lastId;
 }
