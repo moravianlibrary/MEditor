@@ -48,6 +48,7 @@ import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.mods.StringPlusAuthorityClient;
 import cz.mzk.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.mzk.editor.client.view.other.RecentlyModifiedRecord;
+import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
@@ -564,23 +565,36 @@ public class ClientUtils {
                                      treeNode.getAttribute(Constants.ATTR_ALTO_PATH),
                                      type == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
                                              .getAttribute(Constants.ATTR_OCR_PATH),
+                                     treeNode.getAttribute(Constants.ATTR_NOTE),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
-    public static TreeNode toRecord(TreeStructureNode node, boolean page) {
-        TreeNode rec = new TreeNode();
-        if (!page) rec.setAttribute(Constants.ATTR_ID, node.getPropId());
-        rec.setAttribute(Constants.ATTR_PARENT, node.getPropParent());
-        rec.setAttribute(Constants.ATTR_NAME, node.getPropName());
-        rec.setAttribute(Constants.ATTR_PICTURE, node.getPropPicture());
-        rec.setAttribute(page ? Constants.ATTR_MODEL : Constants.ATTR_TYPE, node.getPropType());
-        if (!page) rec.setAttribute(Constants.ATTR_TYPE_ID, node.getPropTypeId());
-        rec.setAttribute(Constants.ATTR_PAGE_TYPE, node.getPropPageType());
-        rec.setAttribute(Constants.ATTR_DATE_ISSUED, node.getPropDateIssued());
-        rec.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
-        rec.setAttribute(page ? Constants.ATTR_ID : Constants.ATTR_OCR_PATH, node.getPropOcrPath());
-        rec.setAttribute(Constants.ATTR_EXIST, toBoolean(node.getPropName()));
+    public static ScanRecord toScanRecord(TreeStructureNode node) {
+        ScanRecord rec =
+                new ScanRecord(node.getPropName(),
+                               node.getPropType(),
+                               node.getPropPicture(),
+                               node.getPropOcrPath(),
+                               node.getPropPageType());
         return rec;
+    }
+
+    public static SubstructureTreeNode toTreeNode(TreeStructureNode node) {
+        SubstructureTreeNode subNode =
+                new SubstructureTreeNode(node.getPropId(),
+                                         node.getPropParent(),
+                                         node.getPropName(),
+                                         node.getPropPicture(),
+                                         node.getPropType(),
+                                         node.getPropTypeId(),
+                                         node.getPropPageType(),
+                                         node.getPropDateIssued(),
+                                         node.getPropNote(),
+                                         true,
+                                         toBoolean(node.getPropName()));
+        subNode.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
+        subNode.setAttribute(Constants.ATTR_OCR_PATH, node.getPropOcrPath());
+        return subNode;
     }
 
     public static String recordsToString(Record[] records) {

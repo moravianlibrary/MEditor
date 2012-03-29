@@ -41,7 +41,6 @@ public class SubstructureTreeNode
 
     public SubstructureTreeNode(String id,
                                 String parent,
-                                int scanIndex,
                                 String name,
                                 String uuid,
                                 String type,
@@ -53,7 +52,6 @@ public class SubstructureTreeNode
                                 boolean exist) {
         setAttribute(Constants.ATTR_ID, id);
         setAttribute(Constants.ATTR_PARENT, parent);
-        setAttribute(Constants.ATTR_SCAN_INDEX, scanIndex);
         setAttribute(Constants.ATTR_NAME, name);
         setAttribute(Constants.ATTR_PICTURE, uuid);
         setAttribute(Constants.ATTR_TYPE, type);

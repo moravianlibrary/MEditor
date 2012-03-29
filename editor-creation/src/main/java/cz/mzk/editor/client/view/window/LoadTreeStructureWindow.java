@@ -363,14 +363,17 @@ public class LoadTreeStructureWindow
                                        TreeNode[] tree = new TreeNode[nodes.size()];
                                        Record[] pages = new Record[nodes.size()];
                                        int i = 0, j = 0;
+                                       int lastId = 0;
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
-                                               pages[j++] = ClientUtils.toRecord(node, true);
+                                               pages[j++] = ClientUtils.toScanRecord(node);
                                            } else {
-                                               tree[i++] = ClientUtils.toRecord(node, false);
+                                               int id = Integer.parseInt(node.getPropId());
+                                               if (id > lastId) lastId = id;
+                                               tree[i++] = ClientUtils.toTreeNode(node);
                                            }
                                        }
-                                       LoadStructureEvent.fire(getEventBus(), tree, pages);
+                                       LoadStructureEvent.fire(getEventBus(), tree, pages, lastId);
                                        hide();
                                    }
                                }

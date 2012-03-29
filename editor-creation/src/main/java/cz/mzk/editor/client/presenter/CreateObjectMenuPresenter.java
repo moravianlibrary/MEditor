@@ -58,6 +58,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
@@ -97,6 +98,8 @@ public class CreateObjectMenuPresenter
 
         TreeGrid getSubelementsGrid();
 
+        void setStructureTree(Tree tree);
+
         SectionStack getSectionStack();
 
         ButtonItem getCreateButton();
@@ -118,7 +121,6 @@ public class CreateObjectMenuPresenter
         void addUndoRedo(boolean useUndoList, boolean isRedoOperation);
 
         void addSubstructure(String id,
-                             int scanIndex,
                              String name,
                              String uuid,
                              String type,
@@ -417,6 +419,10 @@ public class CreateObjectMenuPresenter
         return ++lastId;
     }
 
+    public void setLastId(int lastId) {
+        this.lastId = lastId;
+    }
+
     /**
      * @return the defaultDateIssued
      */
@@ -501,7 +507,6 @@ public class CreateObjectMenuPresenter
     public void addPages(List<Record> pages, String parent) {
         for (int i = 0; i < pages.size(); i++) {
             getView().addSubstructure(String.valueOf(newId()),
-                                      pages.get(i).getAttributeAsInt(Constants.ATTR_SCAN_INDEX),
                                       pages.get(i).getAttribute(Constants.ATTR_NAME),
                                       pages.get(i).getAttribute(Constants.ATTR_PICTURE),
                                       getLabelFromModel().get(DigitalObjectModel.PAGE.getValue()),

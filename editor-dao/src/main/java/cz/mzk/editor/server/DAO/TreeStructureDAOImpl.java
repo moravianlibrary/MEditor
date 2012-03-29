@@ -78,7 +78,7 @@ public class TreeStructureDAOImpl
     public static final String INSERT_NODE =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
-                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture, prop_type, prop_type_id, prop_page_type, prop_date_issued, prop_alto_path, prop_ocr_path, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture, prop_type, prop_type_id, prop_page_type, prop_date_issued, prop_alto_path, prop_image_or_ocr_path, prop_note, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
 
@@ -203,7 +203,8 @@ public class TreeStructureDAOImpl
                         .getString("prop_name"), rs.getString("prop_picture"), rs.getString("prop_type"), rs
                         .getString("prop_type_id"), rs.getString("prop_page_type"), rs
                         .getString("prop_date_issued"), rs.getString("prop_alto_path"), rs
-                        .getString("prop_ocr_path"), rs.getBoolean("prop_exist")));
+                        .getString("prop_image_or_ocr_path"), rs.getString("prop_note"), rs
+                        .getBoolean("prop_exist")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -262,7 +263,8 @@ public class TreeStructureDAOImpl
                 insSt.setString(9, node.getPropDateIssued());
                 insSt.setString(10, node.getPropAltoPath());
                 insSt.setString(11, node.getPropOcrPath());
-                insSt.setBoolean(12, node.getPropExist());
+                insSt.setString(12, node.getPropNote());
+                insSt.setBoolean(13, node.getPropExist());
                 total += insSt.executeUpdate();
             }
             if (total != structure.size()) {
