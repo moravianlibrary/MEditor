@@ -978,14 +978,7 @@ public class CreateObjectMenuView
                                 String note,
                                 boolean isOpen,
                                 boolean exist) {
-        //        if (structureTreeGrid.getTree() != null) {
-        //
-        //        }
         TreeNode parentNode = structureTree.findById(parent);
-        TreeNode[] allNodes = structureTree.getAllNodes();
-        for (TreeNode node : allNodes) {
-            System.err.println(node.getAttribute(Constants.ATTR_ID));
-        }
         structureTree.add(new SubstructureTreeNode(id,
                                                    parent,
                                                    name,

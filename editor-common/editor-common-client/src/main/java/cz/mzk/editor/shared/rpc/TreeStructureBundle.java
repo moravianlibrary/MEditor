@@ -191,6 +191,7 @@ public class TreeStructureBundle
         private String propDateIssued;
         private String propAltoPath;
         private String propOcrPath;
+        private String propNote;
         private boolean propExist;
 
         public TreeStructureNode() {
@@ -207,6 +208,7 @@ public class TreeStructureBundle
                                  String propDateIssued,
                                  String propAltoPath,
                                  String propOcrPath,
+                                 String propNote,
                                  boolean propExist) {
             super();
             this.propId = propId;
@@ -219,6 +221,7 @@ public class TreeStructureBundle
             this.propDateIssued = propDateIssued;
             this.propAltoPath = propAltoPath;
             this.propOcrPath = propOcrPath;
+            this.propNote = propNote;
             this.propExist = propExist;
         }
 
@@ -309,6 +312,22 @@ public class TreeStructureBundle
         public void setPropExist(boolean propExist) {
             this.propExist = propExist;
         }
+
+        /**
+         * @return the propNote
+         */
+        public String getPropNote() {
+            return propNote;
+        }
+
+        /**
+         * @param propNote
+         *        the propNote to set
+         */
+        public void setPropNote(String propNote) {
+            this.propNote = propNote;
+        }
+
     }
 
 }

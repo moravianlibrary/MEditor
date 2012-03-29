@@ -565,30 +565,21 @@ public class ClientUtils {
                                      treeNode.getAttribute(Constants.ATTR_ALTO_PATH),
                                      type == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
                                              .getAttribute(Constants.ATTR_OCR_PATH),
+                                     treeNode.getAttribute(Constants.ATTR_NOTE),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
-    public static ScanRecord toScanRecord(TreeStructureNode node, boolean page) {
+    public static ScanRecord toScanRecord(TreeStructureNode node) {
         ScanRecord rec =
                 new ScanRecord(node.getPropName(),
                                node.getPropType(),
                                node.getPropPicture(),
                                node.getPropOcrPath(),
                                node.getPropPageType());
-        //        rec.setAttribute(Constants.ATTR_PARENT, node.getPropParent());
-        //        rec.setAttribute(Constants.ATTR_NAME, );
-        //        rec.setAttribute(Constants.ATTR_PICTURE, );
-        //        rec.setAttribute(Constants.ATTR_MODEL, );
-        //        rec.setAttribute(Constants.ATTR_PAGE_TYPE, );
-        //        rec.setAttribute(Constants.ATTR_DATE_ISSUED, node.getPropDateIssued());
-        //        rec.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
-        //        rec.setAttribute(Constants.ATTR_ID, );
-        //        rec.setAttribute(Constants.ATTR_EXIST, toBoolean(node.getPropName()));
         return rec;
     }
 
-    public static SubstructureTreeNode toTreeNode(TreeStructureNode node, boolean page) {
-        String propType = node.getPropType();
+    public static SubstructureTreeNode toTreeNode(TreeStructureNode node) {
         SubstructureTreeNode subNode =
                 new SubstructureTreeNode(node.getPropId(),
                                          node.getPropParent(),
@@ -598,21 +589,11 @@ public class ClientUtils {
                                          node.getPropTypeId(),
                                          node.getPropPageType(),
                                          node.getPropDateIssued(),
-                                         "",
+                                         node.getPropNote(),
                                          true,
                                          toBoolean(node.getPropName()));
-        TreeNode rec = new TreeNode();
-        //        rec.setAttribute(Constants.ATTR_ID, );
-        //        rec.setAttribute(Constants.ATTR_PARENT, );
-        //        rec.setAttribute(Constants.ATTR_NAME, );
-        //        rec.setAttribute(Constants.ATTR_PICTURE, );
-        //        rec.setAttribute(Constants.ATTR_TYPE, );
-        //        rec.setAttribute(Constants.ATTR_TYPE_ID, );
-        //        rec.setAttribute(Constants.ATTR_PAGE_TYPE, );
-        //        rec.setAttribute(Constants.ATTR_DATE_ISSUED, );
-        rec.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
-        rec.setAttribute(Constants.ATTR_OCR_PATH, node.getPropOcrPath());
-        //        rec.setAttribute(Constants.ATTR_EXIST, );
+        subNode.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
+        subNode.setAttribute(Constants.ATTR_OCR_PATH, node.getPropOcrPath());
         return subNode;
     }
 

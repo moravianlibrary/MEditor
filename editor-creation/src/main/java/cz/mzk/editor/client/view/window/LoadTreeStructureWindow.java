@@ -366,11 +366,11 @@ public class LoadTreeStructureWindow
                                        int lastId = 0;
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
-                                               pages[j++] = ClientUtils.toScanRecord(node, true);
+                                               pages[j++] = ClientUtils.toScanRecord(node);
                                            } else {
                                                int id = Integer.parseInt(node.getPropId());
                                                if (id > lastId) lastId = id;
-                                               tree[i++] = ClientUtils.toTreeNode(node, false);
+                                               tree[i++] = ClientUtils.toTreeNode(node);
                                            }
                                        }
                                        LoadStructureEvent.fire(getEventBus(), tree, pages, lastId);

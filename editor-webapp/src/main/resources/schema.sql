@@ -102,7 +102,8 @@ CREATE TABLE tree_structure_node (
     prop_page_type character varying(25),
     prop_date_issued character varying(10),
     prop_alto_path character varying(256),
-    prop_ocr_path character varying(256),
+    prop_image_or_ocr_path character varying(256),
+    prop_note character varying(1000),
     prop_exist boolean
 );
 
