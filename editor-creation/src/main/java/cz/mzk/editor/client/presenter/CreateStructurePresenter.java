@@ -794,15 +794,16 @@ public class CreateStructurePresenter
         leftPresenter.getView().addUndoRedo(true, false);
         String dateIssued = "";
         String note = "";
-        boolean isPeriodicalItem = model == DigitalObjectModel.PERIODICALITEM;
 
-        if (model == DigitalObjectModel.PERIODICALVOLUME || isPeriodicalItem) {
+        if (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) {
             dateIssued = leftPresenter.getView().getDateIssued().getValueAsString();
-            if (isPeriodicalItem) {
-                note = leftPresenter.getView().getNoteButton().getPrompt();
-                leftPresenter.getView().getNoteButton().setPrompt("");
-                leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
-            }
+            note = leftPresenter.getView().getNoteButton().getPrompt();
+            leftPresenter.getView().getNoteButton().setPrompt("");
+            leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
+        } else if (model == DigitalObjectModel.MONOGRAPHUNIT) {
+            note = leftPresenter.getView().getNoteButton().getPrompt();
+            leftPresenter.getView().getNoteButton().setPrompt("");
+            leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
         }
         String possibleParent = "-1";
         if (canContain != null) { //adding selected pages

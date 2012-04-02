@@ -136,7 +136,9 @@ public class CreateObjectMenuPresenter
 
         IButton getNoteButton();
 
-        void setCreateVolumeItem(boolean setCreateVolumeItem, boolean setCreateItem, String defaultDateIssued);
+        void setCreateVolumeItem(boolean setCreateVolumeItem,
+                                 boolean setCreateMonographUnit,
+                                 String defaultDateIssued);
 
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
     }
@@ -286,13 +288,15 @@ public class CreateObjectMenuPresenter
                 } else {
                     getView().getCreateButton().disable();
                 }
-                boolean isPeriodicalItem =
-                        event.getValue().equals(getLabelFromModel()
-                                .get(DigitalObjectModel.PERIODICALITEM.getValue()));
+
                 if (event.getValue().equals(getLabelFromModel()
                         .get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
-                        || isPeriodicalItem) {
-                    getView().setCreateVolumeItem(true, isPeriodicalItem, defaultDateIssued);
+                        || event.getValue().equals(getLabelFromModel()
+                                .get(DigitalObjectModel.PERIODICALITEM.getValue()))) {
+                    getView().setCreateVolumeItem(true, false, defaultDateIssued);
+                } else if (event.getValue().equals(getLabelFromModel()
+                        .get(DigitalObjectModel.MONOGRAPHUNIT.getValue()))) {
+                    getView().setCreateVolumeItem(false, true, null);
                 } else {
                     getView().setCreateVolumeItem(false, false, null);
                 }

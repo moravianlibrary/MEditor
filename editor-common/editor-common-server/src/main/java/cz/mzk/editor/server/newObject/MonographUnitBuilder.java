@@ -69,15 +69,6 @@ public class MonographUnitBuilder
         Element title = titleInfo.addElement(new QName("title", modsNs));
         title.addText(unitLabel);
 
-        //        String typeOfResource = getTypeOfResource();
-        //        if (typeOfResource != null) {
-        //            Element typeOfResourceEl = mods.addElement(new QName("typeOfResource", modsNs));
-        //            typeOfResourceEl.addText(getTypeOfResource());
-        //        }
-
-        //        Element genre = mods.addElement(new QName("genre", modsNs));
-        //        genre.addAttribute("type", "volume");
-
         Element originInfo = mods.addElement(new QName("originInfo", modsNs));
         Element issuance = originInfo.addElement(new QName("issuance", modsNs));
         issuance.addText("monographic");
@@ -90,7 +81,7 @@ public class MonographUnitBuilder
             languageTerm.addAttribute("authority", "iso639-2b");
             languageTerm.addText(language);
         }
-        //------  ???????? -----------
+
         Element part = mods.addElement(new QName("part", modsNs));
         part.addAttribute("type", "Chapter");
 
@@ -105,13 +96,12 @@ public class MonographUnitBuilder
         end.addText(children.get(children.size() - 1).getTargetName());
         Element total = extent.addElement(new QName("total", modsNs));
         total.addText(String.valueOf(children.size()));
-        //---------  ???????? --------------
 
-        //        Element part = mods.addElement(new QName("part", modsNs));
-        //        Element detail = part.addElement(new QName("detail", modsNs));
-        //        detail.addAttribute("type", "volume");
-        //        Element number = detail.addElement(new QName("number", modsNs));
-        //        number.addText(unitLabel);
+        if (getNote() != null && !"".equals(getNote())) {
+            Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
+            Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
+            noteEl.addText(getNote());
+        }
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
     }
