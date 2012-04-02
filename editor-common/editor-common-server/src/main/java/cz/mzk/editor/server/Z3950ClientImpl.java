@@ -179,8 +179,7 @@ public class Z3950ClientImpl
         props.put("ServicePort", port);
         props.put("service_short_name", "meditor");
         props.put("service_long_name", "meditor");
-        //        props.put("default_record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
-        props.put("default_record_syntax", "usmarc");
+        props.put("default_record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
 
         //        props.put("charset", "1250");
         props.put("default_element_set_name", "F");

@@ -25,9 +25,14 @@
 			<name>geomajas</name>
 			<url>http://apps.geomajas.org/nexus/content/groups/latest/</url>
 		</repository>
+		<repository>
+			<id>k-int</id>
+			<name>Knowledge Integration</name>
+			<url>http://developer.k-int.com/maven2/</url>
+		</repository>
 	</repositories>
 
-	<dependencies>
+	<dependencies>	 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>editor-common-client</artifactId>
@@ -60,11 +65,11 @@
 			<artifactId>commons-configuration</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ki</groupId>
+			<groupId>mzk.ki</groupId>
 			<artifactId>ki-jzkit-z3950</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ki</groupId>
+			<groupId>mzk.ki</groupId>
 			<artifactId>ki-jzkit-iface</artifactId>
 		</dependency>
 		<dependency>
@@ -72,8 +77,12 @@
 			<artifactId>ki-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ki</groupId>
+			<groupId>mzk.ki</groupId>
 			<artifactId>a2jruntime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mzk.marc4j</groupId>
+			<artifactId>marc4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
@@ -95,7 +104,7 @@
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 		</dependency>
-
+ 
 	</dependencies>
 
 	<build>

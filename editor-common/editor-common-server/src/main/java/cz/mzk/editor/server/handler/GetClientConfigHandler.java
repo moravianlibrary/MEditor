@@ -88,7 +88,6 @@ public class GetClientConfigHandler
         LOGGER.debug("Processing action: GetClientConfigAction");
         ServerUtils.checkExpiredSession(httpSessionProvider);
         HashMap<String, Object> result = new HashMap<String, Object>();
-        @SuppressWarnings("unchecked")
         Iterator<String> it = configuration.getClientConfiguration().getKeys();
         while (it.hasNext()) {
             String key = it.next();
