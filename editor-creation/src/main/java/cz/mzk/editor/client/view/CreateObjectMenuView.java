@@ -133,6 +133,8 @@ public class CreateObjectMenuView
 
     private TextItem dateIssued;
 
+    private CreateDynamicForm dateIssuedForm;
+
     /** The layout. */
     private VLayout layout;
 
@@ -723,7 +725,8 @@ public class CreateObjectMenuView
         dateIssued = new TextItem();
         dateIssued.setTitle(lang.dateIssued());
         dateIssued.setWidth(100);
-        otherLayout.addMember(new CreateDynamicForm(dateIssued));
+        dateIssuedForm = new CreateDynamicForm(dateIssued);
+        otherLayout.addMember(dateIssuedForm);
 
         selectModel = new SelectItem();
         selectModel.setTitle(lang.dcType());
@@ -813,53 +816,62 @@ public class CreateObjectMenuView
 
     @Override
     public void setCreateVolumeItem(boolean setCreateVolumeItem,
-                                    boolean setCreateItem,
+                                    boolean setCreateMonographUnit,
                                     String defaultDateIssued) {
         boolean contains = createLayout.contains(otherLayout);
 
-        if (setCreateVolumeItem) {
+        if (setCreateVolumeItem || setCreateMonographUnit) {
             if (addNoteButton != null && otherLayout.contains(addNoteButton)) {
                 otherLayout.removeMember(addNoteButton);
             }
-            if (setCreateItem) {
-                addNoteButton = new IButton();
-                addNoteButton.setTitle(lang.addNote());
-                addNoteButton.setHeight(18);
-                addNoteButton.setWidth(140);
-                addNoteButton.setLayoutAlign(Alignment.CENTER);
-                addNoteButton.setExtraSpace(3);
-                otherLayout.addMember(addNoteButton);
+            addNoteButton = new IButton();
+            addNoteButton.setTitle(lang.addNote());
+            addNoteButton.setHeight(18);
+            addNoteButton.setWidth(140);
+            addNoteButton.setLayoutAlign(Alignment.CENTER);
+            addNoteButton.setExtraSpace(3);
+            otherLayout.addMember(addNoteButton);
 
-                addNoteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+            addNoteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        new AddNoteWindow(addNoteButton.getTitle(), eventBus, lang, addNoteButton.getPrompt()) {
+                @Override
+                public void onClick(ClickEvent event) {
+                    new AddNoteWindow(addNoteButton.getTitle(), eventBus, lang, addNoteButton.getPrompt()) {
 
-                            @Override
-                            protected void doSave(String note) {
-                                if (note != null && !"".equals(note)) {
-                                    addNoteButton.setTitle(lang.modifyNote());
-                                } else {
-                                    addNoteButton.setTitle(lang.addNote());
-                                }
-                                addNoteButton.setTooltip(note);
-                                hide();
+                        @Override
+                        protected void doSave(String note) {
+                            if (note != null && !"".equals(note)) {
+                                addNoteButton.setTitle(lang.modifyNote());
+                            } else {
+                                addNoteButton.setTitle(lang.addNote());
                             }
-                        };
-                    }
-                });
+                            addNoteButton.setTooltip(note);
+                            hide();
+                        }
+                    };
+                }
+            });
+
+            if (setCreateVolumeItem || !setCreateMonographUnit) {
+                dateIssued.setDefaultValue(defaultDateIssued);
+                if (!otherLayout.contains(dateIssuedForm)) otherLayout.addMember(dateIssuedForm, 1);
+                name.setTitle(lang.issueNumber());
+                name.redraw();
+            } else {
+                if (otherLayout.contains(dateIssuedForm)) {
+                    otherLayout.removeMember(dateIssuedForm);
+                }
             }
-            dateIssued.setDefaultValue(defaultDateIssued);
+
             if (!contains) {
                 createLayout.addMember(otherLayout, 1);
-                name.setTitle(lang.issueNumber());
             }
         } else {
             if (contains) {
                 createLayout.removeMember(otherLayout);
-                name.setTitle(lang.name());
             }
+            name.setTitle(lang.name());
+            name.redraw();
         }
     }
 

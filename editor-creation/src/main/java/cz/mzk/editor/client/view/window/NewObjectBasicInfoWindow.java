@@ -92,27 +92,29 @@ public abstract class NewObjectBasicInfoWindow
         VLayout mainLayout = new VLayout();
         final TextItem nameItem = new TextItem("name", lang.name());
         nameItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NAME));
-        boolean isPeriodicalItem =
-                record.getAttributeAsString(Constants.ATTR_TYPE_ID)
-                        .equals(DigitalObjectModel.PERIODICALITEM.getValue());
 
-        if (isPeriodicalItem
+        if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                .equals(DigitalObjectModel.PERIODICALITEM.getValue())
                 || record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                         .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())) {
 
             dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
             dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
 
-            if (isPeriodicalItem) {
-                noteItem = new TextAreaItem("note", lang.note());
-                noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
-                noteItem.setHeight(60);
-                mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem, noteItem));
-                setHeight(220);
-            } else {
-                mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem));
-                setHeight(160);
-            }
+            noteItem = new TextAreaItem("note", lang.note());
+            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+            noteItem.setHeight(60);
+            mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem, noteItem));
+            setHeight(220);
+
+        } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                .equals(DigitalObjectModel.MONOGRAPHUNIT.getValue())) {
+
+            noteItem = new TextAreaItem("note", lang.note());
+            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+            noteItem.setHeight(60);
+            mainLayout.addMember(new MyDynamicForm(nameItem, noteItem));
+            setHeight(200);
 
         } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                 .equals(DigitalObjectModel.PAGE.getValue())) {
