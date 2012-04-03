@@ -129,6 +129,8 @@ public class CreateObjectMenuPresenter
                              String pageType,
                              String dateIssued,
                              String note,
+                             String periodicalItemType,
+                             String sequenceNumber,
                              boolean isOpen,
                              boolean exist);
 
@@ -137,10 +139,15 @@ public class CreateObjectMenuPresenter
         IButton getNoteButton();
 
         void setCreateVolumeItem(boolean setCreateVolumeItem,
+                                 boolean setCreateItem,
                                  boolean setCreateMonographUnit,
                                  String defaultDateIssued);
 
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
+
+        TextItem getSequenceNumber();
+
+        String getSelectedGenreType();
     }
 
     /**
@@ -241,6 +248,19 @@ public class CreateObjectMenuPresenter
                     sb.append(noteHover);
                 }
 
+                String genreType = record.getAttribute(Constants.ATTR_GENRE_TYPE);
+                if (genreType != null && !"".equals(genreType)) {
+                    String genreTypeHover =
+                            hoverFactory(lang.dcType(), Constants.GENRE_TYPES.MAP.get(genreType));
+                    sb.append(genreTypeHover);
+                }
+
+                String sequenceNumber = record.getAttribute(Constants.ATTR_SEQUENCE_NUMBER);
+                if (sequenceNumber != null && !"".equals(sequenceNumber)) {
+                    String sequenceNumberHover = hoverFactory(lang.issueNumber(), sequenceNumber);
+                    sb.append(sequenceNumberHover);
+                }
+
                 String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
                 if (pageType != null && !"".equals(pageType)) {
                     String pageTypeHover = hoverFactory(lang.specialType(), pageType);
@@ -282,25 +302,9 @@ public class CreateObjectMenuPresenter
 
             @Override
             public void onChange(ChangeEvent event) {
-                String val = (String) event.getValue();
-                if (!"".equals(val.trim())) {
-                    getView().getCreateButton().enable();
-                } else {
-                    getView().getCreateButton().disable();
-                }
-
-                if (event.getValue().equals(getLabelFromModel()
-                        .get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
-                        || event.getValue().equals(getLabelFromModel()
-                                .get(DigitalObjectModel.PERIODICALITEM.getValue()))) {
-                    getView().setCreateVolumeItem(true, false, defaultDateIssued);
-                } else if (event.getValue().equals(getLabelFromModel()
-                        .get(DigitalObjectModel.MONOGRAPHUNIT.getValue()))) {
-                    getView().setCreateVolumeItem(false, true, null);
-                } else {
-                    getView().setCreateVolumeItem(false, false, null);
-                }
+                afterTypeChanged((String) event.getValue());
             }
+
         }));
 
         addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
@@ -362,6 +366,31 @@ public class CreateObjectMenuPresenter
                                                                                   uuid));
     }
 
+    private void afterTypeChanged(String currentModel) {
+        if (!"".equals(currentModel.trim())) {
+            getView().getCreateButton().enable();
+
+            boolean isPeriodicalItem =
+                    currentModel
+                            .equals(getLabelFromModel().get(DigitalObjectModel.PERIODICALITEM.getValue()));
+
+            if (currentModel.equals(getLabelFromModel().get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
+                    || isPeriodicalItem) {
+
+                getView().setCreateVolumeItem(true, isPeriodicalItem, false, defaultDateIssued);
+            } else if (currentModel.equals(getLabelFromModel().get(DigitalObjectModel.MONOGRAPHUNIT
+                    .getValue()))) {
+                getView().setCreateVolumeItem(false, false, true, null);
+            } else {
+                getView().setCreateVolumeItem(false, false, false, null);
+            }
+
+        } else {
+            getView().getCreateButton().disable();
+            getView().setCreateVolumeItem(false, false, false, null);
+        }
+    }
+
     private void shortcutPressed(final int code) {
         if (isVisible()) {
             if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_M.getCode()) {
@@ -393,15 +422,18 @@ public class CreateObjectMenuPresenter
             DigitalObjectModel model = DigitalObjectModel.parseString(modelString);
             List<DigitalObjectModel> childrenModels = NamedGraphModel.getChildren(model);
             String[] values = new String[childrenModels == null ? 0 : childrenModels.size()];
+            String defaultValue = "";
             if (childrenModels != null && childrenModels.size() > 0) {
                 for (int i = 0; i < childrenModels.size(); i++) {
                     values[i] = getLabelFromModel().get(childrenModels.get(i).getValue());
+                    if (defaultValue.equals("") && getView().getSelectModel().getValueAsString() != null
+                            && getView().getSelectModel().getValueAsString().equals(values[i]))
+                        defaultValue = values[i];
                 }
             }
             getView().getSelectModel().setValueMap(values);
-            if (childrenModels == null) {
-                getView().getSelectModel().setValue("");
-            }
+            getView().getSelectModel().setValue(defaultValue);
+            afterTypeChanged(defaultValue);
         }
     }
 
@@ -517,6 +549,8 @@ public class CreateObjectMenuPresenter
                                       DigitalObjectModel.PAGE.getValue(),
                                       parent,
                                       pages.get(i).getAttribute(Constants.ATTR_PAGE_TYPE),
+                                      "",
+                                      "",
                                       "",
                                       "",
                                       true,

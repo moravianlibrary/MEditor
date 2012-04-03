@@ -54,6 +54,8 @@ public class NewDigitalObject
     private String note;
     private String altoPath;
     private String ocrPath;
+    private String genreType;
+    private String sequenceNumber;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -97,6 +99,8 @@ public class NewDigitalObject
         this.note = newDigitalObject.getNote();
         this.altoPath = newDigitalObject.getAltoPath();
         this.ocrPath = newDigitalObject.getOcrPath();
+        this.genreType = newDigitalObject.getGenreType();
+        this.sequenceNumber = newDigitalObject.getSequenceNumber();
     }
 
     /**
@@ -260,6 +264,36 @@ public class NewDigitalObject
 
     public void setOcrPath(String ocrPath) {
         this.ocrPath = ocrPath;
+    }
+
+    /**
+     * @return the genreType
+     */
+    public String getGenreType() {
+        return genreType;
+    }
+
+    /**
+     * @param genreType
+     *        the genreType to set
+     */
+    public void setGenreType(String genreType) {
+        this.genreType = genreType;
+    }
+
+    /**
+     * @return the sequenceNumber
+     */
+    public String getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    /**
+     * @param sequenceNumber
+     *        the sequenceNumber to set
+     */
+    public void setSequenceNumber(String sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     @Override

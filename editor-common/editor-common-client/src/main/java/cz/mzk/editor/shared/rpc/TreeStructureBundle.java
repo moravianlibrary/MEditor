@@ -192,6 +192,8 @@ public class TreeStructureBundle
         private String propAltoPath;
         private String propOcrPath;
         private String propNote;
+        private String propGenreType;
+        private String propSequenceNumber;
         private boolean propExist;
 
         public TreeStructureNode() {
@@ -209,6 +211,8 @@ public class TreeStructureBundle
                                  String propAltoPath,
                                  String propOcrPath,
                                  String propNote,
+                                 String propGenreType,
+                                 String propSequenceNumber,
                                  boolean propExist) {
             super();
             this.propId = propId;
@@ -222,6 +226,8 @@ public class TreeStructureBundle
             this.propAltoPath = propAltoPath;
             this.propOcrPath = propOcrPath;
             this.propNote = propNote;
+            this.propGenreType = propGenreType;
+            this.propSequenceNumber = propSequenceNumber;
             this.propExist = propExist;
         }
 
@@ -326,6 +332,36 @@ public class TreeStructureBundle
          */
         public void setPropNote(String propNote) {
             this.propNote = propNote;
+        }
+
+        /**
+         * @return the propGenreType
+         */
+        public String getPropGenreType() {
+            return propGenreType;
+        }
+
+        /**
+         * @param propGenreType
+         *        the propGenreType to set
+         */
+        public void setPropGenreType(String propGenreType) {
+            this.propGenreType = propGenreType;
+        }
+
+        /**
+         * @return the propSequenceNumber
+         */
+        public String getPropSequenceNumber() {
+            return propSequenceNumber;
+        }
+
+        /**
+         * @param propSequenceNumber
+         *        the propSequenceNumber to set
+         */
+        public void setPropSequenceNumber(String propSequenceNumber) {
+            this.propSequenceNumber = propSequenceNumber;
         }
 
     }

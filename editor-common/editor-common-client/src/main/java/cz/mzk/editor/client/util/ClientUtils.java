@@ -356,6 +356,16 @@ public class ClientUtils {
                 newObj.setNote(note);
             }
 
+            String genreType = node.getAttribute(Constants.ATTR_GENRE_TYPE);
+            if (genreType != null && !"".equals(genreType)) {
+                newObj.setGenreType(Constants.GENRE_TYPES.MAP.get(genreType));
+            }
+
+            String sequenceNumber = node.getAttribute(Constants.ATTR_SEQUENCE_NUMBER);
+            if (sequenceNumber != null && !"".equals(sequenceNumber)) {
+                newObj.setSequenceNumber(sequenceNumber);
+            }
+
             if (exists) {
                 if (imgUuid != null && !"".equals(imgUuid)) {
                     newObj.setUuid(imgUuid.startsWith("uuid:") ? imgUuid.substring("uuid:".length())
@@ -553,6 +563,8 @@ public class ClientUtils {
                                      type == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
                                              .getAttribute(Constants.ATTR_OCR_PATH),
                                      treeNode.getAttribute(Constants.ATTR_NOTE),
+                                     treeNode.getAttribute(Constants.ATTR_GENRE_TYPE),
+                                     treeNode.getAttribute(Constants.ATTR_SEQUENCE_NUMBER),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
@@ -577,6 +589,8 @@ public class ClientUtils {
                                          node.getPropPageType(),
                                          node.getPropDateIssued(),
                                          node.getPropNote(),
+                                         node.getPropGenreType(),
+                                         node.getPropSequenceNumber(),
                                          true,
                                          toBoolean(node.getPropName()));
         subNode.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());

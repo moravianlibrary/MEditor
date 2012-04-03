@@ -48,6 +48,8 @@ public class SubstructureTreeNode
                                 String pageType,
                                 String dateIssued,
                                 String note,
+                                String genreType,
+                                String sequenceNumber,
                                 boolean isOpen,
                                 boolean exist) {
         setAttribute(Constants.ATTR_ID, id);
@@ -59,6 +61,8 @@ public class SubstructureTreeNode
         setAttribute(Constants.ATTR_PAGE_TYPE, pageType);
         setAttribute(Constants.ATTR_DATE_ISSUED, dateIssued);
         setAttribute(Constants.ATTR_NOTE, note);
+        setAttribute(Constants.ATTR_GENRE_TYPE, genreType);
+        setAttribute(Constants.ATTR_SEQUENCE_NUMBER, sequenceNumber);
         setAttribute("isOpen", isOpen);
         setAttribute(Constants.ATTR_EXIST, exist);
         setAttribute(Constants.ATTR_CREATE, !exist);

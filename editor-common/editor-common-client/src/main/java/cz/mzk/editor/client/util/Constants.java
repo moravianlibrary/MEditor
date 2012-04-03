@@ -228,6 +228,12 @@ public class Constants {
     /** The Constant ATTR_PAGE_TYPE. */
     public static final String ATTR_PAGE_TYPE = "pageType";
 
+    /** The Constant ATTR_SEQUENCE_NUMBER. */
+    public static final String ATTR_SEQUENCE_NUMBER = "sequenceNumber";
+
+    /** The Constant ATTR_GENRE_TYPE. */
+    public static final String ATTR_GENRE_TYPE = "genreType";
+
     /** The Constant ATTR_DATE_ISSUED. */
     public static final String ATTR_DATE_ISSUED = "dateIssued";
 
@@ -544,6 +550,23 @@ public class Constants {
             MAP.put(PAGE_TYPES.TB.toString(), "Table");
             MAP.put(PAGE_TYPES.TC.toString(), "TableOfContents");
             MAP.put(PAGE_TYPES.TP.toString(), "TitlePage");
+        }
+    }
+
+    public static enum GENRE_TYPES {
+
+        NORMAL, MORNING, AFTERNOON, EVENING, SEQUENCE_X, CERRECTED, SPECIAL, SUPPLEMENT;
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+            MAP.put(GENRE_TYPES.AFTERNOON.toString(), "Afternoon");
+            MAP.put(GENRE_TYPES.CERRECTED.toString(), "corrected");
+            MAP.put(GENRE_TYPES.EVENING.toString(), "Evening");
+            MAP.put(GENRE_TYPES.MORNING.toString(), "Morning");
+            MAP.put(GENRE_TYPES.NORMAL.toString(), "Normal");
+            MAP.put(GENRE_TYPES.SEQUENCE_X.toString(), "Sequence_X");
+            MAP.put(GENRE_TYPES.SPECIAL.toString(), "Special");
+            MAP.put(GENRE_TYPES.SUPPLEMENT.toString(), "Supplement");
         }
     }
 

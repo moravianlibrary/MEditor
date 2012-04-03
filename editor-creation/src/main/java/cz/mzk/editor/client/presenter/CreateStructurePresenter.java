@@ -390,6 +390,8 @@ public class CreateStructurePresenter
                                                 "",
                                                 "",
                                                 "",
+                                                "",
+                                                "",
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
@@ -794,17 +796,26 @@ public class CreateStructurePresenter
         leftPresenter.getView().addUndoRedo(true, false);
         String dateIssued = "";
         String note = "";
+        String genreType = "";
+        String sequenceNumber = "";
 
         if (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) {
             dateIssued = leftPresenter.getView().getDateIssued().getValueAsString();
             note = leftPresenter.getView().getNoteButton().getPrompt();
             leftPresenter.getView().getNoteButton().setPrompt("");
             leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
+            sequenceNumber = leftPresenter.getView().getSequenceNumber().getValueAsString();
+
+            if (model == DigitalObjectModel.PERIODICALITEM)
+                genreType = leftPresenter.getView().getSelectedGenreType();
+
         } else if (model == DigitalObjectModel.MONOGRAPHUNIT) {
             note = leftPresenter.getView().getNoteButton().getPrompt();
+            sequenceNumber = leftPresenter.getView().getSequenceNumber().getValueAsString();
             leftPresenter.getView().getNoteButton().setPrompt("");
             leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
         }
+
         String possibleParent = "-1";
         if (canContain != null) { //adding selected pages
             possibleParent = String.valueOf(leftPresenter.newId());
@@ -819,6 +830,8 @@ public class CreateStructurePresenter
                                                     "",
                                                     dateIssued,
                                                     note,
+                                                    genreType,
+                                                    sequenceNumber,
                                                     true,
                                                     false);
         } else { // adding something and enrich it with selected pages

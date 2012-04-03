@@ -74,7 +74,9 @@ public abstract class NewObjectBasicInfoWindow
 
     private TextItem dateIssuedItem = null;
     private TextAreaItem noteItem = null;
-    SelectItem pageTypeItem = null;
+    private SelectItem pageTypeItem = null;
+    private TextItem issueNumberItem = null;
+    private SelectItem genreTypeItem = null;
 
     /**
      * @param structureTreeGrid
@@ -92,11 +94,15 @@ public abstract class NewObjectBasicInfoWindow
         VLayout mainLayout = new VLayout();
         final TextItem nameItem = new TextItem("name", lang.name());
         nameItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NAME));
-
-        if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
-                .equals(DigitalObjectModel.PERIODICALITEM.getValue())
+        boolean isPeriodicalItem =
+                record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                        .equals(DigitalObjectModel.PERIODICALITEM.getValue());
+        if (isPeriodicalItem
                 || record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                         .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())) {
+
+            issueNumberItem = new TextItem("issueNumber", lang.issueNumber());
+            issueNumberItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_SEQUENCE_NUMBER));
 
             dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
             dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
@@ -104,8 +110,30 @@ public abstract class NewObjectBasicInfoWindow
             noteItem = new TextAreaItem("note", lang.note());
             noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
             noteItem.setHeight(60);
-            mainLayout.addMember(new MyDynamicForm(nameItem, dateIssuedItem, noteItem));
-            setHeight(220);
+
+            if (isPeriodicalItem) {
+                genreTypeItem = new SelectItem();
+                genreTypeItem.setWidth(100);
+                genreTypeItem.setTitle(lang.dcType());
+
+                LinkedHashMap<String, String> valueMap =
+                        new LinkedHashMap<String, String>(Constants.GENRE_TYPES.MAP);
+                genreTypeItem.setValueMap(valueMap);
+                String genreType = record.getAttribute(Constants.ATTR_GENRE_TYPE);
+
+                if (genreType != null && !"".equals(genreType)) {
+                    genreTypeItem.setDefaultValue(genreType);
+                }
+                mainLayout.addMember(new MyDynamicForm(nameItem,
+                                                       issueNumberItem,
+                                                       genreTypeItem,
+                                                       dateIssuedItem,
+                                                       noteItem));
+                setHeight(300);
+            } else {
+                mainLayout.addMember(new MyDynamicForm(nameItem, issueNumberItem, dateIssuedItem, noteItem));
+                setHeight(270);
+            }
 
         } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
                 .equals(DigitalObjectModel.MONOGRAPHUNIT.getValue())) {
@@ -180,6 +208,16 @@ public abstract class NewObjectBasicInfoWindow
 
     protected String getNote() {
         if (noteItem != null) return noteItem.getValueAsString();
+        return null;
+    }
+
+    protected String getGenreType() {
+        if (genreTypeItem != null) return genreTypeItem.getValueAsString();
+        return null;
+    }
+
+    protected String getIssueNumber() {
+        if (issueNumberItem != null) return issueNumberItem.getValueAsString();
         return null;
     }
 
