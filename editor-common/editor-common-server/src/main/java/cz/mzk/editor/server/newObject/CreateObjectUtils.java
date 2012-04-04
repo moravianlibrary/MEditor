@@ -129,8 +129,12 @@ public class CreateObjectUtils {
                 || node.getModel() == DigitalObjectModel.PERIODICALITEM) {
             builder.setDateIssued(node.getDateIssued());
             builder.setNote(node.getNote());
+            builder.setSequenceNumber(node.getSequenceNumber());
+            if (node.getModel() == DigitalObjectModel.PERIODICALITEM)
+                builder.setGenreType(node.getGenreType());
         } else if (node.getModel() == DigitalObjectModel.MONOGRAPHUNIT) {
             builder.setNote(node.getNote());
+            builder.setSequenceNumber(node.getSequenceNumber());
         }
 
         if (node.getModel() == DigitalObjectModel.PAGE) {

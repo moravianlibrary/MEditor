@@ -80,6 +80,8 @@ public abstract class FoxmlBuilder {
     private String imageUrl;
     private String dateIssued;
     private String note;
+    private String genreType;
+    private String sequenceNumber;
 
     private static final Boolean VERSIONABLE = true;
 
@@ -445,6 +447,36 @@ public abstract class FoxmlBuilder {
 
     public void setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
+    }
+
+    /**
+     * @return the genreType
+     */
+    public String getGenreType() {
+        return genreType;
+    }
+
+    /**
+     * @param genreType
+     *        the genreType to set
+     */
+    public void setGenreType(String genreType) {
+        this.genreType = genreType;
+    }
+
+    /**
+     * @return the sequenceNumber
+     */
+    public String getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    /**
+     * @param sequenceNumber
+     *        the sequenceNumber to set
+     */
+    public void setSequenceNumber(String sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     public void setBundle(MetadataBundle bundle) {

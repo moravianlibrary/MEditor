@@ -555,12 +555,12 @@ public class Constants {
 
     public static enum GENRE_TYPES {
 
-        NORMAL, MORNING, AFTERNOON, EVENING, SEQUENCE_X, CERRECTED, SPECIAL, SUPPLEMENT;
+        NORMAL, MORNING, AFTERNOON, EVENING, SEQUENCE_X, CORRECTED, SPECIAL, SUPPLEMENT;
 
         public static Map<String, String> MAP = new HashMap<String, String>();
         static {
             MAP.put(GENRE_TYPES.AFTERNOON.toString(), "Afternoon");
-            MAP.put(GENRE_TYPES.CERRECTED.toString(), "corrected");
+            MAP.put(GENRE_TYPES.CORRECTED.toString(), "Corrected");
             MAP.put(GENRE_TYPES.EVENING.toString(), "Evening");
             MAP.put(GENRE_TYPES.MORNING.toString(), "Morning");
             MAP.put(GENRE_TYPES.NORMAL.toString(), "Normal");

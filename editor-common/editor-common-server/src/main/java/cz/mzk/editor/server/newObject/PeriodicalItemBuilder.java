@@ -74,7 +74,8 @@ public class PeriodicalItemBuilder
         }
 
         Element genre = mods.addElement(new QName("genre", modsNs));
-        genre.addAttribute("type", "issue");
+        genre.addAttribute("type", getGenreType());
+        genre.addText("issue");
 
         Element originInfo = mods.addElement(new QName("originInfo", modsNs));
         Element dateIssued = originInfo.addElement(new QName("dateIssued", modsNs));
@@ -101,7 +102,7 @@ public class PeriodicalItemBuilder
         Element detail = part.addElement(new QName("detail", modsNs));
         detail.addAttribute("type", "issue");
         Element number = detail.addElement(new QName("number", modsNs));
-        number.addText(volumeLabel);
+        number.addText(getSequenceNumber());
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 

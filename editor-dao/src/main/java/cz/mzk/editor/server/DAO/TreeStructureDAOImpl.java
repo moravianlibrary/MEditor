@@ -199,12 +199,12 @@ public class TreeStructureDAOImpl
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                retList.add(new TreeStructureNode(rs.getString("prop_id"), rs.getString("prop_parent"), rs
-                        .getString("prop_name"), rs.getString("prop_picture"), rs.getString("prop_type"), rs
-                        .getString("prop_type_id"), rs.getString("prop_page_type"), rs
-                        .getString("prop_date_issued"), rs.getString("prop_alto_path"), rs
-                        .getString("prop_image_or_ocr_path"), rs.getString("prop_note"), rs
-                        .getBoolean("prop_exist")));
+                //                retList.add(new TreeStructureNode(rs.getString("prop_id"), rs.getString("prop_parent"), rs
+                //                        .getString("prop_name"), rs.getString("prop_picture"), rs.getString("prop_type"), rs
+                //                        .getString("prop_type_id"), rs.getString("prop_page_type"), rs
+                //                        .getString("prop_date_issued"), rs.getString("prop_alto_path"), rs
+                //                        .getString("prop_image_or_ocr_path"), rs.getString("prop_note"), rs
+                //                        .getBoolean("prop_exist")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);

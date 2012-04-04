@@ -83,7 +83,10 @@ public class MonographUnitBuilder
         }
 
         Element part = mods.addElement(new QName("part", modsNs));
-        part.addAttribute("type", "Chapter");
+        Element detail = part.addElement(new QName("detail", modsNs));
+        detail.addAttribute("type", "Chapter");
+        Element number = detail.addElement(new QName("number", modsNs));
+        number.addText(getSequenceNumber());
 
         Element extent = part.addElement(new QName("extent", modsNs));
         extent.addAttribute("unit", "pages");
