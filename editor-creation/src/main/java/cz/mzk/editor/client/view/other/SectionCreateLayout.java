@@ -27,6 +27,7 @@ package cz.mzk.editor.client.view.other;
 import java.util.LinkedHashMap;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -561,7 +562,7 @@ public class SectionCreateLayout
         String levelName = levelNames.getValueAsString();
 
         if (!PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName))
-            return levelName.substring(0, levelName.length() - 4) + getxOfLevelNames();
+            return levelName.substring(0, levelName.length() - 4) + getFormatedXOfLevelNames();
 
         return levelName;
     }
@@ -587,6 +588,11 @@ public class SectionCreateLayout
      */
     public String getxOfLevelNames() {
         return xOfLevelNames.getValueAsString();
+    }
+
+    private String getFormatedXOfLevelNames() {
+        NumberFormat formatter = NumberFormat.getFormat("0000");
+        return formatter.format(Integer.parseInt(getxOfLevelNames()));
     }
 
     /**
