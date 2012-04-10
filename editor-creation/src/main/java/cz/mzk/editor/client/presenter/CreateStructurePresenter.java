@@ -731,7 +731,12 @@ public class CreateStructurePresenter
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    addNewStructure();
+                    String message = leftPresenter.getSectionCreateLayout().verify();
+                    if (message == null) {
+                        addNewStructure();
+                    } else {
+                        SC.warn(message);
+                    }
                 }
             });
             leftPresenter.getSectionCreateLayout().setCreateButtonHasAClickHandler();

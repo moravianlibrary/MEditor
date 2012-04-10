@@ -162,6 +162,7 @@ public class SectionCreateLayout
 
         xOfLevelNames = new TextItem("xOfLevelNames", "XXXX");
         xOfLevelNames.setWidth(50);
+        xOfLevelNames.setPrompt(getOnlyNumbersHint("XXXX"));
         xOfLevelNamesForm = new CreateDynamicForm(xOfLevelNames);
 
         levelNamesLayout = new HLayout(2);
@@ -175,6 +176,7 @@ public class SectionCreateLayout
 
         partNumber = new TextItem("partNumber", lang.partNumber());
         partNumber.setWidth(40);
+        partNumber.setPrompt(getOnlyNumbersHint(lang.partNumber()));
         partNumberForm = new CreateDynamicForm(partNumber);
 
         partName = new TextItem("partName", lang.intPartPartName());
@@ -186,6 +188,7 @@ public class SectionCreateLayout
 
         xOfSequence = new TextItem("xOfSequence", "X");
         xOfSequence.setWidth(30);
+        xOfSequence.setPrompt(getOnlyNumbersHint("X"));
         xOfSequenceForm = new CreateDynamicForm(xOfSequence);
         xOfSequenceForm.setWidth(60);
 
@@ -260,7 +263,7 @@ public class SectionCreateLayout
 
             addNoteButton.setTitle(lang.addNote());
             addNoteButton.setTooltip("");
-
+            xOfLevelNames.show();
             dateIssued.setDefaultValue(defaultDateIssued);
             partNumberForm.setWidth(100);
 
@@ -323,6 +326,7 @@ public class SectionCreateLayout
         partNumberForm.setWidth100();
         otherLayout.addMember(partNumberForm);
 
+        dateIssued.setPrompt(getDateFormatHint(DigitalObjectModel.MONOGRAPHUNIT));
         otherLayout.addMember(dateIssuedForm);
         otherLayout.addMember(addNoteButtonLyout);
 
@@ -387,11 +391,13 @@ public class SectionCreateLayout
         levelNames.setDefaultValue(PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue());
         levelNames.redraw();
 
+        xOfLevelNames.hide();
         otherLayout.addMember(levelNamesLayout);
 
         nameOrTitle.setTitle(lang.editionName());
         otherLayout.addMember(nameOrTitleForm);
 
+        dateIssued.setPrompt(getDateFormatHint(DigitalObjectModel.PERIODICALITEM));
         otherLayout.addMember(dateIssuedForm);
 
         final LinkedHashMap<String, String> valueMap =
@@ -409,11 +415,12 @@ public class SectionCreateLayout
             public void onChanged(ChangedEvent event) {
                 if (event.getValue().equals(PERIODICAL_ITEM_LEVEL_NAMES.MODS_SUPPL.getValue())) {
                     type.hide();
-                    xOfSequence.hide();
+                    xOfLevelNames.show();
                 } else {
                     type.show();
                     type.setValueMap(valueMap);
                     type.setValue(PERIODICAL_ITEM_GENRE_TYPES.NORMAL.toString());
+                    xOfLevelNames.hide();
                 }
             }
         });
@@ -438,6 +445,7 @@ public class SectionCreateLayout
     private void setCreatePeriodicalVolume() {
         partNumberForm.setWidth100();
         otherLayout.addMember(partNumberForm);
+        dateIssued.setPrompt(getDateFormatHint(DigitalObjectModel.PERIODICALVOLUME));
         otherLayout.addMember(dateIssuedForm);
         otherLayout.addMember(addNoteButtonLyout);
     }
@@ -553,7 +561,7 @@ public class SectionCreateLayout
         String levelName = levelNames.getValueAsString();
 
         if (!PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName))
-            return levelName.substring(0, levelName.length() - 4) + xOfLevelNames.getValueAsString();
+            return levelName.substring(0, levelName.length() - 4) + getxOfLevelNames();
 
         return levelName;
     }
@@ -572,5 +580,56 @@ public class SectionCreateLayout
 
     public void setCreateButtonHasAClickHandler() {
         createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, true);
+    }
+
+    /**
+     * @return the xOfLevelNames
+     */
+    public String getxOfLevelNames() {
+        return xOfLevelNames.getValueAsString();
+    }
+
+    /**
+     * @return
+     */
+    public String verify() {
+        DigitalObjectModel model =
+                LabelAndModelConverter.getModelFromLabel().get(getSelectModel().getValueAsString());
+        if (getxOfSequence() != null && !getxOfSequence().matches(Constants.ONLY_NUMBERS))
+            return getOnlyNumbersHint("X");
+        if (getxOfLevelNames() != null && !getxOfLevelNames().matches(Constants.ONLY_NUMBERS))
+            return getOnlyNumbersHint("XXXX");
+        if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
+            return getOnlyNumbersHint(lang.partNumber());
+
+        if (model == DigitalObjectModel.PERIODICALVOLUME) {
+            if (!(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
+                    .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
+
+        } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
+            if (!(getDateIssued().matches(Constants.DATE_DDMMRRRR)
+                    || getDateIssued().matches(Constants.DATE_MMRRRR)
+                    || getDateIssued().matches(Constants.DATE_RRRR)
+                    || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
+                    .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
+        }
+        return null;
+    }
+
+    private String getOnlyNumbersHint(String textItemName) {
+        return lang.textBox() + " " + textItemName + " " + lang.onlyNum();
+    }
+
+    private String getDateFormatHint(DigitalObjectModel model) {
+        if (model == DigitalObjectModel.PERIODICALVOLUME) {
+            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
+                    + " " + lang.dateInFormat() + ": " + "RRRR " + lang.or() + "<br>RRRR-RRRR";
+
+        } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
+            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
+                    + " " + lang.dateInFormat() + ": <br>" + "DDMMRRRR " + lang.or() + "<br>MMRRRR "
+                    + lang.or() + "<br>RRRR " + lang.or() + "<br>DD-DDMMRRR " + lang.or() + "<br>MM-MMRRRR";
+        }
+        return "";
     }
 }
