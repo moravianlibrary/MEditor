@@ -253,7 +253,7 @@ public class ClientUtils {
         if (children.length == 0) {
             return new NewDigitalObject(name);
         }
-        String modelString = root.getAttribute(Constants.ATTR_TYPE_ID);
+        String modelString = root.getAttribute(Constants.ATTR_MODEL_ID);
         if (modelString == null || "".equals(modelString)) {
             throw new CreateObjectException("unknown type");
         }
@@ -311,7 +311,7 @@ public class ClientUtils {
                                                        Map<String, NewDigitalObject> processedPages)
             throws CreateObjectException {
 
-        String modelString = node.getAttribute(Constants.ATTR_TYPE_ID);
+        String modelString = node.getAttribute(Constants.ATTR_MODEL_ID);
         if (modelString == null || "".equals(modelString)) {
             throw new CreateObjectException("unknown type");
         }
@@ -321,7 +321,7 @@ public class ClientUtils {
         } catch (RuntimeException ex) {
             throw new CreateObjectException("unknown type");
         }
-        String imgUuid = node.getAttribute(Constants.ATTR_PICTURE);
+        String imgUuid = node.getAttribute(Constants.ATTR_PICTURE_OR_UUID);
 
         if (!processedPages.containsKey(imgUuid)) {
 
@@ -338,7 +338,8 @@ public class ClientUtils {
 
             String name = node.getAttribute(Constants.ATTR_NAME);
             if (name == null || "".equals(name)) {
-                throw new CreateObjectException("unknown name");
+                //                throw new CreateObjectException("unknown name");
+                name = "";
             }
 
             Boolean exists = node.getAttributeAsBoolean(Constants.ATTR_EXIST);
@@ -346,24 +347,27 @@ public class ClientUtils {
             NewDigitalObject newObj = new NewDigitalObject(pageIndex, name, model, bundle, null, exists);
 
             newObj.setVisible(visible);
-            String dateIssued = node.getAttribute(Constants.ATTR_DATE_ISSUED);
-            if (dateIssued != null && !"".equals(dateIssued)) {
-                newObj.setDateIssued(dateIssued);
+            String dateOrIntPartName = node.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME);
+            if (dateOrIntPartName != null && !"".equals(dateOrIntPartName)) {
+                newObj.setDateOrIntPartName(dateOrIntPartName);
             }
 
-            String note = node.getAttribute(Constants.ATTR_NOTE);
-            if (note != null && !"".equals(note)) {
-                newObj.setNote(note);
+            String noteOrIntSubtitle = node.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
+            if (noteOrIntSubtitle != null && !"".equals(noteOrIntSubtitle)) {
+                newObj.setNoteOrIntSubtitle(noteOrIntSubtitle);
             }
 
-            String genreType = node.getAttribute(Constants.ATTR_GENRE_TYPE);
-            if (genreType != null && !"".equals(genreType)) {
-                newObj.setGenreType(Constants.GENRE_TYPES.MAP.get(genreType));
+            String type = node.getAttribute(Constants.ATTR_TYPE);
+            if (type != null && !"".equals(type)) {
+                if (model == DigitalObjectModel.INTERNALPART)
+                    newObj.setType(Constants.PERIODICAL_ITEM_GENRE_TYPES.MAP.get(type));
+
+                newObj.setType(node.getAttribute(Constants.ATTR_TYPE));
             }
 
-            String sequenceNumber = node.getAttribute(Constants.ATTR_SEQUENCE_NUMBER);
-            if (sequenceNumber != null && !"".equals(sequenceNumber)) {
-                newObj.setSequenceNumber(sequenceNumber);
+            String partNumberOrAlto = node.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO);
+            if (partNumberOrAlto != null && !"".equals(partNumberOrAlto)) {
+                newObj.setPartNumberOrAlto(partNumberOrAlto);
             }
 
             if (exists) {
@@ -375,18 +379,13 @@ public class ClientUtils {
                 }
             }
 
-            String altoPath = node.getAttribute(Constants.ATTR_ALTO_PATH);
-            if (altoPath != null && !"".equals(altoPath)) {
-                newObj.setAltoPath(altoPath);
-            }
-
-            String ocrPath = node.getAttribute(Constants.ATTR_OCR_PATH);
-            if (ocrPath != null && !"".equals(ocrPath)) {
-                newObj.setOcrPath(ocrPath);
+            String aditionalInfoOrOcr = node.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+            if (aditionalInfoOrOcr != null && !"".equals(aditionalInfoOrOcr)) {
+                newObj.setAditionalInfoOrOcr(aditionalInfoOrOcr);
             }
 
             newObj.setPath(imgUuid);
-            newObj.setPageType(node.getAttribute(Constants.ATTR_PAGE_TYPE));
+
             createChildrenStructure(tree, node, bundle, visible, processedPages, newObj);
             if (model == DigitalObjectModel.PAGE) {
                 processedPages.put(imgUuid, newObj);
@@ -548,33 +547,29 @@ public class ClientUtils {
     }
 
     private static TreeStructureNode toNode(Record treeNode, int order) {
-        String type = treeNode.getAttribute(Constants.ATTR_TYPE);
+        String modelId = treeNode.getAttribute(Constants.ATTR_MODEL_ID);
 
-        return new TreeStructureNode(type == null ? null : treeNode.getAttribute(Constants.ATTR_ID),
+        return new TreeStructureNode(treeNode.getAttribute(Constants.ATTR_ID),
                                      treeNode.getAttribute(Constants.ATTR_PARENT),
                                      trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
-                                     treeNode.getAttribute(Constants.ATTR_PICTURE),
-                                     type == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : type,
-                                     type == null ? String.valueOf(order) : treeNode
-                                             .getAttribute(Constants.ATTR_TYPE_ID),
-                                     treeNode.getAttribute(Constants.ATTR_PAGE_TYPE),
-                                     treeNode.getAttribute(Constants.ATTR_DATE_ISSUED),
-                                     treeNode.getAttribute(Constants.ATTR_ALTO_PATH),
-                                     type == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
-                                             .getAttribute(Constants.ATTR_OCR_PATH),
-                                     treeNode.getAttribute(Constants.ATTR_NOTE),
-                                     treeNode.getAttribute(Constants.ATTR_GENRE_TYPE),
-                                     treeNode.getAttribute(Constants.ATTR_SEQUENCE_NUMBER),
+                                     treeNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                                     modelId == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : modelId,
+                                     modelId == null ? String.valueOf(order) : treeNode
+                                             .getAttribute(Constants.ATTR_TYPE),
+                                     treeNode.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
+                                     treeNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
+                                     treeNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
+                                     treeNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
     public static ScanRecord toScanRecord(TreeStructureNode node) {
         ScanRecord rec =
                 new ScanRecord(node.getPropName(),
-                               node.getPropType(),
-                               node.getPropPicture(),
-                               node.getPropOcrPath(),
-                               node.getPropPageType());
+                               node.getPropModelId(),
+                               node.getPropPictureOrUuid(),
+                               node.getPropId(),
+                               node.getPropType());
         return rec;
     }
 
@@ -583,18 +578,15 @@ public class ClientUtils {
                 new SubstructureTreeNode(node.getPropId(),
                                          node.getPropParent(),
                                          node.getPropName(),
-                                         node.getPropPicture(),
+                                         node.getPropPictureOrUuid(),
+                                         node.getPropModelId(),
                                          node.getPropType(),
-                                         node.getPropTypeId(),
-                                         node.getPropPageType(),
-                                         node.getPropDateIssued(),
-                                         node.getPropNote(),
-                                         node.getPropGenreType(),
-                                         node.getPropSequenceNumber(),
+                                         node.getPropDateOrIntPartName(),
+                                         node.getPropNoteOrIntSubtitle(),
+                                         node.getPropPartNumberOrAlto(),
+                                         node.getPropAditionalInfoOrOcr(),
                                          true,
                                          toBoolean(node.getPropName()));
-        subNode.setAttribute(Constants.ATTR_ALTO_PATH, node.getPropAltoPath());
-        subNode.setAttribute(Constants.ATTR_OCR_PATH, node.getPropOcrPath());
         return subNode;
     }
 
@@ -610,7 +602,7 @@ public class ClientUtils {
                 sb.append(' ');
             }
             sb.append(fyzNum);
-            sb.append(records[i].getAttribute(Constants.ATTR_PAGE_TYPE));
+            sb.append(records[i].getAttribute(Constants.ATTR_TYPE));
             sb.append("  --  ");
             sb.append(records[i].getAttribute(Constants.ATTR_NAME));
             sb.append("\n");

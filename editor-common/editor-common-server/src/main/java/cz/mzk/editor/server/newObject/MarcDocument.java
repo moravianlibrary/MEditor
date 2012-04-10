@@ -130,6 +130,7 @@ public class MarcDocument {
         return findValues(xpathString, doc);
     }
 
+    @SuppressWarnings("unchecked")
     private List<String> findValues(String xpathString, Node node) {
         XPath xpath = getXpath(xpathString);
         xpath.setNamespaceURIs(prefixNamespaceMap);

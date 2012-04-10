@@ -29,7 +29,6 @@ package cz.mzk.editor.client.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,7 +39,6 @@ import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
@@ -48,7 +46,6 @@ import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.DropEvent;
@@ -57,17 +54,11 @@ import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.FormItem;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -88,8 +79,9 @@ import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
+import cz.mzk.editor.client.view.other.LabelAndModelConverter;
+import cz.mzk.editor.client.view.other.SectionCreateLayout;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
-import cz.mzk.editor.client.view.window.AddNoteWindow;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.NewObjectBasicInfoWindow;
@@ -104,8 +96,6 @@ import cz.mzk.editor.shared.event.SaveStructureEvent;
 public class CreateObjectMenuView
         extends ViewWithUiHandlers<CreateObjectMenuUiHandlers>
         implements CreateObjectMenuPresenter.MyView {
-
-    public static final String CREATE_BUTTON_HAS_A_HANDLER = "CREATE_BUTTON_HAS_A_HANDLER";
 
     private final LangConstants lang;
 
@@ -123,24 +113,6 @@ public class CreateObjectMenuView
 
     private SectionStackSection structure;
 
-    private ButtonItem createButton;
-
-    private IButton addNoteButton;
-
-    private CheckboxItem keepCheckbox;
-
-    private SelectItem selectModel;
-
-    private TextItem name;
-
-    private TextItem sequenceNumber;
-
-    private TextItem dateIssued;
-
-    private CreateDynamicForm dateIssuedForm;
-
-    private SelectItem genreType;
-
     /** The layout. */
     private VLayout layout;
 
@@ -155,21 +127,7 @@ public class CreateObjectMenuView
     private List<Tree> redoList;
     private ImgButton redoButton;
 
-    private final VLayout createLayout;
-
     private final EventBus eventBus;
-
-    private static final class CreateDynamicForm
-            extends DynamicForm {
-
-        public CreateDynamicForm(FormItem item) {
-            super();
-            setItems(item);
-            setRight(5);
-        }
-    }
-
-    private VLayout otherLayout;
 
     /**
      * Instantiates a new digital object menu view.
@@ -199,7 +157,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setShowAllRecords(true);
         structureTreeGrid.setCanHover(true);
         structureTreeGrid.setHoverOpacity(75);
-        structureTreeGrid.setHoverWidth(300);
+        structureTreeGrid.setHoverWidth(350);
         structureTreeGrid.setCanEdit(true);
         structureTreeGrid.setCanReparentNodes(true);
         structureTreeGrid.setHoverStyle("interactImageHover");
@@ -317,14 +275,15 @@ public class CreateObjectMenuView
 
                     if (dropPlace != null) {
                         targetModel =
-                                DigitalObjectModel.parseString(dropPlace.getAttribute(Constants.ATTR_TYPE_ID));
+                                DigitalObjectModel.parseString(dropPlace
+                                        .getAttribute(Constants.ATTR_MODEL_ID));
                         List<DigitalObjectModel> possibleChildModels =
                                 NamedGraphModel.getChildren(targetModel);
 
                         if (tileGrid == null) {
                             movedModel =
                                     DigitalObjectModel.parseString(selection[0]
-                                            .getAttribute(Constants.ATTR_TYPE_ID));
+                                            .getAttribute(Constants.ATTR_MODEL_ID));
                         } else {
                             movedModel = DigitalObjectModel.PAGE;
                         }
@@ -355,7 +314,7 @@ public class CreateObjectMenuView
                             targetModel == DigitalObjectModel.PAGE ? structureTreeGrid.getTree()
                                     .getParent(targetNode) : targetNode;
                     final DigitalObjectModel parentModel =
-                            DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_TYPE_ID));
+                            DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_MODEL_ID));
 
                     if ((movedModel == DigitalObjectModel.PAGE
                             && targetModel == DigitalObjectModel.INTERNALPART || parentModel == DigitalObjectModel.INTERNALPART)) {
@@ -371,11 +330,12 @@ public class CreateObjectMenuView
                                         structureTreeGrid.getTree().getParent(structureTreeGrid.getTree()
                                                 .findById(record.getAttributeAsString(Constants.ATTR_ID)));
                                 if (DigitalObjectModel.parseString(recordParent
-                                        .getAttribute(Constants.ATTR_TYPE_ID)) != DigitalObjectModel.INTERNALPART) {
-                                    String uuidRecord = record.getAttributeAsString(Constants.ATTR_PICTURE);
+                                        .getAttribute(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.INTERNALPART) {
+                                    String uuidRecord =
+                                            record.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID);
                                     boolean found = false;
                                     for (Record misRecord : missingPages) {
-                                        if (misRecord.getAttributeAsString(Constants.ATTR_PICTURE)
+                                        if (misRecord.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
                                                 .equals(uuidRecord)) {
                                             found = true;
                                             break;
@@ -464,7 +424,7 @@ public class CreateObjectMenuView
             public void onClick(MenuItemClickEvent event) {
                 final Record[] selection = structureTreeGrid.getSelectedRecords();
                 DigitalObjectModel model =
-                        DigitalObjectModel.parseString(selection[0].getAttribute(Constants.ATTR_TYPE_ID));
+                        DigitalObjectModel.parseString(selection[0].getAttribute(Constants.ATTR_MODEL_ID));
                 new ConnectExistingObjectWindow(lang, true, model, eventBus) {
 
                     @Override
@@ -481,17 +441,16 @@ public class CreateObjectMenuView
                             TreeNode parent = structureTree.findById(parentId);
                             boolean parentIsTopLvl =
                                     NamedGraphModel.isTopLvlModel(DigitalObjectModel.parseString(parent
-                                            .getAttribute(Constants.ATTR_TYPE_ID)));
+                                            .getAttribute(Constants.ATTR_MODEL_ID)));
                             String newParentId = String.valueOf(getUiHandlers().newId());
 
                             // add new parent
                             addSubstructure(newParentId,
-                                            uuidField.getValueAsString(),
-                                            uuidField.getValueAsString(),
-                                            getUiHandlers().getLabelFromModel().get(getModel().getValue()),
-                                            getModel().getValue(),
                                             parent.getAttribute(parentIsTopLvl ? Constants.ATTR_ID
                                                     : Constants.ATTR_PARENT),
+                                            uuidField.getValueAsString(),
+                                            uuidField.getValueAsString(),
+                                            getModel().getValue(),
                                             "",
                                             "",
                                             "",
@@ -501,16 +460,15 @@ public class CreateObjectMenuView
                                             true);
                             for (Record rec : selection) {
                                 addSubstructure(String.valueOf(getUiHandlers().newId()),
-                                                rec.getAttribute(Constants.ATTR_NAME),
-                                                rec.getAttribute(Constants.ATTR_PICTURE),
-                                                rec.getAttribute(Constants.ATTR_TYPE),
-                                                rec.getAttribute(Constants.ATTR_TYPE_ID),
                                                 newParentId,
-                                                rec.getAttribute(Constants.ATTR_PAGE_TYPE),
-                                                rec.getAttribute(Constants.ATTR_DATE_ISSUED),
-                                                rec.getAttribute(Constants.ATTR_NOTE),
-                                                rec.getAttribute(Constants.ATTR_GENRE_TYPE),
-                                                rec.getAttribute(Constants.ATTR_SEQUENCE_NUMBER),
+                                                rec.getAttribute(Constants.ATTR_NAME),
+                                                rec.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                                                rec.getAttribute(Constants.ATTR_MODEL_ID),
+                                                rec.getAttribute(Constants.ATTR_TYPE),
+                                                rec.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
+                                                rec.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
+                                                rec.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
+                                                rec.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
                                                 true,
                                                 false);
                             }
@@ -537,7 +495,7 @@ public class CreateObjectMenuView
             public void onClick(MenuItemClickEvent event) {
                 DigitalObjectModel model =
                         DigitalObjectModel.parseString(structureTreeGrid.getSelectedRecords()[0]
-                                .getAttribute(Constants.ATTR_TYPE_ID));
+                                .getAttribute(Constants.ATTR_MODEL_ID));
 
                 new ConnectExistingObjectWindow(lang, false, model, eventBus) {
 
@@ -545,12 +503,11 @@ public class CreateObjectMenuView
                     protected void doAction(TextItem uuidField) {
                         addUndoRedo(true, false);
                         addSubstructure(String.valueOf(getUiHandlers().newId()),
-                                        uuidField.getValueAsString(),
-                                        uuidField.getValueAsString(),
-                                        getUiHandlers().getLabelFromModel().get(getModel().getValue()),
-                                        getModel().getValue(),
                                         structureTreeGrid.getSelectedRecords()[0]
                                                 .getAttribute(Constants.ATTR_ID),
+                                        uuidField.getValueAsString(),
+                                        uuidField.getValueAsString(),
+                                        getModel().getValue(),
                                         getModel() == DigitalObjectModel.PAGE ? Constants.PAGE_TYPES.NP
                                                 .toString() : "",
                                         "",
@@ -581,18 +538,18 @@ public class CreateObjectMenuView
 
                     @Override
                     protected void doSaveAction(ListGridRecord record, String name) {
-                        addUndoRedo(true, false);
-                        record.setAttribute(Constants.ATTR_NAME, name);
-                        if (getDateIssued() != null)
-                            record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
-                        if (getNote() != null) record.setAttribute(Constants.ATTR_NOTE, getNote());
-                        if (getGenreType() != null)
-                            record.setAttribute(Constants.ATTR_GENRE_TYPE, getGenreType());
-                        if (getIssueNumber() != null)
-                            record.setAttribute(Constants.ATTR_SEQUENCE_NUMBER, getIssueNumber());
-                        if (getPageType() != null)
-                            record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
-                        structureTreeGrid.redraw();
+                        //                        addUndoRedo(true, false);
+                        //                        record.setAttribute(Constants.ATTR_NAME, name);
+                        //                        if (getDateIssued() != null)
+                        //                            record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
+                        //                        if (getNote() != null) record.setAttribute(Constants.ATTR_NOTE, getNote());
+                        //                        if (getGenreType() != null)
+                        //                            record.setAttribute(Constants.ATTR_GENRE_TYPE, getGenreType());
+                        //                        if (getIssueNumber() != null)
+                        //                            record.setAttribute(Constants.ATTR_SEQUENCE_NUMBER, getIssueNumber());
+                        //                        if (getPageType() != null)
+                        //                            record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
+                        //                        structureTreeGrid.redraw();
                         hide();
                     }
                 };
@@ -637,13 +594,13 @@ public class CreateObjectMenuView
                 if (selection == null || selection.length == 0) {
                     return;
                 }
-                String modelStr = selection[0].getAttribute(Constants.ATTR_TYPE_ID);
+                String modelStr = selection[0].getAttribute(Constants.ATTR_MODEL_ID);
                 connect2ExEnabled = true;
                 removeSelectedEnabled = true;
                 for (int i = 0; i < selection.length; i++) {
                     // root mustn't be selected and all selected items must be of the same type
                     connect2ExEnabled &=
-                            (i == 0 || modelStr.equals(selection[i].getAttribute(Constants.ATTR_TYPE_ID)));
+                            (i == 0 || modelStr.equals(selection[i].getAttribute(Constants.ATTR_MODEL_ID)));
 
                     removeSelectedEnabled &=
                             !SubstructureTreeNode.ROOT_ID.equals(selection[i].getAttribute(Constants.ATTR_ID));
@@ -663,7 +620,7 @@ public class CreateObjectMenuView
                 //only one and only pages can be selected
                 if (addAltoEnabled =
                         editSelectedEnabled
-                                && selection[0].getAttribute(Constants.ATTR_TYPE_ID)
+                                && selection[0].getAttribute(Constants.ATTR_MODEL_ID)
                                         .equals(DigitalObjectModel.PAGE.getValue())) {
 
                     String altoPath = selection[0].getAttributeAsString(Constants.ATTR_ALTO_PATH);
@@ -697,10 +654,18 @@ public class CreateObjectMenuView
         TreeGridField typeField = new TreeGridField();
         typeField.setCanFilter(true);
         typeField.setCanEdit(false);
-        typeField.setName(Constants.ATTR_TYPE);
+        typeField.setName(Constants.ATTR_MODEL_ID);
         typeField.setTitle(lang.dcType());
         typeField.setWidth("40%");
         typeField.setCanSort(false);
+        typeField.setCellFormatter(new CellFormatter() {
+
+            @Override
+            public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+                return LabelAndModelConverter.getLabelFromModel().get(record
+                        .getAttribute(Constants.ATTR_MODEL_ID));
+            }
+        });
 
         TreeGridField nameField = new TreeGridField();
         nameField.setCanFilter(true);
@@ -715,15 +680,24 @@ public class CreateObjectMenuView
             public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
                 String altoPath = record.getAttributeAsString(Constants.ATTR_ALTO_PATH);
                 String ocrPath = record.getAttributeAsString(Constants.ATTR_OCR_PATH);
+                String stringToReturn = record.getAttributeAsString(Constants.ATTR_NAME);
+                if (record.getAttributeAsString(Constants.ATTR_NAME) == null
+                        || "".equals(record.getAttributeAsString(Constants.ATTR_NAME))) {
+                    if (DigitalObjectModel.parseString(record.getAttribute(Constants.ATTR_MODEL_ID)) == DigitalObjectModel.PERIODICALVOLUME)
+                        stringToReturn = record.getAttributeAsString(Constants.ATTR_PART_NUMBER_OR_ALTO);
+                }
+
                 if (ocrPath != null && !"".equals(ocrPath)) {
                     if (altoPath != null && !"".equals(altoPath)) {
-                        return "<img src=\"images/icons/16/ocrAlto.png\">".concat(record
-                                .getAttributeAsString(Constants.ATTR_NAME));
+                        stringToReturn =
+                                "<img src=\"images/icons/16/ocrAlto.png\">".concat(record
+                                        .getAttributeAsString(Constants.ATTR_NAME));
                     }
-                    return "<img src=\"images/icons/16/ocr.png\">".concat(record
-                            .getAttributeAsString(Constants.ATTR_NAME));
+                    stringToReturn =
+                            "<img src=\"images/icons/16/ocr.png\">".concat(record
+                                    .getAttributeAsString(Constants.ATTR_NAME));
                 }
-                return record.getAttributeAsString(Constants.ATTR_NAME);
+                return stringToReturn;
             }
         });
 
@@ -733,57 +707,6 @@ public class CreateObjectMenuView
         createStructure.setTitle(lang.createSubStructure());
         createStructure.setResizeable(true);
 
-        name = new TextItem();
-        name.setTitle(lang.name());
-
-        sequenceNumber = new TextItem();
-        sequenceNumber.setTitle(lang.issueNumber());
-        sequenceNumber.setWidth(50);
-
-        genreType = new SelectItem();
-        genreType.setTitle(lang.dcType());
-        LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>(Constants.GENRE_TYPES.MAP);
-        genreType.setValueMap(valueMap);
-        genreType.setValue(Constants.GENRE_TYPES.NORMAL.toString());
-        genreType.setWidth(90);
-
-        otherLayout = new VLayout(2);
-        otherLayout.setWidth100();
-
-        dateIssued = new TextItem();
-        dateIssued.setTitle(lang.dateIssued());
-        dateIssuedForm = new CreateDynamicForm(dateIssued);
-        HLayout issueNumberLayout = new HLayout(2);
-        issueNumberLayout.setWidth(271);
-        issueNumberLayout.setLayoutAlign(Alignment.RIGHT);
-        issueNumberLayout.addMember(new CreateDynamicForm(sequenceNumber));
-        issueNumberLayout.addMember(new CreateDynamicForm(genreType));
-        otherLayout.addMember(issueNumberLayout);
-
-        otherLayout.addMember(dateIssuedForm);
-
-        selectModel = new SelectItem();
-        selectModel.setTitle(lang.dcType());
-
-        keepCheckbox = new CheckboxItem();
-        keepCheckbox.setTitle(lang.keepOnRight());
-        createButton = new ButtonItem();
-        createButton.setTitle(lang.create());
-        createButton.setAlign(Alignment.CENTER);
-        createButton.setColSpan(2);
-        createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, false);
-
-        createLayout = new VLayout();
-        createLayout.setPadding(5);
-        createLayout.setWidth100();
-        createLayout.setExtraSpace(10);
-        createLayout.addMember(new CreateDynamicForm(name));
-        createLayout.addMember(new CreateDynamicForm(selectModel));
-        createLayout.addMember(new CreateDynamicForm(keepCheckbox));
-        createLayout.addMember(new CreateDynamicForm(createButton));
-        createLayout.setRight(10);
-
-        createStructure.setItems(createLayout);
         createStructure.setExpanded(true);
 
         structure = new SectionStackSection();
@@ -831,10 +754,10 @@ public class CreateObjectMenuView
 
         for (int i = 0; i < selection.length; i++) {
             boolean found = false;
-            String selPicture = selection[i].getAttribute(Constants.ATTR_PICTURE);
+            String selPicture = selection[i].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
             if (selPicture != null && !"".equals(selPicture)) {
                 for (int j = 0; j < allNodes.length; j++) {
-                    String childPicture = allNodes[j].getAttribute(Constants.ATTR_PICTURE);
+                    String childPicture = allNodes[j].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
                     if (childPicture != null && childPicture.equals(selPicture)) {
                         found = true;
                         break;
@@ -846,71 +769,6 @@ public class CreateObjectMenuView
             }
         }
         return missing;
-    }
-
-    @Override
-    public void setCreateVolumeItem(boolean setCreateVolumeItem,
-                                    boolean setCreateItem,
-                                    boolean setCreateMonographUnit,
-                                    String defaultDateIssued) {
-        boolean contains = createLayout.contains(otherLayout);
-
-        if (setCreateVolumeItem || setCreateMonographUnit) {
-            if (addNoteButton != null && otherLayout.contains(addNoteButton)) {
-                otherLayout.removeMember(addNoteButton);
-            }
-            if (setCreateItem) {
-                genreType.show();
-            } else {
-                genreType.hide();
-            }
-            addNoteButton = new IButton();
-            addNoteButton.setTitle(lang.addNote());
-            addNoteButton.setHeight(18);
-            addNoteButton.setWidth(140);
-            addNoteButton.setLayoutAlign(Alignment.CENTER);
-            addNoteButton.setExtraSpace(3);
-            otherLayout.addMember(addNoteButton);
-
-            addNoteButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-
-                @Override
-                public void onClick(ClickEvent event) {
-                    new AddNoteWindow(addNoteButton.getTitle(), eventBus, lang, addNoteButton.getPrompt()) {
-
-                        @Override
-                        protected void doSave(String note) {
-                            if (note != null && !"".equals(note)) {
-                                addNoteButton.setTitle(lang.modifyNote());
-                            } else {
-                                addNoteButton.setTitle(lang.addNote());
-                            }
-                            addNoteButton.setTooltip(note);
-                            hide();
-                        }
-                    };
-                }
-            });
-
-            if (setCreateVolumeItem || !setCreateMonographUnit) {
-                dateIssued.setDefaultValue(defaultDateIssued);
-                if (!otherLayout.contains(dateIssuedForm)) otherLayout.addMember(dateIssuedForm, 1);
-            } else {
-                if (otherLayout.contains(dateIssuedForm)) {
-                    otherLayout.removeMember(dateIssuedForm);
-                }
-            }
-
-            if (contains) {
-                createLayout.removeMember(otherLayout);
-            }
-            createLayout.addMember(otherLayout, 1);
-            otherLayout.redraw();
-        } else {
-            if (contains) {
-                createLayout.removeMember(otherLayout);
-            }
-        }
     }
 
     @Override
@@ -970,107 +828,36 @@ public class CreateObjectMenuView
         InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, false);
     }
 
-    @Override
-    public ButtonItem getCreateButton() {
-        return createButton;
-    }
-
-    @Override
-    public CheckboxItem getKeepCheckbox() {
-        return keepCheckbox;
-    }
-
-    @Override
-    public SelectItem getSelectModel() {
-        return selectModel;
-    }
-
-    @Override
-    public TextItem getNewName() {
-        return name;
-    }
-
-    @Override
-    public TextItem getDateIssued() {
-        return dateIssued;
-    }
-
-    @Override
-    public TextItem getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    @Override
-    public String getSelectedGenreType() {
-        return genreType.getValueAsString();
-    }
-
-    @Override
-    public IButton getNoteButton() {
-        return addNoteButton;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-
-    @Override
-    public void enableCheckbox(boolean isEnabled) {
-        if (isEnabled) {
-            keepCheckbox.enable();
-        } else {
-            keepCheckbox.disable();
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public void addSubstructure(String id,
-                                String name,
-                                String uuid,
-                                String type,
-                                String typeId,
                                 String parent,
-                                String pageType,
-                                String dateIssued,
-                                String note,
-                                String genreType,
-                                String sequenceNumber,
+                                String name,
+                                String pictureOrUuid,
+                                String modelId,
+                                String type,
+                                String dateOrIntPartName,
+                                String noteOrIntSubtitle,
+                                String partNumberOrAlto,
+                                String aditionalInfoOrOcr,
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
         structureTree.add(new SubstructureTreeNode(id,
                                                    parent,
                                                    name,
-                                                   uuid,
+                                                   pictureOrUuid,
+                                                   modelId,
                                                    type,
-                                                   typeId,
-                                                   pageType,
-                                                   dateIssued,
-                                                   note,
-                                                   genreType,
-                                                   sequenceNumber,
+                                                   dateOrIntPartName,
+                                                   noteOrIntSubtitle,
+                                                   partNumberOrAlto,
+                                                   aditionalInfoOrOcr,
                                                    isOpen,
                                                    exist), parentNode);
         structureTreeGrid.setData(structureTree);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasCreateButtonAClickHandler() {
-        return createButton.getAttributeAsBoolean(CREATE_BUTTON_HAS_A_HANDLER);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setCreateButtonHasAClickHandler() {
-        createButton.setAttribute(CREATE_BUTTON_HAS_A_HANDLER, true);
     }
 
     /**
@@ -1116,14 +903,13 @@ public class CreateObjectMenuView
                         new SubstructureTreeNode(childNode.getAttribute(Constants.ATTR_ID),
                                                  childNode.getAttribute(Constants.ATTR_PARENT),
                                                  childNode.getAttribute(Constants.ATTR_NAME),
-                                                 childNode.getAttribute(Constants.ATTR_PICTURE),
+                                                 childNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                                                 childNode.getAttribute(Constants.ATTR_MODEL_ID),
                                                  childNode.getAttribute(Constants.ATTR_TYPE),
-                                                 childNode.getAttribute(Constants.ATTR_TYPE_ID),
-                                                 childNode.getAttribute(Constants.ATTR_PAGE_TYPE),
-                                                 childNode.getAttribute(Constants.ATTR_DATE_ISSUED),
-                                                 childNode.getAttribute(Constants.ATTR_NOTE),
-                                                 childNode.getAttribute(Constants.ATTR_GENRE_TYPE),
-                                                 childNode.getAttribute(Constants.ATTR_SEQUENCE_NUMBER),
+                                                 childNode.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
+                                                 childNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
+                                                 childNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
+                                                 childNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
                                                  childNode.getAttributeAsBoolean("isOpen"),
                                                  childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
                 String altoPath = childNode.getAttributeAsString(Constants.ATTR_ALTO_PATH);
@@ -1192,4 +978,13 @@ public class CreateObjectMenuView
         });
         return menuButton;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSectionCreateLayout(SectionCreateLayout sectionCreateLayout) {
+        createStructure.setItems(sectionCreateLayout);
+    }
+
 }

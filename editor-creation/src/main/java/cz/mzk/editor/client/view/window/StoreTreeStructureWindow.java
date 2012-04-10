@@ -39,9 +39,11 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
+
 
 /**
  * @author Jiri Kremser
@@ -76,14 +78,18 @@ public class StoreTreeStructureWindow
         storingWindow = null;
     }
 
+    //    noteOrIntSubtitle
     private StoreTreeStructureWindow(final TreeStructureBundle structure,
                                      final String treeString,
                                      final String pagesString,
                                      final LangConstants lang,
                                      final DispatchAsync dispatcher,
                                      final EventBus eventBus) {
-        super(550, 620, lang.save() + ": " + structure.getNodes().get(0).getPropType() + " " + lang.name()
-                + ": " + structure.getNodes().get(0).getPropName(), eventBus, 40);
+        super(550, 620, lang.save()
+                + ": "
+                + LabelAndModelConverter.getLabelFromModel()
+                        .get(structure.getNodes().get(0).getPropModelId()) + " " + lang.name() + ": "
+                + structure.getNodes().get(0).getPropName(), eventBus, 40);
         this.lang = lang;
 
         Layout mainLayout = new VLayout();

@@ -38,6 +38,7 @@ import org.dom4j.Element;
 import org.dom4j.QName;
 
 import cz.mzk.editor.client.mods.ModsTypeClient;
+import cz.mzk.editor.client.mods.TitleInfoTypeClient;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
@@ -63,7 +64,7 @@ public abstract class FoxmlBuilder {
     private String signature;
     private String sysno;
     private String label;
-    private String pageType;
+    private String type;
     private int pageIndex;
     private Policy policy = Policy.PRIVATE;
     private final List<RelsExtRelation> children;
@@ -78,10 +79,11 @@ public abstract class FoxmlBuilder {
     private String krameriusUrl;
     private String alephUrl;
     private String imageUrl;
-    private String dateIssued;
-    private String note;
-    private String genreType;
-    private String sequenceNumber;
+
+    private String dateOrIntPartName;
+    private String noteOrIntSubtitle;
+    private String partNumber;
+    private String aditionalInfo;
 
     private static final Boolean VERSIONABLE = true;
 
@@ -307,12 +309,19 @@ public abstract class FoxmlBuilder {
         this.label = label;
     }
 
-    public String getPageType() {
-        return pageType;
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
     }
 
-    public void setPageType(String pageType) {
-        this.pageType = pageType;
+    /**
+     * @param type
+     *        the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getPid() {
@@ -401,43 +410,71 @@ public abstract class FoxmlBuilder {
     }
 
     /**
-     * @return the dateIssued
-     */
-
-    public String getDateIssued() {
-        return dateIssued;
-    }
-
-    /**
-     * @param dateIssued
-     *        the dateIssued to set
-     */
-
-    public void setDateIssued(String dateIssued) {
-        this.dateIssued = dateIssued;
-    }
-
-    /**
-     * @return the note
-     */
-    public String getNote() {
-        return note;
-    }
-
-    /**
-     * @param note
-     *        the note to set
-     */
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    /**
      * @return the pageIndex
      */
 
     public int getPageIndex() {
         return pageIndex;
+    }
+
+    /**
+     * @return the dateOrIntPartName
+     */
+    public String getDateOrIntPartName() {
+        return dateOrIntPartName;
+    }
+
+    /**
+     * @param dateOrIntPartName
+     *        the dateOrIntPartName to set
+     */
+    public void setDateOrIntPartName(String dateOrIntPartName) {
+        this.dateOrIntPartName = dateOrIntPartName;
+    }
+
+    /**
+     * @return the noteOrIntSubtitle
+     */
+    public String getNoteOrIntSubtitle() {
+        return noteOrIntSubtitle;
+    }
+
+    /**
+     * @param noteOrIntSubtitle
+     *        the noteOrIntSubtitle to set
+     */
+    public void setNoteOrIntSubtitle(String noteOrIntSubtitle) {
+        this.noteOrIntSubtitle = noteOrIntSubtitle;
+    }
+
+    /**
+     * @return the partNumber
+     */
+    public String getPartNumber() {
+        return partNumber;
+    }
+
+    /**
+     * @param partNumber
+     *        the partNumber to set
+     */
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    /**
+     * @return the aditionalInfo
+     */
+    public String getAditionalInfo() {
+        return aditionalInfo;
+    }
+
+    /**
+     * @param aditionalInfo
+     *        the aditionalInfo to set
+     */
+    public void setAditionalInfo(String aditionalInfo) {
+        this.aditionalInfo = aditionalInfo;
     }
 
     /**
@@ -447,36 +484,6 @@ public abstract class FoxmlBuilder {
 
     public void setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
-    }
-
-    /**
-     * @return the genreType
-     */
-    public String getGenreType() {
-        return genreType;
-    }
-
-    /**
-     * @param genreType
-     *        the genreType to set
-     */
-    public void setGenreType(String genreType) {
-        this.genreType = genreType;
-    }
-
-    /**
-     * @return the sequenceNumber
-     */
-    public String getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    /**
-     * @param sequenceNumber
-     *        the sequenceNumber to set
-     */
-    public void setSequenceNumber(String sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     public void setBundle(MetadataBundle bundle) {
@@ -515,7 +522,7 @@ public abstract class FoxmlBuilder {
         return typeOfResourceValue;
     }
 
-    protected String getLanguage() {
+    protected String getRootLanguage() {
         String language = null;
 
         ModsTypeClient mods = getFirstMods();
@@ -526,5 +533,32 @@ public abstract class FoxmlBuilder {
         }
 
         return language;
+    }
+
+    private TitleInfoTypeClient getFirstTitleInfo() {
+        ModsTypeClient mods = getFirstMods();
+        if (mods != null && mods.getTitleInfo() != null && mods.getTitleInfo().size() > 0
+                && mods.getTitleInfo().get(0) != null) return mods.getTitleInfo().get(0);
+        return null;
+    }
+
+    protected String getRootTitle() {
+        String title = null;
+        TitleInfoTypeClient firstTitleInfo = getFirstTitleInfo();
+        if (firstTitleInfo != null && firstTitleInfo.getTitle() != null
+                && firstTitleInfo.getTitle().size() > 0) title = firstTitleInfo.getTitle().get(0);
+        return title;
+    }
+
+    protected String getRootSubtitle() {
+        String subtitle = null;
+        TitleInfoTypeClient firstTitleInfo = getFirstTitleInfo();
+        if (firstTitleInfo != null && firstTitleInfo.getSubTitle() != null
+                && firstTitleInfo.getSubTitle().size() > 0) subtitle = firstTitleInfo.getSubTitle().get(0);
+        return subtitle;
+    }
+
+    protected boolean isNotNullOrEmpty(String string) {
+        return string != null && !"".equals(string);
     }
 }

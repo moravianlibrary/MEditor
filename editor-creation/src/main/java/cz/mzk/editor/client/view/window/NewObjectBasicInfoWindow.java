@@ -42,7 +42,9 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+
 
 /**
  * @author Matous Jobanek
@@ -72,11 +74,11 @@ public abstract class NewObjectBasicInfoWindow
         }
     }
 
-    private TextItem dateIssuedItem = null;
+    private final TextItem dateIssuedItem = null;
     private TextAreaItem noteItem = null;
     private SelectItem pageTypeItem = null;
-    private TextItem issueNumberItem = null;
-    private SelectItem genreTypeItem = null;
+    private final TextItem issueNumberItem = null;
+    private final SelectItem genreTypeItem = null;
 
     /**
      * @param structureTreeGrid
@@ -86,7 +88,10 @@ public abstract class NewObjectBasicInfoWindow
      */
 
     public NewObjectBasicInfoWindow(final ListGridRecord record, LangConstants lang, EventBus eventBus) {
-        super(120, 420, lang.menuEdit() + " " + record.getAttributeAsString(Constants.ATTR_TYPE) + ": "
+        super(120, 420, lang.menuEdit()
+                + " "
+                + LabelAndModelConverter.getLabelFromModel()
+                        .get(record.getAttributeAsString(Constants.ATTR_MODEL_ID)) + ": "
                 + record.getAttributeAsString(Constants.ATTR_NAME), eventBus, 10);
 
         setAlign(Alignment.LEFT);
@@ -95,56 +100,56 @@ public abstract class NewObjectBasicInfoWindow
         final TextItem nameItem = new TextItem("name", lang.name());
         nameItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NAME));
         boolean isPeriodicalItem =
-                record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                record.getAttributeAsString(Constants.ATTR_MODEL_ID)
                         .equals(DigitalObjectModel.PERIODICALITEM.getValue());
         if (isPeriodicalItem
-                || record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+                || record.getAttributeAsString(Constants.ATTR_MODEL_ID)
                         .equals(DigitalObjectModel.PERIODICALVOLUME.getValue())) {
 
-            issueNumberItem = new TextItem("issueNumber", lang.issueNumber());
-            issueNumberItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_SEQUENCE_NUMBER));
+            //            issueNumberItem = new TextItem("issueNumber", lang.issueNumber());
+            //            issueNumberItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_SEQUENCE_NUMBER));
+            //
+            //            dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
+            //            dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
+            //
+            //            noteItem = new TextAreaItem("note", lang.note());
+            //            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+            //            noteItem.setHeight(60);
+            //
+            //            if (isPeriodicalItem) {
+            //                genreTypeItem = new SelectItem();
+            //                genreTypeItem.setWidth(100);
+            //                genreTypeItem.setTitle(lang.dcType());
+            //
+            //                LinkedHashMap<String, String> valueMap =
+            //                        new LinkedHashMap<String, String>(Constants.GENRE_TYPES.MAP);
+            //                genreTypeItem.setValueMap(valueMap);
+            //                String genreType = record.getAttribute(Constants.ATTR_GENRE_TYPE);
+            //
+            //                if (genreType != null && !"".equals(genreType)) {
+            //                    genreTypeItem.setDefaultValue(genreType);
+            //                }
+            //                mainLayout.addMember(new MyDynamicForm(nameItem,
+            //                                                       issueNumberItem,
+            //                                                       genreTypeItem,
+            //                                                       dateIssuedItem,
+            //                                                       noteItem));
+            //                setHeight(300);
+            //            } else {
+            //                mainLayout.addMember(new MyDynamicForm(nameItem, issueNumberItem, dateIssuedItem, noteItem));
+            //                setHeight(270);
+            //            }
 
-            dateIssuedItem = new TextItem("dateIssued", lang.dateIssued());
-            dateIssuedItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_DATE_ISSUED));
-
-            noteItem = new TextAreaItem("note", lang.note());
-            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
-            noteItem.setHeight(60);
-
-            if (isPeriodicalItem) {
-                genreTypeItem = new SelectItem();
-                genreTypeItem.setWidth(100);
-                genreTypeItem.setTitle(lang.dcType());
-
-                LinkedHashMap<String, String> valueMap =
-                        new LinkedHashMap<String, String>(Constants.GENRE_TYPES.MAP);
-                genreTypeItem.setValueMap(valueMap);
-                String genreType = record.getAttribute(Constants.ATTR_GENRE_TYPE);
-
-                if (genreType != null && !"".equals(genreType)) {
-                    genreTypeItem.setDefaultValue(genreType);
-                }
-                mainLayout.addMember(new MyDynamicForm(nameItem,
-                                                       issueNumberItem,
-                                                       genreTypeItem,
-                                                       dateIssuedItem,
-                                                       noteItem));
-                setHeight(300);
-            } else {
-                mainLayout.addMember(new MyDynamicForm(nameItem, issueNumberItem, dateIssuedItem, noteItem));
-                setHeight(270);
-            }
-
-        } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+        } else if (record.getAttributeAsString(Constants.ATTR_MODEL_ID)
                 .equals(DigitalObjectModel.MONOGRAPHUNIT.getValue())) {
 
             noteItem = new TextAreaItem("note", lang.note());
-            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
+            //            noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE));
             noteItem.setHeight(60);
             mainLayout.addMember(new MyDynamicForm(nameItem, noteItem));
             setHeight(200);
 
-        } else if (record.getAttributeAsString(Constants.ATTR_TYPE_ID)
+        } else if (record.getAttributeAsString(Constants.ATTR_MODEL_ID)
                 .equals(DigitalObjectModel.PAGE.getValue())) {
             pageTypeItem = new SelectItem();
             pageTypeItem.setWidth(100);
@@ -153,10 +158,10 @@ public abstract class NewObjectBasicInfoWindow
             LinkedHashMap<String, String> valueMap =
                     new LinkedHashMap<String, String>(Constants.PAGE_TYPES.MAP);
             pageTypeItem.setValueMap(valueMap);
-            String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
-            if (pageType != null && !"".equals(pageType)) {
-                pageTypeItem.setDefaultValue(pageType);
-            }
+            //            String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
+            //            if (pageType != null && !"".equals(pageType)) {
+            //                pageTypeItem.setDefaultValue(pageType);
+            //            }
             mainLayout.addMember(new MyDynamicForm(nameItem, pageTypeItem));
             setHeight(160);
         } else {

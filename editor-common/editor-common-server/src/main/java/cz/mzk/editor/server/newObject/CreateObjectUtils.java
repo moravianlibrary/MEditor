@@ -119,24 +119,20 @@ public class CreateObjectUtils {
         if (node.getUuid() == null || attempt != Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
             node.setUuid(FoxmlUtils.getRandomUuid());
         }
+        boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
+
         builder.setUuid(node.getUuid());
         builder.setDcXmlContent(dc);
         builder.setModsXmlContent(mods);
         builder.setBundle(node.getBundle());
-        builder.setPageType(node.getPageType());
+        builder.setType(node.getType());
         builder.setPolicy(node.getVisible() ? Policy.PUBLIC : Policy.PRIVATE);
-        if (node.getModel() == DigitalObjectModel.PERIODICALVOLUME
-                || node.getModel() == DigitalObjectModel.PERIODICALITEM) {
-            builder.setDateIssued(node.getDateIssued());
-            builder.setNote(node.getNote());
-            builder.setSequenceNumber(node.getSequenceNumber());
-            if (node.getModel() == DigitalObjectModel.PERIODICALITEM)
-                builder.setGenreType(node.getGenreType());
-        } else if (node.getModel() == DigitalObjectModel.MONOGRAPHUNIT) {
-            builder.setNote(node.getNote());
-            builder.setSequenceNumber(node.getSequenceNumber());
+        builder.setDateOrIntPartName(node.getDateOrIntPartName());
+        builder.setNoteOrIntSubtitle(node.getNoteOrIntSubtitle());
+        if (!isPage) {
+            builder.setPartNumber(node.getPartNumberOrAlto());
+            builder.setAditionalInfo(node.getAditionalInfoOrOcr());
         }
-
         if (node.getModel() == DigitalObjectModel.PAGE) {
             builder.setPageIndex(node.getPageIndex());
         }
@@ -156,7 +152,7 @@ public class CreateObjectUtils {
         boolean internal = config.getImageServerInternal();
         String imageUrl = null;
         String newFilePath = null;
-        boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
+
         if (isPage) {
             String url = config.getImageServerUrl();
             url = addSlash(url);
@@ -206,12 +202,12 @@ public class CreateObjectUtils {
                 }
             }
 
-            String ocrPath = node.getOcrPath();
+            String ocrPath = node.getAditionalInfoOrOcr();
             if (ocrPath != null && !"".equals(ocrPath)) {
                 insertAltoOcr(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath);
             }
 
-            String altoPath = node.getAltoPath();
+            String altoPath = node.getPartNumberOrAlto();
             if (altoPath != null && !"".equals(altoPath)) {
                 insertAltoOcr(DATASTREAM_ID.ALTO, node.getUuid(), altoPath);
             }

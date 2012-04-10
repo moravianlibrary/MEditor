@@ -25,15 +25,15 @@
 package cz.mzk.editor.client.uihandlers;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.event.shared.HasHandlers;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import cz.mzk.editor.client.view.other.SectionCreateLayout;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
-import cz.mzk.editor.shared.domain.DigitalObjectModel;
+
 
 /**
  * @author Jiri Kremser
@@ -43,10 +43,6 @@ public interface CreateObjectMenuUiHandlers
         extends UiHandlers {
 
     void revealItem(String uuid);
-
-    Map<String, DigitalObjectModel> getModelFromLabel();
-
-    Map<String, String> getLabelFromModel();
 
     void getModel(String valueAsString, ConnectExistingObjectWindow window);
 
@@ -60,5 +56,7 @@ public interface CreateObjectMenuUiHandlers
     HasHandlers getBus();
 
     void addPages(List<Record> pages, String parent);
+
+    SectionCreateLayout getSectionCreateLayout();
 
 }

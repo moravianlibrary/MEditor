@@ -188,9 +188,9 @@ public class Constants {
     /** The Constant ATTR_SURNAME. */
     public static final String ATTR_SURNAME = "surname";
 
-    public static final String ATTR_TYPE = "type";
+    //    public static final String ATTR_TYPE_to_delete = "type";
 
-    public static final String ATTR_TYPE_ID = Constants.ATTR_TYPE + Constants.ATTR_ID;
+    public static final String ATTR_MODEL_ID = "modelId";
 
     public static final String ATTR_CREATE = "create";
 
@@ -210,8 +210,8 @@ public class Constants {
     /** The Constant ATTR_GENERIC_ID. */
     public static final String ATTR_GENERIC_ID = "id";
 
-    /** The Constant ATTR_PICTURE. */
-    public static final String ATTR_PICTURE = "picture";
+    /** The Constant ATTR_PICTURE_OR_UUID. */
+    public static final String ATTR_PICTURE_OR_UUID = "pictureOrUuid";
 
     /** The Constant ATTR_BARCODE. */
     public static final String ATTR_BARCODE = "barcode";
@@ -226,19 +226,19 @@ public class Constants {
     public static final String ATTR_OCR_PATH = "ocrPath";
 
     /** The Constant ATTR_PAGE_TYPE. */
-    public static final String ATTR_PAGE_TYPE = "pageType";
+    public static final String ATTR_TYPE = "type";
 
-    /** The Constant ATTR_SEQUENCE_NUMBER. */
-    public static final String ATTR_SEQUENCE_NUMBER = "sequenceNumber";
+    /** The Constant ATTR_PART_NUMBER_OR_ALTO. */
+    public static final String ATTR_PART_NUMBER_OR_ALTO = "partNumberOrAlto";
 
-    /** The Constant ATTR_GENRE_TYPE. */
-    public static final String ATTR_GENRE_TYPE = "genreType";
+    /** The Constant ATTR_DATE_OR_INT_PART_NAME. */
+    public static final String ATTR_DATE_OR_INT_PART_NAME = "dateOrIntPartName";
 
-    /** The Constant ATTR_DATE_ISSUED. */
-    public static final String ATTR_DATE_ISSUED = "dateIssued";
+    /** The Constant ATTR_NOTE_OR_INT_SUBTITLE. */
+    public static final String ATTR_NOTE_OR_INT_SUBTITLE = "noteOrIntSubtitle";
 
-    /** The Constant ATTR_NOTE. */
-    public static final String ATTR_NOTE = "note";
+    /** The Constant ATTR_ADITIONAL_INFO_OR_OCR. */
+    public static final String ATTR_ADITIONAL_INFO_OR_OCR = "aditionalInfoOrOcr";
 
     /** The Constant ATTR_INGEST_INFO. */
     public static final String ATTR_INGEST_INFO = "ingestInfo";
@@ -553,20 +553,163 @@ public class Constants {
         }
     }
 
-    public static enum GENRE_TYPES {
+    public static enum PERIODICAL_ITEM_GENRE_TYPES {
 
-        NORMAL, MORNING, AFTERNOON, EVENING, SEQUENCE_X, CORRECTED, SPECIAL, SUPPLEMENT;
+        AFTERNOON, CORRECTED, EVENING, MORNING, NORMAL, SEQUENCE_X, SPECIAL, SUPPLEMENT;
 
         public static Map<String, String> MAP = new HashMap<String, String>();
         static {
-            MAP.put(GENRE_TYPES.AFTERNOON.toString(), "Afternoon");
-            MAP.put(GENRE_TYPES.CORRECTED.toString(), "Corrected");
-            MAP.put(GENRE_TYPES.EVENING.toString(), "Evening");
-            MAP.put(GENRE_TYPES.MORNING.toString(), "Morning");
-            MAP.put(GENRE_TYPES.NORMAL.toString(), "Normal");
-            MAP.put(GENRE_TYPES.SEQUENCE_X.toString(), "Sequence_X");
-            MAP.put(GENRE_TYPES.SPECIAL.toString(), "Special");
-            MAP.put(GENRE_TYPES.SUPPLEMENT.toString(), "Supplement");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.AFTERNOON.toString(), "Afternoon");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.CORRECTED.toString(), "Corrected");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.EVENING.toString(), "Evening");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.MORNING.toString(), "Morning");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.NORMAL.toString(), "Normal");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString(), "Sequence_X");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.SPECIAL.toString(), "Special");
+            MAP.put(PERIODICAL_ITEM_GENRE_TYPES.SUPPLEMENT.toString(), "Supplement");
+        }
+    }
+
+    public static enum INTERNAL_PART_LEVEL_NAMES {
+        MODS_ART("MODS_ART_XXXX"), MODS_PICT("MODS_PICT_XXXX"), MODS_CHAPTER("MODS_CHAPTER_XXXX"),
+        MODS_PICTURE("MODS_PICTURE_XXXX");
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+            MAP.put(INTERNAL_PART_LEVEL_NAMES.MODS_ART.toString(), "article");
+            MAP.put(INTERNAL_PART_LEVEL_NAMES.MODS_PICT.toString(), "picture");
+            MAP.put(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.toString(), "picture");
+            MAP.put(INTERNAL_PART_LEVEL_NAMES.MODS_PICTURE.toString(), "picture");
+        }
+
+        private final String value;
+
+        private INTERNAL_PART_LEVEL_NAMES(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum PERIODICAL_ITEM_LEVEL_NAMES {
+        MODS_ISSUE("MODS_ISSUE_0001"), MODS_SUPPL("MODS_SUPPL_XXXX");
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+            MAP.put(PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.toString(), "issue");
+            MAP.put(PERIODICAL_ITEM_LEVEL_NAMES.MODS_SUPPL.toString(), "supplement");
+        }
+
+        private final String value;
+
+        private PERIODICAL_ITEM_LEVEL_NAMES(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        /**
+         * Parses the string.
+         * 
+         * @param s
+         *        the s
+         * @return the model
+         */
+        public static PERIODICAL_ITEM_LEVEL_NAMES parseString(String s) {
+            PERIODICAL_ITEM_LEVEL_NAMES[] values = PERIODICAL_ITEM_LEVEL_NAMES.values();
+            for (PERIODICAL_ITEM_LEVEL_NAMES levelName : values) {
+                if (levelName.getValue().equalsIgnoreCase(s)) return levelName;
+            }
+            throw new RuntimeException("Unsupported type: " + s);
+        }
+    }
+
+    public static enum MONOGRAPH_UNIT_LEVEL_NAMES {
+        MODS_SUPPL("MODS_SUPPL_XXXX");
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+            MAP.put(PERIODICAL_ITEM_LEVEL_NAMES.MODS_SUPPL.toString(), "supplement");
+        }
+
+        private final String value;
+
+        private MONOGRAPH_UNIT_LEVEL_NAMES(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum INTERNAL_PART_ARTICLE_GENRE_TYPES {
+
+        ABSTRACT, ADVERTISEMENT, BIBLIOGRAPHY, EDITORSNOTE, INDEX, INTRODUCTION, MAIN_ARTICLE, NEWS, PREFACE,
+        REVIEW, TABLE_OF_CONTENT, UNSPECIFIED;
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.ABSTRACT.toString(), "Abstract");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.ADVERTISEMENT.toString(), "Advertisement");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.BIBLIOGRAPHY.toString(), "Bibliography");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.EDITORSNOTE.toString(), "EditorsNote");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.INDEX.toString(), "Index");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.INTRODUCTION.toString(), "Introduction");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.MAIN_ARTICLE.toString(), "Main article");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.NEWS.toString(), "News");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.PREFACE.toString(), "Preface");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.REVIEW.toString(), "Review");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.TABLE_OF_CONTENT.toString(), "Table of content");
+            MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.UNSPECIFIED.toString(), "Unspecified");
+
+        }
+    }
+
+    public static enum INTERNAL_PART_PICTURE_GENRE_TYPES {
+
+        TABLE, ILLUSTRATION, CHART, PHOTOGRAPH, GRAPHIC, MAP_TYPE, ADVERTISEMENT, COVER, UNSPECIFIED;
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.ADVERTISEMENT.toString(), "Advertisement");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.CHART.toString(), "Chart");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.COVER.toString(), "Cover");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.GRAPHIC.toString(), "Graphic");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.ILLUSTRATION.toString(), "Illustration");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.MAP_TYPE.toString(), "Map");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.PHOTOGRAPH.toString(), "Photograph");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.TABLE.toString(), "Table");
+            MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.UNSPECIFIED.toString(), "Unspecified");
+        }
+    }
+
+    public static enum INTERNAL_PART_CHAPTER_GENRE_TYPES {
+
+        ABSTRACT, ADVERTISEMENT, ARTICLE, BIBLIOGRAPHY, CHAPTER, DEDICATION, EDITORSNOTE, INDEX,
+        INTRODUCTION, PREFACE, REVIEW, TABLE_OF_CONTENT, UNSPECIFIED;
+
+        public static Map<String, String> MAP = new HashMap<String, String>();
+        static {
+
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.ABSTRACT.toString(), "Abstract");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.ADVERTISEMENT.toString(), "Advertisement");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.ARTICLE.toString(), "Article");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.BIBLIOGRAPHY.toString(), "Bibliography");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.CHAPTER.toString(), "Chapter");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.DEDICATION.toString(), "Dedication");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.EDITORSNOTE.toString(), "EditorsNote");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.INDEX.toString(), "Index");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.INTRODUCTION.toString(), "Introduction");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.PREFACE.toString(), "Preface");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.REVIEW.toString(), "Review");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.TABLE_OF_CONTENT.toString(), "Table of content");
+            MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.UNSPECIFIED.toString(), "Unspecified");
         }
     }
 
@@ -677,4 +820,12 @@ public class Constants {
     public static final String TWO_PAGES_SEPARATOR = "|";
 
     public static final String SECTION_INPUT_ID = "input";
+
+    public static final String DATE_RRRR = "\\d{4}";
+    public static final String DATE_RRRR_RRRR = DATE_RRRR + "-" + DATE_RRRR;
+    public static final String DATE_MMRRRR = "\\d{2}\\." + DATE_RRRR;
+    public static final String DATE_MM_MMRRRR = "\\d{2}\\.-" + DATE_MMRRRR;
+    public static final String DATE_DDMMRRRR = "\\d{2}\\." + DATE_MMRRRR;
+    public static final String DATE_DD_DDMMRRRR = "\\d{2}\\.-" + DATE_DDMMRRRR;
+    public static final String ONLY_NUMBERS = "\\d*";
 }

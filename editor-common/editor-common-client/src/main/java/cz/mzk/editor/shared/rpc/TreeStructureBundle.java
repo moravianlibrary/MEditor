@@ -184,16 +184,13 @@ public class TreeStructureBundle
         private String propId;
         private String propParent;
         private String propName;
-        private String propPicture;
+        private String propPictureOrUuid;
+        private String propModelId;
         private String propType;
-        private String propTypeId;
-        private String propPageType;
-        private String propDateIssued;
-        private String propAltoPath;
-        private String propOcrPath;
-        private String propNote;
-        private String propGenreType;
-        private String propSequenceNumber;
+        private String propDateOrIntPartName;
+        private String propNoteOrIntSubtitle;
+        private String propPartNumberOrAlto;
+        private String propAditionalInfoOrOcr;
         private boolean propExist;
 
         public TreeStructureNode() {
@@ -203,165 +200,191 @@ public class TreeStructureBundle
         public TreeStructureNode(String propId,
                                  String propParent,
                                  String propName,
-                                 String propPicture,
+                                 String propPictureOrUuid,
+                                 String propModelId,
                                  String propType,
-                                 String propTypeId,
-                                 String propPageType,
-                                 String propDateIssued,
-                                 String propAltoPath,
-                                 String propOcrPath,
-                                 String propNote,
-                                 String propGenreType,
-                                 String propSequenceNumber,
+                                 String propDateOrIntPartName,
+                                 String noteOrIntSubtitle,
+                                 String propPartNumberOrAlto,
+                                 String propAditionalInfoOrOcr,
                                  boolean propExist) {
             super();
             this.propId = propId;
             this.propParent = propParent;
             this.propName = propName;
-            this.propPicture = propPicture;
+            this.propPictureOrUuid = propPictureOrUuid;
+            this.propModelId = propModelId;
             this.propType = propType;
-            this.propTypeId = propTypeId;
-            this.propPageType = propPageType;
-            this.propDateIssued = propDateIssued;
-            this.propAltoPath = propAltoPath;
-            this.propOcrPath = propOcrPath;
-            this.propNote = propNote;
-            this.propGenreType = propGenreType;
-            this.propSequenceNumber = propSequenceNumber;
+            this.propDateOrIntPartName = propDateOrIntPartName;
+            this.propNoteOrIntSubtitle = noteOrIntSubtitle;
+            this.propPartNumberOrAlto = propPartNumberOrAlto;
+            this.propAditionalInfoOrOcr = propAditionalInfoOrOcr;
             this.propExist = propExist;
         }
 
+        /**
+         * @return the propId
+         */
         public String getPropId() {
             return propId;
         }
 
+        /**
+         * @param propId
+         *        the propId to set
+         */
         public void setPropId(String propId) {
             this.propId = propId;
         }
 
+        /**
+         * @return the propParent
+         */
         public String getPropParent() {
             return propParent;
         }
 
+        /**
+         * @param propParent
+         *        the propParent to set
+         */
         public void setPropParent(String propParent) {
             this.propParent = propParent;
         }
 
+        /**
+         * @return the propName
+         */
         public String getPropName() {
             return propName;
         }
 
+        /**
+         * @param propName
+         *        the propName to set
+         */
         public void setPropName(String propName) {
             this.propName = propName;
         }
 
-        public String getPropPicture() {
-            return propPicture;
+        /**
+         * @return the propPictureOrUuid
+         */
+        public String getPropPictureOrUuid() {
+            return propPictureOrUuid;
         }
 
-        public void setPropPicture(String propPicture) {
-            this.propPicture = propPicture;
+        /**
+         * @param propPictureOrUuid
+         *        the propPictureOrUuid to set
+         */
+        public void setPropPictureOrUuid(String propPictureOrUuid) {
+            this.propPictureOrUuid = propPictureOrUuid;
         }
 
+        /**
+         * @return the propModelId
+         */
+        public String getPropModelId() {
+            return propModelId;
+        }
+
+        /**
+         * @param propModelId
+         *        the propModelId to set
+         */
+        public void setPropModelId(String propModelId) {
+            this.propModelId = propModelId;
+        }
+
+        /**
+         * @return the propType
+         */
         public String getPropType() {
             return propType;
         }
 
+        /**
+         * @param propType
+         *        the propType to set
+         */
         public void setPropType(String propType) {
             this.propType = propType;
         }
 
-        public String getPropTypeId() {
-            return propTypeId;
+        /**
+         * @return the propDateOrIntPartName
+         */
+        public String getPropDateOrIntPartName() {
+            return propDateOrIntPartName;
         }
 
-        public void setPropTypeId(String propTypeId) {
-            this.propTypeId = propTypeId;
+        /**
+         * @param propDateOrIntPartName
+         *        the propDateOrIntPartName to set
+         */
+        public void setPropDateOrIntPartName(String propDateOrIntPartName) {
+            this.propDateOrIntPartName = propDateOrIntPartName;
         }
 
-        public String getPropPageType() {
-            return propPageType;
+        /**
+         * @return the propNoteOrIntSubtitle
+         */
+        public String getPropNoteOrIntSubtitle() {
+            return propNoteOrIntSubtitle;
         }
 
-        public void setPropPageType(String propPageType) {
-            this.propPageType = propPageType;
+        /**
+         * @param propNoteOrIntSubtitle
+         *        the propNoteOrIntSubtitle to set
+         */
+        public void setPropNoteOrIntSubtitle(String propNoteOrIntSubtitle) {
+            this.propNoteOrIntSubtitle = propNoteOrIntSubtitle;
         }
 
-        public String getPropDateIssued() {
-            return propDateIssued;
+        /**
+         * @return the propPartNumberOrAlto
+         */
+        public String getPropPartNumberOrAlto() {
+            return propPartNumberOrAlto;
         }
 
-        public void setPropDateIssued(String propDateIssued) {
-            this.propDateIssued = propDateIssued;
+        /**
+         * @param propPartNumberOrAlto
+         *        the propPartNumberOrAlto to set
+         */
+        public void setPropPartNumberOrAlto(String propPartNumberOrAlto) {
+            this.propPartNumberOrAlto = propPartNumberOrAlto;
         }
 
-        public String getPropAltoPath() {
-            return propAltoPath;
+        /**
+         * @return the propAditionalInfoOrOcr
+         */
+        public String getPropAditionalInfoOrOcr() {
+            return propAditionalInfoOrOcr;
         }
 
-        public void setPropAltoPath(String propAltoPath) {
-            this.propAltoPath = propAltoPath;
+        /**
+         * @param propAditionalInfoOrOcr
+         *        the propAditionalInfoOrOcr to set
+         */
+        public void setPropAditionalInfoOrOcr(String propAditionalInfoOrOcr) {
+            this.propAditionalInfoOrOcr = propAditionalInfoOrOcr;
         }
 
-        public String getPropOcrPath() {
-            return propOcrPath;
-        }
-
-        public void setPropOcrPath(String propOcrPath) {
-            this.propOcrPath = propOcrPath;
-        }
-
-        public boolean getPropExist() {
+        /**
+         * @return the propExist
+         */
+        public boolean isPropExist() {
             return propExist;
         }
 
+        /**
+         * @param propExist
+         *        the propExist to set
+         */
         public void setPropExist(boolean propExist) {
             this.propExist = propExist;
-        }
-
-        /**
-         * @return the propNote
-         */
-        public String getPropNote() {
-            return propNote;
-        }
-
-        /**
-         * @param propNote
-         *        the propNote to set
-         */
-        public void setPropNote(String propNote) {
-            this.propNote = propNote;
-        }
-
-        /**
-         * @return the propGenreType
-         */
-        public String getPropGenreType() {
-            return propGenreType;
-        }
-
-        /**
-         * @param propGenreType
-         *        the propGenreType to set
-         */
-        public void setPropGenreType(String propGenreType) {
-            this.propGenreType = propGenreType;
-        }
-
-        /**
-         * @return the propSequenceNumber
-         */
-        public String getPropSequenceNumber() {
-            return propSequenceNumber;
-        }
-
-        /**
-         * @param propSequenceNumber
-         *        the propSequenceNumber to set
-         */
-        public void setPropSequenceNumber(String propSequenceNumber) {
-            this.propSequenceNumber = propSequenceNumber;
         }
 
     }

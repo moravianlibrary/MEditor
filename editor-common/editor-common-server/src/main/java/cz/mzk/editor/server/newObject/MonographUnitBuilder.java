@@ -24,12 +24,11 @@
 
 package cz.mzk.editor.server.newObject;
 
-import java.util.List;
-
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
@@ -56,24 +55,40 @@ public class MonographUnitBuilder
      */
     @Override
     protected void decorateMODSStream() {
-        String unitLabel = getLabel();
         Element modsCollection = FoxmlUtils.createModsCollectionEl();
         Namespace modsNs = Namespaces.mods;
         Element mods = modsCollection.addElement(new QName("mods", modsNs));
         mods.addAttribute("version", "3.3");
+        mods.addAttribute("ID", getAditionalInfo());
         Element idUrn = mods.addElement(new QName("identifier", modsNs));
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(unitLabel);
+        title.addText(getRootTitle());
+        if (isNotNullOrEmpty(getPartNumber())) {
+            Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
+            partNumber.addText(getPartNumber());
+        }
+        if (isNotNullOrEmpty(getLabel())) {
+            Element partName = titleInfo.addElement(new QName("partName", modsNs));
+            partName.addText(getLabel());
+        }
+
+        Element genre = mods.addElement(new QName("genre", modsNs));
+        String levelName = getAditionalInfo().substring(0, getAditionalInfo().indexOf("_", 6));
+        genre.addText(Constants.MONOGRAPH_UNIT_LEVEL_NAMES.MAP.get(levelName));
 
         Element originInfo = mods.addElement(new QName("originInfo", modsNs));
-        Element issuance = originInfo.addElement(new QName("issuance", modsNs));
-        issuance.addText("monographic");
+        Element dateIssued = originInfo.addElement(new QName("dateIssued", modsNs));
+        if (isNotNullOrEmpty(getDateOrIntPartName())) {
+            dateIssued.addText(getDateOrIntPartName());
+        } else {
+            dateIssued.addAttribute("qualifier", "approximate");
+        }
 
-        String language = getLanguage();
+        String language = getRootLanguage();
         if (language != null) {
             Element languageEl = mods.addElement(new QName("language", modsNs));
             Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
@@ -82,28 +97,10 @@ public class MonographUnitBuilder
             languageTerm.addText(language);
         }
 
-        Element part = mods.addElement(new QName("part", modsNs));
-        Element detail = part.addElement(new QName("detail", modsNs));
-        detail.addAttribute("type", "Chapter");
-        Element number = detail.addElement(new QName("number", modsNs));
-        number.addText(getSequenceNumber());
-
-        Element extent = part.addElement(new QName("extent", modsNs));
-        extent.addAttribute("unit", "pages");
-
-        List<RelsExtRelation> children = getChildren();
-
-        Element start = extent.addElement(new QName("start", modsNs));
-        start.addText(children.get(0).getTargetName());
-        Element end = extent.addElement(new QName("end", modsNs));
-        end.addText(children.get(children.size() - 1).getTargetName());
-        Element total = extent.addElement(new QName("total", modsNs));
-        total.addText(String.valueOf(children.size()));
-
-        if (getNote() != null && !"".equals(getNote())) {
+        if (isNotNullOrEmpty(getNoteOrIntSubtitle())) {
             Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
             Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
-            noteEl.addText(getNote());
+            noteEl.addText(getNoteOrIntSubtitle());
         }
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);

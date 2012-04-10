@@ -78,6 +78,7 @@ public class PeriodicalBuilder
         super(object);
     }
 
+    @SuppressWarnings("unchecked")
     private void updateDcDoc(Document dcDoc,
                              String pid,
                              String signature,
@@ -123,6 +124,7 @@ public class PeriodicalBuilder
         updateDcLanguages(dcDoc);
     }
 
+    @SuppressWarnings("unchecked")
     private void removeDcTypeElements(Document doc) {
         XPath typeXpath = Dom4jUtils.createXPath("/oai_dc:dc/dc:type");
         List<? extends Node> nodes = typeXpath.selectNodes(doc);
@@ -141,6 +143,7 @@ public class PeriodicalBuilder
         updateLanguages(dcDoc, languageXpath);
     }
 
+    @SuppressWarnings("unchecked")
     private void updateLanguages(Document doc, XPath xpath) {
         List<? extends Node> nodes = xpath.selectNodes(doc);
         for (Node languageNode : nodes) {

@@ -81,6 +81,7 @@ import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.CreateStructureView;
+import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.client.view.window.ChooseDetailWindow;
@@ -376,17 +377,17 @@ public class CreateStructurePresenter
         } else {
             name = sysno;
         }
+        leftPresenter.setRootModel(DigitalObjectModel.parseString(model));
         leftPresenter.getView().getSubelementsGrid().disable();
         leftPresenter.getView().getSubelementsGrid().selectAllRecords();
         leftPresenter.getView().getSubelementsGrid().removeSelectedData();
         leftPresenter.getView().getSubelementsGrid().enable();
         leftPresenter.getView().getSubelementsGrid().redraw();
         leftPresenter.getView().addSubstructure(SubstructureTreeNode.ROOT_OBJECT_ID,
+                                                SubstructureTreeNode.ROOT_ID,
                                                 name,
                                                 null,
                                                 model,
-                                                model,
-                                                SubstructureTreeNode.ROOT_ID,
                                                 "",
                                                 "",
                                                 "",
@@ -542,7 +543,7 @@ public class CreateStructurePresenter
                                 }
                                 for (ListGridRecord rec : selection) {
                                     if (!DigitalObjectModel.PAGE.getValue()
-                                            .equals(rec.getAttribute(Constants.ATTR_TYPE_ID))) {
+                                            .equals(rec.getAttribute(Constants.ATTR_MODEL_ID))) {
                                         SC.say("TODO Sem muzete pretahovat jen objekty typu stranka.");
                                         event.cancel();
                                         return;
@@ -718,28 +719,28 @@ public class CreateStructurePresenter
             public void onSelectionChanged(SelectionChangedEvent event) {
                 Record[] selection = getView().getTileGrid().getSelection();
                 if (selection != null && selection.length > 0) {
-                    leftPresenter.getView().getKeepCheckbox().enable();
+                    leftPresenter.getSectionCreateLayout().getKeepCheckbox().enable();
                 } else {
-                    leftPresenter.getView().getKeepCheckbox().disable();
+                    leftPresenter.getSectionCreateLayout().getKeepCheckbox().disable();
                 }
             }
         });
 
-        if (!leftPresenter.getView().hasCreateButtonAClickHandler()) {
-            leftPresenter.getView().getCreateButton().addClickHandler(new ClickHandler() {
+        if (!leftPresenter.getSectionCreateLayout().hasCreateButtonAClickHandler()) {
+            leftPresenter.getSectionCreateLayout().getCreateButton().addClickHandler(new ClickHandler() {
 
                 @Override
                 public void onClick(ClickEvent event) {
                     addNewStructure();
                 }
             });
-            leftPresenter.getView().setCreateButtonHasAClickHandler();
+            leftPresenter.getSectionCreateLayout().setCreateButtonHasAClickHandler();
         }
     }
 
     private void addNewStructure() {
-        final String type = leftPresenter.getView().getSelectModel().getValueAsString();
-        final DigitalObjectModel model = leftPresenter.getModelFromLabel().get(type);
+        final String type = leftPresenter.getSectionCreateLayout().getSelectModel().getValueAsString();
+        final DigitalObjectModel model = LabelAndModelConverter.getModelFromLabel().get(type);
 
         if (model != null) {
             final String parent =
@@ -747,7 +748,7 @@ public class CreateStructurePresenter
                             .getAttribute(Constants.ATTR_ID);
             final Record[] selection = getView().getTileGrid().getSelection();
             TreeNode parentNode = leftPresenter.getView().getSubelementsGrid().getTree().findById(parent);
-            String parentModelString = parentNode.getAttribute(Constants.ATTR_TYPE_ID);
+            String parentModelString = parentNode.getAttribute(Constants.ATTR_MODEL_ID);
             DigitalObjectModel parentModel = null;
             if (parentModelString != null && !"".equals(parentModelString))
                 parentModel = DigitalObjectModel.parseString(parentModelString);
@@ -771,67 +772,85 @@ public class CreateStructurePresenter
                         @Override
                         public void execute(Boolean value) {
                             if (value != null && value) {
-                                addNewStructure(model, type, parent, selection, missing);
+                                addNewStructure(model, parent, selection, missing);
                                 leftPresenter.addPages(missing, model != DigitalObjectModel.PAGE ? parent
                                         : grandpa);
                             }
                         }
                     });
                 } else {
-                    addNewStructure(model, type, parent, selection, new ArrayList<Record>());
+                    addNewStructure(model, parent, selection, new ArrayList<Record>());
                 }
             } else {
-                addNewStructure(model, type, parent, selection, new ArrayList<Record>());
+                addNewStructure(model, parent, selection, new ArrayList<Record>());
             }
         }
     }
 
     private void addNewStructure(DigitalObjectModel model,
-                                 String type,
                                  final String parent,
                                  Record[] selection,
                                  final List<Record> missing) {
         List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
 
         leftPresenter.getView().addUndoRedo(true, false);
-        String dateIssued = "";
-        String note = "";
-        String genreType = "";
-        String sequenceNumber = "";
+        String name = "";
+        String dateOrIntPartName = "";
+        String noteOrArtPictInfo = "";
+        String partNumOrAlto = "";
+        String aditionalInfoOrOcr = "";
+        String type = "";
 
-        if (model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.PERIODICALITEM) {
-            dateIssued = leftPresenter.getView().getDateIssued().getValueAsString();
-            note = leftPresenter.getView().getNoteButton().getPrompt();
-            leftPresenter.getView().getNoteButton().setPrompt("");
-            leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
-            sequenceNumber = leftPresenter.getView().getSequenceNumber().getValueAsString();
+        switch (model) {
+            case PERIODICALVOLUME:
+                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
+                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getNote();
+                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
+                break;
 
-            if (model == DigitalObjectModel.PERIODICALITEM)
-                genreType = leftPresenter.getView().getSelectedGenreType();
+            case PERIODICALITEM:
+                name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
+                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getNote();
+                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
+                type = leftPresenter.getSectionCreateLayout().getType(model, aditionalInfoOrOcr);
+                break;
 
-        } else if (model == DigitalObjectModel.MONOGRAPHUNIT) {
-            note = leftPresenter.getView().getNoteButton().getPrompt();
-            sequenceNumber = leftPresenter.getView().getSequenceNumber().getValueAsString();
-            leftPresenter.getView().getNoteButton().setPrompt("");
-            leftPresenter.getView().getNoteButton().setTitle(lang.addNote());
+            case INTERNALPART:
+                name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getPartName();
+                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getSubtitle();
+                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
+                type = leftPresenter.getSectionCreateLayout().getType(model, aditionalInfoOrOcr);
+                break;
+
+            case MONOGRAPHUNIT:
+                name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
+                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getNote();
+                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
+                break;
+
+            default:
+                break;
         }
-
         String possibleParent = "-1";
         if (canContain != null) { //adding selected pages
             possibleParent = String.valueOf(leftPresenter.newId());
-            String name = leftPresenter.getView().getNewName().getValueAsString();
-            name = name == null || "".equals(name) ? possibleParent : name;
+
             leftPresenter.getView().addSubstructure(possibleParent,
+                                                    parent,
                                                     name,
                                                     null,
-                                                    type,
                                                     model.getValue(),
-                                                    parent,
-                                                    "",
-                                                    dateIssued,
-                                                    note,
-                                                    genreType,
-                                                    sequenceNumber,
+                                                    type,
+                                                    dateOrIntPartName,
+                                                    noteOrArtPictInfo,
+                                                    partNumOrAlto,
+                                                    aditionalInfoOrOcr,
                                                     true,
                                                     false);
         } else { // adding something and enrich it with selected pages
@@ -842,7 +861,7 @@ public class CreateStructurePresenter
                 && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
             leftPresenter.addPages(Arrays.asList(selection), possibleParent);
 
-            if (!leftPresenter.getView().getKeepCheckbox().getValueAsBoolean()) {
+            if (!leftPresenter.getSectionCreateLayout().getKeepCheckbox().getValueAsBoolean()) {
                 getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 getView().getTileGrid().removeSelectedData();
             }

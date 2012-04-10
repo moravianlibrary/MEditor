@@ -54,54 +54,47 @@ public class PeriodicalVolumeBuilder
      */
     @Override
     protected void decorateMODSStream() {
-        String volumeLabel = getLabel();
         Element modsCollection = FoxmlUtils.createModsCollectionEl();
         Namespace modsNs = Namespaces.mods;
         Element mods = modsCollection.addElement(new QName("mods", modsNs));
         mods.addAttribute("version", "3.3");
+        mods.addAttribute("ID", "MODS_VOLUME_0001");
         Element idUrn = mods.addElement(new QName("identifier", modsNs));
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(volumeLabel);
+        title.addText(getRootTitle());
+        if (isNotNullOrEmpty(getPartNumber())) {
+            Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
+            partNumber.addText(getPartNumber());
+        }
 
-        String typeOfResource = getTypeOfResource();
-        if (typeOfResource != null) {
-            Element typeOfResourceEl = mods.addElement(new QName("typeOfResource", modsNs));
-            typeOfResourceEl.addText(getTypeOfResource());
+        Element originInfo = mods.addElement(new QName("originInfo", modsNs));
+        Element dateIssued = originInfo.addElement(new QName("dateIssued", modsNs));
+        if (isNotNullOrEmpty(getDateOrIntPartName())) {
+            dateIssued.addText(getDateOrIntPartName());
+        } else {
+            dateIssued.addAttribute("qualifier", "approximate");
         }
 
         Element genre = mods.addElement(new QName("genre", modsNs));
         genre.addText("volume");
 
-        Element originInfo = mods.addElement(new QName("originInfo", modsNs));
-        Element dateIssued = originInfo.addElement(new QName("dateIssued", modsNs));
-        dateIssued.addText(getDateIssued() != null ? getDateIssued() : "");
-        Element issuance = originInfo.addElement(new QName("issuance", modsNs));
-        issuance.addText("continuing");
+        if (isNotNullOrEmpty(getNoteOrIntSubtitle())) {
+            Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
+            Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
+            noteEl.addText(getNoteOrIntSubtitle());
+        }
 
-        String language = getLanguage();
-        if (language != null) {
+        if (isNotNullOrEmpty(getRootLanguage())) {
             Element languageEl = mods.addElement(new QName("language", modsNs));
             Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
             languageTerm.addAttribute("type", "code");
             languageTerm.addAttribute("authority", "iso639-2b");
-            languageTerm.addText(language);
+            languageTerm.addText(getRootLanguage());
         }
-
-        if (getNote() != null && !"".equals(getNote())) {
-            Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
-            Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
-            noteEl.addText(getNote());
-        }
-
-        Element part = mods.addElement(new QName("part", modsNs));
-        Element detail = part.addElement(new QName("detail", modsNs));
-        detail.addAttribute("type", "volume");
-        Element number = detail.addElement(new QName("number", modsNs));
-        number.addText(getSequenceNumber());
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 

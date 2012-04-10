@@ -109,7 +109,7 @@ public class ScanRecord
      *        the picture
      */
     public void setPicture(String picture) {
-        setAttribute(Constants.ATTR_PICTURE, picture);
+        setAttribute(Constants.ATTR_PICTURE_OR_UUID, picture);
     }
 
     /**
@@ -118,7 +118,7 @@ public class ScanRecord
      * @return the picture
      */
     public String getPicture() {
-        return getAttribute(Constants.ATTR_PICTURE);
+        return getAttribute(Constants.ATTR_PICTURE_OR_UUID);
     }
 
     /**
@@ -147,7 +147,7 @@ public class ScanRecord
      *        the pageType
      */
     public void setPageType(String pageType) {
-        setAttribute(Constants.ATTR_PAGE_TYPE, pageType);
+        setAttribute(Constants.ATTR_TYPE, pageType);
     }
 
     /**
@@ -156,7 +156,7 @@ public class ScanRecord
      * @return the pageType
      */
     public String getPageType() {
-        return getAttribute(Constants.ATTR_PAGE_TYPE);
+        return getAttribute(Constants.ATTR_TYPE);
     }
 
     /**

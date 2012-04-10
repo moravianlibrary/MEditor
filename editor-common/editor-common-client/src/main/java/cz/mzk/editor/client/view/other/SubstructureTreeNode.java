@@ -42,27 +42,25 @@ public class SubstructureTreeNode
     public SubstructureTreeNode(String id,
                                 String parent,
                                 String name,
-                                String uuid,
+                                String pictureOrUuid,
+                                String modelId,
                                 String type,
-                                String typeId,
-                                String pageType,
-                                String dateIssued,
-                                String note,
-                                String genreType,
-                                String sequenceNumber,
+                                String dateOrIntPartName,
+                                String noteOrIntSubtitle,
+                                String partNumberOrAlto,
+                                String aditionalInfoOrOcr,
                                 boolean isOpen,
                                 boolean exist) {
         setAttribute(Constants.ATTR_ID, id);
         setAttribute(Constants.ATTR_PARENT, parent);
         setAttribute(Constants.ATTR_NAME, name);
-        setAttribute(Constants.ATTR_PICTURE, uuid);
+        setAttribute(Constants.ATTR_PICTURE_OR_UUID, pictureOrUuid);
+        setAttribute(Constants.ATTR_MODEL_ID, modelId);
         setAttribute(Constants.ATTR_TYPE, type);
-        setAttribute(Constants.ATTR_TYPE_ID, typeId);
-        setAttribute(Constants.ATTR_PAGE_TYPE, pageType);
-        setAttribute(Constants.ATTR_DATE_ISSUED, dateIssued);
-        setAttribute(Constants.ATTR_NOTE, note);
-        setAttribute(Constants.ATTR_GENRE_TYPE, genreType);
-        setAttribute(Constants.ATTR_SEQUENCE_NUMBER, sequenceNumber);
+        setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, dateOrIntPartName);
+        setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, noteOrIntSubtitle);
+        setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, partNumberOrAlto);
+        setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, aditionalInfoOrOcr);
         setAttribute("isOpen", isOpen);
         setAttribute(Constants.ATTR_EXIST, exist);
         setAttribute(Constants.ATTR_CREATE, !exist);

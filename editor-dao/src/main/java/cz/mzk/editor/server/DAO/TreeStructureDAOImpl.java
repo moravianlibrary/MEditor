@@ -253,18 +253,18 @@ public class TreeStructureDAOImpl
             for (TreeStructureNode node : structure) {
                 insSt = getConnection().prepareStatement(INSERT_NODE);
                 insSt.setLong(1, key);
-                insSt.setString(2, node.getPropId());
-                insSt.setString(3, node.getPropParent());
-                insSt.setString(4, node.getPropName());
-                insSt.setString(5, node.getPropPicture());
-                insSt.setString(6, node.getPropType());
-                insSt.setString(7, node.getPropTypeId());
-                insSt.setString(8, node.getPropPageType());
-                insSt.setString(9, node.getPropDateIssued());
-                insSt.setString(10, node.getPropAltoPath());
-                insSt.setString(11, node.getPropOcrPath());
-                insSt.setString(12, node.getPropNote());
-                insSt.setBoolean(13, node.getPropExist());
+                //                insSt.setString(2, node.getPropId());
+                //                insSt.setString(3, node.getPropParent());
+                //                insSt.setString(4, node.getPropName());
+                //                insSt.setString(5, node.getPropPicture());
+                //                insSt.setString(6, node.getPropTypetodelete());
+                //                insSt.setString(7, node.getPropTypeId());
+                //                insSt.setString(8, node.getPropPageType());
+                //                insSt.setString(9, node.getPropDateIssued());
+                //                insSt.setString(10, node.getPropAltoPath());
+                //                insSt.setString(11, node.getPropOcrPath());
+                //                insSt.setString(12, node.getPropNote());
+                //                insSt.setBoolean(13, node.getPropExist());
                 total += insSt.executeUpdate();
             }
             if (total != structure.size()) {

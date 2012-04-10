@@ -32,6 +32,7 @@ import org.dom4j.QName;
 
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
+import cz.mzk.editor.client.util.Constants.INTERNAL_PART_LEVEL_NAMES;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
@@ -56,30 +57,41 @@ public class IntPartBuilder
      */
     @Override
     protected void decorateMODSStream() {
-        String volumeLabel = getLabel();
         Element modsCollection = FoxmlUtils.createModsCollectionEl();
         Namespace modsNs = Namespaces.mods;
         Element mods = modsCollection.addElement(new QName("mods", modsNs));
         mods.addAttribute("version", "3.3");
+        mods.addAttribute("ID", getAditionalInfo());
         Element idUrn = mods.addElement(new QName("identifier", modsNs));
         idUrn.addAttribute("type", "urn");
         idUrn.addText(getUuid());
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(volumeLabel);
+        title.addText(isNotNullOrEmpty(getLabel()) ? getLabel() : "untitled");
 
-        Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
-        typeOfResource.addText("text");
+        if (isNotNullOrEmpty(getNoteOrIntSubtitle())) {
+            Element subtitle = titleInfo.addElement(new QName("subtitle", modsNs));
+            subtitle.addText(getNoteOrIntSubtitle());
+        }
+        if (isNotNullOrEmpty(getPartNumber())) {
+            Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
+            partNumber.addText(getPartNumber());
+        }
+        if (isNotNullOrEmpty(getDateOrIntPartName())) {
+            Element partName = titleInfo.addElement(new QName("partName", modsNs));
+            partName.addText(getDateOrIntPartName());
+        }
+
+        Element genre = mods.addElement(new QName("genre", modsNs));
+        genre.addAttribute("type", getType());
+        String levelName = getAditionalInfo().substring(0, getAditionalInfo().indexOf("_", 6));
+        genre.addText(INTERNAL_PART_LEVEL_NAMES.MAP.get(levelName));
 
         Element part = mods.addElement(new QName("part", modsNs));
-        part.addAttribute("type", "Chapter");
-
         Element extent = part.addElement(new QName("extent", modsNs));
-        extent.addAttribute("unit", "pages");
 
         List<RelsExtRelation> children = getChildren();
-
         Element start = extent.addElement(new QName("start", modsNs));
         start.addText(children.get(0).getTargetName());
         Element end = extent.addElement(new QName("end", modsNs));
@@ -87,13 +99,13 @@ public class IntPartBuilder
         Element total = extent.addElement(new QName("total", modsNs));
         total.addText(String.valueOf(children.size()));
 
-//        Element detail = part.addElement(new QName("detail", modsNs));
-//        detail.addAttribute("type", "pageNumber");
-//        Element number = detail.addElement(new QName("number", modsNs));
-//        number.addText("");
-
-        Element accessCondition = mods.addElement(new QName("accessCondition", modsNs));
-        accessCondition.addAttribute("type", "restrictionOnAccess");
+        if (isNotNullOrEmpty(getRootLanguage())) {
+            Element languageEl = mods.addElement(new QName("language", modsNs));
+            Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
+            languageTerm.addAttribute("type", "code");
+            languageTerm.addAttribute("authority", "iso639-2b");
+            languageTerm.addText(getRootLanguage());
+        }
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 

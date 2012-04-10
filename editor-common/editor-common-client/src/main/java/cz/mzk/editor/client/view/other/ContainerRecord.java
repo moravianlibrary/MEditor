@@ -122,7 +122,7 @@ public class ContainerRecord
      *        the picture
      */
     public void setPicture(String picture) {
-        setAttribute(Constants.ATTR_PICTURE, picture);
+        setAttribute(Constants.ATTR_PICTURE_OR_UUID, picture);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ContainerRecord
      * @return the picture
      */
     public String getPicture() {
-        return getAttribute(Constants.ATTR_PICTURE);
+        return getAttribute(Constants.ATTR_PICTURE_OR_UUID);
     }
 
     /**

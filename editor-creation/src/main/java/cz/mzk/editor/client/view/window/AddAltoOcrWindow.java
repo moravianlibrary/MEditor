@@ -212,7 +212,7 @@ public abstract class AddAltoOcrWindow
         foundOcrFilesGrid.setFields(txtFileField);
 
         FindAltoOcrFilesAction altoFilesAction =
-                new FindAltoOcrFilesAction(listGridRecord.getAttributeAsString(Constants.ATTR_PICTURE));
+                new FindAltoOcrFilesAction(listGridRecord.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID));
         DispatchCallback<FindAltoOcrFilesResult> altoFilesCallback =
                 new DispatchCallback<FindAltoOcrFilesResult>() {
 

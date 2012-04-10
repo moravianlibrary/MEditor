@@ -27,9 +27,7 @@
 
 package cz.mzk.editor.client.presenter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,11 +44,6 @@ import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
@@ -68,8 +61,10 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.other.InputQueueTree;
+import cz.mzk.editor.client.view.other.LabelAndModelConverter;
+import cz.mzk.editor.client.view.other.SectionCreateLayout;
+import cz.mzk.editor.client.view.other.StructureTreeHoverCreator;
 import cz.mzk.editor.client.view.window.AddAltoOcrWindow;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.LoadTreeStructureWindow;
@@ -102,52 +97,31 @@ public class CreateObjectMenuPresenter
 
         SectionStack getSectionStack();
 
-        ButtonItem getCreateButton();
+        //        boolean hasCreateButtonAClickHandler();
 
-        CheckboxItem getKeepCheckbox();
-
-        SelectItem getSelectModel();
-
-        boolean hasCreateButtonAClickHandler();
-
-        void setCreateButtonHasAClickHandler();
-
-        void enableCheckbox(boolean isEnabled);
-
-        TextItem getNewName();
+        //        void setCreateButtonHasAClickHandler();
 
         void init();
 
         void addUndoRedo(boolean useUndoList, boolean isRedoOperation);
 
         void addSubstructure(String id,
-                             String name,
-                             String uuid,
-                             String type,
-                             String typeId,
                              String parent,
-                             String pageType,
-                             String dateIssued,
-                             String note,
-                             String periodicalItemType,
-                             String sequenceNumber,
+                             String name,
+                             String pictureOrUuid,
+                             String modelId,
+                             String type,
+                             String dateOrIntPartName,
+                             String noteOrIntSubtitle,
+                             String partNumberOrAlto,
+                             String aditionalInfoOrOcr,
                              boolean isOpen,
                              boolean exist);
 
-        TextItem getDateIssued();
-
-        IButton getNoteButton();
-
-        void setCreateVolumeItem(boolean setCreateVolumeItem,
-                                 boolean setCreateItem,
-                                 boolean setCreateMonographUnit,
-                                 String defaultDateIssued);
-
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
 
-        TextItem getSequenceNumber();
+        void setSectionCreateLayout(SectionCreateLayout sectionCreateLayout);
 
-        String getSelectedGenreType();
     }
 
     /**
@@ -178,12 +152,11 @@ public class CreateObjectMenuPresenter
 
     private String barcode = null;
 
-    private final Map<String, DigitalObjectModel> modelsFromLabels =
-            new HashMap<String, DigitalObjectModel>();
-
-    private final Map<String, String> labelsFromModels = new HashMap<String, String>();
-
     private String defaultDateIssued = "";
+
+    SectionCreateLayout sectionCreateLayout = null;
+
+    private DigitalObjectModel rootModel;
 
     /**
      * Instantiates a new digital object menu presenter.
@@ -228,63 +201,18 @@ public class CreateObjectMenuPresenter
     protected void onBind() {
         super.onBind();
         getView().init();
+        sectionCreateLayout = new SectionCreateLayout(lang, getEventBus());
+        getView().setSectionCreateLayout(sectionCreateLayout);
         getView().getSubelementsGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
             public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-                StringBuffer sb = new StringBuffer();
-                String nameHover = hoverFactory(lang.name(), record.getAttribute(Constants.ATTR_NAME));
-                sb.append(nameHover);
-
-                String dIssued = record.getAttribute(Constants.ATTR_DATE_ISSUED);
-                if (dIssued != null && !"".equals(dIssued)) {
-                    String dateIssuedHover = hoverFactory(lang.dateIssued(), dIssued);
-                    sb.append(dateIssuedHover);
-                }
-
-                String note = record.getAttribute(Constants.ATTR_NOTE);
-                if (note != null && !"".equals(note)) {
-                    String noteHover = hoverFactory(lang.note(), note);
-                    sb.append(noteHover);
-                }
-
-                String genreType = record.getAttribute(Constants.ATTR_GENRE_TYPE);
-                if (genreType != null && !"".equals(genreType)) {
-                    String genreTypeHover =
-                            hoverFactory(lang.dcType(), Constants.GENRE_TYPES.MAP.get(genreType));
-                    sb.append(genreTypeHover);
-                }
-
-                String sequenceNumber = record.getAttribute(Constants.ATTR_SEQUENCE_NUMBER);
-                if (sequenceNumber != null && !"".equals(sequenceNumber)) {
-                    String sequenceNumberHover = hoverFactory(lang.issueNumber(), sequenceNumber);
-                    sb.append(sequenceNumberHover);
-                }
-
-                String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
-                if (pageType != null && !"".equals(pageType)) {
-                    String pageTypeHover = hoverFactory(lang.specialType(), pageType);
-                    sb.append(pageTypeHover);
-                }
-
-                String alto = record.getAttribute(Constants.ATTR_ALTO_PATH);
-                if (alto != null && !"".equals(alto)) {
-                    String altoHover = hoverFactory("ALTO", alto.substring(alto.lastIndexOf("/") + 1));
-                    sb.append(altoHover);
-                }
-
-                String ocr = record.getAttribute(Constants.ATTR_OCR_PATH);
-                if (ocr != null && !"".equals(ocr)) {
-                    String ocrHover = hoverFactory("OCR", ocr.substring(ocr.lastIndexOf("/") + 1));
-                    sb.append(ocrHover);
-                }
-
-                getView().getSubelementsGrid().setHoverWidth(350);
-                return sb.toString();
+                return StructureTreeHoverCreator.getHover(lang, record);
             }
         });
-        getView().enableCheckbox(false);
-        getView().getCreateButton().disable();
+
+        sectionCreateLayout.enableCheckbox(false);
+        sectionCreateLayout.getCreateButton().disable();
         registerHandler(getView().getSubelementsGrid()
                 .addSelectionChangedHandler(new SelectionChangedHandler() {
 
@@ -292,13 +220,13 @@ public class CreateObjectMenuPresenter
                     public void onSelectionChanged(SelectionEvent event) {
                         ListGridRecord rec = event.getSelectedRecord();
                         if (rec != null) {
-                            String modelString = rec.getAttribute(Constants.ATTR_TYPE_ID);
+                            String modelString = rec.getAttribute(Constants.ATTR_MODEL_ID);
                             refreshSelectModel(modelString);
                         }
                     }
                 }));
 
-        registerHandler(getView().getSelectModel().addChangeHandler(new ChangeHandler() {
+        registerHandler(sectionCreateLayout.getSelectModel().addChangeHandler(new ChangeHandler() {
 
             @Override
             public void onChange(ChangeEvent event) {
@@ -316,24 +244,8 @@ public class CreateObjectMenuPresenter
         });
 
         // label to model 2 way mapping
-        getLabelFromModel().put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
-        getModelFromLabel().put(lang.internalpart(), DigitalObjectModel.INTERNALPART);
-        getLabelFromModel().put(DigitalObjectModel.MONOGRAPH.getValue(), lang.monograph());
-        getModelFromLabel().put(lang.monograph(), DigitalObjectModel.MONOGRAPH);
-        getLabelFromModel().put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunit());
-        getModelFromLabel().put(lang.monographunit(), DigitalObjectModel.MONOGRAPHUNIT);
-        getLabelFromModel().put(DigitalObjectModel.PAGE.getValue(), lang.page());
-        getModelFromLabel().put(lang.page(), DigitalObjectModel.PAGE);
-        getLabelFromModel().put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
-        getModelFromLabel().put(lang.periodical(), DigitalObjectModel.PERIODICAL);
-        getLabelFromModel().put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
-        getModelFromLabel().put(lang.periodicalitem(), DigitalObjectModel.PERIODICALITEM);
-        getLabelFromModel().put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
-        getModelFromLabel().put(lang.periodicalvolume(), DigitalObjectModel.PERIODICALVOLUME);
-    }
+        LabelAndModelConverter.setLabelAndModelConverter(lang);
 
-    private String hoverFactory(String attribut, String value) {
-        return HtmlCode.bold(attribut) + ": " + value + "<br />";
     }
 
     /*
@@ -368,26 +280,13 @@ public class CreateObjectMenuPresenter
 
     private void afterTypeChanged(String currentModel) {
         if (!"".equals(currentModel.trim())) {
-            getView().getCreateButton().enable();
-
-            boolean isPeriodicalItem =
-                    currentModel
-                            .equals(getLabelFromModel().get(DigitalObjectModel.PERIODICALITEM.getValue()));
-
-            if (currentModel.equals(getLabelFromModel().get(DigitalObjectModel.PERIODICALVOLUME.getValue()))
-                    || isPeriodicalItem) {
-
-                getView().setCreateVolumeItem(true, isPeriodicalItem, false, defaultDateIssued);
-            } else if (currentModel.equals(getLabelFromModel().get(DigitalObjectModel.MONOGRAPHUNIT
-                    .getValue()))) {
-                getView().setCreateVolumeItem(false, false, true, null);
-            } else {
-                getView().setCreateVolumeItem(false, false, false, null);
-            }
-
+            sectionCreateLayout.getCreateButton().enable();
+            sectionCreateLayout.setCreate(LabelAndModelConverter.getModelFromLabel().get(currentModel),
+                                          defaultDateIssued,
+                                          getRootModel() == DigitalObjectModel.PERIODICAL);
         } else {
-            getView().getCreateButton().disable();
-            getView().setCreateVolumeItem(false, false, false, null);
+            sectionCreateLayout.getCreateButton().disable();
+            sectionCreateLayout.setCreate(null, null, getRootModel() == DigitalObjectModel.PERIODICAL);
         }
     }
 
@@ -425,29 +324,18 @@ public class CreateObjectMenuPresenter
             String defaultValue = "";
             if (childrenModels != null && childrenModels.size() > 0) {
                 for (int i = 0; i < childrenModels.size(); i++) {
-                    values[i] = getLabelFromModel().get(childrenModels.get(i).getValue());
-                    if (defaultValue.equals("") && getView().getSelectModel().getValueAsString() != null
-                            && getView().getSelectModel().getValueAsString().equals(values[i]))
+                    values[i] =
+                            LabelAndModelConverter.getLabelFromModel().get(childrenModels.get(i).getValue());
+                    if (defaultValue.equals("")
+                            && sectionCreateLayout.getSelectModel().getValueAsString() != null
+                            && sectionCreateLayout.getSelectModel().getValueAsString().equals(values[i]))
                         defaultValue = values[i];
                 }
             }
-            getView().getSelectModel().setValueMap(values);
-            getView().getSelectModel().setValue(defaultValue);
+            sectionCreateLayout.getSelectModel().setValueMap(values);
+            sectionCreateLayout.getSelectModel().setValue(defaultValue);
             afterTypeChanged(defaultValue);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<String, DigitalObjectModel> getModelFromLabel() {
-        return modelsFromLabels;
-    }
-
-    @Override
-    public Map<String, String> getLabelFromModel() {
-        return labelsFromModels;
     }
 
     @Override
@@ -539,16 +427,30 @@ public class CreateObjectMenuPresenter
         return getEventBus();
     }
 
+    /**
+     * @return the rootModel
+     */
+    public DigitalObjectModel getRootModel() {
+        return rootModel;
+    }
+
+    /**
+     * @param rootModel
+     *        the rootModel to set
+     */
+    public void setRootModel(DigitalObjectModel rootModel) {
+        this.rootModel = rootModel;
+    }
+
     @Override
     public void addPages(List<Record> pages, String parent) {
         for (int i = 0; i < pages.size(); i++) {
             getView().addSubstructure(String.valueOf(newId()),
-                                      pages.get(i).getAttribute(Constants.ATTR_NAME),
-                                      pages.get(i).getAttribute(Constants.ATTR_PICTURE),
-                                      getLabelFromModel().get(DigitalObjectModel.PAGE.getValue()),
-                                      DigitalObjectModel.PAGE.getValue(),
                                       parent,
-                                      pages.get(i).getAttribute(Constants.ATTR_PAGE_TYPE),
+                                      pages.get(i).getAttribute(Constants.ATTR_NAME),
+                                      pages.get(i).getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                                      DigitalObjectModel.PAGE.getValue(),
+                                      pages.get(i).getAttribute(Constants.ATTR_TYPE),
                                       "",
                                       "",
                                       "",
@@ -556,5 +458,14 @@ public class CreateObjectMenuPresenter
                                       true,
                                       false);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SectionCreateLayout getSectionCreateLayout() {
+        //        if (sectionCreateLayout == null) sectionCreateLayout = new SectionCreateLayout(lang, getEventBus());
+        return sectionCreateLayout;
     }
 }

@@ -78,6 +78,7 @@ public class MonographBuilder
         super(object);
     }
 
+    @SuppressWarnings("unchecked")
     private void updateDcDoc(Document dcDoc,
                              String pid,
                              String signature,
@@ -123,6 +124,7 @@ public class MonographBuilder
         updateDcLanguages(dcDoc);
     }
 
+    @SuppressWarnings("unchecked")
     private void removeDcTypeElements(Document doc) {
         XPath typeXpath = Dom4jUtils.createXPath("/oai_dc:dc/dc:type");
         List<? extends Node> nodes = typeXpath.selectNodes(doc);
@@ -141,6 +143,7 @@ public class MonographBuilder
         updateLanguages(dcDoc, languageXpath);
     }
 
+    @SuppressWarnings("unchecked")
     private void updateLanguages(Document doc, XPath xpath) {
         List<? extends Node> nodes = xpath.selectNodes(doc);
         for (Node languageNode : nodes) {
@@ -152,6 +155,7 @@ public class MonographBuilder
     }
 
     private void updateModsDoc(Document modsDoc, MarcSpecificMetadata marc, String uuid) {
+        ((Element) modsXpath.selectSingleNode(modsDoc)).addAttribute("ID", "MODS_VOLUME_0001");
         //addPhysicalLocation(modsDoc, marc);
         addUdcOrDdc(modsDoc, marc);
         addTopic(modsDoc, marc);

@@ -1090,7 +1090,7 @@ public class ModifyView
             }
         });
 
-        DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
+        DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE_OR_UUID);
         pictureField.setType("image");
         if (pages) {
             pictureField.setImageURLPrefix(Constants.SERVLET_THUMBNAIL_PREFIX + '/');

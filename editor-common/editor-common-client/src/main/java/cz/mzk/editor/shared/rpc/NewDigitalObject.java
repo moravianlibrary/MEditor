@@ -49,13 +49,11 @@ public class NewDigitalObject
     private String sysno;
     private String path;
     private boolean visible;
-    private String pageType;
-    private String dateIssued;
-    private String note;
-    private String altoPath;
-    private String ocrPath;
-    private String genreType;
-    private String sequenceNumber;
+    private String type;
+    private String dateOrIntPartName;
+    private String noteOrIntSubtitle;
+    private String partNumberOrAlto;
+    private String aditionalInfoOrOcr;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -94,13 +92,11 @@ public class NewDigitalObject
         this.sysno = newDigitalObject.getSysno();
         this.path = newDigitalObject.getPath();
         this.visible = newDigitalObject.getVisible();
-        this.pageType = newDigitalObject.getPageType();
-        this.dateIssued = newDigitalObject.getDateIssued();
-        this.note = newDigitalObject.getNote();
-        this.altoPath = newDigitalObject.getAltoPath();
-        this.ocrPath = newDigitalObject.getOcrPath();
-        this.genreType = newDigitalObject.getGenreType();
-        this.sequenceNumber = newDigitalObject.getSequenceNumber();
+        this.type = newDigitalObject.getType();
+        this.dateOrIntPartName = newDigitalObject.getDateOrIntPartName();
+        this.noteOrIntSubtitle = newDigitalObject.getNoteOrIntSubtitle();
+        this.partNumberOrAlto = newDigitalObject.partNumberOrAlto;
+        this.aditionalInfoOrOcr = newDigitalObject.getAditionalInfoOrOcr();
     }
 
     /**
@@ -192,108 +188,79 @@ public class NewDigitalObject
         this.visible = visible;
     }
 
-    public String getPageType() {
-        return pageType;
-    }
-
-    public void setPageType(String pageType) {
-        this.pageType = pageType;
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
     }
 
     /**
-     * @return the dateIssued
+     * @param type
+     *        the type to set
      */
-
-    public String getDateIssued() {
-        return dateIssued;
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
-     * @param dateIssued
-     *        the dateIssued to set
+     * @return the dateOrIntPartName
      */
-
-    public void setDateIssued(String dateIssued) {
-        this.dateIssued = dateIssued;
+    public String getDateOrIntPartName() {
+        return dateOrIntPartName;
     }
 
     /**
-     * @return the note
+     * @param dateOrIntPartName
+     *        the dateOrIntPartName to set
      */
-    public String getNote() {
-        return note;
+    public void setDateOrIntPartName(String dateOrIntPartName) {
+        this.dateOrIntPartName = dateOrIntPartName;
     }
 
     /**
-     * @param note
-     *        the note to set
+     * @return the noteOrIntSubtitle
      */
-    public void setNote(String note) {
-        this.note = note;
+    public String getNoteOrIntSubtitle() {
+        return noteOrIntSubtitle;
     }
 
     /**
-     * @return the altoPath
+     * @param noteOrIntSubtitle
+     *        the noteOrIntSubtitle to set
      */
-
-    public String getAltoPath() {
-        return altoPath;
+    public void setNoteOrIntSubtitle(String noteOrIntSubtitle) {
+        this.noteOrIntSubtitle = noteOrIntSubtitle;
     }
 
     /**
-     * @param altoPath
-     *        the altoPath to set
+     * @return the partNumberOrAlto
      */
-
-    public void setAltoPath(String altoPath) {
-        this.altoPath = altoPath;
+    public String getPartNumberOrAlto() {
+        return partNumberOrAlto;
     }
 
     /**
-     * @return the ocrPath
+     * @param partNumberOrAlto
+     *        the partNumberOrAlto to set
      */
-
-    public String getOcrPath() {
-        return ocrPath;
+    public void setPartNumberOrAlto(String partNumberOrAlto) {
+        this.partNumberOrAlto = partNumberOrAlto;
     }
 
     /**
-     * @param ocrPath
-     *        the ocrPath to set
+     * @return the aditionalInfoOrOcr
      */
-
-    public void setOcrPath(String ocrPath) {
-        this.ocrPath = ocrPath;
+    public String getAditionalInfoOrOcr() {
+        return aditionalInfoOrOcr;
     }
 
     /**
-     * @return the genreType
+     * @param aditionalInfoOrOcr
+     *        the aditionalInfoOrOcr to set
      */
-    public String getGenreType() {
-        return genreType;
-    }
-
-    /**
-     * @param genreType
-     *        the genreType to set
-     */
-    public void setGenreType(String genreType) {
-        this.genreType = genreType;
-    }
-
-    /**
-     * @return the sequenceNumber
-     */
-    public String getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    /**
-     * @param sequenceNumber
-     *        the sequenceNumber to set
-     */
-    public void setSequenceNumber(String sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public void setAditionalInfoOrOcr(String aditionalInfoOrOcr) {
+        this.aditionalInfoOrOcr = aditionalInfoOrOcr;
     }
 
     @Override

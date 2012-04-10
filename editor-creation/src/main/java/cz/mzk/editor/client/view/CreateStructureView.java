@@ -337,8 +337,9 @@ public class CreateStructureView
                     tileGrid.setDragAppearance(DragAppearance.TRACKER);
                     String pageIcon =
                             Canvas.imgHTML(getImageURLPrefix()
-                                                   + tileGrid.getSelectedRecord()
-                                                           .getAttributeAsString(Constants.ATTR_PICTURE),
+                                                   + tileGrid
+                                                           .getSelectedRecord()
+                                                           .getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
                                            25,
                                            35);
                     dragHandler.setMoveTracker(pageIcon);
@@ -385,7 +386,7 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                final String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE);
+                final String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
                 winModal = new Window();
                 //                winModal.setWidth(1024);
                 //                winModal.setHeight(768);
@@ -490,7 +491,8 @@ public class CreateStructureView
                         mw.show(true);
                         StringBuffer sb = new StringBuffer();
                         sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
-                                .append('/').append(event.getRecord().getAttribute(Constants.ATTR_PICTURE))
+                                .append('/')
+                                .append(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID))
                                 .append("?" + Constants.URL_PARAM_FULL + "=yes");
                         final Image full = new Image(sb.toString());
                         full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
@@ -528,7 +530,7 @@ public class CreateStructureView
             @Override
             public void onRecordClick(RecordClickEvent event) {
                 if (detailPanelShown) {
-                    showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE));
+                    showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID));
                 }
             }
         });
@@ -539,7 +541,7 @@ public class CreateStructureView
                 if (event.getState()) {
                     pageTypeItem.enable();
                     if (tileGrid.getSelection().length == 1) {
-                        String pageType = event.getRecord().getAttribute(Constants.ATTR_PAGE_TYPE);
+                        String pageType = event.getRecord().getAttribute(Constants.ATTR_TYPE);
                         pageTypeItem.setValue(Constants.PAGE_TYPES.MAP.get(pageType));
                     } else {
                         pageTypeItem.setValue("");
@@ -550,7 +552,7 @@ public class CreateStructureView
             }
         });
 
-        final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE);
+        final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE_OR_UUID);
         pictureField.setType("image");
         pictureField.setImageURLPrefix(getImageURLPrefix());
         pictureField.setImageWidth(imageThumbnailWidth);
@@ -565,7 +567,7 @@ public class CreateStructureView
             public String format(Object value, Record record, DetailViewerField field) {
                 StringBuffer sb = new StringBuffer();
                 sb.append(lang.scan()).append(": ").append(value);
-                String pageType = record.getAttribute(Constants.ATTR_PAGE_TYPE);
+                String pageType = record.getAttribute(Constants.ATTR_TYPE);
                 if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)
                         && !Constants.PAGE_TYPES.BL.toString().equals(pageType)) {
                     sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
@@ -617,7 +619,7 @@ public class CreateStructureView
                 addUndoRedo(tileGrid.getData(), true, false);
                 Record[] selectedRecords = tileGrid.getSelection();
                 for (Record rec : selectedRecords) {
-                    rec.setAttribute(Constants.ATTR_PAGE_TYPE, event.getValue());
+                    rec.setAttribute(Constants.ATTR_TYPE, event.getValue());
                 }
                 tileGrid.deselectRecords(selectedRecords);
                 tileGrid.selectRecords(selectedRecords);
@@ -1260,7 +1262,7 @@ public class CreateStructureView
             }
         }
         TileRecord record = tileGrid.getSelectedRecord();
-        showDetail(record == null ? null : record.getAttribute(Constants.ATTR_PICTURE));
+        showDetail(record == null ? null : record.getAttribute(Constants.ATTR_PICTURE_OR_UUID));
     }
 
     private void showDetail(final String pid) {
