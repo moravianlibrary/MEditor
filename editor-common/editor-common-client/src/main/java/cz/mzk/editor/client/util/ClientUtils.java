@@ -338,8 +338,12 @@ public class ClientUtils {
 
             String name = node.getAttribute(Constants.ATTR_NAME);
             if (name == null || "".equals(name)) {
-                //                throw new CreateObjectException("unknown name");
-                name = "";
+
+                if (model != DigitalObjectModel.PAGE) {
+                    name = node.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO);
+                } else {
+                    throw new CreateObjectException("unknown name");
+                }
             }
 
             Boolean exists = node.getAttributeAsBoolean(Constants.ATTR_EXIST);
