@@ -9,9 +9,20 @@ LIBPATH=$DJATOKA_HOME/lib
 TIFF_TMP=""
 
 if [ $# -ne 3 ] ; then
-  echo 'Usage: convert.sh path_to_djatoka source_image output_image'
+  echo "Usage: convert.sh path_to_djatoka source_image output_image"
   exit 1
 fi
+
+if [ ! -d $1 ] ; then
+  echo "$1 is not valid directory path"
+  exit 2
+fi
+
+if [ ! -s $2 ] || [ ! -r $2 ] ; then
+  echo "$2 is not valid input image file path"
+  exit 3
+fi
+
 
 if [ `uname` = 'Linux' ] ; then
   if [ `uname -m` = "x86_64" ] ; then
@@ -59,7 +70,7 @@ fi
 
 if [ "$TIFF_TMP2" != "" ] ; then
   [ "$NO_PROBLEM" != "ok" ] && {
-     exit 2
+     exit 4
   }
   TIFF_IMG=$TIFF_TMP2
 else
