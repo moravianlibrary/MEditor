@@ -633,8 +633,9 @@ public class SectionCreateLayout
 
         } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
             return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
-                    + " " + lang.dateInFormat() + ": <br>" + "DDMMRRRR " + lang.or() + "<br>MMRRRR "
-                    + lang.or() + "<br>RRRR " + lang.or() + "<br>DD-DDMMRRR " + lang.or() + "<br>MM-MMRRRR";
+                    + " " + lang.dateInFormat() + ": <br>" + "DD.MM.RRRR " + lang.or() + "<br>MM.RRRR "
+                    + lang.or() + "<br>RRRR " + lang.or() + "<br>DD.-DD.MM.RRR " + lang.or()
+                    + "<br>MM.-MM.RRRR";
         }
         return "";
     }
