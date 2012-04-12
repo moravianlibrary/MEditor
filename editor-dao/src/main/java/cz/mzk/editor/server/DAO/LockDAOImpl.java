@@ -80,7 +80,11 @@ public class LockDAOImpl
 
     @Override
     public boolean lockDigitalObject(String uuid, Long id, String description) throws DatabaseException {
-
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
         PreparedStatement updateSt = null;
         boolean successful = false;
 
@@ -157,7 +161,11 @@ public class LockDAOImpl
 
     @Override
     public boolean unlockDigitalObject(String uuid) throws DatabaseException {
-
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
         PreparedStatement deleteSt = null;
         boolean successful = false;
         try {

@@ -227,6 +227,11 @@ public class ImageResolverDAOImpl
 
     @Override
     public ArrayList<String> cacheAgeingProcess(int numberOfDays) throws DatabaseException {
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
         IMAGE_LIFETIME = numberOfDays;
         PreparedStatement statement = null;
         ArrayList<String> ret = new ArrayList<String>();
@@ -268,11 +273,6 @@ public class ImageResolverDAOImpl
     @Override
     public String getOldJpgFsPath(String imageFile) throws DatabaseException {
         if (imageFile == null || "".equals(imageFile)) throw new NullPointerException("imageFile");
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
         PreparedStatement statement = null;
         String oldJpgFsPath = null;
 
