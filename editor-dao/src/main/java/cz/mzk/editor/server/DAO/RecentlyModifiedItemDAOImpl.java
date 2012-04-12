@@ -272,11 +272,6 @@ public class RecentlyModifiedItemDAOImpl
         String description = null;
         PreparedStatement findSt = null;
         try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        try {
             findSt = getConnection().prepareStatement(SELECT_COMMON_DESCRIPTION_STATEMENT);
             findSt.setString(1, uuid);
             ResultSet rs = findSt.executeQuery();
@@ -348,11 +343,6 @@ public class RecentlyModifiedItemDAOImpl
         RecentlyModifiedItem ret = null;
         PreparedStatement findSt = null;
         try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        try {
             findSt = getConnection().prepareStatement(SELECT_USER_DESCRIPTION_STATEMENT);
             findSt.setString(1, uuid);
             findSt.setString(2, openID);
@@ -390,7 +380,6 @@ public class RecentlyModifiedItemDAOImpl
 
         try {
             deleteSt.executeUpdate();
-            getConnection().commit();
             LOGGER.debug("DB has been updated. Queries: \"" + deleteSt + "\"");
 
         } catch (SQLException e) {

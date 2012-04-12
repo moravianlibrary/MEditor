@@ -823,9 +823,9 @@ public class Constants {
 
     public static final String DATE_RRRR = "\\d{4}";
     public static final String DATE_RRRR_RRRR = DATE_RRRR + "-" + DATE_RRRR;
-    public static final String DATE_MMRRRR = "\\d{2}\\." + DATE_RRRR;
-    public static final String DATE_MM_MMRRRR = "\\d{2}\\.-" + DATE_MMRRRR;
-    public static final String DATE_DDMMRRRR = "\\d{2}\\." + DATE_MMRRRR;
-    public static final String DATE_DD_DDMMRRRR = "\\d{2}\\.-" + DATE_DDMMRRRR;
+    public static final String DATE_MMRRRR = "\\d{1,2}\\." + DATE_RRRR;
+    public static final String DATE_MM_MMRRRR = "\\d{1,2}\\.-" + DATE_MMRRRR;
+    public static final String DATE_DDMMRRRR = "\\d{1,2}\\." + DATE_MMRRRR;
+    public static final String DATE_DD_DDMMRRRR = "\\d{1,2}\\.-" + DATE_DDMMRRRR;
     public static final String ONLY_NUMBERS = "\\d*";
 }

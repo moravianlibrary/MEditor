@@ -65,7 +65,7 @@ public class PeriodicalVolumeBuilder
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(getRootTitle());
+        if (isNotNullOrEmpty(getRootTitle())) title.addText(getRootTitle());
         if (isNotNullOrEmpty(getPartNumber())) {
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());

@@ -66,7 +66,7 @@ public class PeriodicalItemBuilder
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(getRootTitle());
+        if (isNotNullOrEmpty(getRootTitle())) title.addText(getRootTitle());
         if (isNotNullOrEmpty(getRootSubtitle())) {
             Element subtitle = titleInfo.addElement(new QName("subtitle", modsNs));
             subtitle.addText(getRootSubtitle());

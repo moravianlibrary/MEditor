@@ -199,17 +199,11 @@ public class InputQueueItemDAOImpl
     @Override
     public void updateIngestInfo(boolean ingested, String path) throws DatabaseException {
         try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        try {
 
             PreparedStatement updateSt = getConnection().prepareStatement(UPDATE_INGEST_INFO);
             updateSt.setBoolean(1, ingested);
             updateSt.setString(2, path);
             int updated = updateSt.executeUpdate();
-            getConnection().commit();
 
             if (updated == 1) {
                 LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
@@ -227,11 +221,6 @@ public class InputQueueItemDAOImpl
 
     @Override
     public void updateName(String path, String name) throws DatabaseException {
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
         int duplicate = selectName(path);
         try {
 
@@ -240,7 +229,6 @@ public class InputQueueItemDAOImpl
             updateSt.setString(1, ClientUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
             updateSt.setString(2, path);
             int updated = updateSt.executeUpdate();
-            getConnection().commit();
 
             if (updated == 1) {
                 LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
@@ -257,11 +245,6 @@ public class InputQueueItemDAOImpl
     }
 
     private int selectName(String path) throws DatabaseException {
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
         PreparedStatement selectSt = null;
         int id = Integer.MIN_VALUE;
         try {
