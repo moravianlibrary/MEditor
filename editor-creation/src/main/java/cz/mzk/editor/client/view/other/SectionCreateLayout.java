@@ -502,6 +502,7 @@ public class SectionCreateLayout
      * @return the dateIssued
      */
     public String getDateIssued() {
+        if (dateIssued.getValueAsString() == null) return "";
         return dateIssued.getValueAsString();
     }
 
@@ -591,8 +592,11 @@ public class SectionCreateLayout
     }
 
     private String getFormatedXOfLevelNames() {
-        NumberFormat formatter = NumberFormat.getFormat("0000");
-        return formatter.format(Integer.parseInt(getxOfLevelNames()));
+        if (getxOfLevelNames() != null && !"".equals(getxOfLevelNames())) {
+            NumberFormat formatter = NumberFormat.getFormat("0000");
+            return formatter.format(Integer.parseInt(getxOfLevelNames()));
+        }
+        return "0000";
     }
 
     /**
@@ -609,15 +613,17 @@ public class SectionCreateLayout
             return getOnlyNumbersHint(lang.partNumber());
 
         if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            if (!(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
-                    .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
+            if (!"".equals(getDateIssued())
+                    && !(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
+                            .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
 
         } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
-            if (!(getDateIssued().matches(Constants.DATE_DDMMRRRR)
-                    || getDateIssued().matches(Constants.DATE_MMRRRR)
-                    || getDateIssued().matches(Constants.DATE_RRRR)
-                    || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
-                    .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
+            if (!"".equals(getDateIssued())
+                    && !(getDateIssued().matches(Constants.DATE_DDMMRRRR)
+                            || getDateIssued().matches(Constants.DATE_MMRRRR)
+                            || getDateIssued().matches(Constants.DATE_RRRR)
+                            || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
+                            .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
         }
         return null;
     }
