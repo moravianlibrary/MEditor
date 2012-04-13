@@ -531,7 +531,7 @@ public class Constants {
     }
 
     public static enum PAGE_TYPES {
-        AD, BC, BS, BL, FC, FS, IN, LI, LM, LT, NP, SP, TB, TC, TP;
+        AD, BC, BS, BL, CO, FL, FC, FS, IN, LI, LM, LT, NP, SP, TB, TC, TP;
 
         public static Map<String, String> MAP = new HashMap<String, String>();
         static {
@@ -539,6 +539,8 @@ public class Constants {
             MAP.put(PAGE_TYPES.BC.toString(), "BackCover");
             MAP.put(PAGE_TYPES.BS.toString(), "BackEndSheet");
             MAP.put(PAGE_TYPES.BL.toString(), "Blank");
+            MAP.put(PAGE_TYPES.CO.toString(), "Cover");
+            MAP.put(PAGE_TYPES.FL.toString(), "FlyLeaf");
             MAP.put(PAGE_TYPES.FC.toString(), "FrontCover");
             MAP.put(PAGE_TYPES.FS.toString(), "FrontEndSheet");
             MAP.put(PAGE_TYPES.IN.toString(), "Index");
