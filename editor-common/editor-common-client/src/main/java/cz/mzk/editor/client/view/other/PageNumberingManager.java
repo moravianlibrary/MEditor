@@ -299,7 +299,9 @@ public final class PageNumberingManager {
                 String number =
                         !isRoman ? String.valueOf(i + (j / n)) : ClientUtils.decimalToRoman((i + (j / n)),
                                                                                             false);
-                rec.setAttribute(Constants.ATTR_NAME, number + "" + alphabet[j % n]);
+                StringBuilder sb = new StringBuilder(5);
+                sb.append('[').append(number).append(alphabet[j % n]).append(']');
+                rec.setAttribute(Constants.ATTR_NAME, sb.toString());
                 j++;
             }
         }

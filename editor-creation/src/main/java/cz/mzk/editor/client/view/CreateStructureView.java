@@ -880,7 +880,7 @@ public class CreateStructureView
         MenuItem toRoman = new MenuItem(lang.convertToRoman(), "icons/16/roman.png");
         MenuItem toRomanOld = new MenuItem(lang.convertToRomanOld(), "icons/16/roman.png");
         MenuItem surround = new MenuItem("1, 2, ...   ⇨   [1], [2], ...", "icons/16/surround.png");
-        MenuItem abc = new MenuItem("1, 2, ...   ⇨   1a, 1b, ...", "icons/16/abc.png");
+        MenuItem abc = new MenuItem("1, 2, ...   ⇨   [1a], [1b], ...", "icons/16/abc.png");
         MenuItem toCollumn = new MenuItem("1, 2, ...   ⇨   1|2, ...", "icons/16/columns.png");
         MenuItem toLeft = new MenuItem(lang.leftShift() + "...", "icons/16/arrow_left.png");
         MenuItem toRight = new MenuItem(lang.rightShift() + "...", "icons/16/arrow_right.png");
@@ -1172,10 +1172,10 @@ public class CreateStructureView
         menu.setShadowDepth(3);
 
         MenuItem rv = new MenuItem("1, 2, 3, 4   ⇨   1r, 1v, 2r, 2v");
-        MenuItem abc2 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 2a, 2b");
-        MenuItem abc3 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 1c, 2a");
-        MenuItem abc4 = new MenuItem("1, 2, 3, 4   ⇨   1a, 1b, 1c, 1d");
-        MenuItem abc5 = new MenuItem("1, .. 4, 5   ⇨   1a, ... 1e, 2a");
+        MenuItem abc2 = new MenuItem("1, 2, 3, 4   ⇨   [1a], [1b], [2a], [2b]");
+        MenuItem abc3 = new MenuItem("1, 2, 3, 4   ⇨   [1a], [1b], [1c], [2a]");
+        MenuItem abc4 = new MenuItem("1, 2, 3, 4   ⇨   [1a], [1b], [1c], [1d]");
+        MenuItem abc5 = new MenuItem("1, .. 4, 5   ⇨   [1a], ... [1e], [2a]");
         MenuItem abcN = new MenuItem(lang.customizeIndex() + "...");
         rv.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
