@@ -267,6 +267,7 @@ public class SectionCreateLayout
             xOfLevelNames.show();
             dateIssued.setDefaultValue(defaultDateIssued);
             partNumberForm.setWidth(100);
+            levelNames.setValue("");
 
             switch (model) {
                 case PERIODICALVOLUME:
@@ -317,7 +318,7 @@ public class SectionCreateLayout
      */
     private void setCreateMonographUnit() {
         levelNames.setValueMap(MONOGRAPH_UNIT_LEVEL_NAMES.MODS_SUPPL.getValue());
-        levelNames.setDefaultValue(MONOGRAPH_UNIT_LEVEL_NAMES.MODS_SUPPL.getValue());
+        levelNames.setValue(MONOGRAPH_UNIT_LEVEL_NAMES.MODS_SUPPL.getValue());
         levelNames.redraw();
         otherLayout.addMember(levelNamesLayout);
 
@@ -340,11 +341,11 @@ public class SectionCreateLayout
         if (isPeriodical) {
             levelNames.setValueMap(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue(),
                                    Constants.INTERNAL_PART_LEVEL_NAMES.MODS_PICT.getValue());
-            levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue());
+            levelNames.setValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue());
         } else {
             levelNames.setValueMap(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue(),
                                    INTERNAL_PART_LEVEL_NAMES.MODS_PICTURE.getValue());
-            levelNames.setDefaultValue(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue());
+            levelNames.setValue(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue());
         }
         levelNames.redraw();
         type.setValue("");
@@ -389,7 +390,7 @@ public class SectionCreateLayout
     private void setCreatePeriodicalItem() {
         levelNames.setValueMap(PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue(),
                                PERIODICAL_ITEM_LEVEL_NAMES.MODS_SUPPL.getValue());
-        levelNames.setDefaultValue(PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue());
+        levelNames.setValue(PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue());
         levelNames.redraw();
 
         xOfLevelNames.hide();
@@ -592,11 +593,8 @@ public class SectionCreateLayout
     }
 
     private String getFormatedXOfLevelNames() {
-        if (getxOfLevelNames() != null && !"".equals(getxOfLevelNames())) {
-            NumberFormat formatter = NumberFormat.getFormat("0000");
-            return formatter.format(Integer.parseInt(getxOfLevelNames()));
-        }
-        return "0000";
+        NumberFormat formatter = NumberFormat.getFormat("0000");
+        return formatter.format(Integer.parseInt(getxOfLevelNames()));
     }
 
     /**
@@ -605,12 +603,30 @@ public class SectionCreateLayout
     public String verify() {
         DigitalObjectModel model =
                 LabelAndModelConverter.getModelFromLabel().get(getSelectModel().getValueAsString());
-        if (getxOfSequence() != null && !getxOfSequence().matches(Constants.ONLY_NUMBERS))
-            return getOnlyNumbersHint("X");
-        if (getxOfLevelNames() != null && !getxOfLevelNames().matches(Constants.ONLY_NUMBERS))
-            return getOnlyNumbersHint("XXXX");
-        if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
-            return getOnlyNumbersHint(lang.partNumber());
+
+        if (model == DigitalObjectModel.PERIODICALITEM) {
+            String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(type.getValueAsString());
+            if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(perItemType)) {
+                if (getxOfSequence() == null || "".equals(getxOfSequence()))
+                    return lang.textBox() + " " + "X" + " " + lang.notEmpty();
+                if (!getxOfSequence().matches(Constants.ONLY_NUMBERS)) return getOnlyNumbersHint("X");
+            }
+        }
+        String levelName = levelNames.getValueAsString();
+        if (levelName != null && !"".equals(levelName)
+                && !PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName)) {
+            if (getxOfLevelNames() == null || "".equals(getxOfLevelNames()))
+                return lang.textBox() + " " + "XXXX" + " " + lang.notEmpty();
+            if (getxOfLevelNames() != null && !getxOfLevelNames().matches(Constants.ONLY_NUMBERS))
+                return getOnlyNumbersHint("XXXX");
+        }
+
+        if (model != DigitalObjectModel.PAGE) {
+            if (getPartNumber() == null || "".equals(getPartNumber()))
+                return lang.textBox() + " " + lang.partNumber() + " " + lang.notEmpty();
+            if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
+                return getOnlyNumbersHint(lang.partNumber());
+        }
 
         if (model == DigitalObjectModel.PERIODICALVOLUME) {
             if (!"".equals(getDateIssued())

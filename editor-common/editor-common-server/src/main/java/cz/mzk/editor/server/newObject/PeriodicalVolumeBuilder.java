@@ -54,6 +54,7 @@ public class PeriodicalVolumeBuilder
      */
     @Override
     protected void decorateMODSStream() {
+
         Element modsCollection = FoxmlUtils.createModsCollectionEl();
         Namespace modsNs = Namespaces.mods;
         Element mods = modsCollection.addElement(new QName("mods", modsNs));
