@@ -568,8 +568,7 @@ public class CreateStructureView
                 StringBuffer sb = new StringBuffer();
                 sb.append(lang.scan()).append(": ").append(value);
                 String pageType = record.getAttribute(Constants.ATTR_TYPE);
-                if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)
-                        && !Constants.PAGE_TYPES.BL.toString().equals(pageType)) {
+                if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)) {
                     sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
                 }
                 return sb.toString();
