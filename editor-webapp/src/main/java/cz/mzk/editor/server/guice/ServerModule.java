@@ -212,15 +212,15 @@ public class ServerModule
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
         // DAO
-        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class).asEagerSingleton();
-        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class).asEagerSingleton();
-        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class).asEagerSingleton();
-        bind(UserDAO.class).to(UserDAOImpl.class).asEagerSingleton();
-        bind(RequestDAO.class).to(RequestDAOImpl.class).asEagerSingleton();
-        bind(LockDAO.class).to(LockDAOImpl.class).asEagerSingleton();
-        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class).asEagerSingleton();
-        bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class).asEagerSingleton();
-        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class).asEagerSingleton();
+        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
+        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class);
+        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class);
+        bind(UserDAO.class).to(UserDAOImpl.class);
+        bind(RequestDAO.class).to(RequestDAOImpl.class);
+        bind(LockDAO.class).to(LockDAOImpl.class);
+        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
+        bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
+        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
         // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
         // Fedora
