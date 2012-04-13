@@ -333,7 +333,7 @@
 				<version>1.6</version>
 			</dependency>
 <!--			
-			install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 -Dversion=1.2.3 -Dpackaging=jar -Dfile=/home/kremser/workspace/MEditor/war/WEB-INF/lib/ki-jzkit-z3950-1_2_3.jar
+			install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 -Dversion=1.2.3 -Dpackaging=jar -Dfile=path
 			-->
 			<dependency>
 				<groupId>mzk.ki</groupId>
@@ -341,7 +341,7 @@
 				<version>1.2.3</version>
 			</dependency>
 <!-- 			
-			mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-iface -Dversion=1.2.3 -Dpackaging=jar -Dfile=/home/kremser/workspace/MEditor/war/WEB-INF/lib/ki-jzkit-iface-1_2_3.jar
+			mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-iface -Dversion=1.2.3 -Dpackaging=jar -Dfile=path
 			 -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
@@ -355,7 +355,7 @@
 				<scope>runtime</scope>
 			</dependency>
 <!--			
-			mvn install:install-file -DgroupId=mzk.ki -DartifactId=a2jruntime -Dversion=1.1.1 -Dpackaging=jar -Dfile=/home/kremser/workspace/MEditor/war/WEB-INF/lib/a2jruntime.jar
+			mvn install:install-file -DgroupId=mzk.ki -DartifactId=a2jruntime -Dversion=1.1.1 -Dpackaging=jar -Dfile=path
 			-->
 			<dependency>
 				<groupId>mzk.ki</groupId>
@@ -363,7 +363,7 @@
 				<version>1.1.1</version>
 				<scope>runtime</scope>
 			</dependency>
-<!--			mvn install:install-file -DgroupId=mzk.marc4j -DartifactId=marc4j -Dversion=2.3.1 -Dpackaging=jar -Dfile=/home/kremser/workspace/MEditor/war/WEB-INF/lib/marc4j.jar
+<!--			mvn install:install-file -DgroupId=mzk.marc4j -DartifactId=marc4j -Dversion=2.3.1 -Dpackaging=jar -Dfile=path
 			-->
 			<dependency>
 				<groupId>mzk.marc4j</groupId>
