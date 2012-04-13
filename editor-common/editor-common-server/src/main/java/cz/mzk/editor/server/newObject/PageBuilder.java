@@ -103,7 +103,7 @@ public class PageBuilder
         super.decorateRelsExtStream();
         Element description = FoxmlUtils.findDescriptionElement(getRelsExtXmlContent());
         Element url = description.addElement(new QName("tiles-url", Namespaces.kramerius));
-        url.addText(getImageUrl() + ".jp2");
+        url.addText(getImageUrl());
     }
 
     /**
