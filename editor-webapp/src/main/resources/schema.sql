@@ -374,6 +374,7 @@ INSERT INTO editor_user VALUES (79, 'Leos', 'Junek', false);
 INSERT INTO editor_user VALUES (80, 'Blanka', 'Sapáková', false);
 INSERT INTO editor_user VALUES (81, 'Pavel', 'Pesta', false);
 INSERT INTO editor_user VALUES (59, 'Martin', 'Rumanek', false);
+INSERT INTO editor_user VALUES (2, 'Olga', 'Jiranova', false);
 
 
 --
@@ -603,6 +604,9 @@ INSERT INTO open_id_identity VALUES (46, 81, 'http://pesta.myopenid.com/');
 INSERT INTO open_id_identity VALUES (47, 69, 'https://www.google.com/profiles/112339578258292421280');
 INSERT INTO open_id_identity VALUES (48, 1, 'http://www.facebook.com/profile.php?id=1611572776');
 INSERT INTO open_id_identity VALUES (26, 59, 'https://www.google.com/profiles/103895332427778311042');
+INSERT INTO open_id_identity VALUES (1, 2, 'https://www.google.com/profiles/116374215933201306796');
+INSERT INTO open_id_identity VALUES (2, 2, 'http://jiranova.myopenid.com/');
+INSERT INTO open_id_identity VALUES (3, 80, 'https://www.google.com/profiles/110961958613699566038');
 
 
 
@@ -753,6 +757,8 @@ INSERT INTO user_in_role VALUES (28, 63, 13, '2011-05-03 11:06:29.18266');
 INSERT INTO user_in_role VALUES (29, 68, 3, '2011-06-10 12:55:29.927104');
 INSERT INTO user_in_role VALUES (30, 68, 9, '2011-06-10 12:55:35.426358');
 INSERT INTO user_in_role VALUES (31, 74, 1, '2011-07-19 11:20:34.784693');
+INSERT INTO user_in_role VALUES (2, 2, 3, '2011-07-19 11:20:34.784693');
+INSERT INTO user_in_role VALUES (3, 80, 3, '2011-07-19 11:20:34.784693');
 
 
 --
