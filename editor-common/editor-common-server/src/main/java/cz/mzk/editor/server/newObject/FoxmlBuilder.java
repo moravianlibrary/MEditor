@@ -179,7 +179,8 @@ public abstract class FoxmlBuilder {
         Element identifier = rootElement.addElement(new QName("identifier", Namespaces.dc));
         identifier.setText(getPid());
         Element type = rootElement.addElement(new QName("type", Namespaces.dc));
-        type.addText("model:" + getModel().getValue());
+        type.addText("model:" + getModel().getValue().substring(0, 1)
+                + getModel().getValue().substring(1).toLowerCase());
         Element rights = rootElement.addElement(new QName("rights", Namespaces.dc));
         rights.addText("policy:" + getPolicy().toString().toLowerCase());
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.DC, rootElement, null, null);
