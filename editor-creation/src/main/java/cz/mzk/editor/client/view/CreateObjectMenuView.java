@@ -534,25 +534,33 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang, eventBus) {
+                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang, eventBus, true) {
 
                     @Override
-                    protected void doSaveAction(ListGridRecord record, String name) {
-                        //                        addUndoRedo(true, false);
-                        //                        record.setAttribute(Constants.ATTR_NAME, name);
-                        //                        if (getDateIssued() != null)
-                        //                            record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
-                        //                        if (getNote() != null) record.setAttribute(Constants.ATTR_NOTE, getNote());
-                        //                        if (getGenreType() != null)
-                        //                            record.setAttribute(Constants.ATTR_GENRE_TYPE, getGenreType());
-                        //                        if (getIssueNumber() != null)
-                        //                            record.setAttribute(Constants.ATTR_SEQUENCE_NUMBER, getIssueNumber());
-                        //                        if (getPageType() != null)
-                        //                            record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
-                        //                        structureTreeGrid.redraw();
-                        hide();
+                    protected void doSaveAction(ListGridRecord record) {
+                        // TODO Auto-generated method stub
+
                     }
                 };
+                //                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang, eventBus) {
+                //
+                //                    @Override
+                //                    protected void doSaveAction(ListGridRecord record, String name) {
+                //                        //                        addUndoRedo(true, false);
+                //                        //                        record.setAttribute(Constants.ATTR_NAME, name);
+                //                        //                        if (getDateIssued() != null)
+                //                        //                            record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
+                //                        //                        if (getNote() != null) record.setAttribute(Constants.ATTR_NOTE, getNote());
+                //                        //                        if (getGenreType() != null)
+                //                        //                            record.setAttribute(Constants.ATTR_GENRE_TYPE, getGenreType());
+                //                        //                        if (getIssueNumber() != null)
+                //                        //                            record.setAttribute(Constants.ATTR_SEQUENCE_NUMBER, getIssueNumber());
+                //                        //                        if (getPageType() != null)
+                //                        //                            record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
+                //                        //                        structureTreeGrid.redraw();
+                //                        hide();
+                //                    }
+                //                };
             }
         });
         edit.setEnableIfCondition(new MenuItemIfFunction() {

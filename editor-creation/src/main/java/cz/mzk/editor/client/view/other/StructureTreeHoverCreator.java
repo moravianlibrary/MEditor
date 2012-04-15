@@ -54,7 +54,7 @@ public class StructureTreeHoverCreator {
                 sb.append(getNameOrTitleHover(lang, record, lang.editionName()));
                 sb.append(getPartNumberOrAltoHover(lang, record, false));
                 sb.append(getDateOrIntPartHover(lang, record, false));
-                sb.append(getGenreHover(lang, record, false));
+                sb.append(getTypeHover(lang, record, false));
                 sb.append(getNoteOrSubtitleHover(lang, record, false));
 
                 return sb.toString();
@@ -65,7 +65,7 @@ public class StructureTreeHoverCreator {
                 sb.append(getNoteOrSubtitleHover(lang, record, true));
                 sb.append(getDateOrIntPartHover(lang, record, true));
                 sb.append(getPartNumberOrAltoHover(lang, record, false));
-                sb.append(getGenreHover(lang, record, false));
+                sb.append(getTypeHover(lang, record, false));
 
                 return sb.toString();
 
@@ -80,7 +80,7 @@ public class StructureTreeHoverCreator {
 
             case PAGE:
                 sb.append(getNameOrTitleHover(lang, record, lang.name()));
-                sb.append(getGenreHover(lang, record, true));
+                sb.append(getTypeHover(lang, record, true));
                 sb.append(getLevelNameOrOcrHover(lang, record, true));
                 sb.append(getPartNumberOrAltoHover(lang, record, true));
 
@@ -111,7 +111,7 @@ public class StructureTreeHoverCreator {
         return "";
     }
 
-    private static String getGenreHover(LangConstants lang, ListGridRecord record, boolean isPage) {
+    private static String getTypeHover(LangConstants lang, ListGridRecord record, boolean isPage) {
         String type = record.getAttribute(Constants.ATTR_TYPE);
         if (type != null && !"".equals(type)) {
             return hoverFactory(isPage ? lang.specialType() : lang.dcType(), type);

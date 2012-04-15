@@ -86,7 +86,7 @@ public class PeriodicalItemBuilder
         }
 
         Element genre = mods.addElement(new QName("genre", modsNs));
-        genre.addAttribute("type", getType());
+        if (isNotNullOrEmpty(getType())) genre.addAttribute("type", getType());
         String levelName = getAditionalInfo().substring(0, getAditionalInfo().indexOf("_", 6));
         genre.addText(Constants.PERIODICAL_ITEM_LEVEL_NAMES.MAP.get(levelName));
 

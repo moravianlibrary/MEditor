@@ -404,6 +404,7 @@ public class SectionCreateLayout
 
         final LinkedHashMap<String, String> valueMap =
                 new LinkedHashMap<String, String>(PERIODICAL_ITEM_GENRE_TYPES.MAP);
+        type.show();
         type.setValueMap(valueMap);
         type.setValue(PERIODICAL_ITEM_GENRE_TYPES.NORMAL.toString());
         xOfSequence.hide();
@@ -532,13 +533,16 @@ public class SectionCreateLayout
             PAGE_TYPES.MAP.get(type.getValueAsString());
 
         } else if (model == DigitalObjectModel.PERIODICALITEM) {
-            String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(type.getValueAsString());
+            if (PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelNames.getValueAsString())) {
+                String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(type.getValueAsString());
 
-            if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(perItemType)) {
-                typeString =
-                        perItemType.substring(0, perItemType.length() - 1) + xOfSequence.getValueAsString();
-            } else {
-                typeString = perItemType;
+                if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(type.getValueAsString())) {
+                    typeString =
+                            perItemType.substring(0, perItemType.length() - 1)
+                                    + xOfSequence.getValueAsString();
+                } else {
+                    typeString = perItemType;
+                }
             }
 
         } else if (model == DigitalObjectModel.INTERNALPART) {
