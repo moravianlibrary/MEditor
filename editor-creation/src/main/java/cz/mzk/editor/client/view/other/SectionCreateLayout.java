@@ -27,7 +27,6 @@ package cz.mzk.editor.client.view.other;
 import java.util.LinkedHashMap;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -50,7 +49,6 @@ import cz.mzk.editor.client.util.Constants.INTERNAL_PART_CHAPTER_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_LEVEL_NAMES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_PICTURE_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.MONOGRAPH_UNIT_LEVEL_NAMES;
-import cz.mzk.editor.client.util.Constants.PAGE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.client.view.window.AddNoteWindow;
@@ -61,7 +59,7 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
  * @version Apr 4, 2012
  */
 public class SectionCreateLayout
-        extends Layout {
+        extends NewDigitalObjectItemManager {
 
     private ButtonItem createButton;
 
@@ -133,7 +131,7 @@ public class SectionCreateLayout
     }
 
     public SectionCreateLayout(LangConstants lang, EventBus eventBus) {
-        super();
+        super(lang);
         this.lang = lang;
         this.eventBus = eventBus;
         addMember(getSequentialCreateLayout());
@@ -465,112 +463,12 @@ public class SectionCreateLayout
         return selectModel;
     }
 
-    public String getNote() {
-        String note = addNoteButton.getPrompt();
-        addNoteButton.setPrompt("");
-        addNoteButton.setTitle(lang.addNote());
-        return note;
-    }
-
-    /**
-     * @return the nameOrTitle
-     */
-    public String getNameOrTitle() {
-        return nameOrTitle.getValueAsString();
-    }
-
-    /**
-     * @return the subtitle
-     */
-    public String getSubtitle() {
-        return subtitle.getValueAsString();
-    }
-
-    /**
-     * @return the partNumber
-     */
-    public String getPartNumber() {
-        return partNumber.getValueAsString();
-    }
-
-    /**
-     * @return the xOfSequence
-     */
-    public String getxOfSequence() {
-        return xOfSequence.getValueAsString();
-    }
-
-    /**
-     * @return the dateIssued
-     */
-    public String getDateIssued() {
-        if (dateIssued.getValueAsString() == null) return "";
-        return dateIssued.getValueAsString();
-    }
-
-    /**
-     * @return the partName
-     */
-    public String getPartName() {
-        return partName.getValueAsString();
-    }
-
     /**
      * @param partName
      *        the partName to set
      */
     public void setPartName(TextItem partName) {
         this.partName = partName;
-    }
-
-    /**
-     * @return the type
-     */
-    public String getType(DigitalObjectModel model, String levelName) {
-        String typeString = "";
-
-        if (model == DigitalObjectModel.PAGE) {
-            PAGE_TYPES.MAP.get(type.getValueAsString());
-
-        } else if (model == DigitalObjectModel.PERIODICALITEM) {
-            if (PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelNames.getValueAsString())) {
-                String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(type.getValueAsString());
-
-                if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(type.getValueAsString())) {
-                    typeString =
-                            perItemType.substring(0, perItemType.length() - 1)
-                                    + xOfSequence.getValueAsString();
-                } else {
-                    typeString = perItemType;
-                }
-            }
-
-        } else if (model == DigitalObjectModel.INTERNALPART) {
-            if (levelName.substring(0, levelName.indexOf("_", 6))
-                    .equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.toString())) {
-                typeString = INTERNAL_PART_ARTICLE_GENRE_TYPES.MAP.get(type.getValueAsString());
-
-            } else if (levelName.substring(0, levelName.indexOf("_", 6))
-                    .equals(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.toString())) {
-                typeString = INTERNAL_PART_CHAPTER_GENRE_TYPES.MAP.get(type.getValueAsString());
-
-            } else {
-                typeString = INTERNAL_PART_PICTURE_GENRE_TYPES.MAP.get(type.getValueAsString());
-            }
-        }
-        return typeString;
-    }
-
-    /**
-     * @return the levelName
-     */
-    public String getLevelName() {
-        String levelName = levelNames.getValueAsString();
-
-        if (!PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName))
-            return levelName.substring(0, levelName.length() - 4) + getFormatedXOfLevelNames();
-
-        return levelName;
     }
 
     public void enableCheckbox(boolean isEnabled) {
@@ -590,79 +488,91 @@ public class SectionCreateLayout
     }
 
     /**
-     * @return the xOfLevelNames
+     * {@inheritDoc}
      */
-    public String getxOfLevelNames() {
-        return xOfLevelNames.getValueAsString();
-    }
-
-    private String getFormatedXOfLevelNames() {
-        NumberFormat formatter = NumberFormat.getFormat("0000");
-        return formatter.format(Integer.parseInt(getxOfLevelNames()));
+    @Override
+    protected IButton getAddNoteButton() {
+        return addNoteButton;
     }
 
     /**
-     * @return
+     * {@inheritDoc}
      */
-    public String verify() {
-        DigitalObjectModel model =
-                LabelAndModelConverter.getModelFromLabel().get(getSelectModel().getValueAsString());
-
-        if (model == DigitalObjectModel.PERIODICALITEM) {
-            String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(type.getValueAsString());
-            if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(perItemType)) {
-                if (getxOfSequence() == null || "".equals(getxOfSequence()))
-                    return lang.textBox() + " " + "X" + " " + lang.notEmpty();
-                if (!getxOfSequence().matches(Constants.ONLY_NUMBERS)) return getOnlyNumbersHint("X");
-            }
-        }
-        String levelName = levelNames.getValueAsString();
-        if (levelName != null && !"".equals(levelName)
-                && !PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName)) {
-            if (getxOfLevelNames() == null || "".equals(getxOfLevelNames()))
-                return lang.textBox() + " " + "XXXX" + " " + lang.notEmpty();
-            if (getxOfLevelNames() != null && !getxOfLevelNames().matches(Constants.ONLY_NUMBERS))
-                return getOnlyNumbersHint("XXXX");
-        }
-
-        if (model != DigitalObjectModel.PAGE) {
-            if (getPartNumber() == null || "".equals(getPartNumber()))
-                return lang.textBox() + " " + lang.partNumber() + " " + lang.notEmpty();
-            if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
-                return getOnlyNumbersHint(lang.partNumber());
-        }
-
-        if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            if (!"".equals(getDateIssued())
-                    && !(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
-                            .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
-
-        } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
-            if (!"".equals(getDateIssued())
-                    && !(getDateIssued().matches(Constants.DATE_DDMMRRRR)
-                            || getDateIssued().matches(Constants.DATE_MMRRRR)
-                            || getDateIssued().matches(Constants.DATE_RRRR)
-                            || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
-                            .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
-        }
-        return null;
+    @Override
+    protected TextItem getNameOrTitleItem() {
+        return nameOrTitle;
     }
 
-    private String getOnlyNumbersHint(String textItemName) {
-        return lang.textBox() + " " + textItemName + " " + lang.onlyNum();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getSubtitleItem() {
+        return subtitle;
     }
 
-    private String getDateFormatHint(DigitalObjectModel model) {
-        if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
-                    + " " + lang.dateInFormat() + ": " + "RRRR " + lang.or() + "<br>RRRR-RRRR";
-
-        } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
-            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
-                    + " " + lang.dateInFormat() + ": <br>" + "DD.MM.RRRR " + lang.or() + "<br>MM.RRRR "
-                    + lang.or() + "<br>RRRR " + lang.or() + "<br>DD.-DD.MM.RRR " + lang.or()
-                    + "<br>MM.-MM.RRRR";
-        }
-        return "";
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getPartNumberItem() {
+        return partNumber;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getXOfSequenceItem() {
+        return xOfSequence;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getDateIssuedItem() {
+        return dateIssued;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getPartNameItem() {
+        return partName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected SelectItem getTypeItem() {
+        return type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected SelectItem getLevelNamesItem() {
+        return levelNames;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getXOfLevelNamesItem() {
+        return xOfLevelNames;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected DigitalObjectModel getCurrentModel() {
+        return LabelAndModelConverter.getModelFromLabel().get(getSelectModel().getValueAsString());
+    }
+
 }
