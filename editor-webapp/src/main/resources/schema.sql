@@ -96,14 +96,13 @@ CREATE TABLE tree_structure_node (
     prop_id character varying(4),
     prop_parent character varying(4),
     prop_name character varying(256),
-    prop_picture character varying(256),
-    prop_type character varying(40),
-    prop_type_id character varying(20),
-    prop_page_type character varying(25),
-    prop_date_issued character varying(10),
-    prop_alto_path character varying(256),
-    prop_image_or_ocr_path character varying(256),
-    prop_note character varying(1000),
+    prop_picture_or_uuid character varying(256),
+    prop_model_id character varying(20),
+    prop_type character varying(25),
+    prop_date_or_int_part_name character varying(10),
+    prop_note_or_int_subtitle character varying(1000),
+    prop_part_number_or_alto character varying(256),
+    prop_aditional_info_or_ocr character varying(256),
     prop_exist boolean
 );
 

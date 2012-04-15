@@ -204,7 +204,7 @@ public class TreeStructureBundle
                                  String propModelId,
                                  String propType,
                                  String propDateOrIntPartName,
-                                 String noteOrIntSubtitle,
+                                 String propNoteOrIntSubtitle,
                                  String propPartNumberOrAlto,
                                  String propAditionalInfoOrOcr,
                                  boolean propExist) {
@@ -216,7 +216,7 @@ public class TreeStructureBundle
             this.propModelId = propModelId;
             this.propType = propType;
             this.propDateOrIntPartName = propDateOrIntPartName;
-            this.propNoteOrIntSubtitle = noteOrIntSubtitle;
+            this.propNoteOrIntSubtitle = propNoteOrIntSubtitle;
             this.propPartNumberOrAlto = propPartNumberOrAlto;
             this.propAditionalInfoOrOcr = propAditionalInfoOrOcr;
             this.propExist = propExist;

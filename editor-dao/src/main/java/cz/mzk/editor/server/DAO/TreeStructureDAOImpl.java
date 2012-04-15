@@ -78,7 +78,7 @@ public class TreeStructureDAOImpl
     public static final String INSERT_NODE =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
-                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture, prop_type, prop_type_id, prop_page_type, prop_date_issued, prop_alto_path, prop_image_or_ocr_path, prop_note, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
 
@@ -138,8 +138,7 @@ public class TreeStructureDAOImpl
         } catch (SQLException e) {
             LOGGER.error("Could not get select infos statement", e);
         }
-        //        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, new Locale("cs", "CZ"));
-        //        dateFormatter.format(new Date());
+
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
@@ -199,12 +198,18 @@ public class TreeStructureDAOImpl
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                //                retList.add(new TreeStructureNode(rs.getString("prop_id"), rs.getString("prop_parent"), rs
-                //                        .getString("prop_name"), rs.getString("prop_picture"), rs.getString("prop_type"), rs
-                //                        .getString("prop_type_id"), rs.getString("prop_page_type"), rs
-                //                        .getString("prop_date_issued"), rs.getString("prop_alto_path"), rs
-                //                        .getString("prop_image_or_ocr_path"), rs.getString("prop_note"), rs
-                //                        .getBoolean("prop_exist")));
+                retList.add(new TreeStructureNode(rs.getString("prop_id"),
+                                                  rs.getString("prop_parent"),
+                                                  rs.getString("prop_name"),
+                                                  rs.getString("prop_picture_or_uuid"),
+                                                  rs.getString("prop_model_id"),
+                                                  rs.getString("prop_type"),
+                                                  rs.getString("prop_date_or_int_part_name"),
+                                                  rs.getString("prop_note_or_int_subtitle"),
+                                                  rs.getString("prop_part_number_or_alto"),
+                                                  rs.getString("prop_aditional_info_or_ocr"),
+                                                  rs.getBoolean("prop_exist")));
+
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -253,18 +258,17 @@ public class TreeStructureDAOImpl
             for (TreeStructureNode node : structure) {
                 insSt = getConnection().prepareStatement(INSERT_NODE);
                 insSt.setLong(1, key);
-                //                insSt.setString(2, node.getPropId());
-                //                insSt.setString(3, node.getPropParent());
-                //                insSt.setString(4, node.getPropName());
-                //                insSt.setString(5, node.getPropPicture());
-                //                insSt.setString(6, node.getPropTypetodelete());
-                //                insSt.setString(7, node.getPropTypeId());
-                //                insSt.setString(8, node.getPropPageType());
-                //                insSt.setString(9, node.getPropDateIssued());
-                //                insSt.setString(10, node.getPropAltoPath());
-                //                insSt.setString(11, node.getPropOcrPath());
-                //                insSt.setString(12, node.getPropNote());
-                //                insSt.setBoolean(13, node.getPropExist());
+                insSt.setString(2, node.getPropId());
+                insSt.setString(3, node.getPropParent());
+                insSt.setString(4, node.getPropName());
+                insSt.setString(5, node.getPropPictureOrUuid());
+                insSt.setString(6, node.getPropModelId());
+                insSt.setString(7, node.getPropType());
+                insSt.setString(8, node.getPropDateOrIntPartName());
+                insSt.setString(9, node.getPropNoteOrIntSubtitle());
+                insSt.setString(10, node.getPropPartNumberOrAlto());
+                insSt.setString(11, node.getPropAditionalInfoOrOcr());
+                insSt.setBoolean(12, node.isPropExist());
                 total += insSt.executeUpdate();
             }
             if (total != structure.size()) {

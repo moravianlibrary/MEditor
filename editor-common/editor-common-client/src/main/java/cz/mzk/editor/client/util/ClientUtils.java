@@ -553,17 +553,17 @@ public class ClientUtils {
     private static TreeStructureNode toNode(Record treeNode, int order) {
         String modelId = treeNode.getAttribute(Constants.ATTR_MODEL_ID);
 
-        return new TreeStructureNode(treeNode.getAttribute(Constants.ATTR_ID),
+        return new TreeStructureNode(modelId == null ? null : treeNode.getAttribute(Constants.ATTR_ID),
                                      treeNode.getAttribute(Constants.ATTR_PARENT),
                                      trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
                                      treeNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
                                      modelId == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : modelId,
-                                     modelId == null ? String.valueOf(order) : treeNode
-                                             .getAttribute(Constants.ATTR_TYPE),
+                                     treeNode.getAttribute(Constants.ATTR_TYPE),
                                      treeNode.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
                                      treeNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
                                      treeNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
-                                     treeNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
+                                     modelId == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
+                                             .getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
@@ -572,7 +572,7 @@ public class ClientUtils {
                 new ScanRecord(node.getPropName(),
                                node.getPropModelId(),
                                node.getPropPictureOrUuid(),
-                               node.getPropId(),
+                               node.getPropAditionalInfoOrOcr(),
                                node.getPropType());
         return rec;
     }
@@ -615,6 +615,7 @@ public class ClientUtils {
     }
 
     public static String trimLabel(String originalString, int maxLength) {
+        if (originalString == null) return "";
         if (originalString.length() <= maxLength) {
             return originalString;
         } else {
