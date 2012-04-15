@@ -538,29 +538,14 @@ public class CreateObjectMenuView
 
                     @Override
                     protected void doSaveAction(ListGridRecord record) {
-                        // TODO Auto-generated method stub
-
+                        setChangedRecord(record);
+                        DigitalObjectModel model =
+                                DigitalObjectModel.parseString(record.getAttribute(Constants.ATTR_MODEL_ID));
+                        if (model == DigitalObjectModel.PERIODICAL || model == DigitalObjectModel.MONOGRAPH) {
+                            structureTreeGrid.redraw();
+                        }
                     }
                 };
-                //                new NewObjectBasicInfoWindow(structureTreeGrid.getSelectedRecords()[0], lang, eventBus) {
-                //
-                //                    @Override
-                //                    protected void doSaveAction(ListGridRecord record, String name) {
-                //                        //                        addUndoRedo(true, false);
-                //                        //                        record.setAttribute(Constants.ATTR_NAME, name);
-                //                        //                        if (getDateIssued() != null)
-                //                        //                            record.setAttribute(Constants.ATTR_DATE_ISSUED, getDateIssued());
-                //                        //                        if (getNote() != null) record.setAttribute(Constants.ATTR_NOTE, getNote());
-                //                        //                        if (getGenreType() != null)
-                //                        //                            record.setAttribute(Constants.ATTR_GENRE_TYPE, getGenreType());
-                //                        //                        if (getIssueNumber() != null)
-                //                        //                            record.setAttribute(Constants.ATTR_SEQUENCE_NUMBER, getIssueNumber());
-                //                        //                        if (getPageType() != null)
-                //                        //                            record.setAttribute(Constants.ATTR_PAGE_TYPE, getPageType());
-                //                        //                        structureTreeGrid.redraw();
-                //                        hide();
-                //                    }
-                //                };
             }
         });
         edit.setEnableIfCondition(new MenuItemIfFunction() {

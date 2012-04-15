@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -106,7 +107,7 @@ public abstract class NewObjectBasicInfoWindow
 
         private HLayout levelNamesLayout;
 
-        private HLayout partNumAndTypeLayout;
+        private HLayout typeLayout;
 
         private VLayout otherLayout;
 
@@ -177,12 +178,12 @@ public abstract class NewObjectBasicInfoWindow
             noteItem.setWidth(300);
             noteItem.setHeight(60);
 
-            partNumAndTypeLayout = new HLayout(3);
-            partNumAndTypeLayout.addMember(new MyDynamicForm(type));
-            partNumAndTypeLayout.addMember(new MyDynamicForm(xOfSequence));
-            partNumAndTypeLayout.setLayoutAlign(Alignment.LEFT);
-            partNumAndTypeLayout.setAlign(Alignment.RIGHT);
-            partNumAndTypeLayout.setWidth(375);
+            typeLayout = new HLayout(3);
+            typeLayout.addMember(new MyDynamicForm(type));
+            typeLayout.addMember(new MyDynamicForm(xOfSequence));
+            typeLayout.setLayoutAlign(Alignment.LEFT);
+            typeLayout.setAlign(Alignment.RIGHT);
+            typeLayout.setWidth(375);
 
             otherLayout = new VLayout();
 
@@ -206,30 +207,30 @@ public abstract class NewObjectBasicInfoWindow
 
                 switch (model) {
                     case PERIODICALVOLUME:
-                        setCreatePeriodicalVolume();
+                        setEditPeriodicalVolume();
                         break;
                     case PERIODICALITEM:
-                        setCreatePeriodicalItem();
+                        setEditPeriodicalItem();
                         break;
 
                     case INTERNALPART:
-                        setCreateInternalPart(isPeriodical);
+                        setEditInternalPart(isPeriodical);
                         break;
 
                     case MONOGRAPHUNIT:
-                        setCreateMonographUnit();
+                        setEditMonographUnit();
                         break;
 
                     case PAGE:
-                        setCreatePage();
+                        setEditPage();
                         break;
 
                     default:
-                        setCreateDefault();
+                        setEditDefault();
                         break;
                 }
             } else {
-                setCreateDefault();
+                setEditDefault();
             }
             addMember(otherLayout, 0);
         }
@@ -237,29 +238,35 @@ public abstract class NewObjectBasicInfoWindow
         /**
          * 
          */
-        private void setCreatePage() {
+        private void setEditPage() {
             nameOrTitle.setTitle(lang.dcTitle());
             nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
             otherLayout.addMember(new MyDynamicForm(nameOrTitle));
 
             final LinkedHashMap<String, String> valueMapPage =
                     new LinkedHashMap<String, String>(PAGE_TYPES.MAP);
+
             type.setValueMap(valueMapPage);
-            type.setValue(record.getAttribute(Constants.ATTR_TYPE));
-            otherLayout.addMember(new MyDynamicForm(type));
+            type.setValue(PAGE_TYPES.MAP.get(record.getAttribute(Constants.ATTR_TYPE)));
+            type.redraw();
+            xOfSequence.hide();
+            otherLayout.addMember(typeLayout);
             NewObjectBasicInfoWindow.this.setHeight(150);
         }
 
         /**
          * 
          */
-        private void setCreateDefault() {
+        private void setEditDefault() {
+            nameOrTitle.setTitle(lang.dcTitle());
+            nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
+            otherLayout.addMember(new MyDynamicForm(nameOrTitle));
         }
 
         /**
          * 
          */
-        private void setCreateMonographUnit() {
+        private void setEditMonographUnit() {
             levelNames.setValueMap(MONOGRAPH_UNIT_LEVEL_NAMES.MODS_SUPPL.getValue());
             levelNames.setDefaultValue(MONOGRAPH_UNIT_LEVEL_NAMES.MODS_SUPPL.getValue());
             levelNames.redraw();
@@ -283,7 +290,14 @@ public abstract class NewObjectBasicInfoWindow
         /**
          * 
          */
-        private void setCreateInternalPart(boolean isPeriodical) {
+        private void setEditInternalPart(boolean isPeriodical) {
+            final LinkedHashMap<String, String> valueMapArt =
+                    new LinkedHashMap<String, String>(INTERNAL_PART_ARTICLE_GENRE_TYPES.MAP);
+            final LinkedHashMap<String, String> valueMapPicture =
+                    new LinkedHashMap<String, String>(INTERNAL_PART_PICTURE_GENRE_TYPES.MAP);
+            final LinkedHashMap<String, String> valueMapChapter =
+                    new LinkedHashMap<String, String>(INTERNAL_PART_CHAPTER_GENRE_TYPES.MAP);
+
             String levelName = record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
             String substringLevelName = levelName.substring(0, levelName.indexOf("_", 6));
 
@@ -293,8 +307,10 @@ public abstract class NewObjectBasicInfoWindow
 
                 if (substringLevelName.equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.toString())) {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue());
+                    type.setValueMap(valueMapArt);
                 } else {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_PICT.getValue());
+                    type.setValueMap(valueMapPicture);
                 }
 
             } else {
@@ -303,8 +319,10 @@ public abstract class NewObjectBasicInfoWindow
 
                 if (substringLevelName.equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.toString())) {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue());
+                    type.setValueMap(valueMapChapter);
                 } else {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_PICTURE.getValue());
+                    type.setValueMap(valueMapPicture);
                 }
             }
             levelNames.redraw();
@@ -323,18 +341,11 @@ public abstract class NewObjectBasicInfoWindow
 
             otherLayout.addMember(new MyDynamicForm(nameOrTitle, subtitle, partName, partNumber));
 
-            final LinkedHashMap<String, String> valueMapArt =
-                    new LinkedHashMap<String, String>(INTERNAL_PART_ARTICLE_GENRE_TYPES.MAP);
-            final LinkedHashMap<String, String> valueMapPicture =
-                    new LinkedHashMap<String, String>(INTERNAL_PART_PICTURE_GENRE_TYPES.MAP);
-            final LinkedHashMap<String, String> valueMapChapter =
-                    new LinkedHashMap<String, String>(INTERNAL_PART_CHAPTER_GENRE_TYPES.MAP);
-
             type.setValueMap(valueMapArt);
             type.setValue(record.getAttribute(Constants.ATTR_TYPE));
             xOfSequence.hide();
-            partNumAndTypeLayout.setExtraSpace(10);
-            otherLayout.addMember(partNumAndTypeLayout);
+            typeLayout.setExtraSpace(10);
+            otherLayout.addMember(typeLayout);
 
             levelNames.addChangedHandler(new ChangedHandler() {
 
@@ -343,9 +354,9 @@ public abstract class NewObjectBasicInfoWindow
                     if (event.getValue().equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue())) {
                         type.setValueMap(valueMapArt);
                     } else if (event.getValue().equals(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue())) {
-                        type.setValueMap(valueMapPicture);
-                    } else {
                         type.setValueMap(valueMapChapter);
+                    } else {
+                        type.setValueMap(valueMapPicture);
                     }
                     type.setValue("");
                 }
@@ -356,7 +367,7 @@ public abstract class NewObjectBasicInfoWindow
         /**
          * 
          */
-        private void setCreatePeriodicalItem() {
+        private void setEditPeriodicalItem() {
             levelNames.setValueMap(PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue(),
                                    PERIODICAL_ITEM_LEVEL_NAMES.MODS_SUPPL.getValue());
             String levelName = record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
@@ -411,8 +422,8 @@ public abstract class NewObjectBasicInfoWindow
                 type.setValue("");
             }
 
-            partNumAndTypeLayout.setExtraSpace(10);
-            otherLayout.addMember(partNumAndTypeLayout);
+            typeLayout.setExtraSpace(10);
+            otherLayout.addMember(typeLayout);
 
             noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE));
 
@@ -450,7 +461,7 @@ public abstract class NewObjectBasicInfoWindow
         /**
          * 
          */
-        private void setCreatePeriodicalVolume() {
+        private void setEditPeriodicalVolume() {
             partNumber.setValue(record.getAttributeAsString(Constants.ATTR_PART_NUMBER_OR_ALTO));
 
             dateIssued.setPrompt(getDateFormatHint(DigitalObjectModel.PERIODICALVOLUME));
@@ -574,7 +585,13 @@ public abstract class NewObjectBasicInfoWindow
 
             @Override
             public void onClick(ClickEvent event) {
-                doSaveAction(record);
+                String message = managerLayout.verify();
+                if (message == null) {
+                    doSaveAction(record);
+                    hide();
+                } else {
+                    SC.warn(message);
+                }
             }
         });
 
@@ -594,8 +611,59 @@ public abstract class NewObjectBasicInfoWindow
     /**
      * @return the managerLayout
      */
-    public MainEditLayoutManager getManagerLayout() {
+    protected MainEditLayoutManager getManagerLayout() {
         return managerLayout;
+    }
+
+    protected void setChangedRecord(ListGridRecord record) {
+        String aditionalInfoOrOcr = "";
+        DigitalObjectModel model =
+                DigitalObjectModel.parseString(record.getAttribute(Constants.ATTR_MODEL_ID));
+
+        switch (model) {
+            case PERIODICALVOLUME:
+                record.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, managerLayout.getDateIssued());
+                record.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, managerLayout.getNote());
+                record.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, managerLayout.getPartNumber());
+                break;
+
+            case PERIODICALITEM:
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
+                record.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, managerLayout.getDateIssued());
+                record.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, managerLayout.getNote());
+                record.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, managerLayout.getPartNumber());
+                aditionalInfoOrOcr = managerLayout.getLevelName();
+                record.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, aditionalInfoOrOcr);
+                record.setAttribute(Constants.ATTR_TYPE, managerLayout.getType(model, aditionalInfoOrOcr));
+                break;
+
+            case INTERNALPART:
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
+                record.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, managerLayout.getPartName());
+                record.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, managerLayout.getSubtitle());
+                record.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, managerLayout.getPartNumber());
+                aditionalInfoOrOcr = managerLayout.getLevelName();
+                record.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, aditionalInfoOrOcr);
+                record.setAttribute(Constants.ATTR_TYPE, managerLayout.getType(model, aditionalInfoOrOcr));
+                break;
+
+            case MONOGRAPHUNIT:
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
+                record.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, managerLayout.getDateIssued());
+                record.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, managerLayout.getNote());
+                record.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, managerLayout.getPartNumber());
+                record.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, managerLayout.getLevelName());
+                break;
+
+            case PAGE:
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
+                record.setAttribute(Constants.ATTR_TYPE, managerLayout.getType(model, null));
+                break;
+
+            default:
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
+                break;
+        }
     }
 
     protected abstract void doSaveAction(ListGridRecord record);

@@ -373,9 +373,9 @@ public class SectionCreateLayout
                 if (event.getValue().equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue())) {
                     type.setValueMap(valueMapArt);
                 } else if (event.getValue().equals(INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue())) {
-                    type.setValueMap(valueMapPicture);
-                } else {
                     type.setValueMap(valueMapChapter);
+                } else {
+                    type.setValueMap(valueMapPicture);
                 }
                 type.setValue("");
             }

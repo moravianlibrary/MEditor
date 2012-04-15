@@ -36,7 +36,6 @@ import cz.mzk.editor.client.util.Constants.INTERNAL_PART_ARTICLE_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_CHAPTER_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_LEVEL_NAMES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_PICTURE_GENRE_TYPES;
-import cz.mzk.editor.client.util.Constants.PAGE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
@@ -137,7 +136,7 @@ public abstract class NewDigitalObjectItemManager
         String typeString = "";
 
         if (model == DigitalObjectModel.PAGE) {
-            PAGE_TYPES.MAP.get(getTypeItem().getValueAsString());
+            typeString = getTypeItem().getValueAsString();
 
         } else if (model == DigitalObjectModel.PERIODICALITEM) {
             if (PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(getLevelNamesItem()
@@ -200,43 +199,48 @@ public abstract class NewDigitalObjectItemManager
     public String verify() {
 
         DigitalObjectModel model = getCurrentModel();
-
-        if (model == DigitalObjectModel.PERIODICALITEM) {
-            String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(getTypeItem().getValueAsString());
-            if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(perItemType)) {
-                if (getxOfSequence() == null || "".equals(getxOfSequence()))
-                    return lang.textBox() + " " + "X" + " " + lang.notEmpty();
-                if (!getxOfSequence().matches(Constants.ONLY_NUMBERS)) return getOnlyNumbersHint("X");
+        if (model != DigitalObjectModel.PERIODICAL && model != DigitalObjectModel.MONOGRAPH) {
+            if (model == DigitalObjectModel.PERIODICALITEM) {
+                String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(getTypeItem().getValueAsString());
+                if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(perItemType)) {
+                    if (getxOfSequence() == null || "".equals(getxOfSequence()))
+                        return lang.textBox() + " " + "X" + " " + lang.notEmpty();
+                    if (!getxOfSequence().matches(Constants.ONLY_NUMBERS)) return getOnlyNumbersHint("X");
+                }
             }
-        }
-        String levelName = getLevelNamesItem().getValueAsString();
-        if (levelName != null && !"".equals(levelName)
-                && !PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName)) {
-            if (getxOfLevelNames() == null || "".equals(getxOfLevelNames()))
-                return lang.textBox() + " " + "XXXX" + " " + lang.notEmpty();
-            if (getxOfLevelNames() != null && !getxOfLevelNames().matches(Constants.ONLY_NUMBERS))
-                return getOnlyNumbersHint("XXXX");
-        }
+            String levelName = getLevelNamesItem().getValueAsString();
+            if (levelName != null && !"".equals(levelName)
+                    && !PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue().equals(levelName)) {
+                if (getxOfLevelNames() == null || "".equals(getxOfLevelNames()))
+                    return lang.textBox() + " " + "XXXX" + " " + lang.notEmpty();
+                if (getxOfLevelNames() != null && !getxOfLevelNames().matches(Constants.ONLY_NUMBERS))
+                    return getOnlyNumbersHint("XXXX");
+            }
 
-        if (model != DigitalObjectModel.PAGE) {
-            if (getPartNumber() == null || "".equals(getPartNumber()))
-                return lang.textBox() + " " + lang.partNumber() + " " + lang.notEmpty();
-            if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
-                return getOnlyNumbersHint(lang.partNumber());
-        }
+            if (model != DigitalObjectModel.PAGE) {
+                if (getPartNumber() == null || "".equals(getPartNumber()))
+                    return lang.textBox() + " " + lang.partNumber() + " " + lang.notEmpty();
+                if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
+                    return getOnlyNumbersHint(lang.partNumber());
+            }
 
-        if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            if (!"".equals(getDateIssued())
-                    && !(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
-                            .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
+            if (model == DigitalObjectModel.PERIODICALVOLUME) {
+                if (!"".equals(getDateIssued())
+                        && !(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
+                                .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
 
-        } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
-            if (!"".equals(getDateIssued())
-                    && !(getDateIssued().matches(Constants.DATE_DDMMRRRR)
-                            || getDateIssued().matches(Constants.DATE_MMRRRR)
-                            || getDateIssued().matches(Constants.DATE_RRRR)
-                            || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
-                            .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
+            } else if (model == DigitalObjectModel.PERIODICALITEM
+                    || model == DigitalObjectModel.MONOGRAPHUNIT) {
+                if (!"".equals(getDateIssued())
+                        && !(getDateIssued().matches(Constants.DATE_DDMMRRRR)
+                                || getDateIssued().matches(Constants.DATE_MMRRRR)
+                                || getDateIssued().matches(Constants.DATE_RRRR)
+                                || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
+                                .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
+            }
+        } else {
+            if (getNameOrTitle() == null || "".equals(getNameOrTitle()))
+                return lang.textBox() + " " + lang.dcTitle() + " " + lang.notEmpty();
         }
         return null;
     }

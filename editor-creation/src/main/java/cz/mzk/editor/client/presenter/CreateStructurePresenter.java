@@ -801,7 +801,7 @@ public class CreateStructurePresenter
         leftPresenter.getView().addUndoRedo(true, false);
         String name = "";
         String dateOrIntPartName = "";
-        String noteOrArtPictInfo = "";
+        String noteOrSubtitle = "";
         String partNumOrAlto = "";
         String aditionalInfoOrOcr = "";
         String type = "";
@@ -809,14 +809,14 @@ public class CreateStructurePresenter
         switch (model) {
             case PERIODICALVOLUME:
                 dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
-                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getNote();
+                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getNote();
                 partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
                 break;
 
             case PERIODICALITEM:
                 name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
                 dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
-                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getNote();
+                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getNote();
                 partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
                 aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
                 type = leftPresenter.getSectionCreateLayout().getType(model, aditionalInfoOrOcr);
@@ -825,7 +825,7 @@ public class CreateStructurePresenter
             case INTERNALPART:
                 name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
                 dateOrIntPartName = leftPresenter.getSectionCreateLayout().getPartName();
-                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getSubtitle();
+                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getSubtitle();
                 partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
                 aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
                 type = leftPresenter.getSectionCreateLayout().getType(model, aditionalInfoOrOcr);
@@ -834,7 +834,7 @@ public class CreateStructurePresenter
             case MONOGRAPHUNIT:
                 name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
                 dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
-                noteOrArtPictInfo = leftPresenter.getSectionCreateLayout().getNote();
+                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getNote();
                 partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
                 aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
                 break;
@@ -853,7 +853,7 @@ public class CreateStructurePresenter
                                                     model.getValue(),
                                                     type,
                                                     dateOrIntPartName,
-                                                    noteOrArtPictInfo,
+                                                    noteOrSubtitle,
                                                     partNumOrAlto,
                                                     aditionalInfoOrOcr,
                                                     true,
