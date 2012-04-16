@@ -164,9 +164,9 @@ public class ScanRecord
      * 
      * @return the page record
      */
-    public ScanRecord deepCopy() {
-        return new ScanRecord(getName(), getModel(), getPicture(), getPath(), getPageType());
-    }
+    //    public ScanRecord deepCopy() {
+    //        return new ScanRecord(getName(), getModel(), getPicture(), getPath(), getPageType());
+    //    }
 
     /**
      * {@inheritDoc}

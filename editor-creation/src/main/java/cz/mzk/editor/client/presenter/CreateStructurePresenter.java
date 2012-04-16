@@ -151,6 +151,8 @@ public class CreateStructurePresenter
         void resizeThumbnails(boolean larger);
 
         void showDetail(int height, boolean isTop, int topSpace);
+
+        ScanRecord deepCopyScanRecord(Record originalRecord);
     }
 
     /**
@@ -554,6 +556,34 @@ public class CreateStructurePresenter
                         }
                     });
                 }
+
+                getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+
+                    @Override
+                    public void onSelectionChanged(SelectionChangedEvent event) {
+                        if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
+                                && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
+                            Record rec = event.getRecord();
+                            event.getRecord()
+                                    .setAttribute("__ref",
+                                                  "ScanRecord [getName()="
+                                                          + rec.getAttributeAsString(Constants.ATTR_NAME)
+                                                          + ", "
+                                                          + "getModel()="
+                                                          + model
+                                                          + ", "
+                                                          + "getPicture()="
+                                                          + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
+                                                          + ", " + "getPath()=, " + "getPageType()="
+                                                          + rec.getAttributeAsString(Constants.ATTR_TYPE)
+                                                          + "]");
+                            event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
+                            event.getRecord().setAttribute(Constants.ATTR_PATH, "");
+                            event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
+                        }
+                    }
+                });
+
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -683,7 +713,7 @@ public class CreateStructurePresenter
                         @Override
                         public void run() {
                             hBar1.setPercentDone(((100 * (alreadyDone + 1)) / data.length));
-                            tileGrid.addData(((ScanRecord) data[alreadyDone]).deepCopy());
+                            tileGrid.addData(getView().deepCopyScanRecord(data[alreadyDone]));//((ScanRecord) data[alreadyDone]).deepCopy());
                             if (++alreadyDone != data.length) {
                                 schedule(15);
                             } else {
@@ -695,7 +725,7 @@ public class CreateStructurePresenter
                     timer.schedule(40);
                 } else {
                     for (int i = 0; i < data.length; i++) {
-                        tileGrid.addData(((ScanRecord) data[i]).deepCopy());
+                        tileGrid.addData(getView().deepCopyScanRecord(data[i]));//((ScanRecord) data[i]).deepCopy());
                     }
                 }
             }

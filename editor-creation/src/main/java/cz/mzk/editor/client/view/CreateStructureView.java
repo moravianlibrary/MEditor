@@ -1528,7 +1528,7 @@ public class CreateStructureView
         Record[] newData = new Record[data.length];
         int i = 0;
         for (Record d : data) {
-            newData[i] = ((ScanRecord) d).deepCopy();
+            newData[i] = deepCopyScanRecord(d);//((ScanRecord) d).deepCopy();
             i++;
         }
         if (isUndoList) {
@@ -1542,7 +1542,14 @@ public class CreateStructureView
             redoList.add(newData);
             redoButton.enable();
         };
+    }
 
+    public ScanRecord deepCopyScanRecord(Record originalRecord) {
+        return new ScanRecord(originalRecord.getAttribute(Constants.ATTR_NAME),
+                              originalRecord.getAttribute(Constants.ATTR_MODEL),
+                              originalRecord.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                              originalRecord.getAttribute(Constants.ATTR_PATH),
+                              originalRecord.getAttribute(Constants.ATTR_TYPE));
     }
 
     /**
