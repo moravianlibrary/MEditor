@@ -31,7 +31,7 @@ import com.gwtplatform.mvp.client.UiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import cz.mzk.editor.client.view.other.SectionCreateLayout;
+import cz.mzk.editor.client.view.other.SequentialCreateLayout;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 
 
@@ -57,6 +57,6 @@ public interface CreateObjectMenuUiHandlers
 
     void addPages(List<Record> pages, String parent);
 
-    SectionCreateLayout getSectionCreateLayout();
+    SequentialCreateLayout getSequentialCreateLayout();
 
 }

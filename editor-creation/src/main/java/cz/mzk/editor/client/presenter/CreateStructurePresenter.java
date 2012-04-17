@@ -749,19 +749,19 @@ public class CreateStructurePresenter
             public void onSelectionChanged(SelectionChangedEvent event) {
                 Record[] selection = getView().getTileGrid().getSelection();
                 if (selection != null && selection.length > 0) {
-                    leftPresenter.getSectionCreateLayout().getKeepCheckbox().enable();
+                    leftPresenter.getSequentialCreateLayout().getKeepCheckbox().enable();
                 } else {
-                    leftPresenter.getSectionCreateLayout().getKeepCheckbox().disable();
+                    leftPresenter.getSequentialCreateLayout().getKeepCheckbox().disable();
                 }
             }
         });
 
-        if (!leftPresenter.getSectionCreateLayout().hasCreateButtonAClickHandler()) {
-            leftPresenter.getSectionCreateLayout().getCreateButton().addClickHandler(new ClickHandler() {
+        if (!leftPresenter.getSequentialCreateLayout().hasCreateButtonAClickHandler()) {
+            leftPresenter.getSequentialCreateLayout().getCreateButton().addClickHandler(new ClickHandler() {
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    String message = leftPresenter.getSectionCreateLayout().verify();
+                    String message = leftPresenter.getSequentialCreateLayout().verify();
                     if (message == null) {
                         addNewStructure();
                     } else {
@@ -769,12 +769,12 @@ public class CreateStructurePresenter
                     }
                 }
             });
-            leftPresenter.getSectionCreateLayout().setCreateButtonHasAClickHandler();
+            leftPresenter.getSequentialCreateLayout().setCreateButtonHasAClickHandler();
         }
     }
 
     private void addNewStructure() {
-        final String type = leftPresenter.getSectionCreateLayout().getSelectModel().getValueAsString();
+        final String type = leftPresenter.getSequentialCreateLayout().getSelectModel().getValueAsString();
         final DigitalObjectModel model = LabelAndModelConverter.getModelFromLabel().get(type);
 
         if (model != null) {
@@ -838,35 +838,35 @@ public class CreateStructurePresenter
 
         switch (model) {
             case PERIODICALVOLUME:
-                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
-                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getNote();
-                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
+                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getDateIssued();
+                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getNote();
+                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
                 break;
 
             case PERIODICALITEM:
-                name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
-                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
-                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getNote();
-                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
-                aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
-                type = leftPresenter.getSectionCreateLayout().getType(model, aditionalInfoOrOcr);
+                name = leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getDateIssued();
+                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getNote();
+                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSequentialCreateLayout().getLevelName();
+                type = leftPresenter.getSequentialCreateLayout().getType(model, aditionalInfoOrOcr);
                 break;
 
             case INTERNALPART:
-                name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
-                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getPartName();
-                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getSubtitle();
-                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
-                aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
-                type = leftPresenter.getSectionCreateLayout().getType(model, aditionalInfoOrOcr);
+                name = leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getPartName();
+                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getSubtitle();
+                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSequentialCreateLayout().getLevelName();
+                type = leftPresenter.getSequentialCreateLayout().getType(model, aditionalInfoOrOcr);
                 break;
 
             case MONOGRAPHUNIT:
-                name = leftPresenter.getSectionCreateLayout().getNameOrTitle();
-                dateOrIntPartName = leftPresenter.getSectionCreateLayout().getDateIssued();
-                noteOrSubtitle = leftPresenter.getSectionCreateLayout().getNote();
-                partNumOrAlto = leftPresenter.getSectionCreateLayout().getPartNumber();
-                aditionalInfoOrOcr = leftPresenter.getSectionCreateLayout().getLevelName();
+                name = leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getDateIssued();
+                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getNote();
+                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSequentialCreateLayout().getLevelName();
                 break;
 
             default:
@@ -896,7 +896,7 @@ public class CreateStructurePresenter
                 && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
             leftPresenter.addPages(Arrays.asList(selection), possibleParent);
 
-            if (!leftPresenter.getSectionCreateLayout().getKeepCheckbox().getValueAsBoolean()) {
+            if (!leftPresenter.getSequentialCreateLayout().getKeepCheckbox().getValueAsBoolean()) {
                 getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 getView().getTileGrid().removeSelectedData();
             }

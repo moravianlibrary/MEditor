@@ -54,6 +54,8 @@ import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.events.ShowContextMenuEvent;
 import com.smartgwt.client.widgets.events.ShowContextMenuHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -80,7 +82,6 @@ import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.other.LabelAndModelConverter;
-import cz.mzk.editor.client.view.other.SectionCreateLayout;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
@@ -128,6 +129,8 @@ public class CreateObjectMenuView
     private ImgButton redoButton;
 
     private final EventBus eventBus;
+
+    private SelectItem creationModeItem;
 
     /**
      * Instantiates a new digital object menu view.
@@ -699,8 +702,17 @@ public class CreateObjectMenuView
         createStructure = new SectionStackSection();
         createStructure.setTitle(lang.createSubStructure());
         createStructure.setResizeable(true);
-
         createStructure.setExpanded(true);
+
+        creationModeItem = new SelectItem("creationMode", lang.creationMode());
+        creationModeItem.setValueMap(lang.atOnce(), lang.sequential());
+        creationModeItem.setValues(lang.atOnce());
+        creationModeItem.setWidth(72);
+        creationModeItem.setHeight(18);
+
+        DynamicForm dynForm = new DynamicForm();
+        dynForm.setItems(creationModeItem);
+        createStructure.setControls(dynForm);
 
         structure = new SectionStackSection();
         structure.setTitle(lang.substructures());
@@ -810,6 +822,14 @@ public class CreateObjectMenuView
     @Override
     public SectionStack getSectionStack() {
         return sectionStack;
+    }
+
+    /**
+     * @return the creationModeItem
+     */
+    @Override
+    public SelectItem getCreationModeItem() {
+        return creationModeItem;
     }
 
     /**
@@ -976,8 +996,8 @@ public class CreateObjectMenuView
      * {@inheritDoc}
      */
     @Override
-    public void setSectionCreateLayout(SectionCreateLayout sectionCreateLayout) {
-        createStructure.setItems(sectionCreateLayout);
+    public void setSectionCreateLayout(VLayout vLayout) {
+        createStructure.setItems(vLayout);
     }
 
 }

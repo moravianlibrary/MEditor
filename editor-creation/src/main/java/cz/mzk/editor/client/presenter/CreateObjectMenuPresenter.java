@@ -33,6 +33,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -43,14 +44,19 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.SectionStack;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
@@ -63,7 +69,7 @@ import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.other.LabelAndModelConverter;
-import cz.mzk.editor.client.view.other.SectionCreateLayout;
+import cz.mzk.editor.client.view.other.SequentialCreateLayout;
 import cz.mzk.editor.client.view.other.StructureTreeHoverCreator;
 import cz.mzk.editor.client.view.window.AddAltoOcrWindow;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
@@ -120,7 +126,9 @@ public class CreateObjectMenuPresenter
 
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
 
-        void setSectionCreateLayout(SectionCreateLayout sectionCreateLayout);
+        void setSectionCreateLayout(VLayout VLayout);
+
+        SelectItem getCreationModeItem();
 
     }
 
@@ -154,7 +162,9 @@ public class CreateObjectMenuPresenter
 
     private String defaultDateIssued = "";
 
-    SectionCreateLayout sectionCreateLayout = null;
+    private SequentialCreateLayout sequentialCreateLayout = null;
+
+    private VLayout atOnceCreateLayout = null;
 
     private DigitalObjectModel rootModel;
 
@@ -201,8 +211,22 @@ public class CreateObjectMenuPresenter
     protected void onBind() {
         super.onBind();
         getView().init();
-        sectionCreateLayout = new SectionCreateLayout(lang, getEventBus());
-        getView().setSectionCreateLayout(sectionCreateLayout);
+        sequentialCreateLayout = new SequentialCreateLayout(lang, getEventBus());
+        setAtOnceCreateLayout();
+        getView().setSectionCreateLayout(sequentialCreateLayout);
+
+        getView().getCreationModeItem().addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                if (lang.atOnce().equals(getView().getCreationModeItem().getSelectedRecord())) {
+                    getView().setSectionCreateLayout(atOnceCreateLayout);
+                } else {
+                    getView().setSectionCreateLayout(sequentialCreateLayout);
+                }
+            }
+        });
+
         getView().getSubelementsGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
@@ -211,8 +235,8 @@ public class CreateObjectMenuPresenter
             }
         });
 
-        sectionCreateLayout.enableCheckbox(false);
-        sectionCreateLayout.getCreateButton().disable();
+        sequentialCreateLayout.enableCheckbox(false);
+        sequentialCreateLayout.getCreateButton().disable();
         registerHandler(getView().getSubelementsGrid()
                 .addSelectionChangedHandler(new SelectionChangedHandler() {
 
@@ -226,7 +250,7 @@ public class CreateObjectMenuPresenter
                     }
                 }));
 
-        registerHandler(sectionCreateLayout.getSelectModel().addChangeHandler(new ChangeHandler() {
+        registerHandler(sequentialCreateLayout.getSelectModel().addChangeHandler(new ChangeHandler() {
 
             @Override
             public void onChange(ChangeEvent event) {
@@ -267,6 +291,17 @@ public class CreateObjectMenuPresenter
         RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, this);
     }
 
+    private void setAtOnceCreateLayout() {
+        atOnceCreateLayout = new VLayout();
+
+        Button createAtOnceButton = new Button(lang.create());
+        CheckBox markingCheckBox = new CheckBox();
+        markingCheckBox.setTitle(lang.mark());
+
+        atOnceCreateLayout.addMember(markingCheckBox);
+        atOnceCreateLayout.addMember(createAtOnceButton);
+    }
+
     /*
      * (non-Javadoc)
      * @see cz.mzk.editor.client.view.DigitalObjectMenuView.MyUiHandlers
@@ -280,13 +315,13 @@ public class CreateObjectMenuPresenter
 
     private void afterTypeChanged(String currentModel) {
         if (!"".equals(currentModel.trim())) {
-            sectionCreateLayout.getCreateButton().enable();
-            sectionCreateLayout.setCreate(LabelAndModelConverter.getModelFromLabel().get(currentModel),
-                                          defaultDateIssued,
-                                          getRootModel() == DigitalObjectModel.PERIODICAL);
+            sequentialCreateLayout.getCreateButton().enable();
+            sequentialCreateLayout.setCreate(LabelAndModelConverter.getModelFromLabel().get(currentModel),
+                                             defaultDateIssued,
+                                             getRootModel() == DigitalObjectModel.PERIODICAL);
         } else {
-            sectionCreateLayout.getCreateButton().disable();
-            sectionCreateLayout.setCreate(null, null, getRootModel() == DigitalObjectModel.PERIODICAL);
+            sequentialCreateLayout.getCreateButton().disable();
+            sequentialCreateLayout.setCreate(null, null, getRootModel() == DigitalObjectModel.PERIODICAL);
         }
     }
 
@@ -327,13 +362,13 @@ public class CreateObjectMenuPresenter
                     values[i] =
                             LabelAndModelConverter.getLabelFromModel().get(childrenModels.get(i).getValue());
                     if (defaultValue.equals("")
-                            && sectionCreateLayout.getSelectModel().getValueAsString() != null
-                            && sectionCreateLayout.getSelectModel().getValueAsString().equals(values[i]))
+                            && sequentialCreateLayout.getSelectModel().getValueAsString() != null
+                            && sequentialCreateLayout.getSelectModel().getValueAsString().equals(values[i]))
                         defaultValue = values[i];
                 }
             }
-            sectionCreateLayout.getSelectModel().setValueMap(values);
-            sectionCreateLayout.getSelectModel().setValue(defaultValue);
+            sequentialCreateLayout.getSelectModel().setValueMap(values);
+            sequentialCreateLayout.getSelectModel().setValue(defaultValue);
             afterTypeChanged(defaultValue);
         }
     }
@@ -464,8 +499,7 @@ public class CreateObjectMenuPresenter
      * {@inheritDoc}
      */
     @Override
-    public SectionCreateLayout getSectionCreateLayout() {
-        //        if (sectionCreateLayout == null) sectionCreateLayout = new SectionCreateLayout(lang, getEventBus());
-        return sectionCreateLayout;
+    public SequentialCreateLayout getSequentialCreateLayout() {
+        return sequentialCreateLayout;
     }
 }
