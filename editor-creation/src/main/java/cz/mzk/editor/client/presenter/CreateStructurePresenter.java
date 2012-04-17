@@ -49,20 +49,29 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Progressbar;
 import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tile.TileGrid;
+import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
+import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.tree.Tree;
@@ -153,6 +162,8 @@ public class CreateStructurePresenter
         void showDetail(int height, boolean isTop, int topSpace);
 
         ScanRecord deepCopyScanRecord(Record originalRecord);
+
+        void updateRecordsInTileGrid(Record[] records);
     }
 
     /**
@@ -188,6 +199,10 @@ public class CreateStructurePresenter
     private final PlaceManager placeManager;
 
     private final EditorClientConfiguration config;
+
+    private List<Record> markedRecords;
+
+    private ButtonItem createAtOnceButton;
 
     /**
      * Instantiates a new create presenter.
@@ -347,6 +362,17 @@ public class CreateStructurePresenter
         }
         leftPresenter.setDefaultDateIssued(getDateIssued());
 
+        createAtOnceButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+
+                //                
+                //                
+
+            }
+        });
+
         ChangeMenuWidthEvent.fire(getEventBus(), "340");
     }
 
@@ -398,6 +424,7 @@ public class CreateStructurePresenter
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
+        setSectionCreateLayout();
     }
 
     /**
@@ -584,6 +611,22 @@ public class CreateStructurePresenter
                     }
                 });
 
+                markedRecords = new ArrayList<Record>();
+                getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
+
+                    @Override
+                    public void onRecordClick(RecordClickEvent event) {
+                        if (event.isAltKeyDown() && event.isCtrlKeyDown()) {
+                            if (!markedRecords.contains(event.getRecord())) {
+                                markedRecords.add(event.getRecord());
+                            } else {
+                                markedRecords.remove(event.getRecord());
+                            }
+                            getView().getTileGrid().deselectRecord(event.getRecord());
+                        }
+                    }
+                });
+
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -633,6 +676,56 @@ public class CreateStructurePresenter
         getView().getPopupPanel().setVisible(true);
         getView().getPopupPanel().center();
         dispatcher.execute(action, callback);
+    }
+
+    private void setSectionCreateLayout() {
+        final VLayout atOnceCreateLayout = new VLayout(2);
+
+        HTMLFlow createFlow =
+                new HTMLFlow("Please mark every periodical volume and then press the create button");
+
+        createAtOnceButton = new ButtonItem("createAtOnceButton", lang.create());
+        createAtOnceButton.setAlign(Alignment.RIGHT);
+
+        DynamicForm createDynForm = new DynamicForm();
+        createDynForm.setItems(createAtOnceButton);
+
+        atOnceCreateLayout.addMember(createFlow);
+        atOnceCreateLayout.addMember(createDynForm);
+        atOnceCreateLayout.setAlign(Alignment.CENTER);
+        atOnceCreateLayout.setWidth(200);
+        atOnceCreateLayout.setHeight(70);
+
+        leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
+
+        leftPresenter.getView().getCreationModeItem().addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+
+                if (lang.atOnce().equals(leftPresenter.getView().getCreationModeItem().getValue())) {
+                    markedRecords = new ArrayList<Record>();
+                    leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
+                } else {
+                    if (markedRecords.size() > 0) {
+                        Record[] selection = getView().getTileGrid().getSelection();
+                        Record[] toUpdate = new Record[markedRecords.size()];
+                        markedRecords.toArray(toUpdate);
+                        getView().updateRecordsInTileGrid(toUpdate);
+                        getView().getTileGrid().selectRecords(selection);
+                    }
+                    leftPresenter.getView().setSectionCreateLayout(leftPresenter.getSequentialCreateLayout());
+                }
+            }
+        });
+    }
+
+    /**
+     * @return the markedRecords
+     */
+    @Override
+    public List<Record> getMarkedRecords() {
+        return markedRecords;
     }
 
     /*
@@ -1069,4 +1162,11 @@ public class CreateStructurePresenter
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMarkingOff() {
+        return lang.sequential().equals(leftPresenter.getView().getCreationModeItem().getValue());
+    }
 }

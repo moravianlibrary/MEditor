@@ -33,7 +33,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HasHandlers;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -44,13 +43,10 @@ import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
@@ -164,8 +160,6 @@ public class CreateObjectMenuPresenter
 
     private SequentialCreateLayout sequentialCreateLayout = null;
 
-    private VLayout atOnceCreateLayout = null;
-
     private DigitalObjectModel rootModel;
 
     /**
@@ -212,21 +206,6 @@ public class CreateObjectMenuPresenter
         super.onBind();
         getView().init();
         sequentialCreateLayout = new SequentialCreateLayout(lang, getEventBus());
-        setAtOnceCreateLayout();
-        getView().setSectionCreateLayout(sequentialCreateLayout);
-
-        getView().getCreationModeItem().addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                if (lang.atOnce().equals(getView().getCreationModeItem().getSelectedRecord())) {
-                    getView().setSectionCreateLayout(atOnceCreateLayout);
-                } else {
-                    getView().setSectionCreateLayout(sequentialCreateLayout);
-                }
-            }
-        });
-
         getView().getSubelementsGrid().setHoverCustomizer(new HoverCustomizer() {
 
             @Override
@@ -289,17 +268,6 @@ public class CreateObjectMenuPresenter
     @Override
     protected void revealInParent() {
         RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, this);
-    }
-
-    private void setAtOnceCreateLayout() {
-        atOnceCreateLayout = new VLayout();
-
-        Button createAtOnceButton = new Button(lang.create());
-        CheckBox markingCheckBox = new CheckBox();
-        markingCheckBox.setTitle(lang.mark());
-
-        atOnceCreateLayout.addMember(markingCheckBox);
-        atOnceCreateLayout.addMember(createAtOnceButton);
     }
 
     /*

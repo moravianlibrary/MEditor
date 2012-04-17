@@ -28,6 +28,7 @@
 package cz.mzk.editor.client.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -106,6 +107,7 @@ import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.toolbar.ToolStripMenuButton;
+import com.smartgwt.client.widgets.viewer.CellStyleHandler;
 import com.smartgwt.client.widgets.viewer.DetailFormatter;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
@@ -557,10 +559,22 @@ public class CreateStructureView
         pictureField.setImageURLPrefix(getImageURLPrefix());
         pictureField.setImageWidth(imageThumbnailWidth);
         pictureField.setImageHeight(imageThumbnailHeight);
-        pictureField.setCellStyle("tileGridImg");
+        pictureField.setCellStyleHandler(new CellStyleHandler() {
+
+            @Override
+            public String execute(Object value, DetailViewerField field, Record record) {
+                boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
+                if (getUiHandlers().isMarkingOff()) {
+                    return !isSelected ? "" : "tileGridImgSelected";
+                } else {
+                    return !getUiHandlers().getMarkedRecords().contains(record) ? (!isSelected ? ""
+                            : "tileGridImgSelected") : (!isSelected ? "tileGridImgMarked"
+                            : "tileGridImgMarkedSelected");
+                }
+            }
+        });
 
         DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
-        nameField.setCellStyle("tileGridTitle");
         nameField.setDetailFormatter(new DetailFormatter() {
 
             @Override
@@ -572,6 +586,20 @@ public class CreateStructureView
                     sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
                 }
                 return sb.toString();
+            }
+        });
+        nameField.setCellStyleHandler(new CellStyleHandler() {
+
+            @Override
+            public String execute(Object value, DetailViewerField field, Record record) {
+                boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
+                if (getUiHandlers().isMarkingOff()) {
+                    return !isSelected ? "" : "tileGridTitleSelected";
+                } else {
+                    return !getUiHandlers().getMarkedRecords().contains(record) ? (!isSelected ? ""
+                            : "tileGridTitleSelected") : (!isSelected ? "tileGridTitleMarked"
+                            : "tileGridTitleMarkedSelected");
+                }
             }
         });
 
@@ -622,7 +650,7 @@ public class CreateStructureView
                 }
                 tileGrid.deselectRecords(selectedRecords);
                 tileGrid.selectRecords(selectedRecords);
-                updateSelectedTileGrid();
+                updateRecordsInTileGrid(tileGrid.getSelection());
             }
 
         });
@@ -974,7 +1002,7 @@ public class CreateStructureView
                                     rec.setAttribute(Constants.ATTR_NAME, n + i);
                                 }
                             }
-                            updateSelectedTileGrid();
+                            updateRecordsInTileGrid(tileGrid.getSelection());
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
@@ -1014,7 +1042,7 @@ public class CreateStructureView
                                     + "]");
                     }
                 }
-                updateSelectedTileGrid();
+                updateRecordsInTileGrid(tileGrid.getSelection());
             }
         });
 
@@ -1144,7 +1172,7 @@ public class CreateStructureView
                                                             ClientUtils.decimalToRoman(n + i++, toRomanOld));
                                        }
                                    }
-                                   updateSelectedTileGrid();
+                                   updateRecordsInTileGrid(tileGrid.getSelection());
                                } catch (NumberFormatException nfe) {
                                    SC.say(lang.notANumber());
                                }
@@ -1153,10 +1181,9 @@ public class CreateStructureView
                        dialog);
     }
 
-    private void updateSelectedTileGrid() {
-        Record[] selection = tileGrid.getSelection();
-        tileGrid.deselectRecords(selection);
-        tileGrid.selectRecords(selection);
+    public void updateRecordsInTileGrid(Record[] records) {
+        tileGrid.deselectRecords(records);
+        tileGrid.selectRecords(records);
     }
 
     private void updateTileGrid() {
@@ -1183,7 +1210,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 numbering.foliation();
-                updateSelectedTileGrid();
+                updateRecordsInTileGrid(tileGrid.getSelection());
             }
         });
         abc2.addClickHandler(getAbcHandler(2));
@@ -1209,7 +1236,7 @@ public class CreateStructureView
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
-                        updateSelectedTileGrid();
+                        updateRecordsInTileGrid(tileGrid.getSelection());
                     }
                 });
             }
@@ -1231,7 +1258,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 numbering.toAbcN(n);
-                updateSelectedTileGrid();
+                updateRecordsInTileGrid(tileGrid.getSelection());
             }
         };
     }
@@ -1453,7 +1480,7 @@ public class CreateStructureView
                                if (value != null && !"".equals(value.trim())) {
                                    addUndoRedo(tileGrid.getData(), true, false);
                                    selectedRecord.setAttribute(Constants.ATTR_NAME, value);
-                                   updateSelectedTileGrid();
+                                   updateRecordsInTileGrid(tileGrid.getSelection());
                                }
                            }
                        },
@@ -1544,6 +1571,7 @@ public class CreateStructureView
         };
     }
 
+    @Override
     public ScanRecord deepCopyScanRecord(Record originalRecord) {
         return new ScanRecord(originalRecord.getAttribute(Constants.ATTR_NAME),
                               originalRecord.getAttribute(Constants.ATTR_MODEL),

@@ -39,6 +39,7 @@ import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.types.VisibilityMode;
@@ -61,6 +62,7 @@ import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
+import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -131,6 +133,8 @@ public class CreateObjectMenuView
     private final EventBus eventBus;
 
     private SelectItem creationModeItem;
+
+    private Layout sectionCreateLayout;
 
     /**
      * Instantiates a new digital object menu view.
@@ -712,7 +716,11 @@ public class CreateObjectMenuView
 
         DynamicForm dynForm = new DynamicForm();
         dynForm.setItems(creationModeItem);
+
+        sectionCreateLayout = new Layout();
         createStructure.setControls(dynForm);
+        createStructure.setItems(sectionCreateLayout);
+        sectionCreateLayout.setAlign(Alignment.CENTER);
 
         structure = new SectionStackSection();
         structure.setTitle(lang.substructures());
@@ -997,7 +1005,11 @@ public class CreateObjectMenuView
      */
     @Override
     public void setSectionCreateLayout(VLayout vLayout) {
-        createStructure.setItems(vLayout);
+        Canvas[] members = sectionCreateLayout.getMembers();
+        if (members.length != 0) {
+            sectionCreateLayout.removeMember(members[0]);
+        }
+        sectionCreateLayout.addMember(vLayout);
     }
 
 }

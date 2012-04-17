@@ -349,16 +349,25 @@ html>body .gwt-DecoratedPopupPanel {
 	background: #8b8b8b;
 }
 
-.tileGridImgSelectedOver {
-	background: #8b8b8b;
-}
-
 .tileGridTitleSelected {
 	background-color: #8b8b8b;
 }
 
-.tileGridTitleSelectedOver {
-	background-color: #8b8b8b;
+
+.tileGridImgMarked {
+	background: #e71818;
+}
+
+.tileGridTitleMarked {
+	background-color: #e71818;
+}
+
+.tileGridImgMarkedSelected {
+	background: #9f1818;
+}
+
+.tileGridTitleMarkedSelected {
+	background-color: #9f1818;
 }
 
 

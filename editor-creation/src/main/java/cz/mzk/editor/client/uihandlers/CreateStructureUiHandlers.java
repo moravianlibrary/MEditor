@@ -24,7 +24,10 @@
 
 package cz.mzk.editor.client.uihandlers;
 
+import java.util.List;
+
 import com.gwtplatform.mvp.client.UiHandlers;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
@@ -54,4 +57,8 @@ public interface CreateStructureUiHandlers
                       boolean isTop,
                       int topSpace,
                       ModalWindow mw);
+
+    List<Record> getMarkedRecords();
+
+    boolean isMarkingOff();
 }
