@@ -13,17 +13,23 @@ import java.util.concurrent.Executors
 
 case class ConvertTask(home: String, input: String, output: String)
 
+case class ConvertTaskBatch(tasks: List[ConvertTask])
+
 
 class Worker extends Actor {
   val prefix = sys.env("CONVERT_HOME")
 
   def receive = {
-    case ConvertTask(home, input, output) ⇒ {
-	println("DEBUG: " + prefix + "/compress.sh " + home + " " + input + " " + output)
-	//(prefix + "/compress.sh " + home + " " + input + " " + output)!
-	val conversion = Process(prefix + "/compress.sh " + home + " " + input + " " + output)
-	val exitCode = conversion.!
-        println(exitCode)
+    case ConvertTaskBatch(tasks) ⇒ {
+        tasks.foreach {
+            task ⇒ {
+                println("DEBUG: " + prefix + "/compress.sh " + home + " " + input + " " + output)
+                val conversion = Process(prefix + "/compress.sh " + home + " " + input + " " + output)
+                val exitCode = conversion.!
+                println(exitCode)
+            }
+        }
+        
     }
   }
 }
@@ -100,10 +106,6 @@ akka {
 
 """)
 
-
-
-  //val context = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2))
-  //val system = ActorSystem("Creation", config.getConfig("creation"))
   ActorSystem("Creation", ConfigFactory.load(basicConf))
   val system = ActorSystem("Creation", ConfigFactory.load(customConf))
 
@@ -111,27 +113,16 @@ akka {
 
 
   def startup = {
-    val log = Logging(system, "")
+  val log = Logging(system, "")
     log.info("Deploy")
-
-
-    //val addresses = Seq(Address("akka", "workers", "editor-devel.mzk.cz", 2552))
-    val addresses = Seq(AddressFromURIString("akka://othersys@anotherhost:1234"))
-
-    val routerRemote = system.actorOf(Props[Worker].withRouter(RemoteRouterConfig(RoundRobinRouter(5), addresses)))
-
-
-    val worker1 = system.actorFor("akka://workers@editor-devel.mzk.cz:2552/user/workers")
-    //val worker2 = system.actorFor("akka://workers@editor.mzk.cz:2552/user/workers")
-    //val routees = Vector[ActorRef](worker1, worker2)
-    //val router = system.actorOf(Props[Worker].withRouter(RoundRobinRouter(routees = routees)))
-    //router ! ConvertTask("11","22","33")
-    routerRemote ! ConvertTask("11","22","33")
-    //worker1 ! ConvertTask("11","22","33")
-
-
-    //system.actorOf(Props[Worker], "workers") ! ConvertTask("asdf","sadf","sdf")
-    //system.actorFor("akka://workers@editor-devel.mzk.cz:2552/user/workers") ! ConvertTask("asdf","sadf","sdf")
+    // 195.113.155.50 -> editor-devel.mzk.cz
+    // 195.113.155.46 -> editor.mzk.cz
+    val worker1 = system.actorFor("akka://Workers@195.113.155.50:2552/user/worker")
+    val worker2 = system.actorFor("akka://Workers@195.113.155.46:2552/user/worker")
+    val routees = Vector[ActorRef](worker1, worker2)
+    val router = system.actorOf(Props[Worker].withRouter(RoundRobinRouter(nrOfInstances = 2, routees = routees)))
+    router ! ConvertTaskBatch(List(ConvertTask("1","2","3"), ConvertTask("11","22","33")))
+    router ! ConvertTaskBatch(List(ConvertTask("111","222","333"), ConvertTask("1111","2222","3333")))    
   }
 
   def shutdown = {
