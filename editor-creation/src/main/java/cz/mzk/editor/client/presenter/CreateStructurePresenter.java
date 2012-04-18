@@ -89,6 +89,8 @@ import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
+import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.client.view.CreateStructureView;
 import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.ScanRecord;
@@ -366,11 +368,9 @@ public class CreateStructurePresenter
 
             @Override
             public void onClick(ClickEvent event) {
-
-                //                
-                //                
-
+                createAtOnceProcess();
             }
+
         });
 
         ChangeMenuWidthEvent.fire(getEventBus(), "340");
@@ -681,8 +681,7 @@ public class CreateStructurePresenter
     private void setSectionCreateLayout() {
         final VLayout atOnceCreateLayout = new VLayout(2);
 
-        HTMLFlow createFlow =
-                new HTMLFlow("Please mark every periodical volume and then press the create button");
+        HTMLFlow createFlow = new HTMLFlow(lang.markingLabel());
 
         createAtOnceButton = new ButtonItem("createAtOnceButton", lang.create());
         createAtOnceButton.setAlign(Alignment.RIGHT);
@@ -693,7 +692,7 @@ public class CreateStructurePresenter
         atOnceCreateLayout.addMember(createFlow);
         atOnceCreateLayout.addMember(createDynForm);
         atOnceCreateLayout.setAlign(Alignment.CENTER);
-        atOnceCreateLayout.setWidth(200);
+        atOnceCreateLayout.setWidth(250);
         atOnceCreateLayout.setHeight(70);
 
         leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
@@ -866,6 +865,56 @@ public class CreateStructurePresenter
         }
     }
 
+    private void createAtOnceProcess() {
+        leftPresenter.getView().addUndoRedo(true, false);
+        Record[] data = getView().getTileGrid().getData();
+        String parent =
+                leftPresenter.getView().getSubelementsGrid().getSelectedRecord()
+                        .getAttribute(Constants.ATTR_ID);
+
+        TreeNode parentNode = leftPresenter.getView().getSubelementsGrid().getTree().findById(parent);
+        DigitalObjectModel parentModel =
+                DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_MODEL_ID));
+
+        if (parentModel != DigitalObjectModel.PERIODICALVOLUME) {
+            String rootId =
+                    leftPresenter.getView().getSubelementsGrid().getTree().getRoot()
+                            .getAttributeAsString(Constants.ATTR_ID);
+            parent = addNewStructure(DigitalObjectModel.PERIODICALVOLUME, rootId, null, true, "");
+        }
+
+        List<Record> toAdd = new ArrayList<Record>();
+        int perItemNum = 0;
+        for (Record rec : data) {
+            if (toAdd.size() > 0) {
+                if (markedRecords.contains(rec)) {
+                    Record[] toAddRecords = new Record[toAdd.size()];
+                    toAdd.toArray(toAddRecords);
+                    addNewStructure(DigitalObjectModel.PERIODICALITEM,
+                                    parent,
+                                    toAddRecords,
+                                    true,
+                                    String.valueOf(++perItemNum));
+                    toAdd = new ArrayList<Record>();
+                }
+            }
+            toAdd.add(rec);
+        }
+        if (toAdd.size() > 0) {
+            Record[] toAddRecords = new Record[toAdd.size()];
+            toAdd.toArray(toAddRecords);
+            addNewStructure(DigitalObjectModel.PERIODICALITEM,
+                            parent,
+                            toAddRecords,
+                            true,
+                            String.valueOf(++perItemNum));
+        }
+
+        getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+        getView().getTileGrid().selectAllRecords();
+        getView().getTileGrid().removeSelectedData();
+    }
+
     private void addNewStructure() {
         final String type = leftPresenter.getSequentialCreateLayout().getSelectModel().getValueAsString();
         final DigitalObjectModel model = LabelAndModelConverter.getModelFromLabel().get(type);
@@ -900,28 +949,30 @@ public class CreateStructurePresenter
                         @Override
                         public void execute(Boolean value) {
                             if (value != null && value) {
-                                addNewStructure(model, parent, selection, missing);
+                                addNewStructure(model, parent, selection, false, "");
                                 leftPresenter.addPages(missing, model != DigitalObjectModel.PAGE ? parent
                                         : grandpa);
                             }
                         }
                     });
                 } else {
-                    addNewStructure(model, parent, selection, new ArrayList<Record>());
+                    addNewStructure(model, parent, selection, false, "");
                 }
             } else {
-                addNewStructure(model, parent, selection, new ArrayList<Record>());
+                addNewStructure(model, parent, selection, false, "");
             }
         }
     }
 
-    private void addNewStructure(DigitalObjectModel model,
-                                 final String parent,
-                                 Record[] selection,
-                                 final List<Record> missing) {
+    private String addNewStructure(DigitalObjectModel model,
+                                   final String parent,
+                                   Record[] selection,
+                                   boolean createAtOnce,
+                                   String perItemNum) {
+
         List<DigitalObjectModel> canContain = NamedGraphModel.getChildren(model);
 
-        leftPresenter.getView().addUndoRedo(true, false);
+        if (!createAtOnce) leftPresenter.getView().addUndoRedo(true, false);
         String name = "";
         String dateOrIntPartName = "";
         String noteOrSubtitle = "";
@@ -931,18 +982,27 @@ public class CreateStructurePresenter
 
         switch (model) {
             case PERIODICALVOLUME:
-                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getDateIssued();
-                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getNote();
-                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
+                dateOrIntPartName =
+                        createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
+                noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
+                partNumOrAlto =
+                        createAtOnce ? "1" : leftPresenter.getSequentialCreateLayout().getPartNumber();
                 break;
 
             case PERIODICALITEM:
-                name = leftPresenter.getSequentialCreateLayout().getNameOrTitle();
-                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getDateIssued();
-                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getNote();
-                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
-                aditionalInfoOrOcr = leftPresenter.getSequentialCreateLayout().getLevelName();
-                type = leftPresenter.getSequentialCreateLayout().getType(model, aditionalInfoOrOcr);
+                name = createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                dateOrIntPartName =
+                        createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
+                noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
+                partNumOrAlto =
+                        createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getPartNumber();
+                aditionalInfoOrOcr =
+                        createAtOnce ? PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue() : leftPresenter
+                                .getSequentialCreateLayout().getLevelName();
+                type =
+                        createAtOnce ? PERIODICAL_ITEM_GENRE_TYPES.MAP.get(PERIODICAL_ITEM_GENRE_TYPES.NORMAL
+                                .toString()) : leftPresenter.getSequentialCreateLayout()
+                                .getType(model, aditionalInfoOrOcr);
                 break;
 
             case INTERNALPART:
@@ -989,11 +1049,13 @@ public class CreateStructurePresenter
                 && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
             leftPresenter.addPages(Arrays.asList(selection), possibleParent);
 
-            if (!leftPresenter.getSequentialCreateLayout().getKeepCheckbox().getValueAsBoolean()) {
+            if (!leftPresenter.getSequentialCreateLayout().getKeepCheckbox().getValueAsBoolean()
+                    && !createAtOnce) {
                 getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                 getView().getTileGrid().removeSelectedData();
             }
         }
+        return possibleParent;
     }
 
     /*
