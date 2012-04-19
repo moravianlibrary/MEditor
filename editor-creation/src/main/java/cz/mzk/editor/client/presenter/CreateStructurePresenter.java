@@ -726,7 +726,18 @@ public class CreateStructurePresenter
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    createAtOnceProcess();
+                    final ModalWindow mw = new ModalWindow(leftPresenter.getView().getSectionStack());
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+                            createAtOnceProcess();
+                            mw.hide();
+                        }
+                    };
+                    timer.run();
                 }
 
             });
