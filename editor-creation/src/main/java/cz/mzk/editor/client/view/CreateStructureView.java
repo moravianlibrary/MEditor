@@ -314,8 +314,8 @@ public class CreateStructureView
         topSpaceBottom = Integer.MAX_VALUE;
         detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
         detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
-        topIsWraped = false;
         bottomIsWraped = false;
+        topIsWraped = false;
         final EditorDragMoveHandler dragHandler = new EditorDragMoveHandler(tileGrid);
         tileGrid.addDragMoveHandler(dragHandler);
 
@@ -567,9 +567,9 @@ public class CreateStructureView
                 if (getUiHandlers().isMarkingOff()) {
                     return !isSelected ? "" : "tileGridImgSelected";
                 } else {
-                    return !getUiHandlers().getMarkedRecords().contains(record) ? (!isSelected ? ""
-                            : "tileGridImgSelected") : (!isSelected ? "tileGridImgMarked"
-                            : "tileGridImgMarkedSelected");
+                    Boolean isMarked = record.getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
+                    return (isMarked == null || !isMarked) ? (!isSelected ? "" : "tileGridImgSelected")
+                            : (!isSelected ? "tileGridImgMarked" : "tileGridImgMarkedSelected");
                 }
             }
         });
@@ -596,9 +596,9 @@ public class CreateStructureView
                 if (getUiHandlers().isMarkingOff()) {
                     return !isSelected ? "" : "tileGridTitleSelected";
                 } else {
-                    return !getUiHandlers().getMarkedRecords().contains(record) ? (!isSelected ? ""
-                            : "tileGridTitleSelected") : (!isSelected ? "tileGridTitleMarked"
-                            : "tileGridTitleMarkedSelected");
+                    Boolean isMarked = record.getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
+                    return (isMarked == null || !isMarked) ? (!isSelected ? "" : "tileGridTitleSelected")
+                            : (!isSelected ? "tileGridTitleMarked" : "tileGridTitleMarkedSelected");
                 }
             }
         });
@@ -1181,6 +1181,7 @@ public class CreateStructureView
                        dialog);
     }
 
+    @Override
     public void updateRecordsInTileGrid(Record[] records) {
         tileGrid.deselectRecords(records);
         tileGrid.selectRecords(records);
@@ -1573,11 +1574,15 @@ public class CreateStructureView
 
     @Override
     public ScanRecord deepCopyScanRecord(Record originalRecord) {
-        return new ScanRecord(originalRecord.getAttribute(Constants.ATTR_NAME),
-                              originalRecord.getAttribute(Constants.ATTR_MODEL),
-                              originalRecord.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
-                              originalRecord.getAttribute(Constants.ATTR_PATH),
-                              originalRecord.getAttribute(Constants.ATTR_TYPE));
+        ScanRecord newScanRecord =
+                new ScanRecord(originalRecord.getAttribute(Constants.ATTR_NAME),
+                               originalRecord.getAttribute(Constants.ATTR_MODEL),
+                               originalRecord.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                               originalRecord.getAttribute(Constants.ATTR_PATH),
+                               originalRecord.getAttribute(Constants.ATTR_TYPE));
+        newScanRecord.setAttribute(Constants.ATTR_IS_MARKED,
+                                   originalRecord.getAttributeAsBoolean(Constants.ATTR_IS_MARKED));
+        return newScanRecord;
     }
 
     /**

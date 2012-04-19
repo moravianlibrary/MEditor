@@ -99,10 +99,6 @@ public class CreateObjectMenuPresenter
 
         SectionStack getSectionStack();
 
-        //        boolean hasCreateButtonAClickHandler();
-
-        //        void setCreateButtonHasAClickHandler();
-
         void init();
 
         void addUndoRedo(boolean useUndoList, boolean isRedoOperation);
