@@ -67,6 +67,7 @@
 		<smartGwt.version>3.0</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>1.5.0</gin.version>
+		<akka.version>2.0</akka.version>
 
 		<warName>meditor</warName>
 		<hostname>editor-devel.mzk.cz</hostname>
@@ -185,7 +186,8 @@
 		<repository>
 			<id>thirdparty-uploads</id>
 			<name>JBoss Thirdparty Uploads</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads
+			</url>
 		</repository>
 	</repositories>
 
@@ -332,17 +334,15 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.6</version>
 			</dependency>
-<!--			
-			install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 -Dversion=1.2.3 -Dpackaging=jar -Dfile=path
-			-->
+			<!-- install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 -Dversion=1.2.3 
+				-Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>ki-jzkit-z3950</artifactId>
 				<version>1.2.3</version>
 			</dependency>
-<!-- 			
-			mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-iface -Dversion=1.2.3 -Dpackaging=jar -Dfile=path
-			 -->
+			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-iface 
+				-Dversion=1.2.3 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>ki-jzkit-iface</artifactId>
@@ -354,17 +354,16 @@
 				<version>1.0</version>
 				<scope>runtime</scope>
 			</dependency>
-<!--			
-			mvn install:install-file -DgroupId=mzk.ki -DartifactId=a2jruntime -Dversion=1.1.1 -Dpackaging=jar -Dfile=path
-			-->
+			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=a2jruntime 
+				-Dversion=1.1.1 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>a2jruntime</artifactId>
 				<version>1.1.1</version>
 				<scope>runtime</scope>
 			</dependency>
-<!--			mvn install:install-file -DgroupId=mzk.marc4j -DartifactId=marc4j -Dversion=2.3.1 -Dpackaging=jar -Dfile=path
-			-->
+			<!-- mvn install:install-file -DgroupId=mzk.marc4j -DartifactId=marc4j 
+				-Dversion=2.3.1 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.marc4j</groupId>
 				<artifactId>marc4j</artifactId>
@@ -408,6 +407,21 @@
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>9.1-901.jdbc4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-actor</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-kernel</artifactId>
+				<version>${akka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-remote</artifactId>
+				<version>${akka.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

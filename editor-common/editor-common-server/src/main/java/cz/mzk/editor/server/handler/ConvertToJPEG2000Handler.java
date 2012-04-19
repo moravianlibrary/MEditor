@@ -225,22 +225,4 @@ public class ConvertToJPEG2000Handler
             return false;
         }
     }
-
-    //    public static void main(String... args) {
-    //        ActorSystem system = ActorSystem.create("Server");
-    //
-    //        ActorRef worker1 = system.actorFor("akka://Workers@195.113.155.50:2552/user/worker");
-    //        ActorRef worker2 = system.actorFor("akka://Workers@195.113.155.46:2552/user/worker");
-    //        Iterable<ActorRef> routees = Arrays.asList(new ActorRef[] {worker1, worker2});
-    //
-    //        ActorRef router =
-    //                system.actorOf(new Props(Worker.class).withRouter(RoundRobinRouter.create(routees)));
-    //        List<ConvertTask> tasks =
-    //                Arrays.asList(new ConvertTask("1", "2", "3"), new ConvertTask("11", "22", "33"));
-    //        router.tell(new ConvertTaskBatch(tasks));
-    //        router.tell(new ConvertTaskBatch(tasks));
-    //        router.tell(new ConvertTaskBatch(tasks));
-    //        system.shutdown(); 
-    //    }
-
 }
