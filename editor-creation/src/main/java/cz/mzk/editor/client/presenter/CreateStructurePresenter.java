@@ -607,11 +607,16 @@ public class CreateStructurePresenter
 
                     @Override
                     public void onRecordClick(RecordClickEvent event) {
-                        if (event.isAltKeyDown() && event.isCtrlKeyDown()) {
-                            if (!markedRecords.contains(event.getRecord())) {
+                        if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
+                            getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+                            Boolean isMarked =
+                                    event.getRecord().getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
+                            if (isMarked == null || !isMarked) {
+                                event.getRecord().setAttribute(Constants.ATTR_IS_MARKED, true);
                                 markedRecords.add(event.getRecord());
                             } else {
                                 markedRecords.remove(event.getRecord());
+                                event.getRecord().setAttribute(Constants.ATTR_IS_MARKED, false);
                             }
                             getView().getTileGrid().deselectRecord(event.getRecord());
                         }
@@ -698,18 +703,18 @@ public class CreateStructurePresenter
                 public void onChanged(ChangedEvent event) {
 
                     if (lang.atOnce().equals(leftPresenter.getView().getCreationModeItem().getValue())) {
-                        markedRecords = new ArrayList<Record>();
                         leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
                     } else {
-                        if (markedRecords.size() > 0) {
-                            Record[] selection = getView().getTileGrid().getSelection();
-                            Record[] toUpdate = new Record[markedRecords.size()];
-                            markedRecords.toArray(toUpdate);
-                            getView().updateRecordsInTileGrid(toUpdate);
-                            getView().getTileGrid().selectRecords(selection);
-                        }
                         leftPresenter.getView()
                                 .setSectionCreateLayout(leftPresenter.getSequentialCreateLayout());
+                    }
+
+                    if (markedRecords.size() > 0) {
+                        Record[] selection = getView().getTileGrid().getSelection();
+                        Record[] toUpdate = new Record[markedRecords.size()];
+                        markedRecords.toArray(toUpdate);
+                        getView().updateRecordsInTileGrid(toUpdate);
+                        getView().getTileGrid().selectRecords(selection);
                     }
                 }
             });
@@ -727,14 +732,6 @@ public class CreateStructurePresenter
             leftPresenter.getView().setSectionCreateLayout(leftPresenter.getSequentialCreateLayout());
             leftPresenter.getView().getCreationModeItem().setValue(lang.sequential());
         }
-    }
-
-    /**
-     * @return the markedRecords
-     */
-    @Override
-    public List<Record> getMarkedRecords() {
-        return markedRecords;
     }
 
     /*
@@ -902,7 +899,8 @@ public class CreateStructurePresenter
         int perItemNum = 0;
         for (Record rec : data) {
             if (toAdd.size() > 0) {
-                if (markedRecords.contains(rec)) {
+                Boolean isMarked = rec.getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
+                if (isMarked != null && isMarked) {
                     Record[] toAddRecords = new Record[toAdd.size()];
                     toAdd.toArray(toAddRecords);
                     addNewStructure(DigitalObjectModel.PERIODICALITEM,
@@ -1129,7 +1127,6 @@ public class CreateStructurePresenter
         }
         if (object != null) {
             object.setSysno(sysno);
-            //            System.out.println(ClientUtils.toStringTree(object));
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
