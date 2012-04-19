@@ -182,6 +182,7 @@ public class CreateObjectMenuView
         structureTreeGrid.setShowConnectors(true);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
         structureTreeGrid.setCanSort(true);
+        //                structureTreeGrid.getTree().
 
         undoButton = new ImgButton();
         redoButton = new ImgButton();

@@ -65,10 +65,14 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tab.TabSet;
+import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
+import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
@@ -166,6 +170,8 @@ public class CreateStructurePresenter
         ScanRecord deepCopyScanRecord(Record originalRecord);
 
         void updateRecordsInTileGrid(Record[] records);
+
+        TabSet getPagesTabSet();
     }
 
     /**
@@ -205,6 +211,8 @@ public class CreateStructurePresenter
     private List<Record> markedRecords;
 
     private ButtonItem createAtOnceButton;
+
+    private Record[] allPages;
 
     /**
      * Instantiates a new create presenter.
@@ -574,58 +582,7 @@ public class CreateStructurePresenter
                         }
                     });
                 }
-
-                getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-
-                    @Override
-                    public void onSelectionChanged(SelectionChangedEvent event) {
-                        if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
-                                && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
-                            Record rec = event.getRecord();
-                            event.getRecord()
-                                    .setAttribute("__ref",
-                                                  "ScanRecord [getName()="
-                                                          + rec.getAttributeAsString(Constants.ATTR_NAME)
-                                                          + ", "
-                                                          + "getModel()="
-                                                          + model
-                                                          + ", "
-                                                          + "getPicture()="
-                                                          + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
-                                                          + ", " + "getPath()=, " + "getPageType()="
-                                                          + rec.getAttributeAsString(Constants.ATTR_TYPE)
-                                                          + "]");
-                            event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
-                            event.getRecord().setAttribute(Constants.ATTR_PATH, "");
-                            event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
-                        }
-                    }
-                });
-
-                markedRecords = new ArrayList<Record>();
-                getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
-
-                    @Override
-                    public void onRecordClick(RecordClickEvent event) {
-                        if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
-                            getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
-                            String isMarked =
-                                    event.getRecord()
-                                            .getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                            if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
-                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                                               Boolean.TRUE.toString());
-                                markedRecords.add(event.getRecord());
-                            } else {
-                                markedRecords.remove(event.getRecord());
-                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                                               Boolean.FALSE.toString());
-                            }
-                            getView().getTileGrid().deselectRecord(event.getRecord());
-                        }
-                    }
-                });
-
+                addHandlers();
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -675,6 +632,83 @@ public class CreateStructurePresenter
         getView().getPopupPanel().setVisible(true);
         getView().getPopupPanel().center();
         dispatcher.execute(action, callback);
+    }
+
+    private void addHandlers() {
+        getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent event) {
+                if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
+                        && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
+                    Record rec = event.getRecord();
+                    event.getRecord()
+                            .setAttribute("__ref",
+                                          "ScanRecord [getName()="
+                                                  + rec.getAttributeAsString(Constants.ATTR_NAME) + ", "
+                                                  + "getModel()=" + model + ", " + "getPicture()="
+                                                  + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
+                                                  + ", " + "getPath()=, " + "getPageType()="
+                                                  + rec.getAttributeAsString(Constants.ATTR_TYPE) + "]");
+                    event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
+                    event.getRecord().setAttribute(Constants.ATTR_PATH, "");
+                    event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
+                }
+            }
+        });
+
+        markedRecords = new ArrayList<Record>();
+        getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
+
+            @Override
+            public void onRecordClick(RecordClickEvent event) {
+                if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
+                    getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+                    String isMarked =
+                            event.getRecord().getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
+                        event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                       Boolean.TRUE.toString());
+                        markedRecords.add(event.getRecord());
+                    } else {
+                        markedRecords.remove(event.getRecord());
+                        event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                       Boolean.FALSE.toString());
+                    }
+                    getView().getTileGrid().deselectRecord(event.getRecord());
+                }
+            }
+        });
+
+        getView().getPagesTabSet().addTabSelectedHandler(new TabSelectedHandler() {
+
+            @Override
+            public void onTabSelected(TabSelectedEvent event) {
+                if (Constants.SELECTED_PAGES_TAB.equals(event.getTab()
+                        .getAttributeAsString(Constants.ATTR_TAB_ID))) {
+                    allPages = getView().getTileGrid().getData();
+
+                    getView().getTileGrid().setData(getSelectedPages());
+                } else {
+                    getView().getTileGrid().setData(allPages);
+                }
+            }
+        });
+
+        leftPresenter
+                .getView()
+                .getSubelementsGrid()
+                .addSelectionChangedHandler(new com.smartgwt.client.widgets.grid.events.SelectionChangedHandler() {
+
+                    @Override
+                    public void onSelectionChanged(SelectionEvent event) {
+
+                        if (Constants.SELECTED_PAGES_TAB.equals((getView().getPagesTabSet().getSelectedTab())
+                                .getAttributeAsString(Constants.ATTR_TAB_ID))) {
+                            getView().getTileGrid().setData(getSelectedPages());
+                        }
+                    }
+                });
     }
 
     private void setSectionCreateLayout() {
@@ -1256,5 +1290,39 @@ public class CreateStructurePresenter
     @Override
     public boolean isMarkingOff() {
         return lang.sequential().equals(leftPresenter.getView().getCreationModeItem().getValue());
+    }
+
+    private ScanRecord[] getSelectedPages() {
+        ListGridRecord selectedRecord = leftPresenter.getView().getSubelementsGrid().getSelectedRecord();
+        if (selectedRecord != null) {
+            if (DigitalObjectModel.parseString(selectedRecord.getAttributeAsString(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.PAGE) {
+                TreeNode[] children =
+                        leftPresenter.getView().getSubelementsGrid().getTree()
+                                .getChildren((TreeNode) selectedRecord);
+                ScanRecord[] toReturn = new ScanRecord[children.length];
+                int i = 0;
+                for (TreeNode node : children) {
+                    String modelId = node.getAttributeAsString(Constants.ATTR_MODEL_ID);
+                    if (DigitalObjectModel.PAGE == DigitalObjectModel.parseString(modelId)) {
+                        toReturn[i++] = fromRecordToScanRecord(node);
+                    }
+                }
+                return toReturn;
+            } else {
+                return new ScanRecord[] {fromRecordToScanRecord(selectedRecord)};
+            }
+        }
+        return new ScanRecord[] {};
+    }
+
+    private ScanRecord fromRecordToScanRecord(Record record) {
+        ScanRecord scanRecord =
+                new ScanRecord(record.getAttribute(Constants.ATTR_NAME),
+                               model,
+                               record.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
+                               "",
+                               record.getAttributeAsString(Constants.ATTR_TYPE));
+        scanRecord.setAttribute(Constants.ATTR_ID, record.getAttributeAsString(Constants.ATTR_ID));
+        return scanRecord;
     }
 }

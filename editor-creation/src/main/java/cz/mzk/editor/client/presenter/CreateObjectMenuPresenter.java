@@ -466,4 +466,5 @@ public class CreateObjectMenuPresenter
     public SequentialCreateLayout getSequentialCreateLayout() {
         return sequentialCreateLayout;
     }
+
 }

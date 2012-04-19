@@ -176,6 +176,15 @@ public class Constants {
     /** The Constant ATTR_ID. */
     public static final String ATTR_ID = "path"; // path
 
+    /** The Constant ATTR_TAB_ID. */
+    public static final String ATTR_TAB_ID = "tabId";
+
+    /** The Constant ALL_PAGES_TAB. */
+    public static final String ALL_PAGES_TAB = "allPagesTab";
+
+    /** The Constant SELECTED_PAGES_TAB. */
+    public static final String SELECTED_PAGES_TAB = "selectedPagesTab";
+
     /** The Constant ATTR_PARENT. */
     public static final String ATTR_PARENT = "parent";
 
@@ -814,6 +823,10 @@ public class Constants {
 
     public static enum SERVER_ACTION_RESULT {
         OK, WRONG_FILE_NAME;
+    }
+
+    public static enum STRUCTURE_TREE_ITEM_ACTION {
+        CHANGE_POSITION, CHANGE_NAME, CHANGE_TYPE;
     }
 
     /** The separator for two pages on one page, or for columns one a page */

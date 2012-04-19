@@ -175,6 +175,8 @@ public class CreateStructureView
 
     private VLayout tileGridLayout;
 
+    private TabSet pagesTabSet;
+
     private VLayout detailPanel;
 
     private VLayout metadataPanel;
@@ -208,9 +210,11 @@ public class CreateStructureView
 
     private ToolStrip toolStrip;
 
-    private List<Record[]> undoList;
+    private List<Record[]> undoListAllPages;
+    private List<Record[]> undoListSelectedPages;
     private ToolStripButton undoButton;
-    private List<Record[]> redoList;
+    private List<Record[]> redoListAllPages;
+    private List<Record[]> redoListSelectedPages;
     private ToolStripButton redoButton;
     int positionBeforeMoving;
     private final EventBus eventBus;
@@ -294,6 +298,12 @@ public class CreateStructureView
         }
         this.model = model;
         this.hostname = hostname;
+        pagesTabSet = new TabSet();
+        Tab allPagesTab = new Tab();
+        allPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.ALL_PAGES_TAB);
+        Tab selectedPagesTab = new Tab();
+        selectedPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.SELECTED_PAGES_TAB);
+
         tileGridLayout = new VLayout();
         tileGrid = new TileGrid();
         tileGrid.setTileWidth(imageThumbnailWidth + 10);
@@ -358,8 +368,10 @@ public class CreateStructureView
                 if (positionBeforeMoving >= 0) {
                     Record[] selection = tileGrid.getSelection();
                     if (selection.length > 0 && tileGrid.getRecordIndex(selection[0]) == positionBeforeMoving) {
-                        undoList.remove(undoList.size() - 1);
-                        if (undoList.size() == 0) undoButton.disable();
+                        undoListAllPages.remove(undoListAllPages.size() - 1);
+                        if (undoListAllPages.size() == 0) undoButton.disable();
+                    } else if (isChosenSelectedPagesTab()) {
+tady bude event
                     }
                     positionBeforeMoving = -1;
                 }
@@ -611,8 +623,12 @@ public class CreateStructureView
 
         if (!resize) toolStrip = getToolStrip();
 
+        pagesTabSet.setTabs(allPagesTab, selectedPagesTab);
+        allPagesTab.setPane(tileGrid);
+        selectedPagesTab.setPane(tileGrid);
         tileGridLayout.addMember(toolStrip);
         tileGridLayout.addMember(tileGrid);
+        tileGridLayout.addMember(pagesTabSet);
         layout.addMember(tileGridLayout);
     }
 
@@ -779,8 +795,8 @@ public class CreateStructureView
 
         undoButton = new ToolStripButton();
         redoButton = new ToolStripButton();
-        undoList = new ArrayList<Record[]>();
-        redoList = new ArrayList<Record[]>();
+        undoListAllPages = new ArrayList<Record[]>();
+        redoListAllPages = new ArrayList<Record[]>();
 
         undoButton.setIcon("icons/16/undo.png");
         undoButton.setTitle(lang.undo());
@@ -794,10 +810,10 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                if (undoList.size() > 0) {
+                if (undoListAllPages.size() > 0) {
                     addUndoRedo(tileGrid.getData(), false, false);
-                    tileGrid.setData(undoList.remove(undoList.size() - 1));
-                    if (undoList.size() == 0) undoButton.disable();
+                    tileGrid.setData(undoListAllPages.remove(undoListAllPages.size() - 1));
+                    if (undoListAllPages.size() == 0) undoButton.disable();
                     updateTileGrid();
                 } else {
                     undoButton.disable();
@@ -810,10 +826,10 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                if (redoList.size() > 0) {
+                if (redoListAllPages.size() > 0) {
                     addUndoRedo(tileGrid.getData(), true, true);
-                    tileGrid.setData(redoList.remove(redoList.size() - 1));
-                    if (redoList.size() == 0) redoButton.disable();
+                    tileGrid.setData(redoListAllPages.remove(redoListAllPages.size() - 1));
+                    if (redoListAllPages.size() == 0) redoButton.disable();
                     updateTileGrid();
                 } else {
                     redoButton.disable();
@@ -1562,14 +1578,14 @@ public class CreateStructureView
             i++;
         }
         if (isUndoList) {
-            undoList.add(newData);
+            undoListAllPages.add(newData);
             undoButton.enable();
-            if (!isRedoOperation && redoList.size() > 0) {
-                redoList = new ArrayList<Record[]>();
+            if (!isRedoOperation && redoListAllPages.size() > 0) {
+                redoListAllPages = new ArrayList<Record[]>();
                 redoButton.setDisabled(true);
             }
         } else {
-            redoList.add(newData);
+            redoListAllPages.add(newData);
             redoButton.enable();
         };
     }
@@ -1613,4 +1629,18 @@ public class CreateStructureView
         tileGrid.selectRecords(selection);
         mw.hide();
     }
+
+    /**
+     * @return the pagesTabSet
+     */
+    @Override
+    public TabSet getPagesTabSet() {
+        return pagesTabSet;
+    }
+
+    private boolean isChosenSelectedPagesTab() {
+        return Constants.SELECTED_PAGES_TAB.equals(pagesTabSet.getSelectedTab()
+                .getAttributeAsString(Constants.ATTR_TAB_ID));
+    }
+
 }
