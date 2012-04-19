@@ -364,15 +364,6 @@ public class CreateStructurePresenter
         }
         leftPresenter.setDefaultDateIssued(getDateIssued());
 
-        createAtOnceButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                createAtOnceProcess();
-            }
-
-        });
-
         ChangeMenuWidthEvent.fire(getEventBus(), "340");
     }
 
@@ -679,44 +670,63 @@ public class CreateStructurePresenter
     }
 
     private void setSectionCreateLayout() {
-        final VLayout atOnceCreateLayout = new VLayout(2);
 
-        HTMLFlow createFlow = new HTMLFlow(lang.markingLabel());
+        if (DigitalObjectModel.parseString(model) == DigitalObjectModel.PERIODICAL) {
+            leftPresenter.getView().getCreationModeItem().show();
 
-        createAtOnceButton = new ButtonItem("createAtOnceButton", lang.create());
-        createAtOnceButton.setAlign(Alignment.RIGHT);
+            final VLayout atOnceCreateLayout = new VLayout(2);
 
-        DynamicForm createDynForm = new DynamicForm();
-        createDynForm.setItems(createAtOnceButton);
+            HTMLFlow createFlow = new HTMLFlow(lang.markingLabel());
 
-        atOnceCreateLayout.addMember(createFlow);
-        atOnceCreateLayout.addMember(createDynForm);
-        atOnceCreateLayout.setAlign(Alignment.CENTER);
-        atOnceCreateLayout.setWidth(250);
-        atOnceCreateLayout.setHeight(70);
+            createAtOnceButton = new ButtonItem("createAtOnceButton", lang.create());
+            createAtOnceButton.setAlign(Alignment.RIGHT);
+            DynamicForm createDynForm = new DynamicForm();
+            createDynForm.setItems(createAtOnceButton);
 
-        leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
+            atOnceCreateLayout.addMember(createFlow);
+            atOnceCreateLayout.addMember(createDynForm);
+            atOnceCreateLayout.setAlign(Alignment.CENTER);
+            atOnceCreateLayout.setWidth(250);
+            atOnceCreateLayout.setHeight(70);
 
-        leftPresenter.getView().getCreationModeItem().addChangedHandler(new ChangedHandler() {
+            leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
+            leftPresenter.getView().getCreationModeItem().setValue(lang.atOnce());
 
-            @Override
-            public void onChanged(ChangedEvent event) {
+            leftPresenter.getView().getCreationModeItem().addChangedHandler(new ChangedHandler() {
 
-                if (lang.atOnce().equals(leftPresenter.getView().getCreationModeItem().getValue())) {
-                    markedRecords = new ArrayList<Record>();
-                    leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
-                } else {
-                    if (markedRecords.size() > 0) {
-                        Record[] selection = getView().getTileGrid().getSelection();
-                        Record[] toUpdate = new Record[markedRecords.size()];
-                        markedRecords.toArray(toUpdate);
-                        getView().updateRecordsInTileGrid(toUpdate);
-                        getView().getTileGrid().selectRecords(selection);
+                @Override
+                public void onChanged(ChangedEvent event) {
+
+                    if (lang.atOnce().equals(leftPresenter.getView().getCreationModeItem().getValue())) {
+                        markedRecords = new ArrayList<Record>();
+                        leftPresenter.getView().setSectionCreateLayout(atOnceCreateLayout);
+                    } else {
+                        if (markedRecords.size() > 0) {
+                            Record[] selection = getView().getTileGrid().getSelection();
+                            Record[] toUpdate = new Record[markedRecords.size()];
+                            markedRecords.toArray(toUpdate);
+                            getView().updateRecordsInTileGrid(toUpdate);
+                            getView().getTileGrid().selectRecords(selection);
+                        }
+                        leftPresenter.getView()
+                                .setSectionCreateLayout(leftPresenter.getSequentialCreateLayout());
                     }
-                    leftPresenter.getView().setSectionCreateLayout(leftPresenter.getSequentialCreateLayout());
                 }
-            }
-        });
+            });
+
+            createAtOnceButton.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+                    createAtOnceProcess();
+                }
+
+            });
+        } else {
+            leftPresenter.getView().getCreationModeItem().hide();
+            leftPresenter.getView().setSectionCreateLayout(leftPresenter.getSequentialCreateLayout());
+            leftPresenter.getView().getCreationModeItem().setValue(lang.sequential());
+        }
     }
 
     /**
@@ -868,19 +878,24 @@ public class CreateStructurePresenter
     private void createAtOnceProcess() {
         leftPresenter.getView().addUndoRedo(true, false);
         Record[] data = getView().getTileGrid().getData();
-        String parent =
-                leftPresenter.getView().getSubelementsGrid().getSelectedRecord()
-                        .getAttribute(Constants.ATTR_ID);
 
-        TreeNode parentNode = leftPresenter.getView().getSubelementsGrid().getTree().findById(parent);
-        DigitalObjectModel parentModel =
-                DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_MODEL_ID));
+        String parent = null;
+        DigitalObjectModel parentModel = null;
+        if (leftPresenter.getView().getSubelementsGrid().getSelectedRecord() != null) {
+            parent =
+                    leftPresenter.getView().getSubelementsGrid().getSelectedRecord()
+                            .getAttribute(Constants.ATTR_ID);
 
-        if (parentModel != DigitalObjectModel.PERIODICALVOLUME) {
-            String rootId =
-                    leftPresenter.getView().getSubelementsGrid().getTree().getRoot()
-                            .getAttributeAsString(Constants.ATTR_ID);
-            parent = addNewStructure(DigitalObjectModel.PERIODICALVOLUME, rootId, null, true, "");
+            TreeNode parentNode = leftPresenter.getView().getSubelementsGrid().getTree().findById(parent);
+            parentModel = DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_MODEL_ID));
+        }
+        if (parent == null || parentModel == null || parentModel != DigitalObjectModel.PERIODICALVOLUME) {
+            parent =
+                    addNewStructure(DigitalObjectModel.PERIODICALVOLUME,
+                                    SubstructureTreeNode.ROOT_OBJECT_ID,
+                                    null,
+                                    true,
+                                    "");
         }
 
         List<Record> toAdd = new ArrayList<Record>();

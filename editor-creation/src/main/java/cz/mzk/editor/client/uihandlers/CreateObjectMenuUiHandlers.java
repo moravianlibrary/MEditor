@@ -34,7 +34,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import cz.mzk.editor.client.view.other.SequentialCreateLayout;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 
-
 /**
  * @author Jiri Kremser
  * @version 11.3.2012

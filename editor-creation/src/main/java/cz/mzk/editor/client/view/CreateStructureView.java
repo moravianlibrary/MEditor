@@ -1181,6 +1181,7 @@ public class CreateStructureView
                        dialog);
     }
 
+    @Override
     public void updateRecordsInTileGrid(Record[] records) {
         tileGrid.deselectRecords(records);
         tileGrid.selectRecords(records);
