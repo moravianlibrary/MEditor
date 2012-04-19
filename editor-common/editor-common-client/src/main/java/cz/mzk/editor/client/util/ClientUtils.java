@@ -559,11 +559,11 @@ public class ClientUtils {
                                      treeNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
                                      modelId == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : modelId,
                                      treeNode.getAttribute(Constants.ATTR_TYPE),
-                                     treeNode.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
+                                     modelId == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
+                                             .getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
                                      treeNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
                                      treeNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
-                                     modelId == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
-                                             .getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
+                                     treeNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
@@ -572,8 +572,9 @@ public class ClientUtils {
                 new ScanRecord(node.getPropName(),
                                node.getPropModelId(),
                                node.getPropPictureOrUuid(),
-                               node.getPropAditionalInfoOrOcr(),
+                               node.getPropDateOrIntPartName(),
                                node.getPropType());
+        rec.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, node.getPropAditionalInfoOrOcr());
         return rec;
     }
 

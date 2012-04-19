@@ -188,8 +188,6 @@ public class Constants {
     /** The Constant ATTR_SURNAME. */
     public static final String ATTR_SURNAME = "surname";
 
-    //    public static final String ATTR_TYPE_to_delete = "type";
-
     public static final String ATTR_MODEL_ID = "modelId";
 
     public static final String ATTR_CREATE = "create";
@@ -224,9 +222,6 @@ public class Constants {
 
     /** The Constant ATTR_OCR_PATH. */
     public static final String ATTR_OCR_PATH = "ocrPath";
-
-    /** The Constant ATTR_IS_MARKED. */
-    public static final String ATTR_IS_MARKED = "isMarked";
 
     /** The Constant ATTR_PAGE_TYPE. */
     public static final String ATTR_TYPE = "type";

@@ -281,7 +281,7 @@ public class CreateStructurePresenter
                     bundle.setInfo(new TreeStructureInfo(-1, null, null, leftPresenter.getBarcode(), object
                             .getName(), null, inputPath, model));
                     bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
-                    if (!emptyTree) {
+                    if (object != null) {
                         bundle.getNodes().addAll(ClientUtils.toNodes(leftPresenter.getView()
                                 .getSubelementsGrid().getTree().getAllNodes()));
                     }
@@ -609,14 +609,17 @@ public class CreateStructurePresenter
                     public void onRecordClick(RecordClickEvent event) {
                         if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
                             getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
-                            Boolean isMarked =
-                                    event.getRecord().getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
-                            if (isMarked == null || !isMarked) {
-                                event.getRecord().setAttribute(Constants.ATTR_IS_MARKED, true);
+                            String isMarked =
+                                    event.getRecord()
+                                            .getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                            if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
+                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                               Boolean.TRUE.toString());
                                 markedRecords.add(event.getRecord());
                             } else {
                                 markedRecords.remove(event.getRecord());
-                                event.getRecord().setAttribute(Constants.ATTR_IS_MARKED, false);
+                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                               Boolean.FALSE.toString());
                             }
                             getView().getTileGrid().deselectRecord(event.getRecord());
                         }
@@ -723,7 +726,18 @@ public class CreateStructurePresenter
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    createAtOnceProcess();
+                    final ModalWindow mw = new ModalWindow(leftPresenter.getView().getSectionStack());
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+                            createAtOnceProcess();
+                            mw.hide();
+                        }
+                    };
+                    timer.run();
                 }
 
             });
@@ -899,8 +913,8 @@ public class CreateStructurePresenter
         int perItemNum = 0;
         for (Record rec : data) {
             if (toAdd.size() > 0) {
-                Boolean isMarked = rec.getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
-                if (isMarked != null && isMarked) {
+                String isMarked = rec.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                if (isMarked != null && Boolean.TRUE.toString().equals(isMarked)) {
                     Record[] toAddRecords = new Record[toAdd.size()];
                     toAdd.toArray(toAddRecords);
                     addNewStructure(DigitalObjectModel.PERIODICALITEM,

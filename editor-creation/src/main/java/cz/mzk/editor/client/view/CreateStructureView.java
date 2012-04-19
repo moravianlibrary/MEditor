@@ -567,8 +567,9 @@ public class CreateStructureView
                 if (getUiHandlers().isMarkingOff()) {
                     return !isSelected ? "" : "tileGridImgSelected";
                 } else {
-                    Boolean isMarked = record.getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
-                    return (isMarked == null || !isMarked) ? (!isSelected ? "" : "tileGridImgSelected")
+                    String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    return (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) ? (!isSelected ? ""
+                            : "tileGridImgSelected")
                             : (!isSelected ? "tileGridImgMarked" : "tileGridImgMarkedSelected");
                 }
             }
@@ -596,8 +597,9 @@ public class CreateStructureView
                 if (getUiHandlers().isMarkingOff()) {
                     return !isSelected ? "" : "tileGridTitleSelected";
                 } else {
-                    Boolean isMarked = record.getAttributeAsBoolean(Constants.ATTR_IS_MARKED);
-                    return (isMarked == null || !isMarked) ? (!isSelected ? "" : "tileGridTitleSelected")
+                    String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    return (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) ? (!isSelected ? ""
+                            : "tileGridTitleSelected")
                             : (!isSelected ? "tileGridTitleMarked" : "tileGridTitleMarkedSelected");
                 }
             }
@@ -1580,8 +1582,8 @@ public class CreateStructureView
                                originalRecord.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
                                originalRecord.getAttribute(Constants.ATTR_PATH),
                                originalRecord.getAttribute(Constants.ATTR_TYPE));
-        newScanRecord.setAttribute(Constants.ATTR_IS_MARKED,
-                                   originalRecord.getAttributeAsBoolean(Constants.ATTR_IS_MARKED));
+        newScanRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                   originalRecord.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR));
         return newScanRecord;
     }
 
