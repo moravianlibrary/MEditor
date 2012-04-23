@@ -65,8 +65,9 @@ public class MonographUnitBuilder
         idUrn.addText(getUuid());
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
-        Element title = titleInfo.addElement(new QName("title", modsNs));
-        if (isNotNullOrEmpty(getRootTitle())) title.addText(getRootTitle());
+
+        addRootTitle(titleInfo.addElement(new QName("title", modsNs)));
+
         if (isNotNullOrEmpty(getPartNumber())) {
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());
@@ -88,17 +89,13 @@ public class MonographUnitBuilder
             dateIssued.addAttribute("qualifier", "approximate");
         }
 
-        String language = getRootLanguage();
-        if (language != null) {
-            Element languageEl = mods.addElement(new QName("language", modsNs));
-            Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
-            languageTerm.addAttribute("type", "code");
-            languageTerm.addAttribute("authority", "iso639-2b");
-            languageTerm.addText(language);
-        }
+        addRootPlace(originInfo);
+        addRootPublisher(originInfo);
+        addRootLanguage(mods);
+        addRootTopic(mods);
 
+        Element physicalDescription = addRootPhysicalDescriptionForm(mods);
         if (isNotNullOrEmpty(getNoteOrIntSubtitle())) {
-            Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
             Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
             noteEl.addText(getNoteOrIntSubtitle());
         }

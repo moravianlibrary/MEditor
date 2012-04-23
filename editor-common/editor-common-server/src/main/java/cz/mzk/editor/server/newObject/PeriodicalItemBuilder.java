@@ -65,12 +65,10 @@ public class PeriodicalItemBuilder
         idUrn.addText(getUuid());
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
-        Element title = titleInfo.addElement(new QName("title", modsNs));
-        if (isNotNullOrEmpty(getRootTitle())) title.addText(getRootTitle());
-        if (isNotNullOrEmpty(getRootSubtitle())) {
-            Element subtitle = titleInfo.addElement(new QName("subtitle", modsNs));
-            subtitle.addText(getRootSubtitle());
-        }
+
+        addRootTitle(titleInfo);
+        addRootSubtitle(titleInfo);
+
         if (isNotNullOrEmpty(getPartNumber())) {
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());
@@ -98,16 +96,16 @@ public class PeriodicalItemBuilder
             dateIssued.addAttribute("qualifier", "approximate");
         }
 
-        if (isNotNullOrEmpty(getRootLanguage())) {
-            Element languageEl = mods.addElement(new QName("language", modsNs));
-            Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
-            languageTerm.addAttribute("type", "code");
-            languageTerm.addAttribute("authority", "iso639-2b");
-            languageTerm.addText(getRootLanguage());
-        }
+        addRootPublisher(originInfo);
+        addRootPlace(originInfo);
+        addRootLanguage(mods);
+        addRootTopic(mods);
+        Element locationEl = mods.addElement(new QName("location", modsNs));
+        addLocation(locationEl);
+        addRootPhysicalLocation(locationEl, false);
 
+        Element physicalDescription = addRootPhysicalDescriptionForm(mods);
         if (isNotNullOrEmpty(getNoteOrIntSubtitle())) {
-            Element physicalDescription = mods.addElement(new QName("physicalDescription", modsNs));
             Element noteEl = physicalDescription.addElement(new QName("note", modsNs));
             noteEl.addText(getNoteOrIntSubtitle());
         }

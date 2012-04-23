@@ -99,15 +99,11 @@ public class IntPartBuilder
         Element total = extent.addElement(new QName("total", modsNs));
         total.addText(String.valueOf(children.size()));
 
-        if (isNotNullOrEmpty(getRootLanguage())) {
-            Element languageEl = mods.addElement(new QName("language", modsNs));
-            Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
-            languageTerm.addAttribute("type", "code");
-            languageTerm.addAttribute("authority", "iso639-2b");
-            languageTerm.addText(getRootLanguage());
-        }
-
+        addRootLanguage(mods);
         addIdentifierUuid(mods, getUuid());
+        addRootRecordInfo(mods.addElement(new QName("recordInfo", modsNs)));
+        addRootTopic(mods);
+        addLocation(mods.addElement(new QName("location", modsNs)));
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 
