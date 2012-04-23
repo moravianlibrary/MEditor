@@ -112,6 +112,7 @@ import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
@@ -244,6 +245,7 @@ public class ServerModule
         requestStaticInjection(URLS.class);
         requestStaticInjection(CreateObjectUtils.class);
         requestStaticInjection(ServerUtils.class);
+        requestStaticInjection(FOXMLBuilderMapping.class);
 
     }
 }
