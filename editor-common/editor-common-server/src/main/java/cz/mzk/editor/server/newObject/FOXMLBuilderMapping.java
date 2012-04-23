@@ -30,6 +30,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import com.google.inject.Injector;
+
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
@@ -42,6 +46,9 @@ import cz.mzk.editor.shared.rpc.NewDigitalObject;
 public class FOXMLBuilderMapping {
 
     private static final Logger LOGGER = Logger.getLogger(FOXMLBuilderMapping.class);
+
+    @Inject
+    private static Injector injector;
 
     private static final Map<DigitalObjectModel, Class<? extends FoxmlBuilder>> MAP =
             new HashMap<DigitalObjectModel, Class<? extends FoxmlBuilder>>(DigitalObjectModel.values().length);
@@ -65,7 +72,9 @@ public class FOXMLBuilderMapping {
                 if (constructors.length == 0) {
                     return null;
                 } else {
-                    return constructors[0].newInstance(object);
+                    FoxmlBuilder builder = constructors[0].newInstance(object);
+                    injector.injectMembers(builder);
+                    return builder;
                 }
             }
             return null;
