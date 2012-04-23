@@ -97,6 +97,8 @@ public class PeriodicalVolumeBuilder
             languageTerm.addText(getRootLanguage());
         }
 
+        addIdentifierUuid(mods, getUuid());
+
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 
     }

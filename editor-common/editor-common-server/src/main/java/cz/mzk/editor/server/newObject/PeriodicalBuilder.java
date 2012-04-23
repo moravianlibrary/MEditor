@@ -161,7 +161,8 @@ public class PeriodicalBuilder
         addSysno(modsDoc, marc);
         //        addLinks(modsDoc, marc, uuid);
         //addPublishment(modsDoc, marc);
-        updateRecordInfo(modsDoc, uuid);
+        updateRecordInfo(modsDoc);
+        addIdentifierUuid((Element) modsXpath.selectSingleNode(modsDoc), uuid);
     }
 
     private void addPhysicalLocation(Document modsDoc, MarcSpecificMetadata marc) {
@@ -266,7 +267,7 @@ public class PeriodicalBuilder
         }
     }
 
-    private void updateRecordInfo(Document modsDoc, String uuid) {
+    private void updateRecordInfo(Document modsDoc) {
         Element recordInfo = (Element) recordInfoXpath.selectSingleNode(modsDoc);
         if (recordInfo == null) {
             recordInfo = modsDoc.getRootElement().addElement(new QName("recordInfo", Namespaces.mods));
@@ -281,8 +282,6 @@ public class PeriodicalBuilder
         Element changeDate = recordInfo.addElement(new QName("recordChangeDate", Namespaces.mods));
         changeDate.addAttribute("encoding", "iso8601");
         changeDate.addText(nowStr);
-        Element recordId = recordInfo.addElement(new QName("recordIdentifier", Namespaces.mods));
-        recordId.addText("uuid:" + uuid);
     }
 
     /**

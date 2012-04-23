@@ -115,6 +115,8 @@ public class PeriodicalItemBuilder
         Element part = mods.addElement(new QName("part", modsNs));
         part.addAttribute("type", "issue");
 
+        addIdentifierUuid(mods, getUuid());
+
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 
     }

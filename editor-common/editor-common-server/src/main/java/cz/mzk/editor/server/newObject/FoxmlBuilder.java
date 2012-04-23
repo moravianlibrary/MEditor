@@ -562,4 +562,10 @@ public abstract class FoxmlBuilder {
     protected boolean isNotNullOrEmpty(String string) {
         return string != null && !"".equals(string);
     }
+
+    protected void addIdentifierUuid(Element modsRootElement, String uuid) {
+        Element identifier = modsRootElement.addElement(new QName("identifier", Namespaces.mods));
+        identifier.addAttribute("type", "uuid");
+        identifier.addText("uuid:" + uuid);
+    }
 }
