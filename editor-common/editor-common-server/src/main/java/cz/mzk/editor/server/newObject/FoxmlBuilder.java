@@ -32,17 +32,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.QName;
+import org.dom4j.XPath;
 
 import cz.mzk.editor.client.mods.ModsTypeClient;
+import cz.mzk.editor.client.mods.PlaceTypeClient;
+import cz.mzk.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.mzk.editor.client.mods.TitleInfoTypeClient;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
+import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils.PrintType;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
@@ -76,7 +82,6 @@ public abstract class FoxmlBuilder {
     private Document relsExtXmlContent;
     private Element policyContentLocation;
 
-    private String krameriusUrl;
     private String alephUrl;
     private String imageUrl;
 
@@ -85,7 +90,12 @@ public abstract class FoxmlBuilder {
     private String partNumber;
     private String aditionalInfo;
 
+    @Inject
+    private EditorConfiguration configuration;
+
     private static final Boolean VERSIONABLE = true;
+
+    private final XPath shelfLocatorXpath = Dom4jUtils.createXPath("mods:shelfLocator");
 
     public FoxmlBuilder(NewDigitalObject object) {
         this(object, Policy.PRIVATE);
@@ -374,14 +384,6 @@ public abstract class FoxmlBuilder {
         this.relsExtXmlContent = relsExtXmlContent;
     }
 
-    public String getKrameriusUrl() {
-        return krameriusUrl;
-    }
-
-    public void setKrameriusUrl(String krameriusUrl) {
-        this.krameriusUrl = krameriusUrl;
-    }
-
     public String getAlephUrl() {
         return alephUrl;
     }
@@ -523,17 +525,20 @@ public abstract class FoxmlBuilder {
         return typeOfResourceValue;
     }
 
-    protected String getRootLanguage() {
-        String language = null;
-
+    protected void addRootLanguage(Element modsRootEl) {
         ModsTypeClient mods = getFirstMods();
         if (mods != null && mods.getLanguage() != null && mods.getLanguage().size() > 0
                 && mods.getLanguage().get(0).getLanguageTerm() != null
-                && mods.getLanguage().get(0).getLanguageTerm().size() > 0) {
-            language = mods.getLanguage().get(0).getLanguageTerm().get(0).getValue();
-        }
+                && mods.getLanguage().get(0).getLanguageTerm().size() > 0
+                && mods.getLanguage().get(0).getLanguageTerm().get(0) != null
+                && isNotNullOrEmpty(mods.getLanguage().get(0).getLanguageTerm().get(0).getValue())) {
 
-        return language;
+            Element languageEl = modsRootEl.addElement(new QName("language", Namespaces.mods));
+            Element languageTerm = languageEl.addElement(new QName("languageTerm", Namespaces.mods));
+            languageTerm.addAttribute("type", "code");
+            languageTerm.addAttribute("authority", "iso639-2b");
+            languageTerm.addText(mods.getLanguage().get(0).getLanguageTerm().get(0).getValue());
+        }
     }
 
     private TitleInfoTypeClient getFirstTitleInfo() {
@@ -543,23 +548,144 @@ public abstract class FoxmlBuilder {
         return null;
     }
 
-    protected String getRootTitle() {
-        String title = null;
+    protected void addRootTitle(Element titleInfo) {
         TitleInfoTypeClient firstTitleInfo = getFirstTitleInfo();
         if (firstTitleInfo != null && firstTitleInfo.getTitle() != null
-                && firstTitleInfo.getTitle().size() > 0) title = firstTitleInfo.getTitle().get(0);
-        return title;
+                && firstTitleInfo.getTitle().size() > 0 && isNotNullOrEmpty(firstTitleInfo.getTitle().get(0))) {
+            titleInfo.addElement(new QName("title", Namespaces.mods)).addText(firstTitleInfo.getTitle()
+                    .get(0));
+        }
     }
 
-    protected String getRootSubtitle() {
-        String subtitle = null;
+    protected void addRootSubtitle(Element titleInfoEl) {
         TitleInfoTypeClient firstTitleInfo = getFirstTitleInfo();
         if (firstTitleInfo != null && firstTitleInfo.getSubTitle() != null
-                && firstTitleInfo.getSubTitle().size() > 0) subtitle = firstTitleInfo.getSubTitle().get(0);
-        return subtitle;
+                && firstTitleInfo.getSubTitle().size() > 0
+                && isNotNullOrEmpty(firstTitleInfo.getSubTitle().get(0))) {
+            titleInfoEl.addElement(new QName("subtitle", Namespaces.mods)).addText(firstTitleInfo
+                    .getSubTitle().get(0));
+        }
     }
 
     protected boolean isNotNullOrEmpty(String string) {
         return string != null && !"".equals(string);
+    }
+
+    protected void addIdentifierUuid(Element modsRootElement, String uuid) {
+        Element identifier = modsRootElement.addElement(new QName("identifier", Namespaces.mods));
+        identifier.addAttribute("type", "uuid");
+        identifier.addText("uuid:" + uuid);
+    }
+
+    protected void addRootPlace(Element originInfoEl) {
+        ModsTypeClient mods = getFirstMods();
+        PlaceTypeClient placeClient = null;
+        if (mods != null && mods.getOriginInfo() != null && mods.getOriginInfo().size() > 0
+                && mods.getOriginInfo().get(0).getPlace() != null
+                && mods.getOriginInfo().get(0).getPlace().size() > 0)
+            placeClient = mods.getOriginInfo().get(0).getPlace().get(0);
+
+        if (placeClient != null && placeClient.getPlaceTerm() != null
+                && placeClient.getPlaceTerm().size() > 0) {
+            String authority = placeClient.getPlaceTerm().get(0).getAuthority().value();
+            String type = placeClient.getPlaceTerm().get(0).getType().value();
+            String place = placeClient.getPlaceTerm().get(0).getValue();
+            if (authority != null && type != null && place != null) {
+                Element placeEl = originInfoEl.addElement(new QName("place", Namespaces.mods));
+                Element placeTermEl = placeEl.addElement(new QName("placeTerm", Namespaces.mods));
+                placeTermEl.addAttribute("type", type);
+                placeTermEl.addAttribute("authority", authority);
+                placeTermEl.addText(place);
+            }
+        }
+    }
+
+    protected void addRootPublisher(Element originInfoEl) {
+        String name = getBundle().getMarc().getPublisher();
+        if (isNotNullOrEmpty(name)) {
+            Element publisher = originInfoEl.addElement(new QName("publisher", Namespaces.mods));
+            publisher.addText(name);
+        }
+    }
+
+    protected Element addRootPhysicalDescriptionForm(Element modsRootEl) {
+        ModsTypeClient mods = getFirstMods();
+        List<StringPlusAuthorityPlusTypeClient> physDescForms = null;
+        Element physDescEl = modsRootEl.addElement(new QName("physicalDescription", Namespaces.mods));
+
+        if (mods != null && mods.getPhysicalDescription().size() > 0
+                && mods.getPhysicalDescription().get(0).getForm() != null
+                && mods.getPhysicalDescription().get(0).getForm().size() > 0) {
+            physDescForms = mods.getPhysicalDescription().get(0).getForm();
+
+            for (StringPlusAuthorityPlusTypeClient physDescForm : physDescForms) {
+                String authority = physDescForm.getAuthority();
+                String form = physDescForm.getValue();
+                if (authority != null && form != null) {
+                    Element formEl = physDescEl.addElement(new QName("form", Namespaces.mods));
+                    formEl.addAttribute("authority", authority);
+                    formEl.addText(form);
+                }
+            }
+        }
+        return physDescEl;
+    }
+
+    protected void addLocation(Element locationEl) {
+        Element url = locationEl.addElement(new QName("url", Namespaces.mods));
+        url.addText(configuration.getKrameriusHost() + "/handle/uuid:" + uuid);
+    }
+
+    protected void addRootRecordInfo(Element recordInfoEl) {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        String nowStr = sdf.format(now);
+        Element creationDate = recordInfoEl.addElement(new QName("recordCreationDate", Namespaces.mods));
+        creationDate.addAttribute("encoding", "iso8601");
+        creationDate.addText(nowStr);
+        Element changeDate = recordInfoEl.addElement(new QName("recordChangeDate", Namespaces.mods));
+        changeDate.addAttribute("encoding", "iso8601");
+        changeDate.addText(nowStr);
+
+    }
+
+    protected void addRootTopic(Element modsRootEl) {
+        String topic = getBundle().getMarc().getTopic();
+        if (topic != null) {
+            Element subjectEl = modsRootEl.addElement(new QName("subject", Namespaces.mods));
+            Element topicEl = subjectEl.addElement(new QName("topic", Namespaces.mods));
+            topicEl.addText(topic);
+        }
+    }
+
+    protected void addRootPhysicalLocation(Element locationEl, boolean doDetach) {
+        String location = getBundle().getMarc().getLocation();
+
+        if (location != null) {
+            Element shelfLocatorEl = (Element) shelfLocatorXpath.selectSingleNode(locationEl);
+            String shelfLocatorStr = "";
+            if (shelfLocatorEl != null) {
+                shelfLocatorStr = shelfLocatorEl.getTextTrim();
+                if (doDetach) shelfLocatorEl.detach();
+            }
+            Element physicalLocationEl =
+                    locationEl.addElement(new QName("physicalLocation", Namespaces.mods));
+            physicalLocationEl.addText(location);
+            shelfLocatorEl = locationEl.addElement(new QName("shelfLocator", Namespaces.mods));
+            shelfLocatorEl.addText(shelfLocatorStr);
+        }
+    }
+
+    protected void addRootUdcOrDdc(Element modsRootEl) {
+        if (getBundle().getMarc().getUdcs() == null) {
+            return;
+        }
+        List<String> udcs = getBundle().getMarc().getUdcs();
+        for (String udc : udcs) {
+            Element classificationEl = modsRootEl.addElement(new QName("classification", Namespaces.mods));
+            classificationEl.addAttribute("authority", "udc");
+            classificationEl.addText(udc);
+        }
     }
 }

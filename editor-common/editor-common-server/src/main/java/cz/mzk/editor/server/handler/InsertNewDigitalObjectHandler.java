@@ -142,10 +142,11 @@ public class InsertNewDigitalObjectHandler
                 } catch (DatabaseException e) {
                     throw new ActionException(e);
                 }
-                createInfoXml(username,
-                              pid.substring(Constants.FEDORA_UUID_PREFIX.length()),
-                              config.getScanInputQueuePath() + action.getInputPath());
-
+                if (config.getCreateIngestInfoXmlFile()) {
+                    createInfoXml(username,
+                                  pid.substring(Constants.FEDORA_UUID_PREFIX.length()),
+                                  config.getScanInputQueuePath() + action.getInputPath());
+                }
             }
 
         } catch (CreateObjectException e) {

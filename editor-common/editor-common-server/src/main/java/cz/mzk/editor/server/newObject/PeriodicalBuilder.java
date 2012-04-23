@@ -26,9 +26,6 @@ package cz.mzk.editor.server.newObject;
 
 import java.io.FileNotFoundException;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -63,7 +60,6 @@ public class PeriodicalBuilder
     private final XPath modsXpath = Dom4jUtils.createXPath("/mods:modsCollection/mods:mods");
     private final XPath locationXpath = Dom4jUtils
             .createXPath("/mods:modsCollection/mods:mods/mods:location");
-    private final XPath shelfLocatorXpath = Dom4jUtils.createXPath("mods:shelfLocator");
     private final XPath copyInformationXpath = Dom4jUtils
             .createXPath("//mods:location/mods:holdingSimple/mods:copyInformation");
     private final XPath recordInfoXpath = Dom4jUtils.createXPath("//mods:recordInfo");
@@ -155,51 +151,13 @@ public class PeriodicalBuilder
     }
 
     private void updateModsDoc(Document modsDoc, MarcSpecificMetadata marc, String uuid) {
-        //addPhysicalLocation(modsDoc, marc);
-        addUdcOrDdc(modsDoc, marc);
-        addTopic(modsDoc, marc);
+        addRootUdcOrDdc((Element) modsXpath.selectSingleNode(modsDoc));
+        addRootTopic((Element) modsXpath.selectSingleNode(modsDoc));
         addSysno(modsDoc, marc);
-        //        addLinks(modsDoc, marc, uuid);
+        addLinks(modsDoc);
         //addPublishment(modsDoc, marc);
-        updateRecordInfo(modsDoc, uuid);
-    }
-
-    private void addPhysicalLocation(Document modsDoc, MarcSpecificMetadata marc) {
-        String location = marc.getLocation();
-        if (location != null) {
-            Element locationEl = (Element) locationXpath.selectSingleNode(modsDoc);
-            Element shelfLocatorEl = (Element) shelfLocatorXpath.selectSingleNode(locationEl);
-            String shelfLocatorStr = shelfLocatorEl.getTextTrim();
-            shelfLocatorEl.detach();
-            Element physicalLocationEl =
-                    locationEl.addElement(new QName("physicalLocation", Namespaces.mods));
-            physicalLocationEl.addText(location);
-            shelfLocatorEl = locationEl.addElement(new QName("shelfLocator", Namespaces.mods));
-            shelfLocatorEl.addText(shelfLocatorStr);
-        }
-    }
-
-    private void addUdcOrDdc(Document modsDoc, MarcSpecificMetadata marc) {
-        if (marc.getUdcs() == null) {
-            return;
-        }
-        List<String> udcs = marc.getUdcs();
-        for (String udc : udcs) {
-            Element modsEl = (Element) modsXpath.selectSingleNode(modsDoc);
-            Element classificationEl = modsEl.addElement(new QName("classification", Namespaces.mods));
-            classificationEl.addAttribute("authority", "udc");
-            classificationEl.addText(udc);
-        }
-    }
-
-    private void addTopic(Document modsDoc, MarcSpecificMetadata marc) {
-        String topic = marc.getTopic();
-        if (topic != null) {
-            Element modsEl = (Element) modsXpath.selectSingleNode(modsDoc);
-            Element subjectEl = modsEl.addElement(new QName("subject", Namespaces.mods));
-            Element topicEl = subjectEl.addElement(new QName("topic", Namespaces.mods));
-            topicEl.addText(topic);
-        }
+        updateRecordInfo(modsDoc);
+        addIdentifierUuid((Element) modsXpath.selectSingleNode(modsDoc), uuid);
     }
 
     private void addSysno(Document modsDoc, MarcSpecificMetadata marc) {
@@ -212,14 +170,11 @@ public class PeriodicalBuilder
         }
     }
 
-    private void addLinks(Document modsDoc, MarcSpecificMetadata marc, String uuid) {
-        Element copyInformation = (Element) copyInformationXpath.selectSingleNode(modsDoc);
-        copyInformation.addElement(new QName("electronicLocator", Namespaces.mods));
-        copyInformation.addText(alephLink(marc));
-
-        Element location = (Element) locationXpath.selectSingleNode(modsDoc);
-        Element url = location.addElement(new QName("url", Namespaces.mods));
-        url.addText(krameriusLink(uuid));
+    private void addLinks(Document modsDoc) {
+        Element locationEl = (Element) locationXpath.selectSingleNode(modsDoc);
+        if (locationEl != null) locationEl.detach();
+        addLocation(((Element) modsXpath.selectSingleNode(modsDoc)).addElement(new QName("location",
+                                                                                         Namespaces.mods)));
     }
 
     private String alephLink(MarcSpecificMetadata marc) {
@@ -227,16 +182,12 @@ public class PeriodicalBuilder
         return getAlephUrl() + "/F?func=direct&doc_number=" + sysno + "&local_base=MZK03&format=999";
     }
 
-    private String krameriusLink(String uuid) {
-        return getKrameriusUrl() + "/search/handle/uuid:" + uuid;
-    }
-
     private void addPublishment(Document modsDoc, MarcSpecificMetadata marc) {
         Element modsEl = (Element) modsXpath.selectSingleNode(modsDoc);
         Element originInfoEl = modsEl.addElement(new QName("originInfo", Namespaces.mods));
         originInfoEl.addAttribute("transliteration", "publisher");
         addPublishmentPlace(originInfoEl, marc);
-        addPublisher(originInfoEl, marc);
+        addRootPublisher(originInfoEl);
         addPublishmentDate(originInfoEl, marc);
     }
 
@@ -250,14 +201,6 @@ public class PeriodicalBuilder
         }
     }
 
-    private void addPublisher(Element originInfoEl, MarcSpecificMetadata marc) {
-        String name = marc.getPublisher();
-        if (name != null) {
-            Element publisher = originInfoEl.addElement(new QName("publisher", Namespaces.mods));
-            publisher.addText(name);
-        }
-    }
-
     private void addPublishmentDate(Element originInfoEl, MarcSpecificMetadata marc) {
         String dates = marc.getDateIssued();
         if (dates != null) {
@@ -266,23 +209,12 @@ public class PeriodicalBuilder
         }
     }
 
-    private void updateRecordInfo(Document modsDoc, String uuid) {
+    private void updateRecordInfo(Document modsDoc) {
         Element recordInfo = (Element) recordInfoXpath.selectSingleNode(modsDoc);
         if (recordInfo == null) {
             recordInfo = modsDoc.getRootElement().addElement(new QName("recordInfo", Namespaces.mods));
         }
-        Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-        String nowStr = sdf.format(now);
-        Element creationDate = recordInfo.addElement(new QName("recordCreationDate", Namespaces.mods));
-        creationDate.addAttribute("encoding", "iso8601");
-        creationDate.addText(nowStr);
-        Element changeDate = recordInfo.addElement(new QName("recordChangeDate", Namespaces.mods));
-        changeDate.addAttribute("encoding", "iso8601");
-        changeDate.addText(nowStr);
-        Element recordId = recordInfo.addElement(new QName("recordIdentifier", Namespaces.mods));
-        recordId.addText("uuid:" + uuid);
+        addRootRecordInfo(recordInfo);
     }
 
     /**
