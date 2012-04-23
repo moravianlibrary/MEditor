@@ -248,6 +248,8 @@ public abstract class EditorConfiguration {
 
         /** The number of days after which will be the generated images removed */
         public static final String GEN_IMAGES_LIFETIME = "genImagesLifetime";
+
+        public static final String CREATE_INGEST_INFO_XML_FILE = "createIngestInfoXmlFile";
     }
 
     /**
@@ -481,6 +483,15 @@ public abstract class EditorConfiguration {
     }
 
     /**
+     * Gets the whether the ingest info xml file has to be created.
+     * 
+     * @return the whether the ingest info xml file has to be created
+     */
+    public Boolean getCreateIngestInfoXmlFile() {
+        return getConfiguration().getBoolean(ServerConstants.CREATE_INGEST_INFO_XML_FILE, false);
+    }
+
+    /**
      * Gets the fedora password.
      * 
      * @return the fedora password
@@ -645,9 +656,7 @@ public abstract class EditorConfiguration {
     }
 
     /**
-     * Gets the path to the user files
-     * 
-     * return the path to the user files
+     * Gets the path to the user files. return the path to the user files
      */
     public String getUserDirectoriesPath() {
         return getConfiguration().getString(ServerConstants.USER_DIRECTORIES);

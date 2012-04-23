@@ -70,7 +70,7 @@
 		<akka.version>2.0</akka.version>
 
 		<warName>meditor</warName>
-		<hostname>editor.mzk.cz</hostname>
+		<hostname>editor-devel.mzk.cz</hostname>
 		<!-- <hostname>editor.mzk.cz</hostname> -->
 		<!-- <hostname>editor.vsup.cz</hostname> -->
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
