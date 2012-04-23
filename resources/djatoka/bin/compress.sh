@@ -13,6 +13,11 @@ if [ $# -ne 3 ] ; then
   exit 1
 fi
 
+if [ -e $3 ] && [ -s $3 ] ; then
+#output file already exists
+  exit 0
+fi
+
 if [ ! -d $1 ] ; then
   echo "$1 is not valid directory path"
   exit 2
