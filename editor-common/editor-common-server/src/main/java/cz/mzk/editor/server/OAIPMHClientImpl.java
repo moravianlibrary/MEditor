@@ -79,7 +79,7 @@ public class OAIPMHClientImpl
     private Document marc2dc;
 
     @Override
-    public ArrayList<MetadataBundle> search(String url) {
+    public ArrayList<MetadataBundle> search(String url, String base) {
         ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
         try {
             if (!url.startsWith("http")) {
@@ -117,7 +117,7 @@ public class OAIPMHClientImpl
             MarcDocument mrc = new MarcDocument(marcDoc);
             MarcSpecificMetadata marcSpecific =
                     new MarcSpecificMetadata(mrc.findSysno(),
-                                             mrc.findBase(),
+                                             base,
                                              mrc.find040a(),
                                              mrc.find080a(),
                                              mrc.find650a(),
