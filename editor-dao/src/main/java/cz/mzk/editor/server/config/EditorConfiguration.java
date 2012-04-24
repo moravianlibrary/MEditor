@@ -253,7 +253,7 @@ public abstract class EditorConfiguration {
         public static final String AKKA_CONVERT_WORKERS = "akkaConvertWorkers";
         
         /** On/Off akka microkernel (if off, the old fashioned way of converting is used)*/
-        public static final String AKKA_ON = "akkaConvertWorkers";
+        public static final String AKKA_ON = "akkaOn";
 
         public static final String CREATE_INGEST_INFO_XML_FILE = "createIngestInfoXmlFile";
     }
