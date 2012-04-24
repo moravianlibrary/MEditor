@@ -313,7 +313,7 @@ public class FindMetadataPresenter
         if (query == null || id == null) {
             return;
         }
-        dispatcher.execute(new FindMetadataAction(field, id, oai, query),
+        dispatcher.execute(new FindMetadataAction(field, id, oai, query, getView().getOaiBase().getValueAsString()),
                            new DispatchCallback<FindMetadataResult>() {
 
                                @Override
