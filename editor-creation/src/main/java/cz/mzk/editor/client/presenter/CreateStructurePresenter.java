@@ -195,6 +195,9 @@ public class CreateStructurePresenter
     /** The model. */
     private String model;
 
+    /** The base. */
+    private String base;
+
     private MetadataBundle bundle;
 
     /** The place manager. */
@@ -322,6 +325,8 @@ public class CreateStructurePresenter
         leftPresenter.setBarcode(sysno);
         inputPath = request.getParameter(Constants.URL_PARAM_PATH, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
+        base = request.getParameter(Constants.URL_PARAM_BASE, null);
+
     }
 
     /*

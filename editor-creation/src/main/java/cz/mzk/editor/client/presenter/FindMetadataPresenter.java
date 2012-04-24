@@ -238,7 +238,8 @@ public class FindMetadataPresenter
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model)
                         .with(Constants.URL_PARAM_SYSNO, bundle.getMarc().getSysno())
-                        .with(Constants.URL_PARAM_PATH, inputPath));
+                        .with(Constants.URL_PARAM_PATH, inputPath)
+                        .with(Constants.URL_PARAM_BASE, bundle.getMarc().getBase()));
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -248,7 +249,8 @@ public class FindMetadataPresenter
                 CreateStructureEvent.fire(getEventBus(), model, sysno, inputPath);
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, sysno)
-                        .with(Constants.URL_PARAM_PATH, inputPath));
+                        .with(Constants.URL_PARAM_PATH, inputPath)
+                        .with(Constants.URL_PARAM_BASE, getView().getOaiBase().getValueAsString()));
             }
         });
         getView().getResults().addCellClickHandler(new CellClickHandler() {

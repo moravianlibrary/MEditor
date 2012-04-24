@@ -111,6 +111,8 @@ public class Constants {
 
     public static final String URL_PARAM_TOP_SPACE = "topSpace";
 
+    public static final String URL_PARAM_BASE = "base";
+
     // db
     /** Path to a file with current DB schema */
     public static final String SCHEMA_PATH = "schema.sql";
