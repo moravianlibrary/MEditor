@@ -54,6 +54,7 @@ public class NewDigitalObject
     private String noteOrIntSubtitle;
     private String partNumberOrAlto;
     private String aditionalInfoOrOcr;
+    private String base;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -97,6 +98,7 @@ public class NewDigitalObject
         this.noteOrIntSubtitle = newDigitalObject.getNoteOrIntSubtitle();
         this.partNumberOrAlto = newDigitalObject.partNumberOrAlto;
         this.aditionalInfoOrOcr = newDigitalObject.getAditionalInfoOrOcr();
+        this.base = newDigitalObject.getBase();
     }
 
     /**
@@ -114,6 +116,21 @@ public class NewDigitalObject
 
     public void setSysno(String sysno) {
         this.sysno = sysno;
+    }
+
+    /**
+     * @return the base
+     */
+    public String getBase() {
+        return base;
+    }
+
+    /**
+     * @param base
+     *        the base to set
+     */
+    public void setBase(String base) {
+        this.base = base;
     }
 
     public int getPageIndex() {
