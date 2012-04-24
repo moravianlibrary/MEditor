@@ -65,8 +65,9 @@ public class PeriodicalVolumeBuilder
         idUrn.addText(getUuid());
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
-        Element title = titleInfo.addElement(new QName("title", modsNs));
-        if (isNotNullOrEmpty(getRootTitle())) title.addText(getRootTitle());
+
+        addRootTitle(titleInfo);
+
         if (isNotNullOrEmpty(getPartNumber())) {
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());
@@ -80,6 +81,25 @@ public class PeriodicalVolumeBuilder
             dateIssued.addAttribute("qualifier", "approximate");
         }
 
+        addRootPublisher(originInfo);
+        addRootPlace(originInfo);
+        originInfo.addElement(new QName("issuance", modsNs)).addText("continuing");
+
+        addRootPhysicalDescriptionForm(mods);
+        Element locationEl = mods.addElement(new QName("location", modsNs));
+        addLocation(locationEl);
+        addRootPhysicalLocation(locationEl, false);
+        addRootRecordInfo(mods.addElement(new QName("recordInfo", modsNs)));
+
+        Element partEl = mods.addElement(new QName("part", modsNs));
+        partEl.addAttribute("type", "volume");
+        Element detailEl = partEl.addElement(new QName("detail", modsNs));
+        detailEl.addAttribute("type", "volume");
+        if (isNotNullOrEmpty(getPartNumber()))
+            detailEl.addElement(new QName("number", modsNs)).addText("volume number: " + getPartNumber());
+        if (isNotNullOrEmpty(getBundle().getMarc().getDateIssued()))
+            partEl.addElement(new QName("date", modsNs)).addText(getBundle().getMarc().getDateIssued());
+
         Element genre = mods.addElement(new QName("genre", modsNs));
         genre.addText("volume");
 
@@ -89,13 +109,8 @@ public class PeriodicalVolumeBuilder
             noteEl.addText(getNoteOrIntSubtitle());
         }
 
-        if (isNotNullOrEmpty(getRootLanguage())) {
-            Element languageEl = mods.addElement(new QName("language", modsNs));
-            Element languageTerm = languageEl.addElement(new QName("languageTerm", modsNs));
-            languageTerm.addAttribute("type", "code");
-            languageTerm.addAttribute("authority", "iso639-2b");
-            languageTerm.addText(getRootLanguage());
-        }
+        addRootLanguage(mods);
+        addIdentifierUuid(mods, getUuid());
 
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
 

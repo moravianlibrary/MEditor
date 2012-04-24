@@ -444,8 +444,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -470,8 +469,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -495,8 +493,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -520,8 +517,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -545,8 +541,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -570,8 +565,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -639,8 +633,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -708,8 +701,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -726,8 +718,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -751,8 +742,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -776,8 +766,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -801,8 +790,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -826,8 +814,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -851,8 +838,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -876,8 +862,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -901,8 +886,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -926,8 +910,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -1066,8 +1049,7 @@ public final class TabUtils {
 
         /*
          * (non-Javadoc)
-         * @see
-         * cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
+         * @see cz.mzk.editor.client.view.other.TabUtils.GetLayoutOperation
          * #execute()
          */
         @Override
@@ -1485,7 +1467,7 @@ public final class TabUtils {
                                 // values than it should be and the mistake is probably where
                                 // the values list is created
                                 itemsToAdd[i + 1].setValue(valueVector == null ? ""
-                                        : valueVector.get(i + 1) == null ? "" : valueVector.get(i + 1));
+                                        : (valueVector.get(i + 1) == null) ? "" : valueVector.get(i + 1));
                             }
                         }
                         form.setFields(itemsToAdd);
@@ -2443,6 +2425,8 @@ public final class TabUtils {
                                                 false,
                                                 values == null ? null : values.getAffiliation(),
                                                 holder.getAffiliations()));
+
+        vals = null;
         if (values != null && values.getRole() != null && values.getRole().size() > 0) {
             vals = new ArrayList<List<String>>();
             for (RoleTypeClient roleTypeClient : values.getRole()) {
@@ -3772,6 +3756,7 @@ public final class TabUtils {
         getLanguageLayout.setValues(values == null ? null : values.getLanguageOfCataloging());
         getLanguageLayout.setHolders(holder.getLanguage());
         sectionStack.addSection(getSomeStack(false, "Language of Cataloging", getLanguageLayout));
+        vals = null;
         if (values != null && values.getDescriptionStandard() != null
                 && values.getDescriptionStandard().size() > 0) {
             vals = new ArrayList<List<String>>();

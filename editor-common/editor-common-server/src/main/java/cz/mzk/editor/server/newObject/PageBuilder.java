@@ -92,6 +92,10 @@ public class PageBuilder
         detail.addAttribute("type", "pageIndex");
         number = detail.addElement(new QName("number", modsNs));
         number.addText(String.valueOf(getPageIndex()));
+
+        addLocation(mods.addElement(new QName("location", modsNs)));
+        addIdentifierUuid(mods, getUuid());
+
         appendDatastream(DATASTREAM_CONTROLGROUP.X, DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
     }
 
