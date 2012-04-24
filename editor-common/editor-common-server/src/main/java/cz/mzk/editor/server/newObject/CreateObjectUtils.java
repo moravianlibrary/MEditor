@@ -181,7 +181,7 @@ public class CreateObjectUtils {
                 }
             } else {
                 String basePath = "";
-                if (base != null && "".equals(base)) {
+                if (base != null && !"".equals(base)) {
                     basePath = base.toLowerCase() + "/";
                 }
                 imageUrl =
@@ -398,7 +398,7 @@ public class CreateObjectUtils {
             imagesDir = new File(config.getEditorHome() + '/' + ".images");
         } else {
             String basePath = "";
-            if (base != null && "".equals(base)) {
+            if (base != null && !"".equals(base)) {
                 basePath = base.toLowerCase() + "/";
             }
             imagesDir =

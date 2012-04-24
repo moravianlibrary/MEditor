@@ -1146,6 +1146,7 @@ public class CreateStructurePresenter
         }
         if (object != null) {
             object.setSysno(sysno);
+            object.setBase(base);
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
