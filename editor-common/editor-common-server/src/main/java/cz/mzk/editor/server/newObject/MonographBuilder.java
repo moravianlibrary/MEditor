@@ -161,7 +161,11 @@ public class MonographBuilder
         //addPublishment(modsDoc, marc);
         updateRecordInfo(modsDoc);
         addIdentifierUuid((Element) modsXpath.selectSingleNode(modsDoc), uuid);
-        addRootPhysicalLocation((Element) locationXpath.selectSingleNode(modsDoc), true);
+        Element locationEl = (Element) locationXpath.selectSingleNode(modsDoc);
+        addRootPhysicalLocation(locationEl != null ? locationEl
+                                        : ((Element) modsXpath.selectSingleNode(modsDoc))
+                                                .addElement(new QName("location", Namespaces.mods)),
+                                true);
     }
 
     private void addSysno(Document modsDoc, MarcSpecificMetadata marc) {
