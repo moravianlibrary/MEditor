@@ -129,6 +129,7 @@ public class CreateObjectUtils {
         }
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
 
+        builder.setBase(base);
         builder.setUuid(node.getUuid());
         builder.setDcXmlContent(dc);
         builder.setModsXmlContent(mods);

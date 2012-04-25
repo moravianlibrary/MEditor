@@ -179,7 +179,11 @@ public class PeriodicalBuilder
 
     private String alephLink(MarcSpecificMetadata marc) {
         String sysno = marc.getSysno();
-        return getAlephUrl() + "/F?func=direct&doc_number=" + sysno + "&local_base=MZK03&format=999";
+        String localBase = "";
+        if (isNotNullOrEmpty(getBase())) {
+            localBase = "&local_base=" + getBase();
+        }
+        return getAlephUrl() + "/F?func=direct&doc_number=" + sysno + localBase + "&format=999";
     }
 
     private void addPublishment(Document modsDoc, MarcSpecificMetadata marc) {
