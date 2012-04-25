@@ -55,6 +55,9 @@ public class FindMetadata {
 
     @In(4)
     private String oaiQuery;
+    
+    @In(5)
+    private String base;
 
     @Out(1)
     private ArrayList<MetadataBundle> bundle;

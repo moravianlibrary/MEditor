@@ -64,8 +64,6 @@ public class ConvertToJPEG2000Handler
             .toString());
 
     private static final Object LOCK = ConvertToJPEG2000Handler.class;
-    
-    private static final String CONVERTER_INSTANCE = "converter";
 
     /** The configuration. */
     private final EditorConfiguration configuration;
@@ -100,9 +98,12 @@ public class ConvertToJPEG2000Handler
         // parse input
         final ImageItem item = action.getItem();
         ServerUtils.checkExpiredSession(httpSessionProvider);
-//        Converter converter = Converter.getInstance();
-//        converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
-        convertToJpeg2000(item);
+        if (configuration.getAkkaOn()) {
+            Converter converter = Converter.getInstance();
+            converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
+        } else {
+            convertToJpeg2000(item);
+        }
         return new ConvertToJPEG2000Result();
     }
 

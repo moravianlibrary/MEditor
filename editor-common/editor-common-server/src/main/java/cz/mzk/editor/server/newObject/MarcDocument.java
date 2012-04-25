@@ -43,7 +43,7 @@ public class MarcDocument {
     }
 
     public String findBase() {
-        return "mzk03";//TODO: opravit
+        return findDatafieldAndSubfield("Z30", 'l');
     }
 
     public String find040a() {

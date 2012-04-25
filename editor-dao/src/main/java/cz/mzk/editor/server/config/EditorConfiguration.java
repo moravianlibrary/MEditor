@@ -251,6 +251,9 @@ public abstract class EditorConfiguration {
 
         /** IP addresses of nodes where akka microkernel is running */
         public static final String AKKA_CONVERT_WORKERS = "akkaConvertWorkers";
+        
+        /** On/Off akka microkernel (if off, the old fashioned way of converting is used)*/
+        public static final String AKKA_ON = "akkaOn";
 
         public static final String CREATE_INGEST_INFO_XML_FILE = "createIngestInfoXmlFile";
     }
@@ -675,4 +678,10 @@ public abstract class EditorConfiguration {
     public String[] getAkkaConvertWorkers() {
         return getConfiguration().getStringArray(ServerConstants.AKKA_CONVERT_WORKERS);
     }
+    
+    public boolean getAkkaOn() {
+        return getConfiguration().getBoolean(ServerConstants.AKKA_ON, false);
+    }
+    
+    
 }
