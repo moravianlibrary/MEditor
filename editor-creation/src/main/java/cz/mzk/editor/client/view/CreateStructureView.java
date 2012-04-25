@@ -842,7 +842,7 @@ public class CreateStructureView
 
     private void create() {
 
-        universalWindow = new UniversalWindow(160, 350, lang.publishName(), eventBus, 20);
+        universalWindow = new UniversalWindow(200, 350, lang.publishName(), eventBus, 20);
 
         HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
         label.setMargin(5);
@@ -850,10 +850,28 @@ public class CreateStructureView
         final DynamicForm form = new DynamicForm();
         form.setMargin(0);
         form.setWidth(100);
-        form.setHeight(20);
+        form.setHeight(30);
         form.setExtraSpace(7);
 
-        final CheckboxItem makePublic = new CheckboxItem("makePublic", lang.makePublic());
+        HTMLFlow setRightsFlow = new HTMLFlow(lang.setRights());
+
+        final CheckboxItem makePublic = new CheckboxItem("makePublic", "public");
+        final CheckboxItem makePrivate = new CheckboxItem("makePrivate", "private");
+        makePrivate.setValue(true);
+        makePublic.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                makePrivate.setValue(!makePublic.getValueAsBoolean());
+            }
+        });
+        makePrivate.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                makePublic.setValue(!makePrivate.getValueAsBoolean());
+            }
+        });
         Button publish = new Button();
         publish.setTitle(lang.ok());
         publish.addClickHandler(new ClickHandler() {
@@ -889,8 +907,10 @@ public class CreateStructureView
         hLayout.addMember(publish);
         hLayout.addMember(cancel);
         hLayout.setMargin(5);
-        form.setFields(makePublic);
+        form.setFields(makePublic, makePrivate);
+        universalWindow.setEdgeOffset(20);
         universalWindow.addItem(label);
+        universalWindow.addItem(setRightsFlow);
         universalWindow.addItem(form);
         universalWindow.addItem(hLayout);
 
