@@ -116,7 +116,7 @@ public class PeriodicalBuilder
         Element typeEl = dcRootEl.addElement("dc:type");
         typeEl.addText("model:" + model.getValue());
         Element rightsEl = dcRootEl.addElement("dc:rights");
-        rightsEl.addText("policy:" + Policy.PUBLIC.toString().toLowerCase());
+        rightsEl.addText("policy:" + getPolicy().toString().toLowerCase());
         updateDcLanguages(dcDoc);
     }
 
