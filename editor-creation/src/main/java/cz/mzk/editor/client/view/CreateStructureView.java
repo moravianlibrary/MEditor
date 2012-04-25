@@ -1600,7 +1600,6 @@ public class CreateStructureView
                 new ScanRecord(originalRecord.getAttribute(Constants.ATTR_NAME),
                                originalRecord.getAttribute(Constants.ATTR_MODEL),
                                originalRecord.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
-                               originalRecord.getAttribute(Constants.ATTR_PATH),
                                originalRecord.getAttribute(Constants.ATTR_TYPE));
         newScanRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
                                    originalRecord.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR));

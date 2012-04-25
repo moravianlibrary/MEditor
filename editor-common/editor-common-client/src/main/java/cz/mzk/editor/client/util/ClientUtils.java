@@ -572,7 +572,6 @@ public class ClientUtils {
                 new ScanRecord(node.getPropName(),
                                node.getPropModelId(),
                                node.getPropPictureOrUuid(),
-                               node.getPropDateOrIntPartName(),
                                node.getPropType());
         rec.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, node.getPropAditionalInfoOrOcr());
         return rec;
