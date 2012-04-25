@@ -90,6 +90,8 @@ public abstract class FoxmlBuilder {
     private String partNumber;
     private String aditionalInfo;
 
+    private String base;
+
     @Inject
     private EditorConfiguration configuration;
 
@@ -470,6 +472,21 @@ public abstract class FoxmlBuilder {
      */
     public String getAditionalInfo() {
         return aditionalInfo;
+    }
+
+    /**
+     * @return the base
+     */
+    public String getBase() {
+        return base;
+    }
+
+    /**
+     * @param base
+     *        the base to set
+     */
+    public void setBase(String base) {
+        this.base = base;
     }
 
     /**
