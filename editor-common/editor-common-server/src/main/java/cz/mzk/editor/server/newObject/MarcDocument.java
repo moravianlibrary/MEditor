@@ -42,10 +42,6 @@ public class MarcDocument {
         return findValue(xpath);
     }
 
-    public String findBase() {
-        return findDatafieldAndSubfield("Z30", 'l');
-    }
-
     public String find040a() {
         return findDatafieldAndSubfield("040", 'a');
     }

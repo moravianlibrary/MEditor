@@ -206,11 +206,11 @@ public class CreateObjectUtils {
             if (!internal) {
                 // TODO: StringBuffer
                 boolean copySuccess =
-                        internal ? true : copyFile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
+                        internal ? true : copyFile(config.getImagesPath()
                                                            + node.getPath() + Constants.JPEG_2000_EXTENSION,
                                                    newFilePath + Constants.JPEG_2000_EXTENSION);
                 if (copySuccess && LOGGER.isInfoEnabled()) {
-                    LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
+                    LOGGER.info("image " + config.getImagesPath() + node.getPath()
                             + "." + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
                             + Constants.JPEG_2000_EXTENSION);
                 }
