@@ -93,7 +93,9 @@ public class GetLockInformationHandler
             } else {
                 String[] timeToExpiration = locksDAO.getTimeToExpirationLock(uuid);
                 if (usersId == lockOwnerId) {
-                    return new GetLockInformationResult(new LockInfo("", null, timeToExpiration));
+                    return new GetLockInformationResult(new LockInfo("",
+                                                                     locksDAO.getDescription(uuid),
+                                                                     timeToExpiration));
 
                 } else {
                     return new GetLockInformationResult(new LockInfo(userDAO.getName(String

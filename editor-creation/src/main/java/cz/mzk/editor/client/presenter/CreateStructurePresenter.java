@@ -541,7 +541,6 @@ public class CreateStructurePresenter
                                 new ScanRecord(String.valueOf(i + 1),
                                                model,
                                                itemList.get(i).getIdentifier(),
-                                               itemList.get(i).getJpgFsPath(),
                                                Constants.PAGE_TYPES.NP.toString());
                     }
 
@@ -601,7 +600,6 @@ public class CreateStructurePresenter
                                                           + rec.getAttributeAsString(Constants.ATTR_TYPE)
                                                           + "]");
                             event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
-                            event.getRecord().setAttribute(Constants.ATTR_PATH, "");
                             event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
                         }
                     }

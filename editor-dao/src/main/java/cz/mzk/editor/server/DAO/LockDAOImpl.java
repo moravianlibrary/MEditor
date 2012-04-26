@@ -92,17 +92,15 @@ public class LockDAOImpl
             if (id != null) {
                 updateSt = getConnection().prepareStatement(INSERT_NEW_DIGITAL_OBJECTS_LOCK);
                 updateSt.setString(1, uuid);
-                updateSt.setString(2, description);
+                updateSt.setString(2, description != null ? description : "");
                 updateSt.setLong(3, id);
             } else {
                 updateSt = getConnection().prepareStatement(UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION);
-                updateSt.setString(1, description);
+                updateSt.setString(1, description != null ? description : "");
                 updateSt.setString(2, uuid);
             }
         } catch (SQLException e) {
             LOGGER.error("Could not get insert statement", e);
-        } finally {
-            closeConnection();
         }
 
         int modified = 0;
@@ -138,6 +136,12 @@ public class LockDAOImpl
                         + FORMATTER.format(new java.util.Date())
                         + " because the lock was older than one week");
             }
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement: " + statement, e);
+        } finally {
+            closeConnection();
+        }
+        try {
             statement = getConnection().prepareStatement(SELECT_LOCK_USER_ID);
             statement.setString(1, uuid);
             ResultSet rs = statement.executeQuery();
@@ -173,8 +177,6 @@ public class LockDAOImpl
             deleteSt.setString(1, uuid);
         } catch (SQLException e) {
             LOGGER.error("Could not get delete statement", e);
-        } finally {
-            closeConnection();
         }
 
         int modified;

@@ -216,9 +216,6 @@ public class Constants {
     /** The Constant ATTR_BARCODE. */
     public static final String ATTR_BARCODE = "barcode";
 
-    /** The Constant ATTR_PATH. */
-    public static final String ATTR_PATH = "path";
-
     /** The Constant ATTR_ALTO_PATH. */
     public static final String ATTR_ALTO_PATH = "altoPath";
 
