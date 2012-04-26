@@ -348,6 +348,7 @@ public class InputQueueTree
 
             @Override
             public void execute(DSResponse response, Object rawData, DSRequest request) {
+                inputQueueTree.redraw();
                 inputQueueTree.openSubfolders(openedNodes, null, selectedRecord);
             }
         });
