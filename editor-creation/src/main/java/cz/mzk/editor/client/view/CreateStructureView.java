@@ -56,10 +56,8 @@ import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.util.ValueCallback;
-import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Dialog;
-import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
@@ -79,8 +77,6 @@ import com.smartgwt.client.widgets.events.DragStopEvent;
 import com.smartgwt.client.widgets.events.DragStopHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
@@ -120,12 +116,11 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.DCTab;
 import cz.mzk.editor.client.view.other.EditorDragMoveHandler;
 import cz.mzk.editor.client.view.other.EditorTabSet;
-import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.other.ModsTab;
 import cz.mzk.editor.client.view.other.PageNumberingManager;
 import cz.mzk.editor.client.view.other.ScanRecord;
+import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
-import cz.mzk.editor.client.view.window.UniversalWindow;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 /**
@@ -201,8 +196,6 @@ public class CreateStructureView
     private int imageThumbnailHeight = Constants.IMAGE_THUMBNAIL_HEIGHT;
 
     private int imageThumbnailWidth = Constants.IMAGE_THUMBNAIL_WIDTH;
-
-    private UniversalWindow universalWindow = null;
 
     private PageNumberingManager numbering;
 
@@ -831,92 +824,19 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                create();
+                new CreateWindow(lang, topTabSet, eventBus) {
+
+                    @Override
+                    protected void createAction(DublinCore dc, ModsTypeClient mods, Boolean makePublic) {
+                        getUiHandlers().createObjects(dc, mods, makePublic);
+                    }
+                };
             }
         });
         toolStrip.addButton(createButton);
 
         pageTypeItem.disable();
         return toolStrip;
-    }
-
-    private void create() {
-
-        universalWindow = new UniversalWindow(200, 350, lang.publishName(), eventBus, 20);
-
-        HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
-        label.setMargin(5);
-        label.setExtraSpace(10);
-        final DynamicForm form = new DynamicForm();
-        form.setMargin(0);
-        form.setWidth(100);
-        form.setHeight(30);
-        form.setExtraSpace(7);
-
-        HTMLFlow setRightsFlow = new HTMLFlow(lang.setRights());
-
-        final CheckboxItem makePublic = new CheckboxItem("makePublic", "public");
-        final CheckboxItem makePrivate = new CheckboxItem("makePrivate", "private");
-        makePrivate.setValue(true);
-        makePublic.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                makePrivate.setValue(!makePublic.getValueAsBoolean());
-            }
-        });
-        makePrivate.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                makePublic.setValue(!makePrivate.getValueAsBoolean());
-            }
-        });
-        Button publish = new Button();
-        publish.setTitle(lang.ok());
-        publish.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event2) {
-
-                DublinCore dc = null;
-                ModsTypeClient mods = null;
-                if (topTabSet != null) {
-                    dc = topTabSet.getDcTab().getDc();
-                    if (topTabSet.getModsTab() != null) {
-                        mods = ((ModsTab) topTabSet.getModsTab()).getMods();
-                    }
-                }
-                getUiHandlers().createObjects(dc, mods, makePublic.getValueAsBoolean());
-                universalWindow.hide();
-                universalWindow = null;
-            }
-        });
-        Button cancel = new Button();
-        cancel.setTitle(lang.cancel());
-        cancel.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event2) {
-                universalWindow.hide();
-                universalWindow = null;
-            }
-        });
-        HLayout hLayout = new HLayout();
-        hLayout.setMembersMargin(10);
-        hLayout.addMember(publish);
-        hLayout.addMember(cancel);
-        hLayout.setMargin(5);
-        form.setFields(makePublic, makePrivate);
-        universalWindow.setEdgeOffset(20);
-        universalWindow.addItem(label);
-        universalWindow.addItem(setRightsFlow);
-        universalWindow.addItem(form);
-        universalWindow.addItem(hLayout);
-
-        universalWindow.centerInPage();
-        universalWindow.show();
-        publish.focus();
     }
 
     private ToolStripMenuButton getToolStripMenuButton() {
