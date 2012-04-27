@@ -76,21 +76,21 @@ public class DateHolder
                 isNull = false;
             }
             dateTypeClient.setPoint(getAttributeForm().getValueAsString(ModsConstants.POINT));
-            if (!"".equals(dateTypeClient.getPoint().trim())) {
+            if (dateTypeClient.getPoint() != null && !"".equals(dateTypeClient.getPoint().trim())) {
                 isNull = false;
             }
             dateTypeClient.setQualifier(getAttributeForm().getValueAsString(ModsConstants.QUALIFIER));
-            if (!"".equals(dateTypeClient.getQualifier().trim())) {
+            if (dateTypeClient.getQualifier() != null && !"".equals(dateTypeClient.getQualifier().trim())) {
                 isNull = false;
             }
             dateTypeClient.setValue(getAttributeForm().getValueAsString(dateName));
-            if (!"".equals(dateTypeClient.getValue().trim())) {
+            if (dateTypeClient.getValue() != null && !"".equals(dateTypeClient.getValue().trim())) {
                 isNull = false;
             }
             if (otherDate) {
                 ((DateOtherTypeClient) dateTypeClient).setType(getAttributeForm()
                         .getValueAsString(ModsConstants.TYPE));
-                if (!"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
+                if (((DateOtherTypeClient) dateTypeClient).getType() != null && !"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
                     isNull = false;
                 }
             }
