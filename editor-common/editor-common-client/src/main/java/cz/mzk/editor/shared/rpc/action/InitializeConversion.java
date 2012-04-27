@@ -1,11 +1,8 @@
-package cz.mzk.editor.server.convert;
-import java.util.UUID;
-
-import akka.actor.UntypedActor;
-
-
 /*
  * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
  * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
@@ -28,24 +25,23 @@ import akka.actor.UntypedActor;
  * 
  */
 
-/**
- * @author Jiri Kremser
- * @version 23.4.2012
- */
-public class Master extends UntypedActor {
+package cz.mzk.editor.shared.rpc.action;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onReceive(Object message) throws Exception {
-        Converter convertor = Converter.getInstance();
-        if (message instanceof Ok) {
-            convertor.finishTask(((Ok)message).uuid());
-        } else if (message instanceof NotOk) {
-            convertor.finishWithError(((NotOk)message).uuid());
-        }
-        if (convertor.allFinished()) {
-        }
-    }
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ScanInputQueue.
+ */
+@GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
+public class InitializeConversion {
+
+    @In(1)
+    private boolean start;
+    
+    @Out(1)
+    private boolean success;
 }

@@ -118,6 +118,8 @@ import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
+import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
+import cz.mzk.editor.shared.rpc.action.InitializeConversionResult;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
@@ -446,16 +448,16 @@ public class CreateStructurePresenter
                 getEventBus().fireEvent(new RefreshTreeEvent(Constants.NAME_OF_TREE.INPUT_QUEUE));
 
                 ServerActionResult serverActionResult = result.getServerActionResult();
-                if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK) {
-                    convert(result);
+                if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK && result != null && result.getToAdd() != null && !result.getToAdd().isEmpty()) {
+                    initializeConversion(result);
                 } else {
                     if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
                         SC.ask(lang.wrongFileName() + serverActionResult.getMessage(), new BooleanCallback() {
 
                             @Override
                             public void execute(Boolean value) {
-                                if (value != null && value) {
-                                    convert(result);
+                                if (value != null && value && result != null && result.getToAdd() != null && !result.getToAdd().isEmpty()) {
+                                    initializeConversion(result);
                                 }
                             }
                         });
@@ -463,6 +465,56 @@ public class CreateStructurePresenter
                 }
 
             }
+            
+            
+            private void initializeConversion(final ScanFolderResult result) {
+                final DispatchCallback<InitializeConversionResult> callback =
+                        new DispatchCallback<InitializeConversionResult>() {
+
+                            @Override
+                            public void callback(InitializeConversionResult initResult) {
+                               if (initResult != null && initResult.isSuccess()) {
+                                   convert(result);
+                               } else {
+                                   SC.ask("Someone else is now running the conversion task. Please wait a second. Do you want to try it again?", new BooleanCallback() {
+
+                                       @Override
+                                       public void execute(Boolean value) {
+                                           if (value != null && value) {
+                                               initializeConversion(result);
+                                           }
+                                       }
+                                   });
+                               }
+                            }
+
+                            @Override
+                            public void callbackError(Throwable t) {
+                               SC.say("Someone else is now running the conversion task.");
+                            }
+                        };
+                dispatcher.execute(new InitializeConversionAction(true), callback);
+            }
+            
+            private void endConversion() {
+                final DispatchCallback<InitializeConversionResult> callback =
+                        new DispatchCallback<InitializeConversionResult>() {
+
+                            @Override
+                            public void callback(InitializeConversionResult result) {
+                                if (result != null && !result.isSuccess()) {
+                                    SC.warn("Some images were not converted.");
+                                }
+                            }
+
+                            @Override
+                            public void callbackError(Throwable t) {
+                               SC.say("Someone else is now running the conversion task.");
+                            }
+                        };
+                dispatcher.execute(new InitializeConversionAction(false), callback);
+            }
+            
 
             private void convert(ScanFolderResult result) {
                 final List<ImageItem> itemList = result == null ? null : result.getItems();
@@ -650,6 +702,7 @@ public class CreateStructurePresenter
                                 if (done >= total && !isDone) {
                                     synchronized (LOCK) {
                                         if (done >= total && !isDone) {
+                                            endConversion();
                                             doTheRest(itemList);
                                             isDone = true;
                                         }
@@ -663,6 +716,7 @@ public class CreateStructurePresenter
                                 if (!isDone) {
                                     synchronized (LOCK) {
                                         if (!isDone) {
+                                            endConversion();
                                             doTheRest(itemList);
                                             isDone = true;
                                         }

@@ -52,12 +52,9 @@ public class Converter {
     private ActorRef router;
     private ActorSystem system;
     private ActorRef master;
-    private Callable<?> onFinishCallback;
-    @Inject
-    private EditorConfiguration config;
     private Map<String, ConvertTask> taskPool = new ConcurrentHashMap<String, ConvertTask>();
+    private Map<String, ConvertTask> finishedWithError = new ConcurrentHashMap<String, ConvertTask>();
     private volatile boolean someoneIsIn = false;
-    private volatile int someoneIsWaiting = 0;
 
     private static Converter instance = null;
 
@@ -72,22 +69,9 @@ public class Converter {
         return instance;
     }
 
-    public void init(Callable<?> onFinishCallback, String[] nodes) {
-        synchronized (this) {
-            while (someoneIsIn) {
-                try {
-                    someoneIsWaiting++;
-                    wait();
-                    someoneIsWaiting--;
-                } catch (InterruptedException e) {
-                }
-            }
-            someoneIsIn = true;
-        }
-        this.onFinishCallback = onFinishCallback;
+    public synchronized void start(String[] ips) {
         system = ActorSystem.create("Server");
         List<ActorRef> routees = new ArrayList<ActorRef>();
-        String[] ips = nodes == null ? config.getAkkaConvertWorkers() : nodes;
         for (String ip : ips) {
             routees.add(system.actorFor("akka://Workers@" + ip + "/user/worker"));
         }
@@ -97,9 +81,19 @@ public class Converter {
         }
         router = system.actorOf(new Props(Worker.class).withRouter(RoundRobinRouter.create(routees)));
         master = system.actorOf(new Props(Master.class));
+        someoneIsIn = true;
     }
 
-    public void convert(String input, String output) {
+    public synchronized boolean isRunning() {
+        return someoneIsIn;
+    }
+
+    public synchronized void stop() {
+        system.shutdown();
+        someoneIsIn = false;
+    }
+
+    public boolean convert(String input, String output) {
         if (system == null || system.isTerminated() || router == null || master == null) {
             throw new IllegalStateException("run init method first");
         }
@@ -107,36 +101,34 @@ public class Converter {
         ConvertTask task = new ConvertTask(uuid, input, output);
         router.tell(task, master);
         taskPool.put(uuid, task);
+        synchronized (task) {
+            try {
+                task.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return finishedWithError.containsKey(uuid);
     }
 
     public synchronized void finishTask(String uuid) {
-        taskPool.remove(uuid);
+        ConvertTask task = taskPool.remove(uuid);
+        synchronized (task) {
+            task.notifyAll();
+        }
     }
 
     public synchronized boolean allFinished() {
         return taskPool.isEmpty();
     }
 
-    public synchronized void finish() {
-        try {
-            onFinishCallback.call();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        someoneIsIn = false;
-        notifyAll();
-        try {
-            wait(50);
-        } catch (InterruptedException e) {
-        }
-        if (someoneIsWaiting == 0) system.shutdown();
-    }
-
     public synchronized void finishWithError(String uuid) {
-        ConvertTask task = taskPool.get(uuid);
+        ConvertTask task = taskPool.remove(uuid);
+        finishedWithError.put(uuid, task);
         // do st with the task
-        taskPool.remove(uuid);
+        synchronized (task) {
+            task.notifyAll();
+        }
     }
 
     public static void main(String... args) {
@@ -144,15 +136,6 @@ public class Converter {
         String inputPrefix = "/home/meditor/input/monograph/test/";
         String outputPrefix = "/home/meditor/imageserver/unknown/test/";
         DecimalFormat nf = new DecimalFormat("0000");
-        convertor.init(new Callable<Integer>() {
-
-            @Override
-            public Integer call() throws Exception {
-                System.out.println("done");
-
-                return 42;
-            }
-        }, args);
         for (int i = 1; i <= 10; i++) {
             String input = inputPrefix + nf.format(i) + ".jpg";
             String output = outputPrefix + i + ".jp2";

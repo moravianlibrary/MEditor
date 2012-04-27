@@ -100,7 +100,10 @@ public class ConvertToJPEG2000Handler
         ServerUtils.checkExpiredSession(httpSessionProvider);
         if (configuration.getAkkaOn()) {
             Converter converter = Converter.getInstance();
-            converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
+            boolean success = converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
+            if (!success) {
+                convertToJpeg2000(item);
+            }
         } else {
             convertToJpeg2000(item);
         }
