@@ -134,6 +134,7 @@
 					<debugSuspend>false</debugSuspend>
 					<style>OBF</style>
 					<strict>true</strict>
+					<draftCompile>true</draftCompile>
 				</configuration>
 				<executions>
 					<execution>
@@ -227,5 +228,61 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<build>
+				<plugins>
+					<!-- Compile -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+					</plugin>
+					<!-- Compile GWT modules -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<runTarget>${coreGuiRunTarget}</runTarget>
+							<localWorkers>${gwt-plugin.localWorkers}</localWorkers>
+							<draftCompile>${gwt.draftCompile}</draftCompile>
+							<soyc>${gwt.soyc}</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<style>DETAILED</style>
+							<strict>true</strict>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.MEditorDev</module>
+										<module>cz.mzk.editor.RequestForAddingDev</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.MEditor</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
