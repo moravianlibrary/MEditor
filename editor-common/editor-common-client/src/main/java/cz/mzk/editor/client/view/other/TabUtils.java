@@ -1399,7 +1399,9 @@ public final class TabUtils {
             public void onClick(ClickEvent event) {
                 final DynamicForm form = new DynamicForm();
                 FormItem item = newItem(mainAttr);
-                item.setWidth(550);
+                if (attributes != null && attributes.length > 0) {
+                    item.setWidth(550);
+                }
                 if (isAttribPresent) {
                     FormItem[] items = getAttributes(false, attributes).getFields();
                     FormItem[] itemsToAdd = new FormItem[items.length + 1];
