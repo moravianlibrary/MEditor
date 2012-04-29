@@ -27,9 +27,7 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.IOException;
-
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
@@ -41,16 +39,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.CreateObjectException;
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.convert.Converter;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
-import cz.mzk.editor.shared.rpc.ImageItem;
-import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
-import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionResult;
 
@@ -64,8 +54,10 @@ public class InitializeConversionHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(InitializeConversionHandler.class.getPackage()
             .toString());
-
-    private static final Object LOCK = InitializeConversionHandler.class;
+    
+    private static final String CONVERSION_START_TIME = "conversion.start";
+    
+    private static final Long MAX_CONVERSION_TIME = 1000L * 60 * 20;
 
     /** The configuration. */
     private final EditorConfiguration configuration;
@@ -95,28 +87,53 @@ public class InitializeConversionHandler
      */
     @Override
     public InitializeConversionResult execute(final InitializeConversionAction action,
-                                           final ExecutionContext context) throws ActionException {
+                                           final ExecutionContext exContext) throws ActionException {
         // parse input
         final boolean start = action.isStart();
         Converter converter = Converter.getInstance();
         if (!configuration.getAkkaOn()) {
             return new InitializeConversionResult(true);
         }
+        HttpSession session = httpSessionProvider.get();
+        ServletContext context = session.getServletContext();
+        Long startTime = (Long)context.getAttribute(CONVERSION_START_TIME);
+        boolean running = converter.isRunning() && startTime != null;
+        boolean expired = startTime == null ? false : System.currentTimeMillis() - startTime > MAX_CONVERSION_TIME;
+        
         if (start) {
-            if (converter.isRunning()) {
+            if (running && !expired) {
                 return new InitializeConversionResult(false);
+            } else if (running && expired) {
+                converter.stop();
+                LOGGER.info("Conversion stop (expired)");
+                converter.start(configuration.getAkkaConvertWorkers());
+                putConversionToken(context);
+                LOGGER.info("Conversion start");
+                return new InitializeConversionResult(true);
             } else {
                 converter.start(configuration.getAkkaConvertWorkers());
+                putConversionToken(context);
+                LOGGER.info("Conversion start");
                 return new InitializeConversionResult(true);
             }
         } else {
             if (converter.isRunning()) {
                 converter.stop();
+                removeConversionToken(context);
+                LOGGER.info("Conversion stop");
                 return new InitializeConversionResult(true);
             } else {
                 return new InitializeConversionResult(false);
             }
         }
+    }
+    
+    private void putConversionToken(ServletContext context) {
+        context.setAttribute(CONVERSION_START_TIME, System.currentTimeMillis());
+    }
+    
+    private void removeConversionToken(ServletContext context) {
+        context.setAttribute(CONVERSION_START_TIME, null);
     }
 
     /*
