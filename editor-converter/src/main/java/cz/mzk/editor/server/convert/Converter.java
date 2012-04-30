@@ -55,6 +55,7 @@ public class Converter {
     private Map<String, ConvertTask> taskPool = new ConcurrentHashMap<String, ConvertTask>();
     private Map<String, ConvertTask> finishedWithError = new ConcurrentHashMap<String, ConvertTask>();
     private volatile boolean someoneIsIn = false;
+    private static int MAX_CONVERSION_TIME = 1000 * 15;
 
     private static Converter instance = null;
 
@@ -103,7 +104,7 @@ public class Converter {
         taskPool.put(uuid, task);
         synchronized (task) {
             try {
-                task.wait();
+                task.wait(MAX_CONVERSION_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
