@@ -34,8 +34,6 @@ import java.io.IOException;
 
 import java.util.Properties;
 
-import com.google.inject.Singleton;
-
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -50,7 +48,6 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 /**
  * The Class EditorConfigurationImpl.
  */
-@Singleton
 public class EditorConfigurationImpl
         extends EditorConfiguration {
 
@@ -127,8 +124,9 @@ public class EditorConfigurationImpl
         constconf.addConfiguration(file);
         constconf.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
         this.configuration = constconf;
-        
-        String hostname = configuration.getString(EditorClientConfiguration.Constants.HOSTNAME, "editor.mzk.cz");
+
+        String hostname =
+                configuration.getString(EditorClientConfiguration.Constants.HOSTNAME, "editor.mzk.cz");
         if (hostname.contains("://")) {
             hostname = hostname.substring(hostname.indexOf("://") + "://".length());
         }
@@ -140,14 +138,13 @@ public class EditorConfigurationImpl
                 throw new RuntimeException("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
             }
         }
-        constconf.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION + hostname + File.separator);
+        constconf.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION
+                + hostname + File.separator);
     }
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.config.EditorConfiguration#getConfiguration
-     * ()
+     * @see cz.mzk.editor.server.config.EditorConfiguration#getConfiguration ()
      */
     @Override
     public Configuration getConfiguration() {
@@ -156,8 +153,7 @@ public class EditorConfigurationImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.config.EditorConfiguration#setConfiguration
+     * @see cz.mzk.editor.server.config.EditorConfiguration#setConfiguration
      * (org.apache.commons.configuration.Configuration)
      */
     @Override

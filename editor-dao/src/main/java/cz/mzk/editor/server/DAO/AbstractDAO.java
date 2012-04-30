@@ -78,7 +78,7 @@ public abstract class AbstractDAO {
      */
     private void initConnection() throws DatabaseException {
         if (poolable != POOLABLE_NO && pool == null) {
-            if (conf.isLocalhost()) {
+            if (conf != null && conf.isLocalhost()) {
                 poolable = POOLABLE_NO;
                 initConnection();
                 return;

@@ -283,8 +283,8 @@
 							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
 							<hostedWebapp>target/hostedWar</hostedWebapp>
 							<debugSuspend>false</debugSuspend>
-							<style>OBF</style>
-							<!--<style>DETAILED</style> -->
+							<!--<style>OBF</style>-->
+							<style>DETAILED</style> 
 							<strict>true</strict>
 						</configuration>
 						<executions>

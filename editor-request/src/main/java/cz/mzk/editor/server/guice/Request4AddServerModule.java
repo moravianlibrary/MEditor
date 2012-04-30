@@ -27,25 +27,27 @@
 
 package cz.mzk.editor.server.guice;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
+import com.gwtplatform.dispatch.server.guice.HandlerModule;
+
+import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class MyGuiceServletConfig.
+ * Module which binds the handlers and configurations.
  */
-public class MyGuiceServletConfig
-        extends GuiceServletContextListener {
+public class Request4AddServerModule
+        extends HandlerModule {
 
     /*
      * (non-Javadoc)
-     * @see com.google.inject.servlet.GuiceServletContextListener#getInjector()
+     * @see
+     * com.gwtplatform.dispatch.server.guice.HandlerModule#configureHandlers()
      */
     @Override
-    protected Injector getInjector() {
-        return Guice.createInjector(new ServerModule(),
-                                    new DispatchServletModule(),
-                                    new Request4AddServerModule());
+    protected void configureHandlers() {
+
+        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class);
+
     }
 }

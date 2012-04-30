@@ -3,7 +3,7 @@
 
 <module rename-to='request4Adding'>
 	<entry-point class="cz.mzk.editor.request4Adding.client.RequestForAdding" />
-	s
+	
 
 	<!-- Pure GWT -->
 	<inherits name='com.google.gwt.user.User' />
@@ -55,7 +55,6 @@
 		console -->
 	<!-- <set-property name="log_DivLogger" value="DISABLED" /> -->
 
-	<source path="request4Adding" />
 	<entry-point class="cz.mzk.editor.request4Adding.client.RequestForAdding" />
 
 	<!-- Specify the paths for translatable code -->

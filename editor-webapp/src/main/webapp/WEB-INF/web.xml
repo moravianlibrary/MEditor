@@ -49,7 +49,7 @@
 
 	<servlet-mapping>
 		<servlet-name>request4adding</servlet-name>
-		<url-pattern>/request/ask</url-pattern>
+		<url-pattern>/request4Adding/ask</url-pattern>
 	</servlet-mapping>
 
 

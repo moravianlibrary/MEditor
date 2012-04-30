@@ -199,7 +199,8 @@ public class AuthenticationServlet
                 default:
                     session.setAttribute(HttpCookies.UNKNOWN_ID_KEY, identifier);
                     session.setAttribute(HttpCookies.NAME_KEY, name);
-                    URLS.redirect(resp, root + URLS.INFO_PAGE);
+                    URLS.redirect(resp, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?"))
+                            + URLS.INFO_PAGE + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
                     break;
             }
         } else {
