@@ -69,6 +69,7 @@ public class DateHolder
         DateTypeClient dateTypeClient = otherDate ? new DateOtherTypeClient() : new DateTypeClient();
         boolean isNull = true;
         if (getAttributeForm() != null) {
+            getAttributeForm().redraw();
             dateTypeClient.setEncoding(getAttributeForm().getValueAsString(ModsConstants.ENCODING));
             String val = getAttributeForm().getValueAsString(ModsConstants.KEY_DATE);
             if (val != null && ClientUtils.toBoolean(val)) {
@@ -83,6 +84,7 @@ public class DateHolder
             if (dateTypeClient.getQualifier() != null && !"".equals(dateTypeClient.getQualifier().trim())) {
                 isNull = false;
             }
+
             dateTypeClient.setValue(getAttributeForm().getValueAsString(dateName));
             if (dateTypeClient.getValue() != null && !"".equals(dateTypeClient.getValue().trim())) {
                 isNull = false;
@@ -90,7 +92,8 @@ public class DateHolder
             if (otherDate) {
                 ((DateOtherTypeClient) dateTypeClient).setType(getAttributeForm()
                         .getValueAsString(ModsConstants.TYPE));
-                if (((DateOtherTypeClient) dateTypeClient).getType() != null && !"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
+                if (((DateOtherTypeClient) dateTypeClient).getType() != null
+                        && !"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
                     isNull = false;
                 }
             }
@@ -112,9 +115,7 @@ public class DateHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-     * ()
+     * @see cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValue ()
      */
     @Override
     public String getValue() {
@@ -123,9 +124,7 @@ public class DateHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-     * ()
+     * @see cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValues ()
      */
     @Override
     public List<String> getValues() {
