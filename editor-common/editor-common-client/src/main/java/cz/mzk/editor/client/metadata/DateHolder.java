@@ -84,8 +84,8 @@ public class DateHolder
             if (dateTypeClient.getQualifier() != null && !"".equals(dateTypeClient.getQualifier().trim())) {
                 isNull = false;
             }
-
-            dateTypeClient.setValue(getAttributeForm().getValueAsString(dateName));
+            dateTypeClient.setValue(getAttributeForm().getField(dateName).getDisplayValue()
+                    .replaceAll("/", "."));
             if (dateTypeClient.getValue() != null && !"".equals(dateTypeClient.getValue().trim())) {
                 isNull = false;
             }

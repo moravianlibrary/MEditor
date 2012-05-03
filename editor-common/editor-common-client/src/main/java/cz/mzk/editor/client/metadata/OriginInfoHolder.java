@@ -165,9 +165,7 @@ public class OriginInfoHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-     * ()
+     * @see cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValue ()
      */
     @Override
     public String getValue() {
@@ -176,9 +174,7 @@ public class OriginInfoHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-     * ()
+     * @see cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValues ()
      */
     @Override
     public List<String> getValues() {
@@ -324,5 +320,4 @@ public class OriginInfoHolder
         }
         return isNull ? null : dates;
     }
-
 }
