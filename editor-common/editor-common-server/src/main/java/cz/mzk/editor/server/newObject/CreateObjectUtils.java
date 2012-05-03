@@ -50,7 +50,6 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -206,12 +205,11 @@ public class CreateObjectUtils {
             if (!internal) {
                 // TODO: StringBuffer
                 boolean copySuccess =
-                        internal ? true : copyFile(config.getImagesPath()
-                                                           + node.getPath() + Constants.JPEG_2000_EXTENSION,
-                                                   newFilePath + Constants.JPEG_2000_EXTENSION);
+                        internal ? true : copyFile(config.getImagesPath() + node.getPath()
+                                + Constants.JPEG_2000_EXTENSION, newFilePath + Constants.JPEG_2000_EXTENSION);
                 if (copySuccess && LOGGER.isInfoEnabled()) {
-                    LOGGER.info("image " + config.getImagesPath() + node.getPath()
-                            + "." + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
+                    LOGGER.info("image " + config.getImagesPath() + node.getPath() + "."
+                            + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
                             + Constants.JPEG_2000_EXTENSION);
                 }
             }
