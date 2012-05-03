@@ -456,9 +456,15 @@ public class CreateStructurePresenter
                 getEventBus().fireEvent(new RefreshTreeEvent(Constants.NAME_OF_TREE.INPUT_QUEUE));
 
                 ServerActionResult serverActionResult = result.getServerActionResult();
-                if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK
-                        && result != null && result.getToAdd() != null && !result.getToAdd().isEmpty()) {
-                    initializeConversion(result);
+                if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK) {
+                    if (result != null && result.getToAdd() != null && !result.getToAdd().isEmpty()) {
+                        initializeConversion(result);
+                    } else if (result != null && result.getItems() != null && !result.getItems().isEmpty()) {
+                        doTheRest(result.getItems());
+                    } else {
+                        EditorSC.operationFailed(lang, "");
+                    }
+
                 } else {
                     if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
                         SC.ask(lang.wrongFileName() + serverActionResult.getMessage(), new BooleanCallback() {
