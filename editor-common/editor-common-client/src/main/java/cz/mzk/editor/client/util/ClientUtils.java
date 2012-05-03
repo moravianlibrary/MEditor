@@ -241,7 +241,7 @@ public class ClientUtils {
         Map<String, NewDigitalObject> processedPages = new HashMap<String, NewDigitalObject>();
 
         TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
-        if (root == null) {
+        if (root == null || tree.getChildren(root).length == 0) {
             return null;
         }
 
