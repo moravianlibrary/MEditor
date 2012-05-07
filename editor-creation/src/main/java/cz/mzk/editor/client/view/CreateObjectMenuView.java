@@ -546,11 +546,7 @@ public class CreateObjectMenuView
                     @Override
                     protected void doSaveAction(ListGridRecord record) {
                         setChangedRecord(record);
-                        DigitalObjectModel model =
-                                DigitalObjectModel.parseString(record.getAttribute(Constants.ATTR_MODEL_ID));
-                        if (model == DigitalObjectModel.PERIODICAL || model == DigitalObjectModel.MONOGRAPH) {
-                            structureTreeGrid.redraw();
-                        }
+                        structureTreeGrid.redraw();
                     }
                 };
             }

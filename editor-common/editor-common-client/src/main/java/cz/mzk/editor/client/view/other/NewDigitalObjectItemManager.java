@@ -26,6 +26,7 @@ package cz.mzk.editor.client.view.other;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -67,7 +68,7 @@ public abstract class NewDigitalObjectItemManager
 
     protected abstract TextItem getXOfSequenceItem();
 
-    protected abstract TextItem getDateIssuedItem();
+    protected abstract DateTimeItem getDateIssuedItem();
 
     protected abstract TextItem getPartNameItem();
 
@@ -118,8 +119,8 @@ public abstract class NewDigitalObjectItemManager
      * @return the dateIssued
      */
     public String getDateIssued() {
-        if (getDateIssuedItem().getValueAsString() == null) return "";
-        return getDateIssuedItem().getValueAsString();
+        if (getDateIssuedItem().getDisplayValue() == null) return "";
+        return getDateIssuedItem().getDisplayValue();
     }
 
     /**

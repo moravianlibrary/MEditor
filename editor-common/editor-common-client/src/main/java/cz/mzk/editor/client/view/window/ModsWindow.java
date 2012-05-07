@@ -32,7 +32,6 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.DateDisplayFormat;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
@@ -40,6 +39,8 @@ import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.HStack;
 import com.smartgwt.client.widgets.layout.VStack;
 
@@ -59,6 +60,8 @@ import cz.mzk.editor.client.mods.PhysicalLocationTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient.RoleTermClient;
 import cz.mzk.editor.client.mods.TitleInfoTypeClient;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 public abstract class ModsWindow
@@ -112,16 +115,7 @@ public abstract class ModsWindow
     private final ModsCollectionClient modsCollection;
 
     /** The DateTimeItem with day value set to EUROPEANSHORTDATE-format */
-    private final DateTimeItem dateItem = new DateTimeItem() {
-
-        {
-            setDateFormatter(DateDisplayFormat.TOEUROPEANSHORTDATE);
-            setInputFormat(DateDisplayFormat.TOEUROPEANSHORTDATE.toString());
-            setHoverOpacity(75);
-            setHoverWidth(330);
-            setHoverStyle("interactImageHover");
-        }
-    };
+    private final DateTimeItem dateItem = new EditorDateItem();
 
     /** The List of FormItem designated for Author1 */
     @SuppressWarnings("serial")
@@ -223,7 +217,11 @@ public abstract class ModsWindow
      * @param lang
      *        the lang
      */
-    public ModsWindow(ModsCollectionClient modsCollection, String uuid, LangConstants lang, EventBus eventBus) {
+    public ModsWindow(ModsCollectionClient modsCollection,
+                      String uuid,
+                      LangConstants lang,
+                      EventBus eventBus,
+                      DigitalObjectModel model) {
         super(450, 900, lang.quickEdit() + ": " + uuid, eventBus, 100);
         this.lang = lang;
         this.modsCollection = modsCollection;
@@ -239,6 +237,23 @@ public abstract class ModsWindow
 
         itemsLayout.setMargin(20);
         itemsLayout.setMembersMargin(20);
+
+        ListGridRecord listGridRecord = new ListGridRecord();
+        listGridRecord.setAttribute(Constants.ATTR_MODEL_ID, model.toString());
+        listGridRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, "");
+
+        mainLayout.addMember(new ObjectBasicInfoLayout(listGridRecord, lang, eventBus, true) {
+
+            @Override
+            protected void setWindowHeight(int height) {
+                ModsWindow.this.setHeight(450 + height);
+            }
+
+            @Override
+            protected HLayout getButtonsLayout() {
+                return new HLayout();
+            }
+        });
         itemsLayout.addMember(createTitleSubtitle());
         itemsLayout.addMember(createNames());
         itemsLayout.addMember(create3Column());

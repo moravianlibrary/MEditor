@@ -261,7 +261,11 @@ public class ModifyView
             modsWindow = null;
         }
         modsWindow =
-                new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang, eventBus) {
+                new ModsWindow(focusedTabSet.getModsCollection(),
+                               focusedTabSet.getUuid(),
+                               lang,
+                               eventBus,
+                               focusedTabSet.getModel()) {
 
                     @Override
                     protected void init() {
@@ -414,6 +418,7 @@ public class ModifyView
         DigitalObjectModel model = detail.getModel();
 
         final EditorTabSet topTabSet = new EditorTabSet();
+        topTabSet.setModel(model);
         topTabSet.setTabBarPosition(Side.TOP);
         topTabSet.setWidth100();
         topTabSet.setHeight100();
@@ -1643,6 +1648,7 @@ public class ModifyView
                     close(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_B.getCode()) {
                     showBasicModsWindow(focusedTabSet);
+
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_O.getCode()) {
                     String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
                     if (lockOwner != null && "".equals(lockOwner)) {
