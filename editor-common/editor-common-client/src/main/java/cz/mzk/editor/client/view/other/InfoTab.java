@@ -21,6 +21,7 @@ public abstract class InfoTab
         extends Tab {
 
     private final TextItem labelItem;
+    private final String label;
     private final String originalLabel;
     private final DigitalObjectModel model;
     private final IButton quickEdit = new IButton();
@@ -37,7 +38,7 @@ public abstract class InfoTab
                    String firstPageURL) {
         super(title, icon);
         this.lang = lang;
-        String label = detail.getLabel();
+        label = detail.getLabel();
         this.model = detail.getModel();;
         this.originalLabel = label;
         this.lockLayout = new Layout();
@@ -123,6 +124,13 @@ public abstract class InfoTab
 
     public Button getLockInfoButton() {
         return lockInfoButton;
+    }
+
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
     }
 
     public void showLockInfoButton(boolean isLockByUser) {

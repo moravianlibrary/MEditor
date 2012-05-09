@@ -265,7 +265,8 @@ public class ModifyView
                                focusedTabSet.getUuid(),
                                lang,
                                eventBus,
-                               focusedTabSet.getModel()) {
+                               focusedTabSet.getModel(),
+                               focusedTabSet.getInfoTab().getLabel()) {
 
                     @Override
                     protected void init() {
@@ -1459,7 +1460,7 @@ public class ModifyView
 
         if (modsWindow != null) {
 
-            changedMods = modsWindow.publishWindow();
+            changedMods = modsWindow.publishWindow(model);
             object.setModsChanged(true);
             changedDC = ts.getDc();
             object.setDcChanged(false);

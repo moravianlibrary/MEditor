@@ -98,13 +98,16 @@ public class NameHolder
 
         List<NamePartTypeClient> list1 = new ArrayList<NamePartTypeClient>();
         boolean isNull = true;
-        for (List<String> values : nameParts.getListOfList()) {
-            if (values != null) {
-                NamePartTypeClient namePartTypeClient = new NamePartTypeClient();
-                namePartTypeClient.setValue(values.get(0));
-                namePartTypeClient.setType(values.get(1));
-                list1.add(namePartTypeClient);
-                isNull = false;
+        List<List<String>> listOfListName = nameParts.getListOfList();
+        if (listOfListName != null && listOfListName.size() > 0) {
+            for (List<String> values : listOfListName) {
+                if (values != null) {
+                    NamePartTypeClient namePartTypeClient = new NamePartTypeClient();
+                    namePartTypeClient.setValue(values.get(0));
+                    namePartTypeClient.setType(values.get(1));
+                    list1.add(namePartTypeClient);
+                    isNull = false;
+                }
             }
         }
         nameTypeClient.setNamePart(isNull ? null : list1);
@@ -112,14 +115,17 @@ public class NameHolder
         List<RoleTypeClient> list2 = new ArrayList<RoleTypeClient>();
         List<RoleTermClient> list3 = new ArrayList<RoleTermClient>();
         isNull = true;
-        for (List<String> values : roles.getListOfList()) {
-            if (values != null) {
-                RoleTermClient roleTermClient = new RoleTermClient();
-                roleTermClient.setValue(values.get(0));
-                roleTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
-                roleTermClient.setAuthority(values.get(2));
-                list3.add(roleTermClient);
-                isNull = false;
+        List<List<String>> listOfListRole = roles.getListOfList();
+        if (listOfListRole != null && listOfListRole.size() > 0) {
+            for (List<String> values : listOfListRole) {
+                if (values != null) {
+                    RoleTermClient roleTermClient = new RoleTermClient();
+                    roleTermClient.setValue(values.get(0));
+                    roleTermClient.setType(CodeOrTextClient.fromValue(values.get(1)));
+                    roleTermClient.setAuthority(values.get(2));
+                    list3.add(roleTermClient);
+                    isNull = false;
+                }
             }
         }
         RoleTypeClient client = new RoleTypeClient();
@@ -131,9 +137,7 @@ public class NameHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.MetadataHolder#getSubelements
-     * ()
+     * @see cz.mzk.editor.client.metadata.MetadataHolder#getSubelements ()
      */
     @Override
     public List<MetadataHolder> getSubelements() {
@@ -151,8 +155,7 @@ public class NameHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.MetadataHolder#getValues()
+     * @see cz.mzk.editor.client.metadata.MetadataHolder#getValues()
      */
     @Override
     public List<String> getValues() {
@@ -161,8 +164,7 @@ public class NameHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.MetadataHolder#getAttributes()
+     * @see cz.mzk.editor.client.metadata.MetadataHolder#getAttributes()
      */
     @Override
     public List<String> getAttributes() {

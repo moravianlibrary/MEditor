@@ -111,12 +111,15 @@ public abstract class ObjectBasicInfoLayout
 
         private TextAreaItem noteItem = null;
 
+        private final int coeficientOfLength;
+
         /**
          * @param lang
          */
-        public MainEditLayoutManager(LangConstants lang) {
+        public MainEditLayoutManager(LangConstants lang, int coeficientOfLength) {
             super(lang);
             this.lang = lang;
+            this.coeficientOfLength = coeficientOfLength;
             // TODO Auto-generated constructor stub
         }
 
@@ -134,16 +137,16 @@ public abstract class ObjectBasicInfoLayout
             //        ATTR_ADITIONAL_INFO_OR_OCR            item/suppl  art/pic     ocr         pict/chapt  suppl
 
             nameOrTitle = new TextItem("name", lang.name());
-            nameOrTitle.setWidth(300);
+            nameOrTitle.setWidth(coeficientOfLength * 23);
 
             subtitle = new TextItem("subtitle", lang.subtitle());
-            subtitle.setWidth(300);
+            subtitle.setWidth(coeficientOfLength * 23);
 
             levelNames = new SelectItem("levelNames", lang.levelName());
-            levelNames.setWidth(170);
+            levelNames.setWidth(coeficientOfLength * 13);
 
             xOfLevelNames = new TextItem("xOfLevelNames", "XXXX");
-            xOfLevelNames.setWidth(60);
+            xOfLevelNames.setWidth(coeficientOfLength * 6);
             xOfLevelNames.setPrompt(getOnlyNumbersHint("XXXX"));
 
             levelNamesLayout = new HLayout(2);
@@ -151,35 +154,35 @@ public abstract class ObjectBasicInfoLayout
             levelNamesLayout.addMember(new MyDynamicForm(xOfLevelNames));
             levelNamesLayout.setLayoutAlign(Alignment.LEFT);
             levelNamesLayout.setAlign(Alignment.RIGHT);
-            levelNamesLayout.setWidth(375);
+            levelNamesLayout.setWidth(coeficientOfLength * 29);
 
             dateIssued = new EditorDateItem("dateIssued", lang.dateIssued());
-            dateIssued.setWidth(300);
+            dateIssued.setWidth(coeficientOfLength * 23);
 
             partNumber = new TextItem("partNumber", lang.partNumber());
-            partNumber.setWidth(100);
+            partNumber.setWidth(coeficientOfLength * 8);
             partNumber.setPrompt(getOnlyNumbersHint(lang.partNumber()));
 
             partName = new TextItem("partName", lang.intPartPartName());
-            partName.setWidth(300);
+            partName.setWidth(coeficientOfLength * 23);
 
             type = new SelectItem("type", lang.dcType());
-            type.setWidth(168);
+            type.setWidth(coeficientOfLength * 14);
 
             xOfSequence = new TextItem("xOfSequence", "X");
-            xOfSequence.setWidth(80);
+            xOfSequence.setWidth(coeficientOfLength * 6);
             xOfSequence.setPrompt(getOnlyNumbersHint("X"));
 
             noteItem = new TextAreaItem("note", lang.note());
-            noteItem.setWidth(300);
-            noteItem.setHeight(60);
+            noteItem.setWidth(coeficientOfLength * 23);
+            noteItem.setHeight(coeficientOfLength * 5);
 
             typeLayout = new HLayout(3);
             typeLayout.addMember(new MyDynamicForm(type));
             typeLayout.addMember(new MyDynamicForm(xOfSequence));
             typeLayout.setLayoutAlign(Alignment.LEFT);
             typeLayout.setAlign(Alignment.RIGHT);
-            typeLayout.setWidth(375);
+            typeLayout.setWidth(coeficientOfLength * 29);
 
             otherLayout = new VLayout();
 
@@ -566,10 +569,11 @@ public abstract class ObjectBasicInfoLayout
     public ObjectBasicInfoLayout(final ListGridRecord record,
                                  LangConstants lang,
                                  EventBus eventBus,
-                                 boolean isPeriodical) {
+                                 boolean isPeriodical,
+                                 int coeficientOfLength) {
         super();
         this.record = record;
-        managerLayout = new MainEditLayoutManager(lang);
+        managerLayout = new MainEditLayoutManager(lang, coeficientOfLength);
         setAlign(Alignment.LEFT);
 
         managerLayout.prepareEdit();
@@ -583,7 +587,7 @@ public abstract class ObjectBasicInfoLayout
     /**
      * @return the managerLayout
      */
-    protected MainEditLayoutManager getManagerLayout() {
+    public NewDigitalObjectItemManager getManagerLayout() {
         return managerLayout;
     }
 

@@ -71,7 +71,7 @@ public abstract class NewObjectBasicInfoWindow
         buttonsLayout.addMember(okButton);
 
         final ObjectBasicInfoLayout objectBasicInfoLayout =
-                new ObjectBasicInfoLayout(record, lang, eventBus, isPeriodical) {
+                new ObjectBasicInfoLayout(record, lang, eventBus, isPeriodical, 13) {
 
                     @Override
                     protected void setWindowHeight(int height) {

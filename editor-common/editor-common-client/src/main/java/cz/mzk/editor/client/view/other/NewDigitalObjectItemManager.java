@@ -119,8 +119,8 @@ public abstract class NewDigitalObjectItemManager
      * @return the dateIssued
      */
     public String getDateIssued() {
-        if (getDateIssuedItem().getDisplayValue() == null) return "";
-        return getDateIssuedItem().getDisplayValue();
+        if (getDateIssuedItem().getDisplayValue() != null) return getDateIssuedItem().getDisplayValue();
+        return "";
     }
 
     /**

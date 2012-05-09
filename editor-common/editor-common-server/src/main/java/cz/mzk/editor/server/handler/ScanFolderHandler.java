@@ -52,7 +52,6 @@ import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
