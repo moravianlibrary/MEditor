@@ -558,7 +558,7 @@ public class ClientUtils {
     private static TreeStructureNode toNode(Record treeNode) {
         String modelId = treeNode.getAttribute(Constants.ATTR_MODEL_ID);
         String attrId = modelId == null ? null : treeNode.getAttribute(Constants.ATTR_ID);
-        if (!attrId.equals(SubstructureTreeNode.ROOT_ID)) {
+        if (attrId == null || !attrId.equals(SubstructureTreeNode.ROOT_ID)) {
             return new TreeStructureNode(attrId,
                                          treeNode.getAttribute(Constants.ATTR_PARENT),
                                          trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
