@@ -126,13 +126,6 @@ public abstract class InfoTab
         return lockInfoButton;
     }
 
-    /**
-     * @return the label
-     */
-    public String getLabel() {
-        return label;
-    }
-
     public void showLockInfoButton(boolean isLockByUser) {
         if (lockInfoButton != null && lockLayout.hasMember(lockInfoButton)) {
             lockLayout.removeMember(lockInfoButton);

@@ -67,6 +67,10 @@ public class PageBuilder
         Element idSici = mods.addElement(new QName("identifier", modsNs));
         idSici.addAttribute("type", "sici");
 
+        Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
+        Element title = titleInfo.addElement(new QName("title", modsNs));
+        title.addText(pageLabel);
+
         Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
         typeOfResource.addText("text");
         Element part = mods.addElement(new QName("part", modsNs));
@@ -74,7 +78,7 @@ public class PageBuilder
         part.addAttribute("type", resolvedPageType == null ? "NormalPage" : resolvedPageType);
         //pageNumber
         Element detail = part.addElement(new QName("detail", modsNs));
-        detail.addAttribute("type", "pageNumber");
+        detail.addAttribute("type", Constants.MODS_PART_DETAIL_PAGE_NUMBER);
 
         Element number = null;
         if (pageLabel.contains(Constants.TWO_PAGES_SEPARATOR)) {

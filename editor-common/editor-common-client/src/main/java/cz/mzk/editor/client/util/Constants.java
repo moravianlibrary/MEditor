@@ -827,4 +827,6 @@ public class Constants {
     public static final String DATE_DDMMRRRR = "\\d{1,2}\\." + DATE_MMRRRR;
     public static final String DATE_DD_DDMMRRRR = "\\d{1,2}\\.-" + DATE_DDMMRRRR;
     public static final String ONLY_NUMBERS = "\\d*";
+
+    public static final String MODS_PART_DETAIL_PAGE_NUMBER = "pageNumber";
 }

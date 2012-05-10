@@ -200,6 +200,13 @@ public abstract class NewDigitalObjectItemManager
     public String verify() {
 
         DigitalObjectModel model = getCurrentModel();
+        if (model == DigitalObjectModel.INTERNALPART || model == DigitalObjectModel.PERIODICALITEM
+                || model == DigitalObjectModel.MONOGRAPHUNIT) {
+            if (getLevelNamesItem().getValueAsString() == null
+                    || "".equals(getLevelNamesItem().getValueAsString()))
+                return lang.textBox() + " " + lang.levelName() + " " + lang.notEmpty();
+        }
+
         if (model != DigitalObjectModel.PERIODICAL && model != DigitalObjectModel.MONOGRAPH) {
             if (model == DigitalObjectModel.PERIODICALITEM) {
                 String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(getTypeItem().getValueAsString());

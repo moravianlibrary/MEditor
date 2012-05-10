@@ -266,7 +266,7 @@ public class ModifyView
                                lang,
                                eventBus,
                                focusedTabSet.getModel(),
-                               focusedTabSet.getInfoTab().getLabel()) {
+                               focusedTabSet.getInfoTab().getOriginalLabel()) {
 
                     @Override
                     protected void init() {
@@ -280,7 +280,12 @@ public class ModifyView
 
                                         @Override
                                         public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                            publishShortCut(focusedTabSet);
+                                            String message = verify();
+                                            if (message == null) {
+                                                publishShortCut(focusedTabSet);
+                                            } else {
+                                                SC.warn(message);
+                                            }
                                         }
                                     });
                         } else {
@@ -372,7 +377,17 @@ public class ModifyView
             universalWindow.hide();
             universalWindow = null;
         }
-        tryToPublish(focusedTabSet);
+
+        if (modsWindow != null && modsWindow.isCreated()) {
+            String message = modsWindow.verify();
+            if (message == null) {
+                tryToPublish(focusedTabSet);
+            } else {
+                SC.warn(message);
+            }
+        } else {
+            tryToPublish(focusedTabSet);
+        }
     }
 
     /**
@@ -1457,6 +1472,8 @@ public class ModifyView
         DublinCore changedDC = null;
         ModsCollectionClient changedMods = null;
         DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+        String newLabel = null;
+        InfoTab infoT = ts.getInfoTab();
 
         if (modsWindow != null) {
 
@@ -1469,6 +1486,8 @@ public class ModifyView
                 changedDC = modsWindow.reflectInDC(changedDC);
                 object.setDcChanged(true);
             }
+
+            newLabel = modsWindow.getLabel();
 
             if (modsWindow != null && downloadingWindow == null) {
                 modsWindow.hide();
@@ -1497,20 +1516,17 @@ public class ModifyView
                 object.setModsChanged(false);
             }
 
+            newLabel = (infoT.getLabelItem() != null ? infoT.getLabelItem() : "");
+        }
+
+        if (newLabel != null) {
+            object.setLabelChanged(infoT.getOriginalLabel() == null
+                    || !newLabel.equals(infoT.getOriginalLabel()));
+            object.setLabel(newLabel);
         }
 
         object.setDc(changedDC);
         object.setMods(changedMods);
-        //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-        InfoTab infoT = ts.getInfoTab();
-
-        if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
-            object.setLabel("");
-            object.setLabelChanged(true);
-        } else {
-            object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
-            object.setLabel(infoT.getLabelItem());
-        }
 
         if (ts.getOcrContent() != null && (ts.getOriginalOcrContent() != null)
                 || "".equals(ts.getOriginalOcrContent())) {

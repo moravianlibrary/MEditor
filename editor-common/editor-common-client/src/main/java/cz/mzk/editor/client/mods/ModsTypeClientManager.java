@@ -28,6 +28,8 @@ import java.util.List;
 
 import com.smartgwt.client.widgets.form.fields.FormItem;
 
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
+
 /**
  * @author Matous Jobanek
  * @version May 7, 2012
@@ -60,16 +62,18 @@ public interface ModsTypeClientManager {
 
     public void modifyOriginInfoList(String publisher, String dateIssued);
 
-    public void modifyTitleInfoList(String title, String subtitle);
+    public void modifyTitle(String title, DigitalObjectModel model);
 
-    public void modifyNameList(List<FormItem> authorPartsOfName1,
-                               List<FormItem> authorPartsOfName2,
-                               String author1,
-                               String author2);
+    public void modifySubtitle(String subtitle);
 
-    public void modifyLocationList(String shelfLocator, String place);
+    public void modifyNames(List<FormItem> authorPartsOfName1,
+                            List<FormItem> authorPartsOfName2,
+                            String author1,
+                            String author2);
 
-    public void modifyPhysDescrList(String extent);
+    public void modifyShelfLocatorAndPlace(String shelfLocator, String place);
+
+    public void modifyExtent(String extent);
 
     public void modifyNote(String note);
 
@@ -91,6 +95,6 @@ public interface ModsTypeClientManager {
     /**
      * @param partNumber
      */
-    public void modifyPartName(String partNumber);
+    public void modifyPartName(String partName);
 
 }

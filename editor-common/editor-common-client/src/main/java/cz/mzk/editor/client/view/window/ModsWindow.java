@@ -54,6 +54,7 @@ import cz.mzk.editor.client.mods.ModsTypeClientManagerImpl;
 import cz.mzk.editor.client.mods.NamePartTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient.RoleTermClient;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DublinCore;
@@ -133,6 +134,8 @@ public abstract class ModsWindow
             add(author2Item);
         }
     };
+
+    private String label = null;
 
     /**
      * The TextItem with width=180, wrapTitle=false, selectOnFocus=true,
@@ -397,7 +400,7 @@ public abstract class ModsWindow
     private DynamicForm createTitleSubtitle(DigitalObjectModel model) {
 
         if (model != DigitalObjectModel.PERIODICAL && model != DigitalObjectModel.INTERNALPART
-                && model != DigitalObjectModel.MONOGRAPH) {
+                && model != DigitalObjectModel.MONOGRAPH && model != DigitalObjectModel.PAGE) {
             titleItem.setDefaultValue(modsClientManager.getTitle());
         } else {
             titleItem = null;
@@ -566,30 +569,50 @@ public abstract class ModsWindow
             if (model != DigitalObjectModel.PERIODICALVOLUME) {
                 levelName = objectBasicInfoLayout.getManagerLayout().getLevelName();
                 modsClientManager.modifyLevelName(levelName);
-                modsClientManager.modifyPartName(objectBasicInfoLayout.getManagerLayout().getPartName());
+                modsClientManager.modifyPartName(objectBasicInfoLayout.getManagerLayout().getNameOrTitle());
             }
         }
 
         if (model != DigitalObjectModel.MONOGRAPHUNIT && model != DigitalObjectModel.PERIODICALVOLUME)
             modsClientManager.modifyType(objectBasicInfoLayout.getManagerLayout().getType(model, levelName));
 
-        modsClientManager.modifyOriginInfoList(publisherItem.getEnteredValue(),
-                                               (dateItem == null) ? objectBasicInfoLayout.getManagerLayout()
-                                                       .getDateIssued() : dateItem.getValue().toString());
+        String newDate =
+                (dateItem == null) ? objectBasicInfoLayout.getManagerLayout().getDateIssued() : (dateItem
+                        .getValue() != null ? dateItem.getValue().toString() : "");
+        modsClientManager.modifyOriginInfoList(publisherItem.getEnteredValue(), newDate);
 
-        modsClientManager.modifyTitleInfoList((titleItem == null) ? objectBasicInfoLayout.getManagerLayout()
-                .getTitle() : titleItem.getEnteredValue(), (subtitleItem == null) ? objectBasicInfoLayout
-                .getManagerLayout().getSubtitle() : subtitleItem.getEnteredValue());
-        modsClientManager.modifyNameList(authorPartsOfName1,
-                                         authorPartsOfName2,
-                                         author1Item.getTitle().equals(AUTHOR1) ? null : author1Item
-                                                 .getTitle(),
-                                         author2Item.getTitle().equals(AUTHOR2) ? null : author2Item
-                                                 .getTitle());
-        modsClientManager.modifyLocationList(shelfLocatorItem.getEnteredValue(), placeItem.getEnteredValue());
-        modsClientManager.modifyPhysDescrList(extentItem.getEnteredValue());
+        String title =
+                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
+                        .getEnteredValue();
+        modsClientManager.modifyTitle(title, model);
+
+        modsClientManager.modifySubtitle((subtitleItem == null) ? objectBasicInfoLayout.getManagerLayout()
+                .getSubtitle() : subtitleItem.getEnteredValue());
+
+        modsClientManager.modifyNames(authorPartsOfName1,
+                                      authorPartsOfName2,
+                                      author1Item.getTitle().equals(AUTHOR1) ? null : author1Item.getTitle(),
+                                      author2Item.getTitle().equals(AUTHOR2) ? null : author2Item.getTitle());
+        modsClientManager.modifyShelfLocatorAndPlace(shelfLocatorItem.getEnteredValue(),
+                                                     placeItem.getEnteredValue());
+        modsClientManager.modifyExtent(extentItem.getEnteredValue());
+
+        setLabel(model, title);
 
         return modsCollection;
+    }
+
+    private void setLabel(DigitalObjectModel model, String title) {
+        String labelToAdd = "";
+        if (model == DigitalObjectModel.PERIODICALVOLUME) {
+            labelToAdd = objectBasicInfoLayout.getManagerLayout().getPartNumber();
+        } else {
+            labelToAdd = title;
+        }
+        this.label =
+                ClientUtils
+                        .trimLabel((labelToAdd != null && !"".equals(labelToAdd) ? labelToAdd : "untitled"),
+                                   Constants.MAX_LABEL_LENGTH);
     }
 
     /**
@@ -609,9 +632,9 @@ public abstract class ModsWindow
         }
 
         String title =
-                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getTitle() : titleItem
+                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
                         .getEnteredValue();
-        if (title != null & !title.trim().equals("")) {
+        if (title != null && !title.trim().equals("")) {
             DC.getTitle().add(0, title.trim());
         }
 
@@ -652,9 +675,11 @@ public abstract class ModsWindow
         } else {
             DC.setDate(new ArrayList<String>());
         }
+
         String dateIssued =
-                (dateItem == null) ? objectBasicInfoLayout.getManagerLayout().getDateIssued() : dateItem
-                        .getValue().toString();
+                (dateItem == null) ? objectBasicInfoLayout.getManagerLayout().getDateIssued() : (dateItem
+                        .getValue() != null ? dateItem.getValue().toString() : "");
+
         if (dateIssued != null && !dateIssued.toString().trim().equals("")) {
             DC.getDate().add(0, dateIssued.toString().trim());
         }
@@ -669,6 +694,14 @@ public abstract class ModsWindow
         }
 
         return DC;
+    }
+
+    public String verify() {
+        return objectBasicInfoLayout.getManagerLayout().verify();
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     /**

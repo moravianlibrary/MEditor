@@ -104,9 +104,23 @@ public abstract class FoxmlBuilder {
     }
 
     public FoxmlBuilder(NewDigitalObject object, Policy policy) {
-        this.label = ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH);
+        setLabel(object);
         this.children = new ArrayList<RelsExtRelation>();
         this.policy = policy;
+    }
+
+    private void setLabel(NewDigitalObject object) {
+        String labelToAdd = "";
+        if (object.getModel() == DigitalObjectModel.PERIODICALVOLUME) {
+            labelToAdd = object.getPartNumberOrAlto();
+        } else {
+            if (object.getName() != null && !"".equals(object.getName())) {
+                labelToAdd = object.getName();
+            } else {
+                labelToAdd = "untitled";
+            }
+        }
+        this.label = ClientUtils.trimLabel(labelToAdd, Constants.MAX_LABEL_LENGTH);
     }
 
     public void createDocument() {
@@ -316,10 +330,6 @@ public abstract class FoxmlBuilder {
 
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     /**

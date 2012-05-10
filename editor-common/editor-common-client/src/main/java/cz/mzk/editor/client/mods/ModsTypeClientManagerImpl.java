@@ -30,6 +30,8 @@ import java.util.List;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 
 import cz.mzk.editor.client.mods.RoleTypeClient.RoleTermClient;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 /**
  * @author Matous Jobanek
@@ -263,17 +265,9 @@ public class ModsTypeClientManagerImpl
     }
 
     @Override
-    public void modifyTitleInfoList(String title, String subtitle) {
-        /** Title info part */
-        List<TitleInfoTypeClient> newTitleInfo;
-        if (!isNotNullOrEmpty(modsTypeClient.getTitleInfo())) {
-            newTitleInfo = new ArrayList<TitleInfoTypeClient>();
-            newTitleInfo.add(new TitleInfoTypeClient());
-        } else {
-            newTitleInfo = modsTypeClient.getTitleInfo();
-        }
+    public void modifyTitle(String title, DigitalObjectModel model) {
+        List<TitleInfoTypeClient> newTitleInfo = getTitleInfoTypeClientLis();
 
-        /** Title part */
         if (title == null || title.trim().equals("")) {
 
             if (isNotNullOrEmpty(newTitleInfo.get(0).getTitle())) {
@@ -288,7 +282,66 @@ public class ModsTypeClientManagerImpl
             newTitleInfo.get(0).getTitle().add(0, title.trim());
         }
 
-        /** Subtitle part */
+        if (model == DigitalObjectModel.PAGE) {
+
+            List<PartTypeClient> newPart;
+            List<DetailTypeClient> newPartDetailList = null;
+            if (isNotNullOrEmpty(modsTypeClient.getPart())) {
+                newPart = modsTypeClient.getPart();
+                if (isNotNullOrEmpty(newPart.get(0).getDetail())) {
+                    newPartDetailList = newPart.get(0).getDetail();
+                }
+            } else {
+                newPart = new ArrayList<PartTypeClient>();
+                newPart.add(new PartTypeClient());
+            }
+
+            if (title == null || title.trim().equals("")) {
+                if (newPartDetailList != null) {
+                    for (DetailTypeClient detail : newPartDetailList) {
+                        if (detail.getType() != null
+                                && Constants.MODS_PART_DETAIL_PAGE_NUMBER.equals(detail.getType())) {
+                            newPart.remove(detail);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                if (newPartDetailList == null) {
+                    newPartDetailList = new ArrayList<DetailTypeClient>();
+                } else {
+                    for (DetailTypeClient detail : newPartDetailList) {
+                        if (detail.getType() != null
+                                && Constants.MODS_PART_DETAIL_PAGE_NUMBER.equals(detail.getType())) {
+                            newPart.remove(detail);
+                            break;
+                        }
+                    }
+                }
+                DetailTypeClient detailTypeClient = new DetailTypeClient();
+                detailTypeClient.setType(Constants.MODS_PART_DETAIL_PAGE_NUMBER);
+                List<String> numbers = new ArrayList<String>();
+                if (title.contains(Constants.TWO_PAGES_SEPARATOR)) {
+                    String[] splitedLabel = title.split("\\" + Constants.TWO_PAGES_SEPARATOR);
+                    numbers.add(splitedLabel[0]);
+                    numbers.add(splitedLabel[1]);
+                } else {
+                    numbers.add(title);
+                }
+
+                detailTypeClient.setNumber(numbers);
+                newPartDetailList.add(0, detailTypeClient);
+                newPart.get(0).setDetail(newPartDetailList);
+            }
+            modsTypeClient.setPart(newPart);
+        }
+        modsTypeClient.setTitleInfo(newTitleInfo);
+    }
+
+    @Override
+    public void modifySubtitle(String subtitle) {
+        List<TitleInfoTypeClient> newTitleInfo = getTitleInfoTypeClientLis();
+
         if (subtitle == null || subtitle.trim().equals("")) {
 
             if (isNotNullOrEmpty(newTitleInfo.get(0).getSubTitle())) {
@@ -307,10 +360,10 @@ public class ModsTypeClientManagerImpl
     }
 
     @Override
-    public void modifyNameList(List<FormItem> authorPartsOfName1,
-                               List<FormItem> authorPartsOfName2,
-                               String author1,
-                               String author2) {
+    public void modifyNames(List<FormItem> authorPartsOfName1,
+                            List<FormItem> authorPartsOfName2,
+                            String author1,
+                            String author2) {
         /** Name part */
 
         List<NameTypeClient> newNameList;
@@ -377,7 +430,7 @@ public class ModsTypeClientManagerImpl
     }
 
     @Override
-    public void modifyLocationList(String shelfLocator, String place) {
+    public void modifyShelfLocatorAndPlace(String shelfLocator, String place) {
         /** Location list part */
         List<LocationTypeClient> newLocationList;
         if (!isNotNullOrEmpty(modsTypeClient.getLocation())) {
@@ -418,9 +471,7 @@ public class ModsTypeClientManagerImpl
         modsTypeClient.setLocation(newLocationList);
     }
 
-    @Override
-    public void modifyPhysDescrList(String extent) {
-        /** Extent part */
+    private List<PhysicalDescriptionTypeClient> getDescriptionTypeClientList() {
         List<PhysicalDescriptionTypeClient> newPhysDescrList;
         if (!isNotNullOrEmpty(modsTypeClient.getPhysicalDescription())) {
             newPhysDescrList = new ArrayList<PhysicalDescriptionTypeClient>();
@@ -428,6 +479,12 @@ public class ModsTypeClientManagerImpl
         } else {
             newPhysDescrList = modsTypeClient.getPhysicalDescription();
         }
+        return newPhysDescrList;
+    }
+
+    @Override
+    public void modifyExtent(String extent) {
+        List<PhysicalDescriptionTypeClient> newPhysDescrList = getDescriptionTypeClientList();
 
         if (extent == null || extent.trim().equals("")) {
             if (isNotNullOrEmpty(newPhysDescrList.get(0).getExtent())) {
@@ -446,13 +503,8 @@ public class ModsTypeClientManagerImpl
 
     @Override
     public void modifyNote(String note) {
-        List<PhysicalDescriptionTypeClient> newPhysDescrList;
-        if (!isNotNullOrEmpty(modsTypeClient.getPhysicalDescription())) {
-            newPhysDescrList = new ArrayList<PhysicalDescriptionTypeClient>();
-            newPhysDescrList.add(new PhysicalDescriptionTypeClient());
-        } else {
-            newPhysDescrList = modsTypeClient.getPhysicalDescription();
-        }
+        List<PhysicalDescriptionTypeClient> newPhysDescrList = getDescriptionTypeClientList();
+
         if (note == null || note.trim().equals("")) {
             if (isNotNullOrEmpty(newPhysDescrList.get(0).getNote())) {
                 newPhysDescrList.get(0).getNote().remove(0);
@@ -471,12 +523,7 @@ public class ModsTypeClientManagerImpl
         modsTypeClient.setPhysicalDescription(newPhysDescrList);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void modifyPartNumber(String partNumber) {
-        /** Title info part */
+    private List<TitleInfoTypeClient> getTitleInfoTypeClientLis() {
         List<TitleInfoTypeClient> newTitleInfo;
         if (!isNotNullOrEmpty(modsTypeClient.getTitleInfo())) {
             newTitleInfo = new ArrayList<TitleInfoTypeClient>();
@@ -484,9 +531,17 @@ public class ModsTypeClientManagerImpl
         } else {
             newTitleInfo = modsTypeClient.getTitleInfo();
         }
+        return newTitleInfo;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void modifyPartNumber(String partNumber) {
+        List<TitleInfoTypeClient> newTitleInfo = getTitleInfoTypeClientLis();
 
         if (partNumber == null || partNumber.trim().equals("")) {
-
             if (isNotNullOrEmpty(newTitleInfo.get(0).getPartNumber())) {
                 newTitleInfo.get(0).getPartNumber().remove(0);
             }
@@ -498,6 +553,7 @@ public class ModsTypeClientManagerImpl
             }
             newTitleInfo.get(0).getPartNumber().add(0, partNumber.trim());
         }
+        modsTypeClient.setTitleInfo(newTitleInfo);
     }
 
     /**
@@ -505,8 +561,7 @@ public class ModsTypeClientManagerImpl
      */
     @Override
     public void modifyLevelName(String levelName) {
-        // TODO Auto-generated method stub
-
+        modsTypeClient.setId(levelName);
     }
 
     /**
@@ -514,16 +569,40 @@ public class ModsTypeClientManagerImpl
      */
     @Override
     public void modifyType(String type) {
-        // TODO Auto-generated method stub
-
+        List<GenreTypeClient> genre;
+        if (isNotNullOrEmpty(modsTypeClient.getGenre())) {
+            genre = modsTypeClient.getGenre();
+        } else {
+            genre = new ArrayList<GenreTypeClient>();
+            genre.add(new GenreTypeClient());
+        }
+        if (type == null || "".equals(type)) {
+            if (genre.get(0).getType() != null) genre.remove(0);
+        } else {
+            genre.get(0).setType(type);
+        }
+        modsTypeClient.setGenre(genre);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void modifyPartName(String partNumber) {
-        // TODO Auto-generated method stub
+    public void modifyPartName(String partName) {
+        List<TitleInfoTypeClient> newTitleInfo = getTitleInfoTypeClientLis();
 
+        if (partName == null || partName.trim().equals("")) {
+            if (isNotNullOrEmpty(newTitleInfo.get(0).getPartName())) {
+                newTitleInfo.get(0).getPartName().remove(0);
+            }
+        } else {
+            if (isNotNullOrEmpty(newTitleInfo.get(0).getPartName())) {
+                newTitleInfo.get(0).getPartName().remove(0);
+            } else {
+                newTitleInfo.get(0).setPartName(new ArrayList<String>());
+            }
+            newTitleInfo.get(0).getPartName().add(0, partName.trim());
+        }
+        modsTypeClient.setTitleInfo(newTitleInfo);
     }
 }
