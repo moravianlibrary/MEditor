@@ -282,12 +282,22 @@ public class CreateStructurePresenter
                 if (emptyTree && emptyPages) {
                     SC.warn(lang.nothingToSave());
                 } else {
-                    object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+                    String name =
+                            leftPresenter.getView().getSubelementsGrid().getTree()
+                                    .findById(SubstructureTreeNode.ROOT_OBJECT_ID)
+                                    .getAttributeAsString(Constants.ATTR_NAME);
                     TreeStructureBundle bundle = new TreeStructureBundle();
-                    bundle.setInfo(new TreeStructureInfo(-1, null, null, leftPresenter.getBarcode(), object
-                            .getName(), null, inputPath, model));
+                    bundle.setInfo(new TreeStructureInfo(-1,
+                                                         null,
+                                                         null,
+                                                         leftPresenter.getBarcode(),
+                                                         name,
+                                                         null,
+                                                         inputPath,
+                                                         model));
                     bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
                     if (object != null) {
+                        object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
                         List<TreeStructureNode> nodes =
                                 ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
                                         .getAllNodes());
@@ -1292,7 +1302,7 @@ public class CreateStructurePresenter
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
         leftPresenter.getView().getSubelementsGrid().redraw();
         leftPresenter.setLastId(lastId);
-        getView().getTileGrid().setData(pagesData);
+        if (pagesData != null) getView().getTileGrid().setData(pagesData);
     }
 
     /**
