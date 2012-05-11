@@ -55,6 +55,7 @@ public class NewDigitalObject
     private String partNumberOrAlto;
     private String aditionalInfoOrOcr;
     private String base;
+    private String signature;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -99,6 +100,7 @@ public class NewDigitalObject
         this.partNumberOrAlto = newDigitalObject.partNumberOrAlto;
         this.aditionalInfoOrOcr = newDigitalObject.getAditionalInfoOrOcr();
         this.base = newDigitalObject.getBase();
+        this.signature = newDigitalObject.getSignature();
     }
 
     /**
@@ -283,6 +285,21 @@ public class NewDigitalObject
     @Override
     public String toString() {
         return model + "  --  " + name;
+    }
+
+    /**
+     * @return the signature
+     */
+    public String getSignature() {
+        return signature;
+    }
+
+    /**
+     * @param signature
+     *        the signature to set
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
 }

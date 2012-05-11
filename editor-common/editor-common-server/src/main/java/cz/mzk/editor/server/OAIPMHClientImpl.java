@@ -123,7 +123,8 @@ public class OAIPMHClientImpl
                                              mrc.find650a(),
                                              mrc.find260aCorrected(),
                                              mrc.find260bCorrected(),
-                                             mrc.find260c());
+                                             mrc.find260c(),
+                                             mrc.find910b());
             @SuppressWarnings("unused")
             InputStream dcStream = null;
             @SuppressWarnings("unused")

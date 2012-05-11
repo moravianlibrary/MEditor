@@ -103,6 +103,10 @@ public class MarcDocument {
         return findDatafieldAndSubfield("260", 'c');
     }
 
+    public String find910b() {
+        return findDatafieldAndSubfield("910", 'b');
+    }
+
     public Document getDocument() {
         return doc;
     }

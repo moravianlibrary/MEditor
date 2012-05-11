@@ -1224,6 +1224,7 @@ public class CreateStructurePresenter
         if (object != null) {
             object.setSysno(sysno);
             object.setBase(base);
+            object.setSignature(bundle.getMarc().getSignature());
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 

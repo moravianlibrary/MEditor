@@ -128,6 +128,7 @@ public class CreateObjectUtils {
         }
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
 
+        builder.setSignature(node.getSignature());
         builder.setBase(base);
         builder.setUuid(node.getUuid());
         builder.setDcXmlContent(dc);

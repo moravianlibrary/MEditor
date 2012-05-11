@@ -139,6 +139,7 @@ public class Z3950ClientImpl
                                                                           null,
                                                                           null,
                                                                           null,
+                                                                          null,
                                                                           null));
             retList.add(bundle);
         }
