@@ -470,6 +470,7 @@ public class ModifyView
         List<Tab> containerTabs = new ArrayList<Tab>();
         if (models != null) { // has any containers (if not, it is a page)
             Map<String, String> labels = new HashMap<String, String>();
+            labels.put(DigitalObjectModel.ARTICLE.getValue(), lang.article());
             labels.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalparts());
             labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunits());
             labels.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitems());
@@ -501,6 +502,7 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
         labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
+        labelsSingular.put(DigitalObjectModel.ARTICLE.getValue(), lang.article());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         topTabSet.setModsCollection(mods);
         topTabSet.setDc(dc);

@@ -55,11 +55,15 @@ public enum DigitalObjectModel
      */
     PAGE("page", ""),
     /** The INTERNALPART. */
-    INTERNALPART("internalpart", Constants.INTERNAL_PART_ICON)/*
-                                                               * ,
-                                                               * THESIS("thesis"
-                                                               * , "")
-                                                               */
+    INTERNALPART("internalpart", Constants.INTERNAL_PART_ICON), /*
+                                                                 * ,
+                                                                 * THESIS("thesis"
+                                                                 * , "")
+                                                                 */
+    /** The ARTICLE. */
+    ARTICLE("article", Constants.INTERNAL_PART_ICON)/*
+                                                     * , THESIS("thesis" , "")
+                                                     */
 
     /**
      * Instantiates a new kramerius model.
