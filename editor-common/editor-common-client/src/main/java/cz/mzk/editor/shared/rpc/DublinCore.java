@@ -90,8 +90,10 @@ public class DublinCore
     /** The rights. */
     private List<String> rights;
 
+    private String errorMessage;
+
     /**
-     * Adds the identifier.
+     * The error message /** Adds the identifier.
      * 
      * @param id
      *        the id
@@ -427,6 +429,21 @@ public class DublinCore
         this.source = source;
     }
 
+    /**
+     * @return the errorMessage
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    /**
+     * @param errorMessage
+     *        the errorMessage to set
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public void removeTrailingSlash() {
         if (title != null && !title.isEmpty()) {
             for (int i = 0; i < title.size(); i++) {
@@ -441,17 +458,17 @@ public class DublinCore
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public String toString() {
-        return "DublinCore [title=" + title + ", identifier=" + identifier + ", coverage=" + coverage
-                + ", relation=" + relation + ", source=" + source + ", creator=" + creator + ", publisher="
-                + publisher + ", contributor=" + contributor + ", date=" + date + ", language=" + language
-                + ", description=" + description + ", format=" + format + ", subject=" + subject + ", type="
-                + type + ", rights=" + rights + "]";
+        return "DublinCore [id=" + id + ", title=" + title + ", identifier=" + identifier + ", coverage="
+                + coverage + ", relation=" + relation + ", source=" + source + ", creator=" + creator
+                + ", publisher=" + publisher + ", contributor=" + contributor + ", date=" + date
+                + ", language=" + language + ", description=" + description + ", format=" + format
+                + ", subject=" + subject + ", type=" + type + ", rights=" + rights + ", errorMessage="
+                + errorMessage + "]";
     }
 
     public ListGridRecord toRecord() {

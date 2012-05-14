@@ -25,6 +25,7 @@
 package cz.mzk.editor.client.view.window;
 
 import com.google.gwt.event.shared.EventBus;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -96,13 +97,15 @@ public abstract class CreateWindow
 
                 DublinCore dc = null;
                 ModsTypeClient mods = null;
-                if (topTabSet != null) {
-                    dc = topTabSet.getDcTab().getDc();
-                    if (topTabSet.getModsTab() != null) {
-                        mods = ((ModsTab) topTabSet.getModsTab()).getMods();
-                    }
+                dc = topTabSet.getDcTab().getDc();
+                if (topTabSet != null && topTabSet.getModsTab() != null) {
+                    mods = ((ModsTab) topTabSet.getModsTab()).getMods();
                 }
-                createAction(dc, mods, makePublic.getValueAsBoolean());
+                if (dc != null && dc.getErrorMessage() != null && !"".equals(dc.getErrorMessage())) {
+                    SC.warn(dc.getErrorMessage());
+                } else {
+                    createAction(dc, mods, makePublic.getValueAsBoolean());
+                }
                 hide();
             }
         });

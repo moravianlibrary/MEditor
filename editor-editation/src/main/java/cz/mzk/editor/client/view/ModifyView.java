@@ -1436,11 +1436,18 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event2) {
+                DigitalObjectDetail createDigitalObjectDetail = createDigitalObjectDetail(ts);
+                if (createDigitalObjectDetail != null && createDigitalObjectDetail.getDc() != null
+                        && createDigitalObjectDetail.getDc().getErrorMessage() != null
+                        && !"".equals(createDigitalObjectDetail.getDc().getErrorMessage())) {
 
-                getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts),
-                                                    versionable.getValueAsBoolean());
-                universalWindow.hide();
-                universalWindow = null;
+                    SC.warn(createDigitalObjectDetail.getDc().getErrorMessage());
+                } else {
+                    getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail,
+                                                        versionable.getValueAsBoolean());
+                    universalWindow.hide();
+                    universalWindow = null;
+                }
             }
         });
         Button cancel = new Button();
