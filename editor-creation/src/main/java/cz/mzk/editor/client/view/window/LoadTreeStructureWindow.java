@@ -56,6 +56,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.shared.event.LoadStructureEvent;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
@@ -368,14 +369,20 @@ public class LoadTreeStructureWindow
                                        Record[] pages = new Record[nodes.size()];
                                        int i = 0, j = 0;
                                        int lastId = 0;
+                                       TreeStructureNode rootTreeNode = null;
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
                                                pages[j++] = ClientUtils.toScanRecord(node);
+                                           } else if (node.getPropId().equals(SubstructureTreeNode.ROOT_ID)) {
+                                               rootTreeNode = node;
                                            } else {
                                                int id = Integer.parseInt(node.getPropId());
                                                if (id > lastId) lastId = id;
                                                tree[i++] = ClientUtils.toTreeNode(node);
                                            }
+                                       }
+                                       if (i == 0 && rootTreeNode != null) {
+                                           tree[i++] = ClientUtils.toTreeNode(rootTreeNode);
                                        }
                                        LoadStructureEvent.fire(getEventBus(), tree, loadOnlyLeft ? null
                                                : pages, lastId);

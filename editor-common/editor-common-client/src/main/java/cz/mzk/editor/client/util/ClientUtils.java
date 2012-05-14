@@ -558,23 +558,19 @@ public class ClientUtils {
     private static TreeStructureNode toNode(Record treeNode) {
         String modelId = treeNode.getAttribute(Constants.ATTR_MODEL_ID);
         String attrId = modelId == null ? null : treeNode.getAttribute(Constants.ATTR_ID);
-        if (attrId == null || !attrId.equals(SubstructureTreeNode.ROOT_ID)) {
-            return new TreeStructureNode(attrId,
-                                         treeNode.getAttribute(Constants.ATTR_PARENT),
-                                         trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
-                                         treeNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
-                                         modelId == null ? treeNode.getAttribute(Constants.ATTR_MODEL)
-                                                 : modelId,
-                                         treeNode.getAttribute(Constants.ATTR_TYPE),
-                                         modelId == null ? treeNode.getAttribute(Constants.ATTR_ID)
-                                                 : treeNode
-                                                         .getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
-                                         treeNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
-                                         treeNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
-                                         treeNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
-                                         treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
-        }
-        return null;
+
+        return new TreeStructureNode(attrId,
+                                     treeNode.getAttribute(Constants.ATTR_PARENT),
+                                     trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
+                                     treeNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
+                                     modelId == null ? treeNode.getAttribute(Constants.ATTR_MODEL) : modelId,
+                                     treeNode.getAttribute(Constants.ATTR_TYPE),
+                                     modelId == null ? treeNode.getAttribute(Constants.ATTR_ID) : treeNode
+                                             .getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
+                                     treeNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
+                                     treeNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
+                                     treeNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
+                                     treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
     public static ScanRecord toScanRecord(TreeStructureNode node) {

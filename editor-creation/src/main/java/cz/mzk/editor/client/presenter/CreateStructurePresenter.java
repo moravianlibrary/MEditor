@@ -296,18 +296,24 @@ public class CreateStructurePresenter
                                                          inputPath,
                                                          model));
                     bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
-                    if (object != null) {
+                    if (object == null)
+                        object =
+                                new NewDigitalObject(leftPresenter.getView().getSubelementsGrid().getTree()
+                                        .findById(SubstructureTreeNode.ROOT_ID)
+                                        .getAttribute(Constants.ATTR_NAME));
+                    else
                         object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
-                        List<TreeStructureNode> nodes =
-                                ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
-                                        .getAllNodes());
-                        if (nodes != null) {
-                            bundle.getNodes().addAll(nodes);
-                        } else {
-                            EditorSC.operationFailed(lang, "Please contact an administrator");
-                            return;
-                        }
+
+                    List<TreeStructureNode> nodes =
+                            ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
+                                    .getAllNodes());
+                    if (nodes != null) {
+                        bundle.getNodes().addAll(nodes);
+                    } else {
+                        EditorSC.operationFailed(lang, "Please contact an administrator");
+                        return;
                     }
+
                     if (!emptyPages) {
                         bundle.getNodes().addAll(ClientUtils.toNodes(tilegridData));
                     }
