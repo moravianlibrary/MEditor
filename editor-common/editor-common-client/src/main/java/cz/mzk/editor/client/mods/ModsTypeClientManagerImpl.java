@@ -84,8 +84,18 @@ public class ModsTypeClientManagerImpl
      */
     @Override
     public String getType() {
-        if (isNotNullOrEmpty(modsTypeClient.getGenre()) && modsTypeClient.getGenre().get(0).getType() != null)
-            return modsTypeClient.getGenre().get(0).getType();
+        if (isNotNullOrEmpty(modsTypeClient.getGenre()) && modsTypeClient.getGenre().get(0).getType() != null) {
+            String fullType = modsTypeClient.getGenre().get(0).getType();
+            String typeKey = "";
+            for (String key : Constants.PAGE_TYPES.MAP.keySet()) {
+                if (Constants.PAGE_TYPES.MAP.get(key).equals(fullType)) {
+                    typeKey = key;
+                    break;
+                }
+            }
+            return typeKey;
+        }
+
         return "";
     }
 
@@ -579,7 +589,8 @@ public class ModsTypeClientManagerImpl
         if (type == null || "".equals(type)) {
             if (genre.get(0).getType() != null) genre.remove(0);
         } else {
-            genre.get(0).setType(type);
+            String resolvedPageType = Constants.PAGE_TYPES.MAP.get(type);
+            genre.get(0).setType(resolvedPageType == null ? "NormalPage" : resolvedPageType);
         }
         modsTypeClient.setGenre(genre);
     }
