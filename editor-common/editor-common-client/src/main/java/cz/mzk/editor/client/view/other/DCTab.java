@@ -27,8 +27,6 @@
 
 package cz.mzk.editor.client.view.other;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import com.smartgwt.client.types.Overflow;
@@ -244,41 +242,23 @@ public class DCTab
      */
     public DublinCore getDc() {
         if (dc == null) return null;
-        dc.setErrorMessage("");
-        dc.setIdentifier(getCheckedValues(identifier.getValues(), lang.dcIdentifier()));
-        dc.setContributor(getCheckedValues(contributor.getValues(), lang.dcContributor()));
-        dc.setCoverage(getCheckedValues(coverage.getValues(), lang.dcCoverage()));
-        dc.setCreator(getCheckedValues(creator.getValues(), lang.dcCreator()));
-        dc.setDate(getCheckedValues(date.getValues(), lang.dcDate()));
-        dc.setDescription(getCheckedValues(description.getValues(), lang.dcDescription()));
-        dc.setFormat(getCheckedValues(format.getValues(), lang.dcFormat()));
-        dc.setIdentifier(getCheckedValues(identifier.getValues(), lang.dcIdentifier()));
-        dc.setLanguage(getCheckedValues(language.getValues(), lang.dcLanguage()));
-        dc.setPublisher(getCheckedValues(publisher.getValues(), lang.dcPublisher()));
-        dc.setRelation(getCheckedValues(relation.getValues(), lang.dcRelation()));
-        dc.setRights(getCheckedValues(rights.getValues(), lang.dcRights()));
-        dc.setSource(getCheckedValues(source.getValues(), lang.dcSource()));
-        dc.setSubject(getCheckedValues(subject.getValues(), lang.dcSubject()));
-        dc.setTitle(getCheckedValues(title.getValues(), lang.dcTitle()));
-        dc.setType(getCheckedValues(type.getValues(), lang.dcType()));
+        dc.setIdentifier(identifier.getValues());
+        dc.setContributor(contributor.getValues());
+        dc.setCoverage(coverage.getValues());
+        dc.setCreator(creator.getValues());
+        dc.setDate(date.getValues());
+        dc.setDescription(description.getValues());
+        dc.setFormat(format.getValues());
+        dc.setIdentifier(identifier.getValues());
+        dc.setLanguage(language.getValues());
+        dc.setPublisher(publisher.getValues());
+        dc.setRelation(relation.getValues());
+        dc.setRights(rights.getValues());
+        dc.setSource(source.getValues());
+        dc.setSubject(subject.getValues());
+        dc.setTitle(title.getValues());
+        dc.setType(type.getValues());
         return dc;
-    }
-
-    private List<String> getCheckedValues(List<String> values, String elementName) {
-        if (values != null) {
-            StringBuffer errorMessage =
-                    new StringBuffer(dc != null && dc.getErrorMessage() != null ? dc.getErrorMessage() : "");
-            for (String value : values) {
-                if (value.contains("<"))
-                    errorMessage.append(lang.inDCSection() + ": " + elementName + " "
-                            + lang.isForbiddenChar() + ": &lt.<br>");
-                if (value.contains(">"))
-                    errorMessage.append(lang.inDCSection() + ": " + elementName + " "
-                            + lang.isForbiddenChar() + ": &gt.<br>");
-            }
-            dc.setErrorMessage(errorMessage.toString());
-        }
-        return values;
     }
 
     /**
