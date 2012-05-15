@@ -1198,13 +1198,19 @@ public class CreateStructurePresenter
     @Override
     public void createObjects(final DublinCore dc, final ModsTypeClient mods, final boolean visible) {
 
+        DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
+        String errorMessage = ClientUtils.checkDC(newDc, lang);
+        if (!"".equals(errorMessage)) {
+            SC.warn(errorMessage);
+            return;
+        }
+
         Image progress = new Image("images/ingesting.gif");
         getView().getPopupPanel().setWidget(progress);
         getView().getPopupPanel().setVisible(true);
         getView().getPopupPanel().center();
         alreadyDone = 0;
 
-        DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
         ModsCollectionClient newMods;
         if (mods != null) {
             newMods = new ModsCollectionClient();

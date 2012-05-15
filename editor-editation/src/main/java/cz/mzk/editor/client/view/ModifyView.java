@@ -98,6 +98,7 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.presenter.ModifyPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.ModifyUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.ContainerRecord;
 import cz.mzk.editor.client.view.other.DCTab;
@@ -1437,11 +1438,13 @@ public class ModifyView
             @Override
             public void onClick(ClickEvent event2) {
                 DigitalObjectDetail createDigitalObjectDetail = createDigitalObjectDetail(ts);
-                if (createDigitalObjectDetail != null && createDigitalObjectDetail.getDc() != null
-                        && createDigitalObjectDetail.getDc().getErrorMessage() != null
-                        && !"".equals(createDigitalObjectDetail.getDc().getErrorMessage())) {
+                String errorMessage = "";
+                if (createDigitalObjectDetail != null && createDigitalObjectDetail.getDc() != null)
+                    errorMessage = ClientUtils.checkDC(createDigitalObjectDetail.getDc(), lang);
 
-                    SC.warn(createDigitalObjectDetail.getDc().getErrorMessage());
+                if (!"".equals(errorMessage)) {
+                    SC.warn(errorMessage);
+                    return;
                 } else {
                     getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail,
                                                         versionable.getValueAsBoolean());

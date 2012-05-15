@@ -90,8 +90,6 @@ public class DublinCore
     /** The rights. */
     private List<String> rights;
 
-    private String errorMessage;
-
     /**
      * The error message /** Adds the identifier.
      * 
@@ -429,21 +427,6 @@ public class DublinCore
         this.source = source;
     }
 
-    /**
-     * @return the errorMessage
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    /**
-     * @param errorMessage
-     *        the errorMessage to set
-     */
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
     public void removeTrailingSlash() {
         if (title != null && !title.isEmpty()) {
             for (int i = 0; i < title.size(); i++) {
@@ -467,8 +450,7 @@ public class DublinCore
                 + coverage + ", relation=" + relation + ", source=" + source + ", creator=" + creator
                 + ", publisher=" + publisher + ", contributor=" + contributor + ", date=" + date
                 + ", language=" + language + ", description=" + description + ", format=" + format
-                + ", subject=" + subject + ", type=" + type + ", rights=" + rights + ", errorMessage="
-                + errorMessage + "]";
+                + ", subject=" + subject + ", type=" + type + ", rights=" + rights + "]";
     }
 
     public ListGridRecord toRecord() {
