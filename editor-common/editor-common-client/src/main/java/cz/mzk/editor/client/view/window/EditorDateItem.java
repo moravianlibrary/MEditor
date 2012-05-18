@@ -28,6 +28,8 @@ import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.DateDisplayFormat;
+import com.smartgwt.client.types.DateItemSelectorFormat;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.FormItemValueFormatter;
 import com.smartgwt.client.widgets.form.fields.DateTimeItem;
@@ -57,6 +59,9 @@ public class EditorDateItem
      * 
      */
     private void setFormating() {
+        setDateFormatter(DateDisplayFormat.TOEUROPEANSHORTDATE);
+        setInputFormat("dd/MM/yyyy");
+        setSelectorFormat(DateItemSelectorFormat.DAY_MONTH_YEAR);
         setEditorValueFormatter(new FormItemValueFormatter() {
 
             @Override
@@ -66,10 +71,9 @@ public class EditorDateItem
                 return date.replaceAll("/", ".");
             }
         });
+
         setHoverOpacity(75);
         setHoverWidth(330);
         setHoverStyle("interactImageHover");
-
     }
-
 }
