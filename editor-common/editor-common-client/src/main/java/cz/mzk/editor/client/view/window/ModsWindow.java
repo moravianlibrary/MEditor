@@ -35,7 +35,6 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -113,7 +112,7 @@ public abstract class ModsWindow
     private final ModsTypeClientManager modsClientManager;
 
     /** The DateTimeItem with day value set to EUROPEANSHORTDATE-format */
-    private DateTimeItem dateItem;
+    private EditorDateItem dateItem;
 
     private ObjectBasicInfoLayout objectBasicInfoLayout;
 

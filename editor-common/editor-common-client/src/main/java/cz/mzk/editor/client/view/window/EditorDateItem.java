@@ -50,6 +50,11 @@ public class EditorDateItem
         setFormating();
     }
 
+    public EditorDateItem(String name) {
+        super(name);
+        setFormating();
+    }
+
     public EditorDateItem(String name, String title) {
         super(name, title);
         setFormating();
@@ -59,8 +64,9 @@ public class EditorDateItem
      * 
      */
     private void setFormating() {
+        setUseTextField(true);
         setDateFormatter(DateDisplayFormat.TOEUROPEANSHORTDATE);
-        setInputFormat("dd/MM/yyyy");
+        setInputFormat("dd.MM.yyyy");
         setSelectorFormat(DateItemSelectorFormat.DAY_MONTH_YEAR);
         setEditorValueFormatter(new FormItemValueFormatter() {
 
