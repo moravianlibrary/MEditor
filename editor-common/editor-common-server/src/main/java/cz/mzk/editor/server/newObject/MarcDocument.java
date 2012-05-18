@@ -38,7 +38,7 @@ public class MarcDocument {
     }
 
     public String findSysno() {
-        String xpath = X_PATH_OAI_PREFIX + "/marc21:record/marc21:controlfield[@tag='001']";
+        String xpath = X_PATH_OAI_PREFIX + "/marc21:record/marc21:controlfield[@tag='SYS']";
         return findValue(xpath);
     }
 
