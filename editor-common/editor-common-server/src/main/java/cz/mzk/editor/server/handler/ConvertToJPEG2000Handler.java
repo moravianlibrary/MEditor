@@ -64,8 +64,6 @@ public class ConvertToJPEG2000Handler
             .toString());
 
     private static final Object LOCK = ConvertToJPEG2000Handler.class;
-    
-    private static final String CONVERTER_INSTANCE = "converter";
 
     /** The configuration. */
     private final EditorConfiguration configuration;
@@ -100,9 +98,15 @@ public class ConvertToJPEG2000Handler
         // parse input
         final ImageItem item = action.getItem();
         ServerUtils.checkExpiredSession(httpSessionProvider);
-//        Converter converter = Converter.getInstance();
-//        converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
-        convertToJpeg2000(item);
+        if (configuration.getAkkaOn()) {
+            Converter converter = Converter.getInstance();
+            boolean success = converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
+            if (!success) {
+                convertToJpeg2000(item);
+            }
+        } else {
+            convertToJpeg2000(item);
+        }
         return new ConvertToJPEG2000Result();
     }
 
@@ -139,11 +143,11 @@ public class ConvertToJPEG2000Handler
         if (item.getJpgFsPath().toLowerCase().endsWith(Constants.JPEG_2000_EXTENSION)) {
             try {
                 CreateObjectUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());
-                LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + item.getJpgFsPath()
+                LOGGER.info("image " + configuration.getImagesPath() + item.getJpgFsPath()
                         + Constants.JPEG_2000_EXTENSION + "  was copied to  " + item.getJpeg2000FsPath()
                         + Constants.JPEG_2000_EXTENSION);
             } catch (CreateObjectException e) {
-                LOGGER.error("Unable to copy image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
+                LOGGER.error("Unable to copy image " + configuration.getImagesPath()
                                      + item.getJpgFsPath() + Constants.JPEG_2000_EXTENSION + " to  "
                                      + item.getJpeg2000FsPath() + Constants.JPEG_2000_EXTENSION,
                              e);

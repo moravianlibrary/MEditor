@@ -51,24 +51,29 @@ public class RequestForAdding
 
     @Override
     public void onModuleLoad() {
-        // TODO Auto-generated method stub
-        final RequestConstants lang = GWT.create(RequestConstants.class);
-        final RequestForAddingServiceAsync service = GWT.create(RequestForAddingService.class);
+        callServer(true);
 
-        AsyncCallback<String> callback = new AsyncCallback<String>() {
+    }
 
-            @Override
-            public void onFailure(Throwable caught) {
-                // TODO: Do something with errors.
-            }
+    private void callServer(boolean process) {
+        if (process) {
+            final RequestConstants lang = GWT.create(RequestConstants.class);
+            final RequestForAddingServiceAsync service = GWT.create(RequestForAddingService.class);
 
-            @Override
-            public void onSuccess(String result) {
-                showGUI(result, lang, service);
-            }
-        };
-        service.getName(callback);
+            AsyncCallback<String> callback = new AsyncCallback<String>() {
 
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO: Do something with errors.
+                }
+
+                @Override
+                public void onSuccess(String result) {
+                    RootPanel.get().add(showGUI(result, lang, service));
+                }
+            };
+            service.getName(callback);
+        }
     }
 
     public synchronized boolean isMsgVisible() {
@@ -79,7 +84,9 @@ public class RequestForAdding
         this.msgVisible = msgVisible;
     }
 
-    private void showGUI(String name, final RequestConstants lang, final RequestForAddingServiceAsync service) {
+    private VLayout showGUI(String name,
+                            final RequestConstants lang,
+                            final RequestForAddingServiceAsync service) {
         VLayout layout = new VLayout();
         layout.setPadding(20);
         layout.setWidth("98%");
@@ -166,19 +173,18 @@ public class RequestForAdding
         layout.addMember(addButton);
         layout.addMember(anim);
         layout.addMember(new HTMLFlow(" "));
-
-        RootPanel.get().add(layout);
+        return layout;
     }
 
     public static native void langRefresh(String locale)/*-{
-		var pos = $wnd.location.search.indexOf('&locale=');
-		var params = $wnd.location.search;
-		if (pos == -1) {
-			$wnd.location.search = params + '&locale=' + locale;
-		} else {
-			$wnd.location.search = params.substring(0, pos) + '&locale='
-					+ locale + params.substring(pos + 13, params.length);
-		}
-    }-*/;
+                                                        var pos = $wnd.location.search.indexOf('&locale=');
+                                                        var params = $wnd.location.search;
+                                                        if (pos == -1) {
+                                                        $wnd.location.search = params + '&locale=' + locale;
+                                                        } else {
+                                                        $wnd.location.search = params.substring(0, pos) + '&locale='
+                                                        + locale + params.substring(pos + 13, params.length);
+                                                        }
+                                                        }-*/;
 
 }

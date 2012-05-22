@@ -56,11 +56,10 @@ public class ScanRecord
      * @param path
      *        the path
      */
-    public ScanRecord(String name, String model, String picture, String path, String pageType) {
+    public ScanRecord(String name, String model, String picture, String pageType) {
         setName(name);
         setModel(model);
         setPicture(picture);
-        setPath(path);
         setPageType(pageType);
     }
 
@@ -122,25 +121,6 @@ public class ScanRecord
     }
 
     /**
-     * Set the path.
-     * 
-     * @param path
-     *        the path
-     */
-    public void setPath(String path) {
-        setAttribute(Constants.ATTR_PATH, path);
-    }
-
-    /**
-     * Return the path.
-     * 
-     * @return the path
-     */
-    public String getPath() {
-        return getAttribute(Constants.ATTR_PATH);
-    }
-
-    /**
      * Set the pageType.
      * 
      * @param pageType
@@ -175,7 +155,7 @@ public class ScanRecord
     @Override
     public String toString() {
         return "ScanRecord [getName()=" + getName() + ", getModel()=" + getModel() + ", getPicture()="
-                + getPicture() + ", getPath()=" + getPath() + ", getPageType()=" + getPageType() + "]";
+                + getPicture() + ", getPageType()=" + getPageType() + "]";
     }
 
 }

@@ -15,11 +15,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-
-	<properties>
-		<gwt.generated></gwt.generated>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.gwt</groupId>

@@ -98,6 +98,7 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.presenter.ModifyPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.ModifyUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.ContainerRecord;
 import cz.mzk.editor.client.view.other.DCTab;
@@ -261,7 +262,12 @@ public class ModifyView
             modsWindow = null;
         }
         modsWindow =
-                new ModsWindow(focusedTabSet.getModsCollection(), focusedTabSet.getUuid(), lang, eventBus) {
+                new ModsWindow(focusedTabSet.getModsCollection(),
+                               focusedTabSet.getUuid(),
+                               lang,
+                               eventBus,
+                               focusedTabSet.getModel(),
+                               focusedTabSet.getInfoTab().getOriginalLabel()) {
 
                     @Override
                     protected void init() {
@@ -275,7 +281,12 @@ public class ModifyView
 
                                         @Override
                                         public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                            publishShortCut(focusedTabSet);
+                                            String message = verify();
+                                            if (message == null) {
+                                                publishShortCut(focusedTabSet);
+                                            } else {
+                                                SC.warn(message);
+                                            }
                                         }
                                     });
                         } else {
@@ -367,7 +378,17 @@ public class ModifyView
             universalWindow.hide();
             universalWindow = null;
         }
-        tryToPublish(focusedTabSet);
+
+        if (modsWindow != null && modsWindow.isCreated()) {
+            String message = modsWindow.verify();
+            if (message == null) {
+                tryToPublish(focusedTabSet);
+            } else {
+                SC.warn(message);
+            }
+        } else {
+            tryToPublish(focusedTabSet);
+        }
     }
 
     /**
@@ -414,6 +435,7 @@ public class ModifyView
         DigitalObjectModel model = detail.getModel();
 
         final EditorTabSet topTabSet = new EditorTabSet();
+        topTabSet.setModel(model);
         topTabSet.setTabBarPosition(Side.TOP);
         topTabSet.setWidth100();
         topTabSet.setHeight100();
@@ -449,6 +471,7 @@ public class ModifyView
         List<Tab> containerTabs = new ArrayList<Tab>();
         if (models != null) { // has any containers (if not, it is a page)
             Map<String, String> labels = new HashMap<String, String>();
+            labels.put(DigitalObjectModel.ARTICLE.getValue(), lang.article());
             labels.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalparts());
             labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunits());
             labels.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitems());
@@ -480,6 +503,7 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICAL.getValue(), lang.periodical());
         labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
+        labelsSingular.put(DigitalObjectModel.ARTICLE.getValue(), lang.article());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         topTabSet.setModsCollection(mods);
         topTabSet.setDc(dc);
@@ -1413,11 +1437,20 @@ public class ModifyView
 
             @Override
             public void onClick(ClickEvent event2) {
+                DigitalObjectDetail createDigitalObjectDetail = createDigitalObjectDetail(ts);
+                String errorMessage = "";
+                if (createDigitalObjectDetail != null && createDigitalObjectDetail.getDc() != null)
+                    errorMessage = ClientUtils.checkDC(createDigitalObjectDetail.getDc(), lang);
 
-                getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail(ts),
-                                                    versionable.getValueAsBoolean());
-                universalWindow.hide();
-                universalWindow = null;
+                if (!"".equals(errorMessage)) {
+                    SC.warn(errorMessage);
+                    return;
+                } else {
+                    getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail,
+                                                        versionable.getValueAsBoolean());
+                    universalWindow.hide();
+                    universalWindow = null;
+                }
             }
         });
         Button cancel = new Button();
@@ -1451,10 +1484,12 @@ public class ModifyView
         DublinCore changedDC = null;
         ModsCollectionClient changedMods = null;
         DigitalObjectDetail object = new DigitalObjectDetail(model, null);
+        String newLabel = null;
+        InfoTab infoT = ts.getInfoTab();
 
         if (modsWindow != null) {
 
-            changedMods = modsWindow.publishWindow();
+            changedMods = modsWindow.publishWindow(model);
             object.setModsChanged(true);
             changedDC = ts.getDc();
             object.setDcChanged(false);
@@ -1463,6 +1498,8 @@ public class ModifyView
                 changedDC = modsWindow.reflectInDC(changedDC);
                 object.setDcChanged(true);
             }
+
+            newLabel = modsWindow.getLabel();
 
             if (modsWindow != null && downloadingWindow == null) {
                 modsWindow.hide();
@@ -1491,20 +1528,17 @@ public class ModifyView
                 object.setModsChanged(false);
             }
 
+            newLabel = (infoT.getLabelItem() != null ? infoT.getLabelItem() : "");
+        }
+
+        if (newLabel != null) {
+            object.setLabelChanged(infoT.getOriginalLabel() == null
+                    || !newLabel.equals(infoT.getOriginalLabel()));
+            object.setLabel(newLabel);
         }
 
         object.setDc(changedDC);
         object.setMods(changedMods);
-        //                TabSet ts = (TabSet) event.getItem().getAttributeAsObject(ID_TABSET);
-        InfoTab infoT = ts.getInfoTab();
-
-        if (infoT.getLabelItem() == null && infoT.getOriginalLabel() != null) {
-            object.setLabel("");
-            object.setLabelChanged(true);
-        } else {
-            object.setLabelChanged(!infoT.getLabelItem().equals(infoT.getOriginalLabel()));
-            object.setLabel(infoT.getLabelItem());
-        }
 
         if (ts.getOcrContent() != null && (ts.getOriginalOcrContent() != null)
                 || "".equals(ts.getOriginalOcrContent())) {
@@ -1643,6 +1677,7 @@ public class ModifyView
                     close(focusedTabSet);
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_B.getCode()) {
                     showBasicModsWindow(focusedTabSet);
+
                 } else if (code == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_O.getCode()) {
                     String lockOwner = focusedTabSet.getLockInfo().getLockOwner();
                     if (lockOwner != null && "".equals(lockOwner)) {

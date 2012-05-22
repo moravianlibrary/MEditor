@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.config;
 
+import java.io.File;
+
 import java.util.StringTokenizer;
 
 import org.apache.commons.configuration.Configuration;
@@ -252,7 +254,20 @@ public abstract class EditorConfiguration {
         /** IP addresses of nodes where akka microkernel is running */
         public static final String AKKA_CONVERT_WORKERS = "akkaConvertWorkers";
 
+        /**
+         * On/Off akka microkernel (if off, the old fashioned way of converting
+         * is used)
+         */
+        public static final String AKKA_ON = "akkaOn";
+
         public static final String CREATE_INGEST_INFO_XML_FILE = "createIngestInfoXmlFile";
+
+        /** The Constant IMAGES_LOCATION. */
+        public static final String IMAGES_LOCATION = "imagesDir";
+        
+        /** The Constant DEFAULT_IMAGES_LOCATION. */
+        public static final String DEFAULT_IMAGES_LOCATION = System.getProperty("user.home")
+                + File.separator + "output" + File.separator;
     }
 
     /**
@@ -432,7 +447,11 @@ public abstract class EditorConfiguration {
     }
 
     public String getHostname() {
-        return getConfiguration().getString(EditorClientConfiguration.Constants.HOSTNAME);
+        return getConfiguration().getString(EditorClientConfiguration.Constants.HOSTNAME, "editor.mzk.cz");
+    }
+
+    public String getImagesPath() {
+        return getConfiguration().getString(ServerConstants.IMAGES_LOCATION);
     }
 
     public String getVsup() {
@@ -675,4 +694,9 @@ public abstract class EditorConfiguration {
     public String[] getAkkaConvertWorkers() {
         return getConfiguration().getStringArray(ServerConstants.AKKA_CONVERT_WORKERS);
     }
+
+    public boolean getAkkaOn() {
+        return getConfiguration().getBoolean(ServerConstants.AKKA_ON, false);
+    }
+
 }

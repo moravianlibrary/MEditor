@@ -42,10 +42,6 @@ public class MarcDocument {
         return findValue(xpath);
     }
 
-    public String findBase() {
-        return "mzk03";//TODO: opravit
-    }
-
     public String find040a() {
         return findDatafieldAndSubfield("040", 'a');
     }
@@ -105,6 +101,10 @@ public class MarcDocument {
 
     public String find260c() {
         return findDatafieldAndSubfield("260", 'c');
+    }
+
+    public String find910b() {
+        return findDatafieldAndSubfield("910", 'b');
     }
 
     public Document getDocument() {

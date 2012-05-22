@@ -90,6 +90,8 @@ public abstract class FoxmlBuilder {
     private String partNumber;
     private String aditionalInfo;
 
+    private String base;
+
     @Inject
     private EditorConfiguration configuration;
 
@@ -102,9 +104,23 @@ public abstract class FoxmlBuilder {
     }
 
     public FoxmlBuilder(NewDigitalObject object, Policy policy) {
-        this.label = ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH);
+        setLabel(object);
         this.children = new ArrayList<RelsExtRelation>();
         this.policy = policy;
+    }
+
+    private void setLabel(NewDigitalObject object) {
+        String labelToAdd = "";
+        if (object.getModel() == DigitalObjectModel.PERIODICALVOLUME) {
+            labelToAdd = object.getPartNumberOrAlto();
+        } else {
+            if (object.getName() != null && !"".equals(object.getName())) {
+                labelToAdd = object.getName();
+            } else {
+                labelToAdd = "untitled";
+            }
+        }
+        this.label = ClientUtils.trimLabel(labelToAdd, Constants.MAX_LABEL_LENGTH);
     }
 
     public void createDocument() {
@@ -316,10 +332,6 @@ public abstract class FoxmlBuilder {
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     /**
      * @return the type
      */
@@ -470,6 +482,21 @@ public abstract class FoxmlBuilder {
      */
     public String getAditionalInfo() {
         return aditionalInfo;
+    }
+
+    /**
+     * @return the base
+     */
+    public String getBase() {
+        return base;
+    }
+
+    /**
+     * @param base
+     *        the base to set
+     */
+    public void setBase(String base) {
+        this.base = base;
     }
 
     /**

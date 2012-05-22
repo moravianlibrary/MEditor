@@ -29,6 +29,7 @@ package cz.mzk.editor.server.DAO;
 
 import java.io.File;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -164,9 +165,23 @@ public class ImageResolverDAOImpl
     public ArrayList<String> resolveItems(List<String> oldJpgFsPaths) throws DatabaseException {
         if (oldJpgFsPaths == null) throw new NullPointerException("oldJpgFsPaths");
         ArrayList<String> ret = new ArrayList<String>(oldJpgFsPaths.size());
-        for (String oldJpgFsPath : oldJpgFsPaths) {
-            ret.add(resolveItem(oldJpgFsPath));
+        if (!oldJpgFsPaths.isEmpty()) {
+            try {
+                Connection con = getConnection();
+                PreparedStatement selectSt = null, updateSt = null;
+                selectSt = con.prepareStatement(SELECT_ITEM_STATEMENT);
+                updateSt = con.prepareStatement(UPDATE_ITEM_STATEMENT);
+                for (String oldJpgFsPath : oldJpgFsPaths) {
+                    ret.add(resolveItem(oldJpgFsPath, selectSt, updateSt));
+                }
+            } catch (SQLException e) {
+                LOGGER.error(e);
+                e.printStackTrace();
+            } finally {
+                closeConnection();
+            }
         }
+
         return ret;
     }
 
@@ -174,49 +189,35 @@ public class ImageResolverDAOImpl
      * {@inheritDoc}
      */
 
-    @Override
-    public String resolveItem(String oldJpgFsPath) throws DatabaseException {
+    private String resolveItem(String oldJpgFsPath, PreparedStatement selectSt, PreparedStatement updateSt)
+            throws DatabaseException {
         if (oldJpgFsPath == null || "".equals(oldJpgFsPath)) throw new NullPointerException("oldJpgFsPath");
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        PreparedStatement statement = null;
+
         String ret = null;
+        int id = -1;
+
         try {
-            // TX start
-            statement = getConnection().prepareStatement(SELECT_ITEM_STATEMENT);
-            statement.setString(1, oldJpgFsPath);
-            ResultSet rs = statement.executeQuery();
-            int i = 0;
-            int id = -1;
-            int rowsAffected = 0;
+            selectSt.setString(1, oldJpgFsPath);
+            ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
                 id = rs.getInt("id");
                 ret = rs.getString("imageFile");
-                i++;
             }
+        } catch (SQLException e) {
+            LOGGER.error(e);
+        }
+        // no need for closing the connection
+        try {
             if (id != -1 && new File(ret).exists()) {
-                statement = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
-                statement.setInt(1, id);
-                rowsAffected = statement.executeUpdate();
+                updateSt.setInt(1, id);
+                updateSt.executeUpdate();
             } else {
                 return null;
             }
-            if (rowsAffected == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated.");
-            } else {
-                getConnection().rollback();
-                LOGGER.error("DB has not been updated -> rollback!");
-            }
-            // TX end
         } catch (SQLException e) {
             LOGGER.error(e);
-        } finally {
-            closeConnection();
         }
+        // no need for closing the connection
 
         return ret;
     }

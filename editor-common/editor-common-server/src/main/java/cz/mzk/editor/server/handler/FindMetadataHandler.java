@@ -104,7 +104,7 @@ public class FindMetadataHandler
         ArrayList<MetadataBundle> enrichedBundle = null;
         if (action.isOai()) {
             String completeQuery = String.format(action.getOaiQuery(), action.getId());
-            bundle = oaiClient.search(completeQuery);
+            bundle = oaiClient.search(completeQuery, action.getBase());
         } else {
             bundle = z39Client.search(action.getSearchType(), action.getId());
             if (ClientUtils.toBoolean(configuration.getVsup())) {
@@ -114,7 +114,7 @@ public class FindMetadataHandler
             enrichedBundle = new ArrayList<MetadataBundle>(bundle.size());
             for (MetadataBundle bun : bundle) {
                 String completeQuery = String.format(action.getOaiQuery(), bun.getMarc().getSysno());
-                ArrayList<MetadataBundle> foo = oaiClient.search(completeQuery);
+                ArrayList<MetadataBundle> foo = oaiClient.search(completeQuery, action.getBase());
                 if (!foo.isEmpty()) {
                     enrichedBundle.add(foo.get(0));
                 }

@@ -88,6 +88,7 @@ import cz.mzk.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.mzk.editor.server.handler.GetRelationshipsHandler;
 import cz.mzk.editor.server.handler.GetUserInfoHandler;
 import cz.mzk.editor.server.handler.GetUserRolesAndIdentitiesHandler;
+import cz.mzk.editor.server.handler.InitializeConversionHandler;
 import cz.mzk.editor.server.handler.InsertNewDigitalObjectHandler;
 import cz.mzk.editor.server.handler.LockDigitalObjectHandler;
 import cz.mzk.editor.server.handler.LogoutHandler;
@@ -134,6 +135,7 @@ import cz.mzk.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;
 import cz.mzk.editor.shared.rpc.action.GetUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
+import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.LockDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
@@ -208,9 +210,10 @@ public class ServerModule
         bindHandler(StoreTreeStructureAction.class, StoreTreeStructureHandler.class);
         bindHandler(ChangeRightsAction.class, ChangeRightsHandler.class);
         bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
+        bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
-        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
+        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class);
 
         // DAO
         bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);

@@ -37,6 +37,9 @@ class Worker extends Actor {
   }
 }
 
+/**
+ * This class is used for testing purposes only
+ */
 class Server extends Bootable {
 
   val basicConf = ConfigFactory.parseString("""

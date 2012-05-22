@@ -34,8 +34,6 @@ import java.io.IOException;
 
 import java.util.Properties;
 
-import com.google.inject.Singleton;
-
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -44,11 +42,12 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.config.EditorClientConfiguration;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class EditorConfigurationImpl.
  */
-@Singleton
 public class EditorConfigurationImpl
         extends EditorConfiguration {
 
@@ -57,10 +56,6 @@ public class EditorConfigurationImpl
 
     /** The Constant DEFAULT_CONF_LOCATION. */
     public static final String DEFAULT_CONF_LOCATION = "configuration.properties";
-
-    /** The Constant DEFAULT_IMAGES_LOCATION. */
-    public static final String DEFAULT_IMAGES_LOCATION = WORKING_DIR + File.separator + "images"
-            + File.separator;
 
     /** The Constant CONFIGURATION. */
     public static final String CONFIGURATION = WORKING_DIR + File.separator + DEFAULT_CONF_LOCATION;
@@ -116,14 +111,6 @@ public class EditorConfigurationImpl
                 }
             }
         }
-        File imagesDir = new File(DEFAULT_IMAGES_LOCATION);
-        if (!imagesDir.exists()) {
-            boolean mkdirs = imagesDir.mkdirs();
-            if (!mkdirs) {
-                LOGGER.error("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
-                throw new RuntimeException("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
-            }
-        }
 
         CompositeConfiguration constconf = new CompositeConfiguration();
         PropertiesConfiguration file = null;
@@ -137,13 +124,27 @@ public class EditorConfigurationImpl
         constconf.addConfiguration(file);
         constconf.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
         this.configuration = constconf;
+
+        String hostname =
+                configuration.getString(EditorClientConfiguration.Constants.HOSTNAME, "editor.mzk.cz");
+        if (hostname.contains("://")) {
+            hostname = hostname.substring(hostname.indexOf("://") + "://".length());
+        }
+        File imagesDir = new File(ServerConstants.DEFAULT_IMAGES_LOCATION + hostname + File.separator);
+        if (!imagesDir.exists()) {
+            boolean mkdirs = imagesDir.mkdirs();
+            if (!mkdirs) {
+                LOGGER.error("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
+                throw new RuntimeException("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
+            }
+        }
+        constconf.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION
+                + hostname + File.separator);
     }
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.config.EditorConfiguration#getConfiguration
-     * ()
+     * @see cz.mzk.editor.server.config.EditorConfiguration#getConfiguration ()
      */
     @Override
     public Configuration getConfiguration() {
@@ -152,8 +153,7 @@ public class EditorConfigurationImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.config.EditorConfiguration#setConfiguration
+     * @see cz.mzk.editor.server.config.EditorConfiguration#setConfiguration
      * (org.apache.commons.configuration.Configuration)
      */
     @Override

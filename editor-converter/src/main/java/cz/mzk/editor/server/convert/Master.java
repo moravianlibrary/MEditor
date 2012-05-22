@@ -46,7 +46,6 @@ public class Master extends UntypedActor {
             convertor.finishWithError(((NotOk)message).uuid());
         }
         if (convertor.allFinished()) {
-            convertor.finish();
         }
     }
 }

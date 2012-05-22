@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.smartgwt.client.types.DateDisplayFormat;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Canvas;
@@ -1399,7 +1400,9 @@ public final class TabUtils {
             public void onClick(ClickEvent event) {
                 final DynamicForm form = new DynamicForm();
                 FormItem item = newItem(mainAttr);
-                item.setWidth(550);
+                if (attributes != null && attributes.length > 0) {
+                    item.setWidth(550);
+                }
                 if (isAttribPresent) {
                     FormItem[] items = getAttributes(false, attributes).getFields();
                     FormItem[] itemsToAdd = new FormItem[items.length + 1];
@@ -1585,6 +1588,7 @@ public final class TabUtils {
             item = new CheckboxItem(attr.getName());
         } else if (type.equals(DateItem.class)) {
             item = new DateItem(attr.getName());
+            item.setDisplayFormat(DateDisplayFormat.TOEUROPEANSHORTDATE);
             ((DateItem) item).setUseTextField(true);
         } else if (type.equals(SelectItem.class)) {
             item = new SelectItem(attr.getName());

@@ -6,8 +6,9 @@
 	<xsl:strip-space elements="*"/>
 
 	<!-- Maintenance note: For each revision, change the content of <recordInfo><recordOrigin> to reflect the new revision number.
-	MARC21slim2MODS3-4 (Revision 1.70) 2010227
+	MARC21slim2MODS3-4 (Revision 1.71) 2010227
 	
+Revision 1.71 - Monographs do not have frequency; signature added for monographs 2012/05/21 - jkremser 
 Revision 1.70 - Added mapping for OCLC numbers in 035s to go into <identifier type="oclc"> 2011/02/27 - tmee 	
 Revision 1.69 - Added mapping for untyped identifiers for 024 - 2011/02/27 tmee 
 Revision 1.68 - Added <subject><titleInfo> mapping for 600/610/611 subfields t,p,n - 2010/12/22 tmee
@@ -850,31 +851,33 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 				</frequency>
 			</xsl:for-each>
 			<!--	1.67	-->
-			<xsl:for-each select="marc:controlfield[@tag=008]">
-				<xsl:variable name="controlField008-18" select="substring($controlField008,19,1)"/>
-				<frequency>
-					<xsl:choose>
-						<xsl:when test="$controlField008-18='a'">Annual</xsl:when>
-						<xsl:when test="$controlField008-18='b'">Bimonthly</xsl:when>
-						<xsl:when test="$controlField008-18='c'">Semiweekly</xsl:when>
-						<xsl:when test="$controlField008-18='d'">Daily</xsl:when>
-						<xsl:when test="$controlField008-18='e'">Biweekly</xsl:when>
-						<xsl:when test="$controlField008-18='f'">Semiannual</xsl:when>
-						<xsl:when test="$controlField008-18='g'">Biennial</xsl:when>
-						<xsl:when test="$controlField008-18='h'">Triennial</xsl:when>
-						<xsl:when test="$controlField008-18='i'">Three times a week</xsl:when>
-						<xsl:when test="$controlField008-18='j'">Three times a month</xsl:when>
-						<xsl:when test="$controlField008-18='k'">Continuously updated</xsl:when>
-						<xsl:when test="$controlField008-18='m'">Monthly</xsl:when>
-						<xsl:when test="$controlField008-18='q'">Quarterly</xsl:when>
-						<xsl:when test="$controlField008-18='s'">Semimonthly</xsl:when>
-						<xsl:when test="$controlField008-18='t'">Three times a year</xsl:when>
-						<xsl:when test="$controlField008-18='u'">Unknown</xsl:when>
-						<xsl:when test="$controlField008-18='w'">Weekly</xsl:when>
-						<xsl:when test="$controlField008-18='#'">Completely irregular</xsl:when>
-					</xsl:choose>
-				</frequency>
-			</xsl:for-each>
+			<xsl:if test="$leader7='b' or $leader7='s'"> <!-- if it is periodical -->
+				<xsl:for-each select="marc:controlfield[@tag=008]">
+					<xsl:variable name="controlField008-18" select="substring($controlField008,19,1)"/>
+					<frequency>
+						<xsl:choose>
+							<xsl:when test="$controlField008-18='a'">Annual</xsl:when>
+							<xsl:when test="$controlField008-18='b'">Bimonthly</xsl:when>
+							<xsl:when test="$controlField008-18='c'">Semiweekly</xsl:when>
+							<xsl:when test="$controlField008-18='d'">Daily</xsl:when>
+							<xsl:when test="$controlField008-18='e'">Biweekly</xsl:when>
+							<xsl:when test="$controlField008-18='f'">Semiannual</xsl:when>
+							<xsl:when test="$controlField008-18='g'">Biennial</xsl:when>
+							<xsl:when test="$controlField008-18='h'">Triennial</xsl:when>
+							<xsl:when test="$controlField008-18='i'">Three times a week</xsl:when>
+							<xsl:when test="$controlField008-18='j'">Three times a month</xsl:when>
+							<xsl:when test="$controlField008-18='k'">Continuously updated</xsl:when>
+							<xsl:when test="$controlField008-18='m'">Monthly</xsl:when>
+							<xsl:when test="$controlField008-18='q'">Quarterly</xsl:when>
+							<xsl:when test="$controlField008-18='s'">Semimonthly</xsl:when>
+							<xsl:when test="$controlField008-18='t'">Three times a year</xsl:when>
+							<xsl:when test="$controlField008-18='u'">Unknown</xsl:when>
+							<xsl:when test="$controlField008-18='w'">Weekly</xsl:when>
+							<xsl:when test="$controlField008-18='#'">Completely irregular</xsl:when>
+						</xsl:choose>
+					</frequency>
+				</xsl:for-each>
+			</xsl:if>
 		</originInfo>
 
 		<xsl:for-each select="marc:datafield[@tag=880]">
@@ -1767,7 +1770,13 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 			<xsl:call-template name="createClassificationFrom086"/>
 		</xsl:for-each>
 
-		<!--	location	-->
+
+		<!-- location -->	
+		<xsl:if test="not($leader7='b' or $leader7='s')">  <!-- if it is monography -->
+			<xsl:for-each select="marc:datafield[@tag=910]">
+				<xsl:call-template name="createLocationFrom910"/>		
+			</xsl:for-each>
+		</xsl:if>
 
 		<xsl:for-each select="marc:datafield[@tag=852]">
 			<xsl:call-template name="createLocationFrom852"/>
@@ -2450,7 +2459,8 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 			</xsl:for-each>
 
 			<recordOrigin>Converted from MARCXML to MODS version 3.4 using MARC21slim2MODS3-4.xsl
-				(Revision 1.70)</recordOrigin>
+				(Revision 1.71)</recordOrigin>
+			<recordOrigin>Digital object was created by Metadata editor (code.google.com/p/meta-editor)</recordOrigin>
 
 			<xsl:for-each select="marc:datafield[@tag=040]/marc:subfield[@code='b']">
 				<languageOfCataloging>
@@ -4960,6 +4970,15 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 				<xsl:call-template name="part"/>
 			</titleInfo>
 		</relatedItem>
+	</xsl:template>
+
+	<!-- location 910 (signature) -->
+	<xsl:template name="createLocationFrom910">
+			<location>
+			<shelfLocation>
+				<xsl:value-of select="."/>
+			</shelfLocation>
+			</location>
 	</xsl:template>
 
 

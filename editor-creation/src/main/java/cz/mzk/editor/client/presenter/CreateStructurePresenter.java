@@ -65,14 +65,10 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
-import com.smartgwt.client.widgets.tab.TabSet;
-import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
-import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
@@ -120,8 +116,11 @@ import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
+import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
+import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
+import cz.mzk.editor.shared.rpc.action.InitializeConversionResult;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
@@ -170,8 +169,6 @@ public class CreateStructurePresenter
         ScanRecord deepCopyScanRecord(Record originalRecord);
 
         void updateRecordsInTileGrid(Record[] records);
-
-        TabSet getPagesTabSet();
     }
 
     /**
@@ -201,6 +198,9 @@ public class CreateStructurePresenter
     /** The model. */
     private String model;
 
+    /** The base. */
+    private String base;
+
     private MetadataBundle bundle;
 
     /** The place manager. */
@@ -211,8 +211,6 @@ public class CreateStructurePresenter
     private List<Record> markedRecords;
 
     private ButtonItem createAtOnceButton;
-
-    private Record[] allPages;
 
     /**
      * Instantiates a new create presenter.
@@ -284,15 +282,38 @@ public class CreateStructurePresenter
                 if (emptyTree && emptyPages) {
                     SC.warn(lang.nothingToSave());
                 } else {
-                    object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+                    String name =
+                            leftPresenter.getView().getSubelementsGrid().getTree()
+                                    .findById(SubstructureTreeNode.ROOT_OBJECT_ID)
+                                    .getAttributeAsString(Constants.ATTR_NAME);
                     TreeStructureBundle bundle = new TreeStructureBundle();
-                    bundle.setInfo(new TreeStructureInfo(-1, null, null, leftPresenter.getBarcode(), object
-                            .getName(), null, inputPath, model));
+                    bundle.setInfo(new TreeStructureInfo(-1,
+                                                         null,
+                                                         null,
+                                                         leftPresenter.getBarcode(),
+                                                         name,
+                                                         null,
+                                                         inputPath,
+                                                         model));
                     bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
-                    if (object != null) {
-                        bundle.getNodes().addAll(ClientUtils.toNodes(leftPresenter.getView()
-                                .getSubelementsGrid().getTree().getAllNodes()));
+                    if (object == null)
+                        object =
+                                new NewDigitalObject(leftPresenter.getView().getSubelementsGrid().getTree()
+                                        .findById(SubstructureTreeNode.ROOT_ID)
+                                        .getAttribute(Constants.ATTR_NAME));
+                    else
+                        object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+
+                    List<TreeStructureNode> nodes =
+                            ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
+                                    .getAllNodes());
+                    if (nodes != null) {
+                        bundle.getNodes().addAll(nodes);
+                    } else {
+                        EditorSC.operationFailed(lang, "Please contact an administrator");
+                        return;
                     }
+
                     if (!emptyPages) {
                         bundle.getNodes().addAll(ClientUtils.toNodes(tilegridData));
                     }
@@ -330,6 +351,8 @@ public class CreateStructurePresenter
         leftPresenter.setBarcode(sysno);
         inputPath = request.getParameter(Constants.URL_PARAM_PATH, null);
         model = request.getParameter(Constants.ATTR_MODEL, null);
+        base = request.getParameter(Constants.URL_PARAM_BASE, null);
+
     }
 
     /*
@@ -450,21 +473,78 @@ public class CreateStructurePresenter
 
                 ServerActionResult serverActionResult = result.getServerActionResult();
                 if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK) {
-                    convert(result);
+                    if (result != null && result.getToAdd() != null && !result.getToAdd().isEmpty()) {
+                        initializeConversion(result);
+                    } else if (result != null && result.getItems() != null && !result.getItems().isEmpty()) {
+                        doTheRest(result.getItems());
+                    } else {
+                        EditorSC.operationFailed(lang, "");
+                    }
+
                 } else {
                     if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
                         SC.ask(lang.wrongFileName() + serverActionResult.getMessage(), new BooleanCallback() {
 
                             @Override
                             public void execute(Boolean value) {
-                                if (value != null && value) {
-                                    convert(result);
+                                if (value != null && value && result != null && result.getToAdd() != null
+                                        && !result.getToAdd().isEmpty()) {
+                                    initializeConversion(result);
                                 }
                             }
                         });
                     }
                 }
 
+            }
+
+            private void initializeConversion(final ScanFolderResult result) {
+                final DispatchCallback<InitializeConversionResult> callback =
+                        new DispatchCallback<InitializeConversionResult>() {
+
+                            @Override
+                            public void callback(InitializeConversionResult initResult) {
+                                if (initResult != null && initResult.isSuccess()) {
+                                    convert(result);
+                                } else {
+                                    SC.ask("Someone else is now running the conversion task. Please wait a second. Do you want to try it again?",
+                                           new BooleanCallback() {
+
+                                               @Override
+                                               public void execute(Boolean value) {
+                                                   if (value != null && value) {
+                                                       initializeConversion(result);
+                                                   }
+                                               }
+                                           });
+                                }
+                            }
+
+                            @Override
+                            public void callbackError(Throwable t) {
+                                SC.say("Someone else is now running the conversion task.");
+                            }
+                        };
+                dispatcher.execute(new InitializeConversionAction(true), callback);
+            }
+
+            private void endConversion() {
+                final DispatchCallback<InitializeConversionResult> callback =
+                        new DispatchCallback<InitializeConversionResult>() {
+
+                            @Override
+                            public void callback(InitializeConversionResult result) {
+                                if (result != null && !result.isSuccess()) {
+                                    SC.warn("Some images were not converted.");
+                                }
+                            }
+
+                            @Override
+                            public void callbackError(Throwable t) {
+                                SC.say("Someone else is now running the conversion task.");
+                            }
+                        };
+                dispatcher.execute(new InitializeConversionAction(false), callback);
             }
 
             private void convert(ScanFolderResult result) {
@@ -544,7 +624,6 @@ public class CreateStructurePresenter
                                 new ScanRecord(String.valueOf(i + 1),
                                                model,
                                                itemList.get(i).getIdentifier(),
-                                               itemList.get(i).getJpgFsPath(),
                                                Constants.PAGE_TYPES.NP.toString());
                     }
 
@@ -582,7 +661,57 @@ public class CreateStructurePresenter
                         }
                     });
                 }
-                addHandlers();
+
+                getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+
+                    @Override
+                    public void onSelectionChanged(SelectionChangedEvent event) {
+                        if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
+                                && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
+                            Record rec = event.getRecord();
+                            event.getRecord()
+                                    .setAttribute("__ref",
+                                                  "ScanRecord [getName()="
+                                                          + rec.getAttributeAsString(Constants.ATTR_NAME)
+                                                          + ", "
+                                                          + "getModel()="
+                                                          + model
+                                                          + ", "
+                                                          + "getPicture()="
+                                                          + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
+                                                          + ", " + "getPath()=, " + "getPageType()="
+                                                          + rec.getAttributeAsString(Constants.ATTR_TYPE)
+                                                          + "]");
+                            event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
+                            event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
+                        }
+                    }
+                });
+
+                markedRecords = new ArrayList<Record>();
+                getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
+
+                    @Override
+                    public void onRecordClick(RecordClickEvent event) {
+                        if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
+                            getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+                            String isMarked =
+                                    event.getRecord()
+                                            .getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                            if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
+                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                               Boolean.TRUE.toString());
+                                markedRecords.add(event.getRecord());
+                            } else {
+                                markedRecords.remove(event.getRecord());
+                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                               Boolean.FALSE.toString());
+                            }
+                            getView().getTileGrid().deselectRecord(event.getRecord());
+                        }
+                    }
+                });
+
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -604,6 +733,7 @@ public class CreateStructurePresenter
                                 if (done >= total && !isDone) {
                                     synchronized (LOCK) {
                                         if (done >= total && !isDone) {
+                                            endConversion();
                                             doTheRest(itemList);
                                             isDone = true;
                                         }
@@ -617,6 +747,7 @@ public class CreateStructurePresenter
                                 if (!isDone) {
                                     synchronized (LOCK) {
                                         if (!isDone) {
+                                            endConversion();
                                             doTheRest(itemList);
                                             isDone = true;
                                         }
@@ -632,83 +763,6 @@ public class CreateStructurePresenter
         getView().getPopupPanel().setVisible(true);
         getView().getPopupPanel().center();
         dispatcher.execute(action, callback);
-    }
-
-    private void addHandlers() {
-        getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-
-            @Override
-            public void onSelectionChanged(SelectionChangedEvent event) {
-                if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
-                        && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
-                    Record rec = event.getRecord();
-                    event.getRecord()
-                            .setAttribute("__ref",
-                                          "ScanRecord [getName()="
-                                                  + rec.getAttributeAsString(Constants.ATTR_NAME) + ", "
-                                                  + "getModel()=" + model + ", " + "getPicture()="
-                                                  + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
-                                                  + ", " + "getPath()=, " + "getPageType()="
-                                                  + rec.getAttributeAsString(Constants.ATTR_TYPE) + "]");
-                    event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
-                    event.getRecord().setAttribute(Constants.ATTR_PATH, "");
-                    event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
-                }
-            }
-        });
-
-        markedRecords = new ArrayList<Record>();
-        getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
-
-            @Override
-            public void onRecordClick(RecordClickEvent event) {
-                if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
-                    getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
-                    String isMarked =
-                            event.getRecord().getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                    if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
-                        event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                                       Boolean.TRUE.toString());
-                        markedRecords.add(event.getRecord());
-                    } else {
-                        markedRecords.remove(event.getRecord());
-                        event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                                       Boolean.FALSE.toString());
-                    }
-                    getView().getTileGrid().deselectRecord(event.getRecord());
-                }
-            }
-        });
-
-        getView().getPagesTabSet().addTabSelectedHandler(new TabSelectedHandler() {
-
-            @Override
-            public void onTabSelected(TabSelectedEvent event) {
-                if (Constants.SELECTED_PAGES_TAB.equals(event.getTab()
-                        .getAttributeAsString(Constants.ATTR_TAB_ID))) {
-                    allPages = getView().getTileGrid().getData();
-
-                    getView().getTileGrid().setData(getSelectedPages());
-                } else {
-                    getView().getTileGrid().setData(allPages);
-                }
-            }
-        });
-
-        leftPresenter
-                .getView()
-                .getSubelementsGrid()
-                .addSelectionChangedHandler(new com.smartgwt.client.widgets.grid.events.SelectionChangedHandler() {
-
-                    @Override
-                    public void onSelectionChanged(SelectionEvent event) {
-
-                        if (Constants.SELECTED_PAGES_TAB.equals((getView().getPagesTabSet().getSelectedTab())
-                                .getAttributeAsString(Constants.ATTR_TAB_ID))) {
-                            getView().getTileGrid().setData(getSelectedPages());
-                        }
-                    }
-                });
     }
 
     private void setSectionCreateLayout() {
@@ -1144,13 +1198,19 @@ public class CreateStructurePresenter
     @Override
     public void createObjects(final DublinCore dc, final ModsTypeClient mods, final boolean visible) {
 
+        DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
+        String errorMessage = ClientUtils.checkDC(newDc, lang);
+        if (!"".equals(errorMessage)) {
+            SC.warn(errorMessage);
+            return;
+        }
+
         Image progress = new Image("images/ingesting.gif");
         getView().getPopupPanel().setWidget(progress);
         getView().getPopupPanel().setVisible(true);
         getView().getPopupPanel().center();
         alreadyDone = 0;
 
-        DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
         ModsCollectionClient newMods;
         if (mods != null) {
             newMods = new ModsCollectionClient();
@@ -1175,6 +1235,8 @@ public class CreateStructurePresenter
         }
         if (object != null) {
             object.setSysno(sysno);
+            object.setBase(base);
+            object.setSignature(bundle.getMarc().getSignature());
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
@@ -1253,7 +1315,7 @@ public class CreateStructurePresenter
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
         leftPresenter.getView().getSubelementsGrid().redraw();
         leftPresenter.setLastId(lastId);
-        getView().getTileGrid().setData(pagesData);
+        if (pagesData != null) getView().getTileGrid().setData(pagesData);
     }
 
     /**
@@ -1290,39 +1352,5 @@ public class CreateStructurePresenter
     @Override
     public boolean isMarkingOff() {
         return lang.sequential().equals(leftPresenter.getView().getCreationModeItem().getValue());
-    }
-
-    private ScanRecord[] getSelectedPages() {
-        ListGridRecord selectedRecord = leftPresenter.getView().getSubelementsGrid().getSelectedRecord();
-        if (selectedRecord != null) {
-            if (DigitalObjectModel.parseString(selectedRecord.getAttributeAsString(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.PAGE) {
-                TreeNode[] children =
-                        leftPresenter.getView().getSubelementsGrid().getTree()
-                                .getChildren((TreeNode) selectedRecord);
-                ScanRecord[] toReturn = new ScanRecord[children.length];
-                int i = 0;
-                for (TreeNode node : children) {
-                    String modelId = node.getAttributeAsString(Constants.ATTR_MODEL_ID);
-                    if (DigitalObjectModel.PAGE == DigitalObjectModel.parseString(modelId)) {
-                        toReturn[i++] = fromRecordToScanRecord(node);
-                    }
-                }
-                return toReturn;
-            } else {
-                return new ScanRecord[] {fromRecordToScanRecord(selectedRecord)};
-            }
-        }
-        return new ScanRecord[] {};
-    }
-
-    private ScanRecord fromRecordToScanRecord(Record record) {
-        ScanRecord scanRecord =
-                new ScanRecord(record.getAttribute(Constants.ATTR_NAME),
-                               model,
-                               record.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
-                               "",
-                               record.getAttributeAsString(Constants.ATTR_TYPE));
-        scanRecord.setAttribute(Constants.ATTR_ID, record.getAttributeAsString(Constants.ATTR_ID));
-        return scanRecord;
     }
 }

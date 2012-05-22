@@ -45,12 +45,14 @@ import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.mzk.editor.client.CreateObjectException;
+import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.mods.StringPlusAuthorityClient;
 import cz.mzk.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.mzk.editor.client.view.other.RecentlyModifiedRecord;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
@@ -241,7 +243,7 @@ public class ClientUtils {
         Map<String, NewDigitalObject> processedPages = new HashMap<String, NewDigitalObject>();
 
         TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
-        if (root == null) {
+        if (root == null || tree.getChildren(root).length == 0) {
             return null;
         }
 
@@ -545,15 +547,21 @@ public class ClientUtils {
     public static List<TreeStructureNode> toNodes(Record[] records) {
         List<TreeStructureNode> retList = new ArrayList<TreeStructureNode>();
         for (int i = 0; i < records.length; i++) {
-            retList.add(toNode(records[i], i));
+            TreeStructureNode node = toNode(records[i]);
+            if (node != null) {
+                retList.add(node);
+            } else {
+                return null;
+            }
         }
         return retList;
     }
 
-    private static TreeStructureNode toNode(Record treeNode, int order) {
+    private static TreeStructureNode toNode(Record treeNode) {
         String modelId = treeNode.getAttribute(Constants.ATTR_MODEL_ID);
+        String attrId = modelId == null ? null : treeNode.getAttribute(Constants.ATTR_ID);
 
-        return new TreeStructureNode(modelId == null ? null : treeNode.getAttribute(Constants.ATTR_ID),
+        return new TreeStructureNode(attrId,
                                      treeNode.getAttribute(Constants.ATTR_PARENT),
                                      trimLabel(treeNode.getAttribute(Constants.ATTR_NAME), 255),
                                      treeNode.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
@@ -572,7 +580,6 @@ public class ClientUtils {
                 new ScanRecord(node.getPropName(),
                                node.getPropModelId(),
                                node.getPropPictureOrUuid(),
-                               node.getPropDateOrIntPartName(),
                                node.getPropType());
         rec.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, node.getPropAditionalInfoOrOcr());
         return rec;
@@ -634,4 +641,40 @@ public class ClientUtils {
     public static native void redirect(String url)/*-{
                                                   $wnd.location = url;
                                                   }-*/;
+
+    public static String checkDC(DublinCore dc, LangConstants lang) {
+        StringBuffer errorMessage = new StringBuffer("");
+        errorMessage.append(checkValues(dc.getIdentifier(), lang.dcIdentifier(), lang));
+        errorMessage.append(checkValues(dc.getContributor(), lang.dcContributor(), lang));
+        errorMessage.append(checkValues(dc.getCoverage(), lang.dcCoverage(), lang));
+        errorMessage.append(checkValues(dc.getCreator(), lang.dcCreator(), lang));
+        errorMessage.append(checkValues(dc.getDate(), lang.dcDate(), lang));
+        errorMessage.append(checkValues(dc.getDescription(), lang.dcDescription(), lang));
+        errorMessage.append(checkValues(dc.getFormat(), lang.dcFormat(), lang));
+        errorMessage.append(checkValues(dc.getIdentifier(), lang.dcIdentifier(), lang));
+        errorMessage.append(checkValues(dc.getLanguage(), lang.dcLanguage(), lang));
+        errorMessage.append(checkValues(dc.getPublisher(), lang.dcPublisher(), lang));
+        errorMessage.append(checkValues(dc.getRelation(), lang.dcRelation(), lang));
+        errorMessage.append(checkValues(dc.getRights(), lang.dcRights(), lang));
+        errorMessage.append(checkValues(dc.getSource(), lang.dcSource(), lang));
+        errorMessage.append(checkValues(dc.getSubject(), lang.dcSubject(), lang));
+        errorMessage.append(checkValues(dc.getTitle(), lang.dcTitle(), lang));
+        errorMessage.append(checkValues(dc.getType(), lang.dcType(), lang));
+        return errorMessage.toString();
+    }
+
+    private static String checkValues(List<String> values, String elementName, LangConstants lang) {
+        StringBuffer errorMessage = new StringBuffer("");
+        if (values != null) {
+            for (String value : values) {
+                if (value.contains("<"))
+                    errorMessage.append(lang.inDCSection() + ": " + elementName + " "
+                            + lang.isForbiddenChar() + ": &lt.<br>");
+                if (value.contains(">"))
+                    errorMessage.append(lang.inDCSection() + ": " + elementName + " "
+                            + lang.isForbiddenChar() + ": &gt.<br>");
+            }
+        }
+        return errorMessage.toString();
+    }
 }

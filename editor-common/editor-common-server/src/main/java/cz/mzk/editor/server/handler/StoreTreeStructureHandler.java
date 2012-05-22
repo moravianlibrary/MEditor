@@ -1,4 +1,5 @@
 /*
+
  * Metadata Editor
  * @author Jiri Kremser
  * 

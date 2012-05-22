@@ -32,7 +32,6 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.DateDisplayFormat;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
@@ -40,25 +39,24 @@ import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.HStack;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.metadata.ModsConstants;
 import cz.mzk.editor.client.mods.CodeOrTextClient;
-import cz.mzk.editor.client.mods.DateTypeClient;
-import cz.mzk.editor.client.mods.LocationTypeClient;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.mods.ModsTypeClient;
+import cz.mzk.editor.client.mods.ModsTypeClientManager;
+import cz.mzk.editor.client.mods.ModsTypeClientManagerImpl;
 import cz.mzk.editor.client.mods.NamePartTypeClient;
-import cz.mzk.editor.client.mods.NameTypeAttributeClient;
-import cz.mzk.editor.client.mods.NameTypeClient;
-import cz.mzk.editor.client.mods.OriginInfoTypeClient;
-import cz.mzk.editor.client.mods.PhysicalDescriptionTypeClient;
-import cz.mzk.editor.client.mods.PhysicalLocationTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient.RoleTermClient;
-import cz.mzk.editor.client.mods.TitleInfoTypeClient;
+import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 public abstract class ModsWindow
@@ -67,10 +65,10 @@ public abstract class ModsWindow
     private final LangConstants lang;
 
     /** The TextItem with title value */
-    private final TextItem titleItem = new MyTextItem();
+    private TextItem titleItem;
 
     /** The TextItem with subtitle value */
-    private final TextItem subtitleItem = new MyTextItem();
+    private TextItem subtitleItem;
 
     /** The Constant AUTHOR1 */
     private static String AUTHOR1;
@@ -111,17 +109,13 @@ public abstract class ModsWindow
     /** The original modsCollectionClient */
     private final ModsCollectionClient modsCollection;
 
-    /** The DateTimeItem with day value set to EUROPEANSHORTDATE-format */
-    private final DateTimeItem dateItem = new DateTimeItem() {
+    /** The manager of the original modsTypeClient */
+    private final ModsTypeClientManager modsClientManager;
 
-        {
-            setDateFormatter(DateDisplayFormat.TOEUROPEANSHORTDATE);
-            setInputFormat(DateDisplayFormat.TOEUROPEANSHORTDATE.toString());
-            setHoverOpacity(75);
-            setHoverWidth(330);
-            setHoverStyle("interactImageHover");
-        }
-    };
+    /** The DateTimeItem with day value set to EUROPEANSHORTDATE-format */
+    private DateTimeItem dateItem;
+
+    private ObjectBasicInfoLayout objectBasicInfoLayout;
 
     /** The List of FormItem designated for Author1 */
     @SuppressWarnings("serial")
@@ -140,6 +134,8 @@ public abstract class ModsWindow
             add(author2Item);
         }
     };
+
+    private String label = null;
 
     /**
      * The TextItem with width=180, wrapTitle=false, selectOnFocus=true,
@@ -186,7 +182,11 @@ public abstract class ModsWindow
          * @param items
          */
         MyDynamicForm(FormItem... items) {
-            this.setItems(items);
+            List<FormItem> toAddItems = new ArrayList<FormItem>();
+            for (FormItem item : items) {
+                if (item != null) toAddItems.add(item);
+            }
+            this.setItems(toAddItems.toArray(new FormItem[] {}));
         }
     }
 
@@ -223,7 +223,12 @@ public abstract class ModsWindow
      * @param lang
      *        the lang
      */
-    public ModsWindow(ModsCollectionClient modsCollection, String uuid, LangConstants lang, EventBus eventBus) {
+    public ModsWindow(ModsCollectionClient modsCollection,
+                      String uuid,
+                      LangConstants lang,
+                      EventBus eventBus,
+                      DigitalObjectModel model,
+                      String label) {
         super(450, 900, lang.quickEdit() + ": " + uuid, eventBus, 100);
         this.lang = lang;
         this.modsCollection = modsCollection;
@@ -232,6 +237,7 @@ public abstract class ModsWindow
         } else {
             modsTypeClient = new ModsTypeClient();
         }
+        modsClientManager = new ModsTypeClientManagerImpl(modsTypeClient);
         setVariables();
 
         VStack mainLayout = new VStack();
@@ -239,9 +245,25 @@ public abstract class ModsWindow
 
         itemsLayout.setMargin(20);
         itemsLayout.setMembersMargin(20);
-        itemsLayout.addMember(createTitleSubtitle());
+
+        ListGridRecord listGridRecord = getListGridRecord(model, label);
+
+        objectBasicInfoLayout = new ObjectBasicInfoLayout(listGridRecord, lang, eventBus, true, 14) {
+
+            @Override
+            protected void setWindowHeight(int height) {
+                ModsWindow.this.setHeight(450 + height);
+            }
+
+            @Override
+            protected HLayout getButtonsLayout() {
+                return new HLayout();
+            }
+        };
+        mainLayout.addMember(objectBasicInfoLayout);
+        itemsLayout.addMember(createTitleSubtitle(model));
         itemsLayout.addMember(createNames());
-        itemsLayout.addMember(create3Column());
+        itemsLayout.addMember(create3Column(model));
 
         mainLayout.addMember(itemsLayout);
         mainLayout.addMember(createButtonsLayout());
@@ -251,12 +273,103 @@ public abstract class ModsWindow
         init();
     }
 
+    /**
+     * @param label
+     * @param string
+     * @return
+     */
+    private ListGridRecord getListGridRecord(DigitalObjectModel model, String label) {
+
+        ListGridRecord listGridRecord = new ListGridRecord();
+        listGridRecord.setAttribute(Constants.ATTR_MODEL_ID, model.toString());
+
+        switch (model) {
+            case PERIODICALVOLUME:
+                setPeriodicalVolumeRecord(listGridRecord);
+                break;
+            case PERIODICALITEM:
+                setPeriodicalItemRecord(listGridRecord);
+                break;
+
+            case INTERNALPART:
+                setInternalPartRecord(listGridRecord);
+                break;
+
+            case MONOGRAPHUNIT:
+                setMonographUnitRecord(listGridRecord);
+                break;
+
+            case PAGE:
+                setPageRecord(listGridRecord, label);
+                break;
+
+            default:
+                listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getTitle());
+                break;
+        }
+        return listGridRecord;
+    }
+
+    /**
+     * @param listGridRecord
+     * @param label
+     */
+    private void setPageRecord(ListGridRecord listGridRecord, String label) {
+        listGridRecord.setAttribute(Constants.ATTR_NAME, label);
+        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType());
+    }
+
+    /**
+     * @param listGridRecord
+     */
+    private void setMonographUnitRecord(ListGridRecord listGridRecord) {
+        listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getPartName());
+        listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getDateIssued());
+        listGridRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, modsClientManager.getNote());
+        listGridRecord.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, modsClientManager.getPartNumber());
+        listGridRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, modsClientManager.getLevelName());
+    }
+
+    /**
+     * @param listGridRecord
+     */
+    private void setInternalPartRecord(ListGridRecord listGridRecord) {
+        listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getTitle());
+        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType());
+        listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getPartName());
+        listGridRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, modsClientManager.getSubtitle());
+        listGridRecord.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, modsClientManager.getPartNumber());
+        listGridRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, modsClientManager.getLevelName());
+    }
+
+    /**
+     * @param listGridRecord
+     */
+    private void setPeriodicalItemRecord(ListGridRecord listGridRecord) {
+        listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getPartName());
+        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType());
+        listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getDateIssued());
+        listGridRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, modsClientManager.getNote());
+        listGridRecord.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, modsClientManager.getPartNumber());
+        listGridRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, modsClientManager.getLevelName());
+    }
+
+    /**
+     * @param listGridRecord
+     */
+    private void setPeriodicalVolumeRecord(ListGridRecord listGridRecord) {
+        listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getDateIssued());
+        listGridRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, modsClientManager.getNote());
+        listGridRecord.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, modsClientManager.getPartNumber());
+    }
+
     private void setVariables() {
 
+        titleItem = new MyTextItem();
         titleItem.setTitle(lang.title());
-
         titleItem.setTooltip(lang.titleMARC());
 
+        subtitleItem = new MyTextItem();
         subtitleItem.setTitle(lang.subtitle());
         subtitleItem.setTooltip(lang.subTitleMARC());
 
@@ -278,26 +391,26 @@ public abstract class ModsWindow
         extentItem.setTitle(lang.extent());
         extentItem.setTooltip(lang.extentMARC());
 
+        dateItem = new EditorDateItem();
         dateItem.setTitle(lang.issuedDateItem());
         dateItem.setTooltip(lang.issuedDate());
 
     }
 
-    private DynamicForm createTitleSubtitle() {
+    private DynamicForm createTitleSubtitle(DigitalObjectModel model) {
 
-        DynamicForm modsForm = new DynamicForm();
-
-        if (isNotNullEmpty(modsTypeClient.getTitleInfo())) {
-
-            List<String> titleList = modsTypeClient.getTitleInfo().get(0).getTitle();
-            titleItem.setDefaultValue(isNotNullEmpty(titleList) ? titleList.get(0) : "");
-
-            List<String> subtitleList = modsTypeClient.getTitleInfo().get(0).getSubTitle();
-            subtitleItem.setDefaultValue(isNotNullEmpty(subtitleList) ? subtitleList.get(0) : "");
+        if (model != DigitalObjectModel.PERIODICAL && model != DigitalObjectModel.INTERNALPART
+                && model != DigitalObjectModel.MONOGRAPH && model != DigitalObjectModel.PAGE) {
+            titleItem.setDefaultValue(modsClientManager.getTitle());
+        } else {
+            titleItem = null;
         }
-
-        modsForm.setItems(titleItem, subtitleItem);
-        return modsForm;
+        if (model != DigitalObjectModel.INTERNALPART) {
+            subtitleItem.setDefaultValue(modsClientManager.getSubtitle());
+        } else {
+            subtitleItem = null;
+        }
+        return new MyDynamicForm(titleItem, subtitleItem);
     }
 
     private VStack createNames() {
@@ -310,10 +423,10 @@ public abstract class ModsWindow
             boolean isFamily = false;
             boolean isGiven = false;
 
-            if (isNotNullEmpty(modsTypeClient.getName()) && modsTypeClient.getName().size() > i) {
+            if (isNotNullOrEmpty(modsTypeClient.getName()) && modsTypeClient.getName().size() > i) {
 
                 List<NamePartTypeClient> namePart = modsTypeClient.getName().get(i).getNamePart();
-                if (isNotNullEmpty(namePart)) {
+                if (isNotNullOrEmpty(namePart)) {
                     for (NamePartTypeClient part : namePart) {
                         if (part.getValue() != null && !part.getValue().trim().equals("")) {
                             if (part.getType() == null) {
@@ -370,10 +483,10 @@ public abstract class ModsWindow
     }
 
     private void setAuthorRole(List<RoleTypeClient> roleList, StaticTextItem roleItem) {
-        if (isNotNullEmpty(roleList)) {
+        if (isNotNullOrEmpty(roleList)) {
             boolean stop = false;
             for (RoleTypeClient roleType : roleList) {
-                if (isNotNullEmpty(roleType.getRoleTerm()) && !stop) {
+                if (isNotNullOrEmpty(roleType.getRoleTerm()) && !stop) {
                     for (RoleTermClient roleTerm : roleType.getRoleTerm()) {
 
                         if (roleTerm.getValue().trim().equals("Author")
@@ -398,42 +511,28 @@ public abstract class ModsWindow
         }
     }
 
-    private DynamicForm create3Column() {
+    private DynamicForm create3Column(DigitalObjectModel model) {
 
-        DynamicForm modsForm = new DynamicForm();
+        publisherItem.setDefaultValue(modsClientManager.getPublisher());
 
-        if (isNotNullEmpty(modsTypeClient.getOriginInfo())) {
-
-            List<String> publisherList = modsTypeClient.getOriginInfo().get(0).getPublisher();
-            publisherItem.setDefaultValue(isNotNullEmpty(publisherList) ? publisherList.get(0) : "");
-
-            List<DateTypeClient> dateIssueList = modsTypeClient.getOriginInfo().get(0).getDateIssued();
-
-            if (!isNotNullEmpty(dateIssueList)) {
-
-            }
-            dateItem.setDefaultValue(isNotNullEmpty(dateIssueList) ? dateIssueList.get(0).getValue() : "");
+        if (model != DigitalObjectModel.PERIODICALITEM && model != DigitalObjectModel.PERIODICALVOLUME
+                && model != DigitalObjectModel.MONOGRAPHUNIT) {
+            dateItem.setDefaultValue(modsClientManager.getDateIssued());
+        } else {
+            dateItem = null;
         }
-
-        if (isNotNullEmpty(modsTypeClient.getLocation())) {
-            List<String> shelfLocatorList = modsTypeClient.getLocation().get(0).getShelfLocator();
-            shelfLocatorItem.setDefaultValue(isNotNullEmpty(shelfLocatorList) ? shelfLocatorList.get(0) : "");
-
-            List<PhysicalLocationTypeClient> placeList =
-                    modsTypeClient.getLocation().get(0).getPhysicalLocation();
-            placeItem.setDefaultValue(isNotNullEmpty(placeList) ? placeList.get(0).getValue() : "");
-        }
-
-        if (isNotNullEmpty(modsTypeClient.getPhysicalDescription())) {
-
-            List<String> extentList = modsTypeClient.getPhysicalDescription().get(0).getExtent();
-            extentItem.setDefaultValue(isNotNullEmpty(extentList) ? extentList.get(0) : "");
-        }
+        shelfLocatorItem.setDefaultValue(modsClientManager.getShelfLocator());
+        placeItem.setDefaultValue(modsClientManager.getPlace());
+        extentItem.setDefaultValue(modsClientManager.getExtent());
 
         reflectInDC.setTitle(lang.changesInDC());
         reflectInDC.setDefaultValue(true);
-        modsForm.setItems(dateItem, publisherItem, placeItem, shelfLocatorItem, extentItem, reflectInDC);
-        return modsForm;
+        return new MyDynamicForm(dateItem,
+                                 publisherItem,
+                                 placeItem,
+                                 shelfLocatorItem,
+                                 extentItem,
+                                 reflectInDC);
     }
 
     private com.smartgwt.client.widgets.layout.Layout createButtonsLayout() {
@@ -457,256 +556,63 @@ public abstract class ModsWindow
      * 
      * @return ModsCollectionClient the newmodsCollectionClient
      */
-    public ModsCollectionClient publishWindow() {
-        ModsCollectionClient newModsCollClient = modsCollection;
-        ModsTypeClient newModsTypeClient = modsTypeClient;
+    public ModsCollectionClient publishWindow(DigitalObjectModel model) {
 
-        newModsTypeClient.setOriginInfo(createNewOriginInfoList(newModsTypeClient));
+        String levelName = "";
+        if (model == DigitalObjectModel.MONOGRAPHUNIT || model == DigitalObjectModel.PERIODICALITEM
+                || model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.INTERNALPART) {
+            modsClientManager.modifyPartNumber(objectBasicInfoLayout.getManagerLayout().getPartNumber());
 
-        newModsTypeClient.setTitleInfo(createNewTitleInfoList(newModsTypeClient));
+            if (model != DigitalObjectModel.INTERNALPART)
+                modsClientManager.modifyNote(objectBasicInfoLayout.getManagerLayout().getNote());
 
-        newModsTypeClient.setName(createNewNameList(newModsTypeClient));
+            if (model != DigitalObjectModel.PERIODICALVOLUME) {
+                levelName = objectBasicInfoLayout.getManagerLayout().getLevelName();
+                modsClientManager.modifyLevelName(levelName);
+                modsClientManager.modifyPartName(objectBasicInfoLayout.getManagerLayout().getNameOrTitle());
+            }
+        }
 
-        newModsTypeClient.setLocation(createNewLocationList(newModsTypeClient));
+        if (model != DigitalObjectModel.MONOGRAPHUNIT && model != DigitalObjectModel.PERIODICALVOLUME)
+            modsClientManager.modifyType(objectBasicInfoLayout.getManagerLayout().getType(model, levelName));
 
-        newModsTypeClient.setPhysicalDescription(createNewPhysDescrList(newModsTypeClient));
+        String newDate =
+                (dateItem == null) ? objectBasicInfoLayout.getManagerLayout().getDateIssued() : (dateItem
+                        .getValue() != null ? dateItem.getValue().toString() : "");
+        modsClientManager.modifyOriginInfoList(publisherItem.getEnteredValue(), newDate);
 
-        newModsCollClient.getMods().remove(0);
-        newModsCollClient.getMods().add(0, newModsTypeClient);
+        String title =
+                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
+                        .getEnteredValue();
+        modsClientManager.modifyTitle(title, model);
 
-        return newModsCollClient;
+        modsClientManager.modifySubtitle((subtitleItem == null) ? objectBasicInfoLayout.getManagerLayout()
+                .getSubtitle() : subtitleItem.getEnteredValue());
+
+        modsClientManager.modifyNames(authorPartsOfName1,
+                                      authorPartsOfName2,
+                                      author1Item.getTitle().equals(AUTHOR1) ? null : author1Item.getTitle(),
+                                      author2Item.getTitle().equals(AUTHOR2) ? null : author2Item.getTitle());
+        modsClientManager.modifyShelfLocatorAndPlace(shelfLocatorItem.getEnteredValue(),
+                                                     placeItem.getEnteredValue());
+        modsClientManager.modifyExtent(extentItem.getEnteredValue());
+
+        setLabel(model, title);
+
+        return modsCollection;
     }
 
-    private List<OriginInfoTypeClient> createNewOriginInfoList(ModsTypeClient newModsTypeClient) {
-        /** Original type client part */
-        List<OriginInfoTypeClient> newOriginalTypeClient;
-        if (!isNotNullEmpty(newModsTypeClient.getOriginInfo())) {
-            newOriginalTypeClient = new ArrayList<OriginInfoTypeClient>();
-            newOriginalTypeClient.add(new OriginInfoTypeClient());
-
+    private void setLabel(DigitalObjectModel model, String title) {
+        String labelToAdd = "";
+        if (model == DigitalObjectModel.PERIODICALVOLUME) {
+            labelToAdd = objectBasicInfoLayout.getManagerLayout().getPartNumber();
         } else {
-            newOriginalTypeClient = newModsTypeClient.getOriginInfo();
+            labelToAdd = title;
         }
-
-        /** Publisher list part */
-        List<String> newPublisherList;
-        if (!isNotNullEmpty(newOriginalTypeClient.get(0).getPublisher())) {
-            newPublisherList = new ArrayList<String>();
-        } else {
-            newPublisherList = newOriginalTypeClient.get(0).getPublisher();
-        }
-
-        if (publisherItem.getEnteredValue() == null || publisherItem.getEnteredValue().trim().equals("")) {
-            if (isNotNullEmpty(newPublisherList)) newPublisherList.remove(0);
-        } else {
-            if (isNotNullEmpty(newPublisherList)) {
-                newPublisherList.remove(0);
-            }
-            newPublisherList.add(0, publisherItem.getEnteredValue().trim());
-        }
-        newOriginalTypeClient.get(0).setPublisher(newPublisherList);
-
-        /** Date issue list part */
-        List<DateTypeClient> dateIssueList;
-        if (!isNotNullEmpty(newOriginalTypeClient.get(0).getDateIssued())) {
-            dateIssueList = new ArrayList<DateTypeClient>();
-        } else {
-            dateIssueList = newModsTypeClient.getOriginInfo().get(0).getDateIssued();
-        }
-
-        if (dateItem.getValue() == null || dateItem.getValue().toString().trim().equals("")) {
-            if (isNotNullEmpty(dateIssueList)) dateIssueList.remove(0);
-        } else {
-            if (isNotNullEmpty(dateIssueList)) {
-                dateIssueList.get(0).setValue(dateItem.getValue().toString().trim());
-            } else {
-
-                DateTypeClient newDateType = new DateTypeClient();
-                newDateType.setValue(dateItem.getValue().toString().trim());
-                dateIssueList.add(0, newDateType);
-            }
-        }
-        newOriginalTypeClient.get(0).setDateIssued(dateIssueList);
-
-        return newOriginalTypeClient;
-    }
-
-    private List<TitleInfoTypeClient> createNewTitleInfoList(ModsTypeClient newModsTypeClient) {
-        /** Title info part */
-        List<TitleInfoTypeClient> newTitleInfo;
-        if (!isNotNullEmpty(newModsTypeClient.getTitleInfo())) {
-            newTitleInfo = new ArrayList<TitleInfoTypeClient>();
-            newTitleInfo.add(new TitleInfoTypeClient());
-        } else {
-            newTitleInfo = newModsTypeClient.getTitleInfo();
-        }
-
-        /** Title part */
-        if (titleItem.getEnteredValue() == null || titleItem.getEnteredValue().trim().equals("")) {
-
-            if (isNotNullEmpty(newTitleInfo.get(0).getTitle())) {
-                newTitleInfo.get(0).getTitle().remove(0);
-            }
-        } else {
-            if (isNotNullEmpty(newTitleInfo.get(0).getTitle())) {
-                newTitleInfo.get(0).getTitle().remove(0);
-            } else {
-                newTitleInfo.get(0).setTitle(new ArrayList<String>());
-            }
-            newTitleInfo.get(0).getTitle().add(0, titleItem.getEnteredValue().trim());
-        }
-
-        /** Subtitle part */
-        if (subtitleItem.getEnteredValue() == null || subtitleItem.getEnteredValue().trim().equals("")) {
-
-            if (isNotNullEmpty(newTitleInfo.get(0).getSubTitle())) {
-                newTitleInfo.get(0).getSubTitle().remove(0);
-            }
-        } else {
-            if (isNotNullEmpty(newTitleInfo.get(0).getSubTitle())) {
-                newTitleInfo.get(0).getSubTitle().remove(0);
-            } else {
-                newTitleInfo.get(0).setSubTitle(new ArrayList<String>());
-            }
-            newTitleInfo.get(0).getSubTitle().add(0, subtitleItem.getEnteredValue().trim());
-
-        }
-        return newTitleInfo;
-    }
-
-    private List<NameTypeClient> createNewNameList(ModsTypeClient newModsTypeClient) {
-        /** Name part */
-
-        List<NameTypeClient> newNameList;
-        if (!isNotNullEmpty(newModsTypeClient.getName())) {
-            newNameList = new ArrayList<NameTypeClient>();
-        } else {
-            newNameList = newModsTypeClient.getName();
-        }
-
-        int index = 0;
-        for (int i = 0; i < 2; i++) {
-
-            List<NamePartTypeClient> nameParts = new ArrayList<NamePartTypeClient>();
-            boolean allIsEmpty = true;
-            for (FormItem item : (i == 0 ? authorPartsOfName1 : authorPartsOfName2)) {
-
-                if (item.getValue() != null && !item.getValue().toString().trim().equals("")) {
-                    NamePartTypeClient part = new NamePartTypeClient();
-                    part.setValue(item.getValue().toString());
-                    part.setType(item.getTitle().toString());
-                    nameParts.add(part);
-                    allIsEmpty = false;
-                }
-            }
-
-            if (newNameList.size() <= index && (!allIsEmpty)) {
-                newNameList.add(index, new NameTypeClient());
-                newNameList.get(index).setRole(new ArrayList<RoleTypeClient>());
-                newNameList.get(index).getRole().add(new RoleTypeClient());
-                newNameList.get(index).getRole().get(0)
-                        .setRoleTerm(new ArrayList<RoleTypeClient.RoleTermClient>());
-
-                RoleTermClient newRoleTermCode = new RoleTermClient();
-                RoleTermClient newRoleTermText = new RoleTermClient();
-
-                if ((i == 0 ? author1Item : author2Item).getTitle().equals((i == 0 ? AUTHOR1 : AUTHOR2))) {
-                    newRoleTermCode.setValue("cre");
-                    newRoleTermText.setValue("Author");
-
-                } else {
-                    newRoleTermCode.setValue("");
-                    newRoleTermText.setValue((i == 0 ? author1Item : author2Item).getTitle());
-                }
-
-                newRoleTermCode.setType(CodeOrTextClient.CODE);
-                newRoleTermText.setType(CodeOrTextClient.TEXT);
-                newNameList.get(index).getRole().get(0).getRoleTerm().add(newRoleTermCode);
-                newNameList.get(index).getRole().get(0).getRoleTerm().add(newRoleTermText);
-            }
-
-            if (allIsEmpty) {
-                if (newNameList.size() > index) newNameList.remove(index);
-
-            } else {
-
-                newNameList.get(index).setNamePart(nameParts);
-                if (newNameList.get(index).getType() == null) {
-                    newNameList.get(index).setType(NameTypeAttributeClient.PERSONAL);
-                }
-                index++;
-            }
-        }
-        return newNameList;
-    }
-
-    private List<LocationTypeClient> createNewLocationList(ModsTypeClient newModsTypeClient) {
-        /** Location list part */
-        List<LocationTypeClient> newLocationList;
-        if (!isNotNullEmpty(newModsTypeClient.getLocation())) {
-            newLocationList = new ArrayList<LocationTypeClient>();
-            newLocationList.add(new LocationTypeClient());
-        } else {
-            newLocationList = newModsTypeClient.getLocation();
-        }
-
-        /** Shelf locator part */
-        if (shelfLocatorItem.getEnteredValue() == null
-                || shelfLocatorItem.getEnteredValue().trim().equals("")) {
-            if (isNotNullEmpty(newLocationList.get(0).getShelfLocator())) {
-                newLocationList.get(0).getShelfLocator().remove(0);
-            }
-        } else {
-            if (isNotNullEmpty(newLocationList.get(0).getShelfLocator())) {
-                newLocationList.get(0).getShelfLocator().remove(0);
-            } else {
-                newLocationList.get(0).setShelfLocator(new ArrayList<String>());
-            }
-            newLocationList.get(0).getShelfLocator().add(0, shelfLocatorItem.getEnteredValue().trim());
-        }
-
-        /** Physical location part */
-        if (placeItem.getEnteredValue() == null || placeItem.getEnteredValue().trim().equals("")) {
-            if (isNotNullEmpty(newLocationList.get(0).getPhysicalLocation())) {
-                newLocationList.get(0).getPhysicalLocation().remove(0);
-            }
-        } else {
-            if (isNotNullEmpty(newLocationList.get(0).getPhysicalLocation())) {
-                newLocationList.get(0).getPhysicalLocation().get(0)
-                        .setValue(placeItem.getEnteredValue().trim());
-            } else {
-                newLocationList.get(0).setPhysicalLocation(new ArrayList<PhysicalLocationTypeClient>());
-                newLocationList.get(0).getPhysicalLocation().add(new PhysicalLocationTypeClient());
-                newLocationList.get(0).getPhysicalLocation().get(0)
-                        .setValue(placeItem.getEnteredValue().trim());
-            }
-        }
-        return newLocationList;
-    }
-
-    private List<PhysicalDescriptionTypeClient> createNewPhysDescrList(ModsTypeClient newModsTypeClient) {
-        /** Extent part */
-        List<PhysicalDescriptionTypeClient> newPhysDescrList;
-        if (!isNotNullEmpty(modsTypeClient.getPhysicalDescription())) {
-            newPhysDescrList = new ArrayList<PhysicalDescriptionTypeClient>();
-            newPhysDescrList.add(new PhysicalDescriptionTypeClient());
-        } else {
-            newPhysDescrList = modsTypeClient.getPhysicalDescription();
-        }
-
-        if (extentItem.getEnteredValue() == null || extentItem.getEnteredValue().trim().equals("")) {
-            if (isNotNullEmpty(newPhysDescrList.get(0).getExtent())) {
-                newPhysDescrList.get(0).getExtent().remove(0);
-            }
-        } else {
-            if (isNotNullEmpty(newPhysDescrList.get(0).getExtent())) {
-                newPhysDescrList.get(0).getExtent().remove(0);
-            } else {
-                newPhysDescrList.get(0).setExtent(new ArrayList<String>());
-            }
-            newPhysDescrList.get(0).getExtent().add(0, extentItem.getEnteredValue().trim());
-        }
-        return newPhysDescrList;
+        this.label =
+                ClientUtils
+                        .trimLabel((labelToAdd != null && !"".equals(labelToAdd) ? labelToAdd : "untitled"),
+                                   Constants.MAX_LABEL_LENGTH);
     }
 
     /**
@@ -719,14 +625,17 @@ public abstract class ModsWindow
     public DublinCore reflectInDC(DublinCore originalDC) {
         DublinCore DC = originalDC;
 
-        if (isNotNullEmpty(DC.getTitle())) {
+        if (isNotNullOrEmpty(DC.getTitle())) {
             DC.getTitle().remove(0);
         } else {
             DC.setTitle(new ArrayList<String>());
         }
-        if (titleItem.getEnteredValue() != null & !titleItem.getEnteredValue().trim().equals("")) {
-            String title = titleItem.getEnteredValue().trim();
-            DC.getTitle().add(0, title);
+
+        String title =
+                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
+                        .getEnteredValue();
+        if (title != null && !title.trim().equals("")) {
+            DC.getTitle().add(0, title.trim());
         }
 
         for (int i = 0; i < 2; i++) {
@@ -747,7 +656,7 @@ public abstract class ModsWindow
                 }
             }
 
-            if (isNotNullEmpty(DC.getCreator())) {
+            if (isNotNullOrEmpty(DC.getCreator())) {
                 if (DC.getCreator().contains(originalAuthor.toString().trim())) {
                     DC.getCreator().remove(originalAuthor.toString().trim());
                 }
@@ -761,16 +670,21 @@ public abstract class ModsWindow
             }
         }
 
-        if (isNotNullEmpty(DC.getDate())) {
+        if (isNotNullOrEmpty(DC.getDate())) {
             DC.getDate().remove(0);
         } else {
             DC.setDate(new ArrayList<String>());
         }
-        if (dateItem.getValue() != null && !dateItem.getValue().toString().trim().equals("")) {
-            DC.getDate().add(0, dateItem.getValue().toString().trim());
+
+        String dateIssued =
+                (dateItem == null) ? objectBasicInfoLayout.getManagerLayout().getDateIssued() : (dateItem
+                        .getValue() != null ? dateItem.getValue().toString() : "");
+
+        if (dateIssued != null && !dateIssued.toString().trim().equals("")) {
+            DC.getDate().add(0, dateIssued.toString().trim());
         }
 
-        if (isNotNullEmpty(DC.getPublisher())) {
+        if (isNotNullOrEmpty(DC.getPublisher())) {
             DC.getPublisher().remove(0);
         } else {
             DC.setPublisher(new ArrayList<String>());
@@ -780,6 +694,14 @@ public abstract class ModsWindow
         }
 
         return DC;
+    }
+
+    public String verify() {
+        return objectBasicInfoLayout.getManagerLayout().verify();
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     /**
@@ -803,9 +725,8 @@ public abstract class ModsWindow
         return (Boolean) reflectInDC.getValue();
     }
 
-    private boolean isNotNullEmpty(Object o) {
-        List<?> objectList = (List<?>) o;
-        return objectList != null && !objectList.isEmpty();
+    private boolean isNotNullOrEmpty(List<?> objectList) {
+        return objectList != null && !objectList.isEmpty() && objectList.get(0) != null;
     }
 
     protected abstract void init();

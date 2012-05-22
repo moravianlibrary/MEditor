@@ -69,6 +69,7 @@ public class DateHolder
         DateTypeClient dateTypeClient = otherDate ? new DateOtherTypeClient() : new DateTypeClient();
         boolean isNull = true;
         if (getAttributeForm() != null) {
+            getAttributeForm().redraw();
             dateTypeClient.setEncoding(getAttributeForm().getValueAsString(ModsConstants.ENCODING));
             String val = getAttributeForm().getValueAsString(ModsConstants.KEY_DATE);
             if (val != null && ClientUtils.toBoolean(val)) {
@@ -76,21 +77,23 @@ public class DateHolder
                 isNull = false;
             }
             dateTypeClient.setPoint(getAttributeForm().getValueAsString(ModsConstants.POINT));
-            if (!"".equals(dateTypeClient.getPoint().trim())) {
+            if (dateTypeClient.getPoint() != null && !"".equals(dateTypeClient.getPoint().trim())) {
                 isNull = false;
             }
             dateTypeClient.setQualifier(getAttributeForm().getValueAsString(ModsConstants.QUALIFIER));
-            if (!"".equals(dateTypeClient.getQualifier().trim())) {
+            if (dateTypeClient.getQualifier() != null && !"".equals(dateTypeClient.getQualifier().trim())) {
                 isNull = false;
             }
-            dateTypeClient.setValue(getAttributeForm().getValueAsString(dateName));
-            if (!"".equals(dateTypeClient.getValue().trim())) {
+            dateTypeClient.setValue(getAttributeForm().getField(dateName).getDisplayValue()
+                    .replaceAll("/", "."));
+            if (dateTypeClient.getValue() != null && !"".equals(dateTypeClient.getValue().trim())) {
                 isNull = false;
             }
             if (otherDate) {
                 ((DateOtherTypeClient) dateTypeClient).setType(getAttributeForm()
                         .getValueAsString(ModsConstants.TYPE));
-                if (!"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
+                if (((DateOtherTypeClient) dateTypeClient).getType() != null
+                        && !"".equals(((DateOtherTypeClient) dateTypeClient).getType().trim())) {
                     isNull = false;
                 }
             }
@@ -112,9 +115,7 @@ public class DateHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValue
-     * ()
+     * @see cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValue ()
      */
     @Override
     public String getValue() {
@@ -123,9 +124,7 @@ public class DateHolder
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValues
-     * ()
+     * @see cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder#getValues ()
      */
     @Override
     public List<String> getValues() {

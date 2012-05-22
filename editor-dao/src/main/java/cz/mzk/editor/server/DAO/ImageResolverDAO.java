@@ -42,8 +42,6 @@ public interface ImageResolverDAO {
 
     ArrayList<String> resolveItems(List<String> identifiers) throws DatabaseException;
 
-    String resolveItem(String identifier) throws DatabaseException;
-
     ArrayList<String> cacheAgeingProcess(int numberOfDays) throws DatabaseException;
 
     /**

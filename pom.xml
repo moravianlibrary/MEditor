@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Usage:
+   mvn install [-Denv=editor]       for generating war for editor.mzk.cz
+   mvn install -Denv=editor-devel   for generating war for editor-devel.mzk.cz
+   mvn install -P dev               for development purposes (1 locale, 1 browser, shorter compilation)
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -70,41 +76,11 @@
 		<akka.version>2.0</akka.version>
 
 		<warName>meditor</warName>
-		<hostname>editor-devel.mzk.cz</hostname>
-		<!-- <hostname>editor.mzk.cz</hostname> -->
-		<!-- <hostname>editor.vsup.cz</hostname> -->
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
 		<webappDirectory>${project.build.directory}/webapp</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss 'UTC'Z</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
-
-		<gwt-plugin.localWorkers>2</gwt-plugin.localWorkers>
-		<!-- The default value results in these GWT modules being compiled into 
-			JavaScript for all supported browsers. To speed up compile time by only compiling 
-			for your preferred browser(s), specify the gwt.userAgent property on the 
-			mvn command line (e.g. -Dgwt.userAgent=gecko1_8) or in your ~/.m2/settings.xml 
-			As of GWT 2.4.0, the recognized agents (defined in gwt-user.jar:com/google/gwt/user/UserAgent.gwt.xml) 
-			are as follows: ie9: IE9 (although for smartgwt we fallback to IE8) ie8: 
-			IE8 gecko: FF1 (NOTE: Support for this was dropped in GWT 2.1.) gecko1_8: 
-			FF2 and later safari: Safari/Chrome opera: Opera *NOTE*: Since we specify 
-			the meta "X-UA-Compatible: IE=IE8" HTTP header in CoreGUI.html, IE9 and later 
-			will emulate IE8. Multiple agents can be specified as a comma-delimited list, 
-			as demonstrated by the default value below. -->
-		<gwt.userAgent>ie8,ie9,gecko1_8,safari,opera</gwt.userAgent>
-		<!-- Change this to "true" via the mvn command line or your ~/.m2/settings.xml 
-			to speed up gwt compilation. -->
-		<gwt.draftCompile>false</gwt.draftCompile>
-		<!-- Change this to "false" via the mvn command line or your ~/.m2/settings.xml 
-			to speed up gwt compilation and reduce memory consumption by avoiding report 
-			generation. -->
-		<gwt.soyc>true</gwt.soyc>
-		<!-- Comma-separated list of the locales that should be included during 
-			GWT compilation. -->
-		<gwt.locale>en,cs</gwt.locale>
-		<!-- The locale that GWT should fallback to if the user specified an unsupported 
-			locale via the 'locale' query string parameter. -->
-		<gwt.fallback.locale>en</gwt.fallback.locale>
 	</properties>
 
 	<repositories>

@@ -44,6 +44,7 @@ public class MarcSpecificMetadata
     private String place;
     private String publisher;
     private String dateIssued;
+    private String signature;
 
     @SuppressWarnings("unused")
     private MarcSpecificMetadata() {
@@ -57,7 +58,8 @@ public class MarcSpecificMetadata
                                 String topic,
                                 String place,
                                 String publisher,
-                                String dateIssued) {
+                                String dateIssued,
+                                String signature) {
         this.sysno = sysno;
         this.base = base;
         this.location = location;
@@ -66,6 +68,7 @@ public class MarcSpecificMetadata
         this.place = place;
         this.publisher = publisher;
         this.dateIssued = dateIssued;
+        this.signature = signature;
     }
 
     public String getSysno() {
@@ -130,6 +133,21 @@ public class MarcSpecificMetadata
 
     public void setDateIssued(String dateIssued) {
         this.dateIssued = dateIssued;
+    }
+
+    /**
+     * @return the signature
+     */
+    public String getSignature() {
+        return signature;
+    }
+
+    /**
+     * @param signature
+     *        the signature to set
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
 }

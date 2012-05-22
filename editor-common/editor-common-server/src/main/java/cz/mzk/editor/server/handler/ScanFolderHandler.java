@@ -52,7 +52,6 @@ import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
@@ -157,7 +156,7 @@ public class ScanFolderHandler
                     sb.append(model).append('#').append(code).append('#').append(i);
                     newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
                     sb = new StringBuffer();
-                    sb.append(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION).append(newIdentifier)
+                    sb.append(configuration.getImagesPath()).append(newIdentifier)
                             .append(Constants.JPEG_2000_EXTENSION);
                     resolvedIdentifier = sb.toString();
                     toAdd.add(new ImageItem(newIdentifier, resolvedIdentifier, imgFileNames.get(i)));

@@ -33,6 +33,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -52,6 +53,7 @@ import cz.mzk.editor.client.util.Constants.MONOGRAPH_UNIT_LEVEL_NAMES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.client.view.window.AddNoteWindow;
+import cz.mzk.editor.client.view.window.EditorDateItem;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 /**
@@ -95,7 +97,7 @@ public class SequentialCreateLayout
 
     private CreateDynamicForm xOfLevelNamesForm;
 
-    private TextItem dateIssued;
+    private DateTimeItem dateIssued;
 
     private CreateDynamicForm dateIssuedForm;
 
@@ -170,7 +172,7 @@ public class SequentialCreateLayout
         levelNamesLayout.setLayoutAlign(Alignment.LEFT);
         levelNamesLayout.setAlign(Alignment.RIGHT);
 
-        dateIssued = new TextItem("dateIssued", lang.dateIssued());
+        dateIssued = new EditorDateItem("dateIssued", lang.dateIssued());
         dateIssuedForm = new CreateDynamicForm(dateIssued);
 
         partNumber = new TextItem("partNumber", lang.partNumber());
@@ -378,6 +380,7 @@ public class SequentialCreateLayout
                     type.setValueMap(valueMapPicture);
                 }
                 type.setValue("");
+                xOfLevelNames.show();
             }
         });
     }
@@ -531,7 +534,7 @@ public class SequentialCreateLayout
      * {@inheritDoc}
      */
     @Override
-    protected TextItem getDateIssuedItem() {
+    protected DateTimeItem getDateIssuedItem() {
         return dateIssued;
     }
 

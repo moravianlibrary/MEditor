@@ -43,6 +43,8 @@ public class EditorTabSet
 
     private boolean storedDigitalObject;
 
+    private DigitalObjectModel model;
+
     /**
      * @return the lockInfo
      */
@@ -146,6 +148,21 @@ public class EditorTabSet
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    /**
+     * @return the model
+     */
+    public DigitalObjectModel getModel() {
+        return model;
+    }
+
+    /**
+     * @param model
+     *        the model to set
+     */
+    public void setModel(DigitalObjectModel model) {
+        this.model = model;
     }
 
     /**

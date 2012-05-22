@@ -27,6 +27,7 @@
 
 package cz.mzk.editor.shared.domain;
 
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARTICLE;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.INTERNALPART;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.MONOGRAPHUNIT;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.PAGE;
@@ -51,7 +52,8 @@ public enum FedoraRelationship {
     hasInternalPart(INTERNALPART, "hasInternalPart", "/rdf:RDF/rdf:Description/kramerius:hasInternalPart"),
     /** The has int comp part. */
     hasIntCompPart(INTERNALPART, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart"),
-
+    /** The has int comp part. */
+    hasIntCompPartArticle(ARTICLE, "hasIntCompPart", "/rdf:RDF/rdf:Description/kramerius:hasIntCompPart"),
     /** The is on page. */
     isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage");
 

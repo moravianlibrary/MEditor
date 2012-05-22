@@ -115,9 +115,9 @@ public class MonographBuilder
         }
         removeDcTypeElements(dcDoc);
         Element typeEl = dcRootEl.addElement("dc:type");
-        typeEl.addText("model:" + model.toString());
+        typeEl.addText("model:" + model.getValue());
         Element rightsEl = dcRootEl.addElement("dc:rights");
-        rightsEl.addText("policy:" + Policy.PUBLIC.toString().toLowerCase());
+        rightsEl.addText("policy:" + getPolicy().toString().toLowerCase());
         updateDcLanguages(dcDoc);
     }
 
@@ -161,7 +161,11 @@ public class MonographBuilder
         //addPublishment(modsDoc, marc);
         updateRecordInfo(modsDoc);
         addIdentifierUuid((Element) modsXpath.selectSingleNode(modsDoc), uuid);
-        addRootPhysicalLocation((Element) locationXpath.selectSingleNode(modsDoc), true);
+        Element locationEl = (Element) locationXpath.selectSingleNode(modsDoc);
+        addRootPhysicalLocation(locationEl != null ? locationEl
+                                        : ((Element) modsXpath.selectSingleNode(modsDoc))
+                                                .addElement(new QName("location", Namespaces.mods)),
+                                true);
     }
 
     private void addSysno(Document modsDoc, MarcSpecificMetadata marc) {
@@ -185,7 +189,11 @@ public class MonographBuilder
 
     private String alephLink(MarcSpecificMetadata marc) {
         String sysno = marc.getSysno();
-        return getAlephUrl() + "/F?func=direct&doc_number=" + sysno + "&local_base=MZK03&format=999";
+        String localBase = "";
+        if (isNotNullOrEmpty(getBase())) {
+            localBase = "&local_base=" + getBase();
+        }
+        return getAlephUrl() + "/F?func=direct&doc_number=" + sysno + localBase + "&format=999";
     }
 
     private void addPublishment(Document modsDoc, MarcSpecificMetadata marc) {

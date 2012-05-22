@@ -111,6 +111,8 @@ public class Constants {
 
     public static final String URL_PARAM_TOP_SPACE = "topSpace";
 
+    public static final String URL_PARAM_BASE = "base";
+
     // db
     /** Path to a file with current DB schema */
     public static final String SCHEMA_PATH = "schema.sql";
@@ -222,9 +224,6 @@ public class Constants {
 
     /** The Constant ATTR_BARCODE. */
     public static final String ATTR_BARCODE = "barcode";
-
-    /** The Constant ATTR_PATH. */
-    public static final String ATTR_PATH = "path";
 
     /** The Constant ATTR_ALTO_PATH. */
     public static final String ATTR_ALTO_PATH = "altoPath";
@@ -841,4 +840,6 @@ public class Constants {
     public static final String DATE_DDMMRRRR = "\\d{1,2}\\." + DATE_MMRRRR;
     public static final String DATE_DD_DDMMRRRR = "\\d{1,2}\\.-" + DATE_DDMMRRRR;
     public static final String ONLY_NUMBERS = "\\d*";
+
+    public static final String MODS_PART_DETAIL_PAGE_NUMBER = "pageNumber";
 }

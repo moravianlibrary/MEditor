@@ -50,7 +50,6 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -80,9 +79,16 @@ public class CreateObjectUtils {
                                       Document mods,
                                       Document dc,
                                       String sysno,
+                                      String base,
                                       Map<String, String> processedPages) throws CreateObjectException {
         if (processedPages == null) processedPages = new HashMap<String, String>();
-        return insertFOXML(node, mods, dc, Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS, sysno, processedPages);
+        return insertFOXML(node,
+                           mods,
+                           dc,
+                           Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS,
+                           sysno,
+                           base,
+                           processedPages);
     }
 
     private static String insertFOXML(NewDigitalObject node,
@@ -90,6 +96,7 @@ public class CreateObjectUtils {
                                       Document dc,
                                       int attempt,
                                       String sysno,
+                                      String base,
                                       Map<String, String> processedPages) throws CreateObjectException {
         if (attempt == 0) {
             throw new CreateObjectException("max number of attempts has been reached");
@@ -104,7 +111,7 @@ public class CreateObjectUtils {
             if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
                 for (NewDigitalObject child : childrenToAdd) {
                     if (!child.getExist()) {
-                        String uuid = insertFOXML(child, mods, dc, sysno, processedPages);
+                        String uuid = insertFOXML(child, mods, dc, sysno, base, processedPages);
                         child.setUuid(uuid);
                         append(node, child);
                     }
@@ -121,6 +128,8 @@ public class CreateObjectUtils {
         }
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
 
+        builder.setSignature(node.getSignature());
+        builder.setBase(base);
         builder.setUuid(node.getUuid());
         builder.setDcXmlContent(dc);
         builder.setModsXmlContent(mods);
@@ -142,7 +151,7 @@ public class CreateObjectUtils {
             List<RelsExtRelation> relations = builder.getChildren();
             for (NewDigitalObject child : childrenToAdd) {
                 if (!child.getExist()) {
-                    String uuid = insertFOXML(child, mods, dc, sysno, processedPages);
+                    String uuid = insertFOXML(child, mods, dc, sysno, base, processedPages);
                     child.setUuid(uuid);
                 }
                 relations.add(new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(node
@@ -172,11 +181,16 @@ public class CreateObjectUtils {
                                     + node.getUuid();
                 }
             } else {
+                String basePath = "";
+                if (base != null && !"".equals(base)) {
+                    basePath = base.toLowerCase() + "/";
+                }
                 imageUrl =
-                        url + "mzk03/" + getSysnoPath(sysno) + (internal ? node.getPath() : node.getUuid());
+                        url + basePath + getSysnoPath(sysno) + (internal ? node.getPath() : node.getUuid());
                 if (!internal) {
                     newFilePath =
-                            addSlash(config.getImageServerKnown()) + getSysnoPath(sysno) + node.getUuid();
+                            addSlash(config.getImageServerKnown()) + basePath + getSysnoPath(sysno)
+                                    + node.getUuid();
                 }
             }
             builder.setImageUrl(imageUrl);
@@ -192,12 +206,11 @@ public class CreateObjectUtils {
             if (!internal) {
                 // TODO: StringBuffer
                 boolean copySuccess =
-                        internal ? true : copyFile(EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION
-                                                           + node.getPath() + Constants.JPEG_2000_EXTENSION,
-                                                   newFilePath + Constants.JPEG_2000_EXTENSION);
+                        internal ? true : copyFile(config.getImagesPath() + node.getPath()
+                                + Constants.JPEG_2000_EXTENSION, newFilePath + Constants.JPEG_2000_EXTENSION);
                 if (copySuccess && LOGGER.isInfoEnabled()) {
-                    LOGGER.info("image " + EditorConfigurationImpl.DEFAULT_IMAGES_LOCATION + node.getPath()
-                            + "." + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
+                    LOGGER.info("image " + config.getImagesPath() + node.getPath() + "."
+                            + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
                             + Constants.JPEG_2000_EXTENSION);
                 }
             }
@@ -214,7 +227,7 @@ public class CreateObjectUtils {
         }
 
         if (!success) {
-            insertFOXML(node, mods, dc, attempt - 1, sysno, processedPages);
+            insertFOXML(node, mods, dc, attempt - 1, sysno, base, processedPages);
         }
         if (node.getModel() == DigitalObjectModel.PAGE) processedPages.put(node.getPath(), node.getUuid());
         return node.getUuid();
@@ -360,7 +373,8 @@ public class CreateObjectUtils {
         return string;
     }
 
-    private static void checkAccessRightsAndCreateDirectories(String sysno) throws CreateObjectException {
+    private static void checkAccessRightsAndCreateDirectories(String sysno, String base)
+            throws CreateObjectException {
         String unknown = config.getImageServerUnknown();
         String known = config.getImageServerKnown();
         String url = config.getImageServerUrl();
@@ -383,9 +397,14 @@ public class CreateObjectUtils {
         if (internal) {
             imagesDir = new File(config.getEditorHome() + '/' + ".images");
         } else {
+            String basePath = "";
+            if (base != null && !"".equals(base)) {
+                basePath = base.toLowerCase() + "/";
+            }
             imagesDir =
-                    new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + getSysnoPath(sysno)
-                            : config.getImageServerUnknown() + getPathFromNonSysno(sysno));
+                    new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
+                            + getSysnoPath(sysno) : config.getImageServerUnknown()
+                            + getPathFromNonSysno(sysno));
         }
         if (!imagesDir.exists()) {
             boolean mkdirs = imagesDir.mkdirs();
@@ -419,8 +438,8 @@ public class CreateObjectUtils {
             return false;
         }
 
-        checkAccessRightsAndCreateDirectories(node.getSysno());
-        insertFOXML(node, mods, dc, node.getSysno(), null);
+        checkAccessRightsAndCreateDirectories(node.getSysno(), node.getBase());
+        insertFOXML(node, mods, dc, node.getSysno(), node.getBase(), null);
         return true;
     }
 }

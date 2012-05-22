@@ -33,7 +33,9 @@ import com.smartgwt.client.types.Side;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
+import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -54,6 +56,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.shared.event.LoadStructureEvent;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
@@ -143,8 +146,10 @@ public class LoadTreeStructureWindow
         final String forAll = lang.forAll();
         radioGroupItem.setValueMap(forObj, forAll);
 
+        final CheckboxItem loadOnlyLeft = new CheckboxItem("loadOnlyLeft", lang.loadOnlyLeft());
+
         form.setExtraSpace(20);
-        form.setFields(radioGroupItem);
+        form.setFields(radioGroupItem, new SpacerItem(), loadOnlyLeft);
         radioGroupItem.addChangedHandler(new ChangedHandler() {
 
             @Override
@@ -167,7 +172,7 @@ public class LoadTreeStructureWindow
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                 Record rec = storedStructures.getSelectedRecord();
                 if (rec != null) {
-                    load(rec.getAttribute(Constants.ATTR_ID));
+                    load(rec.getAttribute(Constants.ATTR_ID), loadOnlyLeft.getValueAsBoolean());
                 }
             }
         });
@@ -210,7 +215,7 @@ public class LoadTreeStructureWindow
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                 Record rec = storedStructuresByAll.getSelectedRecord();
                 if (rec != null) {
-                    load(rec.getAttribute(Constants.ATTR_ID));
+                    load(rec.getAttribute(Constants.ATTR_ID), loadOnlyLeft.getValueAsBoolean());
                 }
             }
         });
@@ -349,7 +354,7 @@ public class LoadTreeStructureWindow
                            });
     }
 
-    private void load(final String id) {
+    private void load(final String id, final Boolean loadOnlyLeft) {
         dispatcher.execute(new StoreTreeStructureAction(Constants.VERB.GET,
                                                         id,
                                                         false,
@@ -364,16 +369,23 @@ public class LoadTreeStructureWindow
                                        Record[] pages = new Record[nodes.size()];
                                        int i = 0, j = 0;
                                        int lastId = 0;
+                                       TreeStructureNode rootTreeNode = null;
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
                                                pages[j++] = ClientUtils.toScanRecord(node);
+                                           } else if (node.getPropId().equals(SubstructureTreeNode.ROOT_ID)) {
+                                               rootTreeNode = node;
                                            } else {
                                                int id = Integer.parseInt(node.getPropId());
                                                if (id > lastId) lastId = id;
                                                tree[i++] = ClientUtils.toTreeNode(node);
                                            }
                                        }
-                                       LoadStructureEvent.fire(getEventBus(), tree, pages, lastId);
+                                       if (i == 0 && rootTreeNode != null) {
+                                           tree[i++] = ClientUtils.toTreeNode(rootTreeNode);
+                                       }
+                                       LoadStructureEvent.fire(getEventBus(), tree, loadOnlyLeft ? null
+                                               : pages, lastId);
                                        hide();
                                    }
                                }
