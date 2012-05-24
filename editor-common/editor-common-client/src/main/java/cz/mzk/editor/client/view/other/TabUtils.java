@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.smartgwt.client.types.DateDisplayFormat;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Canvas;
@@ -46,7 +45,6 @@ import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.FormItemIfFunction;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.DateItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
@@ -125,6 +123,7 @@ import cz.mzk.editor.client.mods.TypeOfResourceTypeClient;
 import cz.mzk.editor.client.mods.UnstructuredTextClient;
 import cz.mzk.editor.client.mods.UrlTypeClient;
 import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.view.window.EditorDateItem;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1586,10 +1585,8 @@ public final class TabUtils {
         } else if (type.equals(CheckboxItem.class)) {
             isCheckbox = true;
             item = new CheckboxItem(attr.getName());
-        } else if (type.equals(DateItem.class)) {
-            item = new DateItem(attr.getName());
-            item.setDisplayFormat(DateDisplayFormat.TOEUROPEANSHORTDATE);
-            ((DateItem) item).setUseTextField(true);
+        } else if (type.equals(EditorDateItem.class)) {
+            item = new EditorDateItem(attr.getName());
         } else if (type.equals(SelectItem.class)) {
             item = new SelectItem(attr.getName());
             item.setValueMap(attr.getLabels());
@@ -2617,7 +2614,7 @@ public final class TabUtils {
                 newItem(new Attribute(TextItem.class, name, title, tooltip, value == null ? ""
                         : value.getValue()));
         FormItem item2 =
-                newItem(new Attribute(DateItem.class, name, title, tooltip, value == null ? ""
+                newItem(new Attribute(EditorDateItem.class, name, title, tooltip, value == null ? ""
                         : value.getValue()));
 
         FormItem[] items = formAttr.getFields();
@@ -3429,7 +3426,7 @@ public final class TabUtils {
         attributes =
                 new Attribute[] {
                         getDisplayLabel(lang.shelfLocMARC(), ""),
-                        new Attribute(DateItem.class,
+                        new Attribute(EditorDateItem.class,
                                       ModsConstants.DATE_LAST_ACCESSED,
                                       "Date Last Accessed",
                                       lang.dateLastAcc()),

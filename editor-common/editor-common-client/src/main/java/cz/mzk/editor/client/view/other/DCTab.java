@@ -31,7 +31,6 @@ import javax.inject.Inject;
 
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
-import com.smartgwt.client.widgets.form.fields.DateItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.tab.Tab;
@@ -39,6 +38,7 @@ import com.smartgwt.client.widgets.tab.Tab;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.metadata.ListOfSimpleValuesHolder;
 import cz.mzk.editor.client.metadata.MetadataHolder;
+import cz.mzk.editor.client.view.window.EditorDateItem;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 // TODO: Auto-generated Javadoc
@@ -173,11 +173,11 @@ public class DCTab
                                                          true,
                                                          dc.getContributor(),
                                                          contributor));
-        sectionStack.addSection(TabUtils.getStackSection(new Attribute(DateItem.class, lang.dcDates(), lang
-                                                                 .dcDate(), lang.dcDateHoover()),
-                                                         true,
-                                                         dc.getDate(),
-                                                         date));
+        sectionStack.addSection(TabUtils.getStackSection(new Attribute(EditorDateItem.class,
+                                                                       lang.dcDates(),
+                                                                       lang.dcDate(),
+                                                                       lang.dcDateHoover()), true, dc
+                .getDate(), date));
         sectionStack.addSection(TabUtils.getStackSection(lang.dcLanguages(),
                                                          lang.dcLanguage(),
                                                          lang.dcLanguageHoover(),

@@ -35,7 +35,7 @@ import cz.mzk.editor.client.util.Constants;
 public class SubstructureTreeNode
         extends TreeNode {
 
-    public static final String ROOT_ID = "1";
+    public static final String ROOT_ID = "-1";
 
     public static final String ROOT_OBJECT_ID = "0";
 
