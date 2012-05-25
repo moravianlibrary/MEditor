@@ -558,9 +558,11 @@ public abstract class ModsWindow
     public ModsCollectionClient publishWindow(DigitalObjectModel model) {
 
         String levelName = "";
+        String partNumber = "";
         if (model == DigitalObjectModel.MONOGRAPHUNIT || model == DigitalObjectModel.PERIODICALITEM
                 || model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.INTERNALPART) {
-            modsClientManager.modifyPartNumber(objectBasicInfoLayout.getManagerLayout().getPartNumber());
+            partNumber = objectBasicInfoLayout.getManagerLayout().getPartNumber();
+            modsClientManager.modifyPartNumber(partNumber);
 
             if (model != DigitalObjectModel.INTERNALPART)
                 modsClientManager.modifyNote(objectBasicInfoLayout.getManagerLayout().getNote());
@@ -580,10 +582,15 @@ public abstract class ModsWindow
                         .getValue() != null ? dateItem.getValue().toString() : "");
         modsClientManager.modifyOriginInfoList(publisherItem.getEnteredValue(), newDate);
 
-        String title =
+        String title = "";
+        title =
                 (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
                         .getEnteredValue();
         modsClientManager.modifyTitle(title, model);
+
+        if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.PERIODICALVOLUME) {
+            title = partNumber;
+        }
 
         modsClientManager.modifySubtitle((subtitleItem == null) ? objectBasicInfoLayout.getManagerLayout()
                 .getSubtitle() : subtitleItem.getEnteredValue());
@@ -619,9 +626,10 @@ public abstract class ModsWindow
      * 
      * @param originalDC
      *        the original DublinCore
+     * @param model
      * @return DublinCore the new DublinCore
      */
-    public DublinCore reflectInDC(DublinCore originalDC) {
+    public DublinCore reflectInDC(DublinCore originalDC, DigitalObjectModel model) {
         DublinCore DC = originalDC;
 
         if (isNotNullOrEmpty(DC.getTitle())) {
@@ -630,9 +638,15 @@ public abstract class ModsWindow
             DC.setTitle(new ArrayList<String>());
         }
 
-        String title =
-                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
-                        .getEnteredValue();
+        String title = "";
+        if (model != DigitalObjectModel.PERIODICALITEM && model != DigitalObjectModel.PERIODICALVOLUME) {
+            title =
+                    (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle()
+                            : titleItem.getEnteredValue();
+        } else {
+            title = objectBasicInfoLayout.getManagerLayout().getPartNumber();
+        }
+
         if (title != null && !title.trim().equals("")) {
             DC.getTitle().add(0, title.trim());
         }
