@@ -684,6 +684,8 @@ public class CreateStructurePresenter
                                                           + "]");
                             event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
                             event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
+                            event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                           Boolean.FALSE);
                         }
                     }
                 });
