@@ -4975,9 +4975,9 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 	<!-- location 910 (signature) -->
 	<xsl:template name="createLocationFrom910">
 			<location>
-			<shelfLocation>
+			<shelfLocator>
 				<xsl:value-of select="."/>
-			</shelfLocation>
+			</shelfLocator>
 			</location>
 	</xsl:template>
 
