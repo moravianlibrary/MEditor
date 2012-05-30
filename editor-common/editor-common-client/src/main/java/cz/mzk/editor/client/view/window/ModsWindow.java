@@ -588,8 +588,10 @@ public abstract class ModsWindow
                         .getEnteredValue();
         modsClientManager.modifyTitle(title, model);
 
-        if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.PERIODICALVOLUME) {
+        if (model == DigitalObjectModel.PERIODICALITEM) {
             title = partNumber;
+        } else if (model == DigitalObjectModel.PERIODICALVOLUME) {
+            title = newDate;
         }
 
         modsClientManager.modifySubtitle((subtitleItem == null) ? objectBasicInfoLayout.getManagerLayout()
@@ -609,16 +611,9 @@ public abstract class ModsWindow
     }
 
     private void setLabel(DigitalObjectModel model, String title) {
-        String labelToAdd = "";
-        if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            labelToAdd = objectBasicInfoLayout.getManagerLayout().getPartNumber();
-        } else {
-            labelToAdd = title;
-        }
         this.label =
-                ClientUtils
-                        .trimLabel((labelToAdd != null && !"".equals(labelToAdd) ? labelToAdd : "untitled"),
-                                   Constants.MAX_LABEL_LENGTH);
+                ClientUtils.trimLabel((title != null && !"".equals(title) ? title : "untitled"),
+                                      Constants.MAX_LABEL_LENGTH);
     }
 
     /**
@@ -638,14 +633,7 @@ public abstract class ModsWindow
             DC.setTitle(new ArrayList<String>());
         }
 
-        String title = "";
-        if (model != DigitalObjectModel.PERIODICALITEM && model != DigitalObjectModel.PERIODICALVOLUME) {
-            title =
-                    (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle()
-                            : titleItem.getEnteredValue();
-        } else {
-            title = objectBasicInfoLayout.getManagerLayout().getPartNumber();
-        }
+        String title = getLabel();
 
         if (title != null && !title.trim().equals("")) {
             DC.getTitle().add(0, title.trim());

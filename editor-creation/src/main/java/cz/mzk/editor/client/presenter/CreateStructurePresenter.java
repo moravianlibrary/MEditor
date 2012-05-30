@@ -1101,6 +1101,7 @@ public class CreateStructurePresenter
             case PERIODICALVOLUME:
                 dateOrIntPartName =
                         createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
+                name = dateOrIntPartName;
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? "1" : leftPresenter.getSequentialCreateLayout().getPartNumber();
@@ -1113,6 +1114,7 @@ public class CreateStructurePresenter
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getPartNumber();
+                if (name == null || "".equals(name)) name = partNumOrAlto;
                 aditionalInfoOrOcr =
                         createAtOnce ? PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue() : leftPresenter
                                 .getSequentialCreateLayout().getLevelName();

@@ -111,7 +111,8 @@ public abstract class FoxmlBuilder {
 
     private void setLabel(NewDigitalObject object) {
         String labelToAdd = "";
-        if (object.getModel() == DigitalObjectModel.PERIODICALVOLUME) {
+        if (object.getModel() == DigitalObjectModel.PERIODICALITEM
+                && (object.getName() == null || "".equals(object.getName()))) {
             labelToAdd = object.getPartNumberOrAlto();
         } else {
             if (object.getName() != null && !"".equals(object.getName())) {
