@@ -98,6 +98,8 @@ public class RemoveDigitalObjectHandler
     @Inject
     private RecentlyModifiedItemDAO recModDao;
 
+    private String rootUuid = "";
+
     private static final class RemovedDigitalObject {
 
         private final String uuid;
@@ -169,10 +171,10 @@ public class RemoveDigitalObjectHandler
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
-        String uuid = action.getUuid();
+        rootUuid = action.getUuid();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();
 
-        String returnedMessage = remove(uuid, context, uuidNotToRemove);
+        String returnedMessage = remove(rootUuid, context, uuidNotToRemove);
         if (!"".equals(returnedMessage)) {
             return new RemoveDigitalObjectResult(returnedMessage, null);
         }
@@ -224,7 +226,8 @@ public class RemoveDigitalObjectHandler
         String pass = configuration.getFedoraPassword();
 
         ArrayList<ArrayList<String>> removedRelationships = new ArrayList<ArrayList<String>>();
-        Foxml foxml = FoxmlUtils.handleFoxml(uuid, fedoraAccess);
+        Foxml foxml = null;
+        if (!uuid.equals(rootUuid)) foxml = FoxmlUtils.handleFoxml(uuid, fedoraAccess);
 
         boolean successful = true;
 
