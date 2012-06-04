@@ -98,8 +98,6 @@ public class RemoveDigitalObjectHandler
     @Inject
     private RecentlyModifiedItemDAO recModDao;
 
-    private String rootUuid = "";
-
     private static final class RemovedDigitalObject {
 
         private final String uuid;
@@ -171,10 +169,9 @@ public class RemoveDigitalObjectHandler
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
-        rootUuid = action.getUuid();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();
 
-        String returnedMessage = remove(rootUuid, context, uuidNotToRemove);
+        String returnedMessage = remove(action.getUuid(), context, uuidNotToRemove);
         if (!"".equals(returnedMessage)) {
             return new RemoveDigitalObjectResult(returnedMessage, null);
         }
@@ -197,6 +194,7 @@ public class RemoveDigitalObjectHandler
             throws ActionException {
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(uuid);
+        int childrenToRemove = 0;
         if (children != null) {
             for (ArrayList<String> child : children) {
                 if (!uuidNotToRemove.contains(child.get(0)) && getDoModelHandler.getModel(uuid) != null) {
@@ -204,11 +202,12 @@ public class RemoveDigitalObjectHandler
                     if (!"".equals(returnedMessage)) {
                         return returnedMessage;
                     }
+                    childrenToRemove++;
                 }
             }
         }
         if (!uuidNotToRemove.contains(uuid) && getDoModelHandler.getModel(uuid) != null) {
-            return removeDigObjAndRel(uuid, removedDigitalObjects, context);
+            return removeDigObjAndRel(uuid, removedDigitalObjects, context, childrenToRemove < 20);
         } else {
             LOGGER.debug("Digital object with uuid: " + uuid + " has not been found.");
             return "";
@@ -218,7 +217,8 @@ public class RemoveDigitalObjectHandler
 
     private String removeDigObjAndRel(String uuid,
                                       final List<RemovedDigitalObject> removedDigitalObjects,
-                                      final ExecutionContext context) throws ActionException {
+                                      final ExecutionContext context,
+                                      boolean downloadFoxml) throws ActionException {
         ArrayList<ArrayList<String>> parents = FedoraUtils.getRelated(uuid);
 
         StringBuffer message = new StringBuffer("");
@@ -227,7 +227,7 @@ public class RemoveDigitalObjectHandler
 
         ArrayList<ArrayList<String>> removedRelationships = new ArrayList<ArrayList<String>>();
         Foxml foxml = null;
-        if (!uuid.equals(rootUuid)) foxml = FoxmlUtils.handleFoxml(uuid, fedoraAccess);
+        if (downloadFoxml) foxml = FoxmlUtils.handleFoxml(uuid, fedoraAccess);
 
         boolean successful = true;
 
