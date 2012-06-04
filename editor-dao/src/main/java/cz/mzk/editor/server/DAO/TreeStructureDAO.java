@@ -64,10 +64,11 @@ public interface TreeStructureDAO {
     /**
      * Returns all saved structures
      * 
+     * @param code
      * @return list of TreeStructureInfo instances belonging to specified user
      * @throws DatabaseException
      */
-    ArrayList<TreeStructureInfo> getAllSavedStructures() throws DatabaseException;
+    ArrayList<TreeStructureInfo> getAllSavedStructures(String code) throws DatabaseException;
 
     /**
      * Deletes the structure from DB

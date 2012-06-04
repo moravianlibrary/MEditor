@@ -100,9 +100,6 @@ public class StoreTreeStructureHandler
                 }
                 break;
             case GET:
-                if (action.getId() == null && action.isAll()) {
-                    throw new NullPointerException("id");
-                }
                 break;
             default:
                 throw new IllegalArgumentException("bad verb");
@@ -131,7 +128,8 @@ public class StoreTreeStructureHandler
                 case GET:
                     if (action.isAll()) {
                         // for all users
-                        return new StoreTreeStructureResult(treeDAO.getAllSavedStructures(), null);
+                        return new StoreTreeStructureResult(treeDAO.getAllSavedStructures(action.getId()),
+                                                            null);
                     } else if (action.getId() == null) {
                         // for all objects of particular user
                         return new StoreTreeStructureResult(treeDAO.getAllSavedStructuresOfUser(userId), null);
