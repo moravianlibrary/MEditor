@@ -55,7 +55,7 @@ public class FindMetadata {
 
     @In(4)
     private String oaiQuery;
-    
+
     @In(5)
     private String base;
 

@@ -247,21 +247,8 @@ public class Z3950ClientImpl
     }
 
     private boolean init() {
-        int profileIndex = -1;
-        if ((profile = configuration.getZ3950Profile()) != null) {
-            if (MZK_PROFILE_ID.equals(profile)) {
-                profileIndex = MZK_PROFILE_INDEX;
-            } else if (MUNI_PROFILE_ID.equals(profile)) {
-                profileIndex = MUNI_PROFILE_INDEX;
-            } else if (NKP_SKC_PROFILE_ID.equals(profile)) {
-                profileIndex = NKP_SKC_PROFILE_INDEX;
-            } else if (NKP_NKC_PROFILE_ID.equals(profile)) {
-                profileIndex = NKP_NKC_PROFILE_INDEX;
-            } else {
-                LOGGER.warn("Invalid value (" + profile + ") for key "
-                        + EditorConfiguration.ServerConstants.Z3950_PROFILE + " in editor configuration.");
-            }
-        }
+        int profileIndex = getProfileIndex();
+
         // host
         if ((host = configuration.getZ3950Host()) == null) {
             if (profileIndex == -1) {
@@ -307,5 +294,24 @@ public class Z3950ClientImpl
             }
         }
         return true;
+    }
+
+    public int getProfileIndex() {
+        int profileIndex = -1;
+        if ((profile = configuration.getZ3950Profile()) != null) {
+            if (MZK_PROFILE_ID.equals(profile)) {
+                profileIndex = MZK_PROFILE_INDEX;
+            } else if (MUNI_PROFILE_ID.equals(profile)) {
+                profileIndex = MUNI_PROFILE_INDEX;
+            } else if (NKP_SKC_PROFILE_ID.equals(profile)) {
+                profileIndex = NKP_SKC_PROFILE_INDEX;
+            } else if (NKP_NKC_PROFILE_ID.equals(profile)) {
+                profileIndex = NKP_NKC_PROFILE_INDEX;
+            } else {
+                LOGGER.warn("Invalid value (" + profile + ") for key "
+                        + EditorConfiguration.ServerConstants.Z3950_PROFILE + " in editor configuration.");
+            }
+        }
+        return profileIndex;
     }
 }
