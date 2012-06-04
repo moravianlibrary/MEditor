@@ -106,7 +106,11 @@ public class StoreTreeStructureHandler
 
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing action: StoreTreeStructureResult role:" + action);
+
+            LOGGER.debug("Processing action: StoreTreeStructureResult role:"
+                    + action
+                    + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
+                            .getBundle().getInfo().getInputPath()) : ""));
         }
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
