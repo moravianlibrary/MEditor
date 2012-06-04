@@ -313,33 +313,33 @@ public class FindMetadataPresenter
         if (query == null || id == null) {
             return;
         }
-        dispatcher.execute(new FindMetadataAction(field, id, oai, query, getView().getOaiBase().getValueAsString()),
-                           new DispatchCallback<FindMetadataResult>() {
+        dispatcher.execute(new FindMetadataAction(field, id, oai, query, getView().getOaiBase()
+                .getValueAsString()), new DispatchCallback<FindMetadataResult>() {
 
-                               @Override
-                               public void callback(FindMetadataResult result) {
-                                   getView().showProgress(true, true);
-                                   List<MetadataBundle> list = result.getBundle();
-                                   if (list != null && list.size() != 0) {
-                                       ListGridRecord[] data = new ListGridRecord[list.size()];
-                                       for (int i = 0; i < list.size(); i++) {
-                                           list.get(i).getDc().setId(i);
-                                           data[i] = list.get(i).getDc().toRecord();
-                                           results.put(i, list.get(i));
-                                       }
-                                       getView().refreshData(data);
-                                   } else {
-                                       getView().refreshData(null);
-                                   }
-                                   getView().showProgress(false, false);
-                               }
+            @Override
+            public void callback(FindMetadataResult result) {
+                getView().showProgress(true, true);
+                List<MetadataBundle> list = result.getBundle();
+                if (list != null && list.size() != 0) {
+                    ListGridRecord[] data = new ListGridRecord[list.size()];
+                    for (int i = 0; i < list.size(); i++) {
+                        list.get(i).getDc().setId(i);
+                        data[i] = list.get(i).getDc().toRecord();
+                        results.put(i, list.get(i));
+                    }
+                    getView().refreshData(data);
+                } else {
+                    getView().refreshData(null);
+                }
+                getView().showProgress(false, false);
+            }
 
-                               @Override
-                               public void callbackError(Throwable t) {
-                                   getView().showProgress(false, false);
-                                   super.callbackError(t);
-                               }
-                           });
+            @Override
+            public void callbackError(Throwable t) {
+                getView().showProgress(false, false);
+                super.callbackError(t);
+            }
+        });
         getView().showProgress(true, false);
     }
 
@@ -381,7 +381,7 @@ public class FindMetadataPresenter
                 getView().getFindBy().setValue(lang.fbarcode());
                 getView().getZ39Id().setTitle(lang.fbarcode());
                 getView().getZ39Id().redraw();
-                findMetadata(Constants.SEARCH_FIELD.BAR, id, false, getQuery());
+                findMetadata(Constants.SEARCH_FIELD.BAR, id, true, getQuery());
             } else {
                 getView().getFindBy().setValue(lang.ftitle());
                 getView().getZ39Id().setTitle(lang.ftitle());
