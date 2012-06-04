@@ -100,16 +100,17 @@ public class StoreTreeStructureHandler
                 }
                 break;
             case GET:
-                if (action.getId() == null && action.isAll()) {
-                    throw new NullPointerException("id");
-                }
                 break;
             default:
                 throw new IllegalArgumentException("bad verb");
 
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing action: StoreTreeStructureResult role:" + action);
+
+            LOGGER.debug("Processing action: StoreTreeStructureResult role:"
+                    + action
+                    + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
+                            .getBundle().getInfo().getInputPath()) : ""));
         }
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
@@ -131,7 +132,8 @@ public class StoreTreeStructureHandler
                 case GET:
                     if (action.isAll()) {
                         // for all users
-                        return new StoreTreeStructureResult(treeDAO.getAllSavedStructures(), null);
+                        return new StoreTreeStructureResult(treeDAO.getAllSavedStructures(action.getId()),
+                                                            null);
                     } else if (action.getId() == null) {
                         // for all objects of particular user
                         return new StoreTreeStructureResult(treeDAO.getAllSavedStructuresOfUser(userId), null);

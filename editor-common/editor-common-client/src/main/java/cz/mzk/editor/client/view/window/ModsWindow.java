@@ -542,7 +542,7 @@ public abstract class ModsWindow
         buttonsLayout.setAlign(Alignment.RIGHT);
 
         publish.setTitle(lang.publishItem());
-        close.setTitle(lang.close());
+        close.setTitle(lang.storno());
 
         buttonsLayout.addMember(publish);
         buttonsLayout.addMember(close);

@@ -77,6 +77,47 @@ public class LoadTreeStructureWindow
     private final ListGrid storedStructures;
     private final ListGrid storedStructuresByAll;
     private final DispatchAsync dispatcher;
+    private boolean commonIsLoaded = false;
+
+    private final class MyForm
+            extends DynamicForm {
+
+        private final RadioGroupItem radioGroupItem;
+        private final CheckboxItem loadOnlyLeft;
+
+        public MyForm(LangConstants lang, final String code, final boolean isAll) {
+            radioGroupItem = new RadioGroupItem();
+            radioGroupItem.setTitle(lang.show());
+            final String forObj = lang.forObj() + " (" + code + ")";
+            radioGroupItem.setValueMap(forObj, isAll ? lang.forAllAll() : lang.forAll());
+
+            loadOnlyLeft = new CheckboxItem("loadOnlyLeft", lang.loadOnlyLeft());
+
+            setExtraSpace(20);
+            setFields(radioGroupItem, new SpacerItem(), loadOnlyLeft);
+            radioGroupItem.addChangedHandler(new ChangedHandler() {
+
+                @Override
+                public void onChanged(ChangedEvent event) {
+                    if (forObj.equals(event.getValue())) {
+                        LoadTreeStructureWindow.this.fetchData(code, isAll);
+                    } else {
+                        LoadTreeStructureWindow.this.fetchData(null, isAll);
+                    }
+
+                }
+            });
+            radioGroupItem.setValue(forObj);
+        }
+
+        /**
+         * @return the loadOnlyLeft
+         */
+        public CheckboxItem getLoadOnlyLeft() {
+            return loadOnlyLeft;
+        }
+
+    }
 
     public static void setInstanceOf(String code,
                                      final LangConstants lang,
@@ -139,29 +180,8 @@ public class LoadTreeStructureWindow
         storedStructuresByAll.setFields(dateField, modelField, nameField, ownerField, descField);
         commonTopLayout.addMember(storedStructuresByAll);
 
-        DynamicForm form = new DynamicForm();
-        final RadioGroupItem radioGroupItem = new RadioGroupItem();
-        radioGroupItem.setTitle(lang.show());
-        final String forObj = lang.forObj() + " (" + code + ")";
-        final String forAll = lang.forAll();
-        radioGroupItem.setValueMap(forObj, forAll);
-
-        final CheckboxItem loadOnlyLeft = new CheckboxItem("loadOnlyLeft", lang.loadOnlyLeft());
-
-        form.setExtraSpace(20);
-        form.setFields(radioGroupItem, new SpacerItem(), loadOnlyLeft);
-        radioGroupItem.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                if (forObj.equals(event.getValue())) {
-                    fetchData(code, false);
-                } else {
-                    fetchData(null, false);
-                }
-
-            }
-        });
+        final MyForm userForm = new MyForm(lang, code, false);
+        final MyForm commonForm = new MyForm(lang, code, true);
 
         final Button userLoadButton = new Button(lang.loadStructure());
         userLoadButton.setExtraSpace(5);
@@ -172,7 +192,7 @@ public class LoadTreeStructureWindow
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                 Record rec = storedStructures.getSelectedRecord();
                 if (rec != null) {
-                    load(rec.getAttribute(Constants.ATTR_ID), loadOnlyLeft.getValueAsBoolean());
+                    load(rec.getAttribute(Constants.ATTR_ID), userForm.getLoadOnlyLeft().getValueAsBoolean());
                 }
             }
         });
@@ -194,7 +214,9 @@ public class LoadTreeStructureWindow
                 ListGridRecord[] selection = event.getSelection();
                 if (selection != null && selection.length > 0) {
                     userDeleteButton.setDisabled(false);
-                    if (selection.length == 1 && forObj.equals(radioGroupItem.getValue())) {
+                    String selBarcode = selection[0].getAttribute(Constants.ATTR_BARCODE);
+                    if (selection.length == 1 && selBarcode != null
+                            && selection[0].getAttribute(Constants.ATTR_BARCODE).equals(code)) {
                         userLoadButton.setDisabled(false);
                     } else {
                         userLoadButton.setDisabled(true);
@@ -215,7 +237,8 @@ public class LoadTreeStructureWindow
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                 Record rec = storedStructuresByAll.getSelectedRecord();
                 if (rec != null) {
-                    load(rec.getAttribute(Constants.ATTR_ID), loadOnlyLeft.getValueAsBoolean());
+                    load(rec.getAttribute(Constants.ATTR_ID), commonForm.getLoadOnlyLeft()
+                            .getValueAsBoolean());
                 }
             }
         });
@@ -238,8 +261,8 @@ public class LoadTreeStructureWindow
                 ListGridRecord[] selection = event.getSelection();
                 if (selection != null && selection.length > 0) {
                     commonDeleteButton.setDisabled(false);
-                    if (selection.length == 1
-                            && selection[0].getAttribute(Constants.ATTR_BARCODE).equals(code)) {
+                    String selBarcode = selection[0].getAttribute(Constants.ATTR_BARCODE);
+                    if (selection.length == 1 && selBarcode != null && selBarcode.equals(code)) {
                         commonLoadButton.setDisabled(false);
                     } else {
                         commonLoadButton.setDisabled(true);
@@ -251,13 +274,14 @@ public class LoadTreeStructureWindow
             }
         });
 
-        userMainLayout.addMember(form);
+        userMainLayout.addMember(userForm);
         Layout userBottomLayout = new HLayout();
         userBottomLayout.setExtraSpace(10);
         userBottomLayout.addMember(userLoadButton);
         userBottomLayout.addMember(userDeleteButton);
         userMainLayout.addMember(userBottomLayout);
 
+        commonMainLayout.addMember(commonForm);
         Layout commonBottomLayout = new HLayout();
         commonBottomLayout.setExtraSpace(10);
         commonBottomLayout.addMember(commonLoadButton);
@@ -269,12 +293,16 @@ public class LoadTreeStructureWindow
         mainTabSet.setWidth100();
         mainTabSet.setHeight100();
         Tab commonStoredStructures = new Tab("", "other/more_people.png");
+
         commonStoredStructures.setPane(commonMainLayout);
         commonStoredStructures.addTabSelectedHandler(new TabSelectedHandler() {
 
             @Override
             public void onTabSelected(TabSelectedEvent event) {
-                fetchData(code, true);
+                if (!commonIsLoaded) {
+                    fetchData(code, true);
+                    commonIsLoaded = true;
+                }
             }
         });
         Tab userStoredStructures = new Tab("", "other/loner.png");
@@ -290,7 +318,6 @@ public class LoadTreeStructureWindow
             }
         });
         focus();
-        radioGroupItem.setValue(forObj);
 
     }
 
