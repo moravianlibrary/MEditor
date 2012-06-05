@@ -115,16 +115,17 @@ public class FindMetadataHandler
         ArrayList<MetadataBundle> enrichedBundle = null;
         boolean isOai = action.isOai();
 
-        String sys = null;
-        if (isOai && action.getId().length() == 10) {
+        String sys = action.getId();
+        if (isOai && sys != null && sys.length() == 10) {
+            sys = null;
             sys = findSysno(action.getId());
             if (sys == null || "".equals(sys)) isOai = false;
         }
 
         if (isOai) {
-
             String completeQuery = String.format(action.getOaiQuery(), sys);
             bundle = oaiClient.search(completeQuery, action.getBase());
+
         } else {
             bundle = z39Client.search(action.getSearchType(), action.getId());
             if (ClientUtils.toBoolean(configuration.getVsup())) {
