@@ -684,6 +684,8 @@ public class CreateStructurePresenter
                                                           + "]");
                             event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
                             event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
+                            event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                                           Boolean.FALSE);
                         }
                     }
                 });
@@ -1099,6 +1101,7 @@ public class CreateStructurePresenter
             case PERIODICALVOLUME:
                 dateOrIntPartName =
                         createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
+                name = dateOrIntPartName;
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? "1" : leftPresenter.getSequentialCreateLayout().getPartNumber();
@@ -1111,6 +1114,7 @@ public class CreateStructurePresenter
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getPartNumber();
+                if (name == null || "".equals(name)) name = partNumOrAlto;
                 aditionalInfoOrOcr =
                         createAtOnce ? PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue() : leftPresenter
                                 .getSequentialCreateLayout().getLevelName();

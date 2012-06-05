@@ -68,4 +68,6 @@ public interface Z3950Client {
 
     ArrayList<MetadataBundle> search(Constants.SEARCH_FIELD field, String what);
 
+    int getProfileIndex();
+
 }

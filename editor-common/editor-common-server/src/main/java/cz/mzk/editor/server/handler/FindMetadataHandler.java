@@ -27,6 +27,9 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -40,11 +43,19 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Node;
+import org.dom4j.XPath;
+
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.server.OAIPMHClient;
 import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
+import cz.mzk.editor.server.fedora.utils.RESTHelper;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
 import cz.mzk.editor.shared.rpc.action.FindMetadataAction;
 import cz.mzk.editor.shared.rpc.action.FindMetadataResult;
@@ -102,9 +113,19 @@ public class FindMetadataHandler
         ServerUtils.checkExpiredSession(httpSessionProvider);
         ArrayList<MetadataBundle> bundle = null;
         ArrayList<MetadataBundle> enrichedBundle = null;
-        if (action.isOai()) {
-            String completeQuery = String.format(action.getOaiQuery(), action.getId());
+        boolean isOai = action.isOai();
+
+        String sys = action.getId();
+        if (isOai && sys != null && sys.length() == 10) {
+            sys = null;
+            sys = findSysno(action.getId());
+            if (sys == null || "".equals(sys)) isOai = false;
+        }
+
+        if (isOai) {
+            String completeQuery = String.format(action.getOaiQuery(), sys);
             bundle = oaiClient.search(completeQuery, action.getBase());
+
         } else {
             bundle = z39Client.search(action.getSearchType(), action.getId());
             if (ClientUtils.toBoolean(configuration.getVsup())) {
@@ -139,5 +160,54 @@ public class FindMetadataHandler
             throws ActionException {
         // TODO Auto-generated method stub
 
+    }
+
+    public String findSysno(String barcode) {
+
+        String alephUrl =
+                EditorConfiguration.ServerConstants.Z3950_DEFAULT_HOSTS[z39Client.getProfileIndex()];
+
+        if (alephUrl == null || "".equals(alephUrl)) return null;
+
+        if (!alephUrl.startsWith("http")) {
+            alephUrl = "http://" + alephUrl;
+        }
+
+        String urlToSetNum = alephUrl + "/X?op=find&code=BAR&request=%s&base=";
+        String urlToSysno = alephUrl + "/X?op=present&set_entry=1&set_number=";
+
+        String completeUrlToSetNum = String.format(urlToSetNum, barcode);
+        String[] oaiBases = configuration.getOaiBases();
+        String sysno = null;
+
+        for (String base : oaiBases) {
+            try {
+                InputStream inputStream = RESTHelper.get(completeUrlToSetNum + base, null, null, false);
+                Document records = Dom4jUtils.loadDocument(inputStream, true);
+
+                XPath xpath = DocumentHelper.createXPath("/find/set_number");
+                Node resultNode = xpath.selectSingleNode(records);
+
+                if (resultNode != null) {
+                    String setNumber = resultNode.getText();
+                    InputStream sysnoStream = RESTHelper.get(urlToSysno + setNumber, null, null, false);
+                    Document sysnoDoc = Dom4jUtils.loadDocument(sysnoStream, true);
+                    xpath = DocumentHelper.createXPath("/present/record/doc_number");
+                    Node sysnoNode = xpath.selectSingleNode(sysnoDoc);
+                    if (sysnoNode != null) sysno = sysnoNode.getText();
+                    break;
+                }
+
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            } catch (DocumentException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
+
+        }
+
+        return sysno;
     }
 }

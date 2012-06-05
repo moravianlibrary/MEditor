@@ -1495,7 +1495,7 @@ public class ModifyView
             object.setDcChanged(false);
 
             if (modsWindow.getReflectInDC()) {
-                changedDC = modsWindow.reflectInDC(changedDC);
+                changedDC = modsWindow.reflectInDC(changedDC, model);
                 object.setDcChanged(true);
             }
 

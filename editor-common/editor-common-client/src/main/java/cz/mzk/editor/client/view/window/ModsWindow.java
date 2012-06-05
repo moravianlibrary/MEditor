@@ -35,7 +35,6 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -113,7 +112,7 @@ public abstract class ModsWindow
     private final ModsTypeClientManager modsClientManager;
 
     /** The DateTimeItem with day value set to EUROPEANSHORTDATE-format */
-    private DateTimeItem dateItem;
+    private EditorDateItem dateItem;
 
     private ObjectBasicInfoLayout objectBasicInfoLayout;
 
@@ -543,7 +542,7 @@ public abstract class ModsWindow
         buttonsLayout.setAlign(Alignment.RIGHT);
 
         publish.setTitle(lang.publishItem());
-        close.setTitle(lang.close());
+        close.setTitle(lang.storno());
 
         buttonsLayout.addMember(publish);
         buttonsLayout.addMember(close);
@@ -559,9 +558,11 @@ public abstract class ModsWindow
     public ModsCollectionClient publishWindow(DigitalObjectModel model) {
 
         String levelName = "";
+        String partNumber = "";
         if (model == DigitalObjectModel.MONOGRAPHUNIT || model == DigitalObjectModel.PERIODICALITEM
                 || model == DigitalObjectModel.PERIODICALVOLUME || model == DigitalObjectModel.INTERNALPART) {
-            modsClientManager.modifyPartNumber(objectBasicInfoLayout.getManagerLayout().getPartNumber());
+            partNumber = objectBasicInfoLayout.getManagerLayout().getPartNumber();
+            modsClientManager.modifyPartNumber(partNumber);
 
             if (model != DigitalObjectModel.INTERNALPART)
                 modsClientManager.modifyNote(objectBasicInfoLayout.getManagerLayout().getNote());
@@ -581,10 +582,17 @@ public abstract class ModsWindow
                         .getValue() != null ? dateItem.getValue().toString() : "");
         modsClientManager.modifyOriginInfoList(publisherItem.getEnteredValue(), newDate);
 
-        String title =
+        String title = "";
+        title =
                 (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
                         .getEnteredValue();
         modsClientManager.modifyTitle(title, model);
+
+        if (model == DigitalObjectModel.PERIODICALITEM) {
+            title = partNumber;
+        } else if (model == DigitalObjectModel.PERIODICALVOLUME) {
+            title = newDate;
+        }
 
         modsClientManager.modifySubtitle((subtitleItem == null) ? objectBasicInfoLayout.getManagerLayout()
                 .getSubtitle() : subtitleItem.getEnteredValue());
@@ -603,16 +611,9 @@ public abstract class ModsWindow
     }
 
     private void setLabel(DigitalObjectModel model, String title) {
-        String labelToAdd = "";
-        if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            labelToAdd = objectBasicInfoLayout.getManagerLayout().getPartNumber();
-        } else {
-            labelToAdd = title;
-        }
         this.label =
-                ClientUtils
-                        .trimLabel((labelToAdd != null && !"".equals(labelToAdd) ? labelToAdd : "untitled"),
-                                   Constants.MAX_LABEL_LENGTH);
+                ClientUtils.trimLabel((title != null && !"".equals(title) ? title : "untitled"),
+                                      Constants.MAX_LABEL_LENGTH);
     }
 
     /**
@@ -620,9 +621,10 @@ public abstract class ModsWindow
      * 
      * @param originalDC
      *        the original DublinCore
+     * @param model
      * @return DublinCore the new DublinCore
      */
-    public DublinCore reflectInDC(DublinCore originalDC) {
+    public DublinCore reflectInDC(DublinCore originalDC, DigitalObjectModel model) {
         DublinCore DC = originalDC;
 
         if (isNotNullOrEmpty(DC.getTitle())) {
@@ -631,9 +633,8 @@ public abstract class ModsWindow
             DC.setTitle(new ArrayList<String>());
         }
 
-        String title =
-                (titleItem == null) ? objectBasicInfoLayout.getManagerLayout().getNameOrTitle() : titleItem
-                        .getEnteredValue();
+        String title = getLabel();
+
         if (title != null && !title.trim().equals("")) {
             DC.getTitle().add(0, title.trim());
         }

@@ -29,6 +29,7 @@ package cz.mzk.editor.server;
 
 import java.io.IOException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -68,10 +69,24 @@ public class AuthenticationFilter
         final HttpServletRequest request = (HttpServletRequest) req;
         final String path = request.getServletPath();
         final HttpSession session = request.getSession(true);
-        final Map<?, ?> parameters = req.getParameterMap();
+        Map<?, ?> parameters = req.getParameterMap();
         final String sessionId = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         final boolean sessionIdBool = sessionId != null;
-        final boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;
+        boolean paramSizeGreaterThanOne = parameters.keySet().size() > 1;
+
+        if (parameters.keySet().size() == 1) {
+            Object keyObj = parameters.keySet().iterator().next();
+            String key = keyObj.toString();
+            String[] value = (String[]) parameters.get(keyObj);
+
+            if (keyObj.equals("pids") && value.length > 0 && value[0].startsWith("uuid:")) {
+                Map<String, Object> myMap = new HashMap<String, Object>();
+                myMap.put(key, value);
+                myMap.put("modify", "");
+                parameters = myMap;
+                paramSizeGreaterThanOne = true;
+            }
+        }
 
         if (!URLS.LOCALHOST() && sessionIdBool && paramSizeGreaterThanOne
                 && (URLS.MAIN_PAGE.equals(path) || URLS.ROOT().equals(path))) {

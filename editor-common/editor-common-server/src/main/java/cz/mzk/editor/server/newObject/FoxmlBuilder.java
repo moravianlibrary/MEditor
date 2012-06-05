@@ -111,7 +111,8 @@ public abstract class FoxmlBuilder {
 
     private void setLabel(NewDigitalObject object) {
         String labelToAdd = "";
-        if (object.getModel() == DigitalObjectModel.PERIODICALVOLUME) {
+        if (object.getModel() == DigitalObjectModel.PERIODICALITEM
+                && (object.getName() == null || "".equals(object.getName()))) {
             labelToAdd = object.getPartNumberOrAlto();
         } else {
             if (object.getName() != null && !"".equals(object.getName())) {
@@ -690,17 +691,17 @@ public abstract class FoxmlBuilder {
         String location = getBundle().getMarc().getLocation();
 
         if (location != null) {
-            Element shelfLocatorEl = (Element) shelfLocatorXpath.selectSingleNode(locationEl);
-            String shelfLocatorStr = "";
-            if (shelfLocatorEl != null) {
-                shelfLocatorStr = shelfLocatorEl.getTextTrim();
-                if (doDetach) shelfLocatorEl.detach();
-            }
+            //            Element shelfLocatorEl = (Element) shelfLocatorXpath.selectSingleNode(locationEl);
+            //            String shelfLocatorStr = "";
+            //            if (shelfLocatorEl != null) {
+            //                shelfLocatorStr = shelfLocatorEl.getTextTrim();
+            //                if (doDetach) shelfLocatorEl.detach();
+            //            }
             Element physicalLocationEl =
                     locationEl.addElement(new QName("physicalLocation", Namespaces.mods));
             physicalLocationEl.addText(location);
-            shelfLocatorEl = locationEl.addElement(new QName("shelfLocator", Namespaces.mods));
-            shelfLocatorEl.addText(shelfLocatorStr);
+            //            shelfLocatorEl = locationEl.addElement(new QName("shelfLocator", Namespaces.mods));
+            //            shelfLocatorEl.addText(shelfLocatorStr);
         }
     }
 

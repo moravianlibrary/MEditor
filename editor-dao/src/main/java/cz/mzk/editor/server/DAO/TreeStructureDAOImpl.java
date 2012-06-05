@@ -55,6 +55,8 @@ public class TreeStructureDAOImpl
             + Constants.TABLE_TREE_STRUCTURE_NAME + " ts LEFT JOIN " + Constants.TABLE_EDITOR_USER
             + " eu ON eu.id = ts.user_id";
 
+    public static final String SELECT_INFOS_WITH_CODE = SELECT_INFOS + " WHERE ts.barcode = (?)";
+
     public static final String SELECT_INFOS_BY_USER = SELECT_INFOS + " WHERE eu.id = (?)";
 
     public static final String SELECT_INFOS_BY_USER_AND_CODE = SELECT_INFOS_BY_USER + " AND ts.barcode = (?)";
@@ -100,8 +102,8 @@ public class TreeStructureDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public ArrayList<TreeStructureInfo> getAllSavedStructures() throws DatabaseException {
-        return getSavedStructures(DISCRIMINATOR.ALL, -1, null);
+    public ArrayList<TreeStructureInfo> getAllSavedStructures(String code) throws DatabaseException {
+        return getSavedStructures(DISCRIMINATOR.ALL, -1, code);
     }
 
     /**
@@ -120,7 +122,12 @@ public class TreeStructureDAOImpl
         try {
             switch (what) {
                 case ALL:
-                    selectSt = getConnection().prepareStatement(SELECT_INFOS);
+                    if (code != null) {
+                        selectSt = getConnection().prepareStatement(SELECT_INFOS_WITH_CODE);
+                        selectSt.setString(1, code);
+                    } else {
+                        selectSt = getConnection().prepareStatement(SELECT_INFOS);
+                    }
                     break;
                 case ALL_OF_USER:
                     selectSt = getConnection().prepareStatement(SELECT_INFOS_BY_USER);

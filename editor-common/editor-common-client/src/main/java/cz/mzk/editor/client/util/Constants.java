@@ -722,7 +722,7 @@ public class Constants {
     }
 
     /** The value of background color of focused tabSet */
-    public static final String BG_COLOR_FOCUSED = "#ededed";
+    public static final String BG_COLOR_FOCUSED = "#c2c2c2";
 
     /** The value of background color of focused tabSet which is locked */
     public static final String BG_COLOR_FOCUSED_LOCK = "#ffe7a3";

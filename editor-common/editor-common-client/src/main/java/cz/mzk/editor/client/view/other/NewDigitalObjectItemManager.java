@@ -225,11 +225,15 @@ public abstract class NewDigitalObjectItemManager
                     return getOnlyNumbersHint("XXXX");
             }
 
-            if (model != DigitalObjectModel.PAGE) {
+            if (model != DigitalObjectModel.PAGE && model != DigitalObjectModel.PERIODICALVOLUME) {
                 if (getPartNumber() == null || "".equals(getPartNumber()))
                     return lang.textBox() + " " + lang.partNumber() + " " + lang.notEmpty();
                 if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
                     return getOnlyNumbersHint(lang.partNumber());
+
+            } else if (model == DigitalObjectModel.PERIODICALVOLUME) {
+                if (getDateIssued() == null || "".equals(getDateIssued()))
+                    return lang.textBox() + " " + lang.dateIssued() + " " + lang.notEmpty();
             }
 
             if (model == DigitalObjectModel.PERIODICALVOLUME) {
