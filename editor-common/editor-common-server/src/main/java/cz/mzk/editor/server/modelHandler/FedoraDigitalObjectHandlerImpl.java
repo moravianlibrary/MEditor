@@ -72,8 +72,7 @@ public class FedoraDigitalObjectHandlerImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.modelHandler.CanGetObject#getDigitalObject
+     * @see cz.mzk.editor.server.modelHandler.CanGetObject#getDigitalObject
      * (java.lang.String)
      */
     @Override

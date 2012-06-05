@@ -41,5 +41,8 @@ public class ChangeStructureTreeItem {
     private STRUCTURE_TREE_ITEM_ACTION action;
 
     @Order(2)
+    private String recordId;
+
+    @Order(3)
     private String newValue;
 }

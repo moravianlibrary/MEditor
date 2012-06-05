@@ -113,6 +113,7 @@ import cz.mzk.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.other.DCTab;
 import cz.mzk.editor.client.view.other.EditorDragMoveHandler;
 import cz.mzk.editor.client.view.other.EditorTabSet;
@@ -121,6 +122,7 @@ import cz.mzk.editor.client.view.other.PageNumberingManager;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
+import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 /**
@@ -361,10 +363,18 @@ public class CreateStructureView
                 if (positionBeforeMoving >= 0) {
                     Record[] selection = tileGrid.getSelection();
                     if (selection.length > 0 && tileGrid.getRecordIndex(selection[0]) == positionBeforeMoving) {
-                        undoListAllPages.remove(undoListAllPages.size() - 1);
-                        if (undoListAllPages.size() == 0) undoButton.disable();
-                    } else if (isChosenSelectedPagesTab()) {
-tady bude event
+                        if (isChosenSelectedPagesTab()) {
+                            for (Record selRecord : tileGrid.getData()) {
+                                eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_POSITION,
+                                                                                    selRecord
+                                                                                            .getAttributeAsString(Constants.ATTR_ID),
+                                                                                    String.valueOf(tileGrid
+                                                                                            .getRecordIndex(selRecord))));
+                            }
+                        } else {
+                            undoListAllPages.remove(undoListAllPages.size() - 1);
+                            if (undoListAllPages.size() == 0) undoButton.disable();
+                        }
                     }
                     positionBeforeMoving = -1;
                 }
@@ -573,7 +583,7 @@ tady bude event
                     return !isSelected ? "" : "tileGridImgSelected";
                 } else {
                     String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                    return (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) ? (!isSelected ? ""
+                    return (isMarked == null || !Boolean.TRUE.toString().equals(isMarked)) ? (!isSelected ? ""
                             : "tileGridImgSelected")
                             : (!isSelected ? "tileGridImgMarked" : "tileGridImgMarkedSelected");
                 }

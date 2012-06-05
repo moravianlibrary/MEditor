@@ -65,10 +65,15 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.CellClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tab.TabSet;
+import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
+import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
@@ -169,6 +174,8 @@ public class CreateStructurePresenter
         ScanRecord deepCopyScanRecord(Record originalRecord);
 
         void updateRecordsInTileGrid(Record[] records);
+
+        TabSet getPagesTabSet();
     }
 
     /**
@@ -211,6 +218,8 @@ public class CreateStructurePresenter
     private List<Record> markedRecords;
 
     private ButtonItem createAtOnceButton;
+
+    private Record[] pages;
 
     /**
      * Instantiates a new create presenter.
@@ -336,6 +345,7 @@ public class CreateStructurePresenter
                 load(event.getTree(), event.getPages(), event.getLastId());
             }
         });
+
     };
 
     /*
@@ -447,6 +457,30 @@ public class CreateStructurePresenter
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
         setSectionCreateLayout();
+        leftPresenter.getView().getSubelementsGrid().addCellClickHandler(new CellClickHandler() {
+
+            @Override
+            public void onCellClick(CellClickEvent event) {
+
+                if (getView().getPagesTabSet().getSelectedTab().getAttributeAsString(Constants.ATTR_TAB_ID)
+                        .equals(Constants.SELECTED_PAGES_TAB)) {
+
+                    //                    ListGridRecord[] selectedRecords =
+                    //                            leftPresenter.getView().getSubelementsGrid().getSelectedRecords();
+
+                    //                    if (selectedRecords.length > 0) {
+                    //                        if (DigitalObjectModel.parseString(selectedRecords[0]
+                    //                                .getAttributeAsString(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.PAGE) {
+
+                    setSelectedTreePages();
+                    //                        }
+                    //                    } else {
+                    //                        getView().getTileGrid().setData(new Record[] {});
+                    //                    }
+
+                }
+            }
+        });
     }
 
     /**
@@ -719,6 +753,22 @@ public class CreateStructurePresenter
                 getView().getPopupPanel().setVisible(false);
                 getView().getPopupPanel().hide();
                 SetEnabledHotKeysEvent.fire(CreateStructurePresenter.this, true);
+
+                getView().getPagesTabSet().addTabSelectedHandler(new TabSelectedHandler() {
+
+                    @Override
+                    public void onTabSelected(TabSelectedEvent event) {
+                        if (event.getTab().getAttributeAsString(Constants.ATTR_TAB_ID)
+                                .equals(Constants.SELECTED_PAGES_TAB)) {
+
+                            pages = getView().getTileGrid().getData();
+                            setSelectedTreePages();
+
+                        } else {
+                            getView().getTileGrid().setData(pages);
+                        }
+                    }
+                });
             }
 
             private void convertItem(ImageItem item, final Progressbar hBar1, final List<ImageItem> itemList) {
@@ -765,6 +815,32 @@ public class CreateStructurePresenter
         getView().getPopupPanel().setVisible(true);
         getView().getPopupPanel().center();
         dispatcher.execute(action, callback);
+    }
+
+    private void setSelectedTreePages() {
+        TreeGrid subelementsGrid = leftPresenter.getView().getSubelementsGrid();
+        ListGridRecord selectedRecord = subelementsGrid.getSelectedRecord();
+
+        if (selectedRecord != null) {
+            TreeNode selNode =
+                    subelementsGrid.getTree()
+                            .findById(selectedRecord.getAttributeAsString(Constants.ATTR_ID));
+
+            TreeNode[] treeRecords = subelementsGrid.getTree().getChildren(selNode);
+            TreeNode[] treePages = new TreeNode[treeRecords.length];
+
+            int j = 0;
+            for (int i = 0; i < treeRecords.length; i++) {
+                if (DigitalObjectModel.parseString(treeRecords[i]
+                        .getAttributeAsString(Constants.ATTR_MODEL_ID)) == DigitalObjectModel.PAGE) {
+                    treePages[j++] = treeRecords[i];
+                }
+            }
+            getView().getTileGrid().setData(treePages);
+            getView().updateRecordsInTileGrid(treePages);
+        } else {
+            getView().getTileGrid().setData(new Record[] {});
+        }
     }
 
     private void setSectionCreateLayout() {

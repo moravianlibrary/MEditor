@@ -72,6 +72,7 @@ import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.LoadTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
+import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
 import cz.mzk.editor.shared.rpc.action.GetDOModelResult;
@@ -245,6 +246,16 @@ public class CreateObjectMenuPresenter
         // label to model 2 way mapping
         LabelAndModelConverter.setLabelAndModelConverter(lang);
 
+        addRegisteredHandler(ChangeStructureTreeItemEvent.getType(),
+                             new ChangeStructureTreeItemEvent.ChangeStructureTreeItemHandler() {
+
+                                 @Override
+                                 public void onChangeStructureTreeItem(ChangeStructureTreeItemEvent event) {
+                                     System.err.println(event.getAction());
+                                     System.err.println(event.getRecordId());
+                                     System.err.println(event.getNewValue());
+                                 }
+                             });
     }
 
     /*
