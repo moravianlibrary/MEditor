@@ -254,6 +254,15 @@ public class CreateObjectMenuPresenter
                                      System.err.println(event.getAction());
                                      System.err.println(event.getRecordId());
                                      System.err.println(event.getNewValue());
+
+                                     switch (event.getAction()) {
+                                         case UPDATE:
+                                             getView().getSubelementsGrid().redraw();
+                                             break;
+
+                                         default:
+                                             break;
+                                     }
                                  }
                              });
     }

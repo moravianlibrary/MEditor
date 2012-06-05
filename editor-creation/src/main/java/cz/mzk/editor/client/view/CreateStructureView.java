@@ -205,11 +205,9 @@ public class CreateStructureView
 
     private ToolStrip toolStrip;
 
-    private List<Record[]> undoListAllPages;
-    private List<Record[]> undoListSelectedPages;
+    private List<Record[]> undoList;
     private ToolStripButton undoButton;
-    private List<Record[]> redoListAllPages;
-    private List<Record[]> redoListSelectedPages;
+    private List<Record[]> redoList;
     private ToolStripButton redoButton;
     int positionBeforeMoving;
     private final EventBus eventBus;
@@ -372,8 +370,8 @@ public class CreateStructureView
                                                                                             .getRecordIndex(selRecord))));
                             }
                         } else {
-                            undoListAllPages.remove(undoListAllPages.size() - 1);
-                            if (undoListAllPages.size() == 0) undoButton.disable();
+                            undoList.remove(undoList.size() - 1);
+                            if (undoList.size() == 0) undoButton.disable();
                         }
                     }
                     positionBeforeMoving = -1;
@@ -671,7 +669,7 @@ public class CreateStructureView
                 }
                 tileGrid.deselectRecords(selectedRecords);
                 tileGrid.selectRecords(selectedRecords);
-                updateRecordsInTileGrid(tileGrid.getSelection());
+                updateRecordsInTileGrid(tileGrid.getSelection(), true);
             }
 
         });
@@ -798,8 +796,8 @@ public class CreateStructureView
 
         undoButton = new ToolStripButton();
         redoButton = new ToolStripButton();
-        undoListAllPages = new ArrayList<Record[]>();
-        redoListAllPages = new ArrayList<Record[]>();
+        undoList = new ArrayList<Record[]>();
+        redoList = new ArrayList<Record[]>();
 
         undoButton.setIcon("icons/16/undo.png");
         undoButton.setTitle(lang.undo());
@@ -813,10 +811,10 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                if (undoListAllPages.size() > 0) {
+                if (undoList.size() > 0) {
                     addUndoRedo(tileGrid.getData(), false, false);
-                    tileGrid.setData(undoListAllPages.remove(undoListAllPages.size() - 1));
-                    if (undoListAllPages.size() == 0) undoButton.disable();
+                    tileGrid.setData(undoList.remove(undoList.size() - 1));
+                    if (undoList.size() == 0) undoButton.disable();
                     updateTileGrid();
                 } else {
                     undoButton.disable();
@@ -829,10 +827,10 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                if (redoListAllPages.size() > 0) {
+                if (redoList.size() > 0) {
                     addUndoRedo(tileGrid.getData(), true, true);
-                    tileGrid.setData(redoListAllPages.remove(redoListAllPages.size() - 1));
-                    if (redoListAllPages.size() == 0) redoButton.disable();
+                    tileGrid.setData(redoList.remove(redoList.size() - 1));
+                    if (redoList.size() == 0) redoButton.disable();
                     updateTileGrid();
                 } else {
                     redoButton.disable();
@@ -970,7 +968,7 @@ public class CreateStructureView
                                     rec.setAttribute(Constants.ATTR_NAME, n + i);
                                 }
                             }
-                            updateRecordsInTileGrid(tileGrid.getSelection());
+                            updateRecordsInTileGrid(tileGrid.getSelection(), true);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
@@ -1010,7 +1008,7 @@ public class CreateStructureView
                                     + "]");
                     }
                 }
-                updateRecordsInTileGrid(tileGrid.getSelection());
+                updateRecordsInTileGrid(tileGrid.getSelection(), true);
             }
         });
 
@@ -1140,7 +1138,7 @@ public class CreateStructureView
                                                             ClientUtils.decimalToRoman(n + i++, toRomanOld));
                                        }
                                    }
-                                   updateRecordsInTileGrid(tileGrid.getSelection());
+                                   updateRecordsInTileGrid(tileGrid.getSelection(), true);
                                } catch (NumberFormatException nfe) {
                                    SC.say(lang.notANumber());
                                }
@@ -1150,9 +1148,13 @@ public class CreateStructureView
     }
 
     @Override
-    public void updateRecordsInTileGrid(Record[] records) {
+    public void updateRecordsInTileGrid(Record[] records, boolean updateTree) {
+
         tileGrid.deselectRecords(records);
         tileGrid.selectRecords(records);
+        if (updateTree && isChosenSelectedPagesTab())
+            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.UPDATE, null, null));
+
     }
 
     private void updateTileGrid() {
@@ -1160,6 +1162,9 @@ public class CreateStructureView
         tileGrid.selectAllRecords();
         tileGrid.deselectAllRecords();
         tileGrid.selectRecords(selection);
+        if (isChosenSelectedPagesTab())
+            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.UPDATE, null, null));
+
     }
 
     private Menu getAbcSubmenu() {
@@ -1179,7 +1184,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 numbering.foliation();
-                updateRecordsInTileGrid(tileGrid.getSelection());
+                updateRecordsInTileGrid(tileGrid.getSelection(), true);
             }
         });
         abc2.addClickHandler(getAbcHandler(2));
@@ -1205,7 +1210,7 @@ public class CreateStructureView
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
-                        updateRecordsInTileGrid(tileGrid.getSelection());
+                        updateRecordsInTileGrid(tileGrid.getSelection(), true);
                     }
                 });
             }
@@ -1227,7 +1232,7 @@ public class CreateStructureView
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
                 numbering.toAbcN(n);
-                updateRecordsInTileGrid(tileGrid.getSelection());
+                updateRecordsInTileGrid(tileGrid.getSelection(), true);
             }
         };
     }
@@ -1449,7 +1454,7 @@ public class CreateStructureView
                                if (value != null && !"".equals(value.trim())) {
                                    addUndoRedo(tileGrid.getData(), true, false);
                                    selectedRecord.setAttribute(Constants.ATTR_NAME, value);
-                                   updateRecordsInTileGrid(tileGrid.getSelection());
+                                   updateRecordsInTileGrid(tileGrid.getSelection(), true);
                                }
                            }
                        },
@@ -1521,23 +1526,27 @@ public class CreateStructureView
      */
     @Override
     public void addUndoRedo(Record[] data, boolean isUndoList, boolean isRedoOperation) {
-        Record[] newData = new Record[data.length];
-        int i = 0;
-        for (Record d : data) {
-            newData[i] = deepCopyScanRecord(d);//((ScanRecord) d).deepCopy();
-            i++;
-        }
-        if (isUndoList) {
-            undoListAllPages.add(newData);
-            undoButton.enable();
-            if (!isRedoOperation && redoListAllPages.size() > 0) {
-                redoListAllPages = new ArrayList<Record[]>();
-                redoButton.setDisabled(true);
+        if (!isChosenSelectedPagesTab()) {
+            Record[] newData = new Record[data.length];
+            int i = 0;
+            for (Record d : data) {
+                newData[i] = deepCopyScanRecord(d);
+                i++;
             }
+            if (isUndoList) {
+                undoList.add(newData);
+                undoButton.enable();
+                if (!isRedoOperation && redoList.size() > 0) {
+                    redoList = new ArrayList<Record[]>();
+                    redoButton.setDisabled(true);
+                }
+            } else {
+                redoList.add(newData);
+                redoButton.enable();
+            };
         } else {
-            redoListAllPages.add(newData);
-            redoButton.enable();
-        };
+            getUiHandlers().addUndoInLeftPanel();
+        }
     }
 
     @Override
@@ -1592,4 +1601,17 @@ public class CreateStructureView
                 .getAttributeAsString(Constants.ATTR_TAB_ID));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUndoRedoButtonsDisabled(boolean disabled) {
+        if (disabled) {
+            undoButton.disable();
+            redoButton.disable();
+        } else {
+            undoButton.enable();
+            redoButton.enable();
+        }
+    }
 }

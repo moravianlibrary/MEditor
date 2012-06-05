@@ -56,4 +56,6 @@ public interface CreateStructureUiHandlers
                       ModalWindow mw);
 
     boolean isMarkingOff();
+
+    void addUndoInLeftPanel();
 }

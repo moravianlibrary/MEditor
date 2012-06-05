@@ -173,9 +173,11 @@ public class CreateStructurePresenter
 
         ScanRecord deepCopyScanRecord(Record originalRecord);
 
-        void updateRecordsInTileGrid(Record[] records);
+        void updateRecordsInTileGrid(Record[] records, boolean updateTree);
 
         TabSet getPagesTabSet();
+
+        void setUndoRedoButtonsDisabled(boolean disabled);
     }
 
     /**
@@ -471,7 +473,6 @@ public class CreateStructurePresenter
                     //                    if (selectedRecords.length > 0) {
                     //                        if (DigitalObjectModel.parseString(selectedRecords[0]
                     //                                .getAttributeAsString(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.PAGE) {
-
                     setSelectedTreePages();
                     //                        }
                     //                    } else {
@@ -763,9 +764,11 @@ public class CreateStructurePresenter
 
                             pages = getView().getTileGrid().getData();
                             setSelectedTreePages();
+                            getView().setUndoRedoButtonsDisabled(true);
 
                         } else {
                             getView().getTileGrid().setData(pages);
+                            getView().setUndoRedoButtonsDisabled(false);
                         }
                     }
                 });
@@ -826,18 +829,25 @@ public class CreateStructurePresenter
                     subelementsGrid.getTree()
                             .findById(selectedRecord.getAttributeAsString(Constants.ATTR_ID));
 
-            TreeNode[] treeRecords = subelementsGrid.getTree().getChildren(selNode);
-            TreeNode[] treePages = new TreeNode[treeRecords.length];
+            TreeNode[] treePages;
+            if (DigitalObjectModel.parseString(selNode.getAttributeAsString(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.PAGE) {
 
-            int j = 0;
-            for (int i = 0; i < treeRecords.length; i++) {
-                if (DigitalObjectModel.parseString(treeRecords[i]
-                        .getAttributeAsString(Constants.ATTR_MODEL_ID)) == DigitalObjectModel.PAGE) {
-                    treePages[j++] = treeRecords[i];
+                TreeNode[] treeRecords = subelementsGrid.getTree().getChildren(selNode);
+                treePages = new TreeNode[treeRecords.length];
+
+                int j = 0;
+                for (int i = 0; i < treeRecords.length; i++) {
+                    if (DigitalObjectModel.parseString(treeRecords[i]
+                            .getAttributeAsString(Constants.ATTR_MODEL_ID)) == DigitalObjectModel.PAGE) {
+                        treePages[j++] = treeRecords[i];
+                    }
                 }
+            } else {
+                treePages = new TreeNode[] {selNode};
             }
+
             getView().getTileGrid().setData(treePages);
-            getView().updateRecordsInTileGrid(treePages);
+            getView().updateRecordsInTileGrid(treePages, false);
         } else {
             getView().getTileGrid().setData(new Record[] {});
         }
@@ -882,7 +892,7 @@ public class CreateStructurePresenter
                         Record[] selection = getView().getTileGrid().getSelection();
                         Record[] toUpdate = new Record[markedRecords.size()];
                         markedRecords.toArray(toUpdate);
-                        getView().updateRecordsInTileGrid(toUpdate);
+                        getView().updateRecordsInTileGrid(toUpdate, true);
                         getView().getTileGrid().selectRecords(selection);
                     }
                 }
@@ -1432,5 +1442,13 @@ public class CreateStructurePresenter
     @Override
     public boolean isMarkingOff() {
         return lang.sequential().equals(leftPresenter.getView().getCreationModeItem().getValue());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addUndoInLeftPanel() {
+        leftPresenter.getView().addUndoRedo(true, false);
     }
 }

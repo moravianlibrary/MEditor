@@ -825,7 +825,7 @@ public class Constants {
     }
 
     public static enum STRUCTURE_TREE_ITEM_ACTION {
-        CHANGE_POSITION, CHANGE_SELECTION;
+        CHANGE_POSITION, CHANGE_SELECTION, DELETE_RECORD, UPDATE;
     }
 
     /** The separator for two pages on one page, or for columns one a page */
