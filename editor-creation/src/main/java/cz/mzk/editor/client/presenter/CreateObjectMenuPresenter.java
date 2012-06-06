@@ -252,63 +252,58 @@ public class CreateObjectMenuPresenter
 
                                  @Override
                                  public void onChangeStructureTreeItem(ChangeStructureTreeItemEvent event) {
-
-                                     TreeNode recordToChange = null;
-                                     Map<String, Integer> recordIdAndItsNewValue = null;
-                                     switch (event.getAction()) {
-                                         case UPDATE:
-                                             getView().getSubelementsGrid().redraw();
-                                             break;
-
-                                         case CHANGE_POSITION:
-                                             recordIdAndItsNewValue = event.getRecordIdAndItsNewValue();
-                                             for (String recordId : recordIdAndItsNewValue.keySet()) {
-                                                 recordToChange =
-                                                         getView().getSubelementsGrid().getTree()
-                                                                 .findById(recordId);
-                                                 getView()
-                                                         .getSubelementsGrid()
-                                                         .getTree()
-                                                         .move(recordToChange,
-                                                               getView().getSubelementsGrid().getTree()
-                                                                       .getParent(recordToChange),
-                                                               recordIdAndItsNewValue.get(recordId));
-                                             }
-                                             break;
-
-                                         case CHANGE_SELECTION:
-                                             recordIdAndItsNewValue = event.getRecordIdAndItsNewValue();
-                                             String key =
-                                                     (String) recordIdAndItsNewValue.keySet().toArray()[0];
-                                             recordToChange =
-                                                     getView().getSubelementsGrid().getTree().findById(key);
-                                             if (recordToChange != null) {
-                                                 if (recordIdAndItsNewValue.get(key) == 1) {
-                                                     getView().getSubelementsGrid()
-                                                             .selectRecord(recordToChange);
-                                                 } else {
-                                                     getView().getSubelementsGrid()
-                                                             .deselectRecord(recordToChange);
-                                                 }
-                                             }
-                                             break;
-
-                                         case DELETE_RECORD:
-
-                                             for (String idToDel : event.getRecordIdAndItsNewValue().keySet()) {
-                                                 recordToChange =
-                                                         getView().getSubelementsGrid().getTree()
-                                                                 .findById(idToDel);
-                                                 getView().getSubelementsGrid().removeData(recordToChange);
-                                             }
-
-                                             break;
-
-                                         default:
-                                             break;
-                                     }
+                                     handleChangeStructureTreeItemEvent(event);
                                  }
                              });
+    }
+
+    private void handleChangeStructureTreeItemEvent(ChangeStructureTreeItemEvent event) {
+        TreeNode recordToChange = null;
+        Map<String, Integer> recordIdAndItsNewValue = null;
+        switch (event.getAction()) {
+            case UPDATE:
+                getView().getSubelementsGrid().redraw();
+                break;
+
+            case CHANGE_POSITION:
+                recordIdAndItsNewValue = event.getRecordIdAndItsNewValue();
+                for (String recordId : recordIdAndItsNewValue.keySet()) {
+                    recordToChange = getView().getSubelementsGrid().getTree().findById(recordId);
+                    getView()
+                            .getSubelementsGrid()
+                            .getTree()
+                            .move(recordToChange,
+                                  getView().getSubelementsGrid().getTree().getParent(recordToChange),
+                                  recordIdAndItsNewValue.get(recordId));
+                }
+                break;
+
+            case CHANGE_SELECTION:
+                recordIdAndItsNewValue = event.getRecordIdAndItsNewValue();
+                String key = (String) recordIdAndItsNewValue.keySet().toArray()[0];
+                recordToChange = getView().getSubelementsGrid().getTree().findById(key);
+                if (recordToChange != null) {
+                    if (recordIdAndItsNewValue.get(key) == 1) {
+                        getView().getSubelementsGrid().selectRecord(recordToChange);
+                    } else {
+                        getView().getSubelementsGrid().deselectRecord(recordToChange);
+                    }
+                }
+                break;
+
+            case DELETE_RECORD:
+
+                for (String idToDel : event.getRecordIdAndItsNewValue().keySet()) {
+                    recordToChange = getView().getSubelementsGrid().getTree().findById(idToDel);
+                    getView().getSubelementsGrid().removeData(recordToChange);
+                }
+
+                break;
+
+            default:
+                break;
+        }
+
     }
 
     /*

@@ -182,6 +182,8 @@ public class CreateStructurePresenter
         TabSet getPagesTabSet();
 
         void setUndoRedoButtonsDisabled(boolean disabled);
+
+        boolean isChosenSelectedPagesTab();
     }
 
     /**
@@ -291,7 +293,9 @@ public class CreateStructurePresenter
                     SC.warn(e.getMessage());
                     e.printStackTrace();
                 }
-                Record[] tilegridData = getView().getTileGrid().getData();
+
+                Record[] tilegridData =
+                        !getView().isChosenSelectedPagesTab() ? getView().getTileGrid().getData() : pages;
                 boolean emptyTree = object == null || object.getModel() == null;
                 boolean emptyPages = tilegridData == null || tilegridData.length == 0;
                 if (emptyTree && emptyPages) {
@@ -319,9 +323,15 @@ public class CreateStructurePresenter
                     else
                         object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
 
+                    for (TreeNode node : leftPresenter.getView().getSubelementsGrid().getTree().getAllNodes()) {
+                        node.setAttribute(Constants.ATTR_PARENT, leftPresenter.getView().getSubelementsGrid()
+                                .getTree().getParent(node).getAttribute(Constants.ATTR_ID));
+                    }
+
                     List<TreeStructureNode> nodes =
                             ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
                                     .getAllNodes());
+
                     if (nodes != null) {
                         bundle.getNodes().addAll(nodes);
                     } else {
@@ -467,23 +477,7 @@ public class CreateStructurePresenter
 
             @Override
             public void onCellClick(CellClickEvent event) {
-
-                if (getView().getPagesTabSet().getSelectedTab().getAttributeAsString(Constants.ATTR_TAB_ID)
-                        .equals(Constants.SELECTED_PAGES_TAB)) {
-
-                    //                    ListGridRecord[] selectedRecords =
-                    //                            leftPresenter.getView().getSubelementsGrid().getSelectedRecords();
-
-                    //                    if (selectedRecords.length > 0) {
-                    //                        if (DigitalObjectModel.parseString(selectedRecords[0]
-                    //                                .getAttributeAsString(Constants.ATTR_MODEL_ID)) != DigitalObjectModel.PAGE) {
-                    setSelectedTreePages();
-                    //                        }
-                    //                    } else {
-                    //                        getView().getTileGrid().setData(new Record[] {});
-                    //                    }
-
-                }
+                if (getView().isChosenSelectedPagesTab()) setSelectedTreePages();
             }
         });
     }
@@ -1033,14 +1027,15 @@ public class CreateStructurePresenter
             public void onClick(MenuItemClickEvent event) {
                 getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
 
-                Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
-                for (Record recToDel : tileGrid.getSelection()) {
-                    recordIdAndItsNewValue.put(recToDel.getAttribute(Constants.ATTR_ID), 0);
+                if (getView().isChosenSelectedPagesTab()) {
+                    Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
+                    for (Record recToDel : tileGrid.getSelection()) {
+                        recordIdAndItsNewValue.put(recToDel.getAttribute(Constants.ATTR_ID), 0);
+                    }
+                    getEventBus()
+                            .fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.DELETE_RECORD,
+                                                                        recordIdAndItsNewValue));
                 }
-                getEventBus()
-                        .fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.DELETE_RECORD,
-                                                                    recordIdAndItsNewValue));
-
                 tileGrid.removeSelectedData();
             }
         });
@@ -1406,6 +1401,7 @@ public class CreateStructurePresenter
     }
 
     public void load(TreeNode[] treeData, Record[] pagesData, int lastId) {
+        getView().getPagesTabSet().selectTab(0);
         Tree tree = new Tree();
         tree.setModelType(TreeModelType.PARENT);
         tree.setRootValue(SubstructureTreeNode.ROOT_ID);

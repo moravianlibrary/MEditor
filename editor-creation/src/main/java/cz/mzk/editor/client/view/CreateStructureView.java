@@ -1608,7 +1608,7 @@ public class CreateStructureView
         return pagesTabSet;
     }
 
-    private boolean isChosenSelectedPagesTab() {
+    public boolean isChosenSelectedPagesTab() {
         return Constants.SELECTED_PAGES_TAB.equals(pagesTabSet.getSelectedTab()
                 .getAttributeAsString(Constants.ATTR_TAB_ID));
     }
