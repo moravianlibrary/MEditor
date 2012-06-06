@@ -294,9 +294,9 @@ public class CreateStructureView
         this.model = model;
         this.hostname = hostname;
         pagesTabSet = new TabSet();
-        Tab allPagesTab = new Tab();
+        Tab allPagesTab = new Tab(lang.scanned());
         allPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.ALL_PAGES_TAB);
-        Tab selectedPagesTab = new Tab();
+        Tab selectedPagesTab = new Tab(lang.selected());
         selectedPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.SELECTED_PAGES_TAB);
 
         tileGridLayout = new VLayout();
@@ -1608,6 +1608,7 @@ public class CreateStructureView
         return pagesTabSet;
     }
 
+    @Override
     public boolean isChosenSelectedPagesTab() {
         return Constants.SELECTED_PAGES_TAB.equals(pagesTabSet.getSelectedTab()
                 .getAttributeAsString(Constants.ATTR_TAB_ID));

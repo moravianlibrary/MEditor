@@ -96,7 +96,9 @@ public class PeriodicalVolumeBuilder
         if (isNotNullOrEmpty(getPartNumber()))
             detailEl.addElement(new QName("number", modsNs)).addText(getPartNumber());//"volume number: " + getPartNumber());
         if (isNotNullOrEmpty(getBundle().getMarc().getDateIssued()))
-            partEl.addElement(new QName("date", modsNs)).addText(getDateOrIntPartName());//getBundle().getMarc().getDateIssued());
+            partEl.addElement(new QName("date", modsNs))
+                    .addText(getDateOrIntPartName() != null ? getDateOrIntPartName() : getBundle().getMarc()
+                            .getDateIssued());
 
         Element genre = mods.addElement(new QName("genre", modsNs));
         genre.addText("volume");
