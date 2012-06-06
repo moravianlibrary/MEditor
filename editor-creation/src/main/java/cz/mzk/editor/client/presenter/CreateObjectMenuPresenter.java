@@ -282,12 +282,26 @@ public class CreateObjectMenuPresenter
                                                      (String) recordIdAndItsNewValue.keySet().toArray()[0];
                                              recordToChange =
                                                      getView().getSubelementsGrid().getTree().findById(key);
-                                             if (recordIdAndItsNewValue.get(key) == 1) {
-                                                 getView().getSubelementsGrid().selectRecord(recordToChange);
-                                             } else {
-                                                 getView().getSubelementsGrid()
-                                                         .deselectRecord(recordToChange);
+                                             if (recordToChange != null) {
+                                                 if (recordIdAndItsNewValue.get(key) == 1) {
+                                                     getView().getSubelementsGrid()
+                                                             .selectRecord(recordToChange);
+                                                 } else {
+                                                     getView().getSubelementsGrid()
+                                                             .deselectRecord(recordToChange);
+                                                 }
                                              }
+                                             break;
+
+                                         case DELETE_RECORD:
+
+                                             for (String idToDel : event.getRecordIdAndItsNewValue().keySet()) {
+                                                 recordToChange =
+                                                         getView().getSubelementsGrid().getTree()
+                                                                 .findById(idToDel);
+                                                 getView().getSubelementsGrid().removeData(recordToChange);
+                                             }
+
                                              break;
 
                                          default:

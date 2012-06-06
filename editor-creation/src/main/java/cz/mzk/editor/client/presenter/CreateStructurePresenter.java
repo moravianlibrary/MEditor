@@ -29,7 +29,9 @@ package cz.mzk.editor.client.presenter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -96,6 +98,7 @@ import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
+import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.CreateStructureView;
 import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.ScanRecord;
@@ -107,6 +110,7 @@ import cz.mzk.editor.client.view.window.StoreTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
+import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.event.CreateStructureEvent;
 import cz.mzk.editor.shared.event.CreateStructureEvent.CreateStructureHandler;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
@@ -1028,6 +1032,15 @@ public class CreateStructurePresenter
             @Override
             public void onClick(MenuItemClickEvent event) {
                 getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+
+                Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
+                for (Record recToDel : tileGrid.getSelection()) {
+                    recordIdAndItsNewValue.put(recToDel.getAttribute(Constants.ATTR_ID), 0);
+                }
+                getEventBus()
+                        .fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.DELETE_RECORD,
+                                                                    recordIdAndItsNewValue));
+
                 tileGrid.removeSelectedData();
             }
         });
