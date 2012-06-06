@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.shared.event;
 
+import java.util.Map;
+
 import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Order;
 
@@ -41,8 +43,6 @@ public class ChangeStructureTreeItem {
     private STRUCTURE_TREE_ITEM_ACTION action;
 
     @Order(2)
-    private String recordId;
+    private Map<String, Integer> recordIdAndItsNewValue;
 
-    @Order(3)
-    private String newValue;
 }

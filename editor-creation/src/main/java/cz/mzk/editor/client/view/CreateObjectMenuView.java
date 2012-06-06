@@ -694,6 +694,7 @@ public class CreateObjectMenuView
                             "<img src=\"images/icons/16/ocr.png\">".concat(record
                                     .getAttributeAsString(Constants.ATTR_NAME));
                 }
+
                 return stringToReturn;
             }
         });

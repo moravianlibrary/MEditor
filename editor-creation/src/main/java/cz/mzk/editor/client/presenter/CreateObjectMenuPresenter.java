@@ -28,6 +28,7 @@
 package cz.mzk.editor.client.presenter;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -251,13 +252,42 @@ public class CreateObjectMenuPresenter
 
                                  @Override
                                  public void onChangeStructureTreeItem(ChangeStructureTreeItemEvent event) {
-                                     System.err.println(event.getAction());
-                                     System.err.println(event.getRecordId());
-                                     System.err.println(event.getNewValue());
 
+                                     TreeNode recordToChange = null;
+                                     Map<String, Integer> recordIdAndItsNewValue = null;
                                      switch (event.getAction()) {
                                          case UPDATE:
                                              getView().getSubelementsGrid().redraw();
+                                             break;
+
+                                         case CHANGE_POSITION:
+                                             recordIdAndItsNewValue = event.getRecordIdAndItsNewValue();
+                                             for (String recordId : recordIdAndItsNewValue.keySet()) {
+                                                 recordToChange =
+                                                         getView().getSubelementsGrid().getTree()
+                                                                 .findById(recordId);
+                                                 getView()
+                                                         .getSubelementsGrid()
+                                                         .getTree()
+                                                         .move(recordToChange,
+                                                               getView().getSubelementsGrid().getTree()
+                                                                       .getParent(recordToChange),
+                                                               recordIdAndItsNewValue.get(recordId));
+                                             }
+                                             break;
+
+                                         case CHANGE_SELECTION:
+                                             recordIdAndItsNewValue = event.getRecordIdAndItsNewValue();
+                                             String key =
+                                                     (String) recordIdAndItsNewValue.keySet().toArray()[0];
+                                             recordToChange =
+                                                     getView().getSubelementsGrid().getTree().findById(key);
+                                             if (recordIdAndItsNewValue.get(key) == 1) {
+                                                 getView().getSubelementsGrid().selectRecord(recordToChange);
+                                             } else {
+                                                 getView().getSubelementsGrid()
+                                                         .deselectRecord(recordToChange);
+                                             }
                                              break;
 
                                          default:

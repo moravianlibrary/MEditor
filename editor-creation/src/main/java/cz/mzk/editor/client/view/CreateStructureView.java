@@ -29,8 +29,10 @@ package cz.mzk.editor.client.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -361,18 +363,19 @@ public class CreateStructureView
                 if (positionBeforeMoving >= 0) {
                     Record[] selection = tileGrid.getSelection();
                     if (selection.length > 0 && tileGrid.getRecordIndex(selection[0]) == positionBeforeMoving) {
-                        if (isChosenSelectedPagesTab()) {
-                            for (Record selRecord : tileGrid.getData()) {
-                                eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_POSITION,
-                                                                                    selRecord
-                                                                                            .getAttributeAsString(Constants.ATTR_ID),
-                                                                                    String.valueOf(tileGrid
-                                                                                            .getRecordIndex(selRecord))));
-                            }
-                        } else {
-                            undoList.remove(undoList.size() - 1);
-                            if (undoList.size() == 0) undoButton.disable();
+
+                        undoList.remove(undoList.size() - 1);
+                        if (undoList.size() == 0) undoButton.disable();
+
+                    } else if (isChosenSelectedPagesTab() && selection.length > 0) {
+                        Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
+                        for (Record selRecord : tileGrid.getData()) {
+                            recordIdAndItsNewValue.put(selRecord.getAttributeAsString(Constants.ATTR_ID),
+                                                       tileGrid.getRecordIndex(selRecord));
                         }
+                        eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_POSITION,
+                                                                            recordIdAndItsNewValue));
+
                     }
                     positionBeforeMoving = -1;
                 }
@@ -563,6 +566,15 @@ public class CreateStructureView
                     }
                 } else {
                     pageTypeItem.disable();
+                }
+                if (isChosenSelectedPagesTab()) {
+
+                    Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
+                    recordIdAndItsNewValue.put(event.getRecord().getAttribute(Constants.ATTR_ID),
+                                               event.getState() ? 1 : -1);
+
+                    eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_SELECTION,
+                                                                        recordIdAndItsNewValue));
                 }
             }
         });
@@ -1153,7 +1165,7 @@ public class CreateStructureView
         tileGrid.deselectRecords(records);
         tileGrid.selectRecords(records);
         if (updateTree && isChosenSelectedPagesTab())
-            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.UPDATE, null, null));
+            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.UPDATE, null));
 
     }
 
@@ -1163,7 +1175,7 @@ public class CreateStructureView
         tileGrid.deselectAllRecords();
         tileGrid.selectRecords(selection);
         if (isChosenSelectedPagesTab())
-            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.UPDATE, null, null));
+            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.UPDATE, null));
 
     }
 
