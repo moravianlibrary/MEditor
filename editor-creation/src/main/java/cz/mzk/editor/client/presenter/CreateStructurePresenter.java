@@ -717,7 +717,7 @@ public class CreateStructurePresenter
                                                           + "]");
                             event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
                             event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
-                            event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, "");
+                            //                            event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, "");
                         }
                     }
                 });
@@ -731,14 +731,14 @@ public class CreateStructurePresenter
                             getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                             String isMarked =
                                     event.getRecord()
-                                            .getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                                            .getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
                             if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
-                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                                                Boolean.TRUE.toString());
                                 markedRecords.add(event.getRecord());
                             } else {
                                 markedRecords.remove(event.getRecord());
-                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                                                Boolean.FALSE.toString());
                             }
                             getView().getTileGrid().deselectRecord(event.getRecord());
@@ -762,10 +762,16 @@ public class CreateStructurePresenter
                             pages = getView().getTileGrid().getData();
                             setSelectedTreePages();
                             getView().setUndoRedoButtonsDisabled(true);
+                            createAtOnceButton.disable();
+                            leftPresenter.getSequentialCreateLayout().getCreateButton().disable();
+                            leftPresenter.getView().getSectionStack().getSection(1).setExpanded(false);
 
                         } else {
                             getView().getTileGrid().setData(pages);
                             getView().setUndoRedoButtonsDisabled(false);
+                            createAtOnceButton.enable();
+                            leftPresenter.getSequentialCreateLayout().getCreateButton().enable();
+                            leftPresenter.getView().getSectionStack().getSection(1).setExpanded(true);
                         }
                     }
                 });
@@ -1096,7 +1102,7 @@ public class CreateStructurePresenter
         int perItemNum = 0;
         for (Record rec : data) {
             if (toAdd.size() > 0) {
-                String isMarked = rec.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                String isMarked = rec.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
                 if (isMarked != null && Boolean.TRUE.toString().equals(isMarked)) {
                     Record[] toAddRecords = new Record[toAdd.size()];
                     toAdd.toArray(toAddRecords);
