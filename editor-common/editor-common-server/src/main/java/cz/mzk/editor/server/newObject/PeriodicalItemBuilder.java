@@ -69,13 +69,14 @@ public class PeriodicalItemBuilder
         addRootTitle(titleInfo);
         addRootSubtitle(titleInfo);
 
+        if (isNotNullOrEmpty(getName())) {
+            Element partName = titleInfo.addElement(new QName("partName", modsNs));
+            partName.addText(getName());
+        }
+
         if (isNotNullOrEmpty(getPartNumber())) {
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());
-        }
-        if (isNotNullOrEmpty(getLabel())) {
-            Element partName = titleInfo.addElement(new QName("partName", modsNs));
-            partName.addText(getLabel());
         }
 
         if (isNotNullOrEmpty(getTypeOfResource())) {

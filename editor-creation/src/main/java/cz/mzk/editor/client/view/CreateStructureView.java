@@ -589,7 +589,7 @@ public class CreateStructureView
             @Override
             public String execute(Object value, DetailViewerField field, Record record) {
                 boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
-                if (getUiHandlers().isMarkingOff()) {
+                if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
                     return !isSelected ? "" : "tileGridImgSelected";
                 } else {
                     String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
@@ -619,7 +619,7 @@ public class CreateStructureView
             @Override
             public String execute(Object value, DetailViewerField field, Record record) {
                 boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
-                if (getUiHandlers().isMarkingOff()) {
+                if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
                     return !isSelected ? "" : "tileGridTitleSelected";
                 } else {
                     String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);

@@ -54,7 +54,7 @@ public interface CreateObjectMenuUiHandlers
 
     HasHandlers getBus();
 
-    void addPages(List<Record> pages, String parent);
+    void addPages(List<Record> pages, String parent, boolean isAtOnce);
 
     SequentialCreateLayout getSequentialCreateLayout();
 

@@ -42,7 +42,7 @@ public interface ModsTypeClientManager {
 
     public String getLevelName();
 
-    public String getType();
+    public String getType(DigitalObjectModel model);
 
     public String getPartName();
 
@@ -88,9 +88,10 @@ public interface ModsTypeClientManager {
     public void modifyLevelName(String levelName);
 
     /**
+     * @param model
      * @param type
      */
-    public void modifyType(String type);
+    public void modifyType(DigitalObjectModel model, String type);
 
     /**
      * @param partNumber

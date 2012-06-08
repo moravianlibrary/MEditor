@@ -501,14 +501,20 @@ public class CreateObjectMenuPresenter
     }
 
     @Override
-    public void addPages(List<Record> pages, String parent) {
+    public void addPages(List<Record> pages, String parent, boolean isAtOnce) {
         for (int i = 0; i < pages.size(); i++) {
+
+            String type = pages.get(i).getAttribute(Constants.ATTR_TYPE);
+            if (i == 0 && isAtOnce) {
+                type = Constants.PAGE_TYPES.TP.toString();
+            }
+
             getView().addSubstructure(String.valueOf(newId()),
                                       parent,
                                       pages.get(i).getAttribute(Constants.ATTR_NAME),
                                       pages.get(i).getAttribute(Constants.ATTR_PICTURE_OR_UUID),
                                       DigitalObjectModel.PAGE.getValue(),
-                                      pages.get(i).getAttribute(Constants.ATTR_TYPE),
+                                      type,
                                       "",
                                       "",
                                       "",

@@ -287,11 +287,11 @@ public abstract class ModsWindow
                 setPeriodicalVolumeRecord(listGridRecord);
                 break;
             case PERIODICALITEM:
-                setPeriodicalItemRecord(listGridRecord);
+                setPeriodicalItemRecord(listGridRecord, model);
                 break;
 
             case INTERNALPART:
-                setInternalPartRecord(listGridRecord);
+                setInternalPartRecord(listGridRecord, model);
                 break;
 
             case MONOGRAPHUNIT:
@@ -299,7 +299,7 @@ public abstract class ModsWindow
                 break;
 
             case PAGE:
-                setPageRecord(listGridRecord, label);
+                setPageRecord(listGridRecord, label, model);
                 break;
 
             default:
@@ -312,10 +312,11 @@ public abstract class ModsWindow
     /**
      * @param listGridRecord
      * @param label
+     * @param model
      */
-    private void setPageRecord(ListGridRecord listGridRecord, String label) {
+    private void setPageRecord(ListGridRecord listGridRecord, String label, DigitalObjectModel model) {
         listGridRecord.setAttribute(Constants.ATTR_NAME, label);
-        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType());
+        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType(model));
     }
 
     /**
@@ -331,10 +332,11 @@ public abstract class ModsWindow
 
     /**
      * @param listGridRecord
+     * @param model
      */
-    private void setInternalPartRecord(ListGridRecord listGridRecord) {
+    private void setInternalPartRecord(ListGridRecord listGridRecord, DigitalObjectModel model) {
         listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getTitle());
-        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType());
+        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType(model));
         listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getPartName());
         listGridRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, modsClientManager.getSubtitle());
         listGridRecord.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, modsClientManager.getPartNumber());
@@ -343,10 +345,11 @@ public abstract class ModsWindow
 
     /**
      * @param listGridRecord
+     * @param model
      */
-    private void setPeriodicalItemRecord(ListGridRecord listGridRecord) {
+    private void setPeriodicalItemRecord(ListGridRecord listGridRecord, DigitalObjectModel model) {
         listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getPartName());
-        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType());
+        listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType(model));
         listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getDateIssued());
         listGridRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, modsClientManager.getNote());
         listGridRecord.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, modsClientManager.getPartNumber());
@@ -575,7 +578,8 @@ public abstract class ModsWindow
         }
 
         if (model != DigitalObjectModel.MONOGRAPHUNIT && model != DigitalObjectModel.PERIODICALVOLUME)
-            modsClientManager.modifyType(objectBasicInfoLayout.getManagerLayout().getType(model, levelName));
+            modsClientManager.modifyType(model,
+                                         objectBasicInfoLayout.getManagerLayout().getType(model, levelName));
 
         String newDate =
                 (dateItem == null) ? objectBasicInfoLayout.getManagerLayout().getDateIssued() : (dateItem

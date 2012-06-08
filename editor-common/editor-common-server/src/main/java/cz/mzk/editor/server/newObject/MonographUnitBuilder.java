@@ -72,9 +72,9 @@ public class MonographUnitBuilder
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());
         }
-        if (isNotNullOrEmpty(getLabel())) {
+        if (isNotNullOrEmpty(getName())) {
             Element partName = titleInfo.addElement(new QName("partName", modsNs));
-            partName.addText(getLabel());
+            partName.addText(getName());
         }
 
         Element genre = mods.addElement(new QName("genre", modsNs));

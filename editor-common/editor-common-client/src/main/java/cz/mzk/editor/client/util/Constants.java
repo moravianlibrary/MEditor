@@ -559,6 +559,13 @@ public class Constants {
             MAP.put(PAGE_TYPES.TC.toString(), "TableOfContents");
             MAP.put(PAGE_TYPES.TP.toString(), "TitlePage");
         }
+
+        public static String getEnumAsStringFromMap(String type) {
+            for (String enumAsString : MAP.keySet()) {
+                if (type.equals(MAP.get(enumAsString))) return enumAsString;
+            }
+            return "";
+        }
     }
 
     public static enum PERIODICAL_ITEM_GENRE_TYPES {
@@ -575,6 +582,13 @@ public class Constants {
             MAP.put(PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString(), "Sequence_X");
             MAP.put(PERIODICAL_ITEM_GENRE_TYPES.SPECIAL.toString(), "Special");
             MAP.put(PERIODICAL_ITEM_GENRE_TYPES.SUPPLEMENT.toString(), "Supplement");
+        }
+
+        public static String getEnumAsStringFromMap(String type) {
+            for (String enumAsString : MAP.keySet()) {
+                if (type.equals(MAP.get(enumAsString))) return enumAsString;
+            }
+            return "";
         }
     }
 
@@ -677,6 +691,13 @@ public class Constants {
             MAP.put(INTERNAL_PART_ARTICLE_GENRE_TYPES.UNSPECIFIED.toString(), "Unspecified");
 
         }
+
+        public static String getEnumAsStringFromMap(String type) {
+            for (String enumAsString : MAP.keySet()) {
+                if (type.equals(MAP.get(enumAsString))) return enumAsString;
+            }
+            return "";
+        }
     }
 
     public static enum INTERNAL_PART_PICTURE_GENRE_TYPES {
@@ -694,6 +715,13 @@ public class Constants {
             MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.PHOTOGRAPH.toString(), "Photograph");
             MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.TABLE.toString(), "Table");
             MAP.put(INTERNAL_PART_PICTURE_GENRE_TYPES.UNSPECIFIED.toString(), "Unspecified");
+        }
+
+        public static String getEnumAsStringFromMap(String type) {
+            for (String enumAsString : MAP.keySet()) {
+                if (type.equals(MAP.get(enumAsString))) return enumAsString;
+            }
+            return "";
         }
     }
 
@@ -718,6 +746,13 @@ public class Constants {
             MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.REVIEW.toString(), "Review");
             MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.TABLE_OF_CONTENT.toString(), "Table of content");
             MAP.put(INTERNAL_PART_CHAPTER_GENRE_TYPES.UNSPECIFIED.toString(), "Unspecified");
+        }
+
+        public static String getEnumAsStringFromMap(String type) {
+            for (String enumAsString : MAP.keySet()) {
+                if (type.equals(MAP.get(enumAsString))) return enumAsString;
+            }
+            return "";
         }
     }
 

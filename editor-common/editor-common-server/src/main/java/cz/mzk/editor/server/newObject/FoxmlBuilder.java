@@ -70,6 +70,7 @@ public abstract class FoxmlBuilder {
     private String signature;
     private String sysno;
     private String label;
+    private String name;
     private String type;
     private int pageIndex;
     private Policy policy = Policy.PRIVATE;
@@ -111,15 +112,19 @@ public abstract class FoxmlBuilder {
 
     private void setLabel(NewDigitalObject object) {
         String labelToAdd = "";
-        if (object.getModel() == DigitalObjectModel.PERIODICALITEM
-                && (object.getName() == null || "".equals(object.getName()))) {
+        if (object.getModel() == DigitalObjectModel.PERIODICALITEM && !isNotNullOrEmpty(object.getName())) {
             labelToAdd = object.getPartNumberOrAlto();
+            this.name = "";
         } else {
-            if (object.getName() != null && !"".equals(object.getName())) {
+            if (isNotNullOrEmpty(object.getName())) {
                 labelToAdd = object.getName();
             } else {
                 labelToAdd = "untitled";
             }
+            this.name = labelToAdd;
+        }
+        if (!isNotNullOrEmpty(labelToAdd)) {
+            labelToAdd = "untitled";
         }
         this.label = ClientUtils.trimLabel(labelToAdd, Constants.MAX_LABEL_LENGTH);
     }
@@ -331,6 +336,10 @@ public abstract class FoxmlBuilder {
 
     public String getLabel() {
         return label;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**

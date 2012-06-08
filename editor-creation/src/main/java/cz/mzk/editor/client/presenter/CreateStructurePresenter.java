@@ -717,8 +717,7 @@ public class CreateStructurePresenter
                                                           + "]");
                             event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
                             event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
-                            event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                                           Boolean.FALSE);
+                            event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, "");
                         }
                     }
                 });
@@ -1162,7 +1161,7 @@ public class CreateStructurePresenter
                             if (value != null && value) {
                                 addNewStructure(model, parent, selection, false, "");
                                 leftPresenter.addPages(missing, model != DigitalObjectModel.PAGE ? parent
-                                        : grandpa);
+                                        : grandpa, false);
                             }
                         }
                     });
@@ -1202,13 +1201,12 @@ public class CreateStructurePresenter
                 break;
 
             case PERIODICALITEM:
-                name = createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                name = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNameOrTitle();
                 dateOrIntPartName =
                         createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getPartNumber();
-                if (name == null || "".equals(name)) name = partNumOrAlto;
                 aditionalInfoOrOcr =
                         createAtOnce ? PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue() : leftPresenter
                                 .getSequentialCreateLayout().getLevelName();
@@ -1260,7 +1258,7 @@ public class CreateStructurePresenter
 
         if (selection != null && selection.length > 0
                 && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
-            leftPresenter.addPages(Arrays.asList(selection), possibleParent);
+            leftPresenter.addPages(Arrays.asList(selection), possibleParent, createAtOnce);
 
             if (!leftPresenter.getSequentialCreateLayout().getKeepCheckbox().getValueAsBoolean()
                     && !createAtOnce) {
