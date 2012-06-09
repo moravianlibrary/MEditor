@@ -4,6 +4,7 @@ Usage:
    mvn install [-Denv=editor]       for generating war for editor.mzk.cz
    mvn install -Denv=editor-devel   for generating war for editor-devel.mzk.cz
    mvn install -P dev               for development purposes (1 locale, 1 browser, shorter compilation)
+   mvn install -Dfilter.hostname=X  for generating war for hostname X
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -138,6 +139,7 @@ Usage:
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+<!--
 		<repository>
 			<id>jboss</id>
 			<url>http://repository.jboss.com/maven2/</url>
@@ -148,6 +150,7 @@ Usage:
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+-->
 		<repository>
 			<id>duraspace-releases</id>
 			<name>DuraSpace Releases Maven Repository</name>
@@ -310,8 +313,8 @@ Usage:
 				<artifactId>commons-codec</artifactId>
 				<version>1.6</version>
 			</dependency>
-			<!-- install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 -Dversion=1.2.3 
-				-Dpackaging=jar -Dfile=path -->
+			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950
+			     -Dversion=1.2.3 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>ki-jzkit-z3950</artifactId>
@@ -368,6 +371,8 @@ Usage:
 				<version>1.2.1</version>
 			</dependency>
 			<dependency>
+	                        <!-- mvn install:install-file -DgroupId=com.foxtrottechnologies -DartifactId=javadjvu 
+        	                	-Dversion=0.8.09 -Dpackaging=jar -Dfile=path -->
 				<!-- Not present in any Maven repo, please download it from http://sourceforge.net/projects/javadjvu/files/ 
 					and install to local maven repository -->
 				<groupId>com.foxtrottechnologies</groupId>
