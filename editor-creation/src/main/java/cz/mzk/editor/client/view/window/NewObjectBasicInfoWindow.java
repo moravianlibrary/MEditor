@@ -129,9 +129,7 @@ public abstract class NewObjectBasicInfoWindow
                 break;
 
             case PERIODICALITEM:
-                String name = managerLayout.getNameOrTitle();
-                record.setAttribute(Constants.ATTR_NAME,
-                                    (name == null || "".equals(name) ? managerLayout.getPartNumber() : name));
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
                 record.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, managerLayout.getDateIssued());
                 record.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, managerLayout.getNote());
                 record.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, managerLayout.getPartNumber());

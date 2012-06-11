@@ -55,7 +55,7 @@ public class PageBuilder
      */
     @Override
     protected void decorateMODSStream() {
-        String pageLabel = getLabel();
+        String pageLabel = getName();
         Element modsCollection = FoxmlUtils.createModsCollectionEl();
         Namespace modsNs = Namespaces.mods;
         Element mods = modsCollection.addElement(new QName("mods", modsNs));

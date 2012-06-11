@@ -83,19 +83,17 @@ public class ModsTypeClientManagerImpl
      * @return
      */
     @Override
-    public String getType() {
-        if (isNotNullOrEmpty(modsTypeClient.getGenre()) && modsTypeClient.getGenre().get(0).getType() != null) {
-            String fullType = modsTypeClient.getGenre().get(0).getType();
-            String typeKey = "";
-            for (String key : Constants.PAGE_TYPES.MAP.keySet()) {
-                if (Constants.PAGE_TYPES.MAP.get(key).equals(fullType)) {
-                    typeKey = key;
-                    break;
-                }
-            }
-            return typeKey;
-        }
+    public String getType(DigitalObjectModel model) {
+        if (model != DigitalObjectModel.PAGE) {
+            if (isNotNullOrEmpty(modsTypeClient.getGenre())
+                    && modsTypeClient.getGenre().get(0).getType() != null) {
+                return modsTypeClient.getGenre().get(0).getType();
 
+            }
+        } else if (isNotNullOrEmpty(modsTypeClient.getPart())
+                && modsTypeClient.getPart().get(0).getType() != null) {
+            return Constants.PAGE_TYPES.getEnumAsStringFromMap(modsTypeClient.getPart().get(0).getType());
+        }
         return "";
     }
 
@@ -578,21 +576,42 @@ public class ModsTypeClientManagerImpl
      * {@inheritDoc}
      */
     @Override
-    public void modifyType(String type) {
-        List<GenreTypeClient> genre;
-        if (isNotNullOrEmpty(modsTypeClient.getGenre())) {
-            genre = modsTypeClient.getGenre();
+    public void modifyType(DigitalObjectModel model, String type) {
+
+        if (model == DigitalObjectModel.PAGE) {
+            modifyPageType(model, type);
         } else {
-            genre = new ArrayList<GenreTypeClient>();
-            genre.add(new GenreTypeClient());
+            List<GenreTypeClient> genre;
+            if (isNotNullOrEmpty(modsTypeClient.getGenre())) {
+                genre = modsTypeClient.getGenre();
+            } else {
+                genre = new ArrayList<GenreTypeClient>();
+                genre.add(new GenreTypeClient());
+            }
+            if (type == null || "".equals(type)) {
+                if (genre.get(0).getType() != null) genre.remove(0);
+            } else {
+                genre.get(0).setType(type);
+            }
+            modsTypeClient.setGenre(genre);
+        }
+    }
+
+    private void modifyPageType(DigitalObjectModel model, String type) {
+        List<PartTypeClient> part;
+        if (isNotNullOrEmpty(modsTypeClient.getGenre())) {
+            part = modsTypeClient.getPart();
+        } else {
+            part = new ArrayList<PartTypeClient>();
+            part.add(new PartTypeClient());
         }
         if (type == null || "".equals(type)) {
-            if (genre.get(0).getType() != null) genre.remove(0);
+            if (part.get(0).getType() != null) part.get(0).setType("");
         } else {
             String resolvedPageType = Constants.PAGE_TYPES.MAP.get(type);
-            genre.get(0).setType(resolvedPageType == null ? "NormalPage" : resolvedPageType);
+            part.get(0).setType(resolvedPageType == null ? "NormalPage" : resolvedPageType);
         }
-        modsTypeClient.setGenre(genre);
+        modsTypeClient.setPart(part);
     }
 
     /**

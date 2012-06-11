@@ -68,7 +68,7 @@ public class IntPartBuilder
 
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
         Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(isNotNullOrEmpty(getLabel()) ? getLabel() : "untitled");
+        title.addText(getName());
 
         if (isNotNullOrEmpty(getNoteOrIntSubtitle())) {
             Element subtitle = titleInfo.addElement(new QName("subtitle", modsNs));

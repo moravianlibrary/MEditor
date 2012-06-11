@@ -246,7 +246,7 @@ public abstract class ObjectBasicInfoLayout
                     new LinkedHashMap<String, String>(PAGE_TYPES.MAP);
 
             type.setValueMap(valueMapPage);
-            type.setValue(PAGE_TYPES.MAP.get(record.getAttribute(Constants.ATTR_TYPE)));
+            type.setValue(record.getAttribute(Constants.ATTR_TYPE));
             type.redraw();
             xOfSequence.hide();
             otherLayout.addMember(typeLayout);
@@ -298,6 +298,7 @@ public abstract class ObjectBasicInfoLayout
                     new LinkedHashMap<String, String>(INTERNAL_PART_CHAPTER_GENRE_TYPES.MAP);
 
             String levelName = record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+            String defaultType = record.getAttribute(Constants.ATTR_TYPE);
 
             String substringLevelName = "";
             if (!"".equals(levelName))
@@ -310,12 +311,16 @@ public abstract class ObjectBasicInfoLayout
                 if ("".equals(substringLevelName)) {
                     levelNames.setDefaultValue("");
                     type.setValueMap("");
+
                 } else if (substringLevelName.equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.toString())) {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_ART.getValue());
                     type.setValueMap(valueMapArt);
+                    defaultType = INTERNAL_PART_ARTICLE_GENRE_TYPES.getEnumAsStringFromMap(defaultType);
+
                 } else {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_PICT.getValue());
                     type.setValueMap(valueMapPicture);
+                    defaultType = INTERNAL_PART_PICTURE_GENRE_TYPES.getEnumAsStringFromMap(defaultType);
                 }
 
             } else {
@@ -325,12 +330,16 @@ public abstract class ObjectBasicInfoLayout
                 if ("".equals(substringLevelName)) {
                     levelNames.setDefaultValue("");
                     type.setValueMap("");
+
                 } else if (substringLevelName.equals(INTERNAL_PART_LEVEL_NAMES.MODS_ART.toString())) {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_CHAPTER.getValue());
                     type.setValueMap(valueMapChapter);
+                    defaultType = INTERNAL_PART_CHAPTER_GENRE_TYPES.getEnumAsStringFromMap(defaultType);
+
                 } else {
                     levelNames.setDefaultValue(Constants.INTERNAL_PART_LEVEL_NAMES.MODS_PICTURE.getValue());
                     type.setValueMap(valueMapPicture);
+                    defaultType = INTERNAL_PART_PICTURE_GENRE_TYPES.getEnumAsStringFromMap(defaultType);
                 }
             }
 
@@ -351,7 +360,7 @@ public abstract class ObjectBasicInfoLayout
             otherLayout.addMember(new MyDynamicForm(nameOrTitle, subtitle, partName, partNumber));
 
             //            type.setValueMap(valueMapArt);
-            type.setValue(record.getAttribute(Constants.ATTR_TYPE));
+            type.setValue(defaultType);
             xOfSequence.hide();
             typeLayout.setExtraSpace(10);
             otherLayout.addMember(typeLayout);
@@ -430,7 +439,7 @@ public abstract class ObjectBasicInfoLayout
                                                                       defaultType.length()));
                 } else {
                     xOfSequence.hide();
-                    type.setValue(defaultType);
+                    type.setValue(PERIODICAL_ITEM_GENRE_TYPES.getEnumAsStringFromMap(defaultType));
                 }
             } else {
                 type.hide();

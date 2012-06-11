@@ -36,4 +36,7 @@ public class ChangeFocusedTabSet {
 
     @Order(1)
     private String focusedUuid;
+
+    @Order(2)
+    private boolean scannedPagesTabSelected;
 }

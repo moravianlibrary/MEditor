@@ -589,10 +589,10 @@ public class CreateStructureView
             @Override
             public String execute(Object value, DetailViewerField field, Record record) {
                 boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
-                if (getUiHandlers().isMarkingOff()) {
+                if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
                     return !isSelected ? "" : "tileGridImgSelected";
                 } else {
-                    String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    String isMarked = record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
                     return (isMarked == null || !Boolean.TRUE.toString().equals(isMarked)) ? (!isSelected ? ""
                             : "tileGridImgSelected")
                             : (!isSelected ? "tileGridImgMarked" : "tileGridImgMarkedSelected");
@@ -619,10 +619,10 @@ public class CreateStructureView
             @Override
             public String execute(Object value, DetailViewerField field, Record record) {
                 boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
-                if (getUiHandlers().isMarkingOff()) {
+                if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
                     return !isSelected ? "" : "tileGridTitleSelected";
                 } else {
-                    String isMarked = record.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    String isMarked = record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
                     return (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) ? (!isSelected ? ""
                             : "tileGridTitleSelected")
                             : (!isSelected ? "tileGridTitleMarked" : "tileGridTitleMarkedSelected");
@@ -1568,8 +1568,8 @@ public class CreateStructureView
                                originalRecord.getAttribute(Constants.ATTR_MODEL),
                                originalRecord.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
                                originalRecord.getAttribute(Constants.ATTR_TYPE));
-        newScanRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                   originalRecord.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR));
+        newScanRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
+                                   originalRecord.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE));
         return newScanRecord;
     }
 

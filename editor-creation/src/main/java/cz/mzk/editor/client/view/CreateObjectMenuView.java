@@ -123,6 +123,7 @@ public class CreateObjectMenuView
     private boolean connectEx2Enabled;
     private boolean removeSelectedEnabled;
     private boolean editSelectedEnabled;
+    private boolean scannedTabSelected;
     private boolean addAltoEnabled;
 
     private List<Tree> undoList;
@@ -363,11 +364,14 @@ public class CreateObjectMenuView
                                     if (value != null && value) {
                                         if (finalTreeGrid == null) {
                                             addUndoRedo(true, false);
-                                            getUiHandlers().addPages(Arrays.asList(selection), targetId);
+                                            getUiHandlers().addPages(Arrays.asList(selection),
+                                                                     targetId,
+                                                                     false);
                                         }
                                         getUiHandlers()
                                                 .addPages(missingPages,
-                                                          intParNodeId.getAttribute(Constants.ATTR_ID));
+                                                          intParNodeId.getAttribute(Constants.ATTR_ID),
+                                                          false);
                                     } else {
                                         if (finalTreeGrid != null) undo();
                                     }
@@ -377,13 +381,13 @@ public class CreateObjectMenuView
                         } else {
                             if (treeGrid == null) {
                                 addUndoRedo(true, false);
-                                getUiHandlers().addPages(Arrays.asList(selection), targetId);
+                                getUiHandlers().addPages(Arrays.asList(selection), targetId, false);
                             }
                         }
                     } else {
                         if (treeGrid == null) {
                             addUndoRedo(true, false);
-                            getUiHandlers().addPages(Arrays.asList(selection), targetId);
+                            getUiHandlers().addPages(Arrays.asList(selection), targetId, false);
                         }
                     }
                     if (tileGrid != null && !event.isCtrlKeyDown()) {
@@ -556,7 +560,7 @@ public class CreateObjectMenuView
 
             @Override
             public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return editSelectedEnabled;
+                return editSelectedEnabled || !scannedTabSelected;
             }
         });
 
@@ -680,7 +684,10 @@ public class CreateObjectMenuView
                 String stringToReturn = record.getAttributeAsString(Constants.ATTR_NAME);
                 if (record.getAttributeAsString(Constants.ATTR_NAME) == null
                         || "".equals(record.getAttributeAsString(Constants.ATTR_NAME))) {
-                    if (DigitalObjectModel.parseString(record.getAttribute(Constants.ATTR_MODEL_ID)) == DigitalObjectModel.PERIODICALVOLUME)
+                    DigitalObjectModel recModel =
+                            DigitalObjectModel.parseString(record.getAttribute(Constants.ATTR_MODEL_ID));
+                    if (recModel == DigitalObjectModel.PERIODICALVOLUME
+                            || recModel == DigitalObjectModel.PERIODICALITEM)
                         stringToReturn = record.getAttributeAsString(Constants.ATTR_PART_NUMBER_OR_ALTO);
                 }
 
@@ -1008,6 +1015,15 @@ public class CreateObjectMenuView
             sectionCreateLayout.removeMember(members[0]);
         }
         sectionCreateLayout.addMember(vLayout);
+    }
+
+    /**
+     * @param scannedTabSelected
+     *        the scannedTabSelected to set
+     */
+    @Override
+    public void setScannedTabSelected(boolean scannedTabSelected) {
+        this.scannedTabSelected = scannedTabSelected;
     }
 
 }

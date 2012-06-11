@@ -109,6 +109,7 @@ import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.StoreTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
+import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.event.CreateStructureEvent;
@@ -717,8 +718,7 @@ public class CreateStructurePresenter
                                                           + "]");
                             event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
                             event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
-                            event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
-                                                           Boolean.FALSE);
+                            //                            event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, "");
                         }
                     }
                 });
@@ -732,14 +732,14 @@ public class CreateStructurePresenter
                             getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
                             String isMarked =
                                     event.getRecord()
-                                            .getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                                            .getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
                             if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
-                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                                                Boolean.TRUE.toString());
                                 markedRecords.add(event.getRecord());
                             } else {
                                 markedRecords.remove(event.getRecord());
-                                event.getRecord().setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                                                Boolean.FALSE.toString());
                             }
                             getView().getTileGrid().deselectRecord(event.getRecord());
@@ -763,10 +763,14 @@ public class CreateStructurePresenter
                             pages = getView().getTileGrid().getData();
                             setSelectedTreePages();
                             getView().setUndoRedoButtonsDisabled(true);
+                            createAtOnceButton.disable();
+                            ChangeFocusedTabSetEvent.fire(CreateStructurePresenter.this, null, false);
 
                         } else {
                             getView().getTileGrid().setData(pages);
                             getView().setUndoRedoButtonsDisabled(false);
+                            createAtOnceButton.enable();
+                            ChangeFocusedTabSetEvent.fire(CreateStructurePresenter.this, null, true);
                         }
                     }
                 });
@@ -1097,7 +1101,7 @@ public class CreateStructurePresenter
         int perItemNum = 0;
         for (Record rec : data) {
             if (toAdd.size() > 0) {
-                String isMarked = rec.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                String isMarked = rec.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
                 if (isMarked != null && Boolean.TRUE.toString().equals(isMarked)) {
                     Record[] toAddRecords = new Record[toAdd.size()];
                     toAdd.toArray(toAddRecords);
@@ -1162,7 +1166,7 @@ public class CreateStructurePresenter
                             if (value != null && value) {
                                 addNewStructure(model, parent, selection, false, "");
                                 leftPresenter.addPages(missing, model != DigitalObjectModel.PAGE ? parent
-                                        : grandpa);
+                                        : grandpa, false);
                             }
                         }
                     });
@@ -1202,13 +1206,12 @@ public class CreateStructurePresenter
                 break;
 
             case PERIODICALITEM:
-                name = createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                name = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNameOrTitle();
                 dateOrIntPartName =
                         createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getPartNumber();
-                if (name == null || "".equals(name)) name = partNumOrAlto;
                 aditionalInfoOrOcr =
                         createAtOnce ? PERIODICAL_ITEM_LEVEL_NAMES.MODS_ISSUE.getValue() : leftPresenter
                                 .getSequentialCreateLayout().getLevelName();
@@ -1260,7 +1263,7 @@ public class CreateStructurePresenter
 
         if (selection != null && selection.length > 0
                 && (canContain == null || canContain.contains(DigitalObjectModel.PAGE))) {
-            leftPresenter.addPages(Arrays.asList(selection), possibleParent);
+            leftPresenter.addPages(Arrays.asList(selection), possibleParent, createAtOnce);
 
             if (!leftPresenter.getSequentialCreateLayout().getKeepCheckbox().getValueAsBoolean()
                     && !createAtOnce) {

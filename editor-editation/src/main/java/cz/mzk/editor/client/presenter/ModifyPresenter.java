@@ -492,7 +492,7 @@ public class ModifyPresenter
 
     @Override
     public void onChangeFocusedTabSet(String focusedUuid) {
-        ChangeFocusedTabSetEvent.fire(ModifyPresenter.this, focusedUuid);
+        ChangeFocusedTabSetEvent.fire(ModifyPresenter.this, focusedUuid, false);
     }
 
     /**
