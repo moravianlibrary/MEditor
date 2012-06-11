@@ -109,6 +109,7 @@ import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.StoreTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
+import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.event.CreateStructureEvent;
@@ -763,15 +764,13 @@ public class CreateStructurePresenter
                             setSelectedTreePages();
                             getView().setUndoRedoButtonsDisabled(true);
                             createAtOnceButton.disable();
-                            leftPresenter.getSequentialCreateLayout().getCreateButton().disable();
-                            leftPresenter.getView().getSectionStack().getSection(1).setExpanded(false);
+                            ChangeFocusedTabSetEvent.fire(CreateStructurePresenter.this, null, false);
 
                         } else {
                             getView().getTileGrid().setData(pages);
                             getView().setUndoRedoButtonsDisabled(false);
                             createAtOnceButton.enable();
-                            leftPresenter.getSequentialCreateLayout().getCreateButton().enable();
-                            leftPresenter.getView().getSectionStack().getSection(1).setExpanded(true);
+                            ChangeFocusedTabSetEvent.fire(CreateStructurePresenter.this, null, true);
                         }
                     }
                 });

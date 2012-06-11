@@ -73,6 +73,8 @@ import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.LoadTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
+import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
+import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
@@ -123,6 +125,8 @@ public class CreateObjectMenuPresenter
         void setSectionCreateLayout(VLayout VLayout);
 
         SelectItem getCreationModeItem();
+
+        void setScannedTabSelected(boolean scannedTabSelected);
 
     }
 
@@ -255,6 +259,24 @@ public class CreateObjectMenuPresenter
                                      handleChangeStructureTreeItemEvent(event);
                                  }
                              });
+
+        addRegisteredHandler(ChangeFocusedTabSetEvent.getType(), new ChangeFocusedTabSetHandler() {
+
+            @Override
+            public void onChangeFocusedTabSet(ChangeFocusedTabSetEvent event) {
+                if (event.getFocusedUuid() == null) {
+                    getView().getSectionStack().getSection(1).setExpanded(event.isScannedPagesTabSelected());
+                    getView().setScannedTabSelected(event.isScannedPagesTabSelected());
+
+                    if (event.isScannedPagesTabSelected()) {
+                        getSequentialCreateLayout().getCreateButton().enable();
+                    } else {
+                        getSequentialCreateLayout().getCreateButton().disable();
+                    }
+                }
+            }
+        });
+
     }
 
     private void handleChangeStructureTreeItemEvent(ChangeStructureTreeItemEvent event) {

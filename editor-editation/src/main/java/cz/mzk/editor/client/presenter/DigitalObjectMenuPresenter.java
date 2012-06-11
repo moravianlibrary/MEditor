@@ -265,7 +265,9 @@ public class DigitalObjectMenuPresenter
 
             @Override
             public void onChangeFocusedTabSet(ChangeFocusedTabSetEvent event) {
-                getView().setRelatedDocuments(openedObjectsUuidAndRelated.get(event.getFocusedUuid()));
+                if (event.getFocusedUuid() != null) {
+                    getView().setRelatedDocuments(openedObjectsUuidAndRelated.get(event.getFocusedUuid()));
+                }
             }
         });
 

@@ -123,6 +123,7 @@ public class CreateObjectMenuView
     private boolean connectEx2Enabled;
     private boolean removeSelectedEnabled;
     private boolean editSelectedEnabled;
+    private boolean scannedTabSelected;
     private boolean addAltoEnabled;
 
     private List<Tree> undoList;
@@ -559,7 +560,7 @@ public class CreateObjectMenuView
 
             @Override
             public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return editSelectedEnabled;
+                return editSelectedEnabled || !scannedTabSelected;
             }
         });
 
@@ -1014,6 +1015,15 @@ public class CreateObjectMenuView
             sectionCreateLayout.removeMember(members[0]);
         }
         sectionCreateLayout.addMember(vLayout);
+    }
+
+    /**
+     * @param scannedTabSelected
+     *        the scannedTabSelected to set
+     */
+    @Override
+    public void setScannedTabSelected(boolean scannedTabSelected) {
+        this.scannedTabSelected = scannedTabSelected;
     }
 
 }
