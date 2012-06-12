@@ -62,6 +62,7 @@ import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
@@ -69,6 +70,7 @@ import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -227,6 +229,8 @@ public class CreateStructurePresenter
     private List<Record> markedRecords;
 
     private ButtonItem createAtOnceButton;
+
+    private TextItem firstNumber;
 
     private Record[] pages;
 
@@ -869,8 +873,19 @@ public class CreateStructurePresenter
             DynamicForm createDynForm = new DynamicForm();
             createDynForm.setItems(createAtOnceButton);
 
+            firstNumber = new TextItem("firstNumber", lang.firstNumber());
+            firstNumber.setWidth(50);
+            firstNumber.setDefaultValue(1);
+            DynamicForm firstNumberDynForm = new DynamicForm();
+            firstNumberDynForm.setItems(firstNumber);
+            firstNumberDynForm.setWidth(150);
+
+            HLayout buttonItem = new HLayout(2);
+            buttonItem.addMember(createDynForm);
+            buttonItem.addMember(firstNumberDynForm);
+
             atOnceCreateLayout.addMember(createFlow);
-            atOnceCreateLayout.addMember(createDynForm);
+            atOnceCreateLayout.addMember(buttonItem);
             atOnceCreateLayout.setAlign(Alignment.CENTER);
             atOnceCreateLayout.setWidth(250);
             atOnceCreateLayout.setHeight(70);
@@ -904,18 +919,25 @@ public class CreateStructurePresenter
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    final ModalWindow mw = new ModalWindow(leftPresenter.getView().getSectionStack());
-                    mw.setLoadingIcon("loadingAnimation.gif");
-                    mw.show(true);
-                    Timer timer = new Timer() {
+                    if (firstNumber.getValueAsString() == null || "".equals(firstNumber.getValueAsString())
+                            || firstNumber.getValueAsString().matches(Constants.ONLY_NUMBERS)) {
 
-                        @Override
-                        public void run() {
-                            createAtOnceProcess();
-                            mw.hide();
-                        }
-                    };
-                    timer.run();
+                        final ModalWindow mw = new ModalWindow(leftPresenter.getView().getSectionStack());
+                        mw.setLoadingIcon("loadingAnimation.gif");
+                        mw.show(true);
+                        Timer timer = new Timer() {
+
+                            @Override
+                            public void run() {
+                                createAtOnceProcess();
+                                mw.hide();
+                            }
+                        };
+                        timer.run();
+                    } else {
+                        SC.warn(lang.textBox() + " " + lang.firstNumber() + " " + lang.onlyNum());
+                    }
+
                 }
 
             });
@@ -1098,7 +1120,10 @@ public class CreateStructurePresenter
         }
 
         List<Record> toAdd = new ArrayList<Record>();
-        int perItemNum = 0;
+
+        int perItemNum =
+                (firstNumber.getValueAsString() == null || "".equals(firstNumber.getValueAsString())) ? 0
+                        : Integer.parseInt(firstNumber.getValueAsString()) - 1;
         for (Record rec : data) {
             if (toAdd.size() > 0) {
                 String isMarked = rec.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
