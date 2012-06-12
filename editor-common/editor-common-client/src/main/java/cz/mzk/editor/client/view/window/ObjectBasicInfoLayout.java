@@ -31,7 +31,6 @@ import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
@@ -95,7 +94,7 @@ public abstract class ObjectBasicInfoLayout
 
         private TextItem xOfLevelNames;
 
-        private DateTimeItem dateIssued;
+        private EditorDateItem dateIssued;
 
         private SelectItem type;
 
@@ -156,7 +155,7 @@ public abstract class ObjectBasicInfoLayout
             levelNamesLayout.setAlign(Alignment.RIGHT);
             levelNamesLayout.setWidth(coeficientOfLength * 29);
 
-            dateIssued = new EditorDateItem("dateIssued", lang.dateIssued());
+            dateIssued = new EditorDateItem("dateIssued", lang.dateIssued(), lang);
             dateIssued.setWidth(coeficientOfLength * 23);
 
             partNumber = new TextItem("partNumber", lang.partNumber());
@@ -543,7 +542,7 @@ public abstract class ObjectBasicInfoLayout
         }
 
         @Override
-        protected DateTimeItem getDateIssuedItem() {
+        protected EditorDateItem getDateIssuedItem() {
             return dateIssued;
         }
 

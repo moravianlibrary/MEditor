@@ -33,7 +33,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -97,7 +96,7 @@ public class SequentialCreateLayout
 
     private CreateDynamicForm xOfLevelNamesForm;
 
-    private DateTimeItem dateIssued;
+    private EditorDateItem dateIssued;
 
     private CreateDynamicForm dateIssuedForm;
 
@@ -172,7 +171,7 @@ public class SequentialCreateLayout
         levelNamesLayout.setLayoutAlign(Alignment.LEFT);
         levelNamesLayout.setAlign(Alignment.RIGHT);
 
-        dateIssued = new EditorDateItem("dateIssued", lang.dateIssued());
+        dateIssued = new EditorDateItem("dateIssued", lang.dateIssued(), lang);
         dateIssuedForm = new CreateDynamicForm(dateIssued);
 
         partNumber = new TextItem("partNumber", lang.partNumber());
@@ -534,7 +533,7 @@ public class SequentialCreateLayout
      * {@inheritDoc}
      */
     @Override
-    protected DateTimeItem getDateIssuedItem() {
+    protected EditorDateItem getDateIssuedItem() {
         return dateIssued;
     }
 

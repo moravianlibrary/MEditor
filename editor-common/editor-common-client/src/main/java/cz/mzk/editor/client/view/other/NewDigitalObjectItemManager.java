@@ -26,7 +26,6 @@ package cz.mzk.editor.client.view.other;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -39,6 +38,7 @@ import cz.mzk.editor.client.util.Constants.INTERNAL_PART_LEVEL_NAMES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_PICTURE_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
+import cz.mzk.editor.client.view.window.EditorDateItem;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 /**
@@ -68,7 +68,7 @@ public abstract class NewDigitalObjectItemManager
 
     protected abstract TextItem getXOfSequenceItem();
 
-    protected abstract DateTimeItem getDateIssuedItem();
+    protected abstract EditorDateItem getDateIssuedItem();
 
     protected abstract TextItem getPartNameItem();
 
@@ -119,8 +119,7 @@ public abstract class NewDigitalObjectItemManager
      * @return the dateIssued
      */
     public String getDateIssued() {
-        if (getDateIssuedItem().getDisplayValue() != null) return getDateIssuedItem().getDisplayValue();
-        return "";
+        return getDateIssuedItem().getEditorDate();
     }
 
     /**
@@ -232,24 +231,12 @@ public abstract class NewDigitalObjectItemManager
                     return getOnlyNumbersHint(lang.partNumber());
 
             } else if (model == DigitalObjectModel.PERIODICALVOLUME) {
-                if (getDateIssued() == null || "".equals(getDateIssued()))
+                if ("".equals(getDateIssued()))
                     return lang.textBox() + " " + lang.dateIssued() + " " + lang.notEmpty();
             }
+            String message = getDateIssuedItem().verify(lang, model);
+            if (message != null && !"".equals(message)) return message;
 
-            if (model == DigitalObjectModel.PERIODICALVOLUME) {
-                if (!"".equals(getDateIssued())
-                        && !(getDateIssued().matches(Constants.DATE_RRRR) || getDateIssued()
-                                .matches(Constants.DATE_RRRR_RRRR))) return getDateFormatHint(model);
-
-            } else if (model == DigitalObjectModel.PERIODICALITEM
-                    || model == DigitalObjectModel.MONOGRAPHUNIT) {
-                if (!"".equals(getDateIssued())
-                        && !(getDateIssued().matches(Constants.DATE_DDMMRRRR)
-                                || getDateIssued().matches(Constants.DATE_MMRRRR)
-                                || getDateIssued().matches(Constants.DATE_RRRR)
-                                || getDateIssued().matches(Constants.DATE_DD_DDMMRRRR) || getDateIssued()
-                                .matches(Constants.DATE_MM_MMRRRR))) return getDateFormatHint(model);
-            }
         } else {
             if (getNameOrTitle() == null || "".equals(getNameOrTitle()))
                 return lang.textBox() + " " + lang.dcTitle() + " " + lang.notEmpty();
@@ -262,17 +249,6 @@ public abstract class NewDigitalObjectItemManager
     }
 
     protected String getDateFormatHint(DigitalObjectModel model) {
-        if (model == DigitalObjectModel.PERIODICALVOLUME) {
-            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
-                    + " " + lang.dateInFormat() + ": " + "RRRR " + lang.or() + "<br>RRRR-RRRR";
-
-        } else if (model == DigitalObjectModel.PERIODICALITEM || model == DigitalObjectModel.MONOGRAPHUNIT) {
-            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
-                    + " " + lang.dateInFormat() + ": <br>" + "DD.MM.RRRR " + lang.or() + "<br>MM.RRRR "
-                    + lang.or() + "<br>RRRR " + lang.or() + "<br>DD.-DD.MM.RRR " + lang.or()
-                    + "<br>MM.-MM.RRRR";
-        }
-        return "";
+        return getDateIssuedItem().getDateFormatHint(lang, model);
     }
-
 }

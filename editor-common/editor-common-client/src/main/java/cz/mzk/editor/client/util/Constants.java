@@ -868,13 +868,46 @@ public class Constants {
 
     public static final String SECTION_INPUT_ID = "input";
 
-    public static final String DATE_RRRR = "\\d{4}";
-    public static final String DATE_RRRR_RRRR = DATE_RRRR + "-" + DATE_RRRR;
-    public static final String DATE_MMRRRR = "\\d{1,2}\\." + DATE_RRRR;
-    public static final String DATE_MM_MMRRRR = "\\d{1,2}\\.-" + DATE_MMRRRR;
-    public static final String DATE_DDMMRRRR = "\\d{1,2}\\." + DATE_MMRRRR;
-    public static final String DATE_DD_DDMMRRRR = "\\d{1,2}\\.-" + DATE_DDMMRRRR;
     public static final String ONLY_NUMBERS = "\\d*";
+
+    private static final String MONTH_REGEX = "(([0]?[1-9])|([1][1-2])|10)";
+
+    private static final String DAY_REGEX = "(([0-2]?[1-9])|([1-3]0)|31)";
+
+    public static enum DATE_RIGHT_FORMATS {
+
+        /** */
+        DATE_RRRR("\\d{1,4}"),
+
+        /** */
+        DATE_RRRR_RRRR(DATE_RRRR.getRegex() + "-" + DATE_RRRR.getRegex()),
+
+        /** */
+        DATE_MMRRRR(MONTH_REGEX + "\\." + DATE_RRRR.getRegex()),
+
+        /** */
+        DATE_MM_MMRRRR(MONTH_REGEX + "\\.-" + DATE_MMRRRR.getRegex()),
+
+        /** */
+        DATE_DDMMRRRR(DAY_REGEX + "\\." + DATE_MMRRRR.getRegex()),
+
+        /** */
+        DATE_DD_DDMMRRRR(DAY_REGEX + "\\.-" + DATE_DDMMRRRR.getRegex());
+
+        private final String regex;
+
+        private DATE_RIGHT_FORMATS(String regex) {
+            this.regex = regex;
+        }
+
+        /**
+         * @return the regex
+         */
+        public String getRegex() {
+            return regex;
+        }
+
+    }
 
     public static final String MODS_PART_DETAIL_PAGE_NUMBER = "pageNumber";
 }

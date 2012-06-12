@@ -1586,7 +1586,7 @@ public final class TabUtils {
             isCheckbox = true;
             item = new CheckboxItem(attr.getName());
         } else if (type.equals(EditorDateItem.class)) {
-            item = new EditorDateItem(attr.getName());
+            item = new EditorDateItem(attr.getName(), lang);
         } else if (type.equals(SelectItem.class)) {
             item = new SelectItem(attr.getName());
             item.setValueMap(attr.getLabels());
