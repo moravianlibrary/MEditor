@@ -93,11 +93,19 @@ public class EditorDateItem
 
             @Override
             public String formatValue(Object value, Record record, DynamicForm form, FormItem item) {
-                String toFormat = DateTimeFormat.getFormat("dd.MM.yyyy").format((Date) value);
-                String toReturn = wasParsed ? EditorDateItem.this.value : toFormat;
-                EditorDateItem.this.value = toFormat;
+                String toReturn;
+
+                if (!wasParsed) {
+                    toReturn = DateTimeFormat.getFormat("dd.MM.yyyy").format((Date) value);
+                    EditorDateItem.this.value = toReturn;
+                } else if (value != null) {
+                    toReturn = value.toString();
+                } else {
+                    return "";
+                }
+
                 wasParsed = false;
-                return toReturn;
+                return EditorDateItem.this.value;
             }
         });
 
@@ -113,12 +121,12 @@ public class EditorDateItem
 
                     if (!verifyAllFormats(value)) {
                         SC.warn((lang != null) ? lang.wrongDate() : "You have entered a wrong date format");
-                        //                        selectValue();
+                        selectValue();
                         return null;
                     }
 
                     DateTimeFormat format = getDateTimeFormat(value);
-                    return (format != null) ? format.parse(value) : null;
+                    return (format != null) ? format.parse(value) : value;
 
                 }
                 EditorDateItem.this.value = "";
@@ -160,13 +168,14 @@ public class EditorDateItem
     }
 
     private DateTimeFormat getDateTimeFormat(String valueToVerify) {
-        if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_RRRR.getRegex())) {
-            return DateTimeFormat.getFormat("yyyy");
-
-        } else if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_MMRRRR.getRegex())) {
-            return DateTimeFormat.getFormat("MM.yyyy");
-
-        } else if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_DDMMRRRR.getRegex())) {
+        //        if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_RRRR.getRegex())) {
+        //            return DateTimeFormat.getFormat("yyyy");
+        //
+        //        } else if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_MMRRRR.getRegex())) {
+        //            return DateTimeFormat.getFormat("MM.yyyy");
+        //
+        //        } else 
+        if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_DDMMRRRR.getRegex())) {
             return DateTimeFormat.getFormat("dd.MM.yyyy");
 
         }
@@ -177,6 +186,16 @@ public class EditorDateItem
         if (getDisplayValue() != null) return getDisplayValue();
         return "";
     }
+
+    //    @Override
+    //    public String getDisplayValue() {
+    //        return getEditorDate();
+    //    }
+    //
+    //    @Override
+    //    public String getValue() {
+    //        return getEditorDate();
+    //    }
 
     public String verify(LangConstants lang, DigitalObjectModel model) {
         if (model == DigitalObjectModel.PERIODICALVOLUME) {

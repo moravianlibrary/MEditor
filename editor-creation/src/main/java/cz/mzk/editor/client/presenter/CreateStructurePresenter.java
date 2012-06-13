@@ -106,6 +106,7 @@ import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.client.view.window.ChooseDetailWindow;
+import cz.mzk.editor.client.view.window.EditorDateItem;
 import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.StoreTreeStructureWindow;
@@ -231,6 +232,8 @@ public class CreateStructurePresenter
     private ButtonItem createAtOnceButton;
 
     private TextItem firstNumber;
+
+    private EditorDateItem baseDate;
 
     private Record[] pages;
 
@@ -880,12 +883,18 @@ public class CreateStructurePresenter
             firstNumberDynForm.setItems(firstNumber);
             firstNumberDynForm.setWidth(150);
 
+            baseDate = new EditorDateItem("baseDate", lang.baseDate(), lang);
+
+            DynamicForm baseDateDynForm = new DynamicForm();
+            baseDateDynForm.setItems(baseDate);
+
             HLayout buttonItem = new HLayout(2);
             buttonItem.addMember(createDynForm);
             buttonItem.addMember(firstNumberDynForm);
 
             atOnceCreateLayout.addMember(createFlow);
             atOnceCreateLayout.addMember(buttonItem);
+            atOnceCreateLayout.addMember(baseDateDynForm);
             atOnceCreateLayout.setAlign(Alignment.CENTER);
             atOnceCreateLayout.setWidth(250);
             atOnceCreateLayout.setHeight(70);
@@ -1233,7 +1242,8 @@ public class CreateStructurePresenter
             case PERIODICALITEM:
                 name = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNameOrTitle();
                 dateOrIntPartName =
-                        createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getDateIssued();
+                        createAtOnce ? baseDate.getEditorDate() : leftPresenter.getSequentialCreateLayout()
+                                .getDateIssued();
                 noteOrSubtitle = createAtOnce ? "" : leftPresenter.getSequentialCreateLayout().getNote();
                 partNumOrAlto =
                         createAtOnce ? perItemNum : leftPresenter.getSequentialCreateLayout().getPartNumber();
