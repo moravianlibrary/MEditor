@@ -49,7 +49,7 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 public class EditorDateItem
         extends DateTimeItem {
 
-    private String value;
+    private String value = "";
     private boolean wasParsed = false;
     private LangConstants lang;
 
@@ -115,9 +115,10 @@ public class EditorDateItem
             public Object parseValue(String value, DynamicForm form, FormItem item) {
 
                 EditorDateItem.this.value = value;
-                wasParsed = true;
 
-                if (value != null) {
+                if (value != null && !"".equals(value)) {
+
+                    wasParsed = true;
 
                     if (!verifyAllFormats(value)) {
                         SC.warn((lang != null) ? lang.wrongDate() : "You have entered a wrong date format");

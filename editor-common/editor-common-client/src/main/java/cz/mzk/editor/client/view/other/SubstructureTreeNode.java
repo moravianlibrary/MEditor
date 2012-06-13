@@ -27,6 +27,7 @@ package cz.mzk.editor.client.view.other;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 /**
  * @author Jiri Kremser
@@ -64,5 +65,8 @@ public class SubstructureTreeNode
         setAttribute("isOpen", isOpen);
         setAttribute(Constants.ATTR_EXIST, exist);
         setAttribute(Constants.ATTR_CREATE, !exist);
+
+        if (modelId != null && !"".equals(modelId))
+            setIsFolder(DigitalObjectModel.parseString(modelId) != DigitalObjectModel.PAGE);
     }
 }

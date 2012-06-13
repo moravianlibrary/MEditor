@@ -298,7 +298,19 @@ public class CreateObjectMenuView
                         }
                         if ((possibleChildModels == null || !possibleChildModels.contains(movedModel))
                                 && (targetModel != DigitalObjectModel.PAGE || targetModel != DigitalObjectModel.PAGE)) {
-                            SC.say(lang.objNotDropable() + ": <code>" + movedModel.getValue() + "</code>");
+
+                            if (targetModel == movedModel) {
+
+                                TreeNode targetNode =
+                                        structureTree.findById(dropPlace.getAttribute(Constants.ATTR_ID));
+                                TreeNode movedNode =
+                                        structureTree.findById(selection[0].getAttribute(Constants.ATTR_ID));
+                                structureTree.move(movedNode,
+                                                   structureTree.getParent(targetNode),
+                                                   structureTreeGrid.getEventRow());
+                            } else {
+                                SC.say(lang.objNotDropable() + ": <code>" + movedModel.getValue() + "</code>");
+                            }
                             event.cancel();
                             return;
                         }
