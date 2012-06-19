@@ -599,15 +599,7 @@ public class CreateStructureView
 
             @Override
             public String execute(Object value, DetailViewerField field, Record record) {
-                boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
-                if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
-                    return !isSelected ? "" : "tileGridImgSelected";
-                } else {
-                    String isMarked = record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
-                    return (isMarked == null || !Boolean.TRUE.toString().equals(isMarked)) ? (!isSelected ? ""
-                            : "tileGridImgSelected")
-                            : (!isSelected ? "tileGridImgMarked" : "tileGridImgMarkedSelected");
-                }
+                return setFieldFormating(record, true);
             }
         });
 
@@ -629,15 +621,7 @@ public class CreateStructureView
 
             @Override
             public String execute(Object value, DetailViewerField field, Record record) {
-                boolean isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
-                if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
-                    return !isSelected ? "" : "tileGridTitleSelected";
-                } else {
-                    String isMarked = record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
-                    return (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) ? (!isSelected ? ""
-                            : "tileGridTitleSelected")
-                            : (!isSelected ? "tileGridTitleMarked" : "tileGridTitleMarkedSelected");
-                }
+                return setFieldFormating(record, false);
             }
         });
 
@@ -654,6 +638,38 @@ public class CreateStructureView
         tileGridLayout.addMember(tileGrid);
         tileGridLayout.addMember(pagesTabSet);
         layout.addMember(tileGridLayout);
+    }
+
+    private String setFieldFormating(Record record, boolean isImage) {
+        boolean isSelected = false;
+        if (record.getAttributeAsString(Constants.ATTR_ID) == null) {
+            isSelected = Arrays.asList(tileGrid.getSelection()).contains(record);
+        } else {
+            isSelected = selectionContains(record);
+        }
+        if (getUiHandlers().isMarkingOff() || isChosenSelectedPagesTab()) {
+            if (!isSelected) {
+                return "";
+            } else {
+                return isImage ? "tileGridImgSelected" : "tileGridTitleSelected";
+            }
+        } else {
+            String isMarked = record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
+            if (isMarked == null || "".equals(isMarked) || Boolean.FALSE.toString().equals(isMarked)) {
+                return (!isSelected ? "" : (isImage ? "tileGridImgSelected" : "tileGridTitleSelected"));
+            } else {
+                return (!isSelected ? (isImage ? "tileGridImgMarked" : "tileGridTitleMarked")
+                        : (isImage ? "tileGridImgMarkedSelected" : "tileGridTitleMarkedSelected"));
+            }
+        }
+    }
+
+    private boolean selectionContains(Record record) {
+        for (Record selected : tileGrid.getSelection()) {
+            if (selected.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
+                    .equals(record.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID))) return true;
+        }
+        return false;
     }
 
     private String getImageURLPrefix() {
