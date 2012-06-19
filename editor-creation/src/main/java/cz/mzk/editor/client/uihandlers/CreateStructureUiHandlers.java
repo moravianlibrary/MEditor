@@ -58,4 +58,6 @@ public interface CreateStructureUiHandlers
     boolean isMarkingOff();
 
     void addUndoInLeftPanel();
+
+    void setTileGridHandlers();
 }

@@ -677,82 +677,8 @@ public class CreateStructurePresenter
                                           items,
                                           config.getHostname(),
                                           false);
-                    getView().getTileGrid().addDropHandler(new DropHandler() {
 
-                        @Override
-                        public void onDrop(DropEvent event) {
-                            Object draggable = EventHandler.getDragTarget();
-                            if (draggable instanceof TreeGrid) {
-                                ListGridRecord[] selection =
-                                        leftPresenter.getView().getSubelementsGrid().getSelectedRecords();
-                                if (selection == null || selection.length == 0) {
-                                    event.cancel();
-                                    return;
-                                }
-                                for (ListGridRecord rec : selection) {
-                                    if (!DigitalObjectModel.PAGE.getValue()
-                                            .equals(rec.getAttribute(Constants.ATTR_MODEL_ID))) {
-                                        SC.say("TODO Sem muzete pretahovat jen objekty typu stranka.");
-                                        event.cancel();
-                                        return;
-                                    }
-                                }
-
-                            }
-                        }
-                    });
                 }
-
-                getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-
-                    @Override
-                    public void onSelectionChanged(SelectionChangedEvent event) {
-                        if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
-                                && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
-                            Record rec = event.getRecord();
-                            event.getRecord()
-                                    .setAttribute("__ref",
-                                                  "ScanRecord [getName()="
-                                                          + rec.getAttributeAsString(Constants.ATTR_NAME)
-                                                          + ", "
-                                                          + "getModel()="
-                                                          + model
-                                                          + ", "
-                                                          + "getPicture()="
-                                                          + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
-                                                          + ", " + "getPath()=, " + "getPageType()="
-                                                          + rec.getAttributeAsString(Constants.ATTR_TYPE)
-                                                          + "]");
-                            event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
-                            event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
-                            //                            event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, "");
-                        }
-                    }
-                });
-
-                markedRecords = new ArrayList<Record>();
-                getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
-
-                    @Override
-                    public void onRecordClick(RecordClickEvent event) {
-                        if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
-                            getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
-                            String isMarked =
-                                    event.getRecord()
-                                            .getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
-                            if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
-                                event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
-                                                               Boolean.TRUE.toString());
-                                markedRecords.add(event.getRecord());
-                            } else {
-                                markedRecords.remove(event.getRecord());
-                                event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
-                                                               Boolean.FALSE.toString());
-                            }
-                            getView().getTileGrid().deselectRecord(event.getRecord());
-                        }
-                    }
-                });
 
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
@@ -860,6 +786,85 @@ public class CreateStructurePresenter
         } else {
             getView().getTileGrid().setData(new Record[] {});
         }
+    }
+
+    @Override
+    public void setTileGridHandlers() {
+        getView().getTileGrid().addDropHandler(new DropHandler() {
+
+            @Override
+            public void onDrop(DropEvent event) {
+                Object draggable = EventHandler.getDragTarget();
+                if (draggable instanceof TreeGrid) {
+                    ListGridRecord[] selection =
+                            leftPresenter.getView().getSubelementsGrid().getSelectedRecords();
+                    if (selection == null || selection.length == 0) {
+                        event.cancel();
+                        return;
+                    }
+                    for (ListGridRecord rec : selection) {
+                        if (!DigitalObjectModel.PAGE.getValue()
+                                .equals(rec.getAttribute(Constants.ATTR_MODEL_ID))) {
+                            SC.say("TODO Sem muzete pretahovat jen objekty typu stranka.");
+                            event.cancel();
+                            return;
+                        }
+                    }
+
+                }
+            }
+        });
+
+        getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent event) {
+                if (event.getRecord().getAttributeAsString(Constants.ATTR_PARENT) != null
+                        && !"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_PARENT))) {
+                    Record rec = event.getRecord();
+                    event.getRecord()
+                            .setAttribute("__ref",
+                                          "ScanRecord [getName()="
+                                                  + rec.getAttributeAsString(Constants.ATTR_NAME) + ", "
+                                                  + "getModel()=" + model + ", " + "getPicture()="
+                                                  + rec.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID)
+                                                  + ", " + "getPath()=, " + "getPageType()="
+                                                  + rec.getAttributeAsString(Constants.ATTR_TYPE) + "]");
+                    event.getRecord().setAttribute(Constants.ATTR_MODEL, model);
+                    event.getRecord().setAttribute(Constants.ATTR_PARENT, "");
+                    //                            event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, "");
+                }
+            }
+        });
+
+        markedRecords = new ArrayList<Record>();
+        getView().getTileGrid().addRecordClickHandler(new RecordClickHandler() {
+
+            @Override
+            public void onRecordClick(RecordClickEvent event) {
+                if (!isMarkingOff() && event.isAltKeyDown() && event.isCtrlKeyDown()) {
+                    getView().addUndoRedo(getView().getTileGrid().getData(), true, false);
+                    String isMarked =
+                            event.getRecord().getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
+                    if (isMarked == null || Boolean.FALSE.toString().equals(isMarked)) {
+                        event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
+                                                       Boolean.TRUE.toString());
+                        markedRecords.add(event.getRecord());
+                    } else {
+                        markedRecords.remove(event.getRecord());
+                        event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
+                                                       Boolean.FALSE.toString());
+                    }
+                    getView().getTileGrid().deselectRecord(event.getRecord());
+                }
+                Record[] selection = getView().getTileGrid().getSelection();
+                if (selection != null && selection.length > 0) {
+                    leftPresenter.getSequentialCreateLayout().getKeepCheckbox().enable();
+                } else {
+                    leftPresenter.getSequentialCreateLayout().getKeepCheckbox().disable();
+                }
+            }
+        });
     }
 
     private void setSectionCreateLayout() {
@@ -1072,19 +1077,6 @@ public class CreateStructurePresenter
                                                                         recordIdAndItsNewValue));
                 }
                 tileGrid.removeSelectedData();
-            }
-        });
-
-        getView().getTileGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-
-            @Override
-            public void onSelectionChanged(SelectionChangedEvent event) {
-                Record[] selection = getView().getTileGrid().getSelection();
-                if (selection != null && selection.length > 0) {
-                    leftPresenter.getSequentialCreateLayout().getKeepCheckbox().enable();
-                } else {
-                    leftPresenter.getSequentialCreateLayout().getKeepCheckbox().disable();
-                }
             }
         });
 

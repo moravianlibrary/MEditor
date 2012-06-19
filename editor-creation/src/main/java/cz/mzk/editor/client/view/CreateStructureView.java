@@ -382,6 +382,8 @@ public class CreateStructureView
             }
         });
 
+        getUiHandlers().setTileGridHandlers();
+
         numbering = new PageNumberingManager(tileGrid);
         Menu menu = new Menu();
         menu.setShowShadow(true);
@@ -552,13 +554,14 @@ public class CreateStructureView
                 }
             }
         });
-        tileGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+        tileGrid.addRecordClickHandler(new RecordClickHandler() {
 
             @Override
-            public void onSelectionChanged(SelectionChangedEvent event) {
-                if (event.getState()) {
+            public void onRecordClick(RecordClickEvent event) {
+                int selLength = tileGrid.getSelection().length;
+                if (selLength > 0) {
                     pageTypeItem.enable();
-                    if (tileGrid.getSelection().length == 1) {
+                    if (selLength == 1) {
                         String pageType = event.getRecord().getAttribute(Constants.ATTR_TYPE);
                         pageTypeItem.setValue(Constants.PAGE_TYPES.MAP.get(pageType));
                     } else {
@@ -567,6 +570,14 @@ public class CreateStructureView
                 } else {
                     pageTypeItem.disable();
                 }
+
+            }
+        });
+
+        tileGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 if (isChosenSelectedPagesTab()) {
 
                     Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
