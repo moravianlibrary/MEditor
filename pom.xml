@@ -58,13 +58,14 @@ Usage:
 	</developers>
 
 	<modules>
-		<module>editor-common</module>
-		<module>editor-dao</module>
-		<module>editor-editation</module>
-		<module>editor-creation</module>
-		<module>editor-user</module>
-		<module>editor-request</module>
-		<module>editor-webapp</module>
+                <module>editor-dao</module>
+                <module>editor-converter</module>
+                <module>editor-common</module>
+                <module>editor-editation</module>
+                <module>editor-creation</module>
+                <module>editor-user</module>
+                <module>editor-request</module>
+                <module>editor-webapp</module>
 	</modules>
 
 	<properties>
@@ -327,6 +328,8 @@ Usage:
 				<artifactId>ki-jzkit-iface</artifactId>
 				<version>1.2.3</version>
 			</dependency>
+			<!-- mvn install:install-file -DgroupId=ki -DartifactId=ki-util 
+				-Dversion=1.0 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>ki</groupId>
 				<artifactId>ki-util</artifactId>
