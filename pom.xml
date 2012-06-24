@@ -421,6 +421,7 @@ Usage:
 	</pluginRepositories>
 
 	<build>
+		<defaultGoal>install</defaultGoal>
 		<pluginManagement>
 			<plugins>
 				<plugin>
