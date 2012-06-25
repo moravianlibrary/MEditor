@@ -66,11 +66,15 @@ INPUT_FILE=$(echo $2 | tr "[:upper:]" "[:lower:]")
 
 NO_PROBLEM=""
 #if [ "${INPUT_FILE:(-4)}x" != ".tifx" ] && [ "${INPUT_FILE:(-5)}x" != "tiffx" ] ; then
-  TIFF_TMP1=`tempfile -s ".tif"`;
+# TIFF_TMP1=`tempfile -s ".tif"`;
   TIFF_TMP2=`tempfile -s ".tif"`;
-  convert $2 $TIFF_TMP1 && tiffcp -c none $TIFF_TMP1 $TIFF_TMP2 && rm $TIFF_TMP1 && {
-    NO_PROBLEM="ok";
+  echo "converting";
+  convert -compress None $2 $TIFF_TMP2 && {
+     NO_PROBLEM="ok";
   }
+  #&& tiffcp -c none $TIFF_TMP1 $TIFF_TMP2 && rm $TIFF_TMP1 && {
+  #  NO_PROBLEM="ok";
+  #}
 #fi
 
 if [ "$TIFF_TMP2" != "" ] ; then
@@ -83,6 +87,7 @@ else
 fi
 
 $DJATOKA_HOME/bin/$PLATFORM/kdu_compress -s $DJATOKA_HOME/bin/kakadu.properties -i "$TIFF_IMG" -o "$3"
+exiftool -overwrite_original  -tagsfromfile "$TIFF_IMG" "$3"
 
 if [ "$TIFF_TMP2" != "" ] ; then
   rm $TIFF_TMP2
