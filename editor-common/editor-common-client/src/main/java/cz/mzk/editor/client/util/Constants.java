@@ -870,6 +870,8 @@ public class Constants {
 
     public static final String ONLY_NUMBERS = "\\d*";
 
+    public static final String EXTENT_OF_NUMBERS = "\\d*-\\d*";
+
     private static final String MONTH_REGEX = "(([0]?[1-9])|([1][1-2])|10)";
 
     private static final String DAY_REGEX = "(([0-2]?[1-9])|([1-3]0)|31)";
@@ -881,6 +883,9 @@ public class Constants {
 
         /** */
         DATE_RRRR_RRRR(DATE_RRRR.getRegex() + "-" + DATE_RRRR.getRegex()),
+
+        /** */
+        DATE_RRRR_RRRR_RRRR_RRRR(DATE_RRRR_RRRR.getRegex() + "," + DATE_RRRR_RRRR.getRegex()),
 
         /** */
         DATE_MMRRRR(MONTH_REGEX + "\\." + DATE_RRRR.getRegex()),

@@ -150,32 +150,33 @@ public class EditorDateItem
                     year = valueToVerify;
 
                 } else if (format == DATE_RIGHT_FORMATS.DATE_RRRR_RRRR) {
-                    String[] splitedYears = valueToVerify.split("-");
-                    year = splitedYears[0];
-                    if (new Date().getTime() < DateTimeFormat.getFormat("yyyy").parse(splitedYears[1])
-                            .getTime()
-                            || DateTimeFormat.getFormat("yyyy").parse(splitedYears[0]).getTime() > DateTimeFormat
-                                    .getFormat("yyyy").parse(splitedYears[1]).getTime()) return false;
+                    return verifyYearExtent(valueToVerify);
+
+                } else if (format == DATE_RIGHT_FORMATS.DATE_RRRR_RRRR_RRRR_RRRR) {
+                    String[] splited = valueToVerify.split(",");
+                    return verifyYearExtent(splited[0]) && verifyYearExtent(splited[1]);
 
                 } else {
                     year = valueToVerify.substring(valueToVerify.lastIndexOf(".") + 1);
                 }
 
-                return (new Date().getTime() > DateTimeFormat.getFormat("yyyy").parse(year).getTime());
-
+                if (year != null) {
+                    return (new Date().getTime() > DateTimeFormat.getFormat("yyyy").parse(year).getTime());
+                }
             }
         }
         return false;
     }
 
+    private boolean verifyYearExtent(String valueToVerify) {
+        String[] splitedYears = valueToVerify.split("-");
+        if (new Date().getTime() < DateTimeFormat.getFormat("yyyy").parse(splitedYears[1]).getTime()
+                || DateTimeFormat.getFormat("yyyy").parse(splitedYears[0]).getTime() > DateTimeFormat
+                        .getFormat("yyyy").parse(splitedYears[1]).getTime()) return false;
+        return true;
+    }
+
     private DateTimeFormat getDateTimeFormat(String valueToVerify) {
-        //        if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_RRRR.getRegex())) {
-        //            return DateTimeFormat.getFormat("yyyy");
-        //
-        //        } else if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_MMRRRR.getRegex())) {
-        //            return DateTimeFormat.getFormat("MM.yyyy");
-        //
-        //        } else 
         if (valueToVerify.matches(DATE_RIGHT_FORMATS.DATE_DDMMRRRR.getRegex())) {
             return DateTimeFormat.getFormat("dd.MM.yyyy");
 
@@ -187,16 +188,6 @@ public class EditorDateItem
         if (getDisplayValue() != null) return getDisplayValue();
         return "";
     }
-
-    //    @Override
-    //    public String getDisplayValue() {
-    //        return getEditorDate();
-    //    }
-    //
-    //    @Override
-    //    public String getValue() {
-    //        return getEditorDate();
-    //    }
 
     public String verify(LangConstants lang, DigitalObjectModel model) {
         if (model == DigitalObjectModel.PERIODICALVOLUME) {
@@ -213,6 +204,14 @@ public class EditorDateItem
                             || getEditorDate().matches(DATE_RIGHT_FORMATS.DATE_DD_DDMMRRRR.getRegex()) || getEditorDate()
                             .matches(DATE_RIGHT_FORMATS.DATE_MM_MMRRRR.getRegex())))
                 return getDateFormatHint(lang, model);
+
+        } else if (model == DigitalObjectModel.PERIODICAL) {
+            if (!"".equals(getEditorDate())
+                    && !(getEditorDate().matches(DATE_RIGHT_FORMATS.DATE_RRRR.getRegex())
+                            || getEditorDate().matches(DATE_RIGHT_FORMATS.DATE_RRRR_RRRR.getRegex()) || getEditorDate()
+                            .matches(DATE_RIGHT_FORMATS.DATE_RRRR_RRRR_RRRR_RRRR.getRegex()))) ;
+
+            return getDateFormatHint(lang, model);
         }
         return null;
     }
@@ -227,6 +226,10 @@ public class EditorDateItem
                     + " " + lang.dateInFormat() + ": <br>" + "DD.MM.RRRR " + lang.or() + "<br>MM.RRRR "
                     + lang.or() + "<br>RRRR " + lang.or() + "<br>DD.-DD.MM.RRR " + lang.or()
                     + "<br>MM.-MM.RRRR";
+        } else if (model == DigitalObjectModel.PERIODICAL) {
+            return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
+                    + " " + lang.dateInFormat() + ": " + "RRRR " + lang.or() + "<br>RRRR-RRRR" + lang.or()
+                    + "<br>RRRR-RRRR,RRRR-RRRR";
         }
         return "";
     }

@@ -227,7 +227,8 @@ public abstract class NewDigitalObjectItemManager
             if (model != DigitalObjectModel.PAGE && model != DigitalObjectModel.PERIODICALVOLUME) {
                 if (getPartNumber() == null || "".equals(getPartNumber()))
                     return lang.textBox() + " " + lang.partNumber() + " " + lang.notEmpty();
-                if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS))
+                if (getPartNumber() != null && !getPartNumber().matches(Constants.ONLY_NUMBERS)
+                        && !getPartNumber().matches(Constants.EXTENT_OF_NUMBERS))
                     return getOnlyNumbersHint(lang.partNumber());
 
             } else if (model == DigitalObjectModel.PERIODICALVOLUME) {
