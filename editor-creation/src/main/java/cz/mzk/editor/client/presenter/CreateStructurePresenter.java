@@ -1492,4 +1492,12 @@ public class CreateStructurePresenter
     public void addUndoInLeftPanel() {
         leftPresenter.getView().addUndoRedo(true, false);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Record> getMarkedRecords() {
+        return markedRecords;
+    }
 }

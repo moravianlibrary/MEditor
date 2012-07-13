@@ -124,6 +124,7 @@ import cz.mzk.editor.client.view.other.PageNumberingManager;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
+import cz.mzk.editor.client.view.window.RenumberWindow;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
@@ -952,36 +953,61 @@ public class CreateStructureView
                     }
 
                     private void askForValue() {
-                        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
-                        dialog.setWidth(330);
-                        SC.askforValue(lang.renumber(),
-                                       lang.enterNumberForRenumber(),
-                                       "1",
-                                       new ValueCallback() {
+                        new RenumberWindow(lang.renumber(), eventBus, lang, !getUiHandlers()
+                                .getMarkedRecords().isEmpty()) {
 
-                                           @Override
-                                           public void execute(String value) {
-                                               if (value == null) {
-                                                   return;
-                                               }
-                                               try {
-                                                   int n = Integer.parseInt(value);
-                                                   addUndoRedo(tileGrid.getData(), true, false);
-                                                   Record[] data = tileGrid.getData();
-                                                   int i = 0;
-                                                   if (data != null && data.length > 0) {
-                                                       for (Record rec : data) {
-                                                           rec.setAttribute(Constants.ATTR_NAME, n + i++);
-                                                       }
-                                                   }
-                                                   updateTileGrid();
-                                               } catch (NumberFormatException nfe) {
-                                                   SC.say(lang.notANumber());
-                                               }
-                                           }
-                                       },
-                                       dialog);
+                            @Override
+                            protected void doRenumber(boolean respectPerItems, String firstNumber) {
+                                try {
+                                    int n = Integer.parseInt(firstNumber);
+                                    addUndoRedo(tileGrid.getData(), true, false);
+                                    Record[] data = tileGrid.getData();
+                                    int i = 0;
+                                    if (data != null && data.length > 0) {
+                                        for (Record rec : data) {
+                                            rec.setAttribute(Constants.ATTR_NAME, n + i++);
+                                        }
+                                    }
+                                    updateTileGrid();
+                                } catch (NumberFormatException nfe) {
+                                    SC.say(lang.notANumber());
+                                }
+                            }
+                        };
+
                     }
+
+                    //                    private void askForValue() {
+                    //                        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
+                    //                        dialog.setWidth(330);
+                    //                        SC.askforValue(lang.renumber(),
+                    //                                       lang.enterNumberForRenumber(),
+                    //                                       "1",
+                    //                                       new ValueCallback() {
+                    //
+                    //                                           @Override
+                    //                                           public void execute(String value) {
+                    //                                               if (value == null) {
+                    //                                                   return;
+                    //                                               }
+                    //                                               try {
+                    //                                                   int n = Integer.parseInt(value);
+                    //                                                   addUndoRedo(tileGrid.getData(), true, false);
+                    //                                                   Record[] data = tileGrid.getData();
+                    //                                                   int i = 0;
+                    //                                                   if (data != null && data.length > 0) {
+                    //                                                       for (Record rec : data) {
+                    //                                                           rec.setAttribute(Constants.ATTR_NAME, n + i++);
+                    //                                                       }
+                    //                                                   }
+                    //                                                   updateTileGrid();
+                    //                                               } catch (NumberFormatException nfe) {
+                    //                                                   SC.say(lang.notANumber());
+                    //                                               }
+                    //                                           }
+                    //                                       },
+                    //                                       dialog);
+                    //                    }
                 });
             }
         });
