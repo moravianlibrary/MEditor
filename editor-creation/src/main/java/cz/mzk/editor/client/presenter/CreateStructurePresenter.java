@@ -1327,10 +1327,12 @@ public class CreateStructurePresenter
     public void createObjects(final DublinCore dc, final ModsTypeClient mods, final boolean visible) {
 
         DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
-        String errorMessage = ClientUtils.checkDC(newDc, lang);
-        if (!"".equals(errorMessage)) {
-            SC.warn(errorMessage);
-            return;
+        if (newDc != null) {
+            String errorMessage = ClientUtils.checkDC(newDc, lang);
+            if (!"".equals(errorMessage)) {
+                SC.warn(errorMessage);
+                return;
+            }
         }
 
         Image progress = new Image("images/ingesting.gif");
@@ -1364,7 +1366,7 @@ public class CreateStructurePresenter
         if (object != null) {
             object.setSysno(sysno);
             object.setBase(base);
-            object.setSignature(bundle.getMarc().getSignature());
+            object.setSignature(bundle != null ? bundle.getMarc().getSignature() : null);
             dispatcher.execute(new InsertNewDigitalObjectAction(object, "/" + model + "/" + inputPath),
                                new DispatchCallback<InsertNewDigitalObjectResult>() {
 
