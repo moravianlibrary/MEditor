@@ -62,6 +62,7 @@ import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
@@ -188,6 +189,7 @@ public class CreateStructurePresenter
         void setUndoRedoButtonsDisabled(boolean disabled);
 
         boolean isChosenSelectedPagesTab();
+
     }
 
     /**
@@ -236,6 +238,8 @@ public class CreateStructurePresenter
     private EditorDateItem baseDate;
 
     private Record[] pages;
+
+    private CheckboxItem afterDivisionRenumber;
 
     /**
      * Instantiates a new create presenter.
@@ -850,12 +854,39 @@ public class CreateStructurePresenter
                         event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                                        Boolean.TRUE.toString());
                         markedRecords.add(event.getRecord());
+
+                        if (afterDivisionRenumber.getValueAsBoolean()) {
+                            Record[] selection = getView().getTileGrid().getSelection();
+                            List<Record> allList = Arrays.asList(getView().getTileGrid().getData());
+                            List<Record> subList =
+                                    allList.subList(getView().getTileGrid().getRecordIndex(event.getRecord()),
+                                                    allList.size());
+
+                            int i = 0;
+                            if (subList != null && subList.size() > 0) {
+                                for (Record rec : subList) {
+                                    String recIsMarked =
+                                            rec.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
+                                    if (recIsMarked != null && !"".equals(recIsMarked)
+                                            && Boolean.TRUE.toString().equals(recIsMarked)) {
+                                        i = 1;
+                                    }
+                                    rec.setAttribute(Constants.ATTR_NAME, i++);
+                                }
+                            }
+                            Record[] toUpdate = new Record[subList.size()];
+                            getView().updateRecordsInTileGrid(subList.toArray(toUpdate), false);
+                            getView().getTileGrid().deselectAllRecords();
+                            getView().getTileGrid().selectRecords(selection);
+                        }
+
                     } else {
                         markedRecords.remove(event.getRecord());
                         event.getRecord().setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                                        Boolean.FALSE.toString());
                     }
                     getView().getTileGrid().deselectRecord(event.getRecord());
+
                 }
                 Record[] selection = getView().getTileGrid().getSelection();
                 if (selection != null && selection.length > 0) {
@@ -890,8 +921,11 @@ public class CreateStructurePresenter
 
             baseDate = new EditorDateItem("baseDate", lang.baseDate(), lang);
 
+            afterDivisionRenumber = new CheckboxItem("afterDivisionRenumber", lang.afterDivRen());
+            afterDivisionRenumber.setValue(true);
+
             DynamicForm baseDateDynForm = new DynamicForm();
-            baseDateDynForm.setItems(baseDate);
+            baseDateDynForm.setItems(baseDate, afterDivisionRenumber);
 
             HLayout buttonItem = new HLayout(2);
             buttonItem.addMember(createDynForm);
@@ -1500,4 +1534,5 @@ public class CreateStructurePresenter
     public List<Record> getMarkedRecords() {
         return markedRecords;
     }
+
 }

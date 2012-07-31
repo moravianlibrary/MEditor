@@ -46,10 +46,6 @@ import cz.mzk.editor.client.util.Constants;
 public abstract class RenumberWindow
         extends UniversalWindow {
 
-    //    public static void instanceOfRenumberAll(LangConstants lang, EventBus eventBus, boolean isDivided) {
-    //        new RenumberWindow(lang.renumberAll(), eventBus, lang, isDivided);
-    //    }
-
     private CheckboxItem respectPerItems;
 
     private final boolean isRomanRenumber;
@@ -96,6 +92,7 @@ public abstract class RenumberWindow
                     new CheckboxItem("respectPerItems",
                                      "Would you like to respect the division on the periodical items?");
             formRes.setItems(respectPerItems);
+            respectPerItems.setValue(true);
             setHeight(170);
             formRes.setExtraSpace(10);
 
