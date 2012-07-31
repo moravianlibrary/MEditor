@@ -134,7 +134,10 @@ public class FedoraDigitalObjectHandlerImpl
         } catch (IOException e) {
             LOGGER.error("Unable to get DC metadata for " + uuid + "[" + e.getMessage() + "]", e);
         }
-        return handleDc(uuid, dcDocument.getDocumentElement(), onlyTitleAndUuid);
+        if (dcDocument != null) {
+            return handleDc(uuid, dcDocument.getDocumentElement(), onlyTitleAndUuid);
+        }
+        return null;
     }
 
     /**
