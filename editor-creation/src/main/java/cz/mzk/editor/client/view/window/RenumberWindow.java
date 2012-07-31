@@ -25,9 +25,9 @@
 package cz.mzk.editor.client.view.window;
 
 import com.google.gwt.event.shared.EventBus;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -36,6 +36,8 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.Constants;
 
 /**
  * @author Matous Jobanek
@@ -50,6 +52,8 @@ public abstract class RenumberWindow
 
     private CheckboxItem respectPerItems;
 
+    private final boolean isRomanRenumber;
+
     /**
      * @param height
      * @param width
@@ -57,18 +61,33 @@ public abstract class RenumberWindow
      * @param eventBus
      * @param milisToWait
      */
-    public RenumberWindow(String title, EventBus eventBus, LangConstants lang, boolean isDivided) {
-        super(150, 350, title, eventBus, 100);
+    public RenumberWindow(int firstNumber,
+                          String title,
+                          EventBus eventBus,
+                          LangConstants lang,
+                          boolean isDivided,
+                          boolean isRomanRenumber) {
 
-        setEdgeOffset(15);
+        super(140, 380, title, eventBus, 100);
+
+        this.isRomanRenumber = isRomanRenumber;
 
         DynamicForm formFirstNum = new DynamicForm();
+        formFirstNum.setLayoutAlign(Alignment.CENTER);
+        formFirstNum.setWidth(340);
+        formFirstNum.setHeight(40);
+
         DynamicForm formRes = new DynamicForm();
-        final TextItem firstNumberItem = new TextItem("firstNumberItem");
+        formRes.setLayoutAlign(Alignment.CENTER);
+        formRes.setWidth(300);
 
-        addItem(new HTMLFlow(lang.enterNumberForRenumber() + ":"));
+        final TextItem firstNumberItem =
+                new TextItem("firstNumberItem", isRomanRenumber ? lang.enterLatinNumberForRenumber()
+                        : lang.enterNumberForRenumber());
+        firstNumberItem.setValue((firstNumber < 0) ? 1 : firstNumber);
+        firstNumberItem.setWidth(60);
+        firstNumberItem.setWrapTitle(false);
 
-        firstNumberItem.setShowTitle(false);
         formFirstNum.setItems(firstNumberItem);
 
         respectPerItems = null;
@@ -77,14 +96,14 @@ public abstract class RenumberWindow
                     new CheckboxItem("respectPerItems",
                                      "Would you like to respect the division on the periodical items?");
             formRes.setItems(respectPerItems);
-            setHeight(200);
+            setHeight(170);
             formRes.setExtraSpace(10);
 
             addItem(formFirstNum);
             addItem(formRes);
 
         } else {
-            formFirstNum.setExtraSpace(10);
+            formFirstNum.setExtraSpace(15);
             addItem(formFirstNum);
         }
 
@@ -107,8 +126,13 @@ public abstract class RenumberWindow
 
             @Override
             public void onClick(ClickEvent event) {
+                final ModalWindow mw = new ModalWindow(RenumberWindow.this);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
                 doRenumber(respectPerItems == null ? false : respectPerItems.getValueAsBoolean(),
                            firstNumberItem.getValueAsString());
+                mw.hide();
+                hide();
             }
 
         });
@@ -123,4 +147,26 @@ public abstract class RenumberWindow
     }
 
     protected abstract void doRenumber(boolean respectPerItems, String firstNumber);
+
+    protected void renumber(Record[] data, int firstNum, boolean respectPerItems, boolean toRomanOld) {
+        int i = 0;
+        if (data != null && data.length > 0) {
+            for (Record rec : data) {
+                if (respectPerItems) {
+                    String isMarked = rec.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
+                    if (isMarked != null && !"".equals(isMarked) && Boolean.TRUE.toString().equals(isMarked)) {
+                        i = 0;
+                        firstNum = 1;
+                    }
+                }
+                if (!isRomanRenumber) {
+                    rec.setAttribute(Constants.ATTR_NAME, firstNum + i++);
+                } else {
+                    rec.setAttribute(Constants.ATTR_NAME,
+                                     ClientUtils.decimalToRoman(firstNum + i++, toRomanOld));
+                }
+            }
+        }
+    }
+
 }

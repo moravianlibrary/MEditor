@@ -113,7 +113,6 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
-import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.other.DCTab;
@@ -953,61 +952,22 @@ public class CreateStructureView
                     }
 
                     private void askForValue() {
-                        new RenumberWindow(lang.renumber(), eventBus, lang, !getUiHandlers()
-                                .getMarkedRecords().isEmpty()) {
+                        new RenumberWindow(1, lang.renumber(), eventBus, lang, !getUiHandlers()
+                                .getMarkedRecords().isEmpty(), false) {
 
                             @Override
                             protected void doRenumber(boolean respectPerItems, String firstNumber) {
                                 try {
                                     int n = Integer.parseInt(firstNumber);
                                     addUndoRedo(tileGrid.getData(), true, false);
-                                    Record[] data = tileGrid.getData();
-                                    int i = 0;
-                                    if (data != null && data.length > 0) {
-                                        for (Record rec : data) {
-                                            rec.setAttribute(Constants.ATTR_NAME, n + i++);
-                                        }
-                                    }
+                                    renumber(tileGrid.getData(), n, respectPerItems, false);
                                     updateTileGrid();
                                 } catch (NumberFormatException nfe) {
                                     SC.say(lang.notANumber());
                                 }
                             }
                         };
-
                     }
-
-                    //                    private void askForValue() {
-                    //                        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
-                    //                        dialog.setWidth(330);
-                    //                        SC.askforValue(lang.renumber(),
-                    //                                       lang.enterNumberForRenumber(),
-                    //                                       "1",
-                    //                                       new ValueCallback() {
-                    //
-                    //                                           @Override
-                    //                                           public void execute(String value) {
-                    //                                               if (value == null) {
-                    //                                                   return;
-                    //                                               }
-                    //                                               try {
-                    //                                                   int n = Integer.parseInt(value);
-                    //                                                   addUndoRedo(tileGrid.getData(), true, false);
-                    //                                                   Record[] data = tileGrid.getData();
-                    //                                                   int i = 0;
-                    //                                                   if (data != null && data.length > 0) {
-                    //                                                       for (Record rec : data) {
-                    //                                                           rec.setAttribute(Constants.ATTR_NAME, n + i++);
-                    //                                                       }
-                    //                                                   }
-                    //                                                   updateTileGrid();
-                    //                                               } catch (NumberFormatException nfe) {
-                    //                                                   SC.say(lang.notANumber());
-                    //                                               }
-                    //                                           }
-                    //                                       },
-                    //                                       dialog);
-                    //                    }
                 });
             }
         });
@@ -1016,30 +976,21 @@ public class CreateStructureView
             @Override
             public void onClick(MenuItemClickEvent event) {
 
-                SC.askforValue(lang.renumber(), lang.enterNumberForRenumber(), new ValueCallback() {
+                new RenumberWindow(getPageNumber(), lang.renumber(), eventBus, lang, isDivided(), false) {
 
                     @Override
-                    public void execute(String value) {
-                        if (value == null) {
-                            return;
-                        }
+                    protected void doRenumber(boolean respectPerItems, String firstNumber) {
+
                         try {
-                            int n = Integer.parseInt(value);
+                            int n = Integer.parseInt(firstNumber);
                             addUndoRedo(tileGrid.getData(), true, false);
-                            Record[] data = tileGrid.getSelection();
-                            if (data != null && data.length > 0) {
-                                for (int i = 0; i < data.length; i++) {
-                                    Record rec = data[i];
-                                    rec.setAttribute(Constants.ATTR_NAME, n + i);
-                                }
-                            }
+                            renumber(tileGrid.getSelection(), n, respectPerItems, false);
                             updateRecordsInTileGrid(tileGrid.getSelection(), true);
                         } catch (NumberFormatException nfe) {
                             SC.say(lang.notANumber());
                         }
                     }
-                });
-
+                };
             }
         });
 
@@ -1047,7 +998,22 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                romanRenumber(false);
+
+                new RenumberWindow(getPageNumber(), lang.convertToRoman(), eventBus, lang, isDivided(), true) {
+
+                    @Override
+                    protected void doRenumber(boolean respectPerItems, String firstNumber) {
+
+                        try {
+                            int n = Integer.parseInt(firstNumber);
+                            addUndoRedo(tileGrid.getData(), true, false);
+                            renumber(tileGrid.getSelection(), n, respectPerItems, false);
+                            updateRecordsInTileGrid(tileGrid.getSelection(), true);
+                        } catch (NumberFormatException nfe) {
+                            SC.say(lang.notANumber());
+                        }
+                    }
+                };
             }
         });
 
@@ -1055,7 +1021,26 @@ public class CreateStructureView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                romanRenumber(true);
+                new RenumberWindow(getPageNumber(),
+                                   lang.convertToRomanOld(),
+                                   eventBus,
+                                   lang,
+                                   isDivided(),
+                                   true) {
+
+                    @Override
+                    protected void doRenumber(boolean respectPerItems, String firstNumber) {
+
+                        try {
+                            int n = Integer.parseInt(firstNumber);
+                            addUndoRedo(tileGrid.getData(), true, false);
+                            renumber(tileGrid.getSelection(), n, respectPerItems, true);
+                            updateRecordsInTileGrid(tileGrid.getSelection(), true);
+                        } catch (NumberFormatException nfe) {
+                            SC.say(lang.notANumber());
+                        }
+                    }
+                };
             }
         });
 
@@ -1179,37 +1164,27 @@ public class CreateStructureView
         return menuButton;
     }
 
-    private void romanRenumber(final boolean toRomanOld) {
-        Dialog dialog = new com.smartgwt.client.widgets.Dialog();
-        dialog.setWidth(330);
-        SC.askforValue(toRomanOld ? lang.convertToRomanOld() : lang.convertToRoman(),
-                       lang.enterLatinNumberForRenumber(),
-                       String.valueOf(tileGrid.getDataAsRecordList().indexOf(tileGrid.getSelection()[0]) + 1),
-                       new ValueCallback() {
+    private int getPageNumber() {
+        if (tileGrid.getSelectedRecord() != null) {
+            int pageNumberFromText =
+                    numbering.getPageNumberFromText(tileGrid.getSelectedRecord()
+                            .getAttributeAsString(Constants.ATTR_NAME));
+            return pageNumberFromText > 0 ? pageNumberFromText : tileGrid.getDataAsRecordList()
+                    .indexOf(tileGrid.getSelectedRecord()) + 1;
+        } else {
+            return Integer.MIN_VALUE;
+        }
+    }
 
-                           @Override
-                           public void execute(String value) {
-                               if (value == null) {
-                                   return;
-                               }
-                               try {
-                                   int n = Integer.parseInt(value);
-                                   addUndoRedo(tileGrid.getData(), true, false);
-                                   Record[] data = tileGrid.getSelection();
-                                   int i = 0;
-                                   if (data != null && data.length > 0) {
-                                       for (Record rec : data) {
-                                           rec.setAttribute(Constants.ATTR_NAME,
-                                                            ClientUtils.decimalToRoman(n + i++, toRomanOld));
-                                       }
-                                   }
-                                   updateRecordsInTileGrid(tileGrid.getSelection(), true);
-                               } catch (NumberFormatException nfe) {
-                                   SC.say(lang.notANumber());
-                               }
-                           }
-                       },
-                       dialog);
+    private boolean isDivided() {
+        if (!getUiHandlers().getMarkedRecords().isEmpty()) {
+            for (Record markedRec : getUiHandlers().getMarkedRecords()) {
+                if (Arrays.asList(tileGrid.getSelection()).contains(markedRec)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

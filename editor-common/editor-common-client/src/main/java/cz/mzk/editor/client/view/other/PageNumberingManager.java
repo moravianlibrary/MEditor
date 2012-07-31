@@ -358,7 +358,7 @@ public final class PageNumberingManager {
         }
     }
 
-    private int getPageNumberFromText(String text) {
+    public int getPageNumberFromText(String text) {
         if (text != null && !"".equals(text)) {
             try {
                 if (text.charAt(0) == '[') {
