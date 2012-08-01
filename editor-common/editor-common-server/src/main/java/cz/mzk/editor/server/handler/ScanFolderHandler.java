@@ -29,6 +29,11 @@ package cz.mzk.editor.server.handler;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,10 +157,11 @@ public class ScanFolderHandler
                 String newIdentifier = null;
                 String resolvedIdentifier = resolvedIdentifiers.get(i);
                 if (resolvedIdentifier == null) {
+                    //                    StringBuffer sb = new StringBuffer();
+                    //                    sb.append(model).append('#').append(code).append('#').append(i);
+                    //                    newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
+                    newIdentifier = UUID.nameUUIDFromBytes(createMD5(imgFileNames.get(i))).toString();
                     StringBuffer sb = new StringBuffer();
-                    sb.append(model).append('#').append(code).append('#').append(i);
-                    newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
-                    sb = new StringBuffer();
                     sb.append(configuration.getImagesPath()).append(newIdentifier)
                             .append(Constants.JPEG_2000_EXTENSION);
                     resolvedIdentifier = sb.toString();
@@ -196,6 +202,32 @@ public class ScanFolderHandler
                                         toAdd,
                                         new ServerActionResult(Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME,
                                                                sb.toString()));
+        }
+    }
+
+    private byte[] createMD5(String path) throws ActionException {
+
+        long fileLength = new File(path).length();
+        if (fileLength > Integer.MAX_VALUE) {
+            throw new ActionException(path + " file is too large");
+        }
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            FileInputStream fis = new FileInputStream(path);
+            byte[] dataBytes = new byte[(int) fileLength];
+            int numRead = 0;
+
+            while ((numRead = fis.read(dataBytes)) != -1) {
+                md.update(dataBytes, 0, numRead);
+            }
+            return md.digest();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new ActionException(e);
         }
     }
 
