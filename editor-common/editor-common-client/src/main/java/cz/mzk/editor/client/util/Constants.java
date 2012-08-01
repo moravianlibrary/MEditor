@@ -882,7 +882,10 @@ public class Constants {
         DATE_RRRR("\\d{1,4}"),
 
         /** */
-        DATE_RRRR_RRRR(DATE_RRRR.getRegex() + "-" + DATE_RRRR.getRegex()),
+        DATE_RRRR_DASH(DATE_RRRR.getRegex() + "-"),
+
+        /** */
+        DATE_RRRR_RRRR(DATE_RRRR_DASH.getRegex() + DATE_RRRR.getRegex()),
 
         /** */
         DATE_RRRR_RRRR_RRRR_RRRR(DATE_RRRR_RRRR.getRegex() + "," + DATE_RRRR_RRRR.getRegex()),
