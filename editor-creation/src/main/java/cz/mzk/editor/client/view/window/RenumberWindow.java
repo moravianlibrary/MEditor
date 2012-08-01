@@ -71,7 +71,7 @@ public abstract class RenumberWindow
         DynamicForm formFirstNum = new DynamicForm();
         formFirstNum.setLayoutAlign(Alignment.CENTER);
         formFirstNum.setWidth(340);
-        formFirstNum.setHeight(40);
+        formFirstNum.setMargin(15);
 
         DynamicForm formRes = new DynamicForm();
         formRes.setLayoutAlign(Alignment.CENTER);
@@ -91,14 +91,14 @@ public abstract class RenumberWindow
             respectPerItems = new CheckboxItem("respectPerItems", lang.respectDiv());
             formRes.setItems(respectPerItems);
             respectPerItems.setValue(true);
-            setHeight(170);
-            formRes.setExtraSpace(10);
+            setHeight(180);
+            formRes.setExtraSpace(20);
 
             addItem(formFirstNum);
             addItem(formRes);
 
         } else {
-            formFirstNum.setExtraSpace(15);
+            formFirstNum.setExtraSpace(5);
             addItem(formFirstNum);
         }
 
