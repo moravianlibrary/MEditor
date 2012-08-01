@@ -47,3 +47,4 @@ public interface MyUiHandlers
     CreateObjectMenuPresenter getCreatePresenter();
 
 }
+
