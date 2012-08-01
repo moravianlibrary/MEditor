@@ -116,6 +116,8 @@ public abstract class ModsWindow
 
     private ObjectBasicInfoLayout objectBasicInfoLayout;
 
+    private DigitalObjectModel model;
+
     /** The List of FormItem designated for Author1 */
     @SuppressWarnings("serial")
     private final List<FormItem> authorPartsOfName1 = new ArrayList<FormItem>() {
@@ -231,6 +233,7 @@ public abstract class ModsWindow
         super(450, 900, lang.quickEdit() + ": " + uuid, eventBus, 100);
         this.lang = lang;
         this.modsCollection = modsCollection;
+        this.model = model;
         if (modsCollection != null) {
             modsTypeClient = modsCollection.getMods().get(0);
         } else {
@@ -245,7 +248,7 @@ public abstract class ModsWindow
         itemsLayout.setMargin(20);
         itemsLayout.setMembersMargin(20);
 
-        ListGridRecord listGridRecord = getListGridRecord(model, label);
+        ListGridRecord listGridRecord = getListGridRecord(label);
 
         objectBasicInfoLayout = new ObjectBasicInfoLayout(listGridRecord, lang, eventBus, true, 14) {
 
@@ -274,10 +277,9 @@ public abstract class ModsWindow
 
     /**
      * @param label
-     * @param string
      * @return
      */
-    private ListGridRecord getListGridRecord(DigitalObjectModel model, String label) {
+    private ListGridRecord getListGridRecord(String label) {
 
         ListGridRecord listGridRecord = new ListGridRecord();
         listGridRecord.setAttribute(Constants.ATTR_MODEL_ID, model.toString());
@@ -287,11 +289,11 @@ public abstract class ModsWindow
                 setPeriodicalVolumeRecord(listGridRecord);
                 break;
             case PERIODICALITEM:
-                setPeriodicalItemRecord(listGridRecord, model);
+                setPeriodicalItemRecord(listGridRecord);
                 break;
 
             case INTERNALPART:
-                setInternalPartRecord(listGridRecord, model);
+                setInternalPartRecord(listGridRecord);
                 break;
 
             case MONOGRAPHUNIT:
@@ -299,7 +301,7 @@ public abstract class ModsWindow
                 break;
 
             case PAGE:
-                setPageRecord(listGridRecord, label, model);
+                setPageRecord(listGridRecord, label);
                 break;
 
             default:
@@ -312,9 +314,8 @@ public abstract class ModsWindow
     /**
      * @param listGridRecord
      * @param label
-     * @param model
      */
-    private void setPageRecord(ListGridRecord listGridRecord, String label, DigitalObjectModel model) {
+    private void setPageRecord(ListGridRecord listGridRecord, String label) {
         listGridRecord.setAttribute(Constants.ATTR_NAME, label);
         listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType(model));
     }
@@ -332,9 +333,8 @@ public abstract class ModsWindow
 
     /**
      * @param listGridRecord
-     * @param model
      */
-    private void setInternalPartRecord(ListGridRecord listGridRecord, DigitalObjectModel model) {
+    private void setInternalPartRecord(ListGridRecord listGridRecord) {
         listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getTitle());
         listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType(model));
         listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getPartName());
@@ -345,9 +345,8 @@ public abstract class ModsWindow
 
     /**
      * @param listGridRecord
-     * @param model
      */
-    private void setPeriodicalItemRecord(ListGridRecord listGridRecord, DigitalObjectModel model) {
+    private void setPeriodicalItemRecord(ListGridRecord listGridRecord) {
         listGridRecord.setAttribute(Constants.ATTR_NAME, modsClientManager.getPartName());
         listGridRecord.setAttribute(Constants.ATTR_TYPE, modsClientManager.getType(model));
         listGridRecord.setAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME, modsClientManager.getDateIssued());
@@ -702,7 +701,9 @@ public abstract class ModsWindow
     }
 
     public String verify() {
-        return objectBasicInfoLayout.getManagerLayout().verify();
+        String message = objectBasicInfoLayout.getManagerLayout().verify();
+        if (dateItem != null && (message == null || "".equals(message))) return dateItem.verify(lang, model);
+        return message;
     }
 
     public String getLabel() {

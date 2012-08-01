@@ -248,7 +248,6 @@ public class ModifyView
         this.lang = lang;
         this.eventBus = eventBus;
         layout = new VLayout();
-        // layout.addMember(new Label("working"));
         layout.setOverflow(Overflow.AUTO);
         layout.setLeaveScrollbarGap(true);
         imagePopup = new PopupPanel(true);
