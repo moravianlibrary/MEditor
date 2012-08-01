@@ -88,9 +88,7 @@ public abstract class RenumberWindow
 
         respectPerItems = null;
         if (isDivided) {
-            respectPerItems =
-                    new CheckboxItem("respectPerItems",
-                                     "Would you like to respect the division on the periodical items?");
+            respectPerItems = new CheckboxItem("respectPerItems", lang.respectDiv());
             formRes.setItems(respectPerItems);
             respectPerItems.setValue(true);
             setHeight(170);
