@@ -31,7 +31,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtplatform.mvp.client.UiHandlers;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ContentsType;
@@ -50,9 +49,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.MEditor;
 import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.AppPresenter.MyView;
-import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
-import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
-import cz.mzk.editor.client.view.AppView.MyUiHandlers;
+import cz.mzk.editor.client.uihandlers.MyUiHandlers;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -61,23 +58,6 @@ import cz.mzk.editor.client.view.AppView.MyUiHandlers;
 public class AppView
         extends ViewWithUiHandlers<MyUiHandlers>
         implements MyView {
-
-    /**
-     * The Interface MyUiHandlers.
-     */
-    public interface MyUiHandlers
-            extends UiHandlers {
-
-        /**
-         * Logout.
-         */
-        void logout();
-
-        DigitalObjectMenuPresenter getDoPresenter();
-
-        CreateObjectMenuPresenter getCreatePresenter();
-
-    }
 
     /** The left container. */
     private final Layout leftContainer;
