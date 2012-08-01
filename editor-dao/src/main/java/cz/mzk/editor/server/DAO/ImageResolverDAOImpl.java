@@ -208,7 +208,8 @@ public class ImageResolverDAOImpl
         }
         // no need for closing the connection
         try {
-            if (id != -1 && new File(ret).exists()) {
+            File img = new File(ret);
+            if (id != -1 && img.exists() && img.length() > 0) {
                 updateSt.setInt(1, id);
                 updateSt.executeUpdate();
             } else {
