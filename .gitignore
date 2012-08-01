@@ -7,4 +7,7 @@ target
 .project
 *.launch
 
+.idea
+*iml
+
 META-INF
