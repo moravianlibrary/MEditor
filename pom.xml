@@ -494,6 +494,11 @@ Usage:
 					<artifactId>maven-replacer-plugin</artifactId>
 					<version>1.4.1</version>
 				</plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <version>${gwt.version}</version>
+                </plugin>
 			</plugins>
 		</pluginManagement>
 
