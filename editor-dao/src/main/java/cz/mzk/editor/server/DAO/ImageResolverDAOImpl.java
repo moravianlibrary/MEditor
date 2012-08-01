@@ -208,19 +208,19 @@ public class ImageResolverDAOImpl
         }
         // no need for closing the connection
         try {
-            File img = new File(ret);
-            if (id != -1 && img.exists() && img.length() > 0) {
-                updateSt.setInt(1, id);
-                updateSt.executeUpdate();
-            } else {
-                return null;
+            if (ret != null) {
+                File img = new File(ret);
+                if (id != -1 && img.exists() && img.length() > 0) {
+                    updateSt.setInt(1, id);
+                    updateSt.executeUpdate();
+                    return ret;
+                }
             }
         } catch (SQLException e) {
             LOGGER.error(e);
         }
         // no need for closing the connection
-
-        return ret;
+        return null;
     }
 
     /**
