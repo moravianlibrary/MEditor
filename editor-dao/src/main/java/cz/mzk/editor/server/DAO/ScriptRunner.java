@@ -255,4 +255,23 @@ public class ScriptRunner {
             logger.error(o);
         }
     }
+
+    public static Process runRemoteCommandViaSsh(String dirPathToScript,
+                                                 String userName,
+                                                 String machineLocation,
+                                                 String command,
+                                                 String outputFile) throws IOException {
+
+        if (dirPathToScript == null || "".equals(dirPathToScript) || userName == null || "".equals(userName)
+                || machineLocation == null || "".equals(machineLocation) || command == null
+                || "".equals(command)) {
+            throw new RuntimeException("The remote command cannot be run, because of a wrong input argument");
+        }
+
+        String toRun =
+                dirPathToScript + " " + userName + " " + machineLocation + " " + command
+                        + (outputFile == null || "".equals(outputFile) ? "" : (" " + outputFile));
+
+        return Runtime.getRuntime().exec(toRun);
+    }
 }
