@@ -28,6 +28,7 @@ package cz.mzk.editor.server.DAO;
  *  limitations under the License.
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -42,6 +43,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+
+import cz.mzk.editor.client.util.Constants;
 
 /**
  * Tool to run database scripts
@@ -269,7 +272,8 @@ public class ScriptRunner {
         }
 
         String toRun =
-                dirPathToScript + " " + userName + " " + machineLocation + " " + command
+                dirPathToScript + File.separator + Constants.SCRIPT_FOR_REMOTE_PROCESS + " " + userName + " "
+                        + machineLocation + " " + command
                         + (outputFile == null || "".equals(outputFile) ? "" : (" " + outputFile));
 
         return Runtime.getRuntime().exec(toRun);
