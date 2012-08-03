@@ -134,6 +134,7 @@ public class HomeView
 
         uuidField = new TextItem();
         uuidField.setTitle("PID");
+        uuidField.setWidth(255);
         uuidField.setHint(HtmlCode.nobr(lang.withoutPrefix()));
         uuidField.setValidators(regExpValidator);
 
@@ -188,8 +189,8 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#
-     * refreshFedora (boolean, java.lang.String)
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView# refreshFedora
+     * (boolean, java.lang.String)
      */
     @Override
     public void refreshFedora(boolean fedoraRunning, String url) {
@@ -212,8 +213,7 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#setURLs
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#setURLs
      * (java.lang.String, java.lang.String)
      */
     @Override
@@ -261,9 +261,7 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#setLoading
-     * ()
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#setLoading ()
      */
     @Override
     public void setLoading() {
@@ -274,9 +272,7 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#getOpen
-     * ()
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#getOpen ()
      */
     @Override
     public IButton getOpen() {
@@ -285,9 +281,7 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#getForm
-     * ()
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#getForm ()
      */
     @Override
     public DynamicForm getForm() {
@@ -296,9 +290,7 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#getUuid
-     * ()
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#getUuid ()
      */
     @Override
     public TextItem getUuid() {
@@ -307,9 +299,7 @@ public class HomeView
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#getUuidItem
-     * ()
+     * @see cz.mzk.editor.client.presenter.HomePresenter.MyView#getUuidItem ()
      */
     @Override
     public HasChangedHandlers getUuidItem() {
