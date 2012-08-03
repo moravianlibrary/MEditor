@@ -65,7 +65,7 @@ public abstract class UuidWindow
         uuidField.setTitle("PID");
         uuidField.setHint(HtmlCode.nobr(lang.withoutPrefix()));
         uuidField.setValidators(regExpValidator);
-        uuidField.setWidth(250);
+        uuidField.setWidth(255);
         uuidField.addKeyPressHandler(new com.smartgwt.client.widgets.form.fields.events.KeyPressHandler() {
 
             @Override
