@@ -33,6 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.util.Date;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
@@ -49,7 +51,9 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.ScriptRunner;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
@@ -72,7 +76,6 @@ public class CheckAndUpdateDBSchemaHandler
     private DBSchemaDAO dbSchemaDao;
 
     /** The configuration. */
-    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The http session provider. */
@@ -126,6 +129,48 @@ public class CheckAndUpdateDBSchemaHandler
 
                 if (!upToDate) {
                     try {
+                        Process p;
+                        String command = "pg_dump -c --inserts " + configuration.getDBName();
+                        String outFile = File.separator + new Date().toString().replaceAll("[ ,:]", "_");
+                        String dirPath =
+                                EditorConfigurationImpl.WORKING_DIR + File.separator
+                                        + Constants.DB_BACKUP_DIR;
+
+                        if (!new File(dirPath).exists()) {
+                            new File(dirPath).mkdirs();
+                        }
+                        try {
+                            if (configuration.isLocalhost()) {
+                                p =
+                                        ScriptRunner.runRemoteCommandViaSsh(dirPath + File.separator + "bin",
+                                                                            configuration.getDBName(),
+                                                                            configuration.getDBHost(),
+                                                                            command,
+                                                                            dirPath + outFile);
+                            } else {
+                                p = Runtime.getRuntime().exec(command + " > " + outFile);
+                            }
+
+                            int pNum;
+                            if ((pNum = p.waitFor()) == 0) {
+                                LOGGER.debug("The DB has been backed up to the file: " + dirPath + outFile);
+                            } else {
+                                LOGGER.error("ERROR " + pNum + " : during the backup to the file: " + dirPath
+                                        + outFile + " the proces returned " + pNum);
+                                throw new ActionException("Unable backup the current DB schema");
+                            }
+
+                        } catch (IOException e) {
+                            LOGGER.error(e.getMessage());
+                            e.printStackTrace();
+                            throw new ActionException("Unable backup the current DB schema", e);
+
+                        } catch (InterruptedException e) {
+                            LOGGER.error(e.getMessage());
+                            e.printStackTrace();
+                            throw new ActionException("Unable backup the current DB schema", e);
+                        }
+
                         dbSchemaDao.updateSchema(version, pathPrefix);
                         success = true;
                     } catch (DatabaseException e) {

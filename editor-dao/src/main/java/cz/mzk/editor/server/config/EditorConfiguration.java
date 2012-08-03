@@ -264,10 +264,10 @@ public abstract class EditorConfiguration {
 
         /** The Constant IMAGES_LOCATION. */
         public static final String IMAGES_LOCATION = "imagesDir";
-        
+
         /** The Constant DEFAULT_IMAGES_LOCATION. */
-        public static final String DEFAULT_IMAGES_LOCATION = System.getProperty("user.home")
-                + File.separator + "output" + File.separator;
+        public static final String DEFAULT_IMAGES_LOCATION = System.getProperty("user.home") + File.separator
+                + "output" + File.separator;
     }
 
     /**

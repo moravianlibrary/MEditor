@@ -57,10 +57,8 @@ public class MEditor
     @Override
     public void onModuleLoad() {
         DelayedBindRegistry.bind(injector);
-        initializeDatabaseIfNeeded(injector.getDispatcher());
         injector.getPlaceManager().revealCurrentPlace();
-        // remove progressbar
-        RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
+        initializeDatabaseIfNeeded(injector.getDispatcher());
     }
 
     /**
@@ -94,11 +92,17 @@ public class MEditor
                                        SC.say("DB has been successfully updated to version "
                                                + result.getVersion());
                                    }
+                                   // remove progressbar
+                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
+                                           .getElement());
                                }
 
                                @Override
                                public void onFailure(Throwable caught) {
                                    SC.warn(caught.getMessage());
+                                   // remove progressbar
+                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
+                                           .getElement());
                                }
                            });
     }
