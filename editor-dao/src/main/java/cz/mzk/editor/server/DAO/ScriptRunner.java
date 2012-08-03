@@ -271,10 +271,10 @@ public class ScriptRunner {
             throw new RuntimeException("The remote command cannot be run, because of a wrong input argument");
         }
 
-        String toRun =
-                dirPathToScript + File.separator + Constants.SCRIPT_FOR_REMOTE_PROCESS + " " + userName + " "
-                        + machineLocation + " " + command
-                        + (outputFile == null || "".equals(outputFile) ? "" : (" " + outputFile));
+        String[] toRun =
+                new String[] {dirPathToScript + File.separator + Constants.SCRIPT_FOR_REMOTE_PROCESS,
+                        userName, machineLocation, command,
+                        (outputFile == null || "".equals(outputFile) ? "" : outputFile)};
 
         return Runtime.getRuntime().exec(toRun);
     }

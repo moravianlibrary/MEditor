@@ -117,6 +117,12 @@ public class Constants {
     /** Path to a file with current DB schema */
     public static final String SCHEMA_PATH = "schema.sql";
 
+    /** Path to directory of backed up schemas */
+    public static final String DB_BACKUP_DIR = "backupDB";
+
+    /** A name of the script for running a process via ssh on a remote machine */
+    public static final String SCRIPT_FOR_REMOTE_PROCESS = "runRemoteProcess.sh";
+
     /** Path to a file with current DB schema version number */
     public static final String SCHEMA_VERSION_PATH = "schemaVersion.txt";
 
