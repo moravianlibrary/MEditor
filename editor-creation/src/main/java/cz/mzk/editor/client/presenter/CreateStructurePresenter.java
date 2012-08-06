@@ -112,6 +112,7 @@ import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.StoreTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
@@ -231,7 +232,7 @@ public class CreateStructurePresenter
 
     private List<Record> markedRecords;
 
-    private ButtonItem createAtOnceButton;
+    private ButtonItem createAtOnceButton = new ButtonItem();
 
     private TextItem firstNumber;
 
@@ -900,7 +901,7 @@ public class CreateStructurePresenter
 
     private void setSectionCreateLayout() {
 
-        if (DigitalObjectModel.parseString(model) == DigitalObjectModel.PERIODICAL) {
+        if (DigitalObjectModel.parseString(model).getTopLevelType() == TopLevelObjectModel.PERIODICAL) {
             leftPresenter.getView().getCreationModeItem().show();
 
             final VLayout atOnceCreateLayout = new VLayout(2);

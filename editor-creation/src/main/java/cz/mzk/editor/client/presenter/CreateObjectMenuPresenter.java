@@ -72,6 +72,7 @@ import cz.mzk.editor.client.view.window.AddAltoOcrWindow;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.LoadTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
@@ -361,12 +362,14 @@ public class CreateObjectMenuPresenter
     private void afterTypeChanged(String currentModel) {
         if (!"".equals(currentModel.trim())) {
             sequentialCreateLayout.getCreateButton().enable();
-            sequentialCreateLayout.setCreate(LabelAndModelConverter.getModelFromLabel().get(currentModel),
-                                             defaultDateIssued,
-                                             getRootModel() == DigitalObjectModel.PERIODICAL);
+            sequentialCreateLayout
+                    .setCreate(LabelAndModelConverter.getModelFromLabel().get(currentModel),
+                               defaultDateIssued,
+                               getRootModel().getTopLevelType() == TopLevelObjectModel.PERIODICAL);
         } else {
             sequentialCreateLayout.getCreateButton().disable();
-            sequentialCreateLayout.setCreate(null, null, getRootModel() == DigitalObjectModel.PERIODICAL);
+            sequentialCreateLayout
+                    .setCreate(null, null, getRootModel().getTopLevelType() == TopLevelObjectModel.PERIODICAL);
         }
     }
 

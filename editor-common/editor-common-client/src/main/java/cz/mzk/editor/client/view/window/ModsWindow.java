@@ -56,6 +56,7 @@ import cz.mzk.editor.client.mods.RoleTypeClient.RoleTermClient;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 public abstract class ModsWindow
@@ -400,8 +401,10 @@ public abstract class ModsWindow
 
     private DynamicForm createTitleSubtitle(DigitalObjectModel model) {
 
-        if (model != DigitalObjectModel.PERIODICAL && model != DigitalObjectModel.INTERNALPART
-                && model != DigitalObjectModel.MONOGRAPH && model != DigitalObjectModel.PAGE) {
+        if (model.getTopLevelType() != TopLevelObjectModel.PERIODICAL
+                && model != DigitalObjectModel.INTERNALPART
+                && model.getTopLevelType() != TopLevelObjectModel.MONOGRAPH
+                && model != DigitalObjectModel.PAGE) {
             titleItem.setDefaultValue(modsClientManager.getTitle());
         } else {
             titleItem = null;

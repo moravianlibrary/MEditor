@@ -65,6 +65,8 @@ public class MonographBuilder
             .createXPath("//mods:location/mods:holdingSimple/mods:copyInformation");
     private final XPath recordInfoXpath = Dom4jUtils.createXPath("//mods:recordInfo");
 
+    private final DigitalObjectModel model;
+
     /**
      * @throws FileNotFoundException
      *         final if some xsl template file cannot be found
@@ -73,6 +75,7 @@ public class MonographBuilder
      */
     public MonographBuilder(NewDigitalObject object) {
         super(object);
+        this.model = object.getModel();
     }
 
     @SuppressWarnings("unchecked")
@@ -258,7 +261,7 @@ public class MonographBuilder
      */
     @Override
     protected DigitalObjectModel getModel() {
-        return DigitalObjectModel.MONOGRAPH;
+        return model;
     }
 
     /**

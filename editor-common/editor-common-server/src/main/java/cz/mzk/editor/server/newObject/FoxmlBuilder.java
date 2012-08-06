@@ -638,10 +638,12 @@ public abstract class FoxmlBuilder {
     }
 
     protected void addRootPublisher(Element originInfoEl) {
-        String name = getBundle().getMarc().getPublisher();
-        if (isNotNullOrEmpty(name)) {
-            Element publisher = originInfoEl.addElement(new QName("publisher", Namespaces.mods));
-            publisher.addText(name);
+        if (getBundle().getMarc() != null) {
+            String name = getBundle().getMarc().getPublisher();
+            if (isNotNullOrEmpty(name)) {
+                Element publisher = originInfoEl.addElement(new QName("publisher", Namespaces.mods));
+                publisher.addText(name);
+            }
         }
     }
 
@@ -688,41 +690,48 @@ public abstract class FoxmlBuilder {
     }
 
     protected void addRootTopic(Element modsRootEl) {
-        String topic = getBundle().getMarc().getTopic();
-        if (topic != null) {
-            Element subjectEl = modsRootEl.addElement(new QName("subject", Namespaces.mods));
-            Element topicEl = subjectEl.addElement(new QName("topic", Namespaces.mods));
-            topicEl.addText(topic);
+        if (getBundle().getMarc() != null) {
+            String topic = getBundle().getMarc().getTopic();
+            if (topic != null) {
+                Element subjectEl = modsRootEl.addElement(new QName("subject", Namespaces.mods));
+                Element topicEl = subjectEl.addElement(new QName("topic", Namespaces.mods));
+                topicEl.addText(topic);
+            }
         }
     }
 
     protected void addRootPhysicalLocation(Element locationEl, boolean doDetach) {
-        String location = getBundle().getMarc().getLocation();
+        if (getBundle().getMarc() != null) {
+            String location = getBundle().getMarc().getLocation();
 
-        if (location != null) {
-            //            Element shelfLocatorEl = (Element) shelfLocatorXpath.selectSingleNode(locationEl);
-            //            String shelfLocatorStr = "";
-            //            if (shelfLocatorEl != null) {
-            //                shelfLocatorStr = shelfLocatorEl.getTextTrim();
-            //                if (doDetach) shelfLocatorEl.detach();
-            //            }
-            Element physicalLocationEl =
-                    locationEl.addElement(new QName("physicalLocation", Namespaces.mods));
-            physicalLocationEl.addText(location);
-            //            shelfLocatorEl = locationEl.addElement(new QName("shelfLocator", Namespaces.mods));
-            //            shelfLocatorEl.addText(shelfLocatorStr);
+            if (location != null) {
+                //            Element shelfLocatorEl = (Element) shelfLocatorXpath.selectSingleNode(locationEl);
+                //            String shelfLocatorStr = "";
+                //            if (shelfLocatorEl != null) {
+                //                shelfLocatorStr = shelfLocatorEl.getTextTrim();
+                //                if (doDetach) shelfLocatorEl.detach();
+                //            }
+                Element physicalLocationEl =
+                        locationEl.addElement(new QName("physicalLocation", Namespaces.mods));
+                physicalLocationEl.addText(location);
+                //            shelfLocatorEl = locationEl.addElement(new QName("shelfLocator", Namespaces.mods));
+                //            shelfLocatorEl.addText(shelfLocatorStr);
+            }
         }
     }
 
     protected void addRootUdcOrDdc(Element modsRootEl) {
-        if (getBundle().getMarc().getUdcs() == null) {
-            return;
-        }
-        List<String> udcs = getBundle().getMarc().getUdcs();
-        for (String udc : udcs) {
-            Element classificationEl = modsRootEl.addElement(new QName("classification", Namespaces.mods));
-            classificationEl.addAttribute("authority", "udc");
-            classificationEl.addText(udc);
+        if (getBundle().getMarc() != null) {
+            if (getBundle().getMarc().getUdcs() == null) {
+                return;
+            }
+            List<String> udcs = getBundle().getMarc().getUdcs();
+            for (String udc : udcs) {
+                Element classificationEl =
+                        modsRootEl.addElement(new QName("classification", Namespaces.mods));
+                classificationEl.addAttribute("authority", "udc");
+                classificationEl.addText(udc);
+            }
         }
     }
 }

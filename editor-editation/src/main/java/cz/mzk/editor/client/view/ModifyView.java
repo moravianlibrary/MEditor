@@ -494,6 +494,7 @@ public class ModifyView
             }
             topTabSet.setItemTab(containerTabs);
         }
+
         Map<String, String> labelsSingular = new HashMap<String, String>();
         labelsSingular.put(DigitalObjectModel.INTERNALPART.getValue(), lang.internalpart());
         labelsSingular.put(DigitalObjectModel.MONOGRAPH.getValue(), lang.monograph());
@@ -503,6 +504,10 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitem());
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         labelsSingular.put(DigitalObjectModel.ARTICLE.getValue(), lang.article());
+        labelsSingular.put(DigitalObjectModel.MANUSCRIPT.getValue(), lang.manuscript());
+        labelsSingular.put(DigitalObjectModel.MAP.getValue(), lang.map());
+        labelsSingular.put(DigitalObjectModel.SUPPLEMENT.getValue(), lang.supplement());
+        labelsSingular.put(DigitalObjectModel.GRAPHIC.getValue(), lang.graphic());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         topTabSet.setModsCollection(mods);
         topTabSet.setDc(dc);
