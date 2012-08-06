@@ -54,6 +54,8 @@ public class FOXMLBuilderMapping {
             new HashMap<DigitalObjectModel, Class<? extends FoxmlBuilder>>(DigitalObjectModel.values().length);
     static {
         MAP.put(DigitalObjectModel.MONOGRAPH, MonographBuilder.class);
+        MAP.put(DigitalObjectModel.MAP, MonographBuilder.class);
+        MAP.put(DigitalObjectModel.MANUSCRIPT, MonographBuilder.class);
         MAP.put(DigitalObjectModel.PERIODICAL, PeriodicalBuilder.class);
         MAP.put(DigitalObjectModel.INTERNALPART, IntPartBuilder.class);
         MAP.put(DigitalObjectModel.PAGE, PageBuilder.class);

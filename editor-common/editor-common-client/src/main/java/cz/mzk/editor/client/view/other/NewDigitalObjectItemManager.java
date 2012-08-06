@@ -40,6 +40,7 @@ import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.client.view.window.EditorDateItem;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
 
 /**
  * @author Matous Jobanek
@@ -206,7 +207,8 @@ public abstract class NewDigitalObjectItemManager
                 return lang.textBox() + " " + lang.levelName() + " " + lang.notEmpty();
         }
 
-        if (model != DigitalObjectModel.PERIODICAL && model != DigitalObjectModel.MONOGRAPH) {
+        if (model.getTopLevelType() != TopLevelObjectModel.PERIODICAL
+                && model.getTopLevelType() != TopLevelObjectModel.MONOGRAPH) {
             if (model == DigitalObjectModel.PERIODICALITEM) {
                 String perItemType = PERIODICAL_ITEM_GENRE_TYPES.MAP.get(getTypeItem().getValueAsString());
                 if (PERIODICAL_ITEM_GENRE_TYPES.SEQUENCE_X.toString().equals(perItemType)) {

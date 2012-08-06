@@ -39,31 +39,59 @@ public enum DigitalObjectModel
         implements IsSerializable {
 
     /** The MONOGRAPH. */
-    MONOGRAPH("monograph", ""), /** The MONOGRAPHUNIT. */
-    MONOGRAPHUNIT("monographunit", Constants.MONOGRAPH_UNIT_ICON), /**
-     * The
-     * PERIODICAL.
+    MONOGRAPH("monograph", "", TopLevelObjectModel.MONOGRAPH),
+
+    /**
+     * The MONOGRAPHUNIT.
      */
-    PERIODICAL("periodical", ""), /** The PERIODICALVOLUME. */
-    PERIODICALVOLUME("periodicalvolume", Constants.VOLUME_ICON), /**
-     * The
-     * PERIODICALITEM.
+    MONOGRAPHUNIT("monographunit", Constants.MONOGRAPH_UNIT_ICON),
+
+    /**
+     * The PERIODICAL.
      */
-    PERIODICALITEM("periodicalitem", Constants.PERIODICAL_ITEM_ICON), /**
-     * The
-     * PAGE.
+    PERIODICAL("periodical", "", TopLevelObjectModel.PERIODICAL),
+
+    /**
+     * The PERIODICALVOLUME.
+     */
+    PERIODICALVOLUME("periodicalvolume", Constants.VOLUME_ICON),
+
+    /**
+     * The PERIODICALITEM.
+     */
+    PERIODICALITEM("periodicalitem", Constants.PERIODICAL_ITEM_ICON),
+
+    /**
+     * The PAGE.
      */
     PAGE("page", ""),
+
     /** The INTERNALPART. */
     INTERNALPART("internalpart", Constants.INTERNAL_PART_ICON), /*
                                                                  * ,
                                                                  * THESIS("thesis"
                                                                  * , "")
                                                                  */
+
     /** The ARTICLE. */
-    ARTICLE("article", Constants.INTERNAL_PART_ICON)/*
-                                                     * , THESIS("thesis" , "")
-                                                     */
+    ARTICLE("article", Constants.INTERNAL_PART_ICON),
+
+    /** The MAP */
+    MAP("map", "", TopLevelObjectModel.MONOGRAPH),
+
+    /** The MANUSCRIPT */
+    MANUSCRIPT("manuscript", "", TopLevelObjectModel.MONOGRAPH),
+
+    /** The SUPPLEMENT */
+    SUPPLEMENT("supplement", Constants.INTERNAL_PART_ICON),
+
+    /***/
+    //    SUPPLEMENT("supplement", Constants.MONOGRAPH_UNIT_ICON), 
+
+    /**
+     * TODO: add the whole RELS-EXT support
+     */
+    GRAPHIC("graphic", "", null),
 
     /**
      * Instantiates a new kramerius model.
@@ -75,9 +103,19 @@ public enum DigitalObjectModel
      */
     ;
 
+    public static enum TopLevelObjectModel {
+        MONOGRAPH, PERIODICAL;
+    }
+
     private DigitalObjectModel(String value, String icon) {
         this.value = value;
         this.icon = icon;
+    }
+
+    private DigitalObjectModel(String value, String icon, TopLevelObjectModel topLevelType) {
+        this.value = value;
+        this.icon = icon;
+        this.topLevelType = topLevelType;
     }
 
     /** The value. */
@@ -85,6 +123,8 @@ public enum DigitalObjectModel
 
     /** The icon. */
     private final String icon;
+
+    private TopLevelObjectModel topLevelType = null;
 
     /**
      * Gets the value.
@@ -102,6 +142,13 @@ public enum DigitalObjectModel
      */
     public String getIcon() {
         return icon;
+    }
+
+    /**
+     * @return the topLevelType
+     */
+    public TopLevelObjectModel getTopLevelType() {
+        return topLevelType;
     }
 
     /**

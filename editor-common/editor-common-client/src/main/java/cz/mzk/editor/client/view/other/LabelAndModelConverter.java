@@ -56,6 +56,14 @@ public class LabelAndModelConverter {
         getModelFromLabel().put(lang.periodicalitem(), DigitalObjectModel.PERIODICALITEM);
         getLabelFromModel().put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         getModelFromLabel().put(lang.periodicalvolume(), DigitalObjectModel.PERIODICALVOLUME);
+        getLabelFromModel().put(DigitalObjectModel.MAP.getValue(), lang.map());
+        getModelFromLabel().put(lang.map(), DigitalObjectModel.MAP);
+        getLabelFromModel().put(DigitalObjectModel.MANUSCRIPT.getValue(), lang.manuscript());
+        getModelFromLabel().put(lang.manuscript(), DigitalObjectModel.MANUSCRIPT);
+        getLabelFromModel().put(DigitalObjectModel.GRAPHIC.getValue(), lang.graphic());
+        getModelFromLabel().put(lang.graphic(), DigitalObjectModel.GRAPHIC);
+        getLabelFromModel().put(DigitalObjectModel.SUPPLEMENT.getValue(), lang.supplement());
+        getModelFromLabel().put(lang.supplement(), DigitalObjectModel.SUPPLEMENT);
     }
 
     public static Map<String, DigitalObjectModel> getModelFromLabel() {

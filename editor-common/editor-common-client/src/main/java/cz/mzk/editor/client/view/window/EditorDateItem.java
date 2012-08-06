@@ -41,6 +41,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.Constants.DATE_RIGHT_FORMATS;
 import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
 
 /**
  * @author Matous Jobanek
@@ -208,7 +209,7 @@ public class EditorDateItem
                             .matches(DATE_RIGHT_FORMATS.DATE_MM_MMRRRR.getRegex())))
                 return getDateFormatHint(lang, model);
 
-        } else if (model == DigitalObjectModel.PERIODICAL) {
+        } else if (model.getTopLevelType() == TopLevelObjectModel.PERIODICAL) {
             if (!"".equals(getEditorDate())
                     && !(getEditorDate().matches(DATE_RIGHT_FORMATS.DATE_RRRR.getRegex())
                             || getEditorDate().matches(DATE_RIGHT_FORMATS.DATE_RRRR_DASH.getRegex())
@@ -230,7 +231,7 @@ public class EditorDateItem
                     + lang.or() + "<br>RRRR " + lang.or() + "<br>DD.-DD.MM.RRR " + lang.or()
                     + "<br>MM.-MM.RRRR";
 
-        } else if (model == DigitalObjectModel.PERIODICAL) {
+        } else if (model.getTopLevelType() == TopLevelObjectModel.PERIODICAL) {
             return lang.dcType() + " " + LabelAndModelConverter.getLabelFromModel().get(model.getValue())
                     + " " + lang.dateInFormat() + ": " + "<br>RRRR " + lang.or() + "<br>RRRR- " + lang.or()
                     + "<br>RRRR-RRRR " + lang.or() + "<br>RRRR-RRRR,RRRR-RRRR";
