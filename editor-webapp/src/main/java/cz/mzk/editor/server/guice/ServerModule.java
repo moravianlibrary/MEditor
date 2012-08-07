@@ -213,7 +213,7 @@ public class ServerModule
         bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
 
         // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
-        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class);
+        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).in(Scopes.SINGLETON);
 
         // DAO
         bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);

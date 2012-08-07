@@ -27,6 +27,9 @@
 
 package cz.mzk.editor.server.guice;
 
+import javax.inject.Inject;
+
+import com.google.inject.Scopes;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -39,6 +42,10 @@ import cz.mzk.editor.server.config.EditorConfigurationImpl;
 public class Request4AddServerModule
         extends HandlerModule {
 
+    /** The conf. */
+    @Inject
+    private EditorConfiguration conf;
+
     /*
      * (non-Javadoc)
      * @see
@@ -47,7 +54,8 @@ public class Request4AddServerModule
     @Override
     protected void configureHandlers() {
 
-        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class);
+        if (conf == null)
+            bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).in(Scopes.SINGLETON);
 
     }
 }
