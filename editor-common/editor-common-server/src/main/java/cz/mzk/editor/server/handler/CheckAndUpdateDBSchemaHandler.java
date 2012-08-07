@@ -33,6 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.nio.charset.Charset;
+
 import java.util.Date;
 
 import javax.servlet.ServletContext;
@@ -54,6 +56,7 @@ import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ScriptRunner;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
+import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
@@ -148,15 +151,31 @@ public class CheckAndUpdateDBSchemaHandler
                                                                             command,
                                                                             dirPath + outFile);
                             } else {
-                                p = Runtime.getRuntime().exec(command + " > " + outFile);
+
+                                p =
+                                        Runtime.getRuntime().exec(new String[] {"pg_dump", "-c", "--inserts",
+                                                configuration.getDBName()});
+                                IOUtils.saveToFile(IOUtils.readAsString(p.getInputStream(),
+                                                                        Charset.defaultCharset(),
+                                                                        false),
+                                                   new File(dirPath + outFile));
                             }
 
                             int pNum;
                             if ((pNum = p.waitFor()) == 0) {
                                 LOGGER.debug("The DB has been backed up to the file: " + dirPath + outFile);
+                                p.getInputStream().close();
                             } else {
-                                LOGGER.error("ERROR " + pNum + " : during the backup to the file: " + dirPath
-                                        + outFile + " the proces returned " + pNum);
+                                p.getInputStream().close();
+                                LOGGER.error("ERROR "
+                                        + pNum
+                                        + " : during the backup to the file: "
+                                        + dirPath
+                                        + outFile
+                                        + " the proces returned "
+                                        + IOUtils.readAsString(p.getErrorStream(),
+                                                               Charset.defaultCharset(),
+                                                               true));
                                 throw new ActionException("Unable backup the current DB schema");
                             }
 
