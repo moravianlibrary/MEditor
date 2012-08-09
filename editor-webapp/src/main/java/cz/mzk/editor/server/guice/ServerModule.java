@@ -212,8 +212,7 @@ public class ServerModule
         bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
         bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
 
-        // bind(Log.class).toProvider(LogProvider.class).in(Singleton.class);
-        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).in(Scopes.SINGLETON);
+        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
         // DAO
         bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
@@ -225,7 +224,6 @@ public class ServerModule
         bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
         bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
-        // bind(HibernateConnection.class).toProvider(ConnectionProvider.class).in(Scopes.SINGLETON);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
@@ -240,7 +238,6 @@ public class ServerModule
         bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
 
         bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
-        // bind(OpenIDServlet.Callback.class).to(OpenIDCallback.class);
 
         // static injection
         requestStaticInjection(FedoraUtils.class);

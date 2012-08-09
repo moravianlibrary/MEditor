@@ -27,6 +27,12 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,11 +40,27 @@ import java.sql.SQLException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import org.xml.sax.SAXException;
 
 import cz.mzk.editor.server.config.EditorConfiguration;
 
@@ -67,6 +89,7 @@ public abstract class AbstractDAO {
     private static final int POOLABLE_YES = 1;
     private static final int POOLABLE_NO = 0;
     private static int poolable = -1;
+    private static boolean contextIsCorrect = false;
 
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
@@ -110,6 +133,7 @@ public abstract class AbstractDAO {
             } catch (SQLException ex) {
                 LOGGER.error("Unable to get a connection from connection pool " + JNDI_DB_POOL_ID, ex);
                 poolable = POOLABLE_NO;
+                pool = null;
                 initConnectionWithoutPool();
             }
         }
@@ -126,6 +150,12 @@ public abstract class AbstractDAO {
         String host = conf.getDBHost();
         String port = conf.getDBPort();
         String name = conf.getDBName();
+
+        if (!contextIsCorrect && !conf.isLocalhost() && pool == null && login != null && password != null
+                && port != null && name != null) {
+            createCorrectContext(login, password, port, name);
+        }
+
         if (password == null || password.length() < 3) {
             LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/"
                     + name + "' reason: no password set.");
@@ -171,4 +201,117 @@ public abstract class AbstractDAO {
         conn = null;
     }
 
+    private void createCorrectContext(String login, String password, String port, String name) {
+        String pathPrefix = System.getProperty("catalina.home");
+        boolean changed = false;
+
+        InputStream is = null;
+        File contextFile =
+                new File(pathPrefix + File.separator + "conf" + File.separator + "Catalina" + File.separator
+                        + "localhost" + File.separator + "meditor.xml");
+        Document contextDoc = null;
+        DocumentBuilder builder;
+        try {
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            if (contextFile.exists()) {
+
+                try {
+
+                    is = new FileInputStream(contextFile);
+                    contextDoc = builder.parse(is);
+
+                } catch (FileNotFoundException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+
+                } catch (SAXException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+            if (contextDoc == null) {
+                contextDoc = builder.newDocument();
+                changed = true;
+            }
+
+            NodeList contextEls = contextDoc.getElementsByTagName("Context");
+            Element contextEl;
+            if (contextEls == null || contextEls.getLength() == 0 || contextEls.item(0) == null) {
+                contextEl = contextDoc.createElement("Context");
+                contextEl.setAttribute("antiJARLocking", "true");
+                contextEl.setAttribute("path", "/meditor");
+                contextDoc.appendChild(contextEl);
+                changed = true;
+
+            } else {
+                contextEl = (Element) contextEls.item(0);
+            }
+
+            NodeList resourceEls = contextEl.getElementsByTagName("Resource");
+            Element resourceEl;
+            if (resourceEls == null || resourceEls.getLength() == 0 || resourceEls.item(0) == null) {
+                resourceEl = contextDoc.createElement("Resource");
+                resourceEl.setAttribute("name", "jdbc/editor");
+                resourceEl.setAttribute("auth", "Container");
+                resourceEl.setAttribute("type", "javax.sql.DataSource");
+                resourceEl.setAttribute("driverClassName", "org.postgresql.Driver");
+                resourceEl.setAttribute("maxActive", "40");
+                resourceEl.setAttribute("maxIdle", "20");
+                resourceEl.setAttribute("maxWait", "7500");
+                resourceEl.setAttribute("removeAbandoned", "true");
+                resourceEl.setAttribute("removeAbandonedTimeout", "100");
+                resourceEl.setAttribute("logAbandoned", "true");
+                contextEl.appendChild(resourceEl);
+                changed = true;
+
+            } else {
+                resourceEl = (Element) resourceEls.item(0);
+            }
+
+            String usernameAttr = resourceEl.getAttribute("username");
+            if (usernameAttr == null || !login.equals(usernameAttr)) {
+                resourceEl.setAttribute("username", login);
+                changed = true;
+            }
+
+            String passwordAttr = resourceEl.getAttribute("password");
+            if (passwordAttr == null || !password.equals(passwordAttr)) {
+                resourceEl.setAttribute("password", password);
+                changed = true;
+            }
+
+            String url = "jdbc:postgresql://localhost:" + port + "/" + name;
+            String urlAttr = resourceEl.getAttribute("url");
+            if (urlAttr == null || !url.equals(urlAttr)) {
+                resourceEl.setAttribute("url", url);
+                changed = true;
+            }
+
+            if (changed) {
+                // write the context.xml file
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                DOMSource source = new DOMSource(contextDoc);
+                Result result = new StreamResult(contextFile.toURI().getPath());
+                contextFile.exists();
+                transformer.transform(source, result);
+            }
+
+        } catch (ParserConfigurationException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+
+        contextIsCorrect = true;
+        poolable = POOLABLE_YES;
+    }
 }

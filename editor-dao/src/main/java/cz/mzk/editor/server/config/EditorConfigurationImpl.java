@@ -34,6 +34,8 @@ import java.io.IOException;
 
 import java.util.Properties;
 
+import com.google.inject.Singleton;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -48,6 +50,7 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 /**
  * The Class EditorConfigurationImpl.
  */
+@Singleton
 public class EditorConfigurationImpl
         extends EditorConfiguration {
 

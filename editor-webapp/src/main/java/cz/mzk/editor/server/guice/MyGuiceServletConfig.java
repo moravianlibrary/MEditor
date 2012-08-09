@@ -44,8 +44,6 @@ public class MyGuiceServletConfig
      */
     @Override
     protected Injector getInjector() {
-        return Guice.createInjector(new ServerModule(),
-                                    new DispatchServletModule(),
-                                    new Request4AddServerModule());
+        return Guice.createInjector(new ServerModule(), new DispatchServletModule());
     }
 }
