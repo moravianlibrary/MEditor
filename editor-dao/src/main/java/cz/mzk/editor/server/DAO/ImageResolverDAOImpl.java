@@ -50,15 +50,13 @@ public class ImageResolverDAOImpl
         extends AbstractDAO
         implements ImageResolverDAO {
 
-    public static int IMAGE_LIFETIME = 2;
-
     /** The Constant DELETE_ITEMS_STATEMENT. */
     public static final String DELETE_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE_NAME
-            + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + " day')";
+            + " WHERE shown < (NOW() - INTERVAL '%s day')";
 
     /** The Constant SELECT_ITEMS_FOR_DELETION_STATEMENT. */
     public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT imageFile FROM "
-            + Constants.TABLE_IMAGE_NAME + " WHERE shown < (NOW() - INTERVAL '" + IMAGE_LIFETIME + " day')";
+            + Constants.TABLE_IMAGE_NAME + " WHERE shown < (NOW() - INTERVAL '%s day')";
 
     /** The Constant SELECT_ITEM_STATEMENT. */
     public static final String SELECT_ITEM_STATEMENT = "SELECT id, imageFile FROM "
@@ -234,12 +232,13 @@ public class ImageResolverDAOImpl
         } catch (SQLException e) {
             LOGGER.warn("Unable to set autocommit off", e);
         }
-        IMAGE_LIFETIME = numberOfDays;
         PreparedStatement statement = null;
         ArrayList<String> ret = new ArrayList<String>();
         try {
             // TX start
-            statement = getConnection().prepareStatement(SELECT_ITEMS_FOR_DELETION_STATEMENT);
+            statement =
+                    getConnection().prepareStatement(String.format(SELECT_ITEMS_FOR_DELETION_STATEMENT,
+                                                                   String.valueOf(numberOfDays)));
             ResultSet rs = statement.executeQuery();
             int i = 0;
             int rowsAffected = 0;
@@ -248,7 +247,9 @@ public class ImageResolverDAOImpl
                 i++;
             }
             if (i > 0) {
-                statement = getConnection().prepareStatement(DELETE_ITEMS_STATEMENT);
+                statement =
+                        getConnection().prepareStatement(String.format(DELETE_ITEMS_STATEMENT,
+                                                                       String.valueOf(numberOfDays)));
                 rowsAffected = statement.executeUpdate();
             }
             if (rowsAffected == i) {
