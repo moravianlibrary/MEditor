@@ -138,6 +138,7 @@ public class CheckAndUpdateDBSchemaHandler
                         String dirPath =
                                 EditorConfigurationImpl.WORKING_DIR + File.separator
                                         + Constants.DB_BACKUP_DIR;
+                        String backupFile = dirPath + outFile;
 
                         if (!new File(dirPath).exists()) {
                             new File(dirPath).mkdirs();
@@ -149,29 +150,25 @@ public class CheckAndUpdateDBSchemaHandler
                                                                             configuration.getDBName(),
                                                                             configuration.getDBHost(),
                                                                             command,
-                                                                            dirPath + outFile);
+                                                                            backupFile);
                             } else {
-
+                                backupFile = backupFile + ".gz";
                                 p =
-                                        Runtime.getRuntime().exec(new String[] {"pg_dump", "-c", "--inserts",
+                                        Runtime.getRuntime().exec(new String[] {"pg_dump", "-c",
+                                                "--compress=9", "--file=" + backupFile, "--inserts",
                                                 configuration.getDBName()});
-                                IOUtils.saveToFile(IOUtils.readAsString(p.getInputStream(),
-                                                                        Charset.defaultCharset(),
-                                                                        false),
-                                                   new File(dirPath + outFile));
                             }
 
                             int pNum;
                             if ((pNum = p.waitFor()) == 0) {
-                                LOGGER.debug("The DB has been backed up to the file: " + dirPath + outFile);
+                                LOGGER.debug("The DB has been backed up to the file: " + backupFile);
                                 p.getInputStream().close();
                             } else {
                                 p.getInputStream().close();
                                 LOGGER.error("ERROR "
                                         + pNum
                                         + " : during the backup to the file: "
-                                        + dirPath
-                                        + outFile
+                                        + backupFile
                                         + " the proces returned "
                                         + IOUtils.readAsString(p.getErrorStream(),
                                                                Charset.defaultCharset(),
