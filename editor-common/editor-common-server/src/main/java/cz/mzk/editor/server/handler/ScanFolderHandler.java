@@ -157,11 +157,13 @@ public class ScanFolderHandler
                 String newIdentifier = null;
                 String resolvedIdentifier = resolvedIdentifiers.get(i);
                 if (resolvedIdentifier == null) {
-                    //                    StringBuffer sb = new StringBuffer();
-                    //                    sb.append(model).append('#').append(code).append('#').append(i);
-                    //                    newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
-                    newIdentifier = UUID.nameUUIDFromBytes(createMD5(imgFileNames.get(i))).toString();
                     StringBuffer sb = new StringBuffer();
+                    sb.append(model).append('#').append(code).append('#').append(i);
+                    //                    newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
+                    newIdentifier =
+                            UUID.nameUUIDFromBytes((createMD5(imgFileNames.get(i)).toString() + sb.toString())
+                                    .getBytes()).toString();
+                    sb = new StringBuffer();
                     sb.append(configuration.getImagesPath()).append(newIdentifier)
                             .append(Constants.JPEG_2000_EXTENSION);
                     resolvedIdentifier = sb.toString();
