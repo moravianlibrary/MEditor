@@ -90,7 +90,7 @@ public class DBSchemaDAOImpl
             while (rs.next()) {
                 versionDb = Integer.parseInt(rs.getString("version"));
             }
-            return versionDb == version;
+            return versionDb >= version;
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new DatabaseException("unable to obtain the version of the DB", e);

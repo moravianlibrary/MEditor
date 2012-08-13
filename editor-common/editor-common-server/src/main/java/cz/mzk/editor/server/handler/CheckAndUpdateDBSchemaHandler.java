@@ -127,7 +127,7 @@ public class CheckAndUpdateDBSchemaHandler
                 } catch (DatabaseException e) {
                     LOGGER.error(e.getMessage(), e);
                     e.printStackTrace();
-                    upToDate = false;
+                    throw new ActionException(e);
                 }
 
                 if (!upToDate) {
