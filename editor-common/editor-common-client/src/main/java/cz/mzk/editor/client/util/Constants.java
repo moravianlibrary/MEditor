@@ -543,7 +543,7 @@ public class Constants {
     }
 
     public static enum PAGE_TYPES {
-        AD, BC, BS, BL, CO, FL, FC, FS, IN, LI, LM, LT, NP, SP, TB, TC, TP;
+        AD, BC, BS, BL, CO, FL, FC, FS, IN, LI, LM, LT, NP, SP, TB, TC, TP, MP;
 
         public static Map<String, String> MAP = new HashMap<String, String>();
         static {
@@ -564,6 +564,7 @@ public class Constants {
             MAP.put(PAGE_TYPES.TB.toString(), "Table");
             MAP.put(PAGE_TYPES.TC.toString(), "TableOfContents");
             MAP.put(PAGE_TYPES.TP.toString(), "TitlePage");
+            MAP.put(PAGE_TYPES.MP.toString(), "Map");
         }
 
         public static String getEnumAsStringFromMap(String type) {
