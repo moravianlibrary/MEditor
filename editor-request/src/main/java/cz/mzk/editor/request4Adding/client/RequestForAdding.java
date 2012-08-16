@@ -48,14 +48,15 @@ public class RequestForAdding
         implements EntryPoint {
 
     private boolean msgVisible = false;
+    private static boolean process = true;
 
     @Override
     public void onModuleLoad() {
-        callServer(true);
+        callServer();
 
     }
 
-    private void callServer(boolean process) {
+    private void callServer() {
         if (process) {
             final RequestConstants lang = GWT.create(RequestConstants.class);
             final RequestForAddingServiceAsync service = GWT.create(RequestForAddingService.class);
@@ -69,7 +70,10 @@ public class RequestForAdding
 
                 @Override
                 public void onSuccess(String result) {
-                    RootPanel.get().add(showGUI(result, lang, service));
+                    if (process && result != null && !"".equals(result)) {
+                        process = false;
+                        RootPanel.get().add(showGUI(result, lang, service));
+                    }
                 }
             };
             service.getName(callback);
