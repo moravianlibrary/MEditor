@@ -137,7 +137,8 @@ public class ConvertToJPEG2000Handler
     }
 
     private boolean convertToJpeg2000(ImageItem item) throws ActionException {
-        if (new File(item.getJpeg2000FsPath()).exists()) {
+        File f = new File(item.getJpeg2000FsPath());
+        if (f.exists() && f.length() > 0) {
             return true;
         }
         if (item.getJpgFsPath().toLowerCase().endsWith(Constants.JPEG_2000_EXTENSION)) {
@@ -147,10 +148,9 @@ public class ConvertToJPEG2000Handler
                         + Constants.JPEG_2000_EXTENSION + "  was copied to  " + item.getJpeg2000FsPath()
                         + Constants.JPEG_2000_EXTENSION);
             } catch (CreateObjectException e) {
-                LOGGER.error("Unable to copy image " + configuration.getImagesPath()
-                                     + item.getJpgFsPath() + Constants.JPEG_2000_EXTENSION + " to  "
-                                     + item.getJpeg2000FsPath() + Constants.JPEG_2000_EXTENSION,
-                             e);
+                LOGGER.error("Unable to copy image " + configuration.getImagesPath() + item.getJpgFsPath()
+                        + Constants.JPEG_2000_EXTENSION + " to  " + item.getJpeg2000FsPath()
+                        + Constants.JPEG_2000_EXTENSION, e);
                 e.printStackTrace();
                 return false;
             }
