@@ -348,7 +348,6 @@ public class InputQueueTree
 
             @Override
             public void execute(DSResponse response, Object rawData, DSRequest request) {
-                inputQueueTree.redraw();
                 inputQueueTree.openSubfolders(openedNodes, null, selectedRecord);
             }
         });
@@ -357,19 +356,20 @@ public class InputQueueTree
     private void openFolder(final List<String> openedNodes,
                             final TreeNode node,
                             final ListGridRecord selectedRecord) {
+
         getData().openFolder(node);
-        getDataSource().fetchData(new Criteria() {
+        getDataSource().fetchData(new Criteria(Constants.ATTR_PARENT, node.getAttributeAsString("path")),
+                                  new DSCallback() {
 
-            {
-                addCriteria(Constants.ATTR_PARENT, node.getAttributeAsString("path"));
-            }
-        }, new DSCallback() {
-
-            @Override
-            public void execute(DSResponse response, Object rawData, DSRequest request) {
-                openSubfolders(openedNodes, node, selectedRecord);
-            }
-        });
+                                      @Override
+                                      public void execute(DSResponse response,
+                                                          Object rawData,
+                                                          DSRequest request) {
+                                          if (openedNodes.size() > 0) {
+                                              openSubfolders(openedNodes, node, selectedRecord);
+                                          }
+                                      }
+                                  });
     }
 
     private void openSubfolders(final List<String> openedNodes,
@@ -384,6 +384,7 @@ public class InputQueueTree
             }
             if ((node == null || !node.getAttributeAsString("path").equals(newNodeAttribute))
                     && openedNodes.contains(newNodeAttribute)) {
+                openedNodes.remove(newNodeAttribute);
                 openFolder(openedNodes, allNewNodes[i], selectedRecord);
             }
         }

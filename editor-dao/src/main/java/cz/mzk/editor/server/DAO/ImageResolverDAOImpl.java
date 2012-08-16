@@ -185,12 +185,13 @@ public class ImageResolverDAOImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
 
     private String resolveItem(String oldJpgFsPath, PreparedStatement selectSt, PreparedStatement updateSt)
-            throws DatabaseException {
+            throws DatabaseException, SQLException {
         if (oldJpgFsPath == null || "".equals(oldJpgFsPath)) throw new NullPointerException("oldJpgFsPath");
-
         String ret = null;
         int id = -1;
 
@@ -202,8 +203,10 @@ public class ImageResolverDAOImpl
                 ret = rs.getString("imageFile");
             }
         } catch (SQLException e) {
+            selectSt.clearWarnings();
             LOGGER.error(e);
         }
+
         // no need for closing the connection
         try {
             if (ret != null) {
