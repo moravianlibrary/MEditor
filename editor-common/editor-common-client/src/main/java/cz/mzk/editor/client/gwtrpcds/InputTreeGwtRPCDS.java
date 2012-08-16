@@ -92,17 +92,21 @@ public class InputTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
     @Override
     protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-        String id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
-        if (id == null) {
-            id = request.getCriteria().getAttributeAsString(Constants.ATTR_PARENT);
+        String id = null;
+        if (request != null && request.getCriteria() != null) {
+            id = (String) request.getCriteria().getValues().get(Constants.ATTR_PARENT);
+            if (id == null) {
+                id = request.getCriteria().getAttributeAsString(Constants.ATTR_PARENT);
+
+            }
         }
+
         dispatcher.execute(new ScanInputQueueAction(id, false), new DispatchCallback<ScanInputQueueResult>() {
 
             @Override
@@ -134,8 +138,7 @@ public class InputTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
      * java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -146,8 +149,7 @@ public class InputTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -158,8 +160,7 @@ public class InputTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
