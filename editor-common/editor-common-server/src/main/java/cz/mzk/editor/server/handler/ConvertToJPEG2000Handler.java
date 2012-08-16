@@ -30,6 +30,8 @@ package cz.mzk.editor.server.handler;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.charset.Charset;
+
 import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
@@ -47,6 +49,7 @@ import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.convert.Converter;
+import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
@@ -184,14 +187,16 @@ public class ConvertToJPEG2000Handler
 
             if (processTimeout(p, 100, 20000)) {
                 int exitValue = p.exitValue();
-                p.getErrorStream().close();
                 p.getInputStream().close();
                 p.getOutputStream().close();
                 if (exitValue != 0) {
                     LOGGER.warn("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath()
-                            + " returns non-zero exitValue: " + exitValue);
+                            + " returns non-zero exitValue: " + exitValue + " with error output: "
+                            + IOUtils.readAsString(p.getErrorStream(), Charset.defaultCharset(), true));
+                    p.getErrorStream().close();
                     return false;
                 } else {
+                    p.getErrorStream().close();
                     return true;
                 }
             } else {
