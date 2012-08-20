@@ -27,12 +27,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URLConnection;
-
 import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
@@ -46,7 +40,6 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
 import cz.mzk.editor.shared.rpc.action.CheckAvailability;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityResult;
@@ -103,7 +96,6 @@ public class CheckAvailabilityHandler
         }
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
-        boolean status = true;
         String url = null;
         String usr = "";
         String pass = "";
@@ -116,27 +108,8 @@ public class CheckAvailabilityHandler
         } else {
             throw new ActionException("Unknown server id");
         }
-        try {
-            URLConnection con = RESTHelper.openConnection(url, usr, pass, false);
-            if (con instanceof HttpURLConnection) {
-                HttpURLConnection httpConnection = (HttpURLConnection) con;
-                int resp = httpConnection.getResponseCode();
-                if (resp < 200 || resp >= 308) {
-                    status = false;
-                    LOGGER.info("Server " + url + " answered with HTTP code "
-                            + httpConnection.getResponseCode());
-                }
-            } else {
-                status = false;
-            }
-        } catch (MalformedURLException e) {
-            status = false;
-            e.printStackTrace();
-        } catch (IOException e) {
-            status = false;
-            e.printStackTrace();
-        }
-        return new CheckAvailabilityResult(status, url);
+
+        return new CheckAvailabilityResult(ServerUtils.checkAvailability(url, usr, pass), url);
     }
 
     /*

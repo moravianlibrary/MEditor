@@ -31,8 +31,10 @@ import java.io.IOException;
 
 import java.lang.reflect.Field;
 
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 
 import java.util.ArrayList;
@@ -313,6 +315,31 @@ public class ServerUtils {
             return null;
         }
         return addr.getHostName();
+    }
+
+    public static boolean checkAvailability(String url, String usr, String pass) {
+        boolean status = true;
+        try {
+            URLConnection con = RESTHelper.openConnection(url, usr, pass, false);
+            if (con instanceof HttpURLConnection) {
+                HttpURLConnection httpConnection = (HttpURLConnection) con;
+                int resp = httpConnection.getResponseCode();
+                if (resp < 200 || resp >= 308) {
+                    status = false;
+                    LOGGER.info("Server " + url + " answered with HTTP code "
+                            + httpConnection.getResponseCode());
+                }
+            } else {
+                status = false;
+            }
+        } catch (MalformedURLException e) {
+            status = false;
+            e.printStackTrace();
+        } catch (IOException e) {
+            status = false;
+            e.printStackTrace();
+        }
+        return status;
     }
 
 }

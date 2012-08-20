@@ -40,6 +40,7 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -102,6 +103,8 @@ public class OAIPMHClientImpl
                 }
                 marc2dc = Dom4jUtils.loadDocument(new File(config.getEditorHome() + MARC_TO_DC_XSLT), true);
             }
+
+            if (!checkAndReplace(marc2mods, false)) checkAndReplace(marc2dc, true);
 
             //            StringWriter writer = new StringWriter();
             //            IOUtils.copy(marcStream, writer, "UTF-8");
@@ -171,5 +174,24 @@ public class OAIPMHClientImpl
             LOGGER.error(e.getMessage());
         }
         return retList;
+    }
+
+    /**
+     * @param document
+     */
+    private boolean checkAndReplace(Document doc, boolean onlyReplace) {
+        boolean available = true;
+        Element hrefNode =
+                (Element) doc
+                        .selectSingleNode("/xsl:stylesheet/*[starts-with(@href,\'http://www.loc.gov\')]");
+
+        if (hrefNode != null) {
+            Attribute hrefAttr = hrefNode.attribute("href");
+            if (onlyReplace
+                    || !(available = ServerUtils.checkAvailability(hrefAttr.getStringValue(), null, null))) {
+                hrefAttr.setText(config.getEditorHome() + MARC_UTILS);
+            }
+        }
+        return available;
     }
 }

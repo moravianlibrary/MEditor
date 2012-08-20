@@ -47,5 +47,7 @@ public interface OAIPMHClient {
 
     String MARC_TO_DC_XSLT = File.separator + "xml" + File.separator + "MARC21slim2OAIDC.xsl";
 
+    String MARC_UTILS = File.separator + "xml" + File.separator + "MARC21slimUtils.xsl";
+
     ArrayList<MetadataBundle> search(String url, String base);
 }
