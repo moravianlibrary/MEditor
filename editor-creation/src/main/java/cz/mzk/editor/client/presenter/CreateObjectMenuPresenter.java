@@ -27,6 +27,7 @@
 
 package cz.mzk.editor.client.presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,8 @@ import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent.ChangeFocusedTabSetHandler;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
+import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchAction;
+import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchResult;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
 import cz.mzk.editor.shared.rpc.action.GetDOModelResult;
 
@@ -469,7 +472,6 @@ public class CreateObjectMenuPresenter
     /**
      * {@inheritDoc}
      */
-
     @Override
     public void addAlto(ListGridRecord record) {
         new AddAltoOcrWindow(record, lang, dispatcher, getEventBus()) {
@@ -490,6 +492,47 @@ public class CreateObjectMenuPresenter
                 getView().getSubelementsGrid().redraw();
             }
         };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addAltoBatch(final ListGridRecord records[]) {
+
+        List<String> uuids = new ArrayList<String>();
+        for (ListGridRecord record : records) {
+            String uuid = record.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID);
+            if (uuid != null) {
+                uuids.add(uuid);
+            }
+        }
+        FindAltoOcrFilesBatchAction altoFilesBatchAction = new FindAltoOcrFilesBatchAction(uuids);
+
+        DispatchCallback<FindAltoOcrFilesBatchResult> altoFilesBatchCallback =
+                new DispatchCallback<FindAltoOcrFilesBatchResult>() {
+
+                    @Override
+                    public void callback(FindAltoOcrFilesBatchResult result) {
+                        getView().addUndoRedo(true, false);
+                        for (ListGridRecord record : records) {
+                            String uuid = record.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID);
+                            String altoPath = result.getAltoFileNames().get(uuid);
+                            String ocrPath = result.getOcrFileNames().get(uuid);
+                            record.setAttribute(Constants.ATTR_ALTO_PATH, altoPath != null ? altoPath : null);
+                            record.setAttribute(Constants.ATTR_OCR_PATH, ocrPath != null ? ocrPath : null);
+                        }
+                        getView().getSubelementsGrid().redraw();
+                    }
+
+                    @Override
+                    public void callbackError(final Throwable cause) {
+                        super.callbackError(cause);
+                    }
+                };
+
+        dispatcher.execute(altoFilesBatchAction, altoFilesBatchCallback);
+
     }
 
     public String getBarcode() {

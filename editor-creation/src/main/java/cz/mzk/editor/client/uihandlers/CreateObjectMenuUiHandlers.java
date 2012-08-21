@@ -48,6 +48,8 @@ public interface CreateObjectMenuUiHandlers
     //Adds an ALTO file to a page
     void addAlto(ListGridRecord record);
 
+    void addAltoBatch(ListGridRecord records[]);
+
     int newId();
 
     void loadStructure();

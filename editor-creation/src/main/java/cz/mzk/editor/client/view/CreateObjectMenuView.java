@@ -130,6 +130,7 @@ public class CreateObjectMenuView
     private ImgButton undoButton;
     private List<Tree> redoList;
     private ImgButton redoButton;
+    private ImgButton addOcrButton;
 
     private final EventBus eventBus;
 
@@ -183,7 +184,6 @@ public class CreateObjectMenuView
         structureTreeGrid.setShowConnectors(true);
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
         structureTreeGrid.setCanSort(true);
-        //                structureTreeGrid.getTree().
 
         undoButton = new ImgButton();
         redoButton = new ImgButton();
@@ -248,6 +248,31 @@ public class CreateObjectMenuView
                 } else {
                     redoButton.disable();
                 }
+            }
+        });
+
+        addOcrButton = new ImgButton();
+        addOcrButton.setSrc("icons/16/ocrAlto.png");
+        addOcrButton.setSize("16", "16");
+        addOcrButton.setShowTitle(false);
+        addOcrButton.setHoverOpacity(75);
+        addOcrButton.setHoverStyle("interactImageHover");
+        addOcrButton.setShowRollOver(false);
+        addOcrButton.setShowDown(false);
+        addOcrButton.setCanHover(true);
+        addOcrButton.addHoverHandler(new HoverHandler() {
+
+            @Override
+            public void onHover(HoverEvent event) {
+                addOcrButton.setPrompt(lang.addOcrBatch());
+            }
+        });
+
+        addOcrButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getUiHandlers().addAltoBatch(structureTreeGrid.getSelectedRecords());
             }
         });
 
@@ -702,16 +727,16 @@ public class CreateObjectMenuView
                             || recModel == DigitalObjectModel.PERIODICALITEM)
                         stringToReturn = record.getAttributeAsString(Constants.ATTR_PART_NUMBER_OR_ALTO);
                 }
-
                 if (ocrPath != null && !"".equals(ocrPath)) {
                     if (altoPath != null && !"".equals(altoPath)) {
                         stringToReturn =
                                 "<img src=\"images/icons/16/ocrAlto.png\">".concat(record
                                         .getAttributeAsString(Constants.ATTR_NAME));
+                    } else {
+                        stringToReturn =
+                                "<img src=\"images/icons/16/ocr.png\">".concat(record
+                                        .getAttributeAsString(Constants.ATTR_NAME));
                     }
-                    stringToReturn =
-                            "<img src=\"images/icons/16/ocr.png\">".concat(record
-                                    .getAttributeAsString(Constants.ATTR_NAME));
                 }
 
                 return stringToReturn;
@@ -745,7 +770,7 @@ public class CreateObjectMenuView
         structure.setItems(structureTreeGrid);
         structure.setExpanded(true);
 
-        structure.setControls(undoButton, redoButton, menuButton);
+        structure.setControls(undoButton, redoButton, addOcrButton, menuButton);
 
         sectionStack = new SectionStack();
         sectionStack.addSection(createStructure);
