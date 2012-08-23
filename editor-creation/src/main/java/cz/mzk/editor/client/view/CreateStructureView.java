@@ -42,6 +42,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -120,6 +121,7 @@ import cz.mzk.editor.client.view.other.EditorDragMoveHandler;
 import cz.mzk.editor.client.view.other.EditorTabSet;
 import cz.mzk.editor.client.view.other.ModsTab;
 import cz.mzk.editor.client.view.other.PageNumberingManager;
+import cz.mzk.editor.client.view.other.PdfViewerPane;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
@@ -222,6 +224,12 @@ public class CreateStructureView
     private boolean topIsWraped = false;
     private boolean bottomIsWraped = false;
 
+    private ToolStripButton editMetadataButton = null;
+
+    private ToolStripButton createButton = null;
+
+    private HTMLPane pdfViewerPane = null;
+
     /**
      * Instantiates a new create view.
      */
@@ -287,356 +295,371 @@ public class CreateStructureView
      */
 
     @Override
-    public void onAddImages(String model, Record[] items, final String hostname, boolean resize) {
+    public void onAddImages(String model, Record[] items, final String hostname, boolean resize, boolean isPdf) {
         if (layout.getMembers().length != 0) {
             layout.removeMember(tileGridLayout);
         }
         this.model = model;
         this.hostname = hostname;
-        pagesTabSet = new TabSet();
-        Tab allPagesTab = new Tab(lang.scanned());
-        allPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.ALL_PAGES_TAB);
-        Tab selectedPagesTab = new Tab(lang.selected());
-        selectedPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.SELECTED_PAGES_TAB);
-
-        tileGridLayout = new VLayout();
-        tileGrid = new TileGrid();
-        tileGrid.setTileWidth(imageThumbnailWidth + 10);
-        tileGrid.setTileHeight(imageThumbnailHeight + 35);
-        tileGrid.setHeight100();
-        tileGrid.setWidth100();
-        tileGrid.setCanDrag(true);
-        tileGrid.setCanAcceptDrop(true);
-        tileGrid.setShowAllRecords(true);
-        tileGrid.setShowResizeBar(true);
-        positionBeforeMoving = -1;
-        detailPanelShown = false;
-        metadataPanelShown = false;
-        detailPanelImageShown = false;
-        detailPanel = null;
         metadataPanel = null;
-        topSpaceTop = Integer.MIN_VALUE;
-        topSpaceBottom = Integer.MAX_VALUE;
-        detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
-        detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
-        bottomIsWraped = false;
-        topIsWraped = false;
-        final EditorDragMoveHandler dragHandler = new EditorDragMoveHandler(tileGrid);
-        tileGrid.addDragMoveHandler(dragHandler);
+        tileGridLayout = new VLayout();
 
-        tileGrid.addDragStartHandler(new DragStartHandler() {
+        if (!isPdf) {
 
-            @Override
-            public void onDragStart(DragStartEvent event) {
-                Record[] selection = tileGrid.getSelection();
-                if (selection != null && selection.length > 0) {
-                    positionBeforeMoving = tileGrid.getRecordIndex(selection[0]);
-                    addUndoRedo(tileGrid.getData(), true, false);
-                }
-            }
-        });
+            pagesTabSet = new TabSet();
+            Tab allPagesTab = new Tab(lang.scanned());
+            allPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.ALL_PAGES_TAB);
+            Tab selectedPagesTab = new Tab(lang.selected());
+            selectedPagesTab.setAttribute(Constants.ATTR_TAB_ID, Constants.SELECTED_PAGES_TAB);
 
-        tileGrid.addDragMoveHandler(new DragMoveHandler() {
+            tileGrid = new TileGrid();
+            tileGrid.setTileWidth(imageThumbnailWidth + 10);
+            tileGrid.setTileHeight(imageThumbnailHeight + 35);
+            tileGrid.setHeight100();
+            tileGrid.setWidth100();
+            tileGrid.setCanDrag(true);
+            tileGrid.setCanAcceptDrop(true);
+            tileGrid.setShowAllRecords(true);
+            tileGrid.setShowResizeBar(true);
+            positionBeforeMoving = -1;
+            detailPanelShown = false;
+            metadataPanelShown = false;
+            detailPanelImageShown = false;
+            detailPanel = null;
+            topSpaceTop = Integer.MIN_VALUE;
+            topSpaceBottom = Integer.MAX_VALUE;
+            detailHeightTop = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+            detailHeightBottom = Constants.PAGE_PREVIEW_HEIGHT_NORMAL;
+            bottomIsWraped = false;
+            topIsWraped = false;
+            final EditorDragMoveHandler dragHandler = new EditorDragMoveHandler(tileGrid);
+            tileGrid.addDragMoveHandler(dragHandler);
 
-            @Override
-            public void onDragMove(DragMoveEvent event) {
-                if (tileGrid.getSelectedRecord() != null) {
-                    tileGrid.setDragAppearance(DragAppearance.TRACKER);
-                    String pageIcon =
-                            Canvas.imgHTML(getImageURLPrefix()
-                                                   + tileGrid
-                                                           .getSelectedRecord()
-                                                           .getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
-                                           25,
-                                           35);
-                    dragHandler.setMoveTracker(pageIcon);
-                } else {
-                    tileGrid.setDragAppearance(DragAppearance.NONE);
-                }
-            }
-        });
+            tileGrid.addDragStartHandler(new DragStartHandler() {
 
-        tileGrid.addDragStopHandler(new DragStopHandler() {
-
-            @Override
-            public void onDragStop(DragStopEvent event) {
-                if (positionBeforeMoving >= 0) {
+                @Override
+                public void onDragStart(DragStartEvent event) {
                     Record[] selection = tileGrid.getSelection();
-                    if (selection.length > 0 && tileGrid.getRecordIndex(selection[0]) == positionBeforeMoving) {
-
-                        undoList.remove(undoList.size() - 1);
-                        if (undoList.size() == 0) undoButton.disable();
-
-                    } else if (isChosenSelectedPagesTab() && selection.length > 0) {
-                        Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
-                        for (Record selRecord : tileGrid.getData()) {
-                            recordIdAndItsNewValue.put(selRecord.getAttributeAsString(Constants.ATTR_ID),
-                                                       tileGrid.getRecordIndex(selRecord));
-                        }
-                        eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_POSITION,
-                                                                            recordIdAndItsNewValue));
-
-                    }
-                    positionBeforeMoving = -1;
-                }
-            }
-        });
-
-        getUiHandlers().setTileGridHandlers();
-
-        numbering = new PageNumberingManager(tileGrid);
-        Menu menu = new Menu();
-        menu.setShowShadow(true);
-        menu.setShadowDepth(10);
-
-        MenuItem editItem = new MenuItem(lang.editPageName(), "icons/16/edit.png");
-        editItem.setEnableIfCondition(isSelected(true));
-        editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-
-            @Override
-            public void onClick(MenuItemClickEvent event) {
-                editPageTitle(tileGrid.getSelectedRecord());
-            }
-        });
-
-        MenuItem viewItem = new MenuItem(lang.menuView(), "icons/16/eye.png");
-        viewItem.setAttribute(ID_NAME, ID_VIEW);
-        viewItem.setEnableIfCondition(isSelected(true));
-        viewItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
-
-            @Override
-            public void onClick(MenuItemClickEvent event) {
-                final String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
-                winModal = new Window();
-                //                winModal.setWidth(1024);
-                //                winModal.setHeight(768);
-                winModal.setWidth("95%");
-                winModal.setHeight("95%");
-                StringBuffer sb = new StringBuffer();
-                sb.append(lang.scan()).append(": ")
-                        .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
-                winModal.setTitle(sb.toString());
-                winModal.setShowMinimizeButton(false);
-                winModal.setIsModal(true);
-                winModal.setShowModalMask(true);
-                winModal.centerInPage();
-                winModal.addCloseClickHandler(new CloseClickHandler() {
-
-                    @Override
-                    public void onCloseClick(CloseClickEvent event) {
-                        escShortCut();
-
-                    }
-                });
-                HTMLPane viewerPane = new HTMLPane();
-                viewerPane.setPadding(15);
-                viewerPane.setContentsURL(hostname + "/meditor/viewer/viewer.html");
-                java.util.Map<String, String> params = new java.util.HashMap<String, String>();
-                params.put("rft_id", uuid);
-                viewerPane.setContentsURLParams(params);
-                viewerPane.setContentsType(ContentsType.PAGE);
-                winModal.addItem(viewerPane);
-                winModal.show();
-            }
-        });
-
-        MenuItem selectAllItem = new MenuItem(lang.menuSelectAll(), "icons/16/document_plain_new.png");
-        selectAllItem.setAttribute(ID_NAME, ID_SEL_ALL);
-
-        MenuItem deselectAllItem =
-                new MenuItem(lang.menuDeselectAll(), "icons/16/document_plain_new_Disabled.png");
-        deselectAllItem.setAttribute(ID_NAME, ID_SEL_NONE);
-
-        MenuItem invertSelectionItem = new MenuItem(lang.menuInvertSelection(), "icons/16/invert.png");
-        invertSelectionItem.setAttribute(ID_NAME, ID_SEL_INV);
-
-        MenuItemSeparator separator = new MenuItemSeparator();
-        separator.setAttribute(ID_NAME, ID_SEPARATOR);
-
-        MenuItem copyItem = new MenuItem(lang.menuCopySelected(), "icons/16/copy.png");
-        copyItem.setAttribute(ID_NAME, ID_COPY);
-        copyItem.setEnableIfCondition(new MenuItemIfFunction() {
-
-            @Override
-            public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return tileGrid.getSelection().length > 0;
-            }
-        });
-
-        MenuItem pasteItem = new MenuItem(lang.menuPaste(), "icons/16/paste.png");
-        pasteItem.setAttribute(ID_NAME, ID_PASTE);
-        pasteItem.setEnableIfCondition(new MenuItemIfFunction() {
-
-            @Override
-            public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return CreateStructureView.this.clipboard != null
-                        && CreateStructureView.this.clipboard.length > 0;
-            }
-        });
-
-        MenuItem removeSelectedItem = new MenuItem(lang.menuRemoveSelected(), "icons/16/close.png");
-        removeSelectedItem.setAttribute(ID_NAME, ID_DELETE);
-        removeSelectedItem.setEnableIfCondition(new MenuItemIfFunction() {
-
-            @Override
-            public boolean execute(Canvas target, Menu menu, MenuItem item) {
-                return tileGrid.getSelection().length > 0;
-            }
-        });
-
-        menu.setItems(editItem,
-                      viewItem,
-                      separator,
-                      selectAllItem,
-                      deselectAllItem,
-                      invertSelectionItem,
-                      separator,
-                      copyItem,
-                      pasteItem,
-                      removeSelectedItem);
-        tileGrid.setContextMenu(menu);
-        tileGrid.setDropTypes(model);
-        tileGrid.setCanAcceptDrop(true);
-        tileGrid.setCanAcceptDroppedRecords(true);
-        tileGrid.setDragType(model);
-        tileGrid.setDragAppearance(DragAppearance.TRACKER);
-        tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
-
-            @Override
-            public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
-                if (event.getRecord() != null) {
-                    try {
-                        final ModalWindow mw = new ModalWindow(layout);
-                        mw.setLoadingIcon("loadingAnimation.gif");
-                        mw.show(true);
-                        StringBuffer sb = new StringBuffer();
-                        sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
-                                .append('/')
-                                .append(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID))
-                                .append("?" + Constants.URL_PARAM_FULL + "=yes");
-                        final Image full = new Image(sb.toString());
-                        full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
-                        full.addLoadHandler(new LoadHandler() {
-
-                            @Override
-                            public void onLoad(LoadEvent event) {
-                                mw.hide();
-                                getPopupPanel().setVisible(true);
-                                getPopupPanel().center();
-                            }
-                        });
-                        getPopupPanel().setWidget(full);
-                        getPopupPanel().addCloseHandler(new CloseHandler<PopupPanel>() {
-
-                            @Override
-                            public void onClose(CloseEvent<PopupPanel> event) {
-                                mw.hide();
-                                getPopupPanel().setWidget(null);
-                            }
-                        });
-                        getPopupPanel().center();
-                        getPopupPanel().setVisible(false);
-
-                    } catch (Throwable t) {
-
-                        // TODO: handle
+                    if (selection != null && selection.length > 0) {
+                        positionBeforeMoving = tileGrid.getRecordIndex(selection[0]);
+                        addUndoRedo(tileGrid.getData(), true, false);
                     }
                 }
-            }
-        });
+            });
 
-        tileGrid.addRecordClickHandler(new RecordClickHandler() {
+            tileGrid.addDragMoveHandler(new DragMoveHandler() {
 
-            @Override
-            public void onRecordClick(RecordClickEvent event) {
-                if (detailPanelShown) {
-                    showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID));
-                }
-            }
-        });
-        tileGrid.addRecordClickHandler(new RecordClickHandler() {
-
-            @Override
-            public void onRecordClick(RecordClickEvent event) {
-                int selLength = tileGrid.getSelection().length;
-                if (selLength > 0) {
-                    pageTypeItem.enable();
-                    if (selLength == 1) {
-                        String pageType = event.getRecord().getAttribute(Constants.ATTR_TYPE);
-                        pageTypeItem.setValue(Constants.PAGE_TYPES.MAP.get(pageType));
+                @Override
+                public void onDragMove(DragMoveEvent event) {
+                    if (tileGrid.getSelectedRecord() != null) {
+                        tileGrid.setDragAppearance(DragAppearance.TRACKER);
+                        String pageIcon =
+                                Canvas.imgHTML(getImageURLPrefix()
+                                                       + tileGrid
+                                                               .getSelectedRecord()
+                                                               .getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
+                                               25,
+                                               35);
+                        dragHandler.setMoveTracker(pageIcon);
                     } else {
-                        pageTypeItem.setValue("");
+                        tileGrid.setDragAppearance(DragAppearance.NONE);
                     }
-                } else {
-                    pageTypeItem.disable();
                 }
+            });
 
-            }
-        });
+            tileGrid.addDragStopHandler(new DragStopHandler() {
 
-        tileGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+                @Override
+                public void onDragStop(DragStopEvent event) {
+                    if (positionBeforeMoving >= 0) {
+                        Record[] selection = tileGrid.getSelection();
+                        if (selection.length > 0
+                                && tileGrid.getRecordIndex(selection[0]) == positionBeforeMoving) {
 
-            @Override
-            public void onSelectionChanged(SelectionChangedEvent event) {
-                if (isChosenSelectedPagesTab()) {
+                            undoList.remove(undoList.size() - 1);
+                            if (undoList.size() == 0) undoButton.disable();
 
-                    Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
-                    recordIdAndItsNewValue.put(event.getRecord().getAttribute(Constants.ATTR_ID),
-                                               event.getState() ? 1 : -1);
+                        } else if (isChosenSelectedPagesTab() && selection.length > 0) {
+                            Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
+                            for (Record selRecord : tileGrid.getData()) {
+                                recordIdAndItsNewValue.put(selRecord.getAttributeAsString(Constants.ATTR_ID),
+                                                           tileGrid.getRecordIndex(selRecord));
+                            }
+                            eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_POSITION,
+                                                                                recordIdAndItsNewValue));
 
-                    eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_SELECTION,
-                                                                        recordIdAndItsNewValue));
+                        }
+                        positionBeforeMoving = -1;
+                    }
                 }
-            }
-        });
+            });
 
-        final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE_OR_UUID);
-        pictureField.setType("image");
-        pictureField.setImageURLPrefix(getImageURLPrefix());
-        pictureField.setImageWidth(imageThumbnailWidth);
-        pictureField.setImageHeight(imageThumbnailHeight);
-        pictureField.setCellStyleHandler(new CellStyleHandler() {
+            getUiHandlers().setTileGridHandlers();
 
-            @Override
-            public String execute(Object value, DetailViewerField field, Record record) {
-                return setFieldFormating(record, true);
-            }
-        });
+            numbering = new PageNumberingManager(tileGrid);
+            Menu menu = new Menu();
+            menu.setShowShadow(true);
+            menu.setShadowDepth(10);
 
-        DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
-        nameField.setDetailFormatter(new DetailFormatter() {
+            MenuItem editItem = new MenuItem(lang.editPageName(), "icons/16/edit.png");
+            editItem.setEnableIfCondition(isSelected(true));
+            editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
-            @Override
-            public String format(Object value, Record record, DetailViewerField field) {
-                StringBuffer sb = new StringBuffer();
-                sb.append(lang.scan()).append(": ").append(value);
-                String pageType = record.getAttribute(Constants.ATTR_TYPE);
-                if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)) {
-                    sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
+                @Override
+                public void onClick(MenuItemClickEvent event) {
+                    editPageTitle(tileGrid.getSelectedRecord());
                 }
-                return sb.toString();
-            }
-        });
-        nameField.setCellStyleHandler(new CellStyleHandler() {
+            });
 
-            @Override
-            public String execute(Object value, DetailViewerField field, Record record) {
-                return setFieldFormating(record, false);
-            }
-        });
+            MenuItem viewItem = new MenuItem(lang.menuView(), "icons/16/eye.png");
+            viewItem.setAttribute(ID_NAME, ID_VIEW);
+            viewItem.setEnableIfCondition(isSelected(true));
+            viewItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
-        tileGrid.setFields(pictureField, nameField);
-        tileGrid.setData(items);
-        getUiHandlers().onAddImages(tileGrid, menu);
+                @Override
+                public void onClick(MenuItemClickEvent event) {
+                    final String uuid =
+                            tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+                    winModal = new Window();
+                    //                winModal.setWidth(1024);
+                    //                winModal.setHeight(768);
+                    winModal.setWidth("95%");
+                    winModal.setHeight("95%");
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(lang.scan()).append(": ")
+                            .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
+                    winModal.setTitle(sb.toString());
+                    winModal.setShowMinimizeButton(false);
+                    winModal.setIsModal(true);
+                    winModal.setShowModalMask(true);
+                    winModal.centerInPage();
+                    winModal.addCloseClickHandler(new CloseClickHandler() {
 
-        if (!resize) toolStrip = getToolStrip();
+                        @Override
+                        public void onCloseClick(CloseClickEvent event) {
+                            escShortCut();
 
-        pagesTabSet.setTabs(allPagesTab, selectedPagesTab);
-        allPagesTab.setPane(tileGrid);
-        selectedPagesTab.setPane(tileGrid);
-        tileGridLayout.addMember(toolStrip);
-        tileGridLayout.addMember(tileGrid);
-        tileGridLayout.addMember(pagesTabSet);
+                        }
+                    });
+                    HTMLPane viewerPane = new HTMLPane();
+                    viewerPane.setPadding(15);
+                    viewerPane.setContentsURL(hostname + "/meditor/viewer/viewer.html");
+                    java.util.Map<String, String> params = new java.util.HashMap<String, String>();
+                    params.put("rft_id", uuid);
+                    viewerPane.setContentsURLParams(params);
+                    viewerPane.setContentsType(ContentsType.PAGE);
+                    winModal.addItem(viewerPane);
+                    winModal.show();
+                }
+            });
+
+            MenuItem selectAllItem = new MenuItem(lang.menuSelectAll(), "icons/16/document_plain_new.png");
+            selectAllItem.setAttribute(ID_NAME, ID_SEL_ALL);
+
+            MenuItem deselectAllItem =
+                    new MenuItem(lang.menuDeselectAll(), "icons/16/document_plain_new_Disabled.png");
+            deselectAllItem.setAttribute(ID_NAME, ID_SEL_NONE);
+
+            MenuItem invertSelectionItem = new MenuItem(lang.menuInvertSelection(), "icons/16/invert.png");
+            invertSelectionItem.setAttribute(ID_NAME, ID_SEL_INV);
+
+            MenuItemSeparator separator = new MenuItemSeparator();
+            separator.setAttribute(ID_NAME, ID_SEPARATOR);
+
+            MenuItem copyItem = new MenuItem(lang.menuCopySelected(), "icons/16/copy.png");
+            copyItem.setAttribute(ID_NAME, ID_COPY);
+            copyItem.setEnableIfCondition(new MenuItemIfFunction() {
+
+                @Override
+                public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                    return tileGrid.getSelection().length > 0;
+                }
+            });
+
+            MenuItem pasteItem = new MenuItem(lang.menuPaste(), "icons/16/paste.png");
+            pasteItem.setAttribute(ID_NAME, ID_PASTE);
+            pasteItem.setEnableIfCondition(new MenuItemIfFunction() {
+
+                @Override
+                public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                    return CreateStructureView.this.clipboard != null
+                            && CreateStructureView.this.clipboard.length > 0;
+                }
+            });
+
+            MenuItem removeSelectedItem = new MenuItem(lang.menuRemoveSelected(), "icons/16/close.png");
+            removeSelectedItem.setAttribute(ID_NAME, ID_DELETE);
+            removeSelectedItem.setEnableIfCondition(new MenuItemIfFunction() {
+
+                @Override
+                public boolean execute(Canvas target, Menu menu, MenuItem item) {
+                    return tileGrid.getSelection().length > 0;
+                }
+            });
+
+            menu.setItems(editItem,
+                          viewItem,
+                          separator,
+                          selectAllItem,
+                          deselectAllItem,
+                          invertSelectionItem,
+                          separator,
+                          copyItem,
+                          pasteItem,
+                          removeSelectedItem);
+            tileGrid.setContextMenu(menu);
+            tileGrid.setDropTypes(model);
+            tileGrid.setCanAcceptDrop(true);
+            tileGrid.setCanAcceptDroppedRecords(true);
+            tileGrid.setDragType(model);
+            tileGrid.setDragAppearance(DragAppearance.TRACKER);
+            tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+
+                @Override
+                public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
+                    if (event.getRecord() != null) {
+                        try {
+                            final ModalWindow mw = new ModalWindow(layout);
+                            mw.setLoadingIcon("loadingAnimation.gif");
+                            mw.show(true);
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
+                                    .append('/')
+                                    .append(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID))
+                                    .append("?" + Constants.URL_PARAM_FULL + "=yes");
+                            final Image full = new Image(sb.toString());
+                            full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
+                            full.addLoadHandler(new LoadHandler() {
+
+                                @Override
+                                public void onLoad(LoadEvent event) {
+                                    mw.hide();
+                                    getPopupPanel().setVisible(true);
+                                    getPopupPanel().center();
+                                }
+                            });
+                            getPopupPanel().setWidget(full);
+                            getPopupPanel().addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                                @Override
+                                public void onClose(CloseEvent<PopupPanel> event) {
+                                    mw.hide();
+                                    getPopupPanel().setWidget(null);
+                                }
+                            });
+                            getPopupPanel().center();
+                            getPopupPanel().setVisible(false);
+
+                        } catch (Throwable t) {
+
+                            // TODO: handle
+                        }
+                    }
+                }
+            });
+
+            tileGrid.addRecordClickHandler(new RecordClickHandler() {
+
+                @Override
+                public void onRecordClick(RecordClickEvent event) {
+                    if (detailPanelShown) {
+                        showDetail(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID));
+                    }
+                }
+            });
+            tileGrid.addRecordClickHandler(new RecordClickHandler() {
+
+                @Override
+                public void onRecordClick(RecordClickEvent event) {
+                    int selLength = tileGrid.getSelection().length;
+                    if (selLength > 0) {
+                        pageTypeItem.enable();
+                        if (selLength == 1) {
+                            String pageType = event.getRecord().getAttribute(Constants.ATTR_TYPE);
+                            pageTypeItem.setValue(Constants.PAGE_TYPES.MAP.get(pageType));
+                        } else {
+                            pageTypeItem.setValue("");
+                        }
+                    } else {
+                        pageTypeItem.disable();
+                    }
+
+                }
+            });
+
+            tileGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+                @Override
+                public void onSelectionChanged(SelectionChangedEvent event) {
+                    if (isChosenSelectedPagesTab()) {
+
+                        Map<String, Integer> recordIdAndItsNewValue = new HashMap<String, Integer>();
+                        recordIdAndItsNewValue.put(event.getRecord().getAttribute(Constants.ATTR_ID),
+                                                   event.getState() ? 1 : -1);
+
+                        eventBus.fireEvent(new ChangeStructureTreeItemEvent(STRUCTURE_TREE_ITEM_ACTION.CHANGE_SELECTION,
+                                                                            recordIdAndItsNewValue));
+                    }
+                }
+            });
+
+            final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE_OR_UUID);
+            pictureField.setType("image");
+            pictureField.setImageURLPrefix(getImageURLPrefix());
+            pictureField.setImageWidth(imageThumbnailWidth);
+            pictureField.setImageHeight(imageThumbnailHeight);
+            pictureField.setCellStyleHandler(new CellStyleHandler() {
+
+                @Override
+                public String execute(Object value, DetailViewerField field, Record record) {
+                    return setFieldFormating(record, true);
+                }
+            });
+
+            DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
+            nameField.setDetailFormatter(new DetailFormatter() {
+
+                @Override
+                public String format(Object value, Record record, DetailViewerField field) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(lang.scan()).append(": ").append(value);
+                    String pageType = record.getAttribute(Constants.ATTR_TYPE);
+                    if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)) {
+                        sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
+                    }
+                    return sb.toString();
+                }
+            });
+            nameField.setCellStyleHandler(new CellStyleHandler() {
+
+                @Override
+                public String execute(Object value, DetailViewerField field, Record record) {
+                    return setFieldFormating(record, false);
+                }
+            });
+
+            tileGrid.setFields(pictureField, nameField);
+            tileGrid.setData(items);
+            getUiHandlers().onAddImages(tileGrid, menu);
+
+            if (!resize) toolStrip = getToolStrip();
+
+            pagesTabSet.setTabs(allPagesTab, selectedPagesTab);
+            allPagesTab.setPane(tileGrid);
+            selectedPagesTab.setPane(tileGrid);
+            tileGridLayout.addMember(toolStrip);
+            tileGridLayout.addMember(tileGrid);
+            tileGridLayout.addMember(pagesTabSet);
+
+        } else {
+
+            String pdfPath = items[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+
+            pdfViewerPane =
+                    new PdfViewerPane(Location.getPath() + Constants.SERVLET_GET_PDF_PREFIX + pdfPath, true);
+
+            tileGridLayout.addMember(pdfViewerPane);
+        }
         layout.addMember(tileGridLayout);
     }
 
@@ -744,7 +767,6 @@ public class CreateStructureView
         //        zoomItems.setDefaultValue("M");
         //        toolStrip.addFormItem(zoomItems);
         final ToolStripButton zoomButton = new ToolStripButton();
-        final ToolStripButton editMetadataButton = new ToolStripButton();
         zoomButton.setIcon("silk/zoom.png");
         zoomButton.setTitle(lang.pageDetail());
         zoomButton.setActionType(SelectionType.CHECKBOX);
@@ -798,40 +820,7 @@ public class CreateStructureView
         toolStrip.addButton(zoomOut);
         toolStrip.addSeparator();
 
-        editMetadataButton.setIcon("silk/metadata_edit.png");
-        editMetadataButton.setTitle(lang.editMeta());
-        editMetadataButton.setActionType(SelectionType.CHECKBOX);
-        editMetadataButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if (detailPanelShown) {
-                    detailPanelShown = false;
-                    tileGridLayout.removeMember(detailPanel);
-                    detailPanel = null;
-                    zoomButton.setSelected(false);
-                }
-                if (metadataPanel == null) {
-                    metadataPanel = new VLayout();
-                    metadataPanel.setPadding(5);
-                    metadataPanel.setAnimateMembers(true);
-                    metadataPanel.setAnimateHideTime(200);
-                    metadataPanel.setAnimateShowTime(200);
-                    metadataPanel.setHeight100();
-                    tileGridLayout.addMember(metadataPanel);
-                    metadataPanelShown = true;
-                    initModsOrDc();
-                } else if (metadataPanelShown) {
-                    metadataPanelShown = false;
-                    tileGridLayout.removeMember(metadataPanel);
-                } else {
-                    tileGridLayout.addMember(metadataPanel);
-                    metadataPanelShown = true;
-                }
-
-            }
-        });
-        toolStrip.addButton(editMetadataButton);
+        toolStrip.addButton(getEditMetadataButton(zoomOut));
 
         undoButton = new ToolStripButton();
         redoButton = new ToolStripButton();
@@ -880,23 +869,7 @@ public class CreateStructureView
 
         toolStrip.addSeparator();
 
-        ToolStripButton createButton = new ToolStripButton();
-        createButton.setIcon("silk/forward_green.png");
-        createButton.setTitle(lang.create());
-        createButton.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                new CreateWindow(lang, topTabSet, eventBus) {
-
-                    @Override
-                    protected void createAction(DublinCore dc, ModsTypeClient mods, Boolean makePublic) {
-                        getUiHandlers().createObjects(dc, mods, makePublic);
-                    }
-                };
-            }
-        });
-        toolStrip.addButton(createButton);
+        toolStrip.addButton(getCreateButton());
 
         pageTypeItem.disable();
         return toolStrip;
@@ -1623,7 +1596,7 @@ public class CreateStructureView
         }
 
         Record[] selection = tileGrid.getSelection();
-        onAddImages(model, tileGrid.getData(), hostname, true);
+        onAddImages(model, tileGrid.getData(), hostname, true, false);
         tileGrid.selectRecords(selection);
         mw.hide();
     }
@@ -1655,4 +1628,85 @@ public class CreateStructureView
             redoButton.enable();
         }
     }
+
+    @Override
+    public ToolStripButton getCreateButton() {
+        if (createButton != null && createButton.getParent() != null) {
+            createButton.removeFromParent();
+        }
+        createButton = new ToolStripButton();
+
+        createButton.setIcon("silk/forward_green.png");
+        createButton.setTitle(lang.create());
+
+        createButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                new CreateWindow(lang, topTabSet, eventBus) {
+
+                    @Override
+                    protected void createAction(DublinCore dc, ModsTypeClient mods, Boolean makePublic) {
+                        getUiHandlers().createObjects(dc, mods, makePublic);
+                    }
+                };
+            }
+        });
+        return createButton;
+    }
+
+    /**
+     * @return the editMetadataButton
+     */
+    @Override
+    public ToolStripButton getEditMetadataButton(final ToolStripButton zoomOut) {
+        if (editMetadataButton != null && editMetadataButton.getParent() != null) {
+            editMetadataButton.removeFromParent();
+        }
+        editMetadataButton = new ToolStripButton();
+
+        editMetadataButton.setIcon("silk/metadata_edit.png");
+        editMetadataButton.setTitle(lang.editMeta());
+        editMetadataButton.setActionType(SelectionType.CHECKBOX);
+        if (zoomOut == null) editMetadataButton.setExtraSpace(15);
+        editMetadataButton.setEdgeShowCenter(true);
+        editMetadataButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (detailPanelShown) {
+                    detailPanelShown = false;
+                    tileGridLayout.removeMember(detailPanel);
+                    detailPanel = null;
+                    if (zoomOut != null) zoomOut.setSelected(false);
+                }
+                if (metadataPanel == null) {
+                    metadataPanel = new VLayout();
+                    metadataPanel.setPadding(5);
+                    metadataPanel.setAnimateMembers(true);
+                    metadataPanel.setAnimateHideTime(200);
+                    metadataPanel.setAnimateShowTime(200);
+                    if (zoomOut != null) {
+                        metadataPanel.setHeight100();
+                    } else {
+                        metadataPanel.setHeight("50%");
+                        pdfViewerPane.setHeight("50%");
+                    }
+                    tileGridLayout.addMember(metadataPanel);
+                    metadataPanelShown = true;
+                    initModsOrDc();
+                } else if (metadataPanelShown) {
+                    metadataPanelShown = false;
+                    tileGridLayout.removeMember(metadataPanel);
+                    if (pdfViewerPane != null) pdfViewerPane.setHeight100();
+                } else {
+                    tileGridLayout.addMember(metadataPanel);
+                    metadataPanelShown = true;
+                }
+
+            }
+        });
+        return editMetadataButton;
+    }
+
 }

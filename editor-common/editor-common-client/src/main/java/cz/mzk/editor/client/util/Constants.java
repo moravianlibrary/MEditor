@@ -59,6 +59,9 @@ public class Constants {
     /** The Constant SERVLET_DOWNLOAD_DATASTREAMS_PREFIX. */
     public static final String SERVLET_DOWNLOAD_DATASTREAMS_PREFIX = "download/datastreams";
 
+    /** The Constant SERVLET_DOWNLOAD_DATASTREAMS_PREFIX. */
+    public static final String SERVLET_GET_PDF_PREFIX = "getPdf/";
+
     /** The Constant XML_HEADER_WITH_BACKSLASHES **/
     public static final String XML_HEADER_WITH_BACKSLASHES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
@@ -112,6 +115,12 @@ public class Constants {
     public static final String URL_PARAM_TOP_SPACE = "topSpace";
 
     public static final String URL_PARAM_BASE = "base";
+
+    /** The Constant URL_PARAM_PDF_PATH. */
+    public static final String URL_PARAM_PDF_PATH = "pdfPath";
+
+    /** The Constant PATH_TO_PDF_VIEWER. */
+    public static final String PATH_TO_PDF_VIEWER = "pdfViewer/web/viewer.html";
 
     // db
     /** Path to a file with current DB schema */
@@ -333,6 +342,9 @@ public class Constants {
 
     /** The Constant JPEG_2000_EXTENSION. */
     public static final String JPEG_2000_EXTENSION = ".jp2";
+
+    /** The Constant PDF_EXTENSION. */
+    public static final String PDF_EXTENSION = ".pdf";
 
     // foxml
     /** The Constant RELS_EXT_LAST_ELEMENT. */
@@ -863,7 +875,7 @@ public class Constants {
             "%", "\'", "[", "]", "{", "}", "(", ")"};
 
     public static enum SERVER_ACTION_RESULT {
-        OK, WRONG_FILE_NAME;
+        OK, WRONG_FILE_NAME, OK_PDF;
     }
 
     public static enum STRUCTURE_TREE_ITEM_ACTION {

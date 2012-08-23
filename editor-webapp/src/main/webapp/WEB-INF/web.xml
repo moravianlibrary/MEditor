@@ -93,6 +93,15 @@
 		<servlet-name>FullImgService</servlet-name>
 		<url-pattern>/images/full/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>PdfServiceImpl</servlet-name>
+		<servlet-class>cz.mzk.editor.server.PdfServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PdfServiceImpl</servlet-name>
+		<url-pattern>/getPdf/*</url-pattern>
+	</servlet-mapping>
 
 	<!-- Servlet for images of scans -->
 	<servlet>

@@ -53,6 +53,7 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TreeModelType;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
@@ -84,6 +85,7 @@ import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
 import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
@@ -169,7 +171,7 @@ public class CreateStructurePresenter
 
         PopupPanel getPopupPanel();
 
-        void onAddImages(String model, Record[] items, String hostname, boolean resize);
+        void onAddImages(String model, Record[] items, String hostname, boolean resize, boolean isPdf);
 
         void escShortCut();
 
@@ -190,6 +192,10 @@ public class CreateStructurePresenter
         void setUndoRedoButtonsDisabled(boolean disabled);
 
         boolean isChosenSelectedPagesTab();
+
+        ToolStripButton getEditMetadataButton(ToolStripButton zoomOut);
+
+        ToolStripButton getCreateButton();
 
     }
 
@@ -297,72 +303,80 @@ public class CreateStructurePresenter
 
             @Override
             public void onSaveStructure(SaveStructureEvent event) {
-                NewDigitalObject object = null;
-                try {
-                    object =
-                            ClientUtils.createTheStructure(null, leftPresenter.getView().getSubelementsGrid()
-                                    .getTree(), true);
-                } catch (CreateObjectException e) {
-                    SC.warn(e.getMessage());
-                    e.printStackTrace();
-                }
 
-                Record[] tilegridData =
-                        !getView().isChosenSelectedPagesTab() ? getView().getTileGrid().getData() : pages;
-                boolean emptyTree = object == null || object.getModel() == null;
-                boolean emptyPages = tilegridData == null || tilegridData.length == 0;
-                if (emptyTree && emptyPages) {
-                    SC.warn(lang.nothingToSave());
-                } else {
-                    String name =
-                            leftPresenter.getView().getSubelementsGrid().getTree()
-                                    .findById(SubstructureTreeNode.ROOT_OBJECT_ID)
-                                    .getAttributeAsString(Constants.ATTR_NAME);
-                    TreeStructureBundle bundle = new TreeStructureBundle();
-                    bundle.setInfo(new TreeStructureInfo(-1,
-                                                         null,
-                                                         null,
-                                                         leftPresenter.getBarcode(),
-                                                         name,
-                                                         null,
-                                                         inputPath,
-                                                         model));
-                    bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
-                    if (object == null)
+                if (getView().getTileGrid() != null) {
+                    NewDigitalObject object = null;
+
+                    try {
                         object =
-                                new NewDigitalObject(leftPresenter.getView().getSubelementsGrid().getTree()
-                                        .findById(SubstructureTreeNode.ROOT_ID)
-                                        .getAttribute(Constants.ATTR_NAME));
-                    else
-                        object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
-
-                    for (TreeNode node : leftPresenter.getView().getSubelementsGrid().getTree().getAllNodes()) {
-                        node.setAttribute(Constants.ATTR_PARENT, leftPresenter.getView().getSubelementsGrid()
-                                .getTree().getParent(node).getAttribute(Constants.ATTR_ID));
+                                ClientUtils.createTheStructure(null, leftPresenter.getView()
+                                        .getSubelementsGrid().getTree(), true);
+                    } catch (CreateObjectException e) {
+                        SC.warn(e.getMessage());
+                        e.printStackTrace();
                     }
 
-                    List<TreeStructureNode> nodes =
-                            ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
-                                    .getAllNodes());
-
-                    if (nodes != null) {
-                        bundle.getNodes().addAll(nodes);
+                    Record[] tilegridData =
+                            !getView().isChosenSelectedPagesTab() ? getView().getTileGrid().getData() : pages;
+                    boolean emptyTree = object == null || object.getModel() == null;
+                    boolean emptyPages = tilegridData == null || tilegridData.length == 0;
+                    if (emptyTree && emptyPages) {
+                        SC.warn(lang.nothingToSave());
                     } else {
-                        EditorSC.operationFailed(lang, "Please contact an administrator");
-                        return;
-                    }
+                        String name =
+                                leftPresenter.getView().getSubelementsGrid().getTree()
+                                        .findById(SubstructureTreeNode.ROOT_OBJECT_ID)
+                                        .getAttributeAsString(Constants.ATTR_NAME);
+                        TreeStructureBundle bundle = new TreeStructureBundle();
+                        bundle.setInfo(new TreeStructureInfo(-1,
+                                                             null,
+                                                             null,
+                                                             leftPresenter.getBarcode(),
+                                                             name,
+                                                             null,
+                                                             inputPath,
+                                                             model));
+                        bundle.setNodes(new ArrayList<TreeStructureBundle.TreeStructureNode>());
+                        if (object == null)
+                            object =
+                                    new NewDigitalObject(leftPresenter.getView().getSubelementsGrid()
+                                            .getTree().findById(SubstructureTreeNode.ROOT_ID)
+                                            .getAttribute(Constants.ATTR_NAME));
+                        else
+                            object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
 
-                    if (!emptyPages) {
-                        bundle.getNodes().addAll(ClientUtils.toNodes(tilegridData));
+                        for (TreeNode node : leftPresenter.getView().getSubelementsGrid().getTree()
+                                .getAllNodes()) {
+                            node.setAttribute(Constants.ATTR_PARENT,
+                                              leftPresenter.getView().getSubelementsGrid().getTree()
+                                                      .getParent(node).getAttribute(Constants.ATTR_ID));
+                        }
+
+                        List<TreeStructureNode> nodes =
+                                ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
+                                        .getAllNodes());
+
+                        if (nodes != null) {
+                            bundle.getNodes().addAll(nodes);
+                        } else {
+                            EditorSC.operationFailed(lang, "Please contact an administrator");
+                            return;
+                        }
+
+                        if (!emptyPages) {
+                            bundle.getNodes().addAll(ClientUtils.toNodes(tilegridData));
+                        }
+                        StoreTreeStructureWindow.setInstanceOf(bundle,
+                                                               emptyTree ? null : ClientUtils
+                                                                       .toStringTree(object),
+                                                               emptyPages ? null : ClientUtils
+                                                                       .recordsToString(tilegridData),
+                                                               lang,
+                                                               dispatcher,
+                                                               getEventBus());
                     }
-                    StoreTreeStructureWindow.setInstanceOf(bundle,
-                                                           emptyTree ? null : ClientUtils
-                                                                   .toStringTree(object),
-                                                           emptyPages ? null : ClientUtils
-                                                                   .recordsToString(tilegridData),
-                                                           lang,
-                                                           dispatcher,
-                                                           getEventBus());
+                } else {
+                    SC.warn(lang.nothingToSave());
                 }
             }
         });
@@ -527,21 +541,20 @@ public class CreateStructurePresenter
                         EditorSC.operationFailed(lang, "");
                     }
 
-                } else {
-                    if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
-                        SC.ask(lang.wrongFileName() + serverActionResult.getMessage(), new BooleanCallback() {
+                } else if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME) {
+                    SC.ask(lang.wrongFileName() + serverActionResult.getMessage(), new BooleanCallback() {
 
-                            @Override
-                            public void execute(Boolean value) {
-                                if (value != null && value && result != null && result.getToAdd() != null
-                                        && !result.getToAdd().isEmpty()) {
-                                    initializeConversion(result);
-                                }
+                        @Override
+                        public void execute(Boolean value) {
+                            if (value != null && value && result != null && result.getToAdd() != null
+                                    && !result.getToAdd().isEmpty()) {
+                                initializeConversion(result);
                             }
-                        });
-                    }
+                        }
+                    });
+                } else if (serverActionResult.getServerActionResult() == Constants.SERVER_ACTION_RESULT.OK_PDF) {
+                    handlePdf(result);
                 }
-
             }
 
             private void initializeConversion(final ScanFolderResult result) {
@@ -681,10 +694,13 @@ public class CreateStructurePresenter
                     getView().onAddImages(DigitalObjectModel.PAGE.getValue(),
                                           items,
                                           config.getHostname(),
+                                          false,
                                           false);
 
                 }
 
+                leftPresenter.getView().getSubelementsGrid().setFolderIcon("icons/16/structure.png");
+                leftPresenter.getView().getSectionStack().getSection(1).setTitle(lang.createSubStructure());
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
                 getView().getPopupPanel().setVisible(false);
@@ -1536,4 +1552,35 @@ public class CreateStructurePresenter
         return markedRecords;
     }
 
+    private void handlePdf(ScanFolderResult result) {
+        ImageItem item = result.getItems().get(0);
+        getView().onAddImages(DigitalObjectModel.PAGE.getValue(),
+                              new ScanRecord[] {new ScanRecord(item.getJpeg2000FsPath(), "", item
+                                      .getIdentifier(), "")},
+                              config.getHostname(),
+                              false,
+                              true);
+        getView().getPopupPanel().setAutoHideEnabled(true);
+        getView().getPopupPanel().setWidget(null);
+        getView().getPopupPanel().setVisible(false);
+        getView().getPopupPanel().hide();
+
+        VLayout leftLayout = new VLayout();
+        leftLayout.setHeight(100);
+
+        leftLayout.setAlign(Alignment.CENTER);
+        leftLayout.setAlign(VerticalAlignment.CENTER);
+        leftLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+
+        leftLayout.addMember(getView().getEditMetadataButton(null));
+        leftLayout.addMember(getView().getCreateButton());
+
+        leftPresenter.getView().setSectionCreateLayout(leftLayout);
+
+        leftPresenter.getView().getCreationModeItem().hide();
+        leftPresenter.getView().getSectionStack().getSection(1).setTitle("Menu");
+        leftPresenter.getView().getSubelementsGrid().setFolderIcon("icons/16/pdf.png");
+        leftPresenter.getView().getSubelementsGrid().redraw();
+
+    }
 }

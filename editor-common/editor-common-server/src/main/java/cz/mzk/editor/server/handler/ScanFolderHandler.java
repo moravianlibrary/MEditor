@@ -46,13 +46,16 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.IOUtils;
+import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
@@ -139,6 +142,11 @@ public class ScanFolderHandler
         if (imgFileNames == null) {
             throw new ActionException("No images found in " + prefix);
         }
+
+        if (imgFileNames.size() == 1 && imgFileNames.get(0).endsWith(Constants.PDF_EXTENSION)) {
+            return handlePdf(imgFileNames.get(0));
+        }
+
         Collections.sort(imgFileNames);
         // due to gwt performance issues, more
         // concrete interface is used
@@ -149,6 +157,10 @@ public class ScanFolderHandler
         try {
             resolvedIdentifiers = imageResolverDAO.resolveItems(imgFileNames);
             for (int i = 0; i < resolvedIdentifiers.size(); i++) {
+                if (imgFileNames.get(i).endsWith(Constants.PDF_EXTENSION)) {
+                    throw new ActionException("There is more than one pdf file or one pdf file and some other file with enable extension in "
+                            + prefix);
+                }
                 String newIdentifier = null;
                 String resolvedIdentifier = resolvedIdentifiers.get(i);
                 if (resolvedIdentifier == null) {
@@ -197,6 +209,28 @@ public class ScanFolderHandler
                                         new ServerActionResult(Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME,
                                                                sb.toString()));
         }
+    }
+
+    private ScanFolderResult handlePdf(String pdfPath) throws ActionException {
+        String uuid = UUID.nameUUIDFromBytes(new File(pdfPath).getAbsolutePath().getBytes()).toString();
+        String newPdfPath = configuration.getImagesPath() + uuid + Constants.PDF_EXTENSION;
+        try {
+            CreateObjectUtils.copyFile(pdfPath, newPdfPath);
+            LOGGER.info("Pdf file " + pdfPath + " has been copied to " + newPdfPath);
+        } catch (CreateObjectException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        }
+        ArrayList<ImageItem> result = new ArrayList<ImageItem>(1);
+        result.add(new ImageItem(uuid, newPdfPath, pdfPath));
+        try {
+            imageResolverDAO.insertItems(result);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new ActionException(e);
+        }
+        return new ScanFolderResult(result, null, new ServerActionResult(SERVER_ACTION_RESULT.OK_PDF));
     }
 
     /**
