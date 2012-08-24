@@ -517,7 +517,7 @@ public class RemoveDigitalObjectHandler
             e.printStackTrace();
         }
 
-        boolean successful = RESTHelper.post(url, null, usr, pass, true);
+        boolean successful = RESTHelper.post(url, "", usr, pass, true);
 
         return successful;
     }

@@ -39,11 +39,14 @@ import cz.mzk.editor.client.util.Constants;
 public class PdfViewerPane
         extends HTMLPane {
 
+    private final String uuid;
+
     /**
      * 
      */
-    public PdfViewerPane(String pathToPdfParam, boolean showEdges) {
+    public PdfViewerPane(String pathToPdfParam, boolean showEdges, String uuid) {
         super();
+        this.uuid = uuid;
 
         setShowResizeBar(true);
         setShowEdges(showEdges);
@@ -52,6 +55,13 @@ public class PdfViewerPane
         setContentsURLParams(params);
         setContentsURL(Constants.PATH_TO_PDF_VIEWER);
         setContentsType(ContentsType.PAGE);
-
     }
+
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
 }

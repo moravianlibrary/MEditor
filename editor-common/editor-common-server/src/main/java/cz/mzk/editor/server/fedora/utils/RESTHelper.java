@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -103,7 +104,7 @@ public class RESTHelper {
      */
     public static URLConnection openConnection(String urlString, String user, String pass, boolean robustMode)
             throws MalformedURLException, IOException {
-        return openConnection(urlString, user, pass, GET, null, robustMode);
+        return openConnection(urlString, user, pass, GET, null, null, robustMode);
     }
 
     /**
@@ -130,6 +131,7 @@ public class RESTHelper {
                                                 String pass,
                                                 final int method,
                                                 String content,
+                                                InputStream contentIs,
                                                 boolean robustMode) throws MalformedURLException, IOException {
         try {
             Thread.sleep(Constants.REST_DELAY);
@@ -185,13 +187,24 @@ public class RESTHelper {
                         e.printStackTrace();
                         return uc;
                     }
+                    OutputStream os = null;
                     try {
-                        if (content != null) out.write(content);
+                        if (content != null) {
+                            out.write(content);
+                        } else if (contentIs != null) {
+                            os = uc.getOutputStream();
+                            IOUtils.copyStreams(contentIs, os);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         return uc;
                     }
-                    out.flush();
+                    if (os != null) {
+                        os.flush();
+                    } else {
+                        out.flush();
+                    }
+
                     break;
                 case DELETE:
                     uc.setDoOutput(true);
@@ -232,13 +245,14 @@ public class RESTHelper {
      */
     private static boolean putOrPost(String urlString,
                                      String content,
+                                     InputStream contentIs,
                                      String user,
                                      String pass,
                                      boolean robustMode,
                                      boolean isPut) {
         URLConnection conn = null;
         try {
-            conn = openConnection(urlString, user, pass, isPut ? PUT : POST, content, robustMode);
+            conn = openConnection(urlString, user, pass, isPut ? PUT : POST, content, contentIs, robustMode);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
@@ -271,7 +285,7 @@ public class RESTHelper {
      * @return true, if successful
      */
     public static boolean put(String urlString, String content, String user, String pass, boolean robustMode) {
-        return putOrPost(urlString, content, user, pass, robustMode, true);
+        return putOrPost(urlString, content, null, user, pass, robustMode, true);
     }
 
     /**
@@ -288,7 +302,28 @@ public class RESTHelper {
      * @return true, if successful
      */
     public static boolean post(String urlString, String content, String user, String pass, boolean robustMode) {
-        return putOrPost(urlString, content, user, pass, robustMode, false);
+        return putOrPost(urlString, content, null, user, pass, robustMode, false);
+    }
+
+    /**
+     * Post.
+     * 
+     * @param urlString
+     *        the url string
+     * @param contentIs
+     *        the contentIs
+     * @param user
+     *        the user
+     * @param pass
+     *        the pass
+     * @return true, if successful
+     */
+    public static boolean post(String urlString,
+                               InputStream contentIs,
+                               String user,
+                               String pass,
+                               boolean robustMode) {
+        return putOrPost(urlString, null, contentIs, user, pass, robustMode, false);
     }
 
     /**
@@ -345,7 +380,7 @@ public class RESTHelper {
                                  boolean isResultString) {
         HttpURLConnection uc = null;
         try {
-            uc = (HttpURLConnection) openConnection(urlString, user, pass, DELETE, null, robustMode);
+            uc = (HttpURLConnection) openConnection(urlString, user, pass, DELETE, null, null, robustMode);
             if (uc == null) return Boolean.FALSE.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();

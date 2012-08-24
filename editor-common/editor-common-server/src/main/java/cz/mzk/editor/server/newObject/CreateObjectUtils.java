@@ -26,6 +26,7 @@ package cz.mzk.editor.server.newObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +55,6 @@ import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.server.fedora.utils.RESTHelper;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
@@ -123,6 +123,11 @@ public class CreateObjectUtils {
         if (builder == null) {
             throw new CreateObjectException("unknown type " + node.getModel());
         }
+        boolean isPdf =
+                node.getModel().getTopLevelType() != null
+                        && (node.getChildren() == null || node.getChildren().size() == 0)
+                        && node.getPath() != null;
+
         if (node.getUuid() == null || attempt != Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
             node.setUuid(FoxmlUtils.getRandomUuid());
         }
@@ -217,17 +222,20 @@ public class CreateObjectUtils {
 
             String ocrPath = node.getAditionalInfoOrOcr();
             if (ocrPath != null && !"".equals(ocrPath)) {
-                insertAltoOcr(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath);
+                insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, "text/xml");
             }
 
             String altoPath = node.getPartNumberOrAlto();
             if (altoPath != null && !"".equals(altoPath)) {
-                insertAltoOcr(DATASTREAM_ID.ALTO, node.getUuid(), altoPath);
+                insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, "text/xml");
             }
         }
 
         if (!success) {
             insertFOXML(node, mods, dc, attempt - 1, sysno, base, processedPages);
+        } else if (isPdf) {
+            insertManagedDatastream(DATASTREAM_ID.IMG_FULL, node.getUuid(), config.getImagesPath()
+                    + File.separator + node.getPath() + Constants.PDF_EXTENSION, "application/pdf");
         }
         if (node.getModel() == DigitalObjectModel.PAGE) processedPages.put(node.getPath(), node.getUuid());
         return node.getUuid();
@@ -275,25 +283,36 @@ public class CreateObjectUtils {
         return success;
     }
 
-    private static boolean insertAltoOcr(DATASTREAM_ID dsId, String uuid, String filePath) {
+    private static boolean insertManagedDatastream(DATASTREAM_ID dsId,
+                                                   String uuid,
+                                                   String filePath,
+                                                   String mimeType) throws CreateObjectException {
 
         String prepUrl =
                 "/objects/" + (uuid.contains("uuid:") ? uuid : "uuid:".concat(uuid)) + "/datastreams/"
-                        + dsId.getValue() + "?controlGroup=M&versionable=false&dsState=A&mimeType=text/xml";
+                        + dsId.getValue() + "?controlGroup=M&versionable=true&dsState=A&mimeType=" + mimeType;
 
-        String content = null;
-        try {
-            content = new String(IOUtils.bos(new File(filePath)));
-        } catch (IOException e1) {
-            LOGGER.error("An error occured when an " + dsId.getValue() + " file: " + filePath
-                    + " was being read. The Error: " + e1.getMessage());
-            return false;
-        }
+        //        String content = null;
+        //        try {
+        //            content = new String(IOUtils.bos(new File(filePath)));
+        //        } catch (IOException e1) {
+        //            LOGGER.error("An error occured when an " + dsId.getValue() + " file: " + filePath
+        //                    + " was being read. The Error: " + e1.getMessage());
+        //            return false;
+        //        }
 
         String login = config.getFedoraLogin();
         String password = config.getFedoraPassword();
         String url = config.getFedoraHost().concat(prepUrl);
-        boolean success = RESTHelper.post(url, content, login, password, false);
+        boolean success;
+        try {
+            success = RESTHelper.post(url, new FileInputStream(new File(filePath)), login, password, false);
+        } catch (FileNotFoundException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new CreateObjectException("Unable to post a file: " + filePath
+                    + " as a managed datastream to the object: " + uuid);
+        }
 
         if (success) {
             LOGGER.info("An " + dsId.getValue() + " file: " + filePath

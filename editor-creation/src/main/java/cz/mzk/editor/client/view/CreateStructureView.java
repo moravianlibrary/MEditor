@@ -228,7 +228,7 @@ public class CreateStructureView
 
     private ToolStripButton createButton = null;
 
-    private HTMLPane pdfViewerPane = null;
+    private PdfViewerPane pdfViewerPane = null;
 
     /**
      * Instantiates a new create view.
@@ -653,10 +653,12 @@ public class CreateStructureView
 
         } else {
 
-            String pdfPath = items[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+            String uuid = items[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
 
             pdfViewerPane =
-                    new PdfViewerPane(Location.getPath() + Constants.SERVLET_GET_PDF_PREFIX + pdfPath, true);
+                    new PdfViewerPane(Location.getPath() + Constants.SERVLET_GET_PDF_PREFIX + uuid,
+                                      true,
+                                      uuid);
 
             tileGridLayout.addMember(pdfViewerPane);
         }
@@ -1707,6 +1709,13 @@ public class CreateStructureView
             }
         });
         return editMetadataButton;
+    }
+
+    /**
+     * @return the pdfViewerPane
+     */
+    public PdfViewerPane getPdfViewerPane() {
+        return pdfViewerPane;
     }
 
 }

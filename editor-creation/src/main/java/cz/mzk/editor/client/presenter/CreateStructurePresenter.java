@@ -106,6 +106,7 @@ import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.CreateStructureView;
 import cz.mzk.editor.client.view.other.LabelAndModelConverter;
+import cz.mzk.editor.client.view.other.PdfViewerPane;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.client.view.window.ChooseDetailWindow;
@@ -197,6 +198,7 @@ public class CreateStructurePresenter
 
         ToolStripButton getCreateButton();
 
+        PdfViewerPane getPdfViewerPane();
     }
 
     /**
@@ -310,7 +312,7 @@ public class CreateStructurePresenter
                     try {
                         object =
                                 ClientUtils.createTheStructure(null, leftPresenter.getView()
-                                        .getSubelementsGrid().getTree(), true);
+                                        .getSubelementsGrid().getTree(), true, false);
                     } catch (CreateObjectException e) {
                         SC.warn(e.getMessage());
                         e.printStackTrace();
@@ -699,7 +701,11 @@ public class CreateStructurePresenter
 
                 }
 
-                leftPresenter.getView().getSubelementsGrid().setFolderIcon("icons/16/structure.png");
+                if (!"icons/16/structure.png".equals(leftPresenter.getView().getSubelementsGrid()
+                        .getFolderIcon())) {
+                    leftPresenter.getView().getSubelementsGrid().setFolderIcon("icons/16/structure.png");
+                    leftPresenter.getView().getSubelementsGrid().redraw();
+                }
                 leftPresenter.getView().getSectionStack().getSection(1).setTitle(lang.createSubStructure());
                 getView().getPopupPanel().setAutoHideEnabled(true);
                 getView().getPopupPanel().setWidget(null);
@@ -1402,18 +1408,22 @@ public class CreateStructurePresenter
                             : new ModsCollectionClient();
         }
         NewDigitalObject object = null;
+
         try {
             TreeGrid treeGrid = leftPresenter.getView().getSubelementsGrid();
-            object =
-                    ClientUtils.createTheStructure(new MetadataBundle(newDc == null ? new DublinCore()
-                                                           : newDc, newMods, bundle == null ? null : bundle
-                                                           .getMarc()),
-                                                   treeGrid.getTree(),
-                                                   visible);
+            boolean isPdf = getView().getTileGrid() == null && getView().getPdfViewerPane() != null;
+            MetadataBundle metadataBundle =
+                    new MetadataBundle(newDc == null ? new DublinCore() : newDc,
+                                       newMods,
+                                       bundle == null ? null : bundle.getMarc());
+            object = ClientUtils.createTheStructure(metadataBundle, treeGrid.getTree(), visible, isPdf);
+            if (isPdf) object.setPath(getView().getPdfViewerPane().getUuid());
+
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
             e.printStackTrace();
         }
+
         if (object != null) {
             object.setSysno(sysno);
             object.setBase(base);

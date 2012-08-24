@@ -237,13 +237,15 @@ public class ClientUtils {
         return list.toArray(new ListGridRecord[] {});
     }
 
-    public static NewDigitalObject createTheStructure(MetadataBundle bundle, Tree tree, boolean visible)
-            throws CreateObjectException {
+    public static NewDigitalObject createTheStructure(MetadataBundle bundle,
+                                                      Tree tree,
+                                                      boolean visible,
+                                                      boolean isPdf) throws CreateObjectException {
 
         Map<String, NewDigitalObject> processedPages = new HashMap<String, NewDigitalObject>();
 
         TreeNode root = tree.findById(SubstructureTreeNode.ROOT_OBJECT_ID);
-        if (root == null || tree.getChildren(root).length == 0) {
+        if (root == null || (tree.getChildren(root).length == 0 && !isPdf)) {
             return null;
         }
 
@@ -251,10 +253,7 @@ public class ClientUtils {
         if (name == null || "".equals(name)) {
             throw new CreateObjectException("unknown name");
         }
-        TreeNode[] children = tree.getChildren(root);
-        if (children.length == 0) {
-            return new NewDigitalObject(name);
-        }
+
         String modelString = root.getAttribute(Constants.ATTR_MODEL_ID);
         if (modelString == null || "".equals(modelString)) {
             throw new CreateObjectException("unknown type");
@@ -268,7 +267,8 @@ public class ClientUtils {
         boolean exists = root.getAttributeAsBoolean(Constants.ATTR_EXIST);
         NewDigitalObject newObj = new NewDigitalObject(0, name, model, bundle, exists ? name : null, exists);
         newObj.setVisible(visible);
-        createChildrenStructure(tree, root, bundle, visible, processedPages, newObj);
+        if (tree.getChildren(root).length > 0)
+            createChildrenStructure(tree, root, bundle, visible, processedPages, newObj);
         return newObj;
     }
 
