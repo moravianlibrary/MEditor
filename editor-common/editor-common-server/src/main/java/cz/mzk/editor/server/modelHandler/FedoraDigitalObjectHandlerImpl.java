@@ -86,6 +86,7 @@ public class FedoraDigitalObjectHandlerImpl
         detail.setLabel(foxml.getLabel());
         detail.setOcr(handleOCR(uuid, getFedoraAccess()));
         detail.setFirstPageURL(FedoraUtils.findFirstPagePid(uuid));
+        detail.setPdf(foxml.isPdf());
         return detail;
     }
 

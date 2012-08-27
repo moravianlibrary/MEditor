@@ -92,6 +92,8 @@ public class DigitalObjectDetail
 
     private LockInfo lockInfo;
 
+    private boolean isPdf = false;
+
     public boolean thereWasAnyOcr() {
         return thereWasAnyOcr;
     }
@@ -403,4 +405,18 @@ public class DigitalObjectDetail
         this.lockInfo = lockInfo;
     }
 
+    /**
+     * @return the isPdf
+     */
+    public boolean isPdf() {
+        return isPdf;
+    }
+
+    /**
+     * @param isPdf
+     *        the isPdf to set
+     */
+    public void setPdf(boolean isPdf) {
+        this.isPdf = isPdf;
+    }
 }

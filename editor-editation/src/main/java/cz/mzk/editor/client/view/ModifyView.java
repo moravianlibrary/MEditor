@@ -107,6 +107,7 @@ import cz.mzk.editor.client.view.other.EditorTabSet;
 import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.other.InfoTab;
 import cz.mzk.editor.client.view.other.ModsTab;
+import cz.mzk.editor.client.view.other.PdfViewerPane;
 import cz.mzk.editor.client.view.window.DownloadFoxmlWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.ModsWindow;
@@ -440,6 +441,7 @@ public class ModifyView
         topTabSet.setHeight100();
         topTabSet.setAnimateTabScrolling(true);
         topTabSet.setShowPaneContainerEdges(false);
+        topTabSet.setPdf(detail.isPdf());
         int insertPosition = -1;
         topTabSet.setStoredDigitalObject(storedDigitalObject);
 
@@ -676,11 +678,15 @@ public class ModifyView
 
                         @Override
                         public void run() {
-                            if (!((EditorTabSet) event.getTab().getTabSet()).isStoredDigitalObject()) {
-                                getUiHandlers().getStream(uuid,
-                                                          DigitalObjectModel.parseString(event.getTab()
-                                                                  .getAttribute(ID_MODEL)),
-                                                          event.getTab().getTabSet());
+                            EditorTabSet tabSet = (EditorTabSet) event.getTab().getTabSet();
+                            if (!tabSet.isStoredDigitalObject()) {
+                                DigitalObjectModel selectedTabModel =
+                                        DigitalObjectModel.parseString(event.getTab().getAttribute(ID_MODEL));
+                                if (selectedTabModel != DigitalObjectModel.PAGE || !tabSet.isPdf()) {
+                                    getUiHandlers().getStream(uuid, selectedTabModel, tabSet);
+                                } else {
+                                    event.getTab().setPane(new PdfViewerPane(uuid, true));
+                                }
                             }
                             mw.hide();
                         }

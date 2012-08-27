@@ -30,6 +30,7 @@ package cz.mzk.editor.server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import java.net.HttpURLConnection;
 
@@ -47,8 +48,10 @@ import com.google.inject.Injector;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.IOUtils;
+import cz.mzk.editor.server.fedora.utils.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -83,10 +86,23 @@ public class PdfServiceImpl
             LOGGER.error("Problem with downloading pdf file - the path is empty.");
         }
 
+        InputStream is;
+        if (pdfPath.startsWith("/" + Constants.URL_PDF_FROM_FEDORA_PREFIX)) {
+
+            is =
+                    RESTHelper.get(config.getFedoraHost() + "/objects"
+                                           + pdfPath.substring(Constants.URL_PDF_FROM_FEDORA_PREFIX.length())
+                                           + "/datastreams/" + DATASTREAM_ID.IMG_FULL + "/content",
+                                   config.getFedoraLogin(),
+                                   config.getFedoraPassword(),
+                                   false);
+        } else {
+            is =
+                    new FileInputStream(config.getImagesPath() + File.separator + pdfPath
+                            + Constants.PDF_EXTENSION);
+        }
+
         ServletOutputStream os = resp.getOutputStream();
-        FileInputStream is =
-                new FileInputStream(config.getImagesPath() + File.separator + pdfPath
-                        + Constants.PDF_EXTENSION);
         try {
             IOUtils.copyStreams(is, os);
         } catch (IOException e) {
@@ -105,6 +121,7 @@ public class PdfServiceImpl
                 }
             }
         }
+
     }
 
     /*

@@ -27,6 +27,7 @@ package cz.mzk.editor.client.view.other;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.Window.Location;
 import com.smartgwt.client.types.ContentsType;
 import com.smartgwt.client.widgets.HTMLPane;
 
@@ -42,16 +43,20 @@ public class PdfViewerPane
     private final String uuid;
 
     /**
-     * 
+     * @param showEdges
+     * @param uuid
+     * @param isLocal
      */
-    public PdfViewerPane(String pathToPdfParam, boolean showEdges, String uuid) {
+    public PdfViewerPane(String uuid, boolean fromFedora) {
         super();
         this.uuid = uuid;
 
         setShowResizeBar(true);
-        setShowEdges(showEdges);
+        setShowEdges(true);
         Map<String, String> params = new HashMap<String, String>();
-        params.put(Constants.URL_PARAM_PDF_PATH, pathToPdfParam);
+        params.put(Constants.URL_PARAM_PDF_PATH, Location.getPath() + Constants.SERVLET_GET_PDF_PREFIX
+                + ((fromFedora) ? Constants.URL_PDF_FROM_FEDORA_PREFIX : "")
+                + (uuid.contains("uuid:") ? ("uuid%3A" + uuid.substring("uuid:".length())) : uuid));
         setContentsURLParams(params);
         setContentsURL(Constants.PATH_TO_PDF_VIEWER);
         setContentsType(ContentsType.PAGE);

@@ -287,7 +287,7 @@ public class CreateObjectUtils {
         String uuid = (node.getUuid().contains("uuid:") ? node.getUuid() : "uuid:".concat(node.getUuid()));
         String pathWithoutExtension = config.getImagesPath() + File.separator + node.getPath();
         if (insertManagedDatastream(DATASTREAM_ID.IMG_FULL, uuid, pathWithoutExtension
-                + Constants.PDF_EXTENSION, "application/pdf")) {
+                + Constants.PDF_EXTENSION, Constants.PDF_MIMETYPE)) {
             createThumbPrewFromPdf(DATASTREAM_ID.IMG_THUMB,
                                    pathWithoutExtension,
                                    node.getPageIndex(),

@@ -45,6 +45,8 @@ public class EditorTabSet
 
     private DigitalObjectModel model;
 
+    private boolean isPdf = false;
+
     /**
      * @return the lockInfo
      */
@@ -180,6 +182,21 @@ public class EditorTabSet
 
     public void setStoredDigitalObject(boolean storedDigitalObject) {
         this.storedDigitalObject = storedDigitalObject;
+    }
+
+    /**
+     * @return the isPdf
+     */
+    public boolean isPdf() {
+        return isPdf;
+    }
+
+    /**
+     * @param isPdf
+     *        the isPdf to set
+     */
+    public void setPdf(boolean isPdf) {
+        this.isPdf = isPdf;
     }
 
 }

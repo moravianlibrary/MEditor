@@ -119,6 +119,9 @@ public class Constants {
     /** The Constant URL_PARAM_PDF_PATH. */
     public static final String URL_PARAM_PDF_PATH = "pdfPath";
 
+    /** The Constant URL_PDF_FROM_FEDORA_SUFFIX. */
+    public static final String URL_PDF_FROM_FEDORA_PREFIX = "fromFedora/";
+
     /** The Constant PATH_TO_PDF_VIEWER. */
     public static final String PATH_TO_PDF_VIEWER = "pdfViewer/web/viewer.html";
 
@@ -345,6 +348,9 @@ public class Constants {
 
     /** The Constant PDF_EXTENSION. */
     public static final String PDF_EXTENSION = ".pdf";
+
+    /** The Constant PDF_MIMETYPE. */
+    public static final String PDF_MIMETYPE = "application/pdf";
 
     // foxml
     /** The Constant RELS_EXT_LAST_ELEMENT. */

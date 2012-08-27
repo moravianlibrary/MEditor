@@ -44,6 +44,7 @@ public class Foxml
     private String identifier;
     private String foxml;
     private String noCodedfoxml;
+    private boolean isPdf;
 
     public String getFoxml() {
         return foxml;
@@ -92,6 +93,21 @@ public class Foxml
 
     public int getId() {
         return id;
+    }
+
+    /**
+     * @return the isPdf
+     */
+    public boolean isPdf() {
+        return isPdf;
+    }
+
+    /**
+     * @param isPdf
+     *        the isPdf to set
+     */
+    public void setPdf(boolean isPdf) {
+        this.isPdf = isPdf;
     }
 
     /*

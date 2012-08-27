@@ -119,9 +119,15 @@ public class FoxmlUtils {
             Document foxmlDocument = getFoxmlDocument(is);
             foxml.setIdentifier(uuid);
             foxml.setLabel(FoxmlUtils.getLabel(foxmlDocument));
+            foxml.setPdf(XMLUtils.getElement(foxmlDocument,
+                                             "//foxml:datastream[@ID=\'IMG_FULL\']/foxml:datastreamVersion[@MIMETYPE=\'"
+                                                     + Constants.PDF_MIMETYPE + "\']") != null);
 
         } catch (IOException e) {
             LOGGER.error("Unable to get Foxml metadata for " + uuid + "[" + e.getMessage() + "]", e);
+        } catch (XPathExpressionException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
         return foxml;
     }

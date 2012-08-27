@@ -42,7 +42,6 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -655,10 +654,7 @@ public class CreateStructureView
 
             String uuid = items[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
 
-            pdfViewerPane =
-                    new PdfViewerPane(Location.getPath() + Constants.SERVLET_GET_PDF_PREFIX + uuid,
-                                      true,
-                                      uuid);
+            pdfViewerPane = new PdfViewerPane(uuid, false);
 
             tileGridLayout.addMember(pdfViewerPane);
         }
