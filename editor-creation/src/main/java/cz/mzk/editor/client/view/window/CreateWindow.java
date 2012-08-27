@@ -25,12 +25,14 @@
 package cz.mzk.editor.client.view.window;
 
 import com.google.gwt.event.shared.EventBus;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -54,9 +56,13 @@ public abstract class CreateWindow
      * @param width
      * @param title
      * @param eventBus
+     * @param isPdf
      * @param milisToWait
      */
-    public CreateWindow(LangConstants lang, final EditorTabSet topTabSet, EventBus eventBus) {
+    public CreateWindow(final LangConstants lang,
+                        final EditorTabSet topTabSet,
+                        EventBus eventBus,
+                        final boolean isPdf) {
         super(200, 350, lang.publishName(), eventBus, 20);
 
         HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
@@ -66,7 +72,6 @@ public abstract class CreateWindow
         form.setMargin(0);
         form.setWidth(100);
         form.setHeight(30);
-        form.setExtraSpace(7);
 
         HTMLFlow setRightsFlow = new HTMLFlow(lang.setRights());
 
@@ -87,6 +92,15 @@ public abstract class CreateWindow
                 makePublic.setValue(!makePrivate.getValueAsBoolean());
             }
         });
+
+        final TextItem thumbPageNumItem =
+                new TextItem("thumbPageNum", "Insert a page number to be used for a thumbnail");
+        if (isPdf) {
+            thumbPageNumItem.setWidth(50);
+            thumbPageNumItem.setDefaultValue("1");
+            thumbPageNumItem.setWrapTitle(false);
+        }
+
         Button publish = new Button();
         publish.setTitle(lang.ok());
         publish.addClickHandler(new ClickHandler() {
@@ -102,7 +116,19 @@ public abstract class CreateWindow
                         mods = ((ModsTab) topTabSet.getModsTab()).getMods();
                     }
                 }
-                createAction(dc, mods, makePublic.getValueAsBoolean());
+
+                int thumbPageNum = Integer.MIN_VALUE;
+                if (isPdf) {
+                    try {
+                        thumbPageNum = Integer.parseInt(thumbPageNumItem.getValueAsString());
+                    } catch (NumberFormatException nfe) {
+                        SC.say(lang.notANumber());
+                        return;
+                    }
+                    if (thumbPageNum <= 0) SC.say(lang.notANumber());
+                }
+
+                createAction(dc, mods, makePublic.getValueAsBoolean(), thumbPageNum);
                 hide();
             }
         });
@@ -120,11 +146,27 @@ public abstract class CreateWindow
         hLayout.addMember(publish);
         hLayout.addMember(cancel);
         hLayout.setMargin(5);
+
         form.setFields(makePublic, makePrivate);
+
         setEdgeOffset(20);
         addItem(label);
         addItem(setRightsFlow);
-        addItem(form);
+
+        if (!isPdf) {
+            form.setExtraSpace(7);
+            addItem(form);
+        } else {
+            addItem(form);
+            final DynamicForm thumbForm = new DynamicForm();
+            thumbForm.setMargin(0);
+            thumbForm.setWidth(100);
+            thumbForm.setFields(thumbPageNumItem);
+            thumbForm.setExtraSpace(7);
+            setHeight(250);
+            addItem(thumbForm);
+        }
+
         addItem(hLayout);
 
         centerInPage();
@@ -132,5 +174,8 @@ public abstract class CreateWindow
         publish.focus();
     }
 
-    protected abstract void createAction(DublinCore dc, ModsTypeClient mods, Boolean makePublic);
+    protected abstract void createAction(DublinCore dc,
+                                         ModsTypeClient mods,
+                                         Boolean makePublic,
+                                         int thumbPageNum);
 }

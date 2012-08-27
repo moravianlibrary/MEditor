@@ -537,7 +537,7 @@ public class Constants {
      */
     public static enum DATASTREAM_ID {
         DC("DC"), RELS_EXT("RELS-EXT"), BIBLIO_MODS("BIBLIO_MODS"), POLICY("POLICY"), IMG_FULL("IMG_FULL"),
-        IMG_THUMB("IMG_THUMB"), TEI("TEI"), TEXT_OCR("TEXT_OCR"), ALTO("ALTO");
+        IMG_THUMB("IMG_THUMB"), IMG_PREVIEW("IMG_PREVIEW"), TEI("TEI"), TEXT_OCR("TEXT_OCR"), ALTO("ALTO");
 
         private final String value;
 

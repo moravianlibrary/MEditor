@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.nio.charset.Charset;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,8 @@ import javax.inject.Inject;
 import com.google.inject.name.Named;
 
 import org.apache.log4j.Logger;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -55,6 +59,7 @@ import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
+import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.server.fedora.utils.RESTHelper;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
@@ -101,6 +106,43 @@ public class CreateObjectUtils {
         if (attempt == 0) {
             throw new CreateObjectException("max number of attempts has been reached");
         }
+
+        boolean isPdf =
+                node.getModel().getTopLevelType() != null
+                        && (node.getChildren() == null || node.getChildren().size() == 0)
+                        && node.getPath() != null;
+
+        if (isPdf && attempt == Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
+            PDDocument document = null;
+            try {
+                document =
+                        PDDocument.load(new File(config.getImagesPath() + File.separator + node.getPath()
+                                + Constants.PDF_EXTENSION));
+                int numberOfPages = document.getNumberOfPages();
+                if (node.getPageIndex() > numberOfPages - 1)
+                    throw new CreateObjectException("The number of page: " + node.getPageIndex()
+                            + " to be used for thumbnail is bigger than count of pages in the file: "
+                            + numberOfPages);
+
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException("Unable to read the pdf file: " + config.getImagesPath()
+                        + File.separator + node.getPath() + Constants.PDF_EXTENSION);
+            } finally {
+                if (document != null)
+                    try {
+                        document.close();
+                    } catch (IOException e) {
+                        LOGGER.error(e.getMessage());
+                        e.printStackTrace();
+                        throw new CreateObjectException("Unable to close the pdf file: "
+                                + config.getImagesPath() + File.separator + node.getPath()
+                                + Constants.PDF_EXTENSION);
+                    }
+            }
+        }
+
         if (processedPages.containsKey(node.getPath())) {
             node.setExist(true);
             node.setUuid(processedPages.get(node.getPath()));
@@ -123,10 +165,6 @@ public class CreateObjectUtils {
         if (builder == null) {
             throw new CreateObjectException("unknown type " + node.getModel());
         }
-        boolean isPdf =
-                node.getModel().getTopLevelType() != null
-                        && (node.getChildren() == null || node.getChildren().size() == 0)
-                        && node.getPath() != null;
 
         if (node.getUuid() == null || attempt != Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
             node.setUuid(FoxmlUtils.getRandomUuid());
@@ -233,12 +271,90 @@ public class CreateObjectUtils {
 
         if (!success) {
             insertFOXML(node, mods, dc, attempt - 1, sysno, base, processedPages);
+
         } else if (isPdf) {
-            insertManagedDatastream(DATASTREAM_ID.IMG_FULL, node.getUuid(), config.getImagesPath()
-                    + File.separator + node.getPath() + Constants.PDF_EXTENSION, "application/pdf");
+            handlePdf(node);
         }
         if (node.getModel() == DigitalObjectModel.PAGE) processedPages.put(node.getPath(), node.getUuid());
         return node.getUuid();
+    }
+
+    /**
+     * @param node
+     * @throws CreateObjectException
+     */
+    private static void handlePdf(NewDigitalObject node) throws CreateObjectException {
+        String uuid = (node.getUuid().contains("uuid:") ? node.getUuid() : "uuid:".concat(node.getUuid()));
+        String pathWithoutExtension = config.getImagesPath() + File.separator + node.getPath();
+        if (insertManagedDatastream(DATASTREAM_ID.IMG_FULL, uuid, pathWithoutExtension
+                + Constants.PDF_EXTENSION, "application/pdf")) {
+            createThumbPrewFromPdf(DATASTREAM_ID.IMG_THUMB,
+                                   pathWithoutExtension,
+                                   node.getPageIndex(),
+                                   uuid,
+                                   128);
+            createThumbPrewFromPdf(DATASTREAM_ID.IMG_PREVIEW,
+                                   pathWithoutExtension,
+                                   node.getPageIndex(),
+                                   uuid,
+                                   500);
+        }
+    }
+
+    /**
+     * @param dsId
+     * @param pathWithoutExtension
+     * @param thumbPageNum
+     * @param uuid
+     * @param pageWidth
+     * @throws CreateObjectException
+     */
+    private static void createThumbPrewFromPdf(DATASTREAM_ID dsId,
+                                               String pathWithoutExtension,
+                                               int thumbPageNum,
+                                               String uuid,
+                                               int pageWidth) throws CreateObjectException {
+        try {
+            Process p =
+                    Runtime.getRuntime().exec("convert " + pathWithoutExtension + Constants.PDF_EXTENSION
+                            + "[" + (thumbPageNum - 1) + "] -thumbnail x" + pageWidth + " "
+                            + pathWithoutExtension + ".jpg");
+
+            int pNum;
+            if ((pNum = p.waitFor()) == 0) {
+                p.getInputStream().close();
+                File thumb = new File(pathWithoutExtension + ".jpg");
+                if (thumb.exists() && thumb.length() > 0) {
+                    insertManagedDatastream(dsId, uuid, pathWithoutExtension + ".jpg", "image/jpeg");
+                } else {
+                    throw new CreateObjectException("After the conversion of the pdf file: "
+                            + pathWithoutExtension + Constants.PDF_EXTENSION + " the image had zero size.");
+                }
+            } else {
+                p.getInputStream().close();
+                LOGGER.error("ERROR " + pNum + " : during the conversion of the pdf file: "
+                        + pathWithoutExtension + Constants.PDF_EXTENSION + " the proces returned "
+                        + IOUtils.readAsString(p.getErrorStream(), Charset.defaultCharset(), true));
+                throw new CreateObjectException("Unable to run the convert proces on the pdf file: "
+                        + pathWithoutExtension + Constants.PDF_EXTENSION);
+            }
+
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new CreateObjectException("Unable to run the convert proces on the pdf file: "
+                    + pathWithoutExtension + Constants.PDF_EXTENSION);
+
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new CreateObjectException("Unable to run the convert proces on the pdf file: "
+                    + pathWithoutExtension + Constants.PDF_EXTENSION);
+
+        } finally {
+            File thumb = new File(pathWithoutExtension + ".jpg");
+            if (thumb.exists()) thumb.delete();
+        }
     }
 
     private static void append(NewDigitalObject parrent, NewDigitalObject child) throws CreateObjectException {

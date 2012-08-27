@@ -1,4 +1,5 @@
 /*
+
  * Metadata Editor
  * 
  * Metadata Editor - Rich internet application for editing metadata.
@@ -45,7 +46,7 @@ public interface CreateStructureUiHandlers
 
     void onAddImages(final TileGrid tileGrid, final Menu menu);
 
-    void createObjects(DublinCore dc, ModsTypeClient mods, boolean visible);
+    void createObjects(DublinCore dc, ModsTypeClient mods, boolean visible, int thumbPageNum);
 
     ModsCollectionClient getMods();
 

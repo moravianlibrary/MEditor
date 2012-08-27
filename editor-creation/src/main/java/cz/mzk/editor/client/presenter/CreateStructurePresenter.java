@@ -196,7 +196,7 @@ public class CreateStructurePresenter
 
         ToolStripButton getEditMetadataButton(ToolStripButton zoomOut);
 
-        ToolStripButton getCreateButton();
+        ToolStripButton getCreateButton(boolean isPdf);
 
         PdfViewerPane getPdfViewerPane();
     }
@@ -1381,7 +1381,10 @@ public class CreateStructurePresenter
      * {@inheritDoc}
      */
     @Override
-    public void createObjects(final DublinCore dc, final ModsTypeClient mods, final boolean visible) {
+    public void createObjects(final DublinCore dc,
+                              final ModsTypeClient mods,
+                              final boolean visible,
+                              int thumbPageNum) {
 
         DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
         if (newDc != null) {
@@ -1417,7 +1420,10 @@ public class CreateStructurePresenter
                                        newMods,
                                        bundle == null ? null : bundle.getMarc());
             object = ClientUtils.createTheStructure(metadataBundle, treeGrid.getTree(), visible, isPdf);
-            if (isPdf) object.setPath(getView().getPdfViewerPane().getUuid());
+            if (isPdf) {
+                object.setPath(getView().getPdfViewerPane().getUuid());
+                object.setPageIndex(thumbPageNum);
+            }
 
         } catch (CreateObjectException e) {
             SC.warn(e.getMessage());
@@ -1583,7 +1589,7 @@ public class CreateStructurePresenter
         leftLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
 
         leftLayout.addMember(getView().getEditMetadataButton(null));
-        leftLayout.addMember(getView().getCreateButton());
+        leftLayout.addMember(getView().getCreateButton(true));
 
         leftPresenter.getView().setSectionCreateLayout(leftLayout);
 

@@ -871,7 +871,7 @@ public class CreateStructureView
 
         toolStrip.addSeparator();
 
-        toolStrip.addButton(getCreateButton());
+        toolStrip.addButton(getCreateButton(false));
 
         pageTypeItem.disable();
         return toolStrip;
@@ -1632,7 +1632,7 @@ public class CreateStructureView
     }
 
     @Override
-    public ToolStripButton getCreateButton() {
+    public ToolStripButton getCreateButton(final boolean isPdf) {
         if (createButton != null && createButton.getParent() != null) {
             createButton.removeFromParent();
         }
@@ -1645,11 +1645,14 @@ public class CreateStructureView
 
             @Override
             public void onClick(ClickEvent event) {
-                new CreateWindow(lang, topTabSet, eventBus) {
+                new CreateWindow(lang, topTabSet, eventBus, isPdf) {
 
                     @Override
-                    protected void createAction(DublinCore dc, ModsTypeClient mods, Boolean makePublic) {
-                        getUiHandlers().createObjects(dc, mods, makePublic);
+                    protected void createAction(DublinCore dc,
+                                                ModsTypeClient mods,
+                                                Boolean makePublic,
+                                                int thumbPageNum) {
+                        getUiHandlers().createObjects(dc, mods, makePublic, thumbPageNum);
                     }
                 };
             }
@@ -1714,6 +1717,7 @@ public class CreateStructureView
     /**
      * @return the pdfViewerPane
      */
+    @Override
     public PdfViewerPane getPdfViewerPane() {
         return pdfViewerPane;
     }
