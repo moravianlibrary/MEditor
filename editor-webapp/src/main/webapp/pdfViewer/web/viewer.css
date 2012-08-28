@@ -9,7 +9,7 @@ html {
 
 body {
   height: 100%;
-  background-color: #404040;
+  background-color: #ffffff;
   background-image: url(images/texture.png);
 }
 
@@ -31,7 +31,7 @@ select {
   top: 0px;
   padding-top: 6px;
   padding-bottom: 24px;
-  background-color: #404040;
+  background-color: #d2d2d2;
   background-image: url(images/texture.png);
   width: 100%;
   height: 100%;
@@ -52,7 +52,7 @@ select {
 }
 
 #viewerContainer:-moz-full-screen {
-  background-color: #404040;
+  background-color: #d2d2d2;
   background-image: url(images/texture.png);
   width: 100%;
   height: 100%;
@@ -65,7 +65,7 @@ select {
 
 #viewerContainer:full-screen {
   top: 0px;
-  background-color: #404040;
+  background-color: #d2d2d2;
   background-image: url(images/texture.png);
   width: 100%;
   height: 100%;
@@ -222,15 +222,16 @@ html[dir='rtl'] #sidebarContent {
   width: 200px;
   height: 29px;
   background-image: url(images/texture.png),
-                    -webkit-linear-gradient(hsla(0,0%,30%,.99), hsla(0,0%,25%,.95));
+                    -webkit-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    -moz-linear-gradient(hsla(0,0%,30%,.99), hsla(0,0%,25%,.95));
+                    -moz-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    -ms-linear-gradient(hsla(0,0%,30%,.99), hsla(0,0%,25%,.95));
+                    -ms-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    -o-linear-gradient(hsla(0,0%,30%,.99), hsla(0,0%,25%,.95));
+                    -o-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    linear-gradient(hsla(0,0%,30%,.99), hsla(0,0%,25%,.95));
+                    linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
+  border-bottom: 1px solid hsla(0,0%,0%,.5);
   box-shadow: inset -2px 0 0 hsla(0,0%,100%,.08),
               inset 0 1px 1px hsla(0,0%,0%,.15),
               inset 0 -1px 0 hsla(0,0%,100%,.05),
@@ -242,16 +243,17 @@ html[dir='rtl'] #sidebarContent {
   position: relative;
   height: 32px;
   background-image: url(images/texture.png),
-                    -webkit-linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+                    -webkit-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    -moz-linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+                    -moz-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    -ms-linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+                    -ms-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    -o-linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+                    -o-linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   background-image: url(images/texture.png),
-                    linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+                    linear-gradient(hsla(0,0%,40%,.95), hsla(0,0%,80%,.99));
   border-left: 1px solid hsla(0,0%,0%,.5);
+  border-bottom: 1px solid hsla(0,0%,0%,.5);
   box-shadow: inset 1px 0 0 hsla(0,0%,100%,.08),
               inset 0 1px 1px hsla(0,0%,0%,.15),
               inset 0 -1px 0 hsla(0,0%,100%,.05),
@@ -307,10 +309,23 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton {
 }
 
 .toolbarButton {
-  border: 0 none;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: hsla(0,0%,0%,.12);
+  background-image: -webkit-linear-gradient(hsla(0,0%,100%,.65), hsla(0,0%,0%,.40));
+  background-image: -moz-linear-gradient(hsla(0,0%,100%,.65), hsla(0,0%,0%,.40));
+  background-image: -ms-linear-gradient(hsla(0,0%,100%,.65), hsla(0,0%,0%,.50));
+  background-image: -o-linear-gradient(hsla(0,0%,100%,.65), hsla(0,0%,0%,.40));
+  background-image: linear-gradient(hsla(0,0%,100%,.65), hsla(0,0%,0%,.40));
+
+  background-clip: padding-box;
+  border: 1px solid hsla(0,0%,0%,.35);
+  border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
+  box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
+              0 0 1px hsla(0,0%,100%,.15) inset,
+              0 1px 0 hsla(0,0%,100%,.05);
+
   width: 32px;
   height: 25px;
+
 }
 
 .toolbarButton > span {
@@ -321,7 +336,7 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton {
 }
 
 .toolbarButton[disabled] {
-  opacity: .5;
+  opacity: .4;
 }
 
 .toolbarButton.group {
@@ -336,12 +351,12 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton {
 .splitToolbarButton:focus > .toolbarButton,
 .splitToolbarButton.toggled > .toolbarButton,
 .toolbarButton.textButton {
-  background-color: hsla(0,0%,0%,.12);
-  background-image: -webkit-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
-  background-image: -moz-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
-  background-image: -ms-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
-  background-image: -o-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
-  background-image: linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  background-color: hsla(0,0%,100%,.2);
+  background-image: -webkit-linear-gradient(hsla(0,0%,100%,.75), hsla(0,0%,0%,.50));
+  background-image: -moz-linear-gradient(hsla(0,0%,100%,.75), hsla(0,0%,0%,.50));
+  background-image: -ms-linear-gradient(hsla(0,0%,100%,.75), hsla(0,0%,0%,.50));
+  background-image: -o-linear-gradient(hsla(0,0%,100%,.75), hsla(0,0%,0%,.50));
+  background-image: linear-gradient(hsla(0,0%,100%,.75), hsla(0,0%,0%,.50));
   background-clip: padding-box;
   border: 1px solid hsla(0,0%,0%,.35);
   border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
@@ -397,7 +412,7 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton:first-child {
 .splitToolbarButtonSeparator {
   padding: 8px 0;
   width: 1px;
-  background-color: hsla(0,0%,00%,.5);
+  background-color: hsla(0,100%,00%,.5);
   z-index: 99;
   box-shadow: 0 0 0 1px hsla(0,0%,100%,.08);
   display: inline-block;
@@ -438,7 +453,7 @@ html[dir='rtl'] .splitToolbarButtonSeparator {
   border: 1px solid transparent;
   border-radius: 2px;
   color: hsl(0,0%,95%);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 14px;
   -webkit-user-select:none;
   -moz-user-select:none;
@@ -573,7 +588,7 @@ html[dir='rtl'] .dropdownToolbarButton {
   -webkit-appearance: none;
   -moz-appearance: none; /* in the future this might matter, see bugzilla bug #649849 */
   min-width: 140px;
-  font-size: 12px;
+  font-size: 14px;
   color: hsl(0,0%,95%);
   margin:0;
   padding:0;
@@ -707,14 +722,14 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   border: 1px solid transparent;
   border-radius: 2px;
   background-color: hsla(0,0%,100%,.09);
-  background-image: -moz-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  background-image: -moz-linear-gradient(hsla(0,0%,0%,.05), hsla(0,0%,100%,0));
   background-clip: padding-box;
   border: 1px solid hsla(0,0%,0%,.35);
   border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
   box-shadow: 0 1px 0 hsla(0,0%,0%,.05) inset,
               0 1px 0 hsla(0,0%,100%,.05);
-  color: hsl(0,0%,95%);
-  font-size: 12px;
+  color: hsl(0,0%,100%);
+  font-size: 14px;
   line-height: 14px;
   outline-style: none;
   -moz-transition-property: background-color, border-color, box-shadow;
@@ -750,8 +765,8 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   margin: 4px 2px 4px 0;
   border: 1px solid transparent;
   border-radius: 2px;
-  color: hsl(0,0%,85%);
-  font-size: 12px;
+  color: hsl(0,0%,100%);
+  font-size: 14px;
   line-height: 14px;
   text-align: left;
   -webkit-user-select:none;
@@ -800,28 +815,28 @@ a:focus > .thumbnail > .thumbnailSelectionRing > .thumbnailImage,
 
 a:focus > .thumbnail > .thumbnailSelectionRing,
 .thumbnail:hover > .thumbnailSelectionRing {
-  background-color: hsla(0,0%,100%,.15);
+  background-color: hsla(0,0%,0%,.2);
   background-image: -moz-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
   background-clip: padding-box;
   box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
               0 0 1px hsla(0,0%,100%,.2) inset,
               0 0 1px hsla(0,0%,0%,.2);
-  color: hsla(0,0%,100%,.9);
+  color: hsla(0,0%,0%,.9);
 }
 
 .thumbnail.selected > .thumbnailSelectionRing > .thumbnailImage {
-  box-shadow: 0 0 0 1px hsla(0,0%,0%,.5);
+  box-shadow: 0 0 0 1px hsla(0,0%,0%,.4);
   opacity: 1;
 }
 
 .thumbnail.selected > .thumbnailSelectionRing {
-  background-color: hsla(0,0%,100%,.3);
+  background-color: hsla(0,0%,0%, 0.5);
   background-image: -moz-linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
   background-clip: padding-box;
   box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
               0 0 1px hsla(0,0%,100%,.1) inset,
               0 0 1px hsla(0,0%,0%,.2);
-  color: hsla(0,0%,100%,1);
+  color: hsla(0,0%,0%,1);
 }
 
 #outlineView {
@@ -848,7 +863,7 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
   padding: 2px 0 0 10px;
   margin-bottom: 1px;
   border-radius: 2px;
-  color: hsla(0,0%,100%,.8);
+  color: hsla(0,0%,0%,1);
   font-size: 13px;
   line-height: 15px;
   -moz-user-select:none;
@@ -864,7 +879,8 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
   box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
               0 0 1px hsla(0,0%,100%,.2) inset,
               0 0 1px hsla(0,0%,0%,.2);
-  color: hsla(0,0%,100%,.9);
+font-weight: bolder; 
+  color: hsla(0,0%,0%,0.8);
 }
 
 .outlineItem.selected {
@@ -880,7 +896,7 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
 .noOutline,
 .noResults {
   font-size: 12px;
-  color: hsla(0,0%,100%,.8);
+  color: hsla(0,0%,0%,1);
   font-style: italic;
 }
 
