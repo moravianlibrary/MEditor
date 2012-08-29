@@ -1046,12 +1046,12 @@ public class CreateObjectMenuView
      * {@inheritDoc}
      */
     @Override
-    public void setSectionCreateLayout(VLayout vLayout) {
+    public void setSectionCreateLayout(Layout layout) {
         Canvas[] members = sectionCreateLayout.getMembers();
         if (members.length != 0) {
             sectionCreateLayout.removeMember(members[0]);
         }
-        sectionCreateLayout.addMember(vLayout);
+        sectionCreateLayout.addMember(layout);
     }
 
     /**

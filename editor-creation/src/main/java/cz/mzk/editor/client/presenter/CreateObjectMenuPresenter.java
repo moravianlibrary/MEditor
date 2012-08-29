@@ -53,8 +53,8 @@ import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
+import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.SectionStack;
-import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
@@ -126,7 +126,7 @@ public class CreateObjectMenuPresenter
 
         List<Record> getMissingPages(TreeNode parentNode, Record[] selection);
 
-        void setSectionCreateLayout(VLayout VLayout);
+        void setSectionCreateLayout(Layout layout);
 
         SelectItem getCreationModeItem();
 

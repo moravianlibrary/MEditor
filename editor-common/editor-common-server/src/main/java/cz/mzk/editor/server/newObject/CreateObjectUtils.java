@@ -260,12 +260,12 @@ public class CreateObjectUtils {
 
             String ocrPath = node.getAditionalInfoOrOcr();
             if (ocrPath != null && !"".equals(ocrPath)) {
-                insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, "text/xml");
+                insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/xml");
             }
 
             String altoPath = node.getPartNumberOrAlto();
             if (altoPath != null && !"".equals(altoPath)) {
-                insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, "text/xml");
+                insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, true, "text/xml");
             }
         }
 
@@ -287,7 +287,7 @@ public class CreateObjectUtils {
         String uuid = (node.getUuid().contains("uuid:") ? node.getUuid() : "uuid:".concat(node.getUuid()));
         String pathWithoutExtension = config.getImagesPath() + File.separator + node.getPath();
         if (insertManagedDatastream(DATASTREAM_ID.IMG_FULL, uuid, pathWithoutExtension
-                + Constants.PDF_EXTENSION, Constants.PDF_MIMETYPE)) {
+                + Constants.PDF_EXTENSION, true, Constants.PDF_MIMETYPE)) {
             createThumbPrewFromPdf(DATASTREAM_ID.IMG_THUMB,
                                    pathWithoutExtension,
                                    node.getPageIndex(),
@@ -298,6 +298,10 @@ public class CreateObjectUtils {
                                    node.getPageIndex(),
                                    uuid,
                                    500);
+            String ocrPath = node.getAditionalInfoOrOcr();
+            if (ocrPath != null && !"".equals(ocrPath)) {
+                insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, false, "text/xml");
+            }
         }
     }
 
@@ -325,7 +329,7 @@ public class CreateObjectUtils {
                 p.getInputStream().close();
                 File thumb = new File(pathWithoutExtension + ".jpg");
                 if (thumb.exists() && thumb.length() > 0) {
-                    insertManagedDatastream(dsId, uuid, pathWithoutExtension + ".jpg", "image/jpeg");
+                    insertManagedDatastream(dsId, uuid, pathWithoutExtension + ".jpg", true, "image/jpeg");
                 } else {
                     throw new CreateObjectException("After the conversion of the pdf file: "
                             + pathWithoutExtension + Constants.PDF_EXTENSION + " the image had zero size.");
@@ -401,7 +405,8 @@ public class CreateObjectUtils {
 
     private static boolean insertManagedDatastream(DATASTREAM_ID dsId,
                                                    String uuid,
-                                                   String filePath,
+                                                   String filePathOrContent,
+                                                   boolean isFile,
                                                    String mimeType) throws CreateObjectException {
 
         String prepUrl =
@@ -422,24 +427,36 @@ public class CreateObjectUtils {
         String url = config.getFedoraHost().concat(prepUrl);
         boolean success;
         try {
-            success = RESTHelper.post(url, new FileInputStream(new File(filePath)), login, password, false);
+            if (isFile) {
+                success =
+                        RESTHelper.post(url,
+                                        new FileInputStream(new File(filePathOrContent)),
+                                        login,
+                                        password,
+                                        false);
+            } else {
+                success = RESTHelper.post(url, filePathOrContent, login, password, false);
+            }
         } catch (FileNotFoundException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
-            throw new CreateObjectException("Unable to post a file: " + filePath
-                    + " as a managed datastream to the object: " + uuid);
+            throw new CreateObjectException("Unable to post "
+                    + (isFile ? ("a file: " + filePathOrContent + " as a ") : "")
+                    + "managed datastream to the object: " + uuid);
         }
 
         if (success) {
-            LOGGER.info("An " + dsId.getValue() + " file: " + filePath
+            LOGGER.info("An " + dsId.getValue() + (isFile ? (" file: " + filePathOrContent) : "")
                     + " has been inserted to the digital object: " + uuid + " as a " + dsId.getValue()
                     + " datastream.");
-            return true;
 
+            return true;
         } else {
-            LOGGER.error("An error occured during inserting an " + dsId.getValue() + " file: " + filePath
-                    + " to the digital object: " + uuid + " as a " + dsId.getValue() + " datastream.");
+            LOGGER.error("An error occured during inserting an " + dsId.getValue()
+                    + (isFile ? (" file: " + filePathOrContent) : "") + " to the digital object: " + uuid
+                    + " as a " + dsId.getValue() + " datastream.");
             return false;
+
         }
     }
 

@@ -113,6 +113,7 @@ import cz.mzk.editor.client.view.window.ChooseDetailWindow;
 import cz.mzk.editor.client.view.window.EditorDateItem;
 import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.client.view.window.ModalWindow;
+import cz.mzk.editor.client.view.window.OcrWindow;
 import cz.mzk.editor.client.view.window.StoreTreeStructureWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
@@ -137,6 +138,8 @@ import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
+import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
+import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionResult;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
@@ -249,6 +252,8 @@ public class CreateStructurePresenter
     private Record[] pages;
 
     private CheckboxItem afterDivisionRenumber;
+
+    private CheckboxItem addOcr = null;
 
     /**
      * Instantiates a new create presenter.
@@ -1423,6 +1428,10 @@ public class CreateStructurePresenter
             if (isPdf) {
                 object.setPath(getView().getPdfViewerPane().getUuid());
                 object.setPageIndex(thumbPageNum);
+                if (addOcr.getValueAsBoolean() && addOcr.getAttribute(Constants.ATTR_OCR_PATH) != null
+                        && !"".equals(addOcr.getAttributeAsString(Constants.ATTR_OCR_PATH))) {
+                    object.setAditionalInfoOrOcr(addOcr.getAttributeAsString(Constants.ATTR_OCR_PATH));
+                }
             }
 
         } catch (CreateObjectException e) {
@@ -1568,7 +1577,7 @@ public class CreateStructurePresenter
         return markedRecords;
     }
 
-    private void handlePdf(ScanFolderResult result) {
+    private void handlePdf(final ScanFolderResult result) {
         ImageItem item = result.getItems().get(0);
         getView().onAddImages(DigitalObjectModel.PAGE.getValue(),
                               new ScanRecord[] {new ScanRecord(item.getJpeg2000FsPath(), "", item
@@ -1581,22 +1590,93 @@ public class CreateStructurePresenter
         getView().getPopupPanel().setVisible(false);
         getView().getPopupPanel().hide();
 
-        VLayout leftLayout = new VLayout();
-        leftLayout.setHeight(100);
+        final VLayout menuLayout = new VLayout();
+        final HLayout topLayout = new HLayout();
 
-        leftLayout.setAlign(Alignment.CENTER);
-        leftLayout.setAlign(VerticalAlignment.CENTER);
-        leftLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+        menuLayout.setHeight(120);
 
-        leftLayout.addMember(getView().getEditMetadataButton(null));
-        leftLayout.addMember(getView().getCreateButton(true));
+        topLayout.setAlign(Alignment.CENTER);
+        topLayout.setAlign(VerticalAlignment.CENTER);
+        topLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
 
-        leftPresenter.getView().setSectionCreateLayout(leftLayout);
+        topLayout.addMember(getView().getEditMetadataButton(null));
+        topLayout.addMember(getView().getCreateButton(true));
+        menuLayout.addMember(topLayout);
+
+        addOcr = new CheckboxItem("addOcr", "Add ocr to the object.");
+        addOcr.setValue(false);
+        addOcr.setVisible(false);
+
+        DynamicForm createOcrForm = new DynamicForm();
+        createOcrForm.setItems(getOcrFromPdfButton(result.getItems().get(0).getIdentifier(), menuLayout));
+        createOcrForm.setWidth(50);
+        menuLayout.addMember(createOcrForm);
+
+        DynamicForm addOcrForm = new DynamicForm();
+        addOcrForm.setItems(addOcr);
+        addOcrForm.setExtraSpace(15);
+        menuLayout.addMember(addOcrForm);
+
+        menuLayout.setAlign(Alignment.CENTER);
+        menuLayout.setAlign(VerticalAlignment.CENTER);
+        menuLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+
+        leftPresenter.getView().setSectionCreateLayout(menuLayout);
 
         leftPresenter.getView().getCreationModeItem().hide();
         leftPresenter.getView().getSectionStack().getSection(1).setTitle("Menu");
         leftPresenter.getView().getSubelementsGrid().setFolderIcon("icons/16/pdf.png");
         leftPresenter.getView().getSubelementsGrid().redraw();
 
+    }
+
+    private ButtonItem getOcrFromPdfButton(final String uuid, final VLayout leftLayout) {
+        final ButtonItem createOcr = new ButtonItem("createOcr", "Get OCR from PDF");
+        createOcr.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if (addOcr.getAttribute(Constants.ATTR_OCR_PATH) == null) {
+                    final ModalWindow mw = new ModalWindow(leftLayout);
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+                    dispatcher.execute(new GetOcrFromPdfAction(uuid),
+                                       new DispatchCallback<GetOcrFromPdfResult>() {
+
+                                           @Override
+                                           public void callback(cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult result) {
+                                               addOcr.setAttribute(Constants.ATTR_OCR_PATH, result.getOcr()
+                                                       .trim());
+                                               addOcr.show();
+                                               addOcr.setValue(true);
+                                               leftLayout.redraw();
+                                               createOcr.setTitle("Edit OCR");
+                                               showOcrWindow(result.getOcr().trim());
+                                               mw.hide();
+                                           }
+
+                                           @Override
+                                           public void callbackError(Throwable t) {
+                                               super.callbackError(t);
+                                               mw.hide();
+                                           }
+                                       });
+
+                } else {
+                    showOcrWindow(addOcr.getAttribute(Constants.ATTR_OCR_PATH));
+                }
+            }
+        });
+        return createOcr;
+    }
+
+    private void showOcrWindow(String ocr) {
+        new OcrWindow(getEventBus(), ocr, lang) {
+
+            @Override
+            protected void doSaveAction(String value) {
+                addOcr.setAttribute(Constants.ATTR_OCR_PATH, value.trim());
+            }
+        };
     }
 }

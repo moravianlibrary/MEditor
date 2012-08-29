@@ -85,6 +85,7 @@ import cz.mzk.editor.server.handler.GetFullImgMetadataHandler;
 import cz.mzk.editor.server.handler.GetIngestInfoHandler;
 import cz.mzk.editor.server.handler.GetLockInformationHandler;
 import cz.mzk.editor.server.handler.GetLoggedUserHandler;
+import cz.mzk.editor.server.handler.GetOcrFromPdfHandler;
 import cz.mzk.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.mzk.editor.server.handler.GetRelationshipsHandler;
 import cz.mzk.editor.server.handler.GetUserInfoHandler;
@@ -133,6 +134,7 @@ import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
 import cz.mzk.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;
 import cz.mzk.editor.shared.rpc.action.GetUserInfoAction;
@@ -214,6 +216,7 @@ public class ServerModule
         bindHandler(ChangeRightsAction.class, ChangeRightsHandler.class);
         bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
         bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
+        bindHandler(GetOcrFromPdfAction.class, GetOcrFromPdfHandler.class);
 
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
