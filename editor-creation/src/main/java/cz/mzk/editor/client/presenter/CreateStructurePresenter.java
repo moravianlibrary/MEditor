@@ -1603,7 +1603,7 @@ public class CreateStructurePresenter
         topLayout.addMember(getView().getCreateButton(true));
         menuLayout.addMember(topLayout);
 
-        addOcr = new CheckboxItem("addOcr", "Add ocr to the object.");
+        addOcr = new CheckboxItem("addOcr", lang.addOcr());
         addOcr.setValue(false);
         addOcr.setVisible(false);
 
@@ -1631,7 +1631,7 @@ public class CreateStructurePresenter
     }
 
     private ButtonItem getOcrFromPdfButton(final String uuid, final VLayout leftLayout) {
-        final ButtonItem createOcr = new ButtonItem("createOcr", "Get OCR from PDF");
+        final ButtonItem createOcr = new ButtonItem("createOcr", lang.retrieveOCR());
         createOcr.addClickHandler(new ClickHandler() {
 
             @Override
@@ -1650,7 +1650,7 @@ public class CreateStructurePresenter
                                                addOcr.show();
                                                addOcr.setValue(true);
                                                leftLayout.redraw();
-                                               createOcr.setTitle("Edit OCR");
+                                               createOcr.setTitle(lang.menuEdit() + " OCR");
                                                showOcrWindow(result.getOcr().trim());
                                                mw.hide();
                                            }
