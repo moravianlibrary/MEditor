@@ -312,7 +312,7 @@ public class ScanInputQueueHandler
         if (dirs == null) {
             return false;
         }
-        boolean hasBeenIngested = dirs.length > 0;
+        boolean hasBeenIngested = dirs.length > 0 || hasBeenIngested(relativePath);
         for (int i = 0; i < dirs.length; i++) {
             String name = dirs[i].getName();
             String rltvpth = relativePath + File.separator + name;
@@ -323,9 +323,7 @@ public class ScanInputQueueHandler
                 list.add(new InputQueueItem(rltvpth, dirs[i].getName(), hasBeenIngested(rltvpth)
                         || lowerLevelIngested, null));
 
-                hasBeenIngested =
-                        list.get(i > 0 ? list.size() - 2 : list.size() - 1).getIngestInfo()
-                                && list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
+                hasBeenIngested = list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
             } else {
                 LOGGER.error("This directory contains some illegal character(s) in its name: " + rltvpth);
                 InputQueueItem inputQueueItem = new InputQueueItem();
