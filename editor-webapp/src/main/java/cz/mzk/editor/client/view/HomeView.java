@@ -91,6 +91,8 @@ public class HomeView
     /** The open. */
     private final IButton open;
 
+    private final IButton scheduler;
+
     /** The uuid field. */
     private final TextItem uuidField;
 
@@ -147,6 +149,8 @@ public class HomeView
         open.setDisabled(true);
         open.setAutoShowParent(false);
 
+        scheduler = new IButton("Scheduler");
+
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
         hLayout.addMember(form);
@@ -162,6 +166,7 @@ public class HomeView
         layout.addMember(html1);
         layout.addMember(status);
         layout.addMember(checkButton);
+        layout.addMember(scheduler);
         layout.addMember(html2);
         layout.addMember(hLayout);
         layout.addMember(html3);
@@ -304,6 +309,14 @@ public class HomeView
     @Override
     public HasChangedHandlers getUuidItem() {
         return uuidField;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IButton getScheduler() {
+        return scheduler;
     }
 
 }

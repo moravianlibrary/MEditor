@@ -33,6 +33,9 @@ import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
+import org.quartz.SchedulerFactory;
+import org.quartz.impl.StdSchedulerFactory;
+
 import cz.mzk.editor.server.AuthenticationServlet;
 import cz.mzk.editor.server.OAIPMHClient;
 import cz.mzk.editor.server.OAIPMHClientImpl;
@@ -100,6 +103,8 @@ import cz.mzk.editor.server.handler.PutRecentlyModifiedHandler;
 import cz.mzk.editor.server.handler.PutUserIdentityHandler;
 import cz.mzk.editor.server.handler.PutUserInfoHandler;
 import cz.mzk.editor.server.handler.PutUserRoleHandler;
+import cz.mzk.editor.server.handler.QuartzConvertImagesHandler;
+import cz.mzk.editor.server.handler.QuartzScheduleJobsHandler;
 import cz.mzk.editor.server.handler.RemoveDigitalObjectHandler;
 import cz.mzk.editor.server.handler.RemoveRequestItemHandler;
 import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
@@ -116,6 +121,8 @@ import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
+import cz.mzk.editor.server.quartz.GuiceJobFactory;
+import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
@@ -149,6 +156,8 @@ import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
+import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
+import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
 import cz.mzk.editor.shared.rpc.action.RemoveDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
@@ -217,7 +226,8 @@ public class ServerModule
         bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
         bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
         bindHandler(GetOcrFromPdfAction.class, GetOcrFromPdfHandler.class);
-
+        bindHandler(QuartzConvertImagesAction.class, QuartzConvertImagesHandler.class);
+        bindHandler(QuartzScheduleJobsAction.class, QuartzScheduleJobsHandler.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
         // DAO
@@ -244,6 +254,11 @@ public class ServerModule
         bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
 
         bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
+
+        // Quartz
+        bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(Scopes.SINGLETON);
+        bind(GuiceJobFactory.class).in(Scopes.SINGLETON);
+        bind(Quartz.class).in(Scopes.SINGLETON);
 
         // static injection
         requestStaticInjection(FedoraUtils.class);

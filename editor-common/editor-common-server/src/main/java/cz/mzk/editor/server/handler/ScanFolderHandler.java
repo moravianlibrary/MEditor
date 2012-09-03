@@ -114,8 +114,10 @@ public class ScanFolderHandler
         }
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Scanning folder: (model = " + model + ", code = " + code + ")");
-        HttpServletRequest req = requestProvider.get();
-        ServerUtils.checkExpiredSession(req.getSession());
+        if (context != null) {
+            HttpServletRequest req = requestProvider.get();
+            ServerUtils.checkExpiredSession(req.getSession());
+        }
 
         try {
             String name = action.getName();

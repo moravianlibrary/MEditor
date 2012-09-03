@@ -100,7 +100,10 @@ public class ConvertToJPEG2000Handler
                                            final ExecutionContext context) throws ActionException {
         // parse input
         final ImageItem item = action.getItem();
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+
+        if (context != null) {
+            ServerUtils.checkExpiredSession(httpSessionProvider);
+        }
         if (configuration.getAkkaOn()) {
             Converter converter = Converter.getInstance();
             boolean success = converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());

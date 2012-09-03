@@ -59,6 +59,7 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.window.SchedulerWindow;
 import cz.mzk.editor.shared.rpc.action.CheckAvailability;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityResult;
@@ -146,6 +147,8 @@ public class HomePresenter
          * @return the form
          */
         public DynamicForm getForm();
+
+        public IButton getScheduler();
     }
 
     /**
@@ -252,6 +255,15 @@ public class HomePresenter
                 }
             }
         });
+        getView().getScheduler().addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                new SchedulerWindow(getEventBus(), dispatcher);
+
+            }
+        });
+
     }
 
     private void evaluateUuid() {

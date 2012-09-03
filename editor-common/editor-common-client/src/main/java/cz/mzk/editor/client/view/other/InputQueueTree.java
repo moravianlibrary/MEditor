@@ -78,6 +78,8 @@ import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;
+import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
+import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
 
@@ -270,6 +272,32 @@ public class InputQueueTree
                     if (id.contains("/")) {
                         id = id.substring(0, id.indexOf("/"));
                     }
+
+                    MenuItem quartz = new MenuItem("Quartz", "icons/16/clock.png");
+                    quartz.addClickHandler(new ClickHandler() {
+
+                        @Override
+                        public void onClick(MenuItemClickEvent event) {
+
+                            String msg = event.getMenu().getEmptyMessage(); //duplicate code
+                            String model = msg.substring(0, msg.indexOf("/"));
+                            String path = msg.substring(msg.indexOf("/") + 1);
+
+                            QuartzConvertImagesAction action = new QuartzConvertImagesAction(model, path);
+
+                            DispatchCallback<QuartzConvertImagesResult> quartzConvertCallback =
+                                    new DispatchCallback<QuartzConvertImagesResult>() {
+
+                                        @Override
+                                        public void callback(QuartzConvertImagesResult result) {
+                                            //TODO
+                                        }
+                                    };
+
+                            dispatcher.execute(action, quartzConvertCallback);
+                        }
+                    });
+
                     if (record.getAttributeAsBoolean(Constants.ATTR_INGEST_INFO)) {
                         MenuItem ingestInfo = new MenuItem(lang.ingestInfo(), "icons/16/export1.png");
                         ingestInfo.addClickHandler(new ClickHandler() {
@@ -280,9 +308,9 @@ public class InputQueueTree
                             }
 
                         });
-                        editMenu.setItems(createItem, ingestInfo);
+                        editMenu.setItems(createItem, ingestInfo, quartz);
                     } else {
-                        editMenu.setItems(createItem);
+                        editMenu.setItems(createItem, quartz);
                     }
 
                     editMenu.setEmptyMessage(path.substring(1, path.length()));
