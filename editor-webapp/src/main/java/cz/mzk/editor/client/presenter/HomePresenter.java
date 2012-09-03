@@ -259,7 +259,7 @@ public class HomePresenter
 
             @Override
             public void onClick(ClickEvent event) {
-                new SchedulerWindow(getEventBus(), dispatcher);
+                new SchedulerWindow(getEventBus(), lang, dispatcher);
 
             }
         });

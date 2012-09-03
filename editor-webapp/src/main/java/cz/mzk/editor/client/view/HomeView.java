@@ -149,7 +149,7 @@ public class HomeView
         open.setDisabled(true);
         open.setAutoShowParent(false);
 
-        scheduler = new IButton("Scheduler");
+        scheduler = new IButton(lang.scheduler());
 
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);

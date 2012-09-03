@@ -31,10 +31,13 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.HoverEvent;
+import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.shared.rpc.ProcessItem;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
@@ -48,6 +51,7 @@ public class SchedulerWindow
         extends UniversalWindow {
 
     private final ListGrid jobsGrid;
+    private final LangConstants lang;
 
     /**
      * @param height
@@ -56,9 +60,9 @@ public class SchedulerWindow
      * @param eventBus
      * @param milisToWait
      */
-    public SchedulerWindow(final EventBus eventBus, final DispatchAsync dispatcher) {
+    public SchedulerWindow(final EventBus eventBus, final LangConstants lang, final DispatchAsync dispatcher) {
         super(630, 600, "Scheduler", eventBus, 50);
-
+        this.lang = lang;
         jobsGrid = new ListGrid() {
 
             @Override
@@ -66,12 +70,19 @@ public class SchedulerWindow
                 String fieldName = this.getFieldName(colNum);
 
                 if (fieldName.equals("action")) {
-                    ImgButton button = new ImgButton();
+                    final ImgButton button = new ImgButton();
                     button.setSrc("icons/16/close.png");
                     button.setSize("16", "16");
                     button.setShowTitle(false);
                     button.setShowRollOver(false);
                     button.setShowDown(false);
+                    button.addHoverHandler(new HoverHandler() {
+
+                        @Override
+                        public void onHover(HoverEvent event) {
+                            button.setPrompt(lang.killProcess());
+                        }
+                    });
                     button.addClickHandler(new ClickHandler() {
 
                         @Override
@@ -88,9 +99,9 @@ public class SchedulerWindow
         };
         jobsGrid.setShowRecordComponents(true);
         jobsGrid.setShowRecordComponentsByCell(true);
-        ListGridField groupField = new ListGridField("group", "group");
-        ListGridField nameField = new ListGridField("name", "name");
-        ListGridField buttonField = new ListGridField("action", "action");
+        ListGridField groupField = new ListGridField("group", lang.groupProcess());
+        ListGridField nameField = new ListGridField("name", lang.nameProcess());
+        ListGridField buttonField = new ListGridField("action", lang.actionProcess());
         jobsGrid.setFields(groupField, nameField, buttonField);
 
         getJobs(dispatcher);

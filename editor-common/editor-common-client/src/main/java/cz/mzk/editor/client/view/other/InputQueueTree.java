@@ -267,13 +267,13 @@ public class InputQueueTree
                 ListGridRecord record = event.getRecord();
                 final String path = record.getAttribute(Constants.ATTR_ID);
                 if (path != null && path.length() > 1 && path.substring(1).contains("/")) {
-                    //                    String model = path.substring(1, path.substring(1).indexOf("/") + 1);
+                    //String model = path.substring(1, path.substring(1).indexOf("/") + 1);
                     String id = path.substring(path.substring(1).indexOf("/") + 2);
                     if (id.contains("/")) {
                         id = id.substring(0, id.indexOf("/"));
                     }
 
-                    MenuItem quartz = new MenuItem("Quartz", "icons/16/clock.png");
+                    MenuItem quartz = new MenuItem(lang.addToScheduler(), "icons/16/clock.png");
                     quartz.addClickHandler(new ClickHandler() {
 
                         @Override
