@@ -194,7 +194,8 @@ public class FoxmlUtils {
         org.dom4j.Element modsCollection =
                 DocumentHelper.createElement(new QName("modsCollection", Namespaces.mods));
         modsCollection.add(Namespaces.mods);
-        String modsSchema = "http://www.loc.gov/standards/mods/v3/mods-3-3.xsd";
+        String modsSchema =
+                "https://raw.github.com/moravianlibrary/MEditor/master/resources/xml/mods-3-3.xsd";//"http://www.loc.gov/standards/mods/v3/mods-3-3.xsd";
         modsCollection.addAttribute("schemaLocation", Namespaces.mods.getURI() + " " + modsSchema);
         return modsCollection;
     }
