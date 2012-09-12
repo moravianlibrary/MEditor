@@ -55,7 +55,7 @@ public class GuiceJobFactory
     public Job newJob(TriggerFiredBundle bundle, Scheduler arg1) throws SchedulerException {
         JobDetail jobDetail = bundle.getJobDetail();
         jobDetail.getJobDataMap().put("Injector", guice);
-        Class jobClass = jobDetail.getJobClass();
-        return (Job) guice.getInstance(jobClass);
+        Class<? extends Job> jobClass = jobDetail.getJobClass();
+        return guice.getInstance(jobClass);
     }
 }

@@ -27,6 +27,7 @@ package cz.mzk.editor.client.view.window;
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -101,8 +102,9 @@ public class SchedulerWindow
         jobsGrid.setShowRecordComponentsByCell(true);
         ListGridField groupField = new ListGridField("group", lang.groupProcess());
         ListGridField nameField = new ListGridField("name", lang.nameProcess());
-        ListGridField buttonField = new ListGridField("action", lang.actionProcess());
-        jobsGrid.setFields(groupField, nameField, buttonField);
+        ListGridField actionField = new ListGridField("action", lang.actionProcess(), 50);
+        actionField.setAlign(Alignment.CENTER);
+        jobsGrid.setFields(groupField, nameField, actionField);
 
         getJobs(dispatcher);
         centerInPage();

@@ -290,7 +290,13 @@ public class InputQueueTree
 
                                         @Override
                                         public void callback(QuartzConvertImagesResult result) {
-                                            //TODO
+                                            if (result.getNumberOfImages() != null) {
+                                                SC.say(result.getNumberOfImages().toString()
+                                                        + " images will be converted");
+                                            } else {
+                                                SC.say("No images found");
+                                            }
+
                                         }
                                     };
 

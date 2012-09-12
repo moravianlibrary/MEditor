@@ -22,11 +22,12 @@
  * 
  */
 
-package jobs;
+package cz.mzk.editor.server.quartz;
 
 import java.util.List;
 
 import com.google.inject.Injector;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
@@ -95,11 +96,18 @@ public class ConvertImages
     }
 
     private void convertItem(ImageItem item, final List<ImageItem> itemList) {
+        //        try {
+        //            Thread.sleep(500);
+        //        } catch (InterruptedException e) {
+        //            // TODO Auto-generated catch block
+        //            LOGGER.error(e.getMessage());
+        //            e.printStackTrace();
+        //        }
         ConvertToJPEG2000Action action = new ConvertToJPEG2000Action(item);
         ConvertToJPEG2000Handler handler = guice.getInstance(ConvertToJPEG2000Handler.class);
         try {
             handler.execute(action, null);
-        } catch (Exception e) {
+        } catch (ActionException e) {
             // TODO Auto-generated catch block
             LOGGER.error(e.getMessage());
             e.printStackTrace();

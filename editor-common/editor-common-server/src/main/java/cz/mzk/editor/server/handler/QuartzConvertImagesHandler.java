@@ -37,11 +37,12 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
+import cz.mzk.editor.server.quartz.ConvertImages;
 import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
-
-import jobs.ConvertImages;
+import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
+import cz.mzk.editor.shared.rpc.action.ScanFolderResult;
 
 /**
  * @author Martin Rumanek
@@ -56,6 +57,9 @@ public class QuartzConvertImagesHandler
             .toString());
     @Inject
     Quartz quartz;
+
+    @Inject
+    ScanFolderHandler scanFolderHandler;
 
     /**
      * {@inheritDoc}
@@ -74,11 +78,23 @@ public class QuartzConvertImagesHandler
         try {
             quartz.getScheduler().scheduleJob(job, trigger);
         } catch (SchedulerException e) {
-            // TODO Auto-generated catch block
             LOGGER.error(e.getMessage());
         }
 
-        return null;
+        ScanFolderAction scanAction = new ScanFolderAction(action.getModel(), action.getCode(), null);
+
+        Integer numberOfImages = null;
+        try {
+            ScanFolderResult result = scanFolderHandler.execute(scanAction, null);
+            numberOfImages = result.getToAdd().size();
+
+        } catch (ActionException e) {
+
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return new QuartzConvertImagesResult(numberOfImages);
     }
 
     /**
@@ -86,8 +102,7 @@ public class QuartzConvertImagesHandler
      */
     @Override
     public Class<QuartzConvertImagesAction> getActionType() {
-        // TODO Auto-generated method stub
-        return null;
+        return QuartzConvertImagesAction.class;
     }
 
     /**

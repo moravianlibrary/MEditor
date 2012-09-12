@@ -45,5 +45,5 @@ public class QuartzConvertImages {
     private String code;
 
     @Out(1)
-    private boolean succes;
+    private Integer numberOfImages;
 }
