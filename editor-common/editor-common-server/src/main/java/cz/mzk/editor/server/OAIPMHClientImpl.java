@@ -182,8 +182,7 @@ public class OAIPMHClientImpl
     private boolean checkAndReplace(Document doc, boolean onlyReplace) {
         boolean available = true;
         Element hrefNode =
-                (Element) doc
-                        .selectSingleNode("/xsl:stylesheet/*[starts-with(@href,\'http://www.loc.gov\')]");
+                (Element) doc.selectSingleNode("/xsl:stylesheet/*[ends-with(@href,\'MARC21slimUtils.xsl\')]");
 
         if (hrefNode != null) {
             Attribute hrefAttr = hrefNode.attribute("href");
