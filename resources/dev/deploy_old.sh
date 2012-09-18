@@ -81,8 +81,8 @@ echo -n "\n\ngetting svn revision number..."
 if [ "$SVN" = "true" ]  ; then
 	REVISION=`svn info https://meta-editor.googlecode.com/svn/ |grep '^Revision:' | sed -e 's/^Revision: //'`
 else
-	#REVISION=`git describe --all --abbrev=4 HEAD^`
-	REVISION=`git describe --all --abbrev=4 origin/HEAD`
+	#REVISION=`git describe --all --abbrev=4 origin/HEAD`
+	REVISION=`git log --oneline | wc -l`
 fi 
 
 echo -n "\nsvn revison is $REVISION"
