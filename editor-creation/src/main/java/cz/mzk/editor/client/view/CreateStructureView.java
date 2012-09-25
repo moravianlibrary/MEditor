@@ -417,38 +417,65 @@ public class CreateStructureView
 
                 @Override
                 public void onClick(MenuItemClickEvent event) {
-                    final String uuid =
-                            tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
-                    winModal = new Window();
-                    //                winModal.setWidth(1024);
-                    //                winModal.setHeight(768);
-                    winModal.setWidth("95%");
-                    winModal.setHeight("95%");
-                    StringBuffer sb = new StringBuffer();
-                    sb.append(lang.scan()).append(": ")
-                            .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
-                    winModal.setTitle(sb.toString());
-                    winModal.setShowMinimizeButton(false);
-                    winModal.setIsModal(true);
-                    winModal.setShowModalMask(true);
-                    winModal.centerInPage();
-                    winModal.addCloseClickHandler(new CloseClickHandler() {
+                    String possibleAudioMimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                        SC.say(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_TYPE));
+                    if (possibleAudioMimeType.equals(Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getMimeType()) ||
+                            possibleAudioMimeType.equals(Constants.AUDIO_MIMETYPES.OGG_MIMETYPE.getMimeType()) ||
+                            possibleAudioMimeType.equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {
+                        String mimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                        String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+                        String type = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_TYPE);
+                        Window audioPlayer = new Window();
+                        audioPlayer.setWidth(400);
+                        audioPlayer.setHeight(300);
+                        audioPlayer.setIsModal(true);
+                        audioPlayer.setShowModalMask(true);
+                        audioPlayer.centerInPage();
+                        audioPlayer.show();
+                        HTMLPane audioPane = new HTMLPane();
+                        audioPane.setPadding(15);
+                        audioPane.setContents("<h3>Audio</h3>" +
+                                "mime-type:" + mimeType + "<br/>" +
+                                "uuid:" + uuid + "<br/>" +
+                                "type:" + type
+                        );
+                        audioPlayer.addItem(audioPane);
 
-                        @Override
-                        public void onCloseClick(CloseClickEvent event) {
-                            escShortCut();
+                    } else {
+                        final String uuid =
+                                tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+                        winModal = new Window();
+                        //                winModal.setWidth(1024);
+                        //                winModal.setHeight(768);
+                        winModal.setWidth("95%");
+                        winModal.setHeight("95%");
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(lang.scan()).append(": ")
+                                .append(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_NAME));
+                        winModal.setTitle(sb.toString());
+                        winModal.setShowMinimizeButton(false);
+                        winModal.setIsModal(true);
+                        winModal.setShowModalMask(true);
+                        winModal.centerInPage();
+                        winModal.addCloseClickHandler(new CloseClickHandler() {
 
-                        }
-                    });
-                    HTMLPane viewerPane = new HTMLPane();
-                    viewerPane.setPadding(15);
-                    viewerPane.setContentsURL(hostname + "/meditor/viewer/viewer.html");
-                    java.util.Map<String, String> params = new java.util.HashMap<String, String>();
-                    params.put("rft_id", uuid);
-                    viewerPane.setContentsURLParams(params);
-                    viewerPane.setContentsType(ContentsType.PAGE);
-                    winModal.addItem(viewerPane);
-                    winModal.show();
+                            @Override
+                            public void onCloseClick(CloseClickEvent event) {
+                                escShortCut();
+
+                            }
+                        });
+                        HTMLPane viewerPane = new HTMLPane();
+                        viewerPane.setPadding(15);
+                        viewerPane.setContentsURL(hostname + "/meditor/viewer/viewer.html");
+                        java.util.Map<String, String> params = new java.util.HashMap<String, String>();
+                        params.put("rft_id", uuid);
+                        viewerPane.setContentsURLParams(params);
+                        viewerPane.setContentsType(ContentsType.PAGE);
+                        winModal.addItem(viewerPane);
+                        winModal.show();
+                    }
+
                 }
             });
 
@@ -601,7 +628,6 @@ public class CreateStructureView
                     }
                 }
             });
-
             final DetailViewerField pictureField = new DetailViewerField(Constants.ATTR_PICTURE_OR_UUID);
             pictureField.setType("image");
             pictureField.setImageURLPrefix(getImageURLPrefix());
@@ -612,6 +638,18 @@ public class CreateStructureView
                 @Override
                 public String execute(Object value, DetailViewerField field, Record record) {
                     return setFieldFormating(record, true);
+                }
+            });
+
+            pictureField.setDetailFormatter(new DetailFormatter() {  // TODO audio image
+                public String format(Object value, Record record, DetailViewerField field) {
+                    String possibleAudioMimeType = record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    if (possibleAudioMimeType != null) { // todo control mimetype
+                        // TODO mimetypes
+                        return new String("88e6561e-0cc6-3e56-9f2b-e6679826dc24");    // TODO copy audio image
+                    } else {
+                        return (String) value;
+                    }
                 }
             });
 
@@ -638,6 +676,7 @@ public class CreateStructureView
             });
 
             tileGrid.setFields(pictureField, nameField);
+
             tileGrid.setData(items);
             getUiHandlers().onAddImages(tileGrid, menu);
 

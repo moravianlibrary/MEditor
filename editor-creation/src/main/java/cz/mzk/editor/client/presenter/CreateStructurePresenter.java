@@ -686,11 +686,16 @@ public class CreateStructurePresenter
                 if (itemList != null && itemList.size() > 0) {
                     items = new ScanRecord[itemList.size()];
                     for (int i = 0, total = itemList.size(); i < total; i++) {
-                        items[i] =
-                                new ScanRecord(String.valueOf(i + 1),
-                                               model,
-                                               itemList.get(i).getIdentifier(),
-                                               Constants.PAGE_TYPES.NP.toString());
+                        ScanRecord record = new ScanRecord(String.valueOf(i + 1),
+                                model,
+                                itemList.get(i).getIdentifier(),
+                                Constants.PAGE_TYPES.NP.toString());
+                        if (itemList.get(i).getMimeType() != null) {
+                            record.setAttrAdditionalInfoOrOcr(itemList.get(i).getMimeType());
+                        }
+                        //record.setAttrAdditionalInfoOrOcr(itemList.get(i).getMimeType());
+                        items[i] = record;
+
                     }
 
                     if (config.getHostname() == null || "".equals(config.getHostname().trim())) {

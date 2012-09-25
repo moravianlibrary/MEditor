@@ -47,6 +47,18 @@ public class ImageItem
     /** The jpgFsPath. */
     private String jpgFsPath;
 
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    /** Mime Type of File */
+    private String mimeType = null;
+
+
     /**
      * Instantiates a new input queue item.
      */

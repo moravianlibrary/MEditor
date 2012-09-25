@@ -139,6 +139,14 @@ public class ScanRecord
         return getAttribute(Constants.ATTR_TYPE);
     }
 
+    public String getAttrAdditionalInfoOrOcr() {
+        return getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+    }
+
+    public void setAttrAdditionalInfoOrOcr(String additionalInfoOrOcr) {
+        setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, additionalInfoOrOcr);
+    }
+
     /**
      * Deep copy.
      * 

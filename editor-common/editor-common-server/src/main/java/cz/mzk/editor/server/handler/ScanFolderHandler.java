@@ -154,6 +154,7 @@ public class ScanFolderHandler
         // concrete interface is used
         ArrayList<ImageItem> result = new ArrayList<ImageItem>(imgFileNames.size());
         ArrayList<ImageItem> toAdd = new ArrayList<ImageItem>();
+        ArrayList<ImageItem> toAddRecording = new ArrayList<ImageItem>();
         ArrayList<String> resolvedIdentifiers;
 
         try {
@@ -163,26 +164,58 @@ public class ScanFolderHandler
                     throw new ActionException("There is more than one pdf file or one pdf file and some other file with enable extension in "
                             + prefix);
                 }
-                String newIdentifier = null;
-                String resolvedIdentifier = resolvedIdentifiers.get(i);
-                if (resolvedIdentifier == null) {
+
+
+                //get mimetype from extension
+                int position = imgFileNames.get(i).lastIndexOf('.');
+                String extension = null;
+                if (position > 0) {
+                    extension = imgFileNames.get(i).substring(position);
+                }
+                Constants.AUDIO_MIMETYPES audioMimeType = Constants.AUDIO_MIMETYPES.findByExtension(extension);
+
+                if (!audioMimeType.equals(Constants.AUDIO_MIMETYPES.UNKOWN_MIMETYPE)) {
                     StringBuffer sb = new StringBuffer();
                     sb.append(model).append('#').append(code).append('#').append(i);
-                    newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
-                    sb = new StringBuffer();
-                    sb.append(configuration.getImagesPath()).append(newIdentifier)
-                            .append(Constants.JPEG_2000_EXTENSION);
-                    resolvedIdentifier = sb.toString();
-                    toAdd.add(new ImageItem(newIdentifier, resolvedIdentifier, imgFileNames.get(i)));
+                    String uuid = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
+                    String newRecordingPath = configuration.getImagesPath() + uuid +  audioMimeType.getExtension();
+                    try {
+                        CreateObjectUtils.copyFile(imgFileNames.get(i), newRecordingPath);
+                        LOGGER.info("Recording file " + imgFileNames.get(i) + " has been copied to " + newRecordingPath);
+                    } catch (CreateObjectException e) {
+                        LOGGER.error(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    ImageItem soundItem = new ImageItem(uuid, imgFileNames.get(i), newRecordingPath);
+                    soundItem.setMimeType(audioMimeType.getMimeType());
+                    toAddRecording.add(soundItem);
+                } else {
+                    String newIdentifier = null;
+                    String resolvedIdentifier = resolvedIdentifiers.get(i);
+                    if (resolvedIdentifier == null) {
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(model).append('#').append(code).append('#').append(i);
+                        newIdentifier = UUID.nameUUIDFromBytes(sb.toString().getBytes()).toString();
+                        sb = new StringBuffer();
+                        sb.append(configuration.getImagesPath()).append(newIdentifier)
+                                .append(Constants.JPEG_2000_EXTENSION);
+                        resolvedIdentifier = sb.toString();
+                        toAdd.add(new ImageItem(newIdentifier, resolvedIdentifier, imgFileNames.get(i)));
+                    }
+                    String uuid =
+                            newIdentifier != null ? newIdentifier : resolvedIdentifier
+                                    .substring(resolvedIdentifier.lastIndexOf('/') + 1,
+                                               resolvedIdentifier.lastIndexOf('.'));
+                    result.add(new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i)));
                 }
-                String uuid =
-                        newIdentifier != null ? newIdentifier : resolvedIdentifier
-                                .substring(resolvedIdentifier.lastIndexOf('/') + 1,
-                                           resolvedIdentifier.lastIndexOf('.'));
-                result.add(new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i)));
             }
+
             if (!toAdd.isEmpty()) {
                 imageResolverDAO.insertItems(toAdd);
+            }
+            if (!toAddRecording.isEmpty()) {
+                imageResolverDAO.insertItems(toAddRecording);
+                result.addAll(toAddRecording);
             }
         } catch (DatabaseException e) {
             throw new ActionException(e);
@@ -267,14 +300,8 @@ public class ScanFolderHandler
      * Scan directory structure.
      * 
      * @param wrongNames
-     * @param pathPrefix
+     * @param path
      *        the path prefix
-     * @param relativePath
-     *        the relative path
-     * @param list
-     *        the list
-     * @param level
-     *        the level
      * @return the list
      */
     private List<String> scanDirectoryStructure(String path,

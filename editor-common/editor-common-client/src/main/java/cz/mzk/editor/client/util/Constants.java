@@ -352,6 +352,40 @@ public class Constants {
     /** The Constant PDF_MIMETYPE. */
     public static final String PDF_MIMETYPE = "application/pdf";
 
+
+    /** Audio mimetypes for sound recording */
+    public static enum AUDIO_MIMETYPES {
+        WAV_MIMETYPE("audio/wav", ".wav"),
+        MP3_MIMETYPE("audio/mpeg", ".mp3"),
+        OGG_MIMETYPE("audio/ogg ", ".ogg"),
+        UNKOWN_MIMETYPE(null, null);
+
+        private String mimetype;
+        private String extension;
+
+        private AUDIO_MIMETYPES(String mimetype, String extension) {
+            this.mimetype  =  mimetype;
+            this.extension = extension;
+        }
+
+        public String getMimeType() {
+            return mimetype;
+        }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public static AUDIO_MIMETYPES findByExtension(String extension) {
+            for (AUDIO_MIMETYPES mimetype : AUDIO_MIMETYPES.values()) {
+                if (extension.equals(mimetype.getExtension())) {
+                    return mimetype;
+                }
+            }
+            return UNKOWN_MIMETYPE;
+        }
+    }
+
     // foxml
     /** The Constant RELS_EXT_LAST_ELEMENT. */
     public static final String RELS_EXT_LAST_ELEMENT = "</rdf:Description>";
