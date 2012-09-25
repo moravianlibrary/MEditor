@@ -46,6 +46,9 @@ public enum DigitalObjectModel
      */
     MONOGRAPHUNIT("monographunit", Constants.MONOGRAPH_UNIT_ICON),
 
+    /** The SOUND RECORDING. */
+    RECORDING("recording", "", TopLevelObjectModel.MONOGRAPH),
+
     /**
      * The PERIODICAL.
      */
