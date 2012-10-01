@@ -1,11 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<name>Editor web application</name>
 	<groupId>cz.mzk</groupId>
 	<artifactId>editor-webapp</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 
 	<parent>
@@ -35,11 +36,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>editor-request</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-common-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -104,13 +100,9 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
 	</dependencies>
 
-	<profiles>
+	 <!-- <profiles>
 		<profile>
 			<id>default-filter</id>
 			<activation>
@@ -136,13 +128,13 @@
 			</activation>
 			<build>
 				<plugins>
-					<!-- Compile -->
+					Compile
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
 					</plugin>
 
-					<!-- Compile GWT modules -->
+					Compile GWT modules
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
@@ -185,7 +177,7 @@
 						</executions>
 					</plugin>
 
-					<!-- Replace $HOSTNAME$ with real hostname <plugin> <groupId>com.google.code.maven-replacer-plugin</groupId> 
+					Replace $HOSTNAME$ with real hostname <plugin> <groupId>com.google.code.maven-replacer-plugin</groupId> 
 						<artifactId>maven-replacer-plugin</artifactId> <executions> <execution> <id>viewer</id> 
 						<phase>prepare-package</phase> <goals> <goal>replace</goal> </goals> <configuration> 
 						<file>src/main/webapp/viewer/viewerTemplate</file> <outputFile>src/main/webapp/viewer/viewer.html</outputFile> 
@@ -195,9 +187,9 @@
 						</goals> <configuration> <file>src/main/webapp/loginTemplate</file> <outputFile>src/main/webapp/login.html</outputFile> 
 						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
 						</replacement> </replacements> </configuration> </execution> </executions> 
-						</plugin> -->
+						</plugin>
 
-					<!-- Pack war file -->
+					Pack war file
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<configuration>
@@ -226,13 +218,13 @@
 							</webResources>
 						</configuration>
 					</plugin>
-					<!-- <plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat7-maven-plugin</artifactId> 
+					<plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat7-maven-plugin</artifactId> 
 						<version>2.0-SNAPSHOT</version> <configuration> <warFile>${basedir}/../target/${warName}</warFile> 
-						<url>{filter.hostname}/manager/html</url> </configuration> </plugin> -->
+						<url>{filter.hostname}/manager/html</url> </configuration> </plugin>
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>prod-editor-devel</id>
 			<activation>
@@ -265,12 +257,12 @@
 				</filters>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>dev</id>
 			<build>
 				<plugins>
-					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
+					Compile GWT modules (dev -> 1 locale, 1 browser)
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
@@ -283,8 +275,8 @@
 							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
 							<hostedWebapp>target/hostedWar</hostedWebapp>
 							<debugSuspend>false</debugSuspend>
-							<!--<style>OBF</style>-->
-							<style>DETAILED</style> 
+							<style>OBF</style>
+							<style>DETAILED</style>
 							<strict>true</strict>
 						</configuration>
 						<executions>
@@ -314,5 +306,24 @@
 				</plugins>
 			</build>
 		</profile>
-	</profiles>
+	</profiles> -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -67,7 +67,7 @@ public class AuthenticationFilter
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
             ServletException {
         final HttpServletRequest request = (HttpServletRequest) req;
-        final String path = request.getServletPath();
+        String path = request.getServletPath();
         final HttpSession session = request.getSession(true);
         Map<?, ?> parameters = req.getParameterMap();
         final String sessionId = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);

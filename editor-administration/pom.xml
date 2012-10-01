@@ -1,0 +1,463 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>Editor administration module</name>
+	<groupId>cz.mzk</groupId>
+	<artifactId>editor-administration</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+
+	<parent>
+		<groupId>cz.mzk</groupId>
+		<artifactId>MEditor</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<!-- <repositories> <repository> <id>Apache</id> <name>Apache</name> <url>https://repository.apache.org/content/repositories/snapshots/</url> 
+		</repository> </repositories> -->
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-webapp</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-common-server</artifactId>
+			<version>${project.version}</version>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.smartgwt</groupId>
+			<artifactId>smartgwt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.gwtplatform</groupId>
+			<artifactId>gwtp-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-assistedinject</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.allen-sauer.gwt.log</groupId>
+			<artifactId>gwt-log</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>default-filter</id>
+			<activation>
+				<property>
+					<name>!env</name>
+				</property>
+			</activation>
+			<build>
+				<filters>
+					<filter>
+						${basedir}/../src/main/filters/default.properties
+					</filter>
+				</filters>
+			</build>
+		</profile>
+
+		<profile>
+			<id>default</id>
+			<activation>
+				<property>
+					<name>!dev</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Compile -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+					</plugin>
+
+					<!-- Compile GWT modules -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<runTarget>${coreGuiRunTarget}</runTarget>
+							<draftCompile>false</draftCompile>
+							<soyc>true</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<style>OBF</style>
+							<strict>true</strict>
+							<draftCompile>true</draftCompile>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.Administration</module>
+										<module>cz.mzk.editor.MEditor</module>
+										<module>cz.mzk.editor.RequestForAdding</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.Administration</module>
+									<module>cz.mzk.editor.MEditor</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Replace $HOSTNAME$ with real hostname <plugin> <groupId>com.google.code.maven-replacer-plugin</groupId> 
+						<artifactId>maven-replacer-plugin</artifactId> <executions> <execution> <id>viewer</id> 
+						<phase>prepare-package</phase> <goals> <goal>replace</goal> </goals> <configuration> 
+						<file>src/main/webapp/viewer/viewerTemplate</file> <outputFile>src/main/webapp/viewer/viewer.html</outputFile> 
+						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
+						</replacement> </replacements> </configuration> </execution> <execution> 
+						<id>login</id> <phase>prepare-package</phase> <goals> <goal>replace</goal> 
+						</goals> <configuration> <file>src/main/webapp/loginTemplate</file> <outputFile>src/main/webapp/login.html</outputFile> 
+						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
+						</replacement> </replacements> </configuration> </execution> </executions> 
+						</plugin> -->
+
+					<!-- Pack war file -->
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<warName>${warName}</warName>
+							<outputDirectory>${basedir}/../target</outputDirectory>
+							<archive>
+								<manifest>
+									<addDefaultSpecificationEntries>true
+							</addDefaultSpecificationEntries>
+									<addDefaultImplementationEntries>true
+							</addDefaultImplementationEntries>
+								</manifest>
+								<manifestEntries>
+									<Build-Number>${buildNumber}</Build-Number>
+								</manifestEntries>
+							</archive>
+							<webResources>
+								<resource>
+									<directory>${basedir}/src/main/administration</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>login.html</include>
+										<include>viewer/viewer.html</include>
+										<include>MEditor.css</include>
+										<include>MEditor.html</include>
+									</includes>
+								</resource>
+							</webResources>
+							<webXml>${basedir}/src/main/administration/WEB-INF/web.xml</webXml>
+						</configuration>
+					</plugin>
+					<!-- <plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat7-maven-plugin</artifactId> 
+						<version>2.0-SNAPSHOT</version> <configuration> <warFile>${basedir}/../target/${warName}</warFile> 
+						<url>{filter.hostname}/manager/html</url> </configuration> </plugin> -->
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>admin</id>
+			<build>
+				<plugins>
+					<!-- Compile -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+					</plugin>
+
+					<!-- Compile GWT modules -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<runTarget>${coreGuiRunTarget}</runTarget>
+							<draftCompile>false</draftCompile>
+							<soyc>true</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<style>OBF</style>
+							<strict>true</strict>
+							<draftCompile>true</draftCompile>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.Administration</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.Administration</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Replace $HOSTNAME$ with real hostname <plugin> <groupId>com.google.code.maven-replacer-plugin</groupId> 
+						<artifactId>maven-replacer-plugin</artifactId> <executions> <execution> <id>viewer</id> 
+						<phase>prepare-package</phase> <goals> <goal>replace</goal> </goals> <configuration> 
+						<file>src/main/webapp/viewer/viewerTemplate</file> <outputFile>src/main/webapp/viewer/viewer.html</outputFile> 
+						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
+						</replacement> </replacements> </configuration> </execution> <execution> 
+						<id>login</id> <phase>prepare-package</phase> <goals> <goal>replace</goal> 
+						</goals> <configuration> <file>src/main/webapp/loginTemplate</file> <outputFile>src/main/webapp/login.html</outputFile> 
+						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
+						</replacement> </replacements> </configuration> </execution> </executions> 
+						</plugin> -->
+
+					<!-- Pack war file -->
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<warName>${warName}</warName>
+							<outputDirectory>${basedir}/../target</outputDirectory>
+							<archive>
+								<manifest>
+									<addDefaultSpecificationEntries>true
+							</addDefaultSpecificationEntries>
+									<addDefaultImplementationEntries>true
+							</addDefaultImplementationEntries>
+								</manifest>
+								<manifestEntries>
+									<Build-Number>${buildNumber}</Build-Number>
+								</manifestEntries>
+							</archive>
+							<webResources>
+								<resource>
+									<directory>${basedir}/src/main/administration</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>login.html</include>
+										<include>viewer/viewer.html</include>
+										<include>MEditor.css</include>
+										<include>MEditor.html</include>
+									</includes>
+								</resource>
+							</webResources>
+							<webXml>${basedir}/src/main/administration/WEB-INF/web.xml</webXml>
+						</configuration>
+					</plugin>
+					<!-- <plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat7-maven-plugin</artifactId> 
+						<version>2.0-SNAPSHOT</version> <configuration> <warFile>${basedir}/../target/${warName}</warFile> 
+						<url>{filter.hostname}/manager/html</url> </configuration> </plugin> -->
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>prod-editor-devel</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>editor-devel</value>
+				</property>
+			</activation>
+			<build>
+				<filters>
+					<filter>
+						${basedir}/../src/main/filters/production-editor-devel.properties
+					</filter>
+				</filters>
+			</build>
+		</profile>
+		<profile>
+			<id>prod-editor</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>editor</value>
+				</property>
+			</activation>
+			<build>
+				<filters>
+					<filter>
+						${basedir}/../src/main/filters/production-editor.properties
+					</filter>
+				</filters>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>devAdmin</id>
+			<build>
+				<plugins>
+					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<draftCompile>true</draftCompile>
+							<soyc>false</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<!--<style>OBF</style>-->
+							<style>DETAILED</style> 
+							<strict>true</strict>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.AdministrationDev</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.Administration</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<build>
+				<plugins>
+					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<draftCompile>true</draftCompile>
+							<soyc>false</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<!--<style>OBF</style>-->
+							<style>DETAILED</style> 
+							<strict>true</strict>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.AdministrationDev</module>
+										<module>cz.mzk.editor.MEditorDev</module>
+										<module>cz.mzk.editor.RequestForAddingDev</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.Administration</module>
+									<module>cz.mzk.editor.MEditor</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

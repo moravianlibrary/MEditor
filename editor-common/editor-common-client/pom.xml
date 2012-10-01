@@ -35,16 +35,16 @@
 			<groupId>com.smartgwt</groupId>
 			<artifactId>smartgwt</artifactId>
 		</dependency>
-		<dependency>
+	<!--	<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+	 	<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>compile</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.gwtplatform</groupId>
 			<artifactId>gwtp-all</artifactId>
@@ -119,7 +119,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Maven Eclipse Plugin -->
+			<!-- Maven Eclipse Plugin 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -147,7 +147,7 @@ enabled="true" runInBatchMode="false" />
 						</file>
 					</additionalConfig>
 				</configuration>
-			</plugin>
+			</plugin>-->	
 
 
 			<!-- Run annotation processors on src/main/java sources -->

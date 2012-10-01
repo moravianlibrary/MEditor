@@ -53,6 +53,8 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.OLD_DB_TABLES;
+import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ScriptRunner;
@@ -119,6 +121,11 @@ public class CheckAndUpdateDBSchemaHandler
                 LOGGER.debug("Processing action: CheckAndUpdateDBSchemaAction");
             }
             HttpSession ses = httpSessionProvider.get();
+            if (URLS.LOCALHOST()) {
+                ses.setAttribute(HttpCookies.SESSION_ID_KEY, "1234");
+                ses.setAttribute(HttpCookies.NAME_KEY, "4321");
+                ses.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
+            }
             ServerUtils.checkExpiredSession(ses);
             ServletContext servletContext = contextProvider.get();
             String pathPrefix = servletContext.getRealPath("/WEB-INF/classes/");
