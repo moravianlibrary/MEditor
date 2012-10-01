@@ -144,7 +144,7 @@ public class FindMetadataPresenter
 
     private final Map<Integer, MetadataBundle> results = new HashMap<Integer, MetadataBundle>();
 
-    public static final String OAI_STRING = "%p/?verb=GetRecord&identifier=%p%p-%s&metadataPrefix=";
+    public static final String OAI_STRING = "%p?verb=GetRecord&identifier=%p%p-%s&metadataPrefix=";
 
     public static final String OAI_STRING_VSUP = "%p/?verb=GetRecord&identifier=%p%s&metadataPrefix=";
 
