@@ -52,6 +52,7 @@ public class SchedulerWindow
         extends UniversalWindow {
 
     private final ListGrid jobsGrid;
+    @SuppressWarnings("unused")
     private final LangConstants lang;
 
     /**

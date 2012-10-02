@@ -277,30 +277,25 @@ public final class PageNumberingManager {
         }
     }
 
-    public void toAbcN(final int n) {
-        if (n > 26 || n < 2)
-            throw new IllegalArgumentException("bad argument (allowed values are between 2 and 26)");
+    public void toAbcN(int n, boolean incrPref, boolean useRoman) {
+        if (n > 26) n = 26;
+        if (n < 2) n = 2;
         final char[] alphabet =
                 {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         Record[] data = tileGrid.getSelection();
         if (data != null && data.length > 0) {
-            String startingNumber = data[0].getAttributeAsString(Constants.ATTR_NAME);
-            int i = getPageNumberFromText(startingNumber);
-            boolean isRoman = false;
-            if (i == Integer.MIN_VALUE) {
-                i = ClientUtils.romanToDecimal(data[0].getAttributeAsString(Constants.ATTR_NAME));
-                if (!(isRoman = i > 0)) {
-                    i = tileGrid.getRecordIndex(data[0]) + 1;
-                }
-            }
+
+            int i = getPageNumberFromText(data[0].getAttributeAsString(Constants.ATTR_NAME));
             int j = 0;
             for (Record rec : data) {
                 String number =
-                        !isRoman ? String.valueOf(i + (j / n)) : ClientUtils.decimalToRoman((i + (j / n)),
-                                                                                            false);
+                        !useRoman ? String.valueOf(incrPref ? (i + (j / n)) : i) : ClientUtils
+                                .decimalToRoman((incrPref ? (i + (j / n)) : i), false);
+
                 StringBuilder sb = new StringBuilder(5);
-                sb.append('[').append(number).append(alphabet[j % n]).append(']');
+                sb.append('[').append(number).append((!incrPref && j >= n) ? alphabet[(j / n) - 1] : "")
+                        .append(alphabet[j % n]).append(']');
                 rec.setAttribute(Constants.ATTR_NAME, sb.toString());
                 j++;
             }
