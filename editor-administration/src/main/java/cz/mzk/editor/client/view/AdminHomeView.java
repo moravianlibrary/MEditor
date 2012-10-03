@@ -92,7 +92,7 @@ public class AdminHomeView
         HTMLFlow html3 = new HTMLFlow();
         html3.setHeight("*");
         html3.setLayoutAlign(VerticalAlignment.BOTTOM);
-        html3.setContents(lang.credits());
+        //        html3.setContents(lang.credits());
         html3.setHeight(20);
 
         layout.addMember(html1);

@@ -23,7 +23,7 @@
 	</filter-mapping> -->
 
 	<listener>
-		<listener-class>cz.mzk.editor.server.guice.AdministrationGuiceServletConfig</listener-class>
+		<listener-class>cz.mzk.editor.server.guice.AdminGuiceServletConfig</listener-class>
 	</listener>
 
 	<!-- <listener>

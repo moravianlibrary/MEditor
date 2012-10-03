@@ -41,28 +41,18 @@ import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ContentSlot;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 
 import cz.mzk.editor.client.Administration;
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.window.IngestInfoWindow;
-import cz.mzk.editor.client.view.window.StoreWorkingCopyWindow;
-import cz.mzk.editor.client.view.window.UuidWindow;
-import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
 import cz.mzk.editor.shared.event.EscKeyPressedEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
-import cz.mzk.editor.shared.event.OpenFirstDigitalObjectEvent;
-import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
-import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 
@@ -82,9 +72,6 @@ public class AdminPresenter
 
     private LangConstants lang;
     private volatile boolean unknown = true;
-
-    /** The uuid-window **/
-    private UuidWindow uuidWindow = null;
 
     @Inject
     public void setLang(LangConstants lang) {
@@ -126,7 +113,7 @@ public class AdminPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
-    private boolean isHotKeysEnabled = true;
+    private final boolean isHotKeysEnabled = true;
 
     /**
      * Instantiates a new app presenter.
@@ -152,8 +139,8 @@ public class AdminPresenter
     public AdminPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy,
     //                        final DigitalObjectMenuPresenter doPresenter,
     //                        final CreateObjectMenuPresenter leftPresenter,
-                        final DispatchAsync dispatcher,
-                        final PlaceManager placeManager) {
+                          final DispatchAsync dispatcher,
+                          final PlaceManager placeManager) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
         //        this.doPresenter = doPresenter;
@@ -205,14 +192,14 @@ public class AdminPresenter
                 }
                 if (isHotKeysEnabled) {
                     if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
-                        StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
+                        //                        StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
                     }
                     if (keyCode == Constants.CODE_KEY_ESC) {
-                        escShortCut();
+                        //                        escShortCut();
                         EscKeyPressedEvent.fire(AdminPresenter.this);
 
                     } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
-                        displayEnterPIDWindow();
+                        //                        displayEnterPIDWindow();
                         return;
                     }
                     KeyPressedEvent.fire(AdminPresenter.this, keyCode);
@@ -223,40 +210,40 @@ public class AdminPresenter
 
         });
 
-        addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
-                             new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
-
-                                 @Override
-                                 public void onOpenFirstDigitalObject(OpenFirstDigitalObjectEvent event) {
-                                     StoredItem storedItem = event.getStoredItem();
-                                     if (storedItem != null) {
-                                         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                                                 .with(Constants.URL_PARAM_UUID, event.getUuid())
-                                                 .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
-                                                 .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
-                                     } else {
-                                         openObject(event.getUuid());
-                                     }
-                                 }
-                             });
-
-        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
-                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
-
-                                 @Override
-                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
-                                     isHotKeysEnabled = event.isEnable();
-                                 }
-                             });
-
-        addRegisteredHandler(ChangeMenuWidthEvent.getType(),
-                             new ChangeMenuWidthEvent.ChangeMenuWidthHandler() {
-
-                                 @Override
-                                 public void onChangeMenuWidth(ChangeMenuWidthEvent event) {
-                                     getView().changeMenuWidth(event.getWidth());
-                                 }
-                             });
+        //        addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
+        //                             new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
+        //
+        //                                 @Override
+        //                                 public void onOpenFirstDigitalObject(OpenFirstDigitalObjectEvent event) {
+        //                                     StoredItem storedItem = event.getStoredItem();
+        //                                     if (storedItem != null) {
+        //                                         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+        //                                                 .with(Constants.URL_PARAM_UUID, event.getUuid())
+        //                                                 .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
+        //                                                 .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+        //                                     } else {
+        //                                         openObject(event.getUuid());
+        //                                     }
+        //                                 }
+        //                             });
+        //
+        //        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
+        //                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
+        //
+        //                                 @Override
+        //                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
+        //                                     isHotKeysEnabled = event.isEnable();
+        //                                 }
+        //                             });
+        //
+        //        addRegisteredHandler(ChangeMenuWidthEvent.getType(),
+        //                             new ChangeMenuWidthEvent.ChangeMenuWidthHandler() {
+        //
+        //                                 @Override
+        //                                 public void onChangeMenuWidth(ChangeMenuWidthEvent event) {
+        //                                     getView().changeMenuWidth(event.getWidth());
+        //                                 }
+        //                             });
 
         addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
 
@@ -303,44 +290,10 @@ public class AdminPresenter
         }
     }
 
-    /**
-     * Method for handle enter-new-object's-PID short-cut
-     */
-    private void displayEnterPIDWindow() {
-        uuidWindow = new UuidWindow(lang, getEventBus()) {
-
-            @Override
-            protected void doAction(TextItem uuidField) {
-                evaluateUuid(uuidWindow.getUuidField());
-            }
-
-        };
-    }
-
-    /**
-     * Method for close currently displayed window
-     */
-    private void escShortCut() {
-        if (uuidWindow != null) {
-            uuidWindow.hide();
-            uuidWindow = null;
-        } else if (IngestInfoWindow.isInstanceVisible()) {
-            IngestInfoWindow.closeInstantiatedWindow();
-        }
-    }
-
-    private void evaluateUuid(TextItem uuidField) {
-        if (uuidField.validate()) {
-            uuidWindow.hide();
-            openObject(uuidField.getValueAsString());
-            uuidWindow = null;
-        }
-    }
-
-    private void openObject(String uuid) {
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
-                                                                                  uuid));
-    }
+    //    private void openObject(String uuid) {
+    //        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
+    //                                                                                  uuid));
+    //    }
 
     /*
      * (non-Javadoc)
