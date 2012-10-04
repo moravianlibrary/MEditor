@@ -55,7 +55,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraRelationship;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
@@ -216,7 +216,7 @@ public class StoredDigitalObjectHandlerImpl
 
         try {
 
-            Element ocrElement = XMLUtils.getElement(foxmlDocument, streamXPath);
+            Element ocrElement = FoxmlUtils.getElement(foxmlDocument, streamXPath);
             if (ocrElement == null) return null;
 
             NodeList ocrContentNodes = ocrElement.getElementsByTagName("foxml:content");
@@ -247,7 +247,7 @@ public class StoredDigitalObjectHandlerImpl
 
         try {
 
-            Element modsElement = XMLUtils.getElement(foxmlDocument, streamXPath);
+            Element modsElement = FoxmlUtils.getElement(foxmlDocument, streamXPath);
             //            modsCollectionElement = XMLUtils.findElement(modsElement, "modsCollection", FedoraNamespaces)
             modsElement.setAttribute("xmlns", "http://www.loc.gov/mods/v3");
             modsElement.setAttribute("xmlns:ns2", "http://www.w3.org/1999/xlink");
@@ -276,7 +276,7 @@ public class StoredDigitalObjectHandlerImpl
 
         try {
 
-            Element dcElement = XMLUtils.getElement(foxmlDocument, streamXPath);
+            Element dcElement = FoxmlUtils.getElement(foxmlDocument, streamXPath);
             return handleDc(uuid, dcElement, false);
 
         } catch (XPathExpressionException e) {

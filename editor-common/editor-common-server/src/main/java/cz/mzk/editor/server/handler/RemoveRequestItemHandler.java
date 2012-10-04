@@ -38,9 +38,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RequestDAO;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.mzk.editor.shared.rpc.action.RemoveRequestItemResult;
 

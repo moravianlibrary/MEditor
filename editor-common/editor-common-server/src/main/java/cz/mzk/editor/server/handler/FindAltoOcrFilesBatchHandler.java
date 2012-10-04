@@ -38,9 +38,9 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchResult;
 

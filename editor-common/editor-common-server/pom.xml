@@ -32,7 +32,7 @@
 		</repository>
 	</repositories>
 
-	<dependencies>	 
+	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>editor-common-client</artifactId>
@@ -64,10 +64,6 @@
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mzk.ki</groupId>
@@ -110,10 +106,10 @@
 			<artifactId>jaxen</artifactId>
 		</dependency>
 		<dependency>
- 			<groupId>org.quartz-scheduler</groupId>
- 			<artifactId>quartz</artifactId>
-   		</dependency>
- 
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

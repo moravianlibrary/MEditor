@@ -17,6 +17,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-conf-utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<scope>runtime</scope>
@@ -79,7 +84,7 @@
 				<configuration>
 					<sources>
 						<source>${generatedGwtpSources}</source>
-						<source>target/generated-sources/gwt</source>
+						<!-- <source>target/generated-sources/gwt</source> -->
 					</sources>
 				</configuration>
 				<executions>
@@ -93,7 +98,7 @@
 				</executions>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
@@ -107,7 +112,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

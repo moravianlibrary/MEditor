@@ -59,13 +59,14 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
-import cz.mzk.editor.server.fedora.utils.IOUtils;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
@@ -344,7 +345,7 @@ public class ScanInputQueueHandler
                 FileInputStream fileStream = new FileInputStream(ingestInfoFile);
                 Document doc = XMLUtils.parseDocument(fileStream);
                 element =
-                        XMLUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]//"
+                        FoxmlUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]//"
                                 + Constants.NAME_INGEST_ELEMENT);
                 fileStream.close();
             } catch (FileNotFoundException e) {

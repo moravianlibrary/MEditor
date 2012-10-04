@@ -113,7 +113,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.other.DCTab;
@@ -1236,7 +1236,7 @@ public class CreateStructureView
         int i = numbering.getPageNumberFromText(startingNumber);
         boolean isRoman = false;
         if (i == Integer.MIN_VALUE) {
-            i = ClientUtils.romanToDecimal(firstPage.getAttributeAsString(Constants.ATTR_NAME));
+            i = ClientCreateUtils.romanToDecimal(firstPage.getAttributeAsString(Constants.ATTR_NAME));
             if (!(isRoman = i > 0)) {
                 i = tileGrid.getRecordIndex(firstPage) + 1;
             }

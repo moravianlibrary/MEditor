@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
@@ -145,7 +145,7 @@ public class RecentlyModifiedItemDAOImpl
                 statement.setString(1, toPut.getUuid());
                 statement.setString(2,
                                     toPut.getName() == null ? ""
-                                            : ClientUtils.trimLabel(toPut.getName(),
+                                            : ClientCreateUtils.trimLabel(toPut.getName(),
                                                                     Constants.MAX_LABEL_LENGTH));
                 statement.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
                 statement.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model

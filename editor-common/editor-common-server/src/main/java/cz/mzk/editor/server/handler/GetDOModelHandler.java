@@ -40,8 +40,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
 import cz.mzk.editor.shared.rpc.action.GetDOModelResult;

@@ -103,7 +103,6 @@ import cz.mzk.editor.client.mods.TypeOfResourceTypeClient;
 import cz.mzk.editor.client.mods.UnstructuredTextClient;
 import cz.mzk.editor.client.mods.UrlTypeClient;
 import cz.mzk.editor.client.mods.YesClient;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.fedora.FedoraNamespaceContext;
 import cz.mzk.editor.server.mods.AbstractType;
 import cz.mzk.editor.server.mods.AccessConditionType;
@@ -159,6 +158,7 @@ import cz.mzk.editor.server.mods.TypeOfResourceType;
 import cz.mzk.editor.server.mods.UnstructuredText;
 import cz.mzk.editor.server.mods.UrlType;
 import cz.mzk.editor.server.mods.Yes;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc

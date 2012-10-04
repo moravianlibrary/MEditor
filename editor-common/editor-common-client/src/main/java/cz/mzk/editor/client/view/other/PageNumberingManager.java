@@ -35,7 +35,7 @@ import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.tile.TileGrid;
 
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.window.ModalWindow;
 
@@ -290,7 +290,7 @@ public final class PageNumberingManager {
             int j = 0;
             for (Record rec : data) {
                 String number =
-                        !useRoman ? String.valueOf(incrPref ? (i + (j / n)) : i) : ClientUtils
+                        !useRoman ? String.valueOf(incrPref ? (i + (j / n)) : i) : ClientCreateUtils
                                 .decimalToRoman((incrPref ? (i + (j / n)) : i), false);
 
                 StringBuilder sb = new StringBuilder(5);
@@ -309,7 +309,7 @@ public final class PageNumberingManager {
             int i = getPageNumberFromText(startingNumber);
             boolean isRoman = false;
             if (i == Integer.MIN_VALUE) {
-                i = ClientUtils.romanToDecimal(data[0].getAttributeAsString(Constants.ATTR_NAME));
+                i = ClientCreateUtils.romanToDecimal(data[0].getAttributeAsString(Constants.ATTR_NAME));
                 if (!(isRoman = i > 0)) {
                     i = tileGrid.getRecordIndex(data[0]) + 1;
                 }
@@ -317,7 +317,7 @@ public final class PageNumberingManager {
             int j = 0;
             for (Record rec : data) {
                 String number =
-                        !isRoman ? String.valueOf(i + (j / 2)) : ClientUtils.decimalToRoman((i + (j / 2)),
+                        !isRoman ? String.valueOf(i + (j / 2)) : ClientCreateUtils.decimalToRoman((i + (j / 2)),
                                                                                             false);
                 rec.setAttribute(Constants.ATTR_NAME, number + "" + (j % 2 == 0 ? 'r' : 'v'));
                 j++;

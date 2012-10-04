@@ -61,7 +61,7 @@ import com.lizardtech.djvubean.DjVuImage;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
-import cz.mzk.editor.server.fedora.utils.IOUtils;
+import cz.mzk.editor.server.util.IOUtils;
 
 // TODO: Auto-generated Javadoc
 /**

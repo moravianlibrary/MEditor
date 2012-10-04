@@ -61,7 +61,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.uihandlers.DigitalObjectMenuUiHandlers;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.NAME_OF_TREE;
 import cz.mzk.editor.client.view.other.RecentlyModifiedRecord;
@@ -376,7 +376,7 @@ public class DigitalObjectMenuPresenter
     public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
         openedObjectsUuidAndRelated.put(item.getUuid(), related);
         getView().setRelatedDocuments(related);
-        RecentlyModifiedRecord record = ClientUtils.toRecord(item);
+        RecentlyModifiedRecord record = ClientCreateUtils.toRecord(item);
         if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
             getView().getRecentlyModifiedGrid().updateData(record);
         } else {

@@ -58,8 +58,8 @@ import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.ImageMimeType;
 import cz.mzk.editor.server.fedora.KrameriusImageSupport;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
-import cz.mzk.editor.server.fedora.utils.IOUtils;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**

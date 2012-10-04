@@ -42,8 +42,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;

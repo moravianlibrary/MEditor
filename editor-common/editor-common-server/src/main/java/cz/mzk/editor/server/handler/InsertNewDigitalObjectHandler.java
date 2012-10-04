@@ -61,13 +61,14 @@ import org.xml.sax.SAXException;
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
@@ -175,7 +176,8 @@ public class InsertNewDigitalObjectHandler
                 try {
                     FileInputStream fileStream = new FileInputStream(ingestInfoFile);
                     doc = XMLUtils.parseDocument(fileStream);
-                    rootElement = XMLUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]");
+                    rootElement =
+                            FoxmlUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]");
                     fileStream.close();
                 } catch (FileNotFoundException e) {
                     fileExists = false;
@@ -197,11 +199,11 @@ public class InsertNewDigitalObjectHandler
                 doc.appendChild(rootElement);
             } else {
                 number =
-                        Integer.parseInt(XMLUtils.getElement(doc,
-                                                             "//" + Constants.NAME_ROOT_INGEST_ELEMENT
-                                                                     + "[1]//"
-                                                                     + Constants.NAME_INGEST_ELEMENT
-                                                                     + "[position()=last()]")
+                        Integer.parseInt(FoxmlUtils.getElement(doc,
+                                                               "//" + Constants.NAME_ROOT_INGEST_ELEMENT
+                                                                       + "[1]//"
+                                                                       + Constants.NAME_INGEST_ELEMENT
+                                                                       + "[position()=last()]")
                                 .getAttribute("number"));
             }
 

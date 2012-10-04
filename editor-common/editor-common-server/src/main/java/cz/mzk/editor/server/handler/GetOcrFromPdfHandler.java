@@ -44,8 +44,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult;
 

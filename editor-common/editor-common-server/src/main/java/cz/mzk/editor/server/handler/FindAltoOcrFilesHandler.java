@@ -42,9 +42,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesResult;
 

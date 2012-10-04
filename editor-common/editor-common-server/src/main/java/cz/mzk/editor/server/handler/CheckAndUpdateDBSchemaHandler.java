@@ -50,13 +50,13 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ScriptRunner;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
-import cz.mzk.editor.server.fedora.utils.IOUtils;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 

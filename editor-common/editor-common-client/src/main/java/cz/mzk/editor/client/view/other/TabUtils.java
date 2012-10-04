@@ -122,6 +122,7 @@ import cz.mzk.editor.client.mods.TitleInfoTypeClient;
 import cz.mzk.editor.client.mods.TypeOfResourceTypeClient;
 import cz.mzk.editor.client.mods.UnstructuredTextClient;
 import cz.mzk.editor.client.mods.UrlTypeClient;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.view.window.EditorDateItem;
 
@@ -2830,7 +2831,7 @@ public final class TabUtils {
                                                               lang.frequency(),
                                                               false,
                                                               new Attribute[] {ATTR_AUTHORITY("")},
-                                                              values == null ? null : ClientUtils
+                                                              values == null ? null : ClientCreateUtils
                                                                       .toListOfListOfStrings(values
                                                                               .getFrequency()),
                                                               holder.getFrequencies(),
@@ -2883,7 +2884,7 @@ public final class TabUtils {
                                                               false,
                                                               attributes,
                                                               values == null ? null
-                                                                      : ClientUtils
+                                                                      : ClientCreateUtils
                                                                               .toListOfListOfStrings(values
                                                                                       .getForm(), false),
                                                               holder.getForms(),

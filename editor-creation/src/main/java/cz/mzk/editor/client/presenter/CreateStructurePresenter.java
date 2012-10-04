@@ -99,6 +99,7 @@ import cz.mzk.editor.client.mods.DateTypeClient;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
@@ -316,7 +317,7 @@ public class CreateStructurePresenter
 
                     try {
                         object =
-                                ClientUtils.createTheStructure(null, leftPresenter.getView()
+                                ClientCreateUtils.createTheStructure(null, leftPresenter.getView()
                                         .getSubelementsGrid().getTree(), true, false);
                     } catch (CreateObjectException e) {
                         SC.warn(e.getMessage());
@@ -350,7 +351,7 @@ public class CreateStructurePresenter
                                             .getTree().findById(SubstructureTreeNode.ROOT_ID)
                                             .getAttribute(Constants.ATTR_NAME));
                         else
-                            object.setName(ClientUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+                            object.setName(ClientCreateUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
 
                         for (TreeNode node : leftPresenter.getView().getSubelementsGrid().getTree()
                                 .getAllNodes()) {
@@ -360,7 +361,7 @@ public class CreateStructurePresenter
                         }
 
                         List<TreeStructureNode> nodes =
-                                ClientUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
+                                ClientCreateUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
                                         .getAllNodes());
 
                         if (nodes != null) {
@@ -371,12 +372,12 @@ public class CreateStructurePresenter
                         }
 
                         if (!emptyPages) {
-                            bundle.getNodes().addAll(ClientUtils.toNodes(tilegridData));
+                            bundle.getNodes().addAll(ClientCreateUtils.toNodes(tilegridData));
                         }
                         StoreTreeStructureWindow.setInstanceOf(bundle,
-                                                               emptyTree ? null : ClientUtils
+                                                               emptyTree ? null : ClientCreateUtils
                                                                        .toStringTree(object),
-                                                               emptyPages ? null : ClientUtils
+                                                               emptyPages ? null : ClientCreateUtils
                                                                        .recordsToString(tilegridData),
                                                                lang,
                                                                dispatcher,
@@ -1393,7 +1394,7 @@ public class CreateStructurePresenter
 
         DublinCore newDc = dc == null && bundle != null ? bundle.getDc() : dc;
         if (newDc != null) {
-            String errorMessage = ClientUtils.checkDC(newDc, lang);
+            String errorMessage = ClientCreateUtils.checkDC(newDc, lang);
             if (!"".equals(errorMessage)) {
                 SC.warn(errorMessage);
                 return;
@@ -1424,7 +1425,7 @@ public class CreateStructurePresenter
                     new MetadataBundle(newDc == null ? new DublinCore() : newDc,
                                        newMods,
                                        bundle == null ? null : bundle.getMarc());
-            object = ClientUtils.createTheStructure(metadataBundle, treeGrid.getTree(), visible, isPdf);
+            object = ClientCreateUtils.createTheStructure(metadataBundle, treeGrid.getTree(), visible, isPdf);
             if (isPdf) {
                 object.setPath(getView().getPdfViewerPane().getUuid());
                 object.setPageIndex(thumbPageNum);

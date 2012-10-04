@@ -44,7 +44,7 @@ import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.mods.PlaceTypeClient;
 import cz.mzk.editor.client.mods.StringPlusAuthorityPlusTypeClient;
 import cz.mzk.editor.client.mods.TitleInfoTypeClient;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
@@ -126,7 +126,7 @@ public abstract class FoxmlBuilder {
         if (!isNotNullOrEmpty(labelToAdd)) {
             labelToAdd = "untitled";
         }
-        this.label = ClientUtils.trimLabel(labelToAdd, Constants.MAX_LABEL_LENGTH);
+        this.label = ClientCreateUtils.trimLabel(labelToAdd, Constants.MAX_LABEL_LENGTH);
     }
 
     public void createDocument() {

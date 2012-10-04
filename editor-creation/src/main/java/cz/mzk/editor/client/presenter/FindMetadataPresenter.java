@@ -59,7 +59,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
@@ -399,7 +399,7 @@ public class FindMetadataPresenter
             return null;
         }
         String query =
-                config.getVsup() ? ClientUtils.format(OAI_STRING_VSUP, 'p', url, base) : ClientUtils
+                config.getVsup() ? ClientCreateUtils.format(OAI_STRING_VSUP, 'p', url, base) : ClientCreateUtils
                         .format(OAI_STRING, 'p', url, prefix, base);
         return query;
     }
