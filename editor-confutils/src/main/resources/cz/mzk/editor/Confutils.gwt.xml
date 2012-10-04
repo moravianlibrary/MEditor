@@ -11,6 +11,10 @@
   <inherits name="com.google.gwt.i18n.I18N"/>
   
   
+  <!-- Smart GWT							                      -->
+  <inherits name='com.smartgwt.SmartGwt'/>
+  <inherits name='com.smartgwt.SmartGwtNoScript'/>
+  <inherits name='com.smartgwt.tools.SmartGwtTools'/>
   
   
   <!-- SmartGWT EE 									
