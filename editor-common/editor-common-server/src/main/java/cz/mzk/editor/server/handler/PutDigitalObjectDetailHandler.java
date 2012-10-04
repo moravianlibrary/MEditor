@@ -27,25 +27,41 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
+import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.server.fedora.utils.RESTHelper;
+import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailResult;
@@ -71,6 +87,8 @@ public class PutDigitalObjectDetailHandler
     /** The http session provider. */
     private final Provider<HttpSession> httpSessionProvider;
 
+    private final FedoraAccess fedoraAccess;
+
     // /** The injector. */
     // @Inject
     // Injector injector;
@@ -88,10 +106,12 @@ public class PutDigitalObjectDetailHandler
     @Inject
     public PutDigitalObjectDetailHandler(final UserDAO userDAO,
                                          final EditorConfiguration configuration,
-                                         Provider<HttpSession> httpSessionProvider) {
+                                         Provider<HttpSession> httpSessionProvider,
+                                         @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
         this.userDAO = userDAO;
         this.httpSessionProvider = httpSessionProvider;
+        this.fedoraAccess = fedoraAccess;
     }
 
     /*
@@ -130,6 +150,7 @@ public class PutDigitalObjectDetailHandler
                 modifyDublinCore(detail, action.isVersioning());
                 shouldReindex = true;
             }
+
             if (detail.isModsChanged()) {
                 modifyMods(detail, action.isVersioning());
                 shouldReindex = true;
@@ -143,11 +164,85 @@ public class PutDigitalObjectDetailHandler
 
                 shouldReindex = true;
             }
+
+            try {
+                shouldReindex = verifyModelElement(detail) || shouldReindex;
+            } catch (XPathExpressionException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            } catch (TransformerException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
+
             if (shouldReindex) {
                 ServerUtils.reindex(detail.getUuid());
             }
         }
         return new PutDigitalObjectDetailResult(write);
+    }
+
+    /**
+     * @param detail
+     * @throws IOException
+     * @throws XPathExpressionException
+     * @throws TransformerException
+     */
+    private boolean verifyModelElement(DigitalObjectDetail detail) throws IOException,
+            XPathExpressionException, TransformerException {
+        String url =
+                configuration.getFedoraHost() + "/objects/" + detail.getUuid()
+                        + "/datastreams/DC?versionable=false&mimeType=text/xml";
+        String usr = configuration.getFedoraLogin();
+        String pass = configuration.getFedoraPassword();
+        Document dc = fedoraAccess.getDC(detail.getUuid());
+
+        XPathExpression allTypes = FedoraUtils.makeNSAwareXpath().compile("//dc:type");
+        NodeList typeElements = (NodeList) allTypes.evaluate(dc, XPathConstants.NODESET);
+        Element typeEl = null;
+        if (typeElements != null && typeElements.getLength() == 1) {
+            typeEl = (Element) typeElements.item(0);
+        } else if (typeElements.getLength() > 1) {
+            FedoraUtils.removeElements((Element) typeElements.item(0).getParentNode(), dc, "//dc:type");
+        }
+
+        String dcModel = null;
+        if (typeEl != null) {
+            String currentModel = typeEl.getTextContent();
+            if (currentModel.startsWith(Constants.FEDORA_MODEL_PREFIX)) {
+                DigitalObjectModel mod = null;
+                try {
+                    mod =
+                            DigitalObjectModel.parseString(currentModel
+                                    .substring(Constants.FEDORA_MODEL_PREFIX.length()));
+                } catch (RuntimeException re) {
+                }
+                try {
+                    if (mod != null && FedoraUtils.getModel(detail.getUuid()) == mod) dcModel = currentModel;
+                } catch (IOException e) {
+                }
+            }
+        } else {
+            String dcStreamXpath = "/oai_dc:dc";
+            Element dcStreamEl = XMLUtils.getElement(dc, dcStreamXpath);
+            typeEl = dc.createElement("dc:type");
+            dcStreamEl.appendChild(typeEl);
+        }
+
+        if (dcModel == null) {
+            typeEl.setTextContent(Constants.FEDORA_MODEL_PREFIX
+                    + FedoraUtils.getModel(detail.getUuid()).getValue());
+            String content = FedoraUtils.getStringFromDocument(dc, true);
+            if (content != null) {
+                RESTHelper.put(url, content, usr, pass, false);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /*

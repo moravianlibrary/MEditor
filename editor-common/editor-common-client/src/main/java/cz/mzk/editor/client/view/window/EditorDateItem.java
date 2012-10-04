@@ -94,11 +94,14 @@ public class EditorDateItem
 
             @Override
             public String formatValue(Object value, Record record, DynamicForm form, FormItem item) {
-                String toReturn;
+                String toReturn = null;
 
                 if (!wasParsed) {
-                    toReturn = DateTimeFormat.getFormat("dd.MM.yyyy").format((Date) value);
-                    EditorDateItem.this.value = toReturn;
+                    try {
+                        toReturn = DateTimeFormat.getFormat("dd.MM.yyyy").format((Date) value);
+                    } catch (ClassCastException cce) {
+                    }
+                    EditorDateItem.this.value = toReturn != null ? toReturn : value.toString();
                 } else if (value != null) {
                     toReturn = value.toString();
                 } else {
@@ -115,24 +118,29 @@ public class EditorDateItem
             @Override
             public Object parseValue(String value, DynamicForm form, FormItem item) {
 
-                EditorDateItem.this.value = value;
+                if (isVisible()) {
+                    EditorDateItem.this.value = value;
 
-                if (value != null && !"".equals(value)) {
+                    if (value != null && !"".equals(value)) {
 
-                    wasParsed = true;
+                        wasParsed = true;
 
-                    if (!verifyAllFormats(value)) {
-                        SC.warn((lang != null) ? lang.wrongDate() : "You have entered a wrong date format");
-                        selectValue();
-                        return null;
+                        if (!verifyAllFormats(value)) {
+                            SC.warn((lang != null) ? lang.wrongDate()
+                                    : "You have entered a wrong date format");
+                            selectValue();
+                            return null;
+                        }
+
+                        DateTimeFormat format = getDateTimeFormat(value);
+                        return (format != null) ? format.parse(value) : value;
+
                     }
-
-                    DateTimeFormat format = getDateTimeFormat(value);
-                    return (format != null) ? format.parse(value) : value;
-
+                    EditorDateItem.this.value = "";
+                    return "";
+                } else {
+                    return value;
                 }
-                EditorDateItem.this.value = "";
-                return "";
             }
         });
 

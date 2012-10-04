@@ -21,11 +21,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-common-server</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.reveregroup.gwt</groupId>
 			<artifactId>gwt-image-loader</artifactId>
 		</dependency>

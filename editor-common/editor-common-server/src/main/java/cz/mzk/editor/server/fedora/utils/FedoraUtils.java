@@ -115,19 +115,10 @@ public class FedoraUtils {
     @Inject
     private static EditorConfiguration configuration;
 
-    /** The Constant RELS_EXT_PART_1. */
-    private static final String RELS_EXT_PART_11 = "<kramerius:";
-    private static final String RELS_EXT_PART_12 = "<";
-
-    /** The Constant RELS_EXT_PART_2. */
-    private static final String RELS_EXT_PART_21 = " rdf:resource=\"info:fedora/";
-
-    private static final String RELS_EXT_PART_22 =
-            " xmlns=\"http://www.nsdl.org/ontologies/relationships#\" rdf:resource=\"info:fedora/";
-
-    /** The Constant RELS_EXT_PART_3. */
-    private static final String RELS_EXT_PART_31 = "\"></kramerius:";
-    private static final String RELS_EXT_PART_32 = "\"></";
+    private static final String RELS_EXT_PART_KRAM = "kramerius:";
+    private static final String RDF_RESOURCE_ATTR = "rdf:resource";
+    private static final String XMLNS_ATTR = "xmlns";
+    private static final String XMLNS_ATTR_CONTENT = "http://www.nsdl.org/ontologies/relationships#";
 
     /** The Constant TERMINATOR1. */
     private static final String TERMINATOR1 = ">\n";
@@ -358,18 +349,21 @@ public class FedoraUtils {
      *        the expr
      * @throws XPathExpressionException
      */
-    public static void removeElements(Element parent, Document doc, String xPath)
+    public static List<Element> removeElements(Element parent, Document doc, String xPath)
             throws XPathExpressionException {
         XPathExpression expr = makeNSAwareXpath().compile(xPath);
         NodeList nodes = null;
+        List<Element> removedNodes = null;
         try {
             nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+            removedNodes = new ArrayList<Element>(nodes.getLength());
             for (int i = 0, lastIndex = nodes.getLength() - 1; i <= lastIndex; i++) {
-                parent.removeChild(nodes.item(i));
+                removedNodes.add((Element) parent.removeChild(nodes.item(i)));
             }
         } catch (XPathExpressionException e) {
             LOGGER.error("Unable to remove elements", e);
         }
+        return removedNodes;
     }
 
     /**
@@ -394,11 +388,10 @@ public class FedoraUtils {
      * @return content content of the new relations part
      */
     public static String createNewRealitonsPart(DigitalObjectDetail detail) {
-        StringBuilder sb = new StringBuilder();
         if (detail.getAllItems() == null) return null;
 
         Document relsExt = null;
-        StringBuilder contentBuilder = new StringBuilder();
+
         try {
             relsExt = fedoraAccess.getRelsExt(detail.getUuid());
         } catch (IOException e) {
@@ -427,46 +420,50 @@ public class FedoraUtils {
             }
             if (!changed) return null;
 
-            String str = null;
-            try {
-                str = getStringFromDocument(relsExt, true);
-            } catch (TransformerException e) {
-                LOGGER.warn("Document transformer failure", e);
+            boolean lameNS = false;
+            String rdfDescXPath = "/rdf:RDF/rdf:Description";
+            Element rdfDescEl = XMLUtils.getElement(relsExt, rdfDescXPath);
+            Element policyEl = null;
+            if (rdfDescEl != null && rdfDescEl.getElementsByTagName("policy").getLength() > 0)
+                policyEl = (Element) rdfDescEl.getElementsByTagName("policy").item(0);
+            if (policyEl != null && policyEl.getAttribute(XMLNS_ATTR) != null) {
+                lameNS = policyEl.getAttribute("xmlns").equals(FedoraNamespaces.KRAMERIUS_URI);
             }
-
-            int lastIndex = str.indexOf(Constants.RELS_EXT_LAST_ELEMENT);
-            if (lastIndex == -1) {
-                // error
-            }
-            boolean lameNS = str.contains(FedoraNamespaces.KRAMERIUS_URI);
-            String head = str.substring(0, lastIndex).trim();
-            String tail = str.substring(lastIndex, str.length());
-
-            // container structure
             int i = 0;
             for (List<DigitalObjectDetail> data : detail.getAllItems()) {
-                if (data != null) { // is changed
-                    String relation =
-                            NamedGraphModel.getRelationship(detail.getModel(), models.get(i))
-                                    .getStringRepresentation();
+                FedoraRelationship relationship =
+                        NamedGraphModel.getRelationship(detail.getModel(), models.get(i));
+                if (data != null) {
+                    String relation = relationship.getStringRepresentation();
                     for (DigitalObjectDetail obj : data) {
-                        sb.append(lameNS ? RELS_EXT_PART_12 : RELS_EXT_PART_11).append(relation)
-                                .append(lameNS ? RELS_EXT_PART_22 : RELS_EXT_PART_21).append(obj.getUuid())
-                                .append(lameNS ? RELS_EXT_PART_32 : RELS_EXT_PART_31).append(relation)
-                                .append(TERMINATOR1);
+
+                        Element newEl =
+                                relsExt.createElement((lameNS ? "" : RELS_EXT_PART_KRAM).concat(relation));
+                        if (lameNS) newEl.setAttribute(XMLNS_ATTR, XMLNS_ATTR_CONTENT);
+                        newEl.setAttribute(RDF_RESOURCE_ATTR, Constants.FEDORA_INFO_PREFIX + obj.getUuid());
+
+                        rdfDescEl.appendChild(newEl);
                     }
+                } else {
+                    List<Element> removedElements =
+                            removeElements(parent, relsExt, relationship.getXPathNamespaceAwareQuery());
+                    for (Element el : removedElements)
+                        rdfDescEl.appendChild(el);
                 }
                 i++;
             }
-
-            contentBuilder.append(head).append(sb).append(tail);
 
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }
 
-        String content = contentBuilder.toString();
-
+        String content = null;
+        try {
+            content = getStringFromDocument(relsExt, true);
+        } catch (TransformerException e) {
+            LOGGER.warn("Document transformer failure", e);
+            e.printStackTrace();
+        }
         return content;
     }
 

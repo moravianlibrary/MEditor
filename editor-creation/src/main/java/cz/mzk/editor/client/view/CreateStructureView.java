@@ -113,6 +113,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter.MyView;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.other.DCTab;
@@ -125,6 +126,7 @@ import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.RenumberWindow;
+import cz.mzk.editor.client.view.window.RenumberWindow.ToAbcWindow;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
@@ -1226,7 +1228,7 @@ public class CreateStructureView
         MenuItem abc2 = new MenuItem("1, 2, 3, 4   ⇨   [1a], [1b], [2a], [2b]");
         MenuItem abc3 = new MenuItem("1, 2, 3, 4   ⇨   [1a], [1b], [1c], [2a]");
         MenuItem abc4 = new MenuItem("1, 2, 3, 4   ⇨   [1a], [1b], [1c], [1d]");
-        MenuItem abc5 = new MenuItem("1, .. 4, 5   ⇨   [1a], ... [1e], [2a]");
+        MenuItem abc26 = new MenuItem("1, 2, ..    ⇨   [1a], .. [1z], [1aa], [1ab], ..");
         MenuItem abcN = new MenuItem(lang.customizeIndex() + "...");
         rv.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
@@ -1240,39 +1242,45 @@ public class CreateStructureView
         abc2.addClickHandler(getAbcHandler(2));
         abc3.addClickHandler(getAbcHandler(3));
         abc4.addClickHandler(getAbcHandler(4));
-        abc5.addClickHandler(getAbcHandler(5));
+        abc26.addClickHandler(getAbcHandler(26));
         abcN.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                // TODO Auto-generated method stub
-                SC.askforValue(lang.customizeIndex(), lang.enterNumberForIndex(), new ValueCallback() {
+
+                new ToAbcWindow(eventBus, lang, isFirstRoman()) {
 
                     @Override
-                    public void execute(String value) {
-                        if (value == null) {
-                            return;
-                        }
-                        try {
-                            int n = Integer.parseInt(value);
-                            addUndoRedo(tileGrid.getData(), true, false);
-                            numbering.toAbcN(n);
-                        } catch (NumberFormatException nfe) {
-                            SC.say(lang.notANumber());
-                        }
+                    protected void doAbc(boolean incrPref, int index, boolean useRomanNumber) {
+                        addUndoRedo(tileGrid.getData(), true, false);
+                        numbering.toAbcN(index, incrPref, useRomanNumber);
                         updateRecordsInTileGrid(tileGrid.getSelection(), true);
                     }
-                });
+                };
             }
         });
         rv.setEnableIfCondition(isSelected(false));
         abc2.setEnableIfCondition(isSelected(false));
         abc3.setEnableIfCondition(isSelected(false));
         abc4.setEnableIfCondition(isSelected(false));
-        abc5.setEnableIfCondition(isSelected(false));
+        abc26.setEnableIfCondition(isSelected(false));
         abcN.setEnableIfCondition(isSelected(false));
-        menu.setItems(rv, new MenuItemSeparator(), abc2, abc3, abc4, abc5, new MenuItemSeparator(), abcN);
+        menu.setItems(rv, new MenuItemSeparator(), abc2, abc3, abc4, abc26, new MenuItemSeparator(), abcN);
         return menu;
+    }
+
+    private boolean isFirstRoman() {
+        TileRecord firstPage = tileGrid.getSelectedRecord();
+        String startingNumber = firstPage.getAttributeAsString(Constants.ATTR_NAME);
+        int i = numbering.getPageNumberFromText(startingNumber);
+        boolean isRoman = false;
+        if (i == Integer.MIN_VALUE) {
+            i = ClientUtils.romanToDecimal(firstPage.getAttributeAsString(Constants.ATTR_NAME));
+            if (!(isRoman = i > 0)) {
+                i = tileGrid.getRecordIndex(firstPage) + 1;
+            }
+        }
+        return isRoman;
     }
 
     private com.smartgwt.client.widgets.menu.events.ClickHandler getAbcHandler(final int n) {
@@ -1281,7 +1289,7 @@ public class CreateStructureView
             @Override
             public void onClick(MenuItemClickEvent event) {
                 addUndoRedo(tileGrid.getData(), true, false);
-                numbering.toAbcN(n);
+                numbering.toAbcN(n, n != 26, isFirstRoman());
                 updateRecordsInTileGrid(tileGrid.getSelection(), true);
             }
         };
