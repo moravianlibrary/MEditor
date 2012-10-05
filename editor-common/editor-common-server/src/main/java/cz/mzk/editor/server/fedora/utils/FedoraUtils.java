@@ -801,7 +801,9 @@ public class FedoraUtils {
 
         try {
 
-            removeElements(FoxmlUtils.getElement(foxmlDocument, streamXPath), foxmlDocument, nextToLastStreamXPath);
+            removeElements(FoxmlUtils.getElement(foxmlDocument, streamXPath),
+                           foxmlDocument,
+                           nextToLastStreamXPath);
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }
