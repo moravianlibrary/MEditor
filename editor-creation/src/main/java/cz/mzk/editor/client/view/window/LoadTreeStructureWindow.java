@@ -54,7 +54,7 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.shared.event.LoadStructureEvent;
@@ -399,17 +399,17 @@ public class LoadTreeStructureWindow
                                        TreeStructureNode rootTreeNode = null;
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
-                                               pages[j++] = ClientUtils.toScanRecord(node);
+                                               pages[j++] = ClientCreateUtils.toScanRecord(node);
                                            } else if (node.getPropId().equals(SubstructureTreeNode.ROOT_ID)) {
                                                rootTreeNode = node;
                                            } else {
                                                int id = Integer.parseInt(node.getPropId());
                                                if (id > lastId) lastId = id;
-                                               tree[i++] = ClientUtils.toTreeNode(node);
+                                               tree[i++] = ClientCreateUtils.toTreeNode(node);
                                            }
                                        }
                                        if (i == 0 && rootTreeNode != null) {
-                                           tree[i++] = ClientUtils.toTreeNode(rootTreeNode);
+                                           tree[i++] = ClientCreateUtils.toTreeNode(rootTreeNode);
                                        }
                                        LoadStructureEvent.fire(getEventBus(), tree, loadOnlyLeft ? null
                                                : pages, lastId);

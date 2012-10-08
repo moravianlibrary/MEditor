@@ -38,7 +38,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 
@@ -226,7 +226,7 @@ public class InputQueueItemDAOImpl
 
             PreparedStatement updateSt =
                     getConnection().prepareStatement((duplicate < 0) ? INSERT_NAME : UPDATE_NAME);
-            updateSt.setString(1, ClientUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
+            updateSt.setString(1, ClientCreateUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
             updateSt.setString(2, path);
             int updated = updateSt.executeUpdate();
 

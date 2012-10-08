@@ -36,10 +36,10 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataAction;
 import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataResult;
 

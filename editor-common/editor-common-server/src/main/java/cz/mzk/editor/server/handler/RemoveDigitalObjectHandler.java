@@ -51,16 +51,15 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
 import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.Foxml;
 import cz.mzk.editor.shared.rpc.action.RemoveDigitalObjectAction;
@@ -391,7 +390,7 @@ public class RemoveDigitalObjectHandler
                     "/rdf:RDF/rdf:Description/kramerius:" + parentRel.get(1) + "[@rdf:resource=\'"
                             + Constants.FEDORA_INFO_PREFIX + uuid + "\']";
 
-            FedoraUtils.removeElements(XMLUtils.getElement(relsExt, "//rdf:RDF/rdf:Description"),
+            FedoraUtils.removeElements(FoxmlUtils.getElement(relsExt, "//rdf:RDF/rdf:Description"),
                                        relsExt,
                                        xPath);
 

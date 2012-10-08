@@ -54,10 +54,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;

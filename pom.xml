@@ -61,6 +61,7 @@ Usage:
                 <module>editor-dao</module>
                 <module>editor-converter</module>
                 <module>editor-common</module>
+                <module>editor-confutils</module>
                 <module>editor-editation</module>
                 <module>editor-creation</module>
                 <module>editor-user</module>

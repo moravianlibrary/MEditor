@@ -52,15 +52,14 @@ import org.w3c.dom.NodeList;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -74,7 +73,6 @@ public class PutDigitalObjectDetailHandler
         implements ActionHandler<PutDigitalObjectDetailAction, PutDigitalObjectDetailResult> {
 
     /** The logger. */
-    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
@@ -227,7 +225,7 @@ public class PutDigitalObjectDetailHandler
             }
         } else {
             String dcStreamXpath = "/oai_dc:dc";
-            Element dcStreamEl = XMLUtils.getElement(dc, dcStreamXpath);
+            Element dcStreamEl = FoxmlUtils.getElement(dc, dcStreamXpath);
             typeEl = dc.createElement("dc:type");
             dcStreamEl.appendChild(typeEl);
         }

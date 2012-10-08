@@ -33,8 +33,8 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
 

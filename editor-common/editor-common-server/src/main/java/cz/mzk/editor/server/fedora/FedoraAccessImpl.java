@@ -74,8 +74,8 @@ import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.LexerException;
 import cz.mzk.editor.server.fedora.utils.PIDParser;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.domain.FedoraRelationship;
@@ -120,9 +120,8 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getRelsExt(java
-     * .lang .String)
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getRelsExt(java .lang
+     * .String)
      */
     @Override
     public Document getRelsExt(String uuid) throws IOException {
@@ -151,8 +150,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getKrameriusModel
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getKrameriusModel
      * (org.w3c.dom.Document)
      */
     @Override
@@ -181,8 +179,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getKrameriusModel
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getKrameriusModel
      * (java.lang.String)
      */
     @Override
@@ -192,8 +189,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getBiblioMods(java
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getBiblioMods(java
      * .lang.String)
      */
     @Override
@@ -221,9 +217,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getDC(java.lang
-     * .String )
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getDC(java.lang .String )
      */
     @Override
     public Document getDC(String uuid) throws IOException {
@@ -250,9 +244,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getOcr(java.lang.
-     * String)
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getOcr(java.lang. String)
      */
     @Override
     public String getOcr(String uuid) {
@@ -392,8 +384,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getPagesUuid(java
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getPagesUuid(java
      * .lang.String)
      */
     @Override
@@ -403,8 +394,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getIsOnPagesUuid(
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getIsOnPagesUuid(
      * java.lang.String)
      */
     @Override
@@ -414,8 +404,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getIntCompPartsUuid
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getIntCompPartsUuid
      * (java.lang.String)
      */
     @Override
@@ -425,8 +414,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getMonographUnitsUuid
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getMonographUnitsUuid
      * (java.lang.String)
      */
     @Override
@@ -436,8 +424,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getPeriodicalItemsUuid
      * (java.lang.String)
      */
     @Override
@@ -447,8 +434,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getVolumesUuid(java
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getVolumesUuid(java
      * .lang.String)
      */
     @Override
@@ -458,8 +444,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getThumbnail(java
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getThumbnail(java
      * .lang.String)
      */
     @Override
@@ -475,8 +460,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getImageFULL(java
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getImageFULL(java
      * .lang.String)
      */
     @Override
@@ -496,8 +480,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#isImageFULLAvailable
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#isImageFULLAvailable
      * (java.lang.String)
      */
     @Override
@@ -527,8 +510,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#isContentAccessible
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#isContentAccessible
      * (java.lang.String)
      */
     @Override
@@ -773,8 +755,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getObjectFactory()
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getObjectFactory()
      */
     @Override
     public ObjectFactory getObjectFactory() {
@@ -846,8 +827,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getMimeTypeForStream
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getMimeTypeForStream
      * (java.lang.String, java.lang.String)
      */
     @Override
@@ -875,8 +855,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#isDigitalObjectPresent
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#isDigitalObjectPresent
      * (java.lang.String)
      */
     @Override
@@ -896,9 +875,7 @@ public class FedoraAccessImpl
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.FedoraAccess#getFOXML(java.lang
-     * .String)
+     * @see cz.mzk.editor.server.fedora.FedoraAccess#getFOXML(java.lang .String)
      */
     @Override
     public String getFOXML(String uuid) {

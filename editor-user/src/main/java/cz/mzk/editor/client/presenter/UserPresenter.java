@@ -68,7 +68,7 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.mzk.editor.client.gwtrpcds.UsersGwtRPCDS;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.OpenIDItem;
 import cz.mzk.editor.shared.rpc.RoleItem;
@@ -497,7 +497,7 @@ public class UserPresenter
             private void deleteFromGUI(int total, ListGridRecord[] selection) {
                 if (deletedCounter == total) {
                     ListGridRecord[] oldData = getView().getUserIdentityGrid().getRecords();
-                    ListGridRecord[] newData = ClientUtils.subtract(oldData, selection);
+                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
                     getView().getUserIdentityGrid().setData(newData);
                 }
             }
@@ -621,7 +621,7 @@ public class UserPresenter
             private void deleteFromGUI(int total, ListGridRecord[] selection) {
                 if (deletedCounter == total) {
                     ListGridRecord[] oldData = getView().getUserRoleGrid().getRecords();
-                    ListGridRecord[] newData = ClientUtils.subtract(oldData, selection);
+                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
                     getView().getUserRoleGrid().setData(newData);
                 }
             }

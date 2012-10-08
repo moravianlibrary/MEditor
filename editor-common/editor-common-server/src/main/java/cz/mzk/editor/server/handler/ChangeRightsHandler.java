@@ -46,12 +46,12 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
-import cz.mzk.editor.server.fedora.utils.XMLUtils;
+import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsResult;
 
@@ -110,7 +110,7 @@ public class ChangeRightsHandler
         String xPath = "/oai_dc:dc/dc:rights";
 
         try {
-            Element element = XMLUtils.getElement(dcDocument, xPath);
+            Element element = FoxmlUtils.getElement(dcDocument, xPath);
             element.setTextContent(right);
         } catch (XPathExpressionException e) {
             LOGGER.error("XPath expression error while finding a DC-element with a right of the object: "

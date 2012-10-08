@@ -40,7 +40,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 
 /**
@@ -224,7 +224,7 @@ public abstract class RenumberWindow
                     rec.setAttribute(Constants.ATTR_NAME, firstNum + i++);
                 } else {
                     rec.setAttribute(Constants.ATTR_NAME,
-                                     ClientUtils.decimalToRoman(firstNum + i++, toRomanOld));
+                                     ClientCreateUtils.decimalToRoman(firstNum + i++, toRomanOld));
                 }
             }
         }

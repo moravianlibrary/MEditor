@@ -51,11 +51,11 @@ import org.dom4j.XPath;
 
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.server.OAIPMHClient;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
 import cz.mzk.editor.shared.rpc.action.FindMetadataAction;
 import cz.mzk.editor.shared.rpc.action.FindMetadataResult;

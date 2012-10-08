@@ -68,9 +68,7 @@ public class RequestIPaddressChecker
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.IPaddressChecker#privateVisitor
-     * ()
+     * @see cz.mzk.editor.server.fedora.IPaddressChecker#privateVisitor ()
      */
     @Override
     public boolean privateVisitor() {
@@ -99,9 +97,7 @@ public class RequestIPaddressChecker
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.server.fedora.IPaddressChecker#localHostVisitor
-     * ()
+     * @see cz.mzk.editor.server.fedora.IPaddressChecker#localHostVisitor ()
      */
     @Override
     public boolean localHostVisitor() {

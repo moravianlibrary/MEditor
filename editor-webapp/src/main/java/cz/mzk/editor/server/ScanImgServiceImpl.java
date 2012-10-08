@@ -46,7 +46,7 @@ import org.apache.commons.lang.time.DateUtils;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
+import cz.mzk.editor.server.util.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**

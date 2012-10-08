@@ -53,7 +53,7 @@ import cz.mzk.editor.client.mods.ModsTypeClientManagerImpl;
 import cz.mzk.editor.client.mods.NamePartTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient;
 import cz.mzk.editor.client.mods.RoleTypeClient.RoleTermClient;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
@@ -618,7 +618,7 @@ public abstract class ModsWindow
 
     private void setLabel(DigitalObjectModel model, String title) {
         this.label =
-                ClientUtils.trimLabel((title != null && !"".equals(title) ? title : "untitled"),
+                ClientCreateUtils.trimLabel((title != null && !"".equals(title) ? title : "untitled"),
                                       Constants.MAX_LABEL_LENGTH);
     }
 

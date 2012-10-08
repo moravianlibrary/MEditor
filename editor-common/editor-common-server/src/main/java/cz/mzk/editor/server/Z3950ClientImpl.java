@@ -296,6 +296,7 @@ public class Z3950ClientImpl
         return true;
     }
 
+    @Override
     public int getProfileIndex() {
         int profileIndex = -1;
         if ((profile = configuration.getZ3950Profile()) != null) {

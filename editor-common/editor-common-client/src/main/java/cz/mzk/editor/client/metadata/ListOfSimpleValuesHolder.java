@@ -34,7 +34,7 @@ import java.util.List;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.form.DynamicForm;
 
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -94,8 +94,8 @@ public class ListOfSimpleValuesHolder
                 if (o instanceof String) {
                     value = (String) o;
                 } else if (o instanceof Date) {
-                    ClientUtils.SimpleDateFormat sdf =
-                            new ClientUtils.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    ClientCreateUtils.SimpleDateFormat sdf =
+                            new ClientCreateUtils.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     value = sdf.format(((Date) o));
                 }
                 if (!"".equals(value.trim())) {

@@ -77,6 +77,9 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.mods.ModsCollection;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.RESTHelper;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.domain.FedoraRelationship;
@@ -422,7 +425,7 @@ public class FedoraUtils {
 
             boolean lameNS = false;
             String rdfDescXPath = "/rdf:RDF/rdf:Description";
-            Element rdfDescEl = XMLUtils.getElement(relsExt, rdfDescXPath);
+            Element rdfDescEl = FoxmlUtils.getElement(relsExt, rdfDescXPath);
             Element policyEl = null;
             if (rdfDescEl != null && rdfDescEl.getElementsByTagName("policy").getLength() > 0)
                 policyEl = (Element) rdfDescEl.getElementsByTagName("policy").item(0);
@@ -736,7 +739,7 @@ public class FedoraUtils {
 
                 String lastStreamXPath =
                         "//foxml:datastream[@ID=\'" + streamToModify + "\']/foxml:datastreamVersion[last()]";
-                Element element = XMLUtils.getElement(foxmlDocument, lastStreamXPath);
+                Element element = FoxmlUtils.getElement(foxmlDocument, lastStreamXPath);
 
                 int versionNumber = 0;
                 if (element != null) {
@@ -764,11 +767,11 @@ public class FedoraUtils {
                 versionElement.appendChild(contentElement);
 
                 String streamXPath = "//foxml:datastream[@ID=\'" + streamToModify + "\']";
-                Element parentOfStream = XMLUtils.getElement(foxmlDocument, streamXPath);
+                Element parentOfStream = FoxmlUtils.getElement(foxmlDocument, streamXPath);
 
                 if (parentOfStream == null) {
                     String digObjXPath = "//foxml:digitalObject";
-                    Element digObjElement = XMLUtils.getElement(foxmlDocument, digObjXPath);
+                    Element digObjElement = FoxmlUtils.getElement(foxmlDocument, digObjXPath);
 
                     parentOfStream = foxmlDocument.createElement("datastream");
                     parentOfStream.setAttribute("ID", streamToModify);
@@ -798,7 +801,7 @@ public class FedoraUtils {
 
         try {
 
-            removeElements(XMLUtils.getElement(foxmlDocument, streamXPath),
+            removeElements(FoxmlUtils.getElement(foxmlDocument, streamXPath),
                            foxmlDocument,
                            nextToLastStreamXPath);
         } catch (XPathExpressionException e) {
@@ -815,7 +818,7 @@ public class FedoraUtils {
         String propertyLabelXPath = "//foxml:objectProperties/foxml:property[@NAME=\'" + LABEL_VALUE + "\']";
 
         try {
-            XMLUtils.getElement(foxmlDocument, propertyLabelXPath).setAttribute("VALUE", detail.getLabel());
+            FoxmlUtils.getElement(foxmlDocument, propertyLabelXPath).setAttribute("VALUE", detail.getLabel());
         } catch (XPathExpressionException e) {
             LOGGER.warn("XPath failure", e);
         }

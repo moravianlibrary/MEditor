@@ -44,9 +44,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 

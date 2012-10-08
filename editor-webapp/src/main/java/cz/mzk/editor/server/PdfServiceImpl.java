@@ -50,8 +50,8 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.IOUtils;
-import cz.mzk.editor.server.fedora.utils.RESTHelper;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**

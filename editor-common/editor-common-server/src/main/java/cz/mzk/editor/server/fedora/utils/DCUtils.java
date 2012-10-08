@@ -47,6 +47,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import cz.mzk.editor.client.DublinCoreConstants;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
 import static cz.mzk.editor.shared.domain.FedoraNamespaces.DC_NAMESPACE_URI;

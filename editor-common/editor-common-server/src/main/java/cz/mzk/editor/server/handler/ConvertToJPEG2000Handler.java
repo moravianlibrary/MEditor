@@ -45,12 +45,12 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.ServerUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.convert.Converter;
-import cz.mzk.editor.server.fedora.utils.IOUtils;
 import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;

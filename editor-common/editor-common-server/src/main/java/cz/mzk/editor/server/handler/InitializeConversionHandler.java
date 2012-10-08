@@ -54,9 +54,9 @@ public class InitializeConversionHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(InitializeConversionHandler.class.getPackage()
             .toString());
-    
+
     private static final String CONVERSION_START_TIME = "conversion.start";
-    
+
     private static final Long MAX_CONVERSION_TIME = 1000L * 60 * 20;
 
     /** The configuration. */
@@ -65,7 +65,6 @@ public class InitializeConversionHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
-
 
     /**
      * Instantiates a new scan input queue handler.
@@ -87,7 +86,7 @@ public class InitializeConversionHandler
      */
     @Override
     public InitializeConversionResult execute(final InitializeConversionAction action,
-                                           final ExecutionContext exContext) throws ActionException {
+                                              final ExecutionContext exContext) throws ActionException {
         // parse input
         final boolean start = action.isStart();
         Converter converter = Converter.getInstance();
@@ -96,10 +95,11 @@ public class InitializeConversionHandler
         }
         HttpSession session = httpSessionProvider.get();
         ServletContext context = session.getServletContext();
-        Long startTime = (Long)context.getAttribute(CONVERSION_START_TIME);
+        Long startTime = (Long) context.getAttribute(CONVERSION_START_TIME);
         boolean running = converter.isRunning() && startTime != null;
-        boolean expired = startTime == null ? false : System.currentTimeMillis() - startTime > MAX_CONVERSION_TIME;
-        
+        boolean expired =
+                startTime == null ? false : System.currentTimeMillis() - startTime > MAX_CONVERSION_TIME;
+
         if (start) {
             if (running && !expired) {
                 return new InitializeConversionResult(false);
@@ -127,11 +127,11 @@ public class InitializeConversionHandler
             }
         }
     }
-    
+
     private void putConversionToken(ServletContext context) {
         context.setAttribute(CONVERSION_START_TIME, System.currentTimeMillis());
     }
-    
+
     private void removeConversionToken(ServletContext context) {
         context.setAttribute(CONVERSION_START_TIME, null);
     }
@@ -156,8 +156,9 @@ public class InitializeConversionHandler
      * com.gwtplatform.dispatch.server.ExecutionContext)
      */
     @Override
-    public void undo(InitializeConversionAction action, InitializeConversionResult result, ExecutionContext context)
-            throws ActionException {
+    public void undo(InitializeConversionAction action,
+                     InitializeConversionResult result,
+                     ExecutionContext context) throws ActionException {
         // TODO Auto-generated method stub
 
     }

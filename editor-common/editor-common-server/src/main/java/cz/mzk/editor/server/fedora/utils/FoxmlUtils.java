@@ -59,6 +59,7 @@ import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.newObject.Namespaces;
 import cz.mzk.editor.server.newObject.Policy;
 import cz.mzk.editor.server.newObject.RelsExtRelation;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.Foxml;
 
 /**
@@ -119,9 +120,9 @@ public class FoxmlUtils {
             Document foxmlDocument = getFoxmlDocument(is);
             foxml.setIdentifier(uuid);
             foxml.setLabel(FoxmlUtils.getLabel(foxmlDocument));
-            foxml.setPdf(XMLUtils.getElement(foxmlDocument,
-                                             "//foxml:datastream[@ID=\'IMG_FULL\']/foxml:datastreamVersion[@MIMETYPE=\'"
-                                                     + Constants.PDF_MIMETYPE + "\']") != null);
+            foxml.setPdf(FoxmlUtils.getElement(foxmlDocument,
+                                                "//foxml:datastream[@ID=\'IMG_FULL\']/foxml:datastreamVersion[@MIMETYPE=\'"
+                                                        + Constants.PDF_MIMETYPE + "\']") != null);
 
         } catch (IOException e) {
             LOGGER.error("Unable to get Foxml metadata for " + uuid + "[" + e.getMessage() + "]", e);
@@ -240,5 +241,16 @@ public class FoxmlUtils {
 
     public static String getRandomUuid() {
         return UUID.randomUUID().toString();
+    }
+
+    public static Element getElement(Document foxmlDocument, String xPath) throws XPathExpressionException {
+        XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(xPath);
+    
+        NodeList nodesOfStream = (NodeList) all.evaluate(foxmlDocument, XPathConstants.NODESET);
+        Element parentOfStream = null;
+        if (nodesOfStream.getLength() != 0) {
+            parentOfStream = (Element) nodesOfStream.item(0);
+        }
+        return parentOfStream;
     }
 }

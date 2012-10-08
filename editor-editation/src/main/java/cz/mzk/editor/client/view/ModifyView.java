@@ -98,7 +98,7 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.presenter.ModifyPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.ModifyUiHandlers;
-import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.ContainerRecord;
 import cz.mzk.editor.client.view.other.DCTab;
@@ -1450,7 +1450,7 @@ public class ModifyView
                 DigitalObjectDetail createDigitalObjectDetail = createDigitalObjectDetail(ts);
                 String errorMessage = "";
                 if (createDigitalObjectDetail != null && createDigitalObjectDetail.getDc() != null)
-                    errorMessage = ClientUtils.checkDC(createDigitalObjectDetail.getDc(), lang);
+                    errorMessage = ClientCreateUtils.checkDC(createDigitalObjectDetail.getDc(), lang);
 
                 if (!"".equals(errorMessage)) {
                     SC.warn(errorMessage);
