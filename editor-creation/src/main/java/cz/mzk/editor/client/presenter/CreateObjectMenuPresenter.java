@@ -576,12 +576,12 @@ public class CreateObjectMenuPresenter
             if (i == 0 && isAtOnce) {
                 type = Constants.PAGE_TYPES.TP.toString();
             }
-
+            String modelId = pages.get(i).getAttribute(Constants.ATTR_MODEL_ID);
             getView().addSubstructure(String.valueOf(newId()),
                                       parent,
                                       pages.get(i).getAttribute(Constants.ATTR_NAME),
                                       pages.get(i).getAttribute(Constants.ATTR_PICTURE_OR_UUID),
-                                      DigitalObjectModel.PAGE.getValue(),
+                                      (modelId != null) ? modelId :DigitalObjectModel.PAGE.getValue(), //TODO-MR: recording
                                       type,
                                       "",
                                       "",

@@ -692,6 +692,7 @@ public class CreateStructurePresenter
                                 Constants.PAGE_TYPES.NP.toString());
                         if (itemList.get(i).getMimeType() != null) {
                             record.setAttrAdditionalInfoOrOcr(itemList.get(i).getMimeType());
+                            record.setAttribute(Constants.ATTR_MODEL_ID, "track");
                         }
                         //record.setAttrAdditionalInfoOrOcr(itemList.get(i).getMimeType());
                         items[i] = record;
@@ -839,9 +840,10 @@ public class CreateStructurePresenter
                         event.cancel();
                         return;
                     }
-                    for (ListGridRecord rec : selection) {
-                        if (!DigitalObjectModel.PAGE.getValue()
-                                .equals(rec.getAttribute(Constants.ATTR_MODEL_ID))) {
+                    for (ListGridRecord rec : selection) {  //TODO-MR:recording
+                        if (!(DigitalObjectModel.PAGE.getValue()
+                                .equals(rec.getAttribute(Constants.ATTR_MODEL_ID)) || DigitalObjectModel.TRACK.getValue()
+                                .equals(rec.getAttribute(Constants.ATTR_MODEL_ID)))) {
                             SC.say("TODO Sem muzete pretahovat jen objekty typu stranka.");
                             event.cancel();
                             return;

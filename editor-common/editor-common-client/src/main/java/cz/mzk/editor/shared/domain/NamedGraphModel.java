@@ -99,6 +99,13 @@ public class NamedGraphModel
         //        putRelationship(PERIODICALVOLUME, hasItem, SUPPLEMENT);
         putRelationship(PERIODICALITEM, hasPage, PAGE);
         putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
+
+        /** The Sound recording */
+        putRelationship(RECORDING, hasUnit, TRACK);
+        putRelationship(RECORDING, hasUnit, PAGE);
+        putRelationship(RECORDING, hasUnit, IMAGE_UNIT);
+        putRelationship(RECORDING, hasUnit, SOUND_UNIT);
+        putRelationship(IMAGE_UNIT, hasUnit, PAGE);
     }
 
     private static void putRelationship(DigitalObjectModel source,

@@ -288,6 +288,11 @@ public class SequentialCreateLayout
                     setCreatePage();
                     break;
 
+                //TODO-MR: recording, co zde pridat?
+//                case SOUND_UNIT:
+//                    setCreatePage();
+//                    break;
+
                 default:
                     setCreateDefault();
                     break;

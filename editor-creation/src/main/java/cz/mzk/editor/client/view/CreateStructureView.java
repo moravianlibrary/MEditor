@@ -413,6 +413,16 @@ public class CreateStructureView
             });
 
             MenuItem viewItem = new MenuItem(lang.menuView(), "icons/16/eye.png");
+            viewItem.setDynamicTitleFunction(new MenuItemStringFunction() {
+                @Override
+                public String execute(Canvas canvas, Menu menu, MenuItem menuItem) {
+                    String possibleAudioMimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    if (Constants.AUDIO_MIMETYPES.isAudio(possibleAudioMimeType)) {
+                        return "audio";
+                    }
+                    return lang.menuView();
+                }
+            });
             viewItem.setAttribute(ID_NAME, ID_VIEW);
             viewItem.setEnableIfCondition(isSelected(true));
             viewItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
@@ -420,13 +430,12 @@ public class CreateStructureView
                 @Override
                 public void onClick(MenuItemClickEvent event) {
                     String possibleAudioMimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                        SC.say(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_TYPE));
-                    if (possibleAudioMimeType.equals(Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getMimeType()) ||
-                            possibleAudioMimeType.equals(Constants.AUDIO_MIMETYPES.OGG_MIMETYPE.getMimeType()) ||
-                            possibleAudioMimeType.equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {
+
+                    if (Constants.AUDIO_MIMETYPES.isAudio(possibleAudioMimeType)) {
                         String mimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
                         String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
                         String type = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_TYPE);
+                        String modelid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID);
                         Window audioPlayer = new Window();
                         audioPlayer.setWidth(400);
                         audioPlayer.setHeight(300);
@@ -439,7 +448,7 @@ public class CreateStructureView
                         audioPane.setContents("<h3>Audio</h3>" +
                                 "mime-type:" + mimeType + "<br/>" +
                                 "uuid:" + uuid + "<br/>" +
-                                "type:" + type
+                                "model_id:" + modelid
                         );
                         audioPlayer.addItem(audioPane);
 
@@ -646,7 +655,7 @@ public class CreateStructureView
             pictureField.setDetailFormatter(new DetailFormatter() {  // TODO audio image
                 public String format(Object value, Record record, DetailViewerField field) {
                     String possibleAudioMimeType = record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                    if (possibleAudioMimeType != null) { // todo control mimetype
+                    if (possibleAudioMimeType != null) { //TODO-MR control mimetype
                         // TODO mimetypes
                         return new String("88e6561e-0cc6-3e56-9f2b-e6679826dc24");    // TODO copy audio image
                     } else {

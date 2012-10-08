@@ -384,6 +384,15 @@ public class Constants {
             }
             return UNKOWN_MIMETYPE;
         }
+
+        public static boolean isAudio(String mimetype) {
+            for (AUDIO_MIMETYPES mime : AUDIO_MIMETYPES.values()) {
+                if (mimetype.equals(mime.getMimeType())) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     // foxml

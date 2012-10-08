@@ -48,6 +48,9 @@ public enum DigitalObjectModel
 
     /** The SOUND RECORDING. */
     RECORDING("recording", "", TopLevelObjectModel.MONOGRAPH),
+    SOUND_UNIT("sound_unit", Constants.MONOGRAPH_UNIT_ICON), //TODO-MR: icon
+    IMAGE_UNIT("image_unit", Constants.MONOGRAPH_UNIT_ICON),
+    TRACK("track", ""),
 
     /**
      * The PERIODICAL.

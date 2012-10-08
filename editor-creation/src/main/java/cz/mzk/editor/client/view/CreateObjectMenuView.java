@@ -319,7 +319,13 @@ public class CreateObjectMenuView
                                     DigitalObjectModel.parseString(selection[0]
                                             .getAttribute(Constants.ATTR_MODEL_ID));
                         } else {
-                            movedModel = DigitalObjectModel.PAGE;
+                            String modelid = selection[0].getAttribute(Constants.ATTR_MODEL_ID);
+                            //TODO-MR: better!
+                            if ("track".equals(modelid)) {
+                                movedModel = DigitalObjectModel.TRACK;
+                            } else {
+                                movedModel = DigitalObjectModel.PAGE;
+                            }
                         }
                         if ((possibleChildModels == null || !possibleChildModels.contains(movedModel))
                                 && (targetModel != DigitalObjectModel.PAGE || targetModel != DigitalObjectModel.PAGE)) {

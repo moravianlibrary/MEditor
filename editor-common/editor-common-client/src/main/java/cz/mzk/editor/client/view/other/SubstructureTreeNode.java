@@ -67,6 +67,7 @@ public class SubstructureTreeNode
         setAttribute(Constants.ATTR_CREATE, !exist);
 
         if (modelId != null && !"".equals(modelId))
-            setIsFolder(DigitalObjectModel.parseString(modelId) != DigitalObjectModel.PAGE);
+            setIsFolder(DigitalObjectModel.parseString(modelId) != DigitalObjectModel.PAGE
+                    && DigitalObjectModel.parseString(modelId) != DigitalObjectModel.TRACK);
     }
 }

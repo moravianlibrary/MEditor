@@ -198,8 +198,14 @@ public abstract class NewDigitalObjectItemManager
      * @return
      */
     public String verify() {
-
         DigitalObjectModel model = getCurrentModel();
+
+        // TODO-MR: recording, potrebuju nejakou kontrolu?
+        if (model == DigitalObjectModel.TRACK || model == DigitalObjectModel.IMAGE_UNIT
+                || model == DigitalObjectModel.SOUND_UNIT) {
+            return null;
+        }
+
         if (model == DigitalObjectModel.INTERNALPART || model == DigitalObjectModel.PERIODICALITEM
                 || model == DigitalObjectModel.MONOGRAPHUNIT) {
             if (getLevelNamesItem().getValueAsString() == null
