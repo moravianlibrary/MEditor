@@ -52,6 +52,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
+import cz.mzk.editor.server.util.ScriptRunner;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 /**

@@ -47,7 +47,6 @@ import cz.mzk.editor.client.presenter.AdminHomePresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.view.AdminHomeView;
 import cz.mzk.editor.client.view.AdminView;
-import cz.mzk.editor.client.view.other.DCTab;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -87,7 +86,6 @@ public class AdminClientModule
         bind(CachingDispatchAsync.class);
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
-        requestStaticInjection(DCTab.class);
         requestStaticInjection(DispatchCallback.class);
 
     }

@@ -1,5 +1,5 @@
 
-package cz.mzk.editor.server.DAO;
+package cz.mzk.editor.server.util;
 
 /*
  * Modified by Pantelis Sopasakis <chvng@mail.ntua.gr> to take care of DILIMITER

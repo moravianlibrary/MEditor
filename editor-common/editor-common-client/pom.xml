@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-confutils</artifactId>
+			<artifactId>editor-administration</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
