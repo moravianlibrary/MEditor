@@ -36,16 +36,7 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARTICLE;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.INTERNALPART;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.MANUSCRIPT;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.MAP;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.MONOGRAPH;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.MONOGRAPHUNIT;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.PAGE;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICAL;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALITEM;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALVOLUME;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.*;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasIntCompPart;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasItem;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasPage;
