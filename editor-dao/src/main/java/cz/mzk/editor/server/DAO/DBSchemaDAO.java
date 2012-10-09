@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.util.Map;
+
 /**
  * @author Jiri Kremser
  * @version 17. 1. 2011
@@ -45,11 +47,13 @@ public interface DBSchemaDAO {
      * 
      * @param version
      *        the version of DB
-     * @return true if the version of the current deployed DB is the same as
-     *         param version
+     * @return 1 if the version of the current deployed DB is the same as param
+     *         version, 0 if the version of the current deployed DB is not same
+     *         as param version, -1 if the version of the current deployed DB is
+     *         the old version (there is no action table and so on)
      * @throws DatabaseException
      */
-    boolean checkVersion(int version) throws DatabaseException;
+    int checkVersion(int version) throws DatabaseException;
 
     /**
      * Updates the schema and writes the new version number into DB
@@ -63,4 +67,10 @@ public interface DBSchemaDAO {
      */
     void updateSchema(int version, String pathPrefix) throws DatabaseException;
 
+    Map<Long, String[]> getAllDataFromTable(String tableName);
+
+    /**
+     * @param map
+     */
+    void transformAndPutDescription(Map<Long, String[]> map);
 }

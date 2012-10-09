@@ -40,6 +40,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
@@ -52,13 +55,136 @@ public class DBSchemaDAOImpl
         extends AbstractDAO
         implements DBSchemaDAO {
 
-    public static final String SELECT_VERSION = "SELECT * FROM " + Constants.TABLE_VERSION_NAME
-            + " WHERE id = 1";
+    //    public static final String SELECT_OLD_VERSION = "SELECT * FROM " + Constants.TABLE_VERSION_NAME
+    //            + " WHERE id = 1";
+
+    public static final String SELECT_ALL = "SELECT * FROM ";
+
+    public static final String SELECT_VERSION = SELECT_ALL + Constants.TABLE_VERSION_NAME;
 
     public static final String UPDATE_VERSION = "UPDATE " + Constants.TABLE_VERSION_NAME
-            + " SET version = (?) WHERE id = 1";
+            + " SET version = (?)";
 
     private static final Logger LOGGER = Logger.getLogger(DBSchemaDAOImpl.class);
+
+    //    
+    //newTables    
+    //
+
+    public static final String INSERT_ITEM_STATEMENT_ACTION = "INSERT INTO " + Constants.TABLE_ACTION
+            + " (editor_user_id, timestamp, successful) VALUES ((?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_ACTION_WITH_TOP_OBJECT =
+            "INSERT INTO "
+                    + Constants.TABLE_ACTION_WITH_TOP_OBJECT
+                    + " (id, editor_user_id, timestamp, successful, top_digital_object_uuid) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_CONVERSION = "INSERT INTO " + Constants.TABLE_CONVERSION
+            + " (editor_user_id, timestamp, successful, input_queue_directory_path) VALUES ((?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_CRUD_DIGITAL_OBJECT_ACTION =
+            "INSERT INTO "
+                    + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
+                    + " (editor_user_id, timestamp, successful, digital_object_uuid, type) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_CRUD_LOCK_ACTION = "INSERT INTO "
+            + Constants.TABLE_CRUD_LOCK_ACTION
+            + " (editor_user_id, timestamp, successful, lock_id, type) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_CRUD_REQUEST_TO_ADMIN_ACTION =
+            "INSERT INTO "
+                    + Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION
+                    + " (editor_user_id, timestamp, successful, request_to_admin_id, type) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_CRUD_SAVED_EDITED_OBJECT_ACTION =
+            "INSERT INTO "
+                    + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
+                    + " (editor_user_id, timestamp, successful, saved_edited_object_id, type) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_CRUD_TREE_STRUCTURE_ACTION =
+            "INSERT INTO "
+                    + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
+                    + " (editor_user_id, timestamp, successful, tree_structure_id, type) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_DESCRIPTION = "INSERT INTO "
+            + Constants.TABLE_DESCRIPTION
+            + " (editor_user_id, digital_object_uuid, description) VALUES ((?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_DIGITAL_OBJECT = "INSERT INTO "
+            + Constants.TABLE_DIGITAL_OBJECT
+            + " (uuid, model, name, description, input_queue_directory_path) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_EDITOR_RIGHT = "INSERT INTO "
+            + Constants.TABLE_EDITOR_RIGHT + " (name, description) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_EDITOR_USER = "INSERT INTO "
+            + Constants.TABLE_EDITOR_USER + " (id, name, surname, state) VALUES ((?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_IMAGE = "INSERT INTO " + Constants.TABLE_IMAGE
+            + " (identifier, shown, old_fs_path, imagefile) VALUES ((?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_INPUT_QUEUE = "INSERT INTO "
+            + Constants.TABLE_INPUT_QUEUE + " (path, barcode, ingested) VALUES ((?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_INPUT_QUEUE_ITEM = "INSERT INTO "
+            + Constants.TABLE_INPUT_QUEUE_ITEM + " (directory_path, name) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_LDAP_IDENTITY = "INSERT INTO "
+            + Constants.TABLE_LDAP_IDENTITY + " (editor_user_id, identity) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_LOCK = "INSERT INTO " + Constants.TABLE_LOCK
+            + " (digital_object_uuid, description, state) VALUES ((?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_LOG_IN_OUT = "INSERT INTO " + Constants.TABLE_LOG_IN_OUT
+            + " (editor_user_id, timestamp, successful, type) VALUES ((?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_LONG_RUNNING_PROCESS = "INSERT INTO "
+            + Constants.TABLE_LONG_RUNNING_PROCESS
+            + " (editor_user_id, timestamp, successful, name, finished) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_OPEN_ID_IDENTITY = "INSERT INTO "
+            + Constants.TABLE_OPEN_ID_IDENTITY + " (editor_user_id, identity) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_REQUEST_TO_ADMIN = "INSERT INTO "
+            + Constants.TABLE_REQUEST_TO_ADMIN
+            + " (admin_editor_user_id, type, object, description, solved) VALUES ((?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_RIGHT_IN_ROLE = "INSERT INTO "
+            + Constants.TABLE_RIGHT_IN_ROLE + " (editor_right_name, role_name) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_ROLE = "INSERT INTO " + Constants.TABLE_ROLE
+            + " (name, description) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_SAVED_EDITED_OBJECT = "INSERT INTO "
+            + Constants.TABLE_SAVED_EDITED_OBJECT
+            + " (digital_object_uuid, file_name, description, state) VALUES ((?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_SHIBBOLETH_IDENTITY = "INSERT INTO "
+            + Constants.TABLE_SHIBBOLETH_IDENTITY + " (editor_user_id, identity) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_TREE_STRUCTURE =
+            "INSERT INTO "
+                    + Constants.TABLE_TREE_STRUCTURE
+                    + " (barcode, description, name, model, state, input_queue_directory_path) VALUES ((?),(?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_TREE_STRUCTURE_NODE =
+            "INSERT INTO "
+                    + Constants.TABLE_TREE_STRUCTURE_NODE
+                    + " (tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist) VALUES ((?),(?),(?),(?),(?),(?),(?),(?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_USER_EDIT =
+            "INSERT INTO "
+                    + Constants.TABLE_USER_EDIT
+                    + " (editor_user_id, timestamp, successful, edited_editor_user_id, description, type) VALUES ((?),(?),(?),(?),(?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_USERS_RIGHT = "INSERT INTO "
+            + Constants.TABLE_USERS_RIGHT + " (editor_user_id, editor_right_name) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_USERS_ROLE = "INSERT INTO " + Constants.TABLE_USERS_ROLE
+            + " (editor_user_id, role_name) VALUES ((?),(?))";
+
+    public static final String INSERT_ITEM_STATEMENT_VERSION = "INSERT INTO " + Constants.TABLE_VERSION
+            + " (version) VALUES ((?))";
 
     /**
      * {@inheritDoc}
@@ -81,16 +207,20 @@ public class DBSchemaDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean checkVersion(int version) throws DatabaseException {
+    public int checkVersion(int version) throws DatabaseException {
         PreparedStatement statement = null;
         int versionDb = -1;
         try {
             statement = getConnection().prepareStatement(SELECT_VERSION);
             ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                versionDb = Integer.parseInt(rs.getString("version"));
+            int columnCount = statement.getMetaData().getColumnCount();
+            if (columnCount != 1) {
+                return -1;
             }
-            return versionDb >= version;
+            while (rs.next()) {
+                versionDb = rs.getInt("version");
+            }
+            return (versionDb >= version) ? 1 : 0;
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new DatabaseException("unable to obtain the version of the DB", e);
@@ -99,7 +229,7 @@ public class DBSchemaDAOImpl
         } finally {
             closeConnection();
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -189,5 +319,59 @@ public class DBSchemaDAOImpl
         } finally {
             closeConnection();
         }
+    }
+
+    @Override
+    public Map<Long, String[]> getAllDataFromTable(String tableName) {
+        PreparedStatement selStatement = null;
+        Map<Long, String[]> rows = null;
+        try {
+            selStatement = getConnection().prepareStatement(SELECT_ALL + tableName);
+            ResultSet rs = selStatement.executeQuery();
+
+            int columnCount = selStatement.getMetaData().getColumnCount();
+            long row = 0;
+            String[] columns = new String[columnCount];
+            rows = new HashMap<Long, String[]>();
+
+            for (int i = 0; i < columnCount; i++) {
+                columns[i] = selStatement.getMetaData().getColumnClassName(i + 1);
+            }
+            rows.put(row++, columns);
+
+            while (rs.next()) {
+                columns = new String[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    columns[i] = rs.getString(i + 1);
+                }
+                rows.put(row++, columns);
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } catch (DatabaseException e) {
+            // TODO Auto-generated catch block
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return rows;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //    description (id, uuid, description)  ->  digital_object (uuid, model, name, description, input_queue_directory_path);
+    //                                                             uuid, ?????, ????, description,             'null'
+    @Override
+    public void transformAndPutDescription(Map<Long, String[]> oldData) {
+
+        for (long i = 1; i < oldData.size(); i++) {
+
+        }
+
     }
 }
