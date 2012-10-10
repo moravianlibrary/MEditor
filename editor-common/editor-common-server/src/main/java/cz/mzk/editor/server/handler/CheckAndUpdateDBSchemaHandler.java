@@ -158,16 +158,20 @@ public class CheckAndUpdateDBSchemaHandler
      */
     private boolean transformDataToNewSchema(int newVersion) throws ActionException {
 
-        Map<OLD_DB_TABLES, Map<Long, String[]>> oldData =
-                new HashMap<Constants.OLD_DB_TABLES, Map<Long, String[]>>(OLD_DB_TABLES.values().length);
+        Map<OLD_DB_TABLES, Map<Long, Object[]>> oldData =
+                new HashMap<Constants.OLD_DB_TABLES, Map<Long, Object[]>>(OLD_DB_TABLES.values().length);
 
         for (OLD_DB_TABLES table : OLD_DB_TABLES.values()) {
-            oldData.put(table, dbSchemaDao.getAllDataFromTable(table.getTableName()));
+            try {
+                oldData.put(table, dbSchemaDao.getAllDataFromTable(table.getTableName()));
+            } catch (ClassNotFoundException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new ActionException(e);
+            }
         }
 
-        String newSchemaPath =
-                EditorConfigurationImpl.WORKING_DIR + File.separator + Constants.DB_BACKUP_DIR
-                        + "newSqlWithClean.sql";
+        String newSchemaPath = EditorConfigurationImpl.WORKING_DIR + File.separator + "newSqlWithClean";
         try {
             dbSchemaDao.updateSchema(newVersion, newSchemaPath);
         } catch (DatabaseException e) {
@@ -176,15 +180,43 @@ public class CheckAndUpdateDBSchemaHandler
             throw new ActionException("Unable update the DB schema from file: " + newSchemaPath, e);
         }
 
-        for (OLD_DB_TABLES oldTable : oldData.keySet()) {
-            switch (oldTable) {
-                case TABLE_DESCRIPTION:
-                    dbSchemaDao.transformAndPutDescription(oldData.get(oldTable));
-                    break;
+        try {
+            dbSchemaDao.transformAndPutDescription(oldData.get(OLD_DB_TABLES.TABLE_DESCRIPTION));
 
-                default:
-                    break;
-            }
+            Map<Long, Long> editorUserIdMapping =
+                    dbSchemaDao.transformAndPutEditorUser(oldData.get(OLD_DB_TABLES.TABLE_EDITOR_USER));
+
+            dbSchemaDao.transformAndPutImage(oldData.get(OLD_DB_TABLES.TABLE_IMAGE_NAME));
+
+            dbSchemaDao.transformAndPutInputQueueItem(oldData.get(OLD_DB_TABLES.TABLE_INPUT_QUEUE_ITEM));
+
+            dbSchemaDao.transformAndPutInputQueue(oldData.get(OLD_DB_TABLES.TABLE_INPUT_QUEUE_ITEM_NAME));
+
+            dbSchemaDao.transformAndPutOpenIdIdentity(oldData.get(OLD_DB_TABLES.TABLE_OPEN_ID_IDENTITY),
+                                                      editorUserIdMapping);
+
+            dbSchemaDao.transformAndRecentlyModified(oldData.get(OLD_DB_TABLES.TABLE_RECENTLY_MODIFIED_NAME),
+                                                     editorUserIdMapping);
+
+            dbSchemaDao.transformAndPutRequestForAdding(oldData.get(OLD_DB_TABLES.TABLE_REQUEST_FOR_ADDING));
+
+            dbSchemaDao.transformAndPutStoredFiles(oldData.get(OLD_DB_TABLES.TABLE_STORED_FILES),
+                                                   editorUserIdMapping);
+
+            Map<Long, Long> treeStrucIdMapping =
+                    dbSchemaDao.transformAndPutTreeStructure(oldData
+                            .get(OLD_DB_TABLES.TABLE_TREE_STRUCTURE_NAME), editorUserIdMapping);
+
+            dbSchemaDao.transformAndPutTreeStrucNode(oldData
+                    .get(OLD_DB_TABLES.TABLE_TREE_STRUCTURE_NODE_NAME), treeStrucIdMapping);
+
+            //            version (id, version) -> version (version)
+            dbSchemaDao.checkVersion((Integer) oldData.get(OLD_DB_TABLES.TABLE_VERSION_NAME).get(1)[1]);
+
+        } catch (DatabaseException e) {
+            LOGGER.error("The old DB-data could not be transformed to the new schema: " + e);
+            e.printStackTrace();
+
         }
         return true;
     }

@@ -205,6 +205,64 @@ public class Constants {
         }
     }
 
+    /**
+     * The Enum CRUD_ACTION_TYPES.
+     */
+    public static enum CRUD_ACTION_TYPES {
+
+        CREATE("c"), READ("r"), UPDATE("u"), DELETE("d");
+
+        private final String value;
+
+        /**
+         * Instantiates a new crUd_action_types.
+         * 
+         * @param value
+         *        the value
+         */
+        private CRUD_ACTION_TYPES(String value) {
+            this.value = value;
+        }
+
+        /**
+         * @return the value
+         */
+        public String getValue() {
+            return value;
+        }
+
+    }
+
+    /**
+     * The Enum REQUESTS_TO_ADMIN_TYPES.
+     */
+    public static enum REQUESTS_TO_ADMIN_TYPES {
+
+        ADDING_NEW_ACOUNT("adding a new acount");
+
+        private final String value;
+
+        /**
+         * Instantiates a new requests_to_ admin_types.
+         * 
+         * @param value
+         *        the value
+         */
+        private REQUESTS_TO_ADMIN_TYPES(String value) {
+            this.value = value;
+        }
+
+        /**
+         * @return the value
+         */
+        public String getValue() {
+            return value;
+        }
+
+    }
+
+    public static final String NON_EXISTENT = "non-existent";
+
     // tables
 
     /** The Constant TABLE_INPUT_QUEUE_ITEM. */
