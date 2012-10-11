@@ -181,6 +181,9 @@ public class CheckAndUpdateDBSchemaHandler
         }
 
         try {
+            dbSchemaDao.checkVersion(Integer.parseInt(oldData.get(OLD_DB_TABLES.TABLE_VERSION_NAME)
+                    .get(new Long(1))[1].toString()));
+
             dbSchemaDao.transformAndPutDescription(oldData.get(OLD_DB_TABLES.TABLE_DESCRIPTION));
 
             Map<Long, Long> editorUserIdMapping =
@@ -211,7 +214,6 @@ public class CheckAndUpdateDBSchemaHandler
                     .get(OLD_DB_TABLES.TABLE_TREE_STRUCTURE_NODE_NAME), treeStrucIdMapping);
 
             //            version (id, version) -> version (version)
-            dbSchemaDao.checkVersion((Integer) oldData.get(OLD_DB_TABLES.TABLE_VERSION_NAME).get(1)[1]);
 
         } catch (DatabaseException e) {
             LOGGER.error("The old DB-data could not be transformed to the new schema: " + e);

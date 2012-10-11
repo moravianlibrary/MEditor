@@ -42,6 +42,8 @@ import cz.mzk.editor.server.OAIPMHClientImpl;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.Z3950ClientImpl;
+import cz.mzk.editor.server.DAO.DAOUtils;
+import cz.mzk.editor.server.DAO.DAOUtilsImpl;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DBSchemaDAOImpl;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
@@ -240,6 +242,7 @@ public class ServerModule
         bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
         bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
+        bind(DAOUtils.class).to(DAOUtilsImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
