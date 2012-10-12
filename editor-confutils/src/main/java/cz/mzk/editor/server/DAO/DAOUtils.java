@@ -36,48 +36,34 @@ import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
  */
 public interface DAOUtils {
 
-    /** The Constant ACTION_INSERT_ITEM_STATEMENT. */
-    public static final String ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_ACTION
-            + " (editor_user_id, timestamp, successful) VALUES ((?),(?),(?))";
-
-    /** The Constant ACTION_WITH_TOP_OBJECT_INSERT_ITEM_STATEMENT. */
-    public static final String ACTION_WITH_TOP_OBJECT_INSERT_ITEM_STATEMENT =
-            "INSERT INTO "
-                    + Constants.TABLE_ACTION_WITH_TOP_OBJECT
-                    + " (id, editor_user_id, timestamp, successful, top_digital_object_uuid) VALUES ((?),(?),(?),(?),(?))";
-
     /** The Constant INSERT_ITEM_STATEMENT_CONVERSION. */
-    public static final String INSERT_ITEM_STATEMENT_CONVERSION = "INSERT INTO " + Constants.TABLE_CONVERSION
-            + " (editor_user_id, timestamp, successful, input_queue_directory_path) VALUES ((?),(?),(?),(?))";
+    public static final String CONVERSION_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_CONVERSION
+            + " (editor_user_id, timestamp, input_queue_directory_path) VALUES ((?),(?),(?),(?))";
 
     /** The Constant CRUD_DIGITAL_OBJECT_ACTION_INSERT_ITEM_STATEMENT. */
-    public static final String CRUD_DIGITAL_OBJECT_ACTION_INSERT_ITEM_STATEMENT =
-            "INSERT INTO "
-                    + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
-                    + " (editor_user_id, timestamp, successful, digital_object_uuid, type) VALUES ((?),(?),(?),(?),(?))";
+    public static final String CRUD_DIGITAL_OBJECT_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
+            + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
+            + " (editor_user_id, timestamp, digital_object_uuid, type) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant CRUD_LOCK_ACTION_INSERT_ITEM_STATEMENT. */
     public static final String CRUD_LOCK_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_CRUD_LOCK_ACTION
-            + " (editor_user_id, timestamp, successful, lock_id, type) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, lock_id, type) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant CRUD_REQUEST_TO_ADMIN_ACTION_INSERT_ITEM_STATEMENT. */
-    public static final String CRUD_REQUEST_TO_ADMIN_ACTION_INSERT_ITEM_STATEMENT =
-            "INSERT INTO "
-                    + Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION
-                    + " (editor_user_id, timestamp, successful, request_to_admin_id, type) VALUES ((?),(?),(?),(?),(?))";
+    public static final String CRUD_REQUEST_TO_ADMIN_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
+            + Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION
+            + " (editor_user_id, timestamp, request_to_admin_id, type) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant CRUD_SAVED_EDITED_OBJECT_ACTION_INSERT_ITEM_STATEMENT. */
-    public static final String CRUD_SAVED_EDITED_OBJECT_ACTION_INSERT_ITEM_STATEMENT =
-            "INSERT INTO "
-                    + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
-                    + " (editor_user_id, timestamp, successful, saved_edited_object_id, type) VALUES ((?),(?),(?),(?),(?))";
+    public static final String CRUD_SAVED_EDITED_OBJECT_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
+            + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
+            + " (editor_user_id, timestamp, saved_edited_object_id, type) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant CRUD_TREE_STRUCTURE_ACTION_INSERT_ITEM_STATEMENT. */
-    public static final String CRUD_TREE_STRUCTURE_ACTION_INSERT_ITEM_STATEMENT =
-            "INSERT INTO "
-                    + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
-                    + " (editor_user_id, timestamp, successful, tree_structure_id, type) VALUES ((?),(?),(?),(?),(?))";
+    public static final String CRUD_TREE_STRUCTURE_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
+            + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
+            + " (editor_user_id, timestamp, tree_structure_id, type) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant DESCRIPTION_INSERT_ITEM_STATEMENT. */
     public static final String DESCRIPTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -136,12 +122,12 @@ public interface DAOUtils {
 
     /** The Constant LOG_IN_OUT_INSERT_ITEM_STATEMENT. */
     public static final String LOG_IN_OUT_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_LOG_IN_OUT
-            + " (editor_user_id, timestamp, successful, type) VALUES ((?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, type) VALUES ((?),(?),(?),(?))";
 
     /** The Constant LONG_RUNNING_PROCESS_INSERT_ITEM_STATEMENT. */
     public static final String LONG_RUNNING_PROCESS_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_LONG_RUNNING_PROCESS
-            + " (editor_user_id, timestamp, successful, name, finished) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, name, finished) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant OPEN_ID_IDENTITY_INSERT_ITEM_STATEMENT. */
     public static final String OPEN_ID_IDENTITY_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -185,7 +171,7 @@ public interface DAOUtils {
     public static final String USER_EDIT_INSERT_ITEM_STATEMENT =
             "INSERT INTO "
                     + Constants.TABLE_USER_EDIT
-                    + " (editor_user_id, timestamp, successful, edited_editor_user_id, description, type) VALUES ((?),(?),(?),(?),(?),(?))";
+                    + " (editor_user_id, timestamp, edited_editor_user_id, description, type) VALUES ((?),(?),(?),(?),(?),(?))";
 
     /** The Constant USERS_RIGHT_INSERT_ITEM_STATEMENT. */
     public static final String USERS_RIGHT_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -194,6 +180,61 @@ public interface DAOUtils {
     /** The Constant USERS_ROLE_INSERT_ITEM_STATEMENT. */
     public static final String USERS_ROLE_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_USERS_ROLE
             + " (editor_user_id, role_name) VALUES ((?),(?))";
+
+    /**
+     * Insert crud action.
+     * 
+     * @param editor_user_id
+     *        the editor_user_id
+     * @param tableName
+     *        the table name
+     * @param fkNameCol
+     *        the fk name col
+     * @param foreignKey
+     *        the foreign key
+     * @param type
+     *        the type
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean insertCrudAction(long editor_user_id,
+                             String tableName,
+                             String fkNameCol,
+                             Object foreignKey,
+                             CRUD_ACTION_TYPES type,
+                             boolean closeCon) throws DatabaseException;
+
+    /**
+     * Insert crud action with top object.
+     * 
+     * @param editor_user_id
+     *        the editor_user_id
+     * @param tableName
+     *        the table name
+     * @param fkNameCol
+     *        the fk name col
+     * @param foreignKey
+     *        the foreign key
+     * @param type
+     *        the type
+     * @param top_digital_object_uuid
+     *        the top_digital_object_uuid
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean insertCrudActionWithTopObject(long editor_user_id,
+                                          String tableName,
+                                          String fkNameCol,
+                                          Object foreignKey,
+                                          CRUD_ACTION_TYPES type,
+                                          String top_digital_object_uuid,
+                                          boolean closeCon) throws DatabaseException;
 
     /**
      * Check digital object.
@@ -231,14 +272,15 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @return
      * @throws DatabaseException
      *         the database exception
      */
-    void updateDigitalObject(String uuid,
-                             String model,
-                             String name,
-                             String description,
-                             String input_queue_directory_path) throws DatabaseException;
+    boolean updateDigitalObject(String uuid,
+                                String model,
+                                String name,
+                                String description,
+                                String input_queue_directory_path) throws DatabaseException;
 
     /**
      * Insert digital object.
@@ -253,14 +295,15 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @return
      * @throws DatabaseException
      *         the database exception
      */
-    void insertDigitalObject(String uuid,
-                             String model,
-                             String name,
-                             String description,
-                             String input_queue_directory_path) throws DatabaseException;
+    boolean insertDigitalObject(String uuid,
+                                String model,
+                                String name,
+                                String description,
+                                String input_queue_directory_path) throws DatabaseException;
 
     /**
      * Insert crud digital object action.
@@ -269,8 +312,6 @@ public interface DAOUtils {
      *        the editor_user_id
      * @param timestamp
      *        the timestamp
-     * @param successful
-     *        the successful
      * @param digital_object_uuid
      *        the digital_object_uuid
      * @param type
@@ -280,7 +321,6 @@ public interface DAOUtils {
      */
     void insertCrudDigitalObjectAction(Long editor_user_id,
                                        Timestamp timestamp,
-                                       boolean successful,
                                        String digital_object_uuid,
                                        CRUD_ACTION_TYPES type) throws DatabaseException;
 
@@ -442,8 +482,6 @@ public interface DAOUtils {
      *        the editor_user_id
      * @param timestamp
      *        the timestamp
-     * @param successful
-     *        the successful
      * @param saved_edited_object_id
      *        the saved_edited_object_id
      * @param type
@@ -453,7 +491,6 @@ public interface DAOUtils {
      */
     void insertCrudSavedEditedObjectAction(Long editor_user_id,
                                            Timestamp timestamp,
-                                           boolean successful,
                                            Long saved_edited_object_id,
                                            CRUD_ACTION_TYPES type) throws DatabaseException;
 
@@ -464,8 +501,6 @@ public interface DAOUtils {
      *        the editor_user_id
      * @param timestamp
      *        the timestamp
-     * @param successful
-     *        the successful
      * @param request_to_admin_id
      *        the request_to_admin_id
      * @param type
@@ -475,7 +510,6 @@ public interface DAOUtils {
      */
     void insertCrudRequestToAdminAction(long editor_user_id,
                                         Timestamp timestamp,
-                                        boolean successful,
                                         long request_to_admin_id,
                                         CRUD_ACTION_TYPES type) throws DatabaseException;
 
@@ -512,8 +546,6 @@ public interface DAOUtils {
      *        the editor_user_id
      * @param timestamp
      *        the timestamp
-     * @param successful
-     *        the successful
      * @param tree_structure_id
      *        the tree_structure_id
      * @param type
@@ -523,7 +555,6 @@ public interface DAOUtils {
      */
     void insertCrudTreeStructureAction(long editor_user_id,
                                        Timestamp timestamp,
-                                       boolean successful,
                                        long tree_structure_id,
                                        CRUD_ACTION_TYPES type) throws DatabaseException;
 

@@ -33,10 +33,12 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
 
@@ -48,30 +50,70 @@ public class RecentlyModifiedItemDAOImpl
         extends AbstractDAO
         implements RecentlyModifiedItemDAO {
 
+    //     recently_modified_item (id, uuid, name, description, modified, model, user_id)  ->
+    //            
+    //         ->  digital_object (uuid,     model, name, description, input_queue_directory_path)
+    //                             uuid, ?ordinal?, name,  'null',             'null'
+    //        
+    //         ->  crud_digital_object_action (editor_user_id, timestamp, digital_object_uuid, type)
+    //                                                user_id,  modified,                uuid,  'c'
+    //        
+    //         ->  description (editor_user_id, digital_object_uuid, description)
+    //                                 user_id,                uuid, description
+
     /** The Constant SELECT_LAST_N_STATEMENT. */
-    public static final String SELECT_LAST_N_STATEMENT =
-            "SELECT uuid, name, MAX(description) AS description, model, MAX(modified) AS modified FROM "
-                    + Constants.TABLE_RECENTLY_MODIFIED_NAME
-                    + " GROUP BY uuid, name, model ORDER by modified DESC LIMIT(?)";
+    //    public static final String SELECT_LAST_N_STATEMENT =
+    //            "SELECT uuid, name, MAX(description) AS description, model, MAX(modified) AS modified FROM "
+    //                    + Constants.TABLE_RECENTLY_MODIFIED_NAME
+    //                    + " GROUP BY uuid, name, model ORDER by modified DESC LIMIT(?)";
+
+    public static final String SELECT_LAST_N_PREFIX =
+            "SELECT digital_object_uuid, o.name, MAX(o.description) AS description, o.model, MAX(timestamp) AS modified FROM "
+                    + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
+                    + " a INNER JOIN "
+                    + Constants.TABLE_DIGITAL_OBJECT + " o ON a.digital_object_uuid=o.uuid ";
+
+     a INNER JOIN digital_object o ON a.digital_object_uuid=o.uuid) LEFT JOIN description d ON d.digital_object_uuid = o.uuid WHERE d.editor_user_id = '5' GROUP BY o.uuid, o.name, d.description, o.model ORDER by modified DESC LIMIT '5';
+    
+    
+    public static final String SELECT_LAST_N_STATEMENT = SELECT_LAST_N_PREFIX
+            + "GROUP BY digital_object_uuid, name, model ORDER by modified DESC LIMIT(?)";
+
+    //    public static final String SELECT_UUID_OBJECT_STATEMENT =  
 
     /** The Constant SELECT_LAST_N_STATEMENT_FOR_USER. */
-    public static final String SELECT_LAST_N_STATEMENT_FOR_USER =
-            "SELECT uuid, name, description, model, modified FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
-                    + " WHERE user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
-                    + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";
+    //    public static final String SELECT_LAST_N_STATEMENT_FOR_USER =
+    //            "SELECT uuid, name, description, model, modified FROM " + Constants.TABLE_RECENTLY_MODIFIED_NAME
+    //                    + " WHERE user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
+    //                    + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";
+
+    public static final String SELECT_LAST_N_STATEMENT_FOR_USER = 
+        "SELECT o.uuid, o.name, d.description, o.model, MAX(a.timestamp) AS modified FROM (" 
+        + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION + " a INNER JOIN " 
+        + Constants.TABLE_DIGITAL_OBJECT
+            + " WHERE editor_user_id IN (SELECT editor_user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
+            + " WHERE identity = (?)) ORDER BY modified DESC LIMIT (?)";
 
     /** The Constant INSERT_ITEM_STATEMENT. */
-    public static final String INSERT_ITEM_STATEMENT =
-            "INSERT INTO "
-                    + Constants.TABLE_RECENTLY_MODIFIED_NAME
-                    + " (uuid, name, description, model, user_id, modified) VALUES ((?),(?),(?),(?),(SELECT user_id FROM "
-                    + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)),(CURRENT_TIMESTAMP))";
+    //    public static final String INSERT_ITEM_STATEMENT =
+    //            "INSERT INTO "
+    //                    + Constants.TABLE_RECENTLY_MODIFIED_NAME
+    //                    + " (uuid, name, description, model, user_id, modified) VALUES ((?),(?),(?),(?),(SELECT user_id FROM "
+    //                    + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)),(CURRENT_TIMESTAMP))";
 
     /** The Constant FIND_ITEM_STATEMENT. */
-    public static final String FIND_ITEM_STATEMENT = "SELECT id FROM "
-            + Constants.TABLE_RECENTLY_MODIFIED_NAME
-            + " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
-            + " WHERE identity = (?))";
+    //        public static final String FIND_ITEM_STATEMENT = "SELECT id FROM "
+    //                + Constants.TABLE_RECENTLY_MODIFIED_NAME
+    //                + " WHERE uuid = (?) AND user_id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
+    //                + " WHERE identity = (?))";
+    public static final String FIND_ITEM_STATEMENT_IN_LAST_N =
+            "SELECT uuid FROM "
+                    + Constants.TABLE_DIGITAL_OBJECT
+                    + " WHERE uuid IN (SELECT digital_object_uuid FROM "
+                    + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
+                    + " a INNER JOIN "
+                    + Constants.TABLE_DIGITAL_OBJECT
+                    + " o ON a.digital_object_uuid=o.uuid GROUP BY digital_object_uuid, timestamp ORDER by a.timestamp DESC LIMIT(?);)";
 
     /** The Constant INSERT_COMMON_DESCRIPTION_STATEMENT. */
     public static final String INSERT_COMMON_DESCRIPTION_STATEMENT = "INSERT INTO "
@@ -107,67 +149,84 @@ public class RecentlyModifiedItemDAOImpl
 
     private static final Logger LOGGER = Logger.getLogger(RecentlyModifiedItemDAOImpl.class);
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO#put(cz.fi
-     * .muni.xkremser.editor.shared.rpc.RecentlyModifiedItem)
+    @Inject
+    private DAOUtils daoUtils;
+
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public boolean put(RecentlyModifiedItem toPut, String openID) throws DatabaseException {
+    public boolean put(RecentlyModifiedItem toPut, long user_id) throws DatabaseException {
         if (toPut == null) throw new NullPointerException("toPut");
         if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
             throw new NullPointerException("toPut.getUuid()");
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        boolean found = true;
-        try {
+        boolean objInserted =
+                daoUtils.checkDigitalObject(toPut.getUuid(),
+                                            toPut.getModel().getValue(),
+                                            toPut.getName(),
+                                            null,
+                                            null);
 
-            PreparedStatement findSt = getConnection().prepareStatement(FIND_ITEM_STATEMENT);
-            PreparedStatement statement = null;
-            findSt.setString(1, toPut.getUuid());
-            findSt.setString(2, openID);
-            ResultSet rs = findSt.executeQuery();
-            found = rs.next();
+        if (objInserted) {
 
-            // TX start
-            int modified = 0;
-            if (found) { // is allready in DB
-                int id = rs.getInt(1);
-                statement = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
-                statement.setInt(1, id);
-                modified = statement.executeUpdate();
-            } else {
-                statement = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
-                statement.setString(1, toPut.getUuid());
-                statement.setString(2,
-                                    toPut.getName() == null ? ""
-                                            : ClientCreateUtils.trimLabel(toPut.getName(),
-                                                                    Constants.MAX_LABEL_LENGTH));
-                statement.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
-                statement.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model
-                statement.setString(5, openID);
-                modified = statement.executeUpdate();
-            }
-            if (modified == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated. Queries: \"" + findSt + "\" and \"" + statement + "\"");
-            } else {
-                getConnection().rollback();
-                LOGGER.error("DB has not been updated -> rollback! Queries: \"" + findSt + "\" and \""
-                        + statement + "\"");
-                found = false;
-            }
-            // TX end
+            //            try {
+            //                getConnection().setAutoCommit(false);
+            //            } catch (SQLException e) {
+            //                LOGGER.warn("Unable to set autocommit off", e);
+            //            }
+            //            boolean found = true;
+            //            try {
 
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            found = false;
-        } finally {
-            closeConnection();
+            daoUtils.insertCrudAction(user_id,
+                                      Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
+                                      "digital_object_uuid",
+                                      toPut.getUuid(),
+                                      CRUD_ACTION_TYPES.CREATE,
+                                      true);
+
+            //            PreparedStatement findSt = getConnection().prepareStatement(FIND_ITEM_STATEMENT);
+            //            PreparedStatement statement = null;
+            //            findSt.setString(1, toPut.getUuid());
+            //            findSt.setString(2, openID);
+            //            ResultSet rs = findSt.executeQuery();
+            //            found = rs.next();
+            //
+            //            // TX start
+            //            int modified = 0;
+            //            if (found) { // is allready in DB
+            //                int id = rs.getInt(1);
+            //                statement = getConnection().prepareStatement(UPDATE_ITEM_STATEMENT);
+            //                statement.setInt(1, id);
+            //                modified = statement.executeUpdate();
+            //            } else {
+            //                statement = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
+            //                statement.setString(1, toPut.getUuid());
+            //                statement.setString(2,
+            //                                    toPut.getName() == null ? "" : ClientCreateUtils.trimLabel(toPut
+            //                                            .getName(), Constants.MAX_LABEL_LENGTH));
+            //                statement.setString(3, toPut.getDescription() == null ? "" : toPut.getDescription());
+            //                statement.setInt(4, toPut.getModel().ordinal()); // TODO: unknown model
+            //                statement.setString(5, openID);
+            //                modified = statement.executeUpdate();
+            //            }
+            //            if (modified == 1) {
+            //                getConnection().commit();
+            //                LOGGER.debug("DB has been updated. Queries: \"" + findSt + "\" and \"" + statement + "\"");
+            //            } else {
+            //                getConnection().rollback();
+            //                LOGGER.error("DB has not been updated -> rollback! Queries: \"" + findSt + "\" and \""
+            //                        + statement + "\"");
+            //                found = false;
+            //            }
+            //            // TX end
+            //
+            //            } catch (SQLException e) {
+            //                LOGGER.error(e);
+            //                found = false;
+            //            } finally {
+            //                closeConnection();
+            //            }
         }
         return found;
     }

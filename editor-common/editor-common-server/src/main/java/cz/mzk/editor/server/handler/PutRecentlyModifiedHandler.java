@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedResult;
@@ -63,6 +64,9 @@ public class PutRecentlyModifiedHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    @Inject
+    private UserDAO userDAO;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -91,7 +95,8 @@ public class PutRecentlyModifiedHandler
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         LOGGER.debug("Processing action: PutRecentlyModified item:" + action.getItem());
         try {
-            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), openID));
+            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(),
+                                                                         userDAO.getUsersId(openID)));
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

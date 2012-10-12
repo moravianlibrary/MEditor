@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 
@@ -45,6 +46,83 @@ public class DAOUtilsImpl
 
     private static final Logger LOGGER = Logger.getLogger(DAOUtilsImpl.class);
 
+    public static final String ACTION_UPDATE_SUCCESS_STATEMENT = "UPDATE " + Constants.TABLE_ACTION
+            + " (editor_user_id, timestamp, successful) VALUES ((?),(?),(?))";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean insertCrudAction(long editor_user_id,
+                                    String tableName,
+                                    String fkNameCol,
+                                    Object foreignKey,
+                                    CRUD_ACTION_TYPES type,
+                                    boolean closeCon) throws DatabaseException {
+        return insertAnyCrudAction(editor_user_id, tableName, fkNameCol, foreignKey, type, null, closeCon);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean insertCrudActionWithTopObject(long editor_user_id,
+                                                 String tableName,
+                                                 String fkNameCol,
+                                                 Object foreignKey,
+                                                 CRUD_ACTION_TYPES type,
+                                                 String top_digital_object_uuid,
+                                                 boolean closeCon) throws DatabaseException {
+        return insertAnyCrudAction(editor_user_id,
+                                   tableName,
+                                   fkNameCol,
+                                   foreignKey,
+                                   type,
+                                   top_digital_object_uuid,
+                                   closeCon);
+    }
+
+    private boolean insertAnyCrudAction(long editor_user_id,
+                                        String tableName,
+                                        String fkNameCol,
+                                        Object foreignKey,
+                                        CRUD_ACTION_TYPES type,
+                                        String top_digital_object_uuid,
+                                        boolean closeCon) throws DatabaseException {
+
+        PreparedStatement insertSt = null;
+        boolean successful = false;
+        String sql =
+                "INSERT INTO " + tableName + " (editor_user_id, timestamp, " + fkNameCol
+                        + ", type) VALUES ((?),(CURRENT_TIMESTAMP),(?),(?)"
+                        + (top_digital_object_uuid == null ? "" : ",(?)") + ")";
+
+        try {
+            insertSt = getConnection().prepareStatement(sql);
+            insertSt.setLong(1, editor_user_id);
+            insertSt.setObject(2, foreignKey);
+            insertSt.setString(3, type.getValue());
+            if (top_digital_object_uuid != null) insertSt.setString(4, top_digital_object_uuid);
+
+            int updated = insertSt.executeUpdate();
+
+            if (updated == 1) {
+                LOGGER.debug("DB has been updated: The " + tableName + " item has been inserted.");
+                successful = false;
+            } else {
+                LOGGER.error("DB has not been updated! " + insertSt);
+            }
+
+        } catch (SQLException ex) {
+            LOGGER.error("Could not get insert item statement " + insertSt, ex);
+            ex.printStackTrace();
+        } finally {
+            if (closeCon) closeConnection();
+        }
+
+        return successful;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -56,6 +134,7 @@ public class DAOUtilsImpl
                                       String input_queue_directory_path) throws DatabaseException {
 
         PreparedStatement selSt = null;
+        boolean successful = false;
         try {
             boolean thereIs = false;
             selSt = getConnection().prepareStatement(DIGITAL_OBJECT_SELECT_ITEM_STATEMENT);
@@ -87,12 +166,14 @@ public class DAOUtilsImpl
                     changed = true;
                 }
                 if (changed) {
-                    updateDigitalObject(uuid, chaModel, chaName, chaDescription, chaInputPath);
+                    successful = updateDigitalObject(uuid, chaModel, chaName, chaDescription, chaInputPath);
+                } else {
+                    successful = true;
                 }
             }
 
             if (!thereIs) {
-                insertDigitalObject(uuid, model, name, description, input_queue_directory_path);
+                successful = insertDigitalObject(uuid, model, name, description, input_queue_directory_path);
             }
 
         } catch (SQLException e) {
@@ -102,19 +183,20 @@ public class DAOUtilsImpl
             closeConnection();
         }
 
-        return true;
+        return successful;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void updateDigitalObject(String uuid,
-                                    String model,
-                                    String name,
-                                    String description,
-                                    String input_queue_directory_path) throws DatabaseException {
+    public boolean updateDigitalObject(String uuid,
+                                       String model,
+                                       String name,
+                                       String description,
+                                       String input_queue_directory_path) throws DatabaseException {
         PreparedStatement updateSt = null;
+        boolean successful = false;
         try {
             updateSt = getConnection().prepareStatement(DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT);
             updateSt.setString(1, model);
@@ -126,6 +208,7 @@ public class DAOUtilsImpl
 
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been updated.");
+                successful = true;
             } else {
                 LOGGER.error("DB has not been updated! " + updateSt);
             }
@@ -136,18 +219,20 @@ public class DAOUtilsImpl
         } finally {
             closeConnection();
         }
+        return successful;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void insertDigitalObject(String uuid,
-                                    String model,
-                                    String name,
-                                    String description,
-                                    String input_queue_directory_path) throws DatabaseException {
+    public boolean insertDigitalObject(String uuid,
+                                       String model,
+                                       String name,
+                                       String description,
+                                       String input_queue_directory_path) throws DatabaseException {
         PreparedStatement insertSt = null;
+        boolean successful = false;
         try {
             insertSt = getConnection().prepareStatement(DIGITAL_OBJECT_INSERT_ITEM_STATEMENT);
             insertSt.setString(1, uuid);
@@ -159,6 +244,7 @@ public class DAOUtilsImpl
 
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been inserted.");
+                successful = true;
             } else {
                 LOGGER.error("DB has not been updated! " + insertSt);
             }
@@ -169,6 +255,7 @@ public class DAOUtilsImpl
         } finally {
             closeConnection();
         }
+        return successful;
     }
 
     /**
@@ -177,7 +264,6 @@ public class DAOUtilsImpl
     @Override
     public void insertCrudDigitalObjectAction(Long editor_user_id,
                                               Timestamp timestamp,
-                                              boolean successful,
                                               String digital_object_uuid,
                                               CRUD_ACTION_TYPES type) throws DatabaseException {
         PreparedStatement insertSt = null;
@@ -185,9 +271,8 @@ public class DAOUtilsImpl
             insertSt = getConnection().prepareStatement(CRUD_DIGITAL_OBJECT_ACTION_INSERT_ITEM_STATEMENT);
             insertSt.setLong(1, editor_user_id);
             insertSt.setTimestamp(2, timestamp);
-            insertSt.setBoolean(3, successful);
-            insertSt.setString(4, digital_object_uuid);
-            insertSt.setString(5, type.getValue());
+            insertSt.setString(3, digital_object_uuid);
+            insertSt.setString(4, type.getValue());
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {
@@ -516,7 +601,6 @@ public class DAOUtilsImpl
     @Override
     public void insertCrudSavedEditedObjectAction(Long editor_user_id,
                                                   Timestamp timestamp,
-                                                  boolean successful,
                                                   Long saved_edited_object_id,
                                                   CRUD_ACTION_TYPES type) throws DatabaseException {
         PreparedStatement insertSt = null;
@@ -525,9 +609,8 @@ public class DAOUtilsImpl
                     getConnection().prepareStatement(CRUD_SAVED_EDITED_OBJECT_ACTION_INSERT_ITEM_STATEMENT);
             insertSt.setLong(1, editor_user_id);
             insertSt.setTimestamp(2, timestamp);
-            insertSt.setBoolean(3, successful);
-            insertSt.setLong(4, saved_edited_object_id);
-            insertSt.setString(5, type.getValue());
+            insertSt.setLong(3, saved_edited_object_id);
+            insertSt.setString(4, type.getValue());
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {
@@ -551,7 +634,6 @@ public class DAOUtilsImpl
     @Override
     public void insertCrudRequestToAdminAction(long editor_user_id,
                                                Timestamp timestamp,
-                                               boolean successful,
                                                long request_to_admin_id,
                                                CRUD_ACTION_TYPES type) throws DatabaseException {
         PreparedStatement insertSt = null;
@@ -559,9 +641,8 @@ public class DAOUtilsImpl
             insertSt = getConnection().prepareStatement(CRUD_REQUEST_TO_ADMIN_ACTION_INSERT_ITEM_STATEMENT);
             insertSt.setLong(1, editor_user_id);
             insertSt.setTimestamp(2, timestamp);
-            insertSt.setBoolean(3, successful);
-            insertSt.setLong(4, request_to_admin_id);
-            insertSt.setString(5, type.getValue());
+            insertSt.setLong(3, request_to_admin_id);
+            insertSt.setString(4, type.getValue());
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {
@@ -631,7 +712,6 @@ public class DAOUtilsImpl
     @Override
     public void insertCrudTreeStructureAction(long editor_user_id,
                                               Timestamp timestamp,
-                                              boolean successful,
                                               long tree_structure_id,
                                               CRUD_ACTION_TYPES type) throws DatabaseException {
         PreparedStatement insertSt = null;
@@ -639,9 +719,8 @@ public class DAOUtilsImpl
             insertSt = getConnection().prepareStatement(CRUD_TREE_STRUCTURE_ACTION_INSERT_ITEM_STATEMENT);
             insertSt.setLong(1, editor_user_id);
             insertSt.setTimestamp(2, timestamp);
-            insertSt.setBoolean(3, successful);
-            insertSt.setLong(4, tree_structure_id);
-            insertSt.setString(5, type.getValue());
+            insertSt.setLong(3, tree_structure_id);
+            insertSt.setString(4, type.getValue());
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {

@@ -63,10 +63,9 @@ public class DBSchemaDAOImpl
 
     public static final String SELECT_ALL = "SELECT * FROM ";
 
-    public static final String SELECT_VERSION = SELECT_ALL + Constants.TABLE_VERSION_NAME;
+    public static final String SELECT_VERSION = SELECT_ALL + Constants.TABLE_VERSION;
 
-    public static final String UPDATE_VERSION = "UPDATE " + Constants.TABLE_VERSION_NAME
-            + " SET version = (?)";
+    public static final String UPDATE_VERSION = "UPDATE " + Constants.TABLE_VERSION + " SET version = (?)";
 
     private static final Logger LOGGER = Logger.getLogger(DBSchemaDAOImpl.class);
 
@@ -390,8 +389,8 @@ public class DBSchemaDAOImpl
     //         ->  digital_object (uuid,     model, name, description, input_queue_directory_path)
     //                             uuid, ?ordinal?, name,  'null',             'null'
     //        
-    //         ->  crud_digital_object_action (editor_user_id, "timestamp", successful, digital_object_uuid, type)
-    //                                                user_id,    modified,     'true',                uuid,  'c'
+    //         ->  crud_digital_object_action (editor_user_id, timestamp, digital_object_uuid, type)
+    //                                                user_id,  modified,                uuid,  'c'
     //        
     //         ->  description (editor_user_id, digital_object_uuid, description)
     //                                 user_id,            uuid, description
@@ -413,7 +412,6 @@ public class DBSchemaDAOImpl
             Long userId = editorUserIdMapping.get(Long.parseLong(recModItem[6].toString()));
             daoUtils.insertCrudDigitalObjectAction(userId,
                                                    (Timestamp) recModItem[4],
-                                                   true,
                                                    (String) recModItem[1],
                                                    CRUD_ACTION_TYPES.READ);
 
@@ -431,23 +429,22 @@ public class DBSchemaDAOImpl
     //        ->  request_to_admin (admin_editor_user_id,  type,   object, description,  solved)
     //                                            'null', 'r4a', identity,        name, 'false'
     //
-    //        ->  crud_request_to_admin_action (editor_user_id, "timestamp", successful, request_to_admin_id, type)
-    //                                          'non-existent',    modified,       true,                  id,  'c'
+    //        ->  crud_request_to_admin_action (editor_user_id, "timestamp", request_to_admin_id, type)
+    //                                          'non-existent',    modified,                  id,  'c'
     @Override
     public void transformAndPutRequestForAdding(Map<Long, Object[]> oldData) throws DatabaseException {
 
         for (long i = 1; i < oldData.size(); i++) {
             Object[] r4a = oldData.get(i);
             Long requestId =
-                    daoUtils.insertRequestToAdmin(1,
+                    daoUtils.insertRequestToAdmin(Constants.NON_EXISTENT_USER_ID,
                                                   REQUESTS_TO_ADMIN_TYPES.ADDING_NEW_ACOUNT,
                                                   (String) r4a[2],
                                                   (String) r4a[1],
                                                   false);
 
-            daoUtils.insertCrudRequestToAdminAction(1,
+            daoUtils.insertCrudRequestToAdminAction(Constants.NON_EXISTENT_USER_ID,
                                                     (Timestamp) r4a[3],
-                                                    true,
                                                     requestId,
                                                     CRUD_ACTION_TYPES.CREATE);
         }
@@ -463,8 +460,8 @@ public class DBSchemaDAOImpl
     //        ->  saved_edited_object (digital_object_uuid, file_name, description, state)
     //                                                uuid, file_name, description, 'true'
     //
-    //        ->  crud_saved_edited_object_action (editor_user_id, "timestamp", successful, saved_edited_object_id, type)
-    //                                                    user_id,      stored,     'true',                     id,  'c'
+    //        ->  crud_saved_edited_object_action (editor_user_id, timestamp, saved_edited_object_id, type)
+    //                                                    user_id,    stored,                     id,  'c'
     //    
     //        ->  digital_object (uuid, model, name, description, input_queue_directory_path)
     //                            uuid, model, ????, ???????????,             'null'
@@ -487,7 +484,7 @@ public class DBSchemaDAOImpl
                                                      (String) storedFile[4],
                                                      true);
             daoUtils.insertCrudSavedEditedObjectAction(editorUserIdMapping.get(Long.parseLong(storedFile[1]
-                    .toString())), (Timestamp) storedFile[5], true, savedId, CRUD_ACTION_TYPES.CREATE);
+                    .toString())), (Timestamp) storedFile[5], savedId, CRUD_ACTION_TYPES.CREATE);
         }
     }
 
@@ -501,8 +498,8 @@ public class DBSchemaDAOImpl
     //        ->  tree_structure (barcode, description, name, model,  state, input_queue_directory_path)
     //                            barcode, description, name, model, 'true',                 input_path
     //
-    //        ->  crud_tree_structure_action (editor_user_id, timestamp, successful, tree_structure_id, type)
-    //                                               user_id,   created,     'true',                id,  'c'
+    //        ->  crud_tree_structure_action (editor_user_id, timestamp, tree_structure_id, type)
+    //                                               user_id,   created,                id,  'c'
     //
     //        ->  input_queue (directory_path, name)
     //                             input_path, ????
@@ -529,7 +526,7 @@ public class DBSchemaDAOImpl
                                                      (String) treeStruc[6]);
 
                 daoUtils.insertCrudTreeStructureAction(editorUserIdMapping.get(Long.parseLong(treeStruc[1]
-                        .toString())), (Timestamp) treeStruc[2], true, treeStrucId, CRUD_ACTION_TYPES.CREATE);
+                        .toString())), (Timestamp) treeStruc[2], treeStrucId, CRUD_ACTION_TYPES.CREATE);
 
                 treeStrucIdMapping.put(Long.parseLong(treeStruc[0].toString()), treeStrucId);
             }

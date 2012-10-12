@@ -36,9 +36,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 
@@ -50,21 +51,33 @@ public class InputQueueItemDAOImpl
         extends AbstractDAO
         implements InputQueueItemDAO {
 
+    //    input_queue_item (id, path, barcode, ingested) -> input_queue_item (path, barcode, ingested)
+    //                                                                        path, barcode, ingested
+
+    //    input_queue_item_name (id, path, name) -> input_queue (directory_path, name)
+    //                                                                     path, name
+
     /** The Constant DELETE_ALL_ITEMS_STATEMENT. */
     public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_ITEM;
 
     /** The Constant SELECT_NUMBER_ITEMS_STATEMENT. */
-    public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(id) FROM "
+    //    public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(id) FROM "
+    //            + Constants.TABLE_INPUT_QUEUE_ITEM;
+    public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(path) FROM "
             + Constants.TABLE_INPUT_QUEUE_ITEM;
 
     /** The Constant INSERT_ITEM_STATEMENT. */
-    public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM
-            + " (path, barcode, ingested) VALUES ((?),(?),(?))";
+    //    public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM
+    //            + " (path, barcode, ingested) VALUES ((?),(?),(?))";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT. */
+    //    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT =
+    //            "SELECT p.path, p.barcode, p.ingested, n.name FROM " + Constants.TABLE_INPUT_QUEUE_ITEM
+    //                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " n ON(p.path=n.path) "
+    //                    + "WHERE position('" + File.separator + "' IN trim(leading ((?)) FROM p.path)) = 0";
     public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT =
             "SELECT p.path, p.barcode, p.ingested, n.name FROM " + Constants.TABLE_INPUT_QUEUE_ITEM
-                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " n ON(p.path=n.path) "
+                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE_ITEM + " n ON(p.path=n.directory_path) "
                     + "WHERE position('" + File.separator + "' IN trim(leading ((?)) FROM p.path)) = 0";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED. */
@@ -78,16 +91,23 @@ public class InputQueueItemDAOImpl
     public static final String UPDATE_INGEST_INFO = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM
             + " SET ingested = (?) WHERE path = (?)";
 
-    public static final String SELECT_NAME_ITEM_ID = "SELECT id FROM "
-            + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " WHERE path=(?)";
+    //    public static final String SELECT_NAME_ITEM_ID = "SELECT id FROM "
+    //            + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " WHERE path=(?)";
 
-    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
-            + " (name, path) VALUES ((?),(?))";
+    //    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
+    //            + " (name, path) VALUES ((?),(?))";
+    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE
+            + " (name, directory_path) VALUES ((?),(?))";
 
-    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
-            + " SET name = (?) WHERE path = (?)";
+    //    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
+    //            + " SET name = (?) WHERE path = (?)";
+    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE
+            + " SET name = (?) WHERE directory_path = (?)";
 
     private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
+
+    @Inject
+    private DAOUtils daoUtils;
 
     /*
      * (non-Javadoc)
@@ -146,7 +166,7 @@ public class InputQueueItemDAOImpl
     private PreparedStatement getItemInsertStatement(InputQueueItem item) throws DatabaseException {
         PreparedStatement itemStmt = null;
         try {
-            itemStmt = getConnection().prepareStatement(INSERT_ITEM_STATEMENT);
+            itemStmt = getConnection().prepareStatement(DAOUtils.INPUT_QUEUE_ITEM_INSERT_ITEM_STATEMENT);
             itemStmt.setString(1, item.getPath());
             itemStmt.setString(2, item.getBarcode());
             itemStmt.setBoolean(3, item.getIngestInfo());
@@ -221,46 +241,48 @@ public class InputQueueItemDAOImpl
 
     @Override
     public void updateName(String path, String name) throws DatabaseException {
-        int duplicate = selectName(path);
-        try {
 
-            PreparedStatement updateSt =
-                    getConnection().prepareStatement((duplicate < 0) ? INSERT_NAME : UPDATE_NAME);
-            updateSt.setString(1, ClientCreateUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
-            updateSt.setString(2, path);
-            int updated = updateSt.executeUpdate();
-
-            if (updated == 1) {
-                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
-            } else {
-                LOGGER.error("DB has been updated, with unexpected count of updated lines: " + updated
-                        + ". Queries: \"" + updateSt + "\".");
-            }
-            // TX end
-        } catch (SQLException e) {
-            LOGGER.error(e);
-        } finally {
-            closeConnection();
-        }
+        daoUtils.checkInputQueue(path, name);
+        //        int duplicate = selectName(path);
+        //        try {
+        //
+        //            PreparedStatement updateSt =
+        //                    getConnection().prepareStatement((duplicate < 0) ? INSERT_NAME : UPDATE_NAME);
+        //            updateSt.setString(1, ClientCreateUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
+        //            updateSt.setString(2, path);
+        //            int updated = updateSt.executeUpdate();
+        //
+        //            if (updated == 1) {
+        //                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
+        //            } else {
+        //                LOGGER.error("DB has been updated, with unexpected count of updated lines: " + updated
+        //                        + ". Queries: \"" + updateSt + "\".");
+        //            }
+        //            // TX end
+        //        } catch (SQLException e) {
+        //            LOGGER.error(e);
+        //        } finally {
+        //            closeConnection();
+        //        }
     }
 
-    private int selectName(String path) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        int id = Integer.MIN_VALUE;
-        try {
-
-            selectSt = getConnection().prepareStatement(SELECT_NAME_ITEM_ID);
-            selectSt.setString(1, path);
-            ResultSet rs = selectSt.executeQuery();
-
-            while (rs.next()) {
-                id = rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-        return id;
-    }
+    //    private int selectName(String path) throws DatabaseException {
+    //        PreparedStatement selectSt = null;
+    //        int id = Integer.MIN_VALUE;
+    //        try {
+    //
+    //            selectSt = getConnection().prepareStatement(SELECT_NAME_ITEM_ID);
+    //            selectSt.setString(1, path);
+    //            ResultSet rs = selectSt.executeQuery();
+    //
+    //            while (rs.next()) {
+    //                id = rs.getInt("id");
+    //            }
+    //        } catch (SQLException e) {
+    //            LOGGER.error("Query: " + selectSt, e);
+    //        } finally {
+    //            closeConnection();
+    //        }
+    //        return id;
+    //    }
 }

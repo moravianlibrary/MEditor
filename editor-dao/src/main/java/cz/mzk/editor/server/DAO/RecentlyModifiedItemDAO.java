@@ -42,11 +42,13 @@ public interface RecentlyModifiedItemDAO {
      * 
      * @param toPut
      *        the to put
-     * @param openID
-     *        the open id
+     * @param user_id
+     *        the user_id
      * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
      */
-    boolean put(RecentlyModifiedItem toPut, String openID) throws DatabaseException;
+    boolean put(RecentlyModifiedItem toPut, long user_id) throws DatabaseException;
 
     /**
      * Put description.

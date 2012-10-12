@@ -111,14 +111,14 @@ public class LockDigitalObjectHandler
 
             if (lockInfo.getLockOwner() == null) {
 
-                successful = locksDAO.lockDigitalObject(uuid, usersId, description);
+                successful = locksDAO.lockDigitalObject(uuid, usersId, description, true);
                 LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
                         + successful);
                 return new LockDigitalObjectResult(lockInfo);
 
             } else {
                 if ("".equals(lockInfo.getLockOwner())) {
-                    successful = locksDAO.lockDigitalObject(uuid, null, description);
+                    successful = locksDAO.lockDigitalObject(uuid, null, description, false);
                     LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
                             + successful);
                     return new LockDigitalObjectResult(lockInfo);
