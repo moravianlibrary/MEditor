@@ -30,6 +30,7 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.text.SimpleDateFormat;
 
@@ -37,9 +38,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 
@@ -51,9 +55,28 @@ public class TreeStructureDAOImpl
         extends AbstractDAO
         implements TreeStructureDAO {
 
-    public static final String SELECT_INFOS = "SELECT eu.surname || ', ' || eu.name as full_name, ts.* FROM "
-            + Constants.TABLE_TREE_STRUCTURE_NAME + " ts LEFT JOIN " + Constants.TABLE_EDITOR_USER
-            + " eu ON eu.id = ts.user_id";
+    //    tree_structure (id, user_id, created, barcode, description, name, input_path, model)    ->
+    //    
+    //        ->  tree_structure (barcode, description, name, model,  state, input_queue_directory_path)
+    //                            barcode, description, name, model, 'true',                 input_path
+    //
+    //        ->  crud_tree_structure_action (editor_user_id, timestamp, tree_structure_id, type)
+    //                                               user_id,   created,                id,  'c'
+    //
+    //        ->  input_queue (directory_path, name)
+    //                             input_path, ????
+
+    //    tree_structure_node (id,           tree_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist)   ->
+    //    tree_structure_node (id, tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist)
+
+    /** The Constant SELECT_INFOS. */
+    public static final String SELECT_INFOS =
+            "SELECT eu.surname || ', ' || eu.name as full_name, ts.* FROM ((SELECT timestamp, editor_user_id, tree_structure_id FROM "
+                    + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
+                    + " WHERE type='c') a INNER JOIN (SELECT * FROM "
+                    + Constants.TABLE_TREE_STRUCTURE
+                    + " WHERE state='true') t ON a.tree_structure_id = t.id) ts LEFT JOIN "
+                    + Constants.TABLE_EDITOR_USER + " eu ON eu.id = ts.editor_user_id";
 
     public static final String SELECT_INFOS_WITH_CODE = SELECT_INFOS + " WHERE ts.barcode = (?)";
 
@@ -61,28 +84,31 @@ public class TreeStructureDAOImpl
 
     public static final String SELECT_INFOS_BY_USER_AND_CODE = SELECT_INFOS_BY_USER + " AND ts.barcode = (?)";
 
-    public static final String SELECT_NODES = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
-            + " WHERE tree_id = (?)";
+    public static final String SELECT_NODES = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
+            + " WHERE tree_structure_id = (?)";
 
-    public static final String DELETE_NODES = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
-            + " WHERE tree_id = (?)";
+    public static final String DELETE_NODES = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
+            + " WHERE tree_structure_id = (?)";
 
-    public static final String DELETE_INFO = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NAME
-            + " WHERE id = (?)";
+    public static final String DISABLE_INFO = "UPDATE " + Constants.TABLE_TREE_STRUCTURE
+            + " SET state = 'false' WHERE id = (?)";
 
     public static final String INSERT_INFO =
             "INSERT INTO "
-                    + Constants.TABLE_TREE_STRUCTURE_NAME
-                    + " (user_id, created, description, barcode, name, input_path, model) VALUES ((?), (CURRENT_TIMESTAMP), (?), (?), (?), (?), (?))";
+                    + Constants.TABLE_TREE_STRUCTURE
+                    + " (barcode, description, name, model, state, input_queue_directory_path) VALUES ((?), (?), (?), (?), 'true', (?))";
 
     public static final String INFO_VALUE = "SELECT currval('" + Constants.SEQUENCE_TREE_STRUCTURE + "')";
 
     public static final String INSERT_NODE =
             "INSERT INTO "
-                    + Constants.TABLE_TREE_STRUCTURE_NODE_NAME
-                    + " (tree_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+                    + Constants.TABLE_TREE_STRUCTURE_NODE
+                    + " (tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
+
+    @Inject
+    private DAOUtils daoUtils;
 
     private static enum DISCRIMINATOR {
         ALL, ALL_OF_USER, BARCODE_OF_USER
@@ -150,11 +176,12 @@ public class TreeStructureDAOImpl
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                Date date = rs.getTimestamp("created");
+                Date date = rs.getTimestamp("timestamp");
                 if (date != null) {
                     retList.add(new TreeStructureInfo(rs.getLong("id"), formatter.format(date), rs
                             .getString("description"), rs.getString("barcode"), rs.getString("name"), rs
-                            .getString("full_name"), rs.getString("input_path"), rs.getString("model")));
+                            .getString("full_name"), rs.getString("input_queue_directory_path"), rs
+                            .getString("model")));
                 }
             }
         } catch (SQLException e) {
@@ -169,23 +196,50 @@ public class TreeStructureDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public void removeSavedStructure(long id) throws DatabaseException {
-        PreparedStatement deleteSt1 = null, deleteSt2 = null;
+    public boolean removeSavedStructure(long id) throws DatabaseException {
+        PreparedStatement deleteSt = null, disableSt = null;
+        boolean successful = false;
         try {
-            deleteSt1 = getConnection().prepareStatement(DELETE_NODES);
-            deleteSt1.setLong(1, id);
-            deleteSt1.executeUpdate();
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
 
-            deleteSt2 = getConnection().prepareStatement(DELETE_INFO);
-            deleteSt2.setLong(1, id);
-            deleteSt2.executeUpdate();
+        try {
+            deleteSt = getConnection().prepareStatement(DELETE_NODES);
+            deleteSt.setLong(1, id);
+            deleteSt.executeUpdate();
+
+            disableSt = getConnection().prepareStatement(DISABLE_INFO);
+            disableSt.setLong(1, id);
+            if (disableSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The tree structure info: " + id + " has been disabled.");
+                boolean success =
+                        daoUtils.insertCrudAction(getUserId(),
+                                                  Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
+                                                  "tree_structure_id",
+                                                  id,
+                                                  CRUD_ACTION_TYPES.DELETE,
+                                                  false);
+                if (success) {
+                    getConnection().commit();
+                    successful = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+            } else {
+                LOGGER.error("DB has not been updated! " + deleteSt + "\n" + disableSt);
+            }
 
         } catch (SQLException e) {
-            LOGGER.error("Could not delete tree structure (info) with id " + id + "\n Query1: " + deleteSt1
-                    + "\n Query2: " + deleteSt2, e);
+            LOGGER.error("Could not delete tree structure (info) with id " + id + "\n Query1: " + deleteSt
+                    + "\n Query2: " + disableSt, e);
         } finally {
             closeConnection();
         }
+        return successful;
     }
 
     /**
@@ -194,6 +248,12 @@ public class TreeStructureDAOImpl
     @Override
     public ArrayList<TreeStructureNode> loadStructure(long structureId) throws DatabaseException {
         PreparedStatement selectSt = null;
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
         ArrayList<TreeStructureNode> retList = new ArrayList<TreeStructureNode>();
         try {
             selectSt = getConnection().prepareStatement(SELECT_NODES);
@@ -218,6 +278,25 @@ public class TreeStructureDAOImpl
                                                   rs.getBoolean("prop_exist")));
 
             }
+            if (retList.isEmpty()) {
+                LOGGER.debug("DB has been updated: The tree structure: " + structureId + " has been read.");
+                boolean success =
+                        daoUtils.insertCrudAction(getUserId(),
+                                                  Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
+                                                  "tree_structure_id",
+                                                  structureId,
+                                                  CRUD_ACTION_TYPES.READ,
+                                                  false);
+                if (success) {
+                    getConnection().commit();
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+            } else {
+                LOGGER.error("DB has not been updated! " + selectSt);
+            }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
         } finally {
@@ -230,66 +309,92 @@ public class TreeStructureDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public void saveStructure(long userId, TreeStructureInfo info, List<TreeStructureNode> structure)
+    public boolean saveStructure(long userId, TreeStructureInfo info, List<TreeStructureNode> structure)
             throws DatabaseException {
         if (info == null) throw new NullPointerException("info");
         if (structure == null) throw new NullPointerException("structure");
+        boolean successful = false;
         try {
             getConnection().setAutoCommit(false);
         } catch (SQLException e) {
             LOGGER.warn("Unable to set autocommit off", e);
         }
         PreparedStatement insertInfoSt = null, insSt = null;
-        try {
-            // TX start
-            insertInfoSt = getConnection().prepareStatement(INSERT_INFO);
-            insertInfoSt.setLong(1, userId);
-            insertInfoSt.setString(2, info.getDescription() != null ? info.getDescription() : "");
-            insertInfoSt.setString(3, info.getBarcode());
-            insertInfoSt.setString(4, info.getName());
-            insertInfoSt.setString(5, info.getInputPath());
-            insertInfoSt.setString(6, info.getModel());
-            insertInfoSt.executeUpdate();
-            PreparedStatement seqSt = getConnection().prepareStatement(INFO_VALUE);
-            ResultSet rs = seqSt.executeQuery();
-            int key = -1;
-            while (rs.next()) {
-                key = rs.getInt(1);
-            }
-            if (key == -1) {
-                getConnection().rollback();
-                throw new DatabaseException("Unable to obtain new id from DB when executing query: "
-                        + insertInfoSt);
-            }
-            int total = 0;
-            for (TreeStructureNode node : structure) {
-                insSt = getConnection().prepareStatement(INSERT_NODE);
-                insSt.setLong(1, key);
-                insSt.setString(2, node.getPropId());
-                insSt.setString(3, node.getPropParent());
-                insSt.setString(4, node.getPropName());
-                insSt.setString(5, node.getPropPictureOrUuid());
-                insSt.setString(6, node.getPropModelId());
-                insSt.setString(7, node.getPropType());
-                insSt.setString(8, node.getPropDateOrIntPartName());
-                insSt.setString(9, node.getPropNoteOrIntSubtitle());
-                insSt.setString(10, node.getPropPartNumberOrAlto());
-                insSt.setString(11, node.getPropAditionalInfoOrOcr());
-                insSt.setBoolean(12, node.isPropExist());
-                total += insSt.executeUpdate();
-            }
-            if (total != structure.size()) {
-                getConnection().rollback();
-                throw new DatabaseException("Unable to insert _ALL_ nodes: " + total
-                        + " nodes were inserted of " + structure.size());
-            }
 
-            getConnection().commit();
-            // TX end
+        try {
+            if (daoUtils.checkInputQueue(info.getInputPath(), null, false)) {
+                // TX start
+                insertInfoSt = getConnection().prepareStatement(INSERT_INFO, Statement.RETURN_GENERATED_KEYS);
+                insertInfoSt.setString(1, info.getBarcode());
+                insertInfoSt.setString(2, info.getDescription() != null ? info.getDescription() : "");
+                insertInfoSt.setString(3, info.getName());
+                insertInfoSt.setString(4, info.getModel());
+                insertInfoSt.setString(5, info.getInputPath());
+                insertInfoSt.executeUpdate();
+
+                ResultSet gk = insertInfoSt.getGeneratedKeys();
+                Long key;
+                if (gk.next()) {
+                    key = Long.parseLong(Integer.toString(gk.getInt(1)));
+                } else {
+                    LOGGER.error("No key has been returned! " + insertInfoSt);
+                    getConnection().rollback();
+                    throw new DatabaseException("Unable to obtain new id from DB when executing query: "
+                            + insertInfoSt);
+                    //                
+                    //                TODO: zkontrolovat vsude rollback pri nenavraceni id
+                    //                
+                }
+
+                int total = 0;
+                for (TreeStructureNode node : structure) {
+                    insSt = getConnection().prepareStatement(INSERT_NODE);
+                    insSt.setLong(1, key);
+                    insSt.setString(2, node.getPropId());
+                    insSt.setString(3, node.getPropParent());
+                    insSt.setString(4, node.getPropName());
+                    insSt.setString(5, node.getPropPictureOrUuid());
+                    insSt.setString(6, node.getPropModelId());
+                    insSt.setString(7, node.getPropType());
+                    insSt.setString(8, node.getPropDateOrIntPartName());
+                    insSt.setString(9, node.getPropNoteOrIntSubtitle());
+                    insSt.setString(10, node.getPropPartNumberOrAlto());
+                    insSt.setString(11, node.getPropAditionalInfoOrOcr());
+                    insSt.setBoolean(12, node.isPropExist());
+                    total += insSt.executeUpdate();
+                }
+                if (total != structure.size()) {
+                    getConnection().rollback();
+                    throw new DatabaseException("Unable to insert _ALL_ nodes: " + total
+                            + " nodes were inserted of " + structure.size());
+                } else {
+                    LOGGER.debug("DB has been updated by commit.");
+                    getConnection().commit();
+
+                    successful =
+                            daoUtils.insertCrudAction(userId,
+                                                      Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
+                                                      "tree_structure_id",
+                                                      key,
+                                                      CRUD_ACTION_TYPES.CREATE,
+                                                      false);
+                    if (!successful) {
+                        throw new DatabaseException("DB has not been updated: Unable to insert crud action!");
+                    }
+                }
+            }
         } catch (SQLException e) {
+            try {
+                getConnection().rollback();
+            } catch (SQLException e1) {
+                LOGGER.error(e.getMessage());
+                e1.printStackTrace();
+            }
             LOGGER.error("Queries: \"" + insertInfoSt + "\" and \"" + insSt + "\"", e);
         } finally {
             closeConnection();
         }
+
+        return successful;
     }
 }

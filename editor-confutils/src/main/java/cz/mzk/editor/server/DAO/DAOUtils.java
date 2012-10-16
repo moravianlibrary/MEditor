@@ -24,6 +24,7 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import cz.mzk.editor.client.util.Constants;
@@ -38,32 +39,32 @@ public interface DAOUtils {
 
     /** The Constant INSERT_ITEM_STATEMENT_CONVERSION. */
     public static final String CONVERSION_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_CONVERSION
-            + " (editor_user_id, timestamp, input_queue_directory_path) VALUES ((?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, input_queue_directory_path) VALUES ((?),(?),(?))";
 
     /** The Constant CRUD_DIGITAL_OBJECT_ACTION_INSERT_ITEM_STATEMENT. */
     public static final String CRUD_DIGITAL_OBJECT_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
-            + " (editor_user_id, timestamp, digital_object_uuid, type) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, digital_object_uuid, type) VALUES ((?),(?),(?),(?))";
 
     /** The Constant CRUD_LOCK_ACTION_INSERT_ITEM_STATEMENT. */
     public static final String CRUD_LOCK_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_CRUD_LOCK_ACTION
-            + " (editor_user_id, timestamp, lock_id, type) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, lock_id, type) VALUES ((?),(?),(?),(?))";
 
     /** The Constant CRUD_REQUEST_TO_ADMIN_ACTION_INSERT_ITEM_STATEMENT. */
     public static final String CRUD_REQUEST_TO_ADMIN_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION
-            + " (editor_user_id, timestamp, request_to_admin_id, type) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, request_to_admin_id, type) VALUES ((?),(?),(?),(?))";
 
     /** The Constant CRUD_SAVED_EDITED_OBJECT_ACTION_INSERT_ITEM_STATEMENT. */
     public static final String CRUD_SAVED_EDITED_OBJECT_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
-            + " (editor_user_id, timestamp, saved_edited_object_id, type) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, saved_edited_object_id, type) VALUES ((?),(?),(?),(?))";
 
     /** The Constant CRUD_TREE_STRUCTURE_ACTION_INSERT_ITEM_STATEMENT. */
     public static final String CRUD_TREE_STRUCTURE_ACTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
-            + " (editor_user_id, timestamp, tree_structure_id, type) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, tree_structure_id, type) VALUES ((?),(?),(?),(?))";
 
     /** The Constant DESCRIPTION_INSERT_ITEM_STATEMENT. */
     public static final String DESCRIPTION_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -122,12 +123,12 @@ public interface DAOUtils {
 
     /** The Constant LOG_IN_OUT_INSERT_ITEM_STATEMENT. */
     public static final String LOG_IN_OUT_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_LOG_IN_OUT
-            + " (editor_user_id, timestamp, type) VALUES ((?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, type) VALUES ((?),(?),(?))";
 
     /** The Constant LONG_RUNNING_PROCESS_INSERT_ITEM_STATEMENT. */
     public static final String LONG_RUNNING_PROCESS_INSERT_ITEM_STATEMENT = "INSERT INTO "
             + Constants.TABLE_LONG_RUNNING_PROCESS
-            + " (editor_user_id, timestamp, name, finished) VALUES ((?),(?),(?),(?),(?))";
+            + " (editor_user_id, timestamp, name, finished) VALUES ((?),(?),(?),(?))";
 
     /** The Constant OPEN_ID_IDENTITY_INSERT_ITEM_STATEMENT. */
     public static final String OPEN_ID_IDENTITY_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -171,7 +172,7 @@ public interface DAOUtils {
     public static final String USER_EDIT_INSERT_ITEM_STATEMENT =
             "INSERT INTO "
                     + Constants.TABLE_USER_EDIT
-                    + " (editor_user_id, timestamp, edited_editor_user_id, description, type) VALUES ((?),(?),(?),(?),(?),(?))";
+                    + " (editor_user_id, timestamp, edited_editor_user_id, description, type) VALUES ((?),(?),(?),(?),(?))";
 
     /** The Constant USERS_RIGHT_INSERT_ITEM_STATEMENT. */
     public static final String USERS_RIGHT_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -199,13 +200,14 @@ public interface DAOUtils {
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
     boolean insertCrudAction(long editor_user_id,
                              String tableName,
                              String fkNameCol,
                              Object foreignKey,
                              CRUD_ACTION_TYPES type,
-                             boolean closeCon) throws DatabaseException;
+                             boolean closeCon) throws DatabaseException, SQLException;
 
     /**
      * Insert crud action with top object.
@@ -227,6 +229,7 @@ public interface DAOUtils {
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
     boolean insertCrudActionWithTopObject(long editor_user_id,
                                           String tableName,
@@ -234,7 +237,7 @@ public interface DAOUtils {
                                           Object foreignKey,
                                           CRUD_ACTION_TYPES type,
                                           String top_digital_object_uuid,
-                                          boolean closeCon) throws DatabaseException;
+                                          boolean closeCon) throws DatabaseException, SQLException;
 
     /**
      * Check digital object.
@@ -249,15 +252,19 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param closeCon
+     *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
     boolean checkDigitalObject(String uuid,
                                String model,
                                String name,
                                String description,
-                               String input_queue_directory_path) throws DatabaseException;
+                               String input_queue_directory_path,
+                               boolean closeCon) throws DatabaseException, SQLException;
 
     /**
      * Update digital object.
@@ -272,15 +279,19 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
-     * @return
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
     boolean updateDigitalObject(String uuid,
                                 String model,
                                 String name,
                                 String description,
-                                String input_queue_directory_path) throws DatabaseException;
+                                String input_queue_directory_path,
+                                boolean closeCon) throws DatabaseException, SQLException;
 
     /**
      * Insert digital object.
@@ -295,15 +306,19 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
-     * @return
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
     boolean insertDigitalObject(String uuid,
                                 String model,
                                 String name,
                                 String description,
-                                String input_queue_directory_path) throws DatabaseException;
+                                String input_queue_directory_path,
+                                boolean closeCon) throws DatabaseException, SQLException;
 
     /**
      * Insert crud digital object action.
@@ -333,10 +348,11 @@ public interface DAOUtils {
      *        the surname
      * @param state
      *        the state
+     * @return the long
      * @throws DatabaseException
      *         the database exception
      */
-    void insertEditorUser(String name, String surname, boolean state) throws DatabaseException;
+    Long insertEditorUser(String name, String surname, boolean state) throws DatabaseException;
 
     /**
      * Insert image.
@@ -376,10 +392,15 @@ public interface DAOUtils {
      *        the directory_path
      * @param name
      *        the name
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
-    void checkInputQueue(String directory_path, String name) throws DatabaseException;
+    boolean checkInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
+            SQLException;
 
     /**
      * Update input queue.
@@ -388,10 +409,15 @@ public interface DAOUtils {
      *        the directory_path
      * @param name
      *        the name
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
-    void updateInputQueue(String directory_path, String name) throws DatabaseException;
+    boolean updateInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
+            SQLException;
 
     /**
      * Insert input queue.
@@ -400,10 +426,15 @@ public interface DAOUtils {
      *        the directory_path
      * @param name
      *        the name
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
-    void insertInputQueue(String directory_path, String name) throws DatabaseException;
+    boolean insertInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
+            SQLException;
 
     /**
      * Insert open id identity.
@@ -426,10 +457,11 @@ public interface DAOUtils {
      *        the digital_object_uuid
      * @param description
      *        the description
+     * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      */
-    void insertDescription(long editor_user_id, String digital_object_uuid, String description)
+    boolean insertDescription(long editor_user_id, String digital_object_uuid, String description)
             throws DatabaseException;
 
     /**

@@ -264,46 +264,46 @@ public class Constants {
     public static final String NON_EXISTENT = "non-existent";
 
     // tables
-    //
-    //    /** The Constant TABLE_INPUT_QUEUE_ITEM. */
-    //    //    public static final String TABLE_INPUT_QUEUE_ITEM = "input_queue_item";
-    //
+
+    /** The Constant TABLE_INPUT_QUEUE_ITEM. */
+    //    public static final String TABLE_INPUT_QUEUE_ITEM = "input_queue_item";
+
     //    /** The Constant TABLE_INPUT_QUEUE_ITEM_NAME. */
     //    public static final String TABLE_INPUT_QUEUE_ITEM_NAME = "input_queue_item_name";
-    //
+
     //    /** The Constant TABLE_IMAGE_NAME. */
     //    public static final String TABLE_IMAGE_NAME = "image";
-    //
+
     //    /** The Constant TABLE_RECENTLY_MODIFIED_NAME. */
     //    public static final String TABLE_RECENTLY_MODIFIED_NAME = "recently_modified_item";
-    //
+
     //    /** The Constant TABLE_DESCRIPTION. */
-    //    //    public static final String TABLE_DESCRIPTION = "description";
-    //
+    //    public static final String TABLE_DESCRIPTION = "description";
+
     //    /** The Constant TABLE_EDITOR_USER. */
-    //    //    public static final String TABLE_EDITOR_USER = "editor_user";
-    //
+    //    public static final String TABLE_EDITOR_USER = "editor_user";
+
     //    /** The Constant TABLE_LOCK. */
-    //    //    public static final String TABLE_LOCK = "lock";
-    //
-    //    /** The Constant TABLE_STORED_FILES. */
-    //    public static final String TABLE_STORED_FILES = "stored_files";
-    //
+    //    public static final String TABLE_LOCK = "lock";
+
+    /** The Constant TABLE_STORED_FILES. */
+    public static final String TABLE_STORED_FILES = "stored_files";
+
     //    /** The Constant TABLE_ROLE. */
-    //    //    public static final String TABLE_ROLE = "role";
-    //
+    //    public static final String TABLE_ROLE = "role";
+
     //    /** The Constant TABLE_USER_IN_ROLE. */
     //    public static final String TABLE_USER_IN_ROLE = "user_in_role";
-    //
+
     //    /** The Constant TABLE_OPEN_ID_IDENTITY. */
-    //    //    public static final String TABLE_OPEN_ID_IDENTITY = "open_id_identity";
-    //
+    //    public static final String TABLE_OPEN_ID_IDENTITY = "open_id_identity";
+
     //    /** The Constant TABLE_VERSION_NAME. */
     //    public static final String TABLE_VERSION_NAME = "version";
-    //
+
     //    /** The Constant TABLE_TREE_STRUCTURE_NODE_NAME. */
     //    public static final String TABLE_TREE_STRUCTURE_NODE_NAME = "tree_structure_node";
-    //
+
     //    /** The Constant TABLE_TREE_STRUCTURE_NAME. */
     //    public static final String TABLE_TREE_STRUCTURE_NAME = "tree_structure";
 
@@ -1103,6 +1103,18 @@ public class Constants {
         public String getRegex() {
             return regex;
         }
+
+    }
+
+    /**
+     * The Enum USER_IDENTITY_TYPES.
+     */
+    public static enum USER_IDENTITY_TYPES {
+
+        /** The OPE n_ id. */
+        OPEN_ID, /** The SHIBBOLETH. */
+        SHIBBOLETH, /** The LDAP. */
+        LDAP;
 
     }
 

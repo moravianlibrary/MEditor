@@ -46,6 +46,8 @@ import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DAOUtilsImpl;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DBSchemaDAOImpl;
+import cz.mzk.editor.server.DAO.DescriptionDAO;
+import cz.mzk.editor.server.DAO.DescriptionDAOImpl;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.ImageResolverDAOImpl;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
@@ -243,6 +245,7 @@ public class ServerModule
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
         bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
         bind(DAOUtils.class).to(DAOUtilsImpl.class);
+        bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)

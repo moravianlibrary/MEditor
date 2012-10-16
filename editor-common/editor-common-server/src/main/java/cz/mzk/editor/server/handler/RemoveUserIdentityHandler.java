@@ -29,6 +29,7 @@ package cz.mzk.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
@@ -82,18 +83,20 @@ public class RemoveUserIdentityHandler
     @Override
     public RemoveUserIdentityResult execute(final RemoveUserIdentityAction action,
                                             final ExecutionContext context) throws ActionException {
-        if (action.getId() == null) throw new NullPointerException("getId()");
-        LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getId());
+        if (action.getUserIdentity() == null) throw new NullPointerException("getId()");
+        LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getUserIdentity());
         ServerUtils.checkExpiredSession(httpSessionProvider);
-
+        boolean successful = false;
         try {
-            userDAO.removeUserIdentity(Long.parseLong(action.getId()));
+            successful = userDAO.addRemoveUserIdentity(action.getUserIdentity(), false);
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
             throw new ActionException(e);
+        } catch (UnsupportedDataTypeException e) {
+            throw new ActionException(e);
         }
-        return new RemoveUserIdentityResult();
+        return new RemoveUserIdentityResult(successful);
     }
 
     /*

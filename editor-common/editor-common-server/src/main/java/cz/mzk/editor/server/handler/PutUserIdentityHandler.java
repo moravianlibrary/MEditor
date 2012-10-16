@@ -29,6 +29,7 @@ package cz.mzk.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
@@ -40,7 +41,6 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityResult;
 
@@ -87,20 +87,23 @@ public class PutUserIdentityHandler
     public PutUserIdentityResult execute(final PutUserIdentityAction action, final ExecutionContext context)
             throws ActionException {
         if (action.getIdentity() == null) throw new NullPointerException("getIdentity()");
-        if (action.getUserId() == null || "".equals(action.getUserId()))
+        if (action.getIdentity().getUserId() == null || "".equals(action.getIdentity().getUserId()))
             throw new NullPointerException("getUserId()");
         LOGGER.debug("Processing action: PutUserIdentityAction identity:" + action.getIdentity());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
 
-        String id;
+        boolean succ = false;
         try {
-            id = userDAO.addUserIdentity(action.getIdentity(), Long.parseLong(action.getUserId()));
+            try {
+                succ = userDAO.addRemoveUserIdentity(action.getIdentity(), true);
+            } catch (UnsupportedDataTypeException e) {
+                throw new ActionException(e);
+            }
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
-        return new PutUserIdentityResult(id, "exist".equals(id));
+        return new PutUserIdentityResult(succ);
     }
 
     /*

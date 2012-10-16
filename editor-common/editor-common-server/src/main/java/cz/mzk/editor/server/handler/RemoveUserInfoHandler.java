@@ -91,7 +91,7 @@ public class RemoveUserInfoHandler
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
         try {
-            userDAO.removeUser(Long.parseLong(action.getId()));
+            userDAO.disableUser(Long.parseLong(action.getId()));
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {

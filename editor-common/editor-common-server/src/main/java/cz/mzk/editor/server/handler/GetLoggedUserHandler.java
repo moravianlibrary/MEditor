@@ -92,10 +92,10 @@ public class GetLoggedUserHandler
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         boolean editUsers;
         try {
-            editUsers =
-                    HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN))
-                            || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
-            return new GetLoggedUserResult(userDAO.getName(openID, true), editUsers);
+            editUsers = true;
+            //                    HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN))
+            //                            || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
+            return new GetLoggedUserResult(userDAO.getName(userDAO.getUsersId(openID)), editUsers);
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

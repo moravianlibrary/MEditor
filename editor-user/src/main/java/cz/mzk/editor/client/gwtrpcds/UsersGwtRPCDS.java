@@ -42,7 +42,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
 import cz.mzk.editor.shared.rpc.action.GetUserInfoAction;
@@ -96,8 +95,7 @@ public class UsersGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -129,8 +127,7 @@ public class UsersGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
      * java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -168,8 +165,7 @@ public class UsersGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -204,8 +200,7 @@ public class UsersGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -251,7 +246,6 @@ public class UsersGwtRPCDS
     private static void copyValues(ListGridRecord from, UserInfoItem to) {
         to.setSurname(from.getAttributeAsString(Constants.ATTR_SURNAME));
         to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-        to.setSex(ClientUtils.toBoolean(from.getAttributeAsString(Constants.ATTR_SEX)) ? "m" : "f");
         to.setId(from.getAttributeAsString(Constants.ATTR_USER_ID));
     }
 
@@ -266,7 +260,6 @@ public class UsersGwtRPCDS
     private static void copyValues(UserInfoItem from, ListGridRecord to) {
         to.setAttribute(Constants.ATTR_SURNAME, from.getSurname());
         to.setAttribute(Constants.ATTR_NAME, from.getName());
-        to.setAttribute(Constants.ATTR_SEX, from.getSex());
         to.setAttribute(Constants.ATTR_USER_ID, from.getId());
     }
 

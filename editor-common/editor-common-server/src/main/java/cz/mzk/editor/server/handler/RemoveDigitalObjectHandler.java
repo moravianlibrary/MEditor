@@ -51,7 +51,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -176,15 +175,15 @@ public class RemoveDigitalObjectHandler
         }
         List<String> removedUuid = new ArrayList<String>();
 
-        for (RemovedDigitalObject removedObj : removedDigitalObjects) {
-            removedUuid.add(removedObj.getUuid());
-            try {
-                recModDao.deleteRemovedItem(removedObj.getUuid());
-            } catch (DatabaseException e) {
-                LOGGER.error("The digital object: " + removedObj.getUuid() + " could not be removed from "
-                        + Constants.TABLE_RECENTLY_MODIFIED_NAME + " " + e);
-            }
-        }
+        //        for (RemovedDigitalObject removedObj : removedDigitalObjects) {
+        //            removedUuid.add(removedObj.getUuid());
+        //            try {
+        //                recModDao.deleteRemovedItem(removedObj.getUuid());
+        //            } catch (DatabaseException e) {
+        //                LOGGER.error("The digital object: " + removedObj.getUuid() + " could not be removed from "
+        //                        + Constants.TABLE_RECENTLY_MODIFIED_NAME + " " + e);
+        //            }
+        //        }
 
         return new RemoveDigitalObjectResult(null, removedUuid);
     }

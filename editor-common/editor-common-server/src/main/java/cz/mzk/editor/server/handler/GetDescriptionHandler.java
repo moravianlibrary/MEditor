@@ -27,8 +27,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
@@ -42,9 +40,9 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.mzk.editor.server.DAO.DescriptionDAO;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
 import cz.mzk.editor.shared.rpc.action.GetDescriptionAction;
 import cz.mzk.editor.shared.rpc.action.GetDescriptionResult;
 
@@ -59,9 +57,13 @@ public class GetDescriptionHandler
     private static final Logger LOGGER = Logger
             .getLogger(GetDescriptionHandler.class.getPackage().toString());
 
-    /** The recently modified dao. */
+    /** The description dao. */
     @Inject
-    private RecentlyModifiedItemDAO recentlyModifiedDAO;
+    private DescriptionDAO descriptionDAO;
+
+    /** The user dao. */
+    @Inject
+    UserDAO userDAO;
 
     /** The http session provider. */
     @Inject
@@ -91,23 +93,17 @@ public class GetDescriptionHandler
         }
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         String commonDescription = null;
         String userDescription = null;
-        Date modified = null;
         try {
-            RecentlyModifiedItem item =
-                    recentlyModifiedDAO.getUserDescriptionAndDate(openID, action.getUuid());
-            if (item != null) {
-                userDescription = item.getDescription();
-                modified = item.getModified();
-            }
-            commonDescription = recentlyModifiedDAO.getDescription(action.getUuid());
+            long usersId = userDAO.getUsersId((String) session.getAttribute(HttpCookies.SESSION_ID_KEY));
+            userDescription = descriptionDAO.getUserDescription(action.getUuid(), usersId);
+            commonDescription = descriptionDAO.getCommonDescription(action.getUuid());
 
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
-        return new GetDescriptionResult(commonDescription, userDescription, modified);
+        return new GetDescriptionResult(commonDescription, userDescription);
     }
 
     /*

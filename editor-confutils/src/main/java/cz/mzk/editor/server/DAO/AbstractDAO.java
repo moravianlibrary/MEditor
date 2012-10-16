@@ -35,10 +35,14 @@ import java.io.InputStream;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import javax.servlet.http.HttpSession;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,6 +58,8 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import com.google.inject.Provider;
+
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
@@ -62,6 +68,9 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 /**
@@ -93,6 +102,9 @@ public abstract class AbstractDAO {
 
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
+
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Inits the connection.
@@ -313,5 +325,60 @@ public abstract class AbstractDAO {
 
         contextIsCorrect = true;
         poolable = POOLABLE_YES;
+    }
+
+    /**
+     * Gets the users id.
+     * 
+     * @param identifier
+     *        the identifier
+     * @param type
+     *        the type
+     * @return the users id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    protected long getUsersId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        long userId = -1;
+        try {
+            StringBuffer sql = new StringBuffer("SELECT editor_user_id FROM ");
+
+            switch (type) {
+                case OPEN_ID:
+                    sql.append(Constants.TABLE_OPEN_ID_IDENTITY);
+                    break;
+                case SHIBBOLETH:
+                    sql.append(Constants.TABLE_SHIBBOLETH_IDENTITY);
+                    break;
+                case LDAP:
+                    sql.append(Constants.TABLE_LDAP_IDENTITY);
+                    break;
+                default:
+                    return Constants.NON_EXISTENT_USER_ID;
+            }
+            sql.append(" WHERE identity = (?)");
+            selectSt = getConnection().prepareStatement(sql.toString());
+            selectSt.setString(1, identifier);
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                userId = rs.getLong("editor_user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return userId;
+    }
+
+    protected Long getUserId() throws DatabaseException {
+        String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
+        return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
     }
 }

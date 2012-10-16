@@ -77,7 +77,7 @@ public class InputQueueItemDAOImpl
     //                    + "WHERE position('" + File.separator + "' IN trim(leading ((?)) FROM p.path)) = 0";
     public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT =
             "SELECT p.path, p.barcode, p.ingested, n.name FROM " + Constants.TABLE_INPUT_QUEUE_ITEM
-                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE_ITEM + " n ON(p.path=n.directory_path) "
+                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE + " n ON(p.path=n.directory_path) "
                     + "WHERE position('" + File.separator + "' IN trim(leading ((?)) FROM p.path)) = 0";
 
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED. */
@@ -242,7 +242,12 @@ public class InputQueueItemDAOImpl
     @Override
     public void updateName(String path, String name) throws DatabaseException {
 
-        daoUtils.checkInputQueue(path, name);
+        try {
+            daoUtils.checkInputQueue(path, name, true);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
         //        int duplicate = selectName(path);
         //        try {
         //

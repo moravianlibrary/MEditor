@@ -29,6 +29,7 @@ package cz.mzk.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
@@ -41,7 +42,6 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleResult;
 
@@ -81,20 +81,22 @@ public class PutUserRoleHandler
     public PutUserRoleResult execute(final PutUserRoleAction action, final ExecutionContext context)
             throws ActionException {
         if (action.getRole() == null) throw new NullPointerException("getRole()");
-        if (action.getUserId() == null || "".equals(action.getUserId()))
+        if (action.getRole().getUserId() == null || "".equals(action.getRole().getUserId()))
             throw new NullPointerException("getUserId()");
         LOGGER.debug("Processing action: PutUserRoleAction role:" + action.getRole());
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
-        RoleItem role;
+        boolean successful = false;
         try {
-            role = userDAO.addUserRole(action.getRole(), Long.parseLong(action.getUserId()));
+            successful = userDAO.addRemoveRoleItem(action.getRole(), true);
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
             throw new ActionException(e);
+        } catch (UnsupportedDataTypeException e) {
+            throw new ActionException(e);
         }
-        return new PutUserRoleResult(role.getId(), "exist".equals(role.getId()), role.getDescription());
+        return new PutUserRoleResult(successful);
     }
 
     /*

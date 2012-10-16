@@ -29,6 +29,9 @@ package cz.mzk.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
+
+import cz.mzk.editor.shared.rpc.RoleItem;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,8 +41,12 @@ import com.gwtplatform.dispatch.annotation.In;
 @SuppressWarnings("unused")
 public class RemoveUserRole {
 
-    /** The id. */
+    /** The role item. */
     @In(1)
-    private String id;
+    private RoleItem roleItem;
+
+    /** The successful. */
+    @Out(1)
+    private boolean successful;
 
 }

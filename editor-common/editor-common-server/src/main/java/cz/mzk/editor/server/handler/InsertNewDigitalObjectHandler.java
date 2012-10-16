@@ -133,8 +133,8 @@ public class InsertNewDigitalObjectHandler
                 String username;
                 try {
                     username =
-                            userDAO.getName(String.valueOf(String.valueOf(ses
-                                    .getAttribute(HttpCookies.SESSION_ID_KEY))), true);
+                            userDAO.getName(userDAO.getUsersId(String.valueOf(ses
+                                    .getAttribute(HttpCookies.SESSION_ID_KEY))));
                 } catch (DatabaseException e) {
                     throw new ActionException(e);
                 }

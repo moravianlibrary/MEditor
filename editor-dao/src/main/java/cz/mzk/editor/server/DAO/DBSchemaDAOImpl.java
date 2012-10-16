@@ -247,11 +247,9 @@ public class DBSchemaDAOImpl
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (DatabaseException e) {
-            // TODO Auto-generated catch block
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         } finally {
@@ -273,11 +271,17 @@ public class DBSchemaDAOImpl
         for (long i = 1; i < oldData.size(); i++) {
             Object[] desc = oldData.get(i);
             String uuid = (String) desc[1];
-            daoUtils.checkDigitalObject((uuid).startsWith("uuid:") ? uuid : "uuid:" + uuid,
-                                        "?",
-                                        null,
-                                        (String) desc[2],
-                                        null);
+            try {
+                daoUtils.checkDigitalObject((uuid).startsWith("uuid:") ? uuid : "uuid:" + uuid,
+                                            "?",
+                                            null,
+                                            (String) desc[2],
+                                            null,
+                                            true);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -297,8 +301,8 @@ public class DBSchemaDAOImpl
 
         for (long i = 1; i < oldData.size(); i++) {
             Object[] user = oldData.get(i);
-            daoUtils.insertEditorUser((String) user[1], (String) user[2], true);
-            editorUserIdMapping.put(Long.parseLong(user[0].toString()), i);
+            Long userId = daoUtils.insertEditorUser((String) user[1], (String) user[2], true);
+            editorUserIdMapping.put(Long.parseLong(user[0].toString()), userId);
         }
         return editorUserIdMapping;
     }
@@ -315,7 +319,6 @@ public class DBSchemaDAOImpl
     @Override
     public void transformAndPutImage(Map<Long, Object[]> oldData) throws DatabaseException {
 
-        String[] types = (String[]) oldData.get(1);
         for (long i = 1; i < oldData.size(); i++) {
             Object[] image = oldData.get(i);
             daoUtils.insertImage((String) image[1],
@@ -355,7 +358,12 @@ public class DBSchemaDAOImpl
 
         for (long i = 1; i < oldData.size(); i++) {
             Object[] inputQueue = oldData.get(i);
-            daoUtils.insertInputQueue((String) inputQueue[1], (String) inputQueue[2]);
+            try {
+                daoUtils.insertInputQueue((String) inputQueue[1], (String) inputQueue[2], true);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -401,21 +409,28 @@ public class DBSchemaDAOImpl
         for (long i = 1; i < oldData.size(); i++) {
             Object[] recModItem = oldData.get(i);
 
-            daoUtils.checkDigitalObject((String) recModItem[1],
-                                        DigitalObjectModel
-                                                .getModel(Integer.parseInt(recModItem[5].toString()))
-                                                .getValue(),
-                                        (String) recModItem[2],
-                                        null,
-                                        null);
+            try {
+                daoUtils.checkDigitalObject((String) recModItem[1],
+                                            DigitalObjectModel.getModel(Integer.parseInt(recModItem[5]
+                                                    .toString())).getValue(),
+                                            (String) recModItem[2],
+                                            null,
+                                            null,
+                                            true);
 
-            Long userId = editorUserIdMapping.get(Long.parseLong(recModItem[6].toString()));
-            daoUtils.insertCrudDigitalObjectAction(userId,
-                                                   (Timestamp) recModItem[4],
-                                                   (String) recModItem[1],
-                                                   CRUD_ACTION_TYPES.READ);
+                Long userId = editorUserIdMapping.get(Long.parseLong(recModItem[6].toString()));
+                daoUtils.insertCrudDigitalObjectAction(userId,
+                                                       (Timestamp) recModItem[4],
+                                                       (String) recModItem[1],
+                                                       CRUD_ACTION_TYPES.READ);
 
-            daoUtils.insertDescription(userId, (String) recModItem[1], (String) recModItem[3]);
+                String desc = (String) recModItem[3];
+                if (desc != null && !"".equals(desc))
+                    daoUtils.insertDescription(userId, (String) recModItem[1], desc);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -471,20 +486,29 @@ public class DBSchemaDAOImpl
 
         for (long i = 1; i < oldData.size(); i++) {
             Object[] storedFile = oldData.get(i);
-            daoUtils.checkDigitalObject((String) storedFile[2],
-                                        DigitalObjectModel
-                                                .getModel(Integer.parseInt(storedFile[3].toString()))
-                                                .getValue(),
-                                        null,
-                                        null,
-                                        null);
-            Long savedId =
-                    daoUtils.insertSavedEditedObject((String) storedFile[2],
-                                                     (String) storedFile[6],
-                                                     (String) storedFile[4],
-                                                     true);
-            daoUtils.insertCrudSavedEditedObjectAction(editorUserIdMapping.get(Long.parseLong(storedFile[1]
-                    .toString())), (Timestamp) storedFile[5], savedId, CRUD_ACTION_TYPES.CREATE);
+            try {
+                daoUtils.checkDigitalObject((String) storedFile[2],
+                                            DigitalObjectModel.getModel(Integer.parseInt(storedFile[3]
+                                                    .toString())).getValue(),
+                                            null,
+                                            null,
+                                            null,
+                                            true);
+
+                Long savedId =
+                        daoUtils.insertSavedEditedObject((String) storedFile[2],
+                                                         (String) storedFile[6],
+                                                         (String) storedFile[4],
+                                                         true);
+                daoUtils.insertCrudSavedEditedObjectAction(editorUserIdMapping.get(Long
+                                                                   .parseLong(storedFile[1].toString())),
+                                                           (Timestamp) storedFile[5],
+                                                           savedId,
+                                                           CRUD_ACTION_TYPES.CREATE);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -515,20 +539,28 @@ public class DBSchemaDAOImpl
 
             if (treeStruc[3] != null && !"".equals(treeStruc[3])) {
 
-                daoUtils.checkInputQueue((String) treeStruc[6], null);
+                try {
+                    daoUtils.checkInputQueue((String) treeStruc[6], null, true);
 
-                Long treeStrucId =
-                        daoUtils.insertTreeStructure((String) treeStruc[3],
-                                                     (String) treeStruc[4],
-                                                     (String) treeStruc[5],
-                                                     (String) treeStruc[7],
-                                                     true,
-                                                     (String) treeStruc[6]);
+                    Long treeStrucId =
+                            daoUtils.insertTreeStructure((String) treeStruc[3],
+                                                         (String) treeStruc[4],
+                                                         (String) treeStruc[5],
+                                                         (String) treeStruc[7],
+                                                         true,
+                                                         (String) treeStruc[6]);
 
-                daoUtils.insertCrudTreeStructureAction(editorUserIdMapping.get(Long.parseLong(treeStruc[1]
-                        .toString())), (Timestamp) treeStruc[2], treeStrucId, CRUD_ACTION_TYPES.CREATE);
+                    daoUtils.insertCrudTreeStructureAction(editorUserIdMapping.get(Long
+                                                                   .parseLong(treeStruc[1].toString())),
+                                                           (Timestamp) treeStruc[2],
+                                                           treeStrucId,
+                                                           CRUD_ACTION_TYPES.CREATE);
 
-                treeStrucIdMapping.put(Long.parseLong(treeStruc[0].toString()), treeStrucId);
+                    treeStrucIdMapping.put(Long.parseLong(treeStruc[0].toString()), treeStrucId);
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
 

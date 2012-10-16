@@ -29,6 +29,9 @@ package cz.mzk.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
+
+import cz.mzk.editor.shared.rpc.UserIdentity;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,8 +41,11 @@ import com.gwtplatform.dispatch.annotation.In;
 @SuppressWarnings("unused")
 public class RemoveUserIdentity {
 
-    /** The id. */
+    /** The user identity. */
     @In(1)
-    private String id;
+    private UserIdentity userIdentity;
 
+    /** The successful. */
+    @Out(1)
+    private boolean successful;
 }

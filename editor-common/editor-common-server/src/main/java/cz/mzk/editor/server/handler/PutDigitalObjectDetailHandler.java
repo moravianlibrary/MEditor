@@ -130,7 +130,7 @@ public class PutDigitalObjectDetailHandler
         boolean write = false;
         try {
             write =
-                    userDAO.openIDhasRole(UserDAO.CAN_PUBLISH_STRING, openID)
+                    userDAO.hasRole(UserDAO.CAN_PUBLISH_STRING, userDAO.getUsersId(openID))
                             || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
         } catch (DatabaseException e) {
             throw new ActionException(e);

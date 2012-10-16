@@ -38,7 +38,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
@@ -83,12 +82,12 @@ public class PutUserInfoHandler
         LOGGER.debug("Processing action: PutUserInfoAction user:" + action.getUser());
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
-        String id;
-        try {
-            id = userDAO.addUser(action.getUser());
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
-        }
+        String id = "";
+        //        try {
+        //            id = userDAO.addUser(action.getUser());
+        //        } catch (DatabaseException e) {
+        //            throw new ActionException(e);
+        //        }
         return new PutUserInfoResult(id, "exist".equals(id));
     }
 

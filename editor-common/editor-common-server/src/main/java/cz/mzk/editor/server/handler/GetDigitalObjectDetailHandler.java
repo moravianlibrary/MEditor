@@ -48,6 +48,8 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.DescriptionDAO;
+import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
@@ -55,8 +57,6 @@ import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.LockInfo;
-import cz.mzk.editor.shared.rpc.action.GetDescriptionAction;
-import cz.mzk.editor.shared.rpc.action.GetDescriptionResult;
 import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
@@ -91,6 +91,14 @@ public class GetDigitalObjectDetailHandler
     /** The user DAO **/
     @Inject
     private UserDAO userDAO;
+
+    /** The description dao. */
+    @Inject
+    private DescriptionDAO descriptionDAO;
+
+    /** The recently modified dao. */
+    @Inject
+    private RecentlyModifiedItemDAO recentlyModifiedDAO;
 
     /**
      * Instantiates a new gets the digital object detail handler.
@@ -154,17 +162,20 @@ public class GetDigitalObjectDetailHandler
             }
 
             //TODO storedFOXMLFilePath != null------------------------------------------------------
-            GetDescriptionResult result =
-                    descritptionHandler.execute(new GetDescriptionAction(uuid), context);
-
-            String description = result.getUserDescription();
-            Date modified = result.getModified();
+            //            GetDescriptionResult result =
+            //                    descritptionHandler.execute(new GetDescriptionAction(uuid), context);
+            //
+            //            String description = result.getUserDescription();
+            //            Date modified = result.getModified();
             //--------------------------------------------------------------------------------------
-
-            @SuppressWarnings("unused")
-            long usersId = 0;
+            String description = null;
+            Date modified = null;
             try {
-                usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
+                long usersId =
+                        userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
+                description = descriptionDAO.getUserDescription(uuid, usersId);
+                //                recentlyModifiedDAO
+
                 // TODO: is the given user authorized to this operation?
             } catch (DatabaseException e) {
                 throw new ActionException(e);

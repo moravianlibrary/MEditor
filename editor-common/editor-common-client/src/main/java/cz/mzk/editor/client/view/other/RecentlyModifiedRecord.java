@@ -40,20 +40,20 @@ public class RecentlyModifiedRecord
         extends ListGridRecord {
 
     /** The uuid. */
-    private String uuid;
-
-    /** The name. */
-    private String name;
-
-    /** The description. */
-    private String description;
-
-    /** The model. */
-    private DigitalObjectModel model;
-
-    private String lockOwner;
-
-    private String lockDescription;
+    //    private String uuid;
+    //
+    //    /** The name. */
+    //    private String name;
+    //
+    //    /** The description. */
+    //    private String description;
+    //
+    //    /** The model. */
+    //    private DigitalObjectModel model;
+    //
+    //    private String lockOwner;
+    //
+    //    private String lockDescription;
 
     // @SuppressWarnings("unused")
     /**
@@ -168,7 +168,7 @@ public class RecentlyModifiedRecord
     }
 
     public String getLockDescription() {
-        return getAttribute(lockDescription);
+        return getAttribute(Constants.ATTR_DESC);
     }
 
     public void setLockDescription(String lockDescription) {
@@ -181,9 +181,9 @@ public class RecentlyModifiedRecord
      */
     @Override
     public String toString() {
-        return "RecentlyModifiedRecord [uuid=" + uuid + ", name=" + name + ", description=" + description
-                + ", model=" + model + ", lockOwner=" + lockOwner + ", lockDescription=" + lockDescription
-                + "]";
+        return "RecentlyModifiedRecord [uuid=" + getUuid() + ", name=" + getName() + ", description="
+                + getDescription() + ", model=" + getModel() + ", lockOwner=" + getLockOwner()
+                + ", lockDescription=" + getLockDescription() + "]";
     }
 
 }

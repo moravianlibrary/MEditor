@@ -57,9 +57,13 @@ public interface RecentlyModifiedItemDAO {
      *        the uuid
      * @param description
      *        the description
+     * @param user_id
+     *        the user_id
      * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
      */
-    boolean putDescription(String uuid, String description) throws DatabaseException;
+    //    boolean putDescription(String uuid, String description, Long user_id) throws DatabaseException;
 
     /**
      * Gets the description.
@@ -68,7 +72,7 @@ public interface RecentlyModifiedItemDAO {
      *        the uuid
      * @return the description
      */
-    String getDescription(String uuid) throws DatabaseException;
+    //    String getDescription(String uuid) throws DatabaseException;
 
     /**
      * Put user description.
@@ -81,7 +85,7 @@ public interface RecentlyModifiedItemDAO {
      *        the description
      * @return true, if successful
      */
-    boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException;
+    //    boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException;
 
     /**
      * Gets the user description.
@@ -92,18 +96,20 @@ public interface RecentlyModifiedItemDAO {
      *        the uuid
      * @return the RecentlyModifiedItem
      */
-    RecentlyModifiedItem getUserDescriptionAndDate(String openID, String uuid) throws DatabaseException;
+    //    RecentlyModifiedItem getUserDescriptionAndDate(String openID, String uuid) throws DatabaseException;
 
     /**
      * Gets the items.
      * 
      * @param nLatest
      *        the n latest
-     * @param openID
-     *        the open id
+     * @param user_id
+     *        the user_id
      * @return the items
+     * @throws DatabaseException
+     *         the database exception
      */
-    ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) throws DatabaseException;
+    ArrayList<RecentlyModifiedItem> getItems(int nLatest, Long user_id) throws DatabaseException;
 
     /**
      * Deletes the removed item
@@ -113,5 +119,5 @@ public interface RecentlyModifiedItemDAO {
      * @throws DatabaseException
      */
 
-    boolean deleteRemovedItem(String uuid) throws DatabaseException;
+    //    boolean deleteRemovedItem(String uuid) throws DatabaseException;
 }

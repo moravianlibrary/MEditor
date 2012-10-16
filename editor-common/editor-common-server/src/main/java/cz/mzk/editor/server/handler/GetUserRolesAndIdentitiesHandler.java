@@ -29,6 +29,7 @@ package cz.mzk.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
@@ -38,6 +39,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -99,10 +101,13 @@ public class GetUserRolesAndIdentitiesHandler
 
         try {
             return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())),
-                                                       userDAO.getIdentities(action.getId()));
+                                                       userDAO.getIdentities(action.getId(),
+                                                                             USER_IDENTITY_TYPES.OPEN_ID));
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
+            throw new ActionException(e);
+        } catch (UnsupportedDataTypeException e) {
             throw new ActionException(e);
         }
     }

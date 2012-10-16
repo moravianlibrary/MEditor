@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.Out;
 
+import cz.mzk.editor.shared.rpc.RoleItem;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetRecentlyModified.
@@ -42,5 +44,5 @@ public class GetAllRoles {
 
     /** The items. */
     @Out(1)
-    private ArrayList<String> roles;
+    private ArrayList<RoleItem> roles;
 }

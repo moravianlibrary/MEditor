@@ -51,6 +51,8 @@ public class DAOUtilsImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
     public boolean insertCrudAction(long editor_user_id,
@@ -58,12 +60,14 @@ public class DAOUtilsImpl
                                     String fkNameCol,
                                     Object foreignKey,
                                     CRUD_ACTION_TYPES type,
-                                    boolean closeCon) throws DatabaseException {
+                                    boolean closeCon) throws DatabaseException, SQLException {
         return insertAnyCrudAction(editor_user_id, tableName, fkNameCol, foreignKey, type, null, closeCon);
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
     public boolean insertCrudActionWithTopObject(long editor_user_id,
@@ -72,7 +76,7 @@ public class DAOUtilsImpl
                                                  Object foreignKey,
                                                  CRUD_ACTION_TYPES type,
                                                  String top_digital_object_uuid,
-                                                 boolean closeCon) throws DatabaseException {
+                                                 boolean closeCon) throws DatabaseException, SQLException {
         return insertAnyCrudAction(editor_user_id,
                                    tableName,
                                    fkNameCol,
@@ -88,7 +92,7 @@ public class DAOUtilsImpl
                                         Object foreignKey,
                                         CRUD_ACTION_TYPES type,
                                         String top_digital_object_uuid,
-                                        boolean closeCon) throws DatabaseException {
+                                        boolean closeCon) throws DatabaseException, SQLException {
 
         PreparedStatement insertSt = null;
         boolean successful = false;
@@ -108,14 +112,18 @@ public class DAOUtilsImpl
 
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The " + tableName + " item has been inserted.");
-                successful = false;
+                successful = true;
             } else {
                 LOGGER.error("DB has not been updated! " + insertSt);
             }
 
         } catch (SQLException ex) {
             LOGGER.error("Could not get insert item statement " + insertSt, ex);
-            ex.printStackTrace();
+            if (closeCon) {
+                ex.printStackTrace();
+            } else {
+                throw new SQLException(ex);
+            }
         } finally {
             if (closeCon) closeConnection();
         }
@@ -125,24 +133,25 @@ public class DAOUtilsImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
     public boolean checkDigitalObject(String uuid,
                                       String model,
                                       String name,
                                       String description,
-                                      String input_queue_directory_path) throws DatabaseException {
+                                      String input_queue_directory_path,
+                                      boolean closeCon) throws DatabaseException, SQLException {
 
         PreparedStatement selSt = null;
         boolean successful = false;
         try {
-            boolean thereIs = false;
             selSt = getConnection().prepareStatement(DIGITAL_OBJECT_SELECT_ITEM_STATEMENT);
             selSt.setString(1, uuid);
             ResultSet rs = selSt.executeQuery();
 
-            while (rs.next()) {
-                thereIs = true;
+            if (rs.next()) {
                 boolean changed = false;
                 String chaModel = rs.getString("model");
 
@@ -166,21 +175,36 @@ public class DAOUtilsImpl
                     changed = true;
                 }
                 if (changed) {
-                    successful = updateDigitalObject(uuid, chaModel, chaName, chaDescription, chaInputPath);
+
+                    successful =
+                            updateDigitalObject(uuid,
+                                                chaModel,
+                                                chaName,
+                                                chaDescription,
+                                                chaInputPath,
+                                                closeCon);
                 } else {
                     successful = true;
                 }
-            }
-
-            if (!thereIs) {
-                successful = insertDigitalObject(uuid, model, name, description, input_queue_directory_path);
+            } else {
+                successful =
+                        insertDigitalObject(uuid,
+                                            model,
+                                            name,
+                                            description,
+                                            input_queue_directory_path,
+                                            closeCon);
             }
 
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement " + selSt, e);
-            e.printStackTrace();
+            if (closeCon) {
+                e.printStackTrace();
+            } else {
+                throw new SQLException(e);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
 
         return successful;
@@ -188,13 +212,16 @@ public class DAOUtilsImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
     public boolean updateDigitalObject(String uuid,
                                        String model,
                                        String name,
                                        String description,
-                                       String input_queue_directory_path) throws DatabaseException {
+                                       String input_queue_directory_path,
+                                       boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement updateSt = null;
         boolean successful = false;
         try {
@@ -215,22 +242,29 @@ public class DAOUtilsImpl
 
         } catch (SQLException ex) {
             LOGGER.error("Could not get update item statement " + updateSt, ex);
-            ex.printStackTrace();
+            if (closeCon) {
+                ex.printStackTrace();
+            } else {
+                throw new SQLException(ex);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
         return successful;
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
     public boolean insertDigitalObject(String uuid,
                                        String model,
                                        String name,
                                        String description,
-                                       String input_queue_directory_path) throws DatabaseException {
+                                       String input_queue_directory_path,
+                                       boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement insertSt = null;
         boolean successful = false;
         try {
@@ -251,9 +285,13 @@ public class DAOUtilsImpl
 
         } catch (SQLException ex) {
             LOGGER.error("Could not get insert item statement " + insertSt, ex);
-            ex.printStackTrace();
+            if (closeCon) {
+                ex.printStackTrace();
+            } else {
+                throw new SQLException(ex);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
         return successful;
     }
@@ -294,10 +332,13 @@ public class DAOUtilsImpl
      * {@inheritDoc}
      */
     @Override
-    public void insertEditorUser(String name, String surname, boolean state) throws DatabaseException {
+    public Long insertEditorUser(String name, String surname, boolean state) throws DatabaseException {
         PreparedStatement insertSt = null;
+        Long id = null;
         try {
-            insertSt = getConnection().prepareStatement(EDITOR_USER_INSERT_ITEM_STATEMENT);
+            insertSt =
+                    getConnection().prepareStatement(EDITOR_USER_INSERT_ITEM_STATEMENT,
+                                                     Statement.RETURN_GENERATED_KEYS);
             insertSt.setString(1, name);
             insertSt.setString(2, surname);
             insertSt.setBoolean(3, state);
@@ -306,6 +347,12 @@ public class DAOUtilsImpl
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The editor user: " + name + " " + surname
                         + " has been inserted.");
+                ResultSet gk = insertSt.getGeneratedKeys();
+                if (gk.next()) {
+                    id = Long.parseLong(Integer.toString(gk.getInt(1)));
+                } else {
+                    LOGGER.error("No key has been returned! " + insertSt);
+                }
             } else {
                 LOGGER.error("DB has not been updated! " + insertSt);
             }
@@ -316,6 +363,7 @@ public class DAOUtilsImpl
         } finally {
             closeConnection();
         }
+        return id;
     }
 
     /**
@@ -376,10 +424,14 @@ public class DAOUtilsImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
-    public void checkInputQueue(String directory_path, String name) throws DatabaseException {
+    public boolean checkInputQueue(String directory_path, String name, boolean closeCon)
+            throws DatabaseException, SQLException {
         PreparedStatement selSt = null;
+        boolean successful = false;
         try {
             selSt = getConnection().prepareStatement(INPUT_QUEUE_SELECT_NAME_STATEMENT);
             selSt.setString(1, directory_path);
@@ -387,26 +439,37 @@ public class DAOUtilsImpl
 
             if (rs.next()) {
                 if (name != null && !name.equals(rs.getString("name"))) {
-
+                    successful = updateInputQueue(directory_path, name, closeCon);
+                } else {
+                    successful = updateInputQueue(directory_path, "", closeCon);
                 }
             } else {
-                insertInputQueue(directory_path, name);
+                successful = insertInputQueue(directory_path, name != null ? name : "", closeCon);
             }
 
         } catch (SQLException ex) {
             LOGGER.error("Could not get select item statement " + selSt, ex);
-            ex.printStackTrace();
+            if (closeCon) {
+                ex.printStackTrace();
+            } else {
+                throw new SQLException(ex);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
+        return successful;
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
-    public void updateInputQueue(String directory_path, String name) throws DatabaseException {
+    public boolean updateInputQueue(String directory_path, String name, boolean closeCon)
+            throws DatabaseException, SQLException {
         PreparedStatement updateSt = null;
+        boolean successful = false;
         try {
             updateSt = getConnection().prepareStatement(INPUT_QUEUE_UPDATE_ITEM_STATEMENT);
             updateSt.setString(1, name);
@@ -416,24 +479,34 @@ public class DAOUtilsImpl
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The name of input queue: " + directory_path
                         + " has been changed to: " + name + ".");
+                successful = true;
             } else {
                 LOGGER.error("DB has not been updated! " + updateSt);
             }
 
         } catch (SQLException ex) {
             LOGGER.error("Could not get update item statement " + updateSt, ex);
-            ex.printStackTrace();
+            if (closeCon) {
+                ex.printStackTrace();
+            } else {
+                throw new SQLException(ex);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
+        return successful;
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
-    public void insertInputQueue(String directory_path, String name) throws DatabaseException {
+    public boolean insertInputQueue(String directory_path, String name, boolean closeCon)
+            throws DatabaseException, SQLException {
         PreparedStatement insertSt = null;
+        boolean successful = false;
         try {
             insertSt = getConnection().prepareStatement(INPUT_QUEUE_INSERT_ITEM_STATEMENT);
             insertSt.setString(1, directory_path);
@@ -443,16 +516,22 @@ public class DAOUtilsImpl
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The input queue: " + directory_path
                         + " has been inserted.");
+                successful = true;
             } else {
                 LOGGER.error("DB has not been updated! " + insertSt);
             }
 
         } catch (SQLException ex) {
             LOGGER.error("Could not get insert item statement " + insertSt, ex);
-            ex.printStackTrace();
+            if (closeCon) {
+                ex.printStackTrace();
+            } else {
+                throw new SQLException(ex);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
+        return successful;
     }
 
     /**
@@ -485,9 +564,10 @@ public class DAOUtilsImpl
      * {@inheritDoc}
      */
     @Override
-    public void insertDescription(long editor_user_id, String digital_object_uuid, String description)
+    public boolean insertDescription(long editor_user_id, String digital_object_uuid, String description)
             throws DatabaseException {
         PreparedStatement insertSt = null;
+        boolean successful = false;
         try {
             insertSt = getConnection().prepareStatement(DESCRIPTION_INSERT_ITEM_STATEMENT);
             insertSt.setLong(1, editor_user_id);
@@ -497,6 +577,7 @@ public class DAOUtilsImpl
 
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: A description has been inserted.");
+                successful = true;
             } else {
                 LOGGER.error("DB has not been updated! " + insertSt);
             }
@@ -507,6 +588,7 @@ public class DAOUtilsImpl
         } finally {
             closeConnection();
         }
+        return successful;
     }
 
     /**

@@ -29,85 +29,88 @@ package cz.mzk.editor.shared.rpc;
 
 import java.io.Serializable;
 
+import cz.mzk.editor.client.util.Constants;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecentlyModifiedItem.
  */
-public class RoleItem
+public class UserIdentity
         implements Serializable {
 
-    private static final long serialVersionUID = 1940732012984034268L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 8562338344074874962L;
+
+    /** The identity. */
+    private String identity;
+
+    /** The type. */
+    private Constants.USER_IDENTITY_TYPES type;
 
     /** The user id. */
     private Long userId;
-
-    /** The name. */
-    private String name;
-
-    /** The description. */
-    private String description;
 
     // @SuppressWarnings("unused")
     /**
      * Instantiates a new recently modified item.
      */
-    public RoleItem() {
+    public UserIdentity() {
 
     }
 
     /**
-     * Instantiates a new role item.
+     * Instantiates a new user identity.
      * 
+     * @param identity
+     *        the identity
+     * @param type
+     *        the type
      * @param userId
      *        the user id
-     * @param name
-     *        the name
-     * @param description
-     *        the description
      */
-    public RoleItem(Long userId, String name, String description) {
+    public UserIdentity(String identity, Constants.USER_IDENTITY_TYPES type, Long userId) {
         super();
+        this.identity = identity;
+        this.type = type;
         this.userId = userId;
-        this.name = name;
-        this.description = description;
     }
 
     /**
-     * Gets the name.
+     * Gets the identity.
      * 
-     * @return the name
+     * @return the identity
      */
-    public String getName() {
-        return name;
+    public String getIdentity() {
+        return identity;
     }
 
     /**
-     * Sets the name.
+     * Sets the identity.
      * 
-     * @param name
-     *        the new name
+     * @param identity
+     *        the new identity
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
     /**
-     * Gets the description.
+     * Gets the type.
      * 
-     * @return the description
+     * @return the type
      */
-    public String getDescription() {
-        return description;
+    public Constants.USER_IDENTITY_TYPES getType() {
+        return type;
     }
 
     /**
-     * Sets the description.
+     * Sets the type.
      * 
-     * @param description
-     *        the new description
+     * @param type
+     *        the type to set
      */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setType(Constants.USER_IDENTITY_TYPES type) {
+        this.type = type;
     }
 
     /**
@@ -126,36 +129,36 @@ public class RoleItem
     }
 
     /**
-     * {@inheritDoc}
+     * Hash code.
+     * 
+     * @return the int {@inheritDoc}
      */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        result = prime * result + ((identity == null) ? 0 : identity.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
 
     /**
-     * {@inheritDoc}
+     * Equals.
+     * 
+     * @param obj
+     *        the obj
+     * @return true, if successful {@inheritDoc}
      */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        RoleItem other = (RoleItem) obj;
-        if (description == null) {
-            if (other.description != null) return false;
-        } else if (!description.equals(other.description)) return false;
-        if (name == null) {
-            if (other.name != null) return false;
-        } else if (!name.equals(other.name)) return false;
-        if (userId == null) {
-            if (other.userId != null) return false;
-        } else if (!userId.equals(other.userId)) return false;
+        UserIdentity other = (UserIdentity) obj;
+        if (identity == null) {
+            if (other.identity != null) return false;
+        } else if (!identity.equals(other.identity)) return false;
+        if (type != other.type) return false;
         return true;
     }
 

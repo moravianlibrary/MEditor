@@ -29,6 +29,7 @@ package cz.mzk.editor.server.handler;
 
 import javax.servlet.http.HttpSession;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
@@ -81,18 +82,21 @@ public class RemoveUserRoleHandler
     @Override
     public RemoveUserRoleResult execute(final RemoveUserRoleAction action, final ExecutionContext context)
             throws ActionException {
-        if (action.getId() == null) throw new NullPointerException("getId()");
-        LOGGER.debug("Processing action: RemoveUserRoleAction user id:" + action.getId());
+        if (action.getRoleItem() == null) throw new NullPointerException("getId()");
+        LOGGER.debug("Processing action: RemoveUserRoleAction user id:" + action.getRoleItem());
         ServerUtils.checkExpiredSession(httpSessionProvider);
 
+        boolean successful = false;
         try {
-            userDAO.removeUserRole(Long.parseLong(action.getId()));
+            successful = userDAO.addRemoveRoleItem(action.getRoleItem(), false);
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
             throw new ActionException(e);
+        } catch (UnsupportedDataTypeException e) {
+            throw new ActionException(e);
         }
-        return new RemoveUserRoleResult();
+        return new RemoveUserRoleResult(successful);
     }
 
     /*
