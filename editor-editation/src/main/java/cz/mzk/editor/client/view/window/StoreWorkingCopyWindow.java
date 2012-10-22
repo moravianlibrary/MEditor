@@ -311,7 +311,8 @@ public class StoreWorkingCopyWindow
             String fileName = record.getAttributeAsString(Constants.ATTR_FILE_NAME);
             DigitalObjectModel model = (DigitalObjectModel) record.getAttributeAsObject(Constants.ATTR_MODEL);
             String uuid = record.getAttributeAsString(Constants.ATTR_UUID);
-            StoredItem storedItem = new StoredItem(fileName, uuid, model, null, null);
+            Long id = record.getAttributeAsLong(Constants.ATTR_ID);
+            StoredItem storedItem = new StoredItem(id, fileName, uuid, model, null, null);
             if (modifyIsVisible) {
                 eventBus.fireEvent(new OpenDigitalObjectEvent(uuid, storedItem));
             } else {
@@ -330,15 +331,17 @@ public class StoreWorkingCopyWindow
             @Override
             public void onClick(MenuItemClickEvent event) {
                 ListGridRecord record = storedFilesGrid.getSelectedRecord();
-                deleteItem(record.getAttributeAsString(Constants.ATTR_FILE_NAME), dispatcher);
+                deleteItem(record.getAttributeAsLong(Constants.ATTR_ID),
+                           record.getAttributeAsString(Constants.ATTR_FILE_NAME),
+                           dispatcher);
 
             }
         });
         return deleteItem;
     }
 
-    public static void deleteItem(String fileName, final DispatchAsync dispatcher) {
-        dispatcher.execute(new StoredItemsAction(null, new StoredItem(fileName), Constants.VERB.DELETE),
+    public static void deleteItem(Long id, String fileName, final DispatchAsync dispatcher) {
+        dispatcher.execute(new StoredItemsAction(null, new StoredItem(id, fileName), Constants.VERB.DELETE),
                            new DispatchCallback<StoredItemsResult>() {
 
                                @Override
@@ -407,6 +410,7 @@ public class StoreWorkingCopyWindow
         to.setAttribute(Constants.ATTR_MODEL, from.getModel());
         to.setAttribute(Constants.ATTR_UUID, from.getUuid());
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
+        to.setAttribute(Constants.ATTR_ID, from.getId());
     }
 
     private static void store(DigitalObjectDetail detail,

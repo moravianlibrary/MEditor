@@ -170,9 +170,9 @@ public class AuthenticationServlet
             int userStatus = UserDAO.UNKNOWN;
             try {
                 userStatus = userDAO.isSupported(identifier);
-            } catch (DatabaseException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                //                userStatus = userDAO.isSupported(identifier, true);
+            } catch (DatabaseException ex) {
+                ex.printStackTrace();
             }
             switch (userStatus) {
                 case UserDAO.UNKNOWN:

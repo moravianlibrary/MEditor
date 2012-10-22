@@ -97,8 +97,9 @@ public class DAOUtilsImpl
         PreparedStatement insertSt = null;
         boolean successful = false;
         String sql =
-                "INSERT INTO " + tableName + " (editor_user_id, timestamp, " + fkNameCol
-                        + ", type) VALUES ((?),(CURRENT_TIMESTAMP),(?),(?)"
+                "INSERT INTO " + tableName + " (editor_user_id, timestamp, " + fkNameCol + ", type"
+                        + (top_digital_object_uuid == null ? "" : ", top_digital_object_uuid")
+                        + ") VALUES ((?),(CURRENT_TIMESTAMP),(?),(?)"
                         + (top_digital_object_uuid == null ? "" : ",(?)") + ")";
 
         try {
@@ -349,7 +350,7 @@ public class DAOUtilsImpl
                         + " has been inserted.");
                 ResultSet gk = insertSt.getGeneratedKeys();
                 if (gk.next()) {
-                    id = Long.parseLong(Integer.toString(gk.getInt(1)));
+                    id = gk.getLong(1);
                 } else {
                     LOGGER.error("No key has been returned! " + insertSt);
                 }
@@ -441,8 +442,9 @@ public class DAOUtilsImpl
                 if (name != null && !name.equals(rs.getString("name"))) {
                     successful = updateInputQueue(directory_path, name, closeCon);
                 } else {
-                    successful = updateInputQueue(directory_path, "", closeCon);
+                    successful = true;
                 }
+
             } else {
                 successful = insertInputQueue(directory_path, name != null ? name : "", closeCon);
             }
@@ -618,7 +620,7 @@ public class DAOUtilsImpl
                         + " has been inserted.");
                 ResultSet gk = insertSt.getGeneratedKeys();
                 if (gk.next()) {
-                    id = Long.parseLong(Integer.toString(gk.getInt(1)));
+                    id = gk.getLong(1);
                 } else {
                     LOGGER.error("No key has been returned! " + insertSt);
                 }
@@ -660,7 +662,7 @@ public class DAOUtilsImpl
                         + " has been inserted.");
                 ResultSet gk = insertSt.getGeneratedKeys();
                 if (gk.next()) {
-                    id = Long.parseLong(Integer.toString(gk.getInt(1)));
+                    id = gk.getLong(1);
                 } else {
                     LOGGER.error("No key has been returned! " + insertSt);
                 }
@@ -771,7 +773,7 @@ public class DAOUtilsImpl
                         + " has been inserted.");
                 ResultSet gk = insertSt.getGeneratedKeys();
                 if (gk.next()) {
-                    id = Long.parseLong(Integer.toString(gk.getInt(1)));
+                    id = gk.getLong(1);
                 } else {
                     LOGGER.error("No key has been returned! " + insertSt);
                 }

@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.sql.SQLException;
+
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -46,10 +48,12 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.ConnectionException;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
-import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
@@ -96,9 +100,8 @@ public class GetDigitalObjectDetailHandler
     @Inject
     private DescriptionDAO descriptionDAO;
 
-    /** The recently modified dao. */
     @Inject
-    private RecentlyModifiedItemDAO recentlyModifiedDAO;
+    private DAOUtils daoUtils;
 
     /**
      * Instantiates a new gets the digital object detail handler.
@@ -128,8 +131,9 @@ public class GetDigitalObjectDetailHandler
         // parse input
         String uuid = action.getUuid();
         String storedFOXMLFilePath = null;
-        if (action.getStoredFOXMLFilePath() != null && !action.getStoredFOXMLFilePath().equals("")) {
-            storedFOXMLFilePath = action.getStoredFOXMLFilePath();
+        if (action.getSavedEditedObject() != null && action.getSavedEditedObject().getFileName() != null
+                && !action.getSavedEditedObject().getFileName().equals("")) {
+            storedFOXMLFilePath = action.getSavedEditedObject().getFileName();
         }
 
         try {
@@ -147,6 +151,13 @@ public class GetDigitalObjectDetailHandler
             injector.injectMembers(descritptionHandler);
             injector.injectMembers(getLockInformationHandler);
             ServerUtils.checkExpiredSession(ses);
+            Long usersId = null;
+            try {
+                usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            } catch (DatabaseException e) {
+                throw new ActionException(e);
+            }
+
             DigitalObjectDetail obj = null;
             if (storedFOXMLFilePath == null) {
                 if (action.getModel() == null) { // lazy
@@ -159,6 +170,22 @@ public class GetDigitalObjectDetailHandler
                         storedObjectHandler.getStoredDigitalObject(uuid,
                                                                    storedFOXMLFilePath,
                                                                    action.getModel());
+                try {
+                    daoUtils.insertCrudAction(usersId,
+                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                              "",
+                                              action.getSavedEditedObject().getId(),
+                                              CRUD_ACTION_TYPES.READ,
+                                              true);
+                } catch (DatabaseException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                    throw new ActionException(e);
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                    throw new ActionException(e);
+                }
             }
 
             //TODO storedFOXMLFilePath != null------------------------------------------------------
@@ -171,10 +198,7 @@ public class GetDigitalObjectDetailHandler
             String description = null;
             Date modified = null;
             try {
-                long usersId =
-                        userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
                 description = descriptionDAO.getUserDescription(uuid, usersId);
-                //                recentlyModifiedDAO
 
                 // TODO: is the given user authorized to this operation?
             } catch (DatabaseException e) {

@@ -376,7 +376,6 @@ public class DigitalObjectMenuPresenter
     public void onAddDigitalObject(final RecentlyModifiedItem item, final List<? extends List<String>> related) {
         openedObjectsUuidAndRelated.put(item.getUuid(), related);
         getView().setRelatedDocuments(related);
-        System.err.println(item);
         RecentlyModifiedRecord record = ClientCreateUtils.toRecord(item);
         if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
             System.err.println(record);

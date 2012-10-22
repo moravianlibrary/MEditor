@@ -85,8 +85,8 @@ public class TreeStructureDAOImpl
     public static final String SELECT_INFOS_BY_USER_AND_CODE = SELECT_INFOS_BY_USER + " AND ts.barcode = (?)";
 
     public static final String SELECT_NODES = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
-            + " WHERE tree_structure_id = (?)";
-
+            + " WHERE tree_structure_id = (?) ORDER BY id";
+    //order by id
     public static final String DELETE_NODES = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
             + " WHERE tree_structure_id = (?)";
 
@@ -335,7 +335,7 @@ public class TreeStructureDAOImpl
                 ResultSet gk = insertInfoSt.getGeneratedKeys();
                 Long key;
                 if (gk.next()) {
-                    key = Long.parseLong(Integer.toString(gk.getInt(1)));
+                    key = gk.getLong(1);
                 } else {
                     LOGGER.error("No key has been returned! " + insertInfoSt);
                     getConnection().rollback();

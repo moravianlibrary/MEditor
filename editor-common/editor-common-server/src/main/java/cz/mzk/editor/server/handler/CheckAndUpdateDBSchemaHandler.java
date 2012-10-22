@@ -134,7 +134,7 @@ public class CheckAndUpdateDBSchemaHandler
                 }
                 if (upToDate < 0) {
                     //                    backupCurrentDb();
-                    boolean succ = transformDataToNewSchema(version);
+                    success = transformDataToNewSchema(version);
                 } else if (upToDate == 0) {
                     try {
                         backupCurrentDb();

@@ -261,8 +261,6 @@ public class Constants {
 
     }
 
-    public static final String NON_EXISTENT = "non-existent";
-
     // tables
 
     /** The Constant TABLE_INPUT_QUEUE_ITEM. */
@@ -286,8 +284,8 @@ public class Constants {
     //    /** The Constant TABLE_LOCK. */
     //    public static final String TABLE_LOCK = "lock";
 
-    /** The Constant TABLE_STORED_FILES. */
-    public static final String TABLE_STORED_FILES = "stored_files";
+    //    /** The Constant TABLE_STORED_FILES. */
+    //    public static final String TABLE_STORED_FILES = "stored_files";
 
     //    /** The Constant TABLE_ROLE. */
     //    public static final String TABLE_ROLE = "role";
@@ -309,10 +307,40 @@ public class Constants {
 
     // tables
 
-    public static final Long NON_EXISTENT_USER_ID = new Long(1);
+    public static enum DEFAULT_SYSTEM_USERS {
+
+        NON_EXISTENT(new Long(1), "non-existent"), TIME(new Long(2), "time");
+
+        private final Long userId;
+        private final String userName;
+
+        /**
+         * @param userId
+         * @param userName
+         */
+        private DEFAULT_SYSTEM_USERS(Long userId, String userName) {
+            this.userId = userId;
+            this.userName = userName;
+        }
+
+        /**
+         * @return the userId
+         */
+        public Long getUserId() {
+            return userId;
+        }
+
+        /**
+         * @return the userName
+         */
+        public String getUserName() {
+            return userName;
+        }
+
+    }
 
     public static final String TABLE_ACTION = "action";
-    public static final String TABLE_ACTION_WITH_TOP_OBJECT = "action_with_top_object";
+    public static final String TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT = "crud_do_action_with_top_object";
     public static final String TABLE_CONVERSION = "conversion";
     public static final String TABLE_CRUD_DIGITAL_OBJECT_ACTION = "crud_digital_object_action";
     public static final String TABLE_CRUD_LOCK_ACTION = "crud_lock_action";

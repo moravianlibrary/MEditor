@@ -122,7 +122,7 @@ public class RecentlyModifiedItemDAOImpl
                                                   "digital_object_uuid",
                                                   toPut.getUuid(),
                                                   CRUD_ACTION_TYPES.READ,
-                                                  true);
+                                                  false);
             if (successful) {
                 getConnection().commit();
                 LOGGER.debug("DB has been updated by commit.");

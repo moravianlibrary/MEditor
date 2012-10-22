@@ -105,9 +105,14 @@ public class UserDAOImpl
     public static final String SELECT_USER_NAME = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
             + " WHERE id=(?)";
 
+    public static final String SELECT_USER_ID_BY_OPENID = "SELECT id FROM " + Constants.TABLE_EDITOR_USER
+            + " WHERE id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
+            + " WHERE identity = (?))";
+
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
     /** The dao utils. */
+    @SuppressWarnings("unused")
     @Inject
     private DAOUtils daoUtils;
 
@@ -129,6 +134,8 @@ public class UserDAOImpl
     public int isSupported(String identifier) throws DatabaseException {
 
         long userId = getUsersId(identifier);
+
+        if (userId == -1) userId = getUsersIdOld(identifier);
 
         if (userId != -1) {
             if (hasRole(UserDAO.ADMIN_STRING, userId)) {
@@ -154,6 +161,28 @@ public class UserDAOImpl
     public long getUsersId(String identifier) throws DatabaseException {
 
         return getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID);
+    }
+
+    private long getUsersIdOld(String identifier) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        long userId = -1;
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_USER_ID_BY_OPENID);
+            selectSt.setString(1, identifier);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                userId = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return userId;
     }
 
     /*
@@ -297,7 +326,7 @@ public class UserDAOImpl
                         + user.getSurname() + " has been inserted.");
                 ResultSet gk = updateSt.getGeneratedKeys();
                 if (gk.next()) {
-                    id = Long.parseLong(Integer.toString(gk.getInt(1)));
+                    id = gk.getLong(1);
                 } else {
                     LOGGER.error("No key has been returned! " + updateSt);
                 }

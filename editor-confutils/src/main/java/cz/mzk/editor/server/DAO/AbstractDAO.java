@@ -69,6 +69,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -355,7 +356,7 @@ public abstract class AbstractDAO {
                     sql.append(Constants.TABLE_LDAP_IDENTITY);
                     break;
                 default:
-                    return Constants.NON_EXISTENT_USER_ID;
+                    return DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId();
             }
             sql.append(" WHERE identity = (?)");
             selectSt = getConnection().prepareStatement(sql.toString());

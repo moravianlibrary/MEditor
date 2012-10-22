@@ -50,6 +50,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
@@ -297,7 +298,9 @@ public class DBSchemaDAOImpl
 
         Map<Long, Long> editorUserIdMapping = new HashMap<Long, Long>(oldData.size());
 
-        daoUtils.insertEditorUser(Constants.NON_EXISTENT, Constants.NON_EXISTENT, true);
+        for (DEFAULT_SYSTEM_USERS defSysUser : DEFAULT_SYSTEM_USERS.values()) {
+            daoUtils.insertEditorUser("", defSysUser.getUserName(), true);
+        }
 
         for (long i = 1; i < oldData.size(); i++) {
             Object[] user = oldData.get(i);
@@ -452,13 +455,13 @@ public class DBSchemaDAOImpl
         for (long i = 1; i < oldData.size(); i++) {
             Object[] r4a = oldData.get(i);
             Long requestId =
-                    daoUtils.insertRequestToAdmin(Constants.NON_EXISTENT_USER_ID,
+                    daoUtils.insertRequestToAdmin(DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId(),
                                                   REQUESTS_TO_ADMIN_TYPES.ADDING_NEW_ACOUNT,
                                                   (String) r4a[2],
                                                   (String) r4a[1],
                                                   false);
 
-            daoUtils.insertCrudRequestToAdminAction(Constants.NON_EXISTENT_USER_ID,
+            daoUtils.insertCrudRequestToAdminAction(DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId(),
                                                     (Timestamp) r4a[3],
                                                     requestId,
                                                     CRUD_ACTION_TYPES.CREATE);
