@@ -124,8 +124,8 @@ import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
+import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.quartz.GuiceJobFactory;
 import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -273,7 +273,7 @@ public class ServerModule
         requestStaticInjection(FedoraUtils.class);
         requestStaticInjection(AuthenticationServlet.class);
         requestStaticInjection(URLS.class);
-        requestStaticInjection(CreateObjectUtils.class);
+        requestStaticInjection(IngestUtils.class);
         requestStaticInjection(ServerUtils.class);
         requestStaticInjection(FOXMLBuilderMapping.class);
 

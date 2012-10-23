@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 
 // TODO: Auto-generated Javadoc
@@ -61,20 +62,10 @@ public class InputQueueItemDAOImpl
     public static final String DELETE_ALL_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_INPUT_QUEUE_ITEM;
 
     /** The Constant SELECT_NUMBER_ITEMS_STATEMENT. */
-    //    public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(id) FROM "
-    //            + Constants.TABLE_INPUT_QUEUE_ITEM;
     public static final String SELECT_NUMBER_ITEMS_STATEMENT = "SELECT count(path) FROM "
             + Constants.TABLE_INPUT_QUEUE_ITEM;
 
-    /** The Constant INSERT_ITEM_STATEMENT. */
-    //    public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM
-    //            + " (path, barcode, ingested) VALUES ((?),(?),(?))";
-
     /** The Constant FIND_ITEMS_ON_TOP_LVL_STATEMENT. */
-    //    public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT =
-    //            "SELECT p.path, p.barcode, p.ingested, n.name FROM " + Constants.TABLE_INPUT_QUEUE_ITEM
-    //                    + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " n ON(p.path=n.path) "
-    //                    + "WHERE position('" + File.separator + "' IN trim(leading ((?)) FROM p.path)) = 0";
     public static final String FIND_ITEMS_ON_TOP_LVL_STATEMENT =
             "SELECT p.path, p.barcode, p.ingested, n.name FROM " + Constants.TABLE_INPUT_QUEUE_ITEM
                     + " p LEFT JOIN " + Constants.TABLE_INPUT_QUEUE + " n ON(p.path=n.directory_path) "
@@ -88,31 +79,30 @@ public class InputQueueItemDAOImpl
     public static final String FIND_ITEMS_BY_PATH_STATEMENT = FIND_ITEMS_ON_TOP_LVL_STATEMENT
             + " AND p.path LIKE ((?)) ORDER BY p.path";
 
-    public static final String UPDATE_INGEST_INFO = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM
-            + " SET ingested = (?) WHERE path = (?)";
-
-    //    public static final String SELECT_NAME_ITEM_ID = "SELECT id FROM "
-    //            + Constants.TABLE_INPUT_QUEUE_ITEM_NAME + " WHERE path=(?)";
-
-    //    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
-    //            + " (name, path) VALUES ((?),(?))";
+    /** The Constant INSERT_NAME. */
     public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE
             + " (name, directory_path) VALUES ((?),(?))";
 
-    //    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM_NAME
-    //            + " SET name = (?) WHERE path = (?)";
+    /** The Constant UPDATE_NAME. */
     public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE
             + " SET name = (?) WHERE directory_path = (?)";
 
+    public static final String SELECT_INGEST_INFO =
+            "SELECT top_digital_object_uuid, timestamp, editor_user_id FROM ((SELECT top_digital_object_uuid, timestamp, editor_user_id FROM "
+                    + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
+                    + " WHERE type = 'c' AND top_digital_object_uuid = digital_object_uuid) a INNER JOIN (SELECT uuid, input_queue_directory_path FROM "
+                    + Constants.TABLE_DIGITAL_OBJECT
+                    + " WHERE input_queue_directory_path = (?)) o ON a.top_digital_object_uuid = o.uuid)";
+
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.InputQueueItemDAO#updateItems(java
-     * .util.List)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void updateItems(List<InputQueueItem> toUpdate) throws DatabaseException {
@@ -162,6 +152,7 @@ public class InputQueueItemDAOImpl
      *        the item
      * @return the item insert statement
      * @throws DatabaseException
+     *         the database exception
      */
     private PreparedStatement getItemInsertStatement(InputQueueItem item) throws DatabaseException {
         PreparedStatement itemStmt = null;
@@ -176,10 +167,8 @@ public class InputQueueItemDAOImpl
         return itemStmt;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.InputQueueItemDAO#getItems(java .lang
-     * .String)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException {
@@ -212,33 +201,15 @@ public class InputQueueItemDAOImpl
         return retList;
     }
 
+    @Override
+    public boolean hasBeenIngested(String path) throws DatabaseException {
+        List<IngestInfo> ingestInfo = getIngestInfo(path);
+        return ingestInfo != null && !ingestInfo.isEmpty();
+    }
+
     /**
      * {@inheritDoc}
      */
-
-    @Override
-    public void updateIngestInfo(boolean ingested, String path) throws DatabaseException {
-        try {
-
-            PreparedStatement updateSt = getConnection().prepareStatement(UPDATE_INGEST_INFO);
-            updateSt.setBoolean(1, ingested);
-            updateSt.setString(2, path);
-            int updated = updateSt.executeUpdate();
-
-            if (updated == 1) {
-                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
-            } else {
-                LOGGER.error("DB has been updated, with unexpected count of updated lines: " + updated
-                        + ". Queries: \"" + updateSt + "\".");
-            }
-            // TX end
-        } catch (SQLException e) {
-            LOGGER.error(e);
-        } finally {
-            closeConnection();
-        }
-    }
-
     @Override
     public void updateName(String path, String name) throws DatabaseException {
 
@@ -248,46 +219,36 @@ public class InputQueueItemDAOImpl
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
-        //        int duplicate = selectName(path);
-        //        try {
-        //
-        //            PreparedStatement updateSt =
-        //                    getConnection().prepareStatement((duplicate < 0) ? INSERT_NAME : UPDATE_NAME);
-        //            updateSt.setString(1, ClientCreateUtils.trimLabel(name, Constants.MAX_LABEL_LENGTH));
-        //            updateSt.setString(2, path);
-        //            int updated = updateSt.executeUpdate();
-        //
-        //            if (updated == 1) {
-        //                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\".");
-        //            } else {
-        //                LOGGER.error("DB has been updated, with unexpected count of updated lines: " + updated
-        //                        + ". Queries: \"" + updateSt + "\".");
-        //            }
-        //            // TX end
-        //        } catch (SQLException e) {
-        //            LOGGER.error(e);
-        //        } finally {
-        //            closeConnection();
-        //        }
     }
 
-    //    private int selectName(String path) throws DatabaseException {
-    //        PreparedStatement selectSt = null;
-    //        int id = Integer.MIN_VALUE;
-    //        try {
-    //
-    //            selectSt = getConnection().prepareStatement(SELECT_NAME_ITEM_ID);
-    //            selectSt.setString(1, path);
-    //            ResultSet rs = selectSt.executeQuery();
-    //
-    //            while (rs.next()) {
-    //                id = rs.getInt("id");
-    //            }
-    //        } catch (SQLException e) {
-    //            LOGGER.error("Query: " + selectSt, e);
-    //        } finally {
-    //            closeConnection();
-    //        }
-    //        return id;
-    //    }
+    @Override
+    public List<IngestInfo> getIngestInfo(String path) throws DatabaseException {
+        PreparedStatement selectSt = null;
+
+        List<String> pid = new ArrayList<String>();
+        List<String> username = new ArrayList<String>();
+        List<String> time = new ArrayList<String>();
+        int count = 0;
+
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_INGEST_INFO);
+            selectSt.setString(1, path);
+            ResultSet rs = selectSt.executeQuery();
+
+            while (rs.next()) {
+                pid.add(rs.getString("top_digital_object_uuid"));
+                time.add(rs.getString("timestamp"));
+                username.add(rs.getString("editor_user_id"));
+                count++;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        List<IngestInfo> ingestInfo = new ArrayList<IngestInfo>(count);
+        if (count > 0) ingestInfo.add(new IngestInfo(path, pid, username, time));
+        return ingestInfo;
+    }
 }

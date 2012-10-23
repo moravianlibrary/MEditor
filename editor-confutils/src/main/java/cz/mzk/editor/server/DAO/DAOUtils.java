@@ -72,18 +72,20 @@ public interface DAOUtils {
             + " (editor_user_id, digital_object_uuid, description) VALUES ((?),(?),(?))";
 
     /** The Constant DIGITAL_OBJECT_INSERT_ITEM_STATEMENT. */
-    public static final String DIGITAL_OBJECT_INSERT_ITEM_STATEMENT = "INSERT INTO "
-            + Constants.TABLE_DIGITAL_OBJECT
-            + " (uuid, model, name, description, input_queue_directory_path) VALUES ((?),(?),(?),(?),(?))";
+    public static final String DIGITAL_OBJECT_INSERT_ITEM_STATEMENT =
+            "INSERT INTO "
+                    + Constants.TABLE_DIGITAL_OBJECT
+                    + " (uuid, model, name, description, input_queue_directory_path, state) VALUES ((?),(?),(?),(?),(?), 'true')";
 
     /** The Constant DIGITAL_OBJECT_SELECT_ITEM_STATEMENT. */
     public static final String DIGITAL_OBJECT_SELECT_ITEM_STATEMENT = "SELECT * FROM "
             + Constants.TABLE_DIGITAL_OBJECT + " WHERE uuid=(?)";
 
     /** The Constant DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT. */
-    public static final String DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT = "UPDATE "
-            + Constants.TABLE_DIGITAL_OBJECT
-            + " SET model=(?), name=(?), description=(?), input_queue_directory_path=(?) WHERE uuid=(?)";
+    public static final String DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT =
+            "UPDATE "
+                    + Constants.TABLE_DIGITAL_OBJECT
+                    + " SET model=(?), name=(?), description=(?), input_queue_directory_path=(?), state = 'true' WHERE uuid=(?)";
 
     /** The Constant EDITOR_RIGHT_INSERT_ITEM_STATEMENT. */
     public static final String EDITOR_RIGHT_INSERT_ITEM_STATEMENT = "INSERT INTO "

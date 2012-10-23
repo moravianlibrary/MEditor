@@ -43,12 +43,10 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.convert.Converter;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
@@ -149,11 +147,11 @@ public class ConvertToJPEG2000Handler
         }
         if (item.getJpgFsPath().toLowerCase().endsWith(Constants.JPEG_2000_EXTENSION)) {
             try {
-                CreateObjectUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());
+                IOUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());
                 LOGGER.info("image " + configuration.getImagesPath() + item.getJpgFsPath()
                         + Constants.JPEG_2000_EXTENSION + "  was copied to  " + item.getJpeg2000FsPath()
                         + Constants.JPEG_2000_EXTENSION);
-            } catch (CreateObjectException e) {
+            } catch (IOException e) {
                 LOGGER.error("Unable to copy image " + configuration.getImagesPath() + item.getJpgFsPath()
                         + Constants.JPEG_2000_EXTENSION + " to  " + item.getJpeg2000FsPath()
                         + Constants.JPEG_2000_EXTENSION, e);

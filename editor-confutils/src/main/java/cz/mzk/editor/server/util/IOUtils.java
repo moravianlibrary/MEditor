@@ -256,4 +256,51 @@ public class IOUtils {
     public static boolean containsIllegalCharacter(String string) {
         return (!string.matches("[a-zA-Z0-9._\\-]*"));
     }
+
+    /**
+     * @param path
+     *        from
+     * @param path
+     *        to
+     * @throws CreateObjectException
+     */
+    public static boolean copyFile(String path, String newFilePath) throws IOException {
+
+        File inputFile = new File(path);
+        if (!inputFile.exists()) {
+            LOGGER.error("file " + path + " does not exist");
+            return false;
+        }
+        File outputFile = new File(newFilePath);
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(inputFile);
+            out = new FileOutputStream(outputFile);
+            byte[] buf = new byte[1024 * 128];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            return true;
+        } catch (IOException e) {
+            throw new IOException(e.getMessage(), e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    in = null;
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    out = null;
+                }
+            }
+        }
+    }
 }

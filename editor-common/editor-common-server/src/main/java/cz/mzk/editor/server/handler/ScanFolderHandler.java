@@ -29,6 +29,7 @@ package cz.mzk.editor.server.handler;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,14 +47,12 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
@@ -217,9 +216,9 @@ public class ScanFolderHandler
         String uuid = UUID.nameUUIDFromBytes(new File(pdfPath).getAbsolutePath().getBytes()).toString();
         String newPdfPath = configuration.getImagesPath() + uuid + Constants.PDF_EXTENSION;
         try {
-            CreateObjectUtils.copyFile(pdfPath, newPdfPath);
+            IOUtils.copyFile(pdfPath, newPdfPath);
             LOGGER.info("Pdf file " + pdfPath + " has been copied to " + newPdfPath);
-        } catch (CreateObjectException e) {
+        } catch (IOException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);

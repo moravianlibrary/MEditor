@@ -27,6 +27,8 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -50,6 +52,16 @@ public class DigitalObjectDAOImpl
 
     public static final String DISABLE_DIGITAL_OBJECT_ITEM = "UPDATE " + Constants.TABLE_DIGITAL_OBJECT
             + " SET state = 'false' WHERE uuid = (?)";
+
+    public static final String UPDATE_TOP_DO_TIMESTAMP =
+            "UPDATE "
+                    + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
+                    + " SET timestamp = (CURRENT_TIMESTAMP) WHERE digital_object_uuid = (?) AND top_digital_object_uuid = (?) AND type='c'";
+
+    public static final String UPDATE_TOP_DO_UUID =
+            "UPDATE "
+                    + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
+                    + " SET top_digital_object_uuid = (?) WHERE top_digital_object_uuid = (?) AND digital_object_uuid = (?)";
 
     @Inject
     private DAOUtils daoUtils;
@@ -83,5 +95,131 @@ public class DigitalObjectDAOImpl
             closeConnection();
         }
         return successful;
+    }
+
+    @Override
+    public boolean insertNewDigitalObject(String uuid,
+                                          String model,
+                                          String name,
+                                          String input_queue_directory_path,
+                                          String top_digital_object_uuid) throws DatabaseException {
+        String pid =
+                (uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? uuid : Constants.FEDORA_UUID_PREFIX
+                        .concat(uuid);
+        String top_digital_object_pid =
+                (uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? top_digital_object_uuid
+                        : Constants.FEDORA_UUID_PREFIX.concat(top_digital_object_uuid);
+        boolean successful = false;
+
+        try {
+            if (daoUtils.checkDigitalObject(pid, model, name, null, input_queue_directory_path, true))
+                successful =
+                        daoUtils.insertCrudActionWithTopObject(getUserId(),
+                                                               Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                               "digital_object_uuid",
+                                                               pid,
+                                                               CRUD_ACTION_TYPES.CREATE,
+                                                               top_digital_object_pid,
+                                                               true);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return successful;
+    }
+
+    @Override
+    public void updateTopObjectTime(String uuid) throws DatabaseException {
+        PreparedStatement updateSt = null;
+        String pid =
+                (uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? uuid : Constants.FEDORA_UUID_PREFIX
+                        .concat(uuid);
+        try {
+            updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_TIMESTAMP);
+            updateSt.setString(1, pid);
+            updateSt.setString(2, pid);
+
+            if (updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The top digital object: " + uuid + " has been updated.");
+            } else {
+                LOGGER.error("DB has not been updated: " + updateSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + updateSt, e);
+        } finally {
+            closeConnection();
+        }
+    }
+
+    @Override
+    public boolean updateTopObjectUuid(String oldUuid,
+                                       String newUuid,
+                                       List<String> lowerObj,
+                                       String model,
+                                       String name,
+                                       String input_queue_directory_path) throws DatabaseException {
+
+        boolean successful = false;
+        if (insertNewDigitalObject(newUuid, model, name, input_queue_directory_path, newUuid)) {
+
+            try {
+                getConnection().setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.warn("Unable to set autocommit off", e);
+            }
+
+            PreparedStatement updateSt = null;
+            String oldPid =
+                    (oldUuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? oldUuid
+                            : Constants.FEDORA_UUID_PREFIX.concat(oldUuid);
+
+            String newPid =
+                    (newUuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? newUuid
+                            : Constants.FEDORA_UUID_PREFIX.concat(newUuid);
+
+            try {
+                for (String lowerUuid : lowerObj) {
+                    if (!(successful =
+                            (getUpdateUuidSt(updateSt, oldPid, newPid, lowerUuid).executeUpdate() == 0))) {
+                        break;
+                    }
+                }
+
+                if (successful) {
+                    LOGGER.debug("DB has been updated: The top digital object: " + oldUuid
+                            + " has been updated to: " + newUuid);
+                    getConnection().commit();
+                } else {
+                    LOGGER.error("DB ERROR!!! The top digital object: " + oldUuid
+                            + " has not been updated to: " + newUuid);
+                    getConnection().rollback();
+                }
+
+            } catch (SQLException e) {
+                LOGGER.error("Query: " + updateSt, e);
+            } finally {
+                closeConnection();
+            }
+        }
+        return successful;
+    }
+
+    private PreparedStatement getUpdateUuidSt(PreparedStatement updateSt,
+                                              String oldPid,
+                                              String newPid,
+                                              String lowerObjUuid) throws SQLException, DatabaseException {
+
+        String lowerObjPid =
+                (lowerObjUuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? lowerObjUuid
+                        : Constants.FEDORA_UUID_PREFIX.concat(lowerObjUuid);
+
+        updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_UUID);
+        updateSt.setString(1, newPid);
+        updateSt.setString(2, oldPid);
+        updateSt.setString(2, lowerObjPid);
+
+        return updateSt;
+
     }
 }

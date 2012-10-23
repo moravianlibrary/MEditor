@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.util.List;
+
 /**
  * @author Matous Jobanek
  * @version Oct 22, 2012
@@ -32,4 +34,19 @@ public interface DigitalObjectDAO {
 
     boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid)
             throws DatabaseException;
+
+    boolean insertNewDigitalObject(String uuid,
+                                   String model,
+                                   String name,
+                                   String input_queue_directory_path,
+                                   String top_digital_object_uuid) throws DatabaseException;
+
+    void updateTopObjectTime(String uuid) throws DatabaseException;
+
+    boolean updateTopObjectUuid(String oldUuid,
+                                String newUuid,
+                                List<String> lowerObj,
+                                String model,
+                                String name,
+                                String input_queue_directory_path) throws DatabaseException;
 }

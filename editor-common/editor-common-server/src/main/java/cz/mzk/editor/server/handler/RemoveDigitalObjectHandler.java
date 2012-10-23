@@ -56,7 +56,7 @@ import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
@@ -450,8 +450,8 @@ public class RemoveDigitalObjectHandler
             boolean successful = false;
             while (!successful && attempt++ < 3) {
                 successful =
-                        CreateObjectUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
-                                .getLabel(), removed.getUuid(), ROLLBACK_FLAG);
+                        IngestUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
+                                .getLabel(), removed.getUuid(), ROLLBACK_FLAG, null, null);
             }
 
             if (!successful) {

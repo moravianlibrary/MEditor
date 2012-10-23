@@ -175,6 +175,11 @@ public class DAOUtilsImpl
                     chaInputPath = input_queue_directory_path;
                     changed = true;
                 }
+
+                if (!rs.getBoolean("state")) {
+                    changed = true;
+                }
+
                 if (changed) {
 
                     successful =
