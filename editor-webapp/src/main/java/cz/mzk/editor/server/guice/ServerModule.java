@@ -56,6 +56,8 @@ import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.mzk.editor.server.DAO.LockDAO;
 import cz.mzk.editor.server.DAO.LockDAOImpl;
+import cz.mzk.editor.server.DAO.LogInOutDAO;
+import cz.mzk.editor.server.DAO.LogInOutDAOImpl;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.mzk.editor.server.DAO.RequestDAO;
@@ -249,6 +251,7 @@ public class ServerModule
         bind(DAOUtils.class).to(DAOUtilsImpl.class);
         bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
         bind(DigitalObjectDAO.class).to(DigitalObjectDAOImpl.class);
+        bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
