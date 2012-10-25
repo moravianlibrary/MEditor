@@ -62,14 +62,19 @@ public class DBSchemaDAOImpl
         extends AbstractDAO
         implements DBSchemaDAO {
 
+    /** The Constant SELECT_ALL. */
     public static final String SELECT_ALL = "SELECT * FROM ";
 
+    /** The Constant SELECT_VERSION. */
     public static final String SELECT_VERSION = SELECT_ALL + Constants.TABLE_VERSION;
 
+    /** The Constant UPDATE_VERSION. */
     public static final String UPDATE_VERSION = "UPDATE " + Constants.TABLE_VERSION + " SET version = (?)";
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(DBSchemaDAOImpl.class);
 
+    /** The Constant VERSION_INSERT_ITEM_STATEMENT. */
     public static final String VERSION_INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_VERSION
             + " (version) VALUES ((?))";
 
@@ -207,6 +212,14 @@ public class DBSchemaDAOImpl
         updateVersionInDb(version);
     }
 
+    /**
+     * Update version in db.
+     * 
+     * @param version
+     *        the version
+     * @throws DatabaseException
+     *         the database exception
+     */
     private void updateVersionInDb(int version) throws DatabaseException {
         PreparedStatement statement = null;
         try {
@@ -221,6 +234,9 @@ public class DBSchemaDAOImpl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<Long, Object[]> getAllDataFromTable(String tableName) throws ClassNotFoundException {
         PreparedStatement selStatement = null;
@@ -259,13 +275,11 @@ public class DBSchemaDAOImpl
         return rows;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    description (id, uuid, description) -> digital_object (uuid, model, name, description, input_queue_directory_path);
     //                                                           uuid, ?????, ????, description,             'null'
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutDescription(Map<Long, Object[]> oldData) throws DatabaseException {
 
@@ -286,13 +300,11 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    editor_user (id, name, surname, sex) -> editor_user (id, name, surname, state)
     //                                                             name, surname, 'true'
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<Long, Long> transformAndPutEditorUser(Map<Long, Object[]> oldData) throws DatabaseException {
 
@@ -310,15 +322,11 @@ public class DBSchemaDAOImpl
         return editorUserIdMapping;
     }
 
-    //    Class.forName(types[i]).cast();
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //  image (id, identifier, shown, old_fs_path, imagefile) -> image (identifier, shown, old_fs_path, imagefile)
     //                                                                  identifier, shown, old_fs_path, imagefile
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutImage(Map<Long, Object[]> oldData) throws DatabaseException {
 
@@ -331,13 +339,11 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    input_queue_item (id, path, barcode, ingested) -> input_queue_item (path, barcode, ingested)
     //                                                                        path, barcode, ingested
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutInputQueueItem(Map<Long, Object[]> oldData) throws DatabaseException {
 
@@ -349,13 +355,11 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    input_queue_item_name (id, path, name) -> input_queue (directory_path, name)
     //                                                                     path, name
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutInputQueue(Map<Long, Object[]> oldData) throws DatabaseException {
 
@@ -370,14 +374,11 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     * @throws NumberFormatException
-     */
     //    open_id_identity (id, user_id, identity) -> open_id_identity (editor_user_id, identity)
     //                                                                         user_id, identity
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutOpenIdIdentity(Map<Long, Object[]> oldData, Map<Long, Long> editorUserIdMapping)
             throws NumberFormatException, DatabaseException {
@@ -389,12 +390,6 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     * @throws NumberFormatException
-     */
     //     recently_modified_item (id, uuid, name, description, modified, model, user_id)  ->
     //            
     //         ->  digital_object (uuid,     model, name, description, input_queue_directory_path)
@@ -405,6 +400,9 @@ public class DBSchemaDAOImpl
     //        
     //         ->  description (editor_user_id, digital_object_uuid, description)
     //                                 user_id,            uuid, description
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndRecentlyModified(Map<Long, Object[]> oldData, Map<Long, Long> editorUserIdMapping)
             throws NumberFormatException, DatabaseException {
@@ -437,11 +435,6 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    request_for_adding (id, name, identity, modified)   ->
     //    
     //        ->  request_to_admin (admin_editor_user_id,  type,   object, description,  solved)
@@ -449,6 +442,9 @@ public class DBSchemaDAOImpl
     //
     //        ->  crud_request_to_admin_action (editor_user_id, "timestamp", request_to_admin_id, type)
     //                                          'non-existent',    modified,                  id,  'c'
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutRequestForAdding(Map<Long, Object[]> oldData) throws DatabaseException {
 
@@ -468,11 +464,6 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    stored_files (id, user_id, uuid, model, description, stored, file_name) ->
     //    
     //        ->  saved_edited_object (digital_object_uuid, file_name, description, state)
@@ -483,6 +474,9 @@ public class DBSchemaDAOImpl
     //    
     //        ->  digital_object (uuid, model, name, description, input_queue_directory_path)
     //                            uuid, model, ????, ???????????,             'null'
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutStoredFiles(Map<Long, Object[]> oldData, Map<Long, Long> editorUserIdMapping)
             throws DatabaseException {
@@ -515,11 +509,6 @@ public class DBSchemaDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     */
     //    tree_structure (id, user_id, created, barcode, description, name, input_path, model)    ->
     //    
     //        ->  tree_structure (barcode, description, name, model,  state, input_queue_directory_path)
@@ -530,6 +519,9 @@ public class DBSchemaDAOImpl
     //
     //        ->  input_queue (directory_path, name)
     //                             input_path, ????
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<Long, Long> transformAndPutTreeStructure(Map<Long, Object[]> oldData,
                                                         Map<Long, Long> editorUserIdMapping)
@@ -570,14 +562,11 @@ public class DBSchemaDAOImpl
         return treeStrucIdMapping;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws DatabaseException
-     * @throws NumberFormatException
-     */
     //    tree_structure_node (id,           tree_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist)   ->
     //    tree_structure_node (id, tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist)
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void transformAndPutTreeStrucNode(Map<Long, Object[]> oldData, Map<Long, Long> treeStrucIdMapping)
             throws NumberFormatException, DatabaseException {

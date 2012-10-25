@@ -47,7 +47,10 @@ import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class TreeStructureDAOImpl.
+ * 
  * @author Jiri Kremser
  * @version 25. 1. 2011
  */
@@ -78,46 +81,70 @@ public class TreeStructureDAOImpl
                     + " WHERE state='true') t ON a.tree_structure_id = t.id) ts LEFT JOIN "
                     + Constants.TABLE_EDITOR_USER + " eu ON eu.id = ts.editor_user_id";
 
+    /** The Constant SELECT_INFOS_WITH_CODE. */
     public static final String SELECT_INFOS_WITH_CODE = SELECT_INFOS + " WHERE ts.barcode = (?)";
 
+    /** The Constant SELECT_INFOS_BY_USER. */
     public static final String SELECT_INFOS_BY_USER = SELECT_INFOS + " WHERE eu.id = (?)";
 
+    /** The Constant SELECT_INFOS_BY_USER_AND_CODE. */
     public static final String SELECT_INFOS_BY_USER_AND_CODE = SELECT_INFOS_BY_USER + " AND ts.barcode = (?)";
 
+    /** The Constant SELECT_NODES. */
     public static final String SELECT_NODES = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
             + " WHERE tree_structure_id = (?) ORDER BY id";
-    //order by id
+
+    /** The Constant DELETE_NODES. */
     public static final String DELETE_NODES = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
             + " WHERE tree_structure_id = (?)";
 
+    /** The Constant DISABLE_INFO. */
     public static final String DISABLE_INFO = "UPDATE " + Constants.TABLE_TREE_STRUCTURE
             + " SET state = 'false' WHERE id = (?)";
 
+    /** The Constant INSERT_INFO. */
     public static final String INSERT_INFO =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE
                     + " (barcode, description, name, model, state, input_queue_directory_path) VALUES ((?), (?), (?), (?), 'true', (?))";
 
+    /** The Constant INFO_VALUE. */
     public static final String INFO_VALUE = "SELECT currval('" + Constants.SEQUENCE_TREE_STRUCTURE + "')";
 
+    /** The Constant INSERT_NODE. */
     public static final String INSERT_NODE =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NODE
                     + " (tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 
+    /**
+     * The Enum DISCRIMINATOR.
+     */
     private static enum DISCRIMINATOR {
-        ALL, ALL_OF_USER, BARCODE_OF_USER
+
+        /** The ALL. */
+        ALL,
+        /** The AL l_ o f_ user. */
+        ALL_OF_USER,
+        /** The BARCOD e_ o f_ user. */
+        BARCODE_OF_USER
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the all saved structures of user.
      * 
+     * @param userId
+     *        the user id
+     * @return the all saved structures of user
      * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
     @Override
     public ArrayList<TreeStructureInfo> getAllSavedStructuresOfUser(long userId) throws DatabaseException {
@@ -125,7 +152,13 @@ public class TreeStructureDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the all saved structures.
+     * 
+     * @param code
+     *        the code
+     * @return the all saved structures
+     * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
     @Override
     public ArrayList<TreeStructureInfo> getAllSavedStructures(String code) throws DatabaseException {
@@ -133,7 +166,15 @@ public class TreeStructureDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the saved structures of user.
+     * 
+     * @param userId
+     *        the user id
+     * @param code
+     *        the code
+     * @return the saved structures of user
+     * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
     @Override
     public ArrayList<TreeStructureInfo> getSavedStructuresOfUser(long userId, String code)
@@ -141,6 +182,19 @@ public class TreeStructureDAOImpl
         return getSavedStructures(DISCRIMINATOR.BARCODE_OF_USER, userId, code);
     }
 
+    /**
+     * Gets the saved structures.
+     * 
+     * @param what
+     *        the what
+     * @param userId
+     *        the user id
+     * @param code
+     *        the code
+     * @return the saved structures
+     * @throws DatabaseException
+     *         the database exception
+     */
     private ArrayList<TreeStructureInfo> getSavedStructures(DISCRIMINATOR what, long userId, String code)
             throws DatabaseException {
         PreparedStatement selectSt = null;

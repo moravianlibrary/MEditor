@@ -54,47 +54,38 @@ public class ImageResolverDAOImpl
     //                                                                  identifier, shown, old_fs_path, imagefile
 
     /** The Constant DELETE_ITEMS_STATEMENT. */
-    //    public static final String DELETE_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE_NAME
-    //            + " WHERE shown < (NOW() - INTERVAL '%s day')";
     public static final String DELETE_ITEMS_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE
             + " WHERE shown < (NOW() - INTERVAL '%s day')";
 
     /** The Constant SELECT_ITEMS_FOR_DELETION_STATEMENT. */
-    //    public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT imageFile FROM "
-    //            + Constants.TABLE_IMAGE_NAME + " WHERE shown < (NOW() - INTERVAL '%s day')";
     public static final String SELECT_ITEMS_FOR_DELETION_STATEMENT = "SELECT imageFile FROM "
             + Constants.TABLE_IMAGE + " WHERE shown < (NOW() - INTERVAL '%s day')";
 
-    /** The Constant SELECT_ITEM_STATEMENT. */
-    //    public static final String SELECT_ITEM_STATEMENT = "SELECT id, imageFile FROM "
-    //            + Constants.TABLE_IMAGE_NAME + " WHERE old_fs_path = ((?))";
+    /** The Constant SELECT_IDENT_FILE_STATEMENT. */
     public static final String SELECT_IDENT_FILE_STATEMENT = "SELECT identifier, imageFile FROM "
             + Constants.TABLE_IMAGE + " WHERE old_fs_path = ((?))";
 
     /** The Constant SELECT_OLD_FS_PATH_STATEMENT. */
-    //    public static final String SELECT_OLD_FS_PATH_STATEMENT = "SELECT old_fs_path FROM "
-    //            + Constants.TABLE_IMAGE_NAME + " WHERE imagefile LIKE ((?))";
     public static final String SELECT_OLD_FS_PATH_STATEMENT = "SELECT old_fs_path FROM "
             + Constants.TABLE_IMAGE + " WHERE imagefile LIKE ((?))";
 
-    /** The Constant UPDATE_ITEM_STATEMENT. */
-    //    public static final String UPDATE_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_IMAGE_NAME
-    //            + " SET shown = CURRENT_TIMESTAMP WHERE id = (?)";
+    /** The Constant UPDATE_SHOWN_ITEM_STATEMENT. */
     public static final String UPDATE_SHOWN_ITEM_STATEMENT = "UPDATE " + Constants.TABLE_IMAGE
             + " SET shown = CURRENT_TIMESTAMP WHERE identifier = (?)";
 
     /** The Constant INSERT_ITEM_STATEMENT. */
-    //    public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_IMAGE_NAME
-    //            + " (identifier, imageFile, old_fs_path, shown) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP))";
     public static final String INSERT_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_IMAGE
             + " (identifier, imageFile, old_fs_path, shown) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP))";
 
-    /** The Constant INSERT_ITEM_STATEMENT. */
-    //    public static final String DELETE_ITEM_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE_NAME
-    //            + " WHERE identifier = (?)";
+    /** The Constant DELETE_ITEM_STATEMENT. */
     public static final String DELETE_ITEM_STATEMENT = "DELETE FROM " + Constants.TABLE_IMAGE
             + " WHERE identifier = (?)";
 
+    /** The Constant SELECT_NEW_IMAGE_FILE_PATH. */
+    public static final String SELECT_NEW_IMAGE_FILE_PATH = "SELECT imageFile FROM " + Constants.TABLE_IMAGE
+            + " WHERE identifier = (?)";
+
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(ImageResolverDAOImpl.class);
 
     /**
@@ -104,6 +95,7 @@ public class ImageResolverDAOImpl
      *        the item
      * @return the item insert statement
      * @throws DatabaseException
+     *         the database exception
      */
     private PreparedStatement getItemInsertStatement(ImageItem item) throws DatabaseException {
         PreparedStatement itemStmt = null;
@@ -125,6 +117,7 @@ public class ImageResolverDAOImpl
      *        the identifier
      * @return the item delete statement
      * @throws DatabaseException
+     *         the database exception
      */
     private PreparedStatement getItemDeleteStatement(String identifier) throws DatabaseException {
         PreparedStatement deleteItemStmt = null;
@@ -138,9 +131,13 @@ public class ImageResolverDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Insert items.
+     * 
+     * @param toInsert
+     *        the to insert
+     * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
-
     @Override
     public void insertItems(List<ImageItem> toInsert) throws DatabaseException {
         if (toInsert == null) throw new NullPointerException("toInsert");
@@ -173,9 +170,14 @@ public class ImageResolverDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Resolve items.
+     * 
+     * @param oldJpgFsPaths
+     *        the old jpg fs paths
+     * @return the array list
+     * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
-
     @Override
     public ArrayList<String> resolveItems(List<String> oldJpgFsPaths) throws DatabaseException {
         if (oldJpgFsPaths == null) throw new NullPointerException("oldJpgFsPaths");
@@ -201,11 +203,20 @@ public class ImageResolverDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Resolve item.
      * 
+     * @param oldJpgFsPath
+     *        the old jpg fs path
+     * @param selectSt
+     *        the select st
+     * @param updateSt
+     *        the update st
+     * @return the string
+     * @throws DatabaseException
+     *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
-
     private String resolveItem(String oldJpgFsPath, PreparedStatement selectSt, PreparedStatement updateSt)
             throws DatabaseException, SQLException {
         if (oldJpgFsPath == null || "".equals(oldJpgFsPath)) throw new NullPointerException("oldJpgFsPath");
@@ -244,7 +255,6 @@ public class ImageResolverDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
     public ArrayList<String> cacheAgeingProcess(int numberOfDays) throws DatabaseException {
         try {
@@ -292,7 +302,6 @@ public class ImageResolverDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
     public String getOldJpgFsPath(String imageFile) throws DatabaseException {
         if (imageFile == null || "".equals(imageFile)) throw new NullPointerException("imageFile");
@@ -318,5 +327,32 @@ public class ImageResolverDAOImpl
         }
 
         return oldJpgFsPath;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getNewImageFilePath(String identifier) throws DatabaseException {
+        if (identifier == null || "".equals(identifier)) throw new NullPointerException("identifier");
+        PreparedStatement statement = null;
+        String newFilePath = null;
+
+        try {
+            statement = getConnection().prepareStatement(SELECT_NEW_IMAGE_FILE_PATH);
+            statement.setString(1, identifier);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                newFilePath = rs.getString("imageFile");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e);
+        } finally {
+            closeConnection();
+        }
+
+        return newFilePath;
     }
 }

@@ -43,6 +43,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
+import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.newObject.CreateObject;
@@ -81,6 +82,10 @@ public class InsertNewDigitalObjectHandler
     @Inject
     private DAOUtils daoUtils;
 
+    /** The image resolver dao. */
+    @Inject
+    private ImageResolverDAO imageResolverDAO;
+
     public InsertNewDigitalObjectHandler() {
         super();
     }
@@ -115,7 +120,11 @@ public class InsertNewDigitalObjectHandler
 
         try {
             CreateObject createObject =
-                    new CreateObject(action.getInputPath(), config, digitalObjectDAO, fedoraAccess);
+                    new CreateObject(action.getInputPath(),
+                                     config,
+                                     digitalObjectDAO,
+                                     imageResolverDAO,
+                                     fedoraAccess);
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
             if (createObject.getTopLevelUuid() != object.getUuid()) {

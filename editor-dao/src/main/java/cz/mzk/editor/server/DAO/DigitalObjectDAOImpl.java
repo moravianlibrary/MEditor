@@ -44,28 +44,36 @@ public class DigitalObjectDAOImpl
         extends AbstractDAO
         implements DigitalObjectDAO {
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(DigitalObjectDAOImpl.class.getPackage().toString());
 
     //         ->  digital_object (uuid, model, name, description, input_queue_directory_path, state)
 
     //         ->  crud_digital_object_action (editor_user_id, timestamp, digital_object_uuid, type)
 
+    /** The Constant DISABLE_DIGITAL_OBJECT_ITEM. */
     public static final String DISABLE_DIGITAL_OBJECT_ITEM = "UPDATE " + Constants.TABLE_DIGITAL_OBJECT
             + " SET state = 'false' WHERE uuid = (?)";
 
+    /** The Constant UPDATE_TOP_DO_TIMESTAMP. */
     public static final String UPDATE_TOP_DO_TIMESTAMP =
             "UPDATE "
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
                     + " SET timestamp = (CURRENT_TIMESTAMP) WHERE digital_object_uuid = (?) AND top_digital_object_uuid = (?) AND type='c'";
 
+    /** The Constant UPDATE_TOP_DO_UUID. */
     public static final String UPDATE_TOP_DO_UUID =
             "UPDATE "
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
                     + " SET top_digital_object_uuid = (?) WHERE top_digital_object_uuid = (?) AND digital_object_uuid = (?)";
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid)
             throws DatabaseException {
@@ -97,6 +105,9 @@ public class DigitalObjectDAOImpl
         return successful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean insertNewDigitalObject(String uuid,
                                           String model,
@@ -128,6 +139,9 @@ public class DigitalObjectDAOImpl
         return successful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateTopObjectTime(String uuid) throws DatabaseException {
         PreparedStatement updateSt = null;
@@ -152,6 +166,9 @@ public class DigitalObjectDAOImpl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean updateTopObjectUuid(String oldUuid,
                                        String newUuid,
@@ -205,6 +222,23 @@ public class DigitalObjectDAOImpl
         return successful;
     }
 
+    /**
+     * Gets the update uuid st.
+     * 
+     * @param updateSt
+     *        the update st
+     * @param oldPid
+     *        the old pid
+     * @param newPid
+     *        the new pid
+     * @param lowerObjUuid
+     *        the lower obj uuid
+     * @return the update uuid st
+     * @throws SQLException
+     *         the sQL exception
+     * @throws DatabaseException
+     *         the database exception
+     */
     private PreparedStatement getUpdateUuidSt(PreparedStatement updateSt,
                                               String oldPid,
                                               String newPid,

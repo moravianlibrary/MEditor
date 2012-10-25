@@ -62,6 +62,7 @@ public class RecentlyModifiedItemDAOImpl
     //         ->  description (editor_user_id, digital_object_uuid, description)
     //                                 user_id,                uuid, description
 
+    /** The Constant SELECT_LAST_N_STATEMENT. */
     public static final String SELECT_LAST_N_STATEMENT =
             "SELECT o.uuid, o.name, o.description, o.model, MAX(a.timestamp) AS modified FROM (SELECT timestamp, digital_object_uuid FROM "
                     + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
@@ -71,6 +72,7 @@ public class RecentlyModifiedItemDAOImpl
                     + Constants.TABLE_DIGITAL_OBJECT
                     + " WHERE state = 'true') o ON a.digital_object_uuid=o.uuid GROUP BY o.uuid, o.name, o.model, o.description ORDER by modified DESC LIMIT (?)";
 
+    /** The Constant SELECT_LAST_N_STATEMENT_FOR_USER. */
     public static final String SELECT_LAST_N_STATEMENT_FOR_USER =
             "SELECT o.uuid, o.name, d.description, o.model, MAX(o.timestamp) AS modified FROM (SELECT uuid, name, model, a.timestamp FROM (SELECT timestamp, digital_object_uuid FROM "
                     + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
@@ -82,11 +84,14 @@ public class RecentlyModifiedItemDAOImpl
                     + Constants.TABLE_DESCRIPTION
                     + " WHERE editor_user_id = (?)) d ON d.digital_object_uuid = o.uuid GROUP BY o.uuid, d.description, name, model ORDER by modified DESC LIMIT (?)";
 
+    /** The Constant SELECT_COMMON_DESCRIPTION_STATEMENT. */
     public static final String SELECT_COMMON_DESCRIPTION_STATEMENT = "SELECT description FROM "
             + Constants.TABLE_DIGITAL_OBJECT + " WHERE uuid = (?)";
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(RecentlyModifiedItemDAOImpl.class);
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 
@@ -141,10 +146,8 @@ public class RecentlyModifiedItemDAOImpl
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO#getItems (int,
-     * boolean)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public ArrayList<RecentlyModifiedItem> getItems(int nLatest, Long user_id) throws DatabaseException {

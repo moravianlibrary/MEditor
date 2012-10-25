@@ -43,9 +43,13 @@ public class LogInOutDAOImpl
 
     //  log_in_out (id, editor_user_id, "timestamp", successful, type)
 
+    /** The Constant INSERT_LOG_IN_ACTION. */
     public static final String INSERT_LOG_IN_ACTION = "INSERT INTO " + Constants.TABLE_LOG_IN_OUT
             + " (editor_user_id, timestamp, type) VALUES ((?), (CURRENT_TIMESTAMP), (?))";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void logInOut(Long userId, boolean logIn) throws DatabaseException {
         PreparedStatement insSt = null;

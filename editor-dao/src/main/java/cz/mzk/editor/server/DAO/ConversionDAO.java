@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -29,44 +26,35 @@ package cz.mzk.editor.server.DAO;
 
 import java.util.ArrayList;
 
-import cz.mzk.editor.shared.rpc.RequestItem;
+import cz.mzk.editor.shared.rpc.InputQueueItem;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface UserDAO.
+ * @author Matous Jobanek
+ * @version Oct 24, 2012
  */
-public interface RequestDAO {
+public interface ConversionDAO {
 
     /**
-     * Adds the open id request.
+     * Insert conversion info.
      * 
-     * @param name
-     *        the name
-     * @param openID
-     *        the open id
-     * @return true, if successful
+     * @param directoryPath
+     *        the directory path
      * @throws DatabaseException
      *         the database exception
      */
-    boolean addOpenIDRequest(String name, String openID) throws DatabaseException;
+    void insertConversionInfo(String directoryPath) throws DatabaseException;
 
     /**
-     * Removes the open id request.
+     * Gets the conversion info.
      * 
-     * @param id
-     *        the id
+     * @param data
+     *        the data
+     * @param numberOfDays
+     *        the number of days
+     * @return the conversion info
      * @throws DatabaseException
      *         the database exception
      */
-    void removeOpenIDRequest(long id) throws DatabaseException;
-
-    /**
-     * Gets the all open id requests.
-     * 
-     * @return the all open id requests
-     * @throws DatabaseException
-     *         the database exception
-     */
-    ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException;
-
+    ArrayList<InputQueueItem> getConversionInfo(ArrayList<InputQueueItem> data, int numberOfDays)
+            throws DatabaseException;
 }

@@ -65,8 +65,11 @@ public class StoredItemsDAOImpl
 
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(StoredItemsDAOImpl.class.getPackage().toString());
+
+    /** The Constant FORMATTER. */
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    /** The Constant SELECT_STORED_ITEMS_BY_USER. */
     private static final String SELECT_STORED_ITEMS_BY_USER =
             "SELECT so.id, so.file_name, so.description, a.timestamp, so.digital_object_uuid, so.model FROM ((SELECT saved_edited_object_id, timestamp FROM "
                     + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
@@ -76,9 +79,11 @@ public class StoredItemsDAOImpl
                     + Constants.TABLE_SAVED_EDITED_OBJECT
                     + " WHERE state = 'true') s ON o.uuid = s.digital_object_uuid) so ON a.saved_edited_object_id = so.id) ORDER BY a.timestamp";
 
+    /** The Constant UPDATE_STORED_ITEM. */
     private static final String UPDATE_STORED_ITEM = "UPDATE " + Constants.TABLE_SAVED_EDITED_OBJECT
             + " SET digital_object_uuid=(?), description=(?) WHERE id = (?)";
 
+    /** The Constant SELECT_STORED_ITEM_WITH_SAME_NAME. */
     private static final String SELECT_STORED_ITEM_WITH_SAME_NAME =
             "SELECT o.id FROM ((SELECT saved_edited_object_id FROM "
                     + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
@@ -86,19 +91,21 @@ public class StoredItemsDAOImpl
                     + Constants.TABLE_SAVED_EDITED_OBJECT
                     + " WHERE state = 'true' AND file_name = (?)) o ON a.saved_edited_object_id = o.id)";
 
+    /** The Constant DISABLE_STORED_ITEM. */
     private static final String DISABLE_STORED_ITEM = "UPDATE " + Constants.TABLE_SAVED_EDITED_OBJECT
             + " SET state = 'false' WHERE id = (?)";
 
+    /** The Constant INSERT_STORED_ITEM. */
     private static final String INSERT_STORED_ITEM = "INSERT INTO " + Constants.TABLE_SAVED_EDITED_OBJECT
             + " (digital_object_uuid, description, file_name, state) VALUES ((?),(?),(?),'true') ";
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}
      */
-
     @Override
     public List<StoredItem> getStoredItems(long userId) throws DatabaseException {
 
@@ -136,7 +143,6 @@ public class StoredItemsDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
     public boolean checkStoredDigitalObject(long userId, StoredItem storedItem) throws DatabaseException {
         PreparedStatement updateSt = null;
@@ -194,6 +200,17 @@ public class StoredItemsDAOImpl
         return successful;
     }
 
+    /**
+     * Select duplicate.
+     * 
+     * @param userId
+     *        the user id
+     * @param fileName
+     *        the file name
+     * @return the long
+     * @throws DatabaseException
+     *         the database exception
+     */
     private Long selectDuplicate(long userId, String fileName) throws DatabaseException {
         PreparedStatement selectSt = null;
         Long id = Long.MIN_VALUE;
@@ -216,6 +233,9 @@ public class StoredItemsDAOImpl
         return id;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean deleteItem(Long id) throws DatabaseException {
         PreparedStatement deleteSt = null;

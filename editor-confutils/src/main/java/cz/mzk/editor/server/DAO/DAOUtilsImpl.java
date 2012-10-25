@@ -438,20 +438,22 @@ public class DAOUtilsImpl
             throws DatabaseException, SQLException {
         PreparedStatement selSt = null;
         boolean successful = false;
+        String dirPath = directoryPathToRightFormat(directory_path);
+
         try {
             selSt = getConnection().prepareStatement(INPUT_QUEUE_SELECT_NAME_STATEMENT);
-            selSt.setString(1, directory_path);
+            selSt.setString(1, dirPath);
             ResultSet rs = selSt.executeQuery();
 
             if (rs.next()) {
                 if (name != null && !name.equals(rs.getString("name"))) {
-                    successful = updateInputQueue(directory_path, name, closeCon);
+                    successful = updateInputQueue(dirPath, name, closeCon);
                 } else {
                     successful = true;
                 }
 
             } else {
-                successful = insertInputQueue(directory_path, name != null ? name : "", closeCon);
+                successful = insertInputQueue(dirPath, name != null ? name : "", closeCon);
             }
 
         } catch (SQLException ex) {
@@ -480,7 +482,7 @@ public class DAOUtilsImpl
         try {
             updateSt = getConnection().prepareStatement(INPUT_QUEUE_UPDATE_ITEM_STATEMENT);
             updateSt.setString(1, name);
-            updateSt.setString(2, directory_path);
+            updateSt.setString(2, directoryPathToRightFormat(directory_path));
             int updated = updateSt.executeUpdate();
 
             if (updated == 1) {
@@ -516,7 +518,7 @@ public class DAOUtilsImpl
         boolean successful = false;
         try {
             insertSt = getConnection().prepareStatement(INPUT_QUEUE_INSERT_ITEM_STATEMENT);
-            insertSt.setString(1, directory_path);
+            insertSt.setString(1, directoryPathToRightFormat(directory_path));
             insertSt.setString(2, name);
             int updated = insertSt.executeUpdate();
 
@@ -873,5 +875,10 @@ public class DAOUtilsImpl
         } finally {
             closeConnection();
         }
+    }
+
+    public static String directoryPathToRightFormat(String path) {
+        String dirPath = (path.startsWith("/")) ? path : "/".concat(path);
+        return dirPath.endsWith("/") ? dirPath.substring(0, dirPath.length() - 1) : dirPath;
     }
 }

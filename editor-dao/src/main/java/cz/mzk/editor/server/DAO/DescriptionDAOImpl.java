@@ -57,6 +57,7 @@ public class DescriptionDAOImpl
     public static final String SELECT_COMMON_DESCRIPTION_STATEMENT = "SELECT description FROM "
             + Constants.TABLE_DIGITAL_OBJECT + " WHERE uuid = (?)";
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 

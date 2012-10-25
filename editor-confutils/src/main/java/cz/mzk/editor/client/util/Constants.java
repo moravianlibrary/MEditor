@@ -465,6 +465,12 @@ public class Constants {
     /** The Constant ATTR_INPUT_PATH. */
     public static final String ATTR_INPUT_PATH = "inputPath";
 
+    /** The Constant ATTR_CONVERSION_DATE. */
+    public static final String ATTR_CONVERSION_DATE = "conversionDate";
+
+    /** The Constant ATTR_IS_CONVERTED. */
+    public static final String ATTR_IS_CONVERTED = "isConverted";
+
     /** The Constant DIR_MAX_DEPTH. */
     public static final int DIR_MAX_DEPTH = 5;
 

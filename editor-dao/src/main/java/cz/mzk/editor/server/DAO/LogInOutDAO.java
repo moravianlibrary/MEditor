@@ -30,8 +30,26 @@ package cz.mzk.editor.server.DAO;
  */
 public interface LogInOutDAO {
 
+    /**
+     * Log in out.
+     * 
+     * @param userId
+     *        the user id
+     * @param logIn
+     *        the log in
+     * @throws DatabaseException
+     *         the database exception
+     */
     void logInOut(Long userId, boolean logIn) throws DatabaseException;
 
+    /**
+     * Log in out.
+     * 
+     * @param logIn
+     *        the log in
+     * @throws DatabaseException
+     *         the database exception
+     */
     void logInOut(boolean logIn) throws DatabaseException;
 
 }

@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
+import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
@@ -83,6 +84,9 @@ public class ScanFolderHandler
     /** The input queue dao. */
     @Inject
     private InputQueueItemDAO inputQueueDAO;
+
+    @Inject
+    private ConversionDAO conversionDAO;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -192,6 +196,13 @@ public class ScanFolderHandler
         }
 
         if (wrongNames.size() == 0) {
+            try {
+                conversionDAO.insertConversionInfo(File.separator + model + File.separator + code
+                        + File.separator);
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
             return new ScanFolderResult(result,
                                         toAdd,
                                         new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));

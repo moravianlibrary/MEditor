@@ -80,19 +80,21 @@ public class InputQueueItemDAOImpl
             + " AND p.path LIKE ((?)) ORDER BY p.path";
 
     /** The Constant INSERT_NAME. */
-    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE
-            + " (name, directory_path) VALUES ((?),(?))";
+    //    public static final String INSERT_NAME = "INSERT INTO " + Constants.TABLE_INPUT_QUEUE
+    //            + " (name, directory_path) VALUES ((?),(?))";
+    //
+    //    /** The Constant UPDATE_NAME. */
+    //    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE
+    //            + " SET name = (?) WHERE directory_path = (?)";
 
-    /** The Constant UPDATE_NAME. */
-    public static final String UPDATE_NAME = "UPDATE " + Constants.TABLE_INPUT_QUEUE
-            + " SET name = (?) WHERE directory_path = (?)";
-
+    /** The Constant SELECT_INGEST_INFO. */
     public static final String SELECT_INGEST_INFO =
-            "SELECT top_digital_object_uuid, timestamp, editor_user_id FROM ((SELECT top_digital_object_uuid, timestamp, editor_user_id FROM "
+            "SELECT eu.surname || ', ' || eu.name as full_name, io.top_digital_object_uuid, io.timestamp FROM ((SELECT top_digital_object_uuid, timestamp, editor_user_id FROM "
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
                     + " WHERE type = 'c' AND top_digital_object_uuid = digital_object_uuid) a INNER JOIN (SELECT uuid, input_queue_directory_path FROM "
                     + Constants.TABLE_DIGITAL_OBJECT
-                    + " WHERE input_queue_directory_path = (?)) o ON a.top_digital_object_uuid = o.uuid)";
+                    + " WHERE input_queue_directory_path = (?)) o ON a.top_digital_object_uuid = o.uuid) io LEFT JOIN "
+                    + Constants.TABLE_EDITOR_USER + " eu ON io.editor_user_id = eu.id";
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
@@ -102,7 +104,12 @@ public class InputQueueItemDAOImpl
     private DAOUtils daoUtils;
 
     /**
-     * {@inheritDoc}
+     * Update items.
+     * 
+     * @param toUpdate
+     *        the to update
+     * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
     @Override
     public void updateItems(List<InputQueueItem> toUpdate) throws DatabaseException {
@@ -168,7 +175,13 @@ public class InputQueueItemDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the items.
+     * 
+     * @param prefix
+     *        the prefix
+     * @return the items
+     * @throws DatabaseException
+     *         the database exception {@inheritDoc}
      */
     @Override
     public ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException {
@@ -179,10 +192,7 @@ public class InputQueueItemDAOImpl
             findSt =
                     getConnection().prepareStatement(top ? FIND_ITEMS_ON_TOP_LVL_STATEMENT_ORDERED
                             : FIND_ITEMS_BY_PATH_STATEMENT);
-        } catch (SQLException e) {
-            LOGGER.error("Could not get find items statement " + findSt, e);
-        }
-        try {
+
             findSt.setString(1, prefix + '/');
             if (!top) {
                 findSt.setString(2, '%' + prefix + "/%");
@@ -201,6 +211,9 @@ public class InputQueueItemDAOImpl
         return retList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasBeenIngested(String path) throws DatabaseException {
         List<IngestInfo> ingestInfo = getIngestInfo(path);
@@ -221,6 +234,9 @@ public class InputQueueItemDAOImpl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IngestInfo> getIngestInfo(String path) throws DatabaseException {
         PreparedStatement selectSt = null;
@@ -238,7 +254,7 @@ public class InputQueueItemDAOImpl
             while (rs.next()) {
                 pid.add(rs.getString("top_digital_object_uuid"));
                 time.add(rs.getString("timestamp"));
-                username.add(rs.getString("editor_user_id"));
+                username.add(rs.getString("full_name"));
                 count++;
             }
         } catch (SQLException e) {

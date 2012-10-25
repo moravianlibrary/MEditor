@@ -42,6 +42,8 @@ import cz.mzk.editor.server.OAIPMHClientImpl;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.Z3950ClientImpl;
+import cz.mzk.editor.server.DAO.ConversionDAO;
+import cz.mzk.editor.server.DAO.ConversionDAOImpl;
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DAOUtilsImpl;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
@@ -252,6 +254,7 @@ public class ServerModule
         bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
         bind(DigitalObjectDAO.class).to(DigitalObjectDAOImpl.class);
         bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
+        bind(ConversionDAO.class).to(ConversionDAOImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)

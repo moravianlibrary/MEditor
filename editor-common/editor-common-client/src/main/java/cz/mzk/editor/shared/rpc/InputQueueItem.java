@@ -47,7 +47,14 @@ public class InputQueueItem
     /** The ingest info */
     private boolean ingestInfo = false;
 
+    /** The name. */
     private String name;
+
+    /** The conversion date. */
+    private String conversionDate;
+
+    /** The is converted. */
+    private boolean isConverted;
 
     /**
      * Instantiates a new input queue item.
@@ -111,15 +118,6 @@ public class InputQueueItem
         this.barcode = barcode;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "(" + this.path + ", " + this.barcode + ", " + this.ingestInfo + ")";
-    }
-
     /**
      * @return the ingestInfo
      */
@@ -153,4 +151,45 @@ public class InputQueueItem
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * @return the conversionDate
+     */
+    public String getConversionDate() {
+        return conversionDate;
+    }
+
+    /**
+     * @return the isConverted
+     */
+    public boolean isConverted() {
+        return isConverted;
+    }
+
+    /**
+     * @param conversionDate
+     *        the conversionDate to set
+     */
+    public void setConversionDate(String conversionDate) {
+        this.conversionDate = conversionDate;
+    }
+
+    /**
+     * @param isConverted
+     *        the isConverted to set
+     */
+    public void setConverted(boolean isConverted) {
+        this.isConverted = isConverted;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "InputQueueItem [path=" + path + ", barcode=" + barcode + ", ingestInfo=" + ingestInfo
+                + ", name=" + name + ", conversionDate=" + conversionDate + ", isConverted=" + isConverted
+                + "]";
+    }
+
 }

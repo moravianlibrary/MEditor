@@ -46,23 +46,48 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 
+// TODO: Auto-generated Javadoc
 /**
- * Tool to run database scripts
+ * Tool to run database scripts.
  */
 public class ScriptRunner {
 
+    /** The Constant DEFAULT_DELIMITER. */
     private static final String DEFAULT_DELIMITER = ";";
+
+    /** The connection. */
     private final Connection connection;
+
+    /** The stop on error. */
     private final boolean stopOnError;
+
+    /** The auto commit. */
     private final boolean autoCommit;
+
+    /** The logger. */
     private Logger logger = Logger.getLogger(ScriptRunner.class);
+
+    /** The delimiter. */
     private String delimiter = DEFAULT_DELIMITER;
+
+    /** The full line delimiter. */
     private boolean fullLineDelimiter = false;
+
+    /** The Constant DELIMITER_LINE_REGEX. */
     private static final String DELIMITER_LINE_REGEX = "(?i)DELIMITER.+";
+
+    /** The Constant DELIMITER_LINE_SPLIT_REGEX. */
     private static final String DELIMITER_LINE_SPLIT_REGEX = "(?i)DELIMITER";
 
     /**
-     * Default constructor
+     * Instantiates a new script runner.
+     * 
+     * @param connection
+     *        the connection
+     * @param autoCommit
+     *        the auto commit
+     * @param stopOnError
+     *        the stop on error
      */
     public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) {
         this.connection = connection;
@@ -70,26 +95,38 @@ public class ScriptRunner {
         this.stopOnError = stopOnError;
     }
 
+    /**
+     * Sets the delimiter.
+     * 
+     * @param delimiter
+     *        the delimiter
+     * @param fullLineDelimiter
+     *        the full line delimiter
+     */
     public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
         this.delimiter = delimiter;
         this.fullLineDelimiter = fullLineDelimiter;
     }
 
     /**
-     * Setter for errorLogWriter property
+     * Setter for errorLogWriter property.
      * 
-     * @param errorLogWriter
-     *        - the new value of the errorLogWriter property
+     * @param logger
+     *        the new logger
      */
     public void setLogger(Logger logger) {
         this.logger = logger;
     }
 
     /**
-     * Runs an SQL script (read in using the Reader parameter)
+     * Runs an SQL script (read in using the Reader parameter).
      * 
      * @param reader
      *        - the source of the script
+     * @throws IOException
+     *         Signals that an I/O exception has occurred.
+     * @throws SQLException
+     *         the sQL exception
      */
     public void runScript(Reader reader) throws IOException, SQLException {
         try {
@@ -113,16 +150,16 @@ public class ScriptRunner {
 
     /**
      * Runs an SQL script (read in using the Reader parameter) using the
-     * connection passed in
+     * connection passed in.
      * 
      * @param conn
      *        - the connection to use for the script
      * @param reader
      *        - the source of the script
-     * @throws SQLException
-     *         if any SQL errors occur
      * @throws IOException
      *         if there is an error reading from the Reader
+     * @throws SQLException
+     *         if any SQL errors occur
      */
     private void runScript(Connection conn, Reader reader) throws IOException, SQLException {
         StringBuffer command = null;
@@ -237,28 +274,68 @@ public class ScriptRunner {
         }
     }
 
+    /**
+     * Gets the delimiter.
+     * 
+     * @return the delimiter
+     */
     private String getDelimiter() {
         return delimiter;
     }
 
+    /**
+     * Prints the.
+     * 
+     * @param o
+     *        the o
+     */
     private void print(Object o) {
         if (logger != null) {
             System.out.print(o);
         }
     }
 
+    /**
+     * Println.
+     * 
+     * @param o
+     *        the o
+     */
     private void println(Object o) {
         if (logger != null) {
             logger.info(o);
         }
     }
 
+    /**
+     * Println error.
+     * 
+     * @param o
+     *        the o
+     */
     private void printlnError(Object o) {
         if (logger != null) {
             logger.error(o);
         }
     }
 
+    /**
+     * Run remote command via ssh.
+     * 
+     * @param dirPathToScript
+     *        the dir path to script
+     * @param userName
+     *        the user name
+     * @param machineLocation
+     *        the machine location
+     * @param command
+     *        the command
+     * @param outputFile
+     *        the output file
+     * @return the process
+     * @throws IOException
+     *         Signals that an I/O exception has occurred.
+     */
     public static Process runRemoteCommandViaSsh(String dirPathToScript,
                                                  String userName,
                                                  String machineLocation,

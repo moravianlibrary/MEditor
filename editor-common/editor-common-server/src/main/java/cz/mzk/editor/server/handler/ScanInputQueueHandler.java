@@ -48,6 +48,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -89,6 +90,9 @@ public class ScanInputQueueHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
+    @Inject
+    private ConversionDAO conversionDAO;
+
     /**
      * Instantiates a new scan input queue handler.
      * 
@@ -129,21 +133,25 @@ public class ScanInputQueueHandler
             ArrayList<InputQueueItem> list; // due to gwt performance issues, more
                                             // concrete interface is used
             try {
+
                 if (id == null || "".equals(id)) { // top level
 
                     if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
                         ArrayList<ArrayList<InputQueueItem>> completeScanResult = updateDb(base);
                         result =
-                                new ScanInputQueueResult(completeScanResult.get(0),
+                                new ScanInputQueueResult(conversionDAO.getConversionInfo(completeScanResult
+                                                                 .get(0), getImageLifeTime()),
                                                          createServerActionResult(completeScanResult.get(1)));
                     } else {
                         result =
-                                new ScanInputQueueResult(list,
+                                new ScanInputQueueResult(conversionDAO.getConversionInfo(list,
+                                                                                         getImageLifeTime()),
                                                          new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
                     }
                 } else {
                     result =
-                            new ScanInputQueueResult(inputQueueDAO.getItems(id),
+                            new ScanInputQueueResult(conversionDAO.getConversionInfo(inputQueueDAO
+                                                             .getItems(id), getImageLifeTime()),
                                                      new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
                 }
             } catch (DatabaseException e) {
@@ -155,7 +163,8 @@ public class ScanInputQueueHandler
             try {
                 ArrayList<ArrayList<InputQueueItem>> completeScanResult = updateDb(base);
                 result =
-                        new ScanInputQueueResult(completeScanResult.get(0),
+                        new ScanInputQueueResult(conversionDAO.getConversionInfo(completeScanResult.get(0),
+                                                                                 getImageLifeTime()),
                                                  createServerActionResult(completeScanResult.get(1)));
             } catch (DatabaseException e) {
                 throw new ActionException(e);
@@ -180,6 +189,20 @@ public class ScanInputQueueHandler
             }
             return new ServerActionResult(Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME, sb.toString());
         }
+    }
+
+    private int getImageLifeTime() {
+        int numberOfDays = 0;
+        String numberString = configuration.getGenImagesLifetime();
+
+        if (numberString != null) {
+            try {
+                int number = Integer.parseInt(numberString);
+                if (number > 0) numberOfDays = number;
+            } catch (NumberFormatException nfe) {
+            }
+        }
+        return numberOfDays;
     }
 
     /**

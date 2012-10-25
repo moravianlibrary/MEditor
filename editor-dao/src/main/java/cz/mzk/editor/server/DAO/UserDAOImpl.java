@@ -105,10 +105,12 @@ public class UserDAOImpl
     public static final String SELECT_USER_NAME = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
             + " WHERE id=(?)";
 
+    /** The Constant SELECT_USER_ID_BY_OPENID. */
     public static final String SELECT_USER_ID_BY_OPENID = "SELECT id FROM " + Constants.TABLE_EDITOR_USER
             + " WHERE id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
             + " WHERE identity = (?))";
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
     /** The dao utils. */
@@ -116,19 +118,11 @@ public class UserDAOImpl
     @Inject
     private DAOUtils daoUtils;
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#isSupported(java.lang.String )
-     */
+    @Inject
+    private LockDAO lockDAO;
+
     /**
-     * Checks if is supported.
-     * 
-     * @param identifier
-     *        the identifier
-     * @return the int
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
-     * @throws UnsupportedDataTypeException
+     * {@inheritDoc}
      */
     @Override
     public int isSupported(String identifier) throws DatabaseException {
@@ -149,13 +143,7 @@ public class UserDAOImpl
     }
 
     /**
-     * Gets the users id.
-     * 
-     * @param identifier
-     *        the identifier
-     * @return the users id
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public long getUsersId(String identifier) throws DatabaseException {
@@ -163,6 +151,15 @@ public class UserDAOImpl
         return getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID);
     }
 
+    /**
+     * Gets the users id old.
+     * 
+     * @param identifier
+     *        the identifier
+     * @return the users id old
+     * @throws DatabaseException
+     *         the database exception
+     */
     private long getUsersIdOld(String identifier) throws DatabaseException {
         PreparedStatement selectSt = null;
         long userId = -1;
@@ -185,16 +182,8 @@ public class UserDAOImpl
         return userId;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getUsers()
-     */
     /**
-     * Gets the users.
-     * 
-     * @return the users
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public ArrayList<UserInfoItem> getUsers() throws DatabaseException {
@@ -219,19 +208,8 @@ public class UserDAOImpl
         return retList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#removeUser(long)
-     */
     /**
-     * Disable user.
-     * 
-     * @param id
-     *        the id
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
-     * @throws UnsupportedDataTypeException
+     * {@inheritDoc}
      */
     @Override
     public boolean disableUser(long userId) throws DatabaseException {
@@ -249,14 +227,10 @@ public class UserDAOImpl
             updateSt.setLong(1, userId);
             int updated = updateSt.executeUpdate();
 
-            //            
-            //            
-            //            TODO:lock the objects
-            //            
-            //            
-
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The user: " + userId + " has been disabled.");
+
+                //                lockDAO.un
 
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(),
@@ -287,8 +261,6 @@ public class UserDAOImpl
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws UnsupportedDataTypeException
      */
     @Override
     public boolean insertUpdatetUser(UserInfoItem user) throws DatabaseException {
@@ -335,7 +307,6 @@ public class UserDAOImpl
             }
 
             if (id != null) {
-                //                editor_user_id, timestamp, edited_editor_user_id, description, type
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(),
                                                  id,
@@ -410,18 +381,8 @@ public class UserDAOImpl
         return successful;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getRolesOfUser(long)
-     */
     /**
-     * Gets the roles of user.
-     * 
-     * @param userId
-     *        the user id
-     * @return the roles of user
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public ArrayList<RoleItem> getRolesOfUser(long userId) throws DatabaseException {
@@ -446,6 +407,9 @@ public class UserDAOImpl
         return retList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArrayList<UserIdentity> getIdentities(String id, USER_IDENTITY_TYPES type)
             throws DatabaseException, UnsupportedDataTypeException {
@@ -453,8 +417,6 @@ public class UserDAOImpl
         ArrayList<UserIdentity> retList = new ArrayList<UserIdentity>();
         long userId = Long.parseLong(id);
         try {
-            //            
-            //            + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE user_id = (?)"
 
             StringBuffer sql = new StringBuffer("SELECT identity FROM ");
             switch (type) {
@@ -490,18 +452,7 @@ public class UserDAOImpl
     }
 
     /**
-     * Adds the remove user identity.
-     * 
-     * @param userIdentity
-     *        the user identity
-     * @param userId
-     *        the user id
-     * @param add
-     *        the add
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception
-     * @throws UnsupportedDataTypeException
+     * {@inheritDoc}
      */
     @Override
     public boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
@@ -637,20 +588,8 @@ public class UserDAOImpl
         return success;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#hasRole(java.lang.String, long)
-     */
     /**
-     * Checks for role.
-     * 
-     * @param role
-     *        the role
-     * @param userId
-     *        the user id
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public boolean hasRole(String role, long userId) throws DatabaseException {
@@ -665,16 +604,8 @@ public class UserDAOImpl
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getRoles()
-     */
     /**
-     * Gets the roles.
-     * 
-     * @return the roles
-     * @throws DatabaseException
-     *         the database exception {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public ArrayList<RoleItem> getRoles() throws DatabaseException {

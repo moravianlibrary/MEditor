@@ -88,6 +88,14 @@ public class InputTreeGwtRPCDS
         field.setHidden(true);
         field.setRequired(true);
         addField(field);
+        field = new DataSourceTextField(Constants.ATTR_CONVERSION_DATE, "conversionDate");
+        field.setHidden(true);
+        field.setRequired(true);
+        addField(field);
+        field = new DataSourceTextField(Constants.ATTR_IS_CONVERTED, "isConverted");
+        field.setHidden(true);
+        field.setRequired(true);
+        addField(field);
     }
 
     /*
@@ -182,6 +190,8 @@ public class InputTreeGwtRPCDS
         to.setAttribute(Constants.ATTR_BARCODE, from.getBarcode());
         to.setAttribute(Constants.ATTR_INGEST_INFO, from.getIngestInfo());
         to.setAttribute(Constants.ATTR_NAME, from.getName());
+        to.setAttribute(Constants.ATTR_CONVERSION_DATE, from.getConversionDate());
+        to.setAttribute(Constants.ATTR_IS_CONVERTED, from.isConverted());
     }
 
 }

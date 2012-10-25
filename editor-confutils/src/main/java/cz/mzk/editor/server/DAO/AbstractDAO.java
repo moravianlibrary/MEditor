@@ -39,6 +39,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.text.SimpleDateFormat;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -95,6 +97,9 @@ public abstract class AbstractDAO {
 
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
+
+    /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
+    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     private static final int POOLABLE_YES = 1;
     private static final int POOLABLE_NO = 0;
@@ -381,5 +386,16 @@ public abstract class AbstractDAO {
     protected Long getUserId() throws DatabaseException {
         String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
         return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
+    }
+
+    /**
+     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * 
+     * @param date
+     *        the date
+     * @return the string
+     */
+    protected String formatDate(java.util.Date date) {
+        return FORMATTER.format(date);
     }
 }

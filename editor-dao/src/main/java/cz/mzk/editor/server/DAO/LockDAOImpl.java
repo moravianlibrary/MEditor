@@ -58,10 +58,14 @@ public class LockDAOImpl
 
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(LockDAOImpl.class.getPackage().toString());
+
+    /** The Constant FORMATTER. */
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    /** The Constant DURATION_LOCK. */
     private static final String DURATION_LOCK = "1 week";
 
+    /** The Constant SELECT_USER_ID_OF_LOCK. */
     private static final String SELECT_USER_ID_OF_LOCK =
             "SELECT editor_user_id, MAX(timestamp) FROM ((SELECT editor_user_id, lock_id, timestamp FROM   "
                     + Constants.TABLE_CRUD_LOCK_ACTION
@@ -69,23 +73,29 @@ public class LockDAOImpl
                     + Constants.TABLE_LOCK
                     + "  WHERE digital_object_uuid=(?) AND state='true') l ON a.lock_id=l.id) GROUP BY editor_user_id, timestamp ORDER BY timestamp DESC LIMIT '1'";
 
+    /** The Constant SELECT_OLD_DO_LOCKS. */
     private static final String SELECT_OLD_DO_LOCKS = "SELECT l.id FROM ((SELECT lock_id FROM "
             + Constants.TABLE_CRUD_LOCK_ACTION
             + " WHERE (type='c' OR type='u') AND timestamp < (NOW() - INTERVAL '" + DURATION_LOCK
             + "')) a INNER JOIN (SELECT digital_object_uuid, id FROM " + Constants.TABLE_LOCK
             + "lock WHERE state='true') l ON a.lock_id=l.id)";
 
+    /** The Constant DISABLE_DO_LOCK_BY_UUID. */
     private static final String DISABLE_DO_LOCK_BY_UUID =
             "UPDATE lock SET state = 'false' WHERE digital_object_uuid = (?)";
 
+    /** The Constant DISABLE_DO_LOCK_BY_ID. */
     private static final String DISABLE_DO_LOCK_BY_ID = "UPDATE lock SET state = 'false' WHERE id = (?)";
 
+    /** The Constant UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION. */
     private static final String UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION = "UPDATE "
             + Constants.TABLE_LOCK + " SET description = (?) WHERE id = (?)";
 
+    /** The Constant SELECT_LOCK_DESCRIPTION. */
     private static final String SELECT_LOCK_DESCRIPTION = "SELECT description FROM  " + Constants.TABLE_LOCK
             + " WHERE digital_object_uuid = (?)";
 
+    /** The Constant SELECT_TIME_TO_EXPIRATION_LOCK. */
     private static final String SELECT_TIME_TO_EXPIRATION_LOCK =
             "SELECT ((MAX(al.timestamp) + INTERVAL '"
                     + DURATION_LOCK
@@ -95,6 +105,7 @@ public class LockDAOImpl
                     + Constants.TABLE_LOCK
                     + " WHERE digital_object_uuid=(?) AND state='true') l ON a.lock_id=l.id) al GROUP BY al.timestamp ORDER BY al.timestamp DESC LIMIT '1'";
 
+    /** The Constant SELECT_ID_OF_LOCK. */
     private static final String SELECT_ID_OF_LOCK =
             "SELECT l.id, MAX(timestamp) FROM ((SELECT lock_id, timestamp FROM "
                     + Constants.TABLE_CRUD_LOCK_ACTION
@@ -103,15 +114,13 @@ public class LockDAOImpl
                     + "  WHERE digital_object_uuid = (?) AND state = 'true') l ON a.lock_id=l.id) "
                     + "GROUP BY l.id, timestamp ORDER BY timestamp DESC LIMIT '1'";
 
+    /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws DatabaseException
      */
-
     @Override
     public boolean lockDigitalObject(String uuid, String description, boolean insert)
             throws DatabaseException {
@@ -167,6 +176,9 @@ public class LockDAOImpl
         return successful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getLockOwnersID(String uuid) throws DatabaseException {
         PreparedStatement statement = null;
@@ -189,6 +201,12 @@ public class LockDAOImpl
         return lockOwnersId;
     }
 
+    /**
+     * Disable old locks.
+     * 
+     * @throws DatabaseException
+     *         the database exception
+     */
     private void disableOldLocks() throws DatabaseException {
 
         PreparedStatement selSt = null, disSt = null;
@@ -221,10 +239,7 @@ public class LockDAOImpl
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws DatabaseException
      */
-
     @Override
     public boolean unlockDigitalObject(String uuid) throws DatabaseException {
         PreparedStatement deleteSt = null;
@@ -270,6 +285,15 @@ public class LockDAOImpl
         return successful;
     }
 
+    /**
+     * Gets the lock id.
+     * 
+     * @param uuid
+     *        the uuid
+     * @return the lock id
+     * @throws DatabaseException
+     *         the database exception
+     */
     private Long getLockId(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;
         Long userId = getUserId();
@@ -298,7 +322,6 @@ public class LockDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
     public String getDescription(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;
@@ -327,7 +350,6 @@ public class LockDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
     public String[] getTimeToExpirationLock(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;

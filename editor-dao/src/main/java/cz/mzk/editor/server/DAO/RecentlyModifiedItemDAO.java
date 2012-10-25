@@ -51,54 +51,6 @@ public interface RecentlyModifiedItemDAO {
     boolean put(RecentlyModifiedItem toPut, long user_id) throws DatabaseException;
 
     /**
-     * Put description.
-     * 
-     * @param uuid
-     *        the uuid
-     * @param description
-     *        the description
-     * @param user_id
-     *        the user_id
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception
-     */
-    //    boolean putDescription(String uuid, String description, Long user_id) throws DatabaseException;
-
-    /**
-     * Gets the description.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the description
-     */
-    //    String getDescription(String uuid) throws DatabaseException;
-
-    /**
-     * Put user description.
-     * 
-     * @param openID
-     *        the open id
-     * @param uuid
-     *        the uuid
-     * @param description
-     *        the description
-     * @return true, if successful
-     */
-    //    boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException;
-
-    /**
-     * Gets the user description.
-     * 
-     * @param openID
-     *        the open id
-     * @param uuid
-     *        the uuid
-     * @return the RecentlyModifiedItem
-     */
-    //    RecentlyModifiedItem getUserDescriptionAndDate(String openID, String uuid) throws DatabaseException;
-
-    /**
      * Gets the items.
      * 
      * @param nLatest
@@ -111,13 +63,4 @@ public interface RecentlyModifiedItemDAO {
      */
     ArrayList<RecentlyModifiedItem> getItems(int nLatest, Long user_id) throws DatabaseException;
 
-    /**
-     * Deletes the removed item
-     * 
-     * @param uuid
-     * @return
-     * @throws DatabaseException
-     */
-
-    //    boolean deleteRemovedItem(String uuid) throws DatabaseException;
 }

@@ -32,17 +32,76 @@ import java.util.List;
  */
 public interface DigitalObjectDAO {
 
+    /**
+     * Delete digital object.
+     * 
+     * @param uuid
+     *        the uuid
+     * @param model
+     *        the model
+     * @param name
+     *        the name
+     * @param topObjectUuid
+     *        the top object uuid
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
     boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid)
             throws DatabaseException;
 
+    /**
+     * Insert new digital object.
+     * 
+     * @param uuid
+     *        the uuid
+     * @param model
+     *        the model
+     * @param name
+     *        the name
+     * @param input_queue_directory_path
+     *        the input_queue_directory_path
+     * @param top_digital_object_uuid
+     *        the top_digital_object_uuid
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
     boolean insertNewDigitalObject(String uuid,
                                    String model,
                                    String name,
                                    String input_queue_directory_path,
                                    String top_digital_object_uuid) throws DatabaseException;
 
+    /**
+     * Update top object time.
+     * 
+     * @param uuid
+     *        the uuid
+     * @throws DatabaseException
+     *         the database exception
+     */
     void updateTopObjectTime(String uuid) throws DatabaseException;
 
+    /**
+     * Update top object uuid.
+     * 
+     * @param oldUuid
+     *        the old uuid
+     * @param newUuid
+     *        the new uuid
+     * @param lowerObj
+     *        the lower obj
+     * @param model
+     *        the model
+     * @param name
+     *        the name
+     * @param input_queue_directory_path
+     *        the input_queue_directory_path
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
     boolean updateTopObjectUuid(String oldUuid,
                                 String newUuid,
                                 List<String> lowerObj,
