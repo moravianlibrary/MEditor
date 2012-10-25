@@ -651,9 +651,8 @@ public class CreateStructureView
 
             pictureField.setDetailFormatter(new DetailFormatter() {  // TODO audio image
                 public String format(Object value, Record record, DetailViewerField field) {
-                    String possibleAudioMimeType = record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                    if (possibleAudioMimeType != null) { //TODO-MR control mimetype
-                        // TODO mimetypes
+                    String modelId = record.getAttribute(Constants.ATTR_MODEL_ID);
+                    if ("track".equals(modelId)) { //TODO-MR control mimetype
                         return new String("88e6561e-0cc6-3e56-9f2b-e6679826dc24");    // TODO copy audio image
                     } else {
                         return (String) value;
@@ -1622,6 +1621,10 @@ public class CreateStructureView
                                originalRecord.getAttribute(Constants.ATTR_TYPE));
         newScanRecord.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE,
                                    originalRecord.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE));
+        newScanRecord.setAttribute(Constants.ATTR_MODEL_ID,
+                                   originalRecord.getAttributeAsString(Constants.ATTR_MODEL_ID));
+        newScanRecord.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR,
+                                   originalRecord.getAttributeAsString(Constants.ATTR_ADITIONAL_INFO_OR_OCR));
         return newScanRecord;
     }
 

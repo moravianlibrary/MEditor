@@ -319,9 +319,8 @@ public class CreateObjectMenuView
                                     DigitalObjectModel.parseString(selection[0]
                                             .getAttribute(Constants.ATTR_MODEL_ID));
                         } else {
-                            String modelid = selection[0].getAttribute(Constants.ATTR_MODEL_ID);
-                            //TODO-MR: better!
-                            if ("track".equals(modelid)) {
+                            String modelId = selection[0].getAttribute(Constants.ATTR_MODEL_ID);
+                            if (modelId != null && "track".equals(modelId)) {
                                 movedModel = DigitalObjectModel.TRACK;
                             } else {
                                 movedModel = DigitalObjectModel.PAGE;
@@ -367,6 +366,8 @@ public class CreateObjectMenuView
                                     .getParent(targetNode) : targetNode;
                     final DigitalObjectModel parentModel =
                             DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_MODEL_ID));
+
+                    validateRecordingPageDrop(movedModel, parentNode, structureTreeGrid, selection);
 
                     if ((movedModel == DigitalObjectModel.PAGE
                             && targetModel == DigitalObjectModel.INTERNALPART || parentModel == DigitalObjectModel.INTERNALPART)) {
@@ -789,6 +790,30 @@ public class CreateObjectMenuView
         layout.addMember(sectionStack);
     }
 
+
+    private boolean validateRecordingPageDrop(DigitalObjectModel movedModel, TreeNode targetNode,
+                                              TreeGrid structureTreeGrid, Record[] selection) {
+        final DigitalObjectModel targetModel =
+                DigitalObjectModel.parseString(targetNode.getAttribute(Constants.ATTR_MODEL_ID));
+
+
+        //exclusivity relationship, page is on IMAGE_UNIT xor RECORDING. Not both!
+        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.RECORDING) {
+            //TreeNode parentNode = structureTreeGrid.getTree().getParent(targetNode);
+            SC.say(getPagesWithRedundantRelationship(targetNode, selection, true).toString());
+        }
+        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.IMAGE_UNIT) {
+            TreeNode parentNode = structureTreeGrid.getTree().getParent(targetNode);
+            SC.say(getPagesWithRedundantRelationship(parentNode, selection, false).toString());
+        }
+
+
+//        if ((movedModel == DigitalObjectModel.PAGE
+//                && targetModel == DigitalObjectModel.INTERNALPART || parentModel == DigitalObjectModel.INTERNALPART)) {
+
+            return true;
+    }
+
     private void undo() {
         if (undoList.size() > 0) {
             ModalWindow mw = new ModalWindow(structureTreeGrid);
@@ -804,6 +829,38 @@ public class CreateObjectMenuView
         } else {
             undoButton.disable();
         }
+    }
+
+    private List<Record> getPagesWithRedundantRelationship(TreeNode parentNode, Record[] selection, Boolean innerNode) {
+        List<Record> redundantPages = new ArrayList<Record>();
+
+        TreeNode[] allNodes = structureTreeGrid.getTree().getChildren(parentNode);
+
+        for (int counterSelected = 0; counterSelected < selection.length; counterSelected++) {
+            String selectedItem = selection[counterSelected].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+
+            for (int j = 0; j < allNodes.length; j++) {
+                String childItem = allNodes[j].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+                if (innerNode == false) {
+                    if (childItem != null && childItem.equals(selectedItem)) {
+                        redundantPages.add(selection[counterSelected]);
+                        break;
+                    }
+                } else {
+                    TreeNode[] allInnerNodes = structureTreeGrid.getTree().getChildren(allNodes[j]);
+                    for (int counterInnerNodes = 0; counterInnerNodes < allInnerNodes.length; counterInnerNodes++) {
+                        String childInnerItem = allInnerNodes[counterInnerNodes].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+                        if (childInnerItem != null && childInnerItem.equals(selectedItem)) {
+                            redundantPages.add(selection[counterSelected]);
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return redundantPages;
     }
 
     @Override

@@ -386,6 +386,7 @@ public class Constants {
         }
 
         public static boolean isAudio(String mimetype) {
+            if (mimetype == null) return false;
             for (AUDIO_MIMETYPES mime : AUDIO_MIMETYPES.values()) {
                 if (mimetype.equals(mime.getMimeType())) {
                     return true;
@@ -394,6 +395,8 @@ public class Constants {
             return false;
         }
     }
+
+    public static final String UUID_SOUND_THUMBVIEW = "88e6561e-0cc6-3e56-9f2b-e6679826dc24";
 
     // foxml
     /** The Constant RELS_EXT_LAST_ELEMENT. */

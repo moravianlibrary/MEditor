@@ -222,7 +222,12 @@ public abstract class ObjectBasicInfoLayout
                     case PAGE:
                         setEditPage();
                         break;
-
+                    case SOUND_UNIT:
+                        setEditSoundUnit(); //TODO-MR: rychla editace
+                        break;
+                    case TRACK:
+                        setEditTrack();
+                        break;
                     default:
                         setEditDefault();
                         break;
@@ -250,6 +255,19 @@ public abstract class ObjectBasicInfoLayout
             xOfSequence.hide();
             otherLayout.addMember(typeLayout);
             ObjectBasicInfoLayout.this.setWindowHeight(150);
+        }
+
+        public void setEditTrack() {
+            nameOrTitle.setTitle(lang.dcTitle());
+            nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
+            otherLayout.addMember(new MyDynamicForm(nameOrTitle));
+        }
+
+        private void setEditSoundUnit() {
+            nameOrTitle.setTitle(lang.dcTitle());
+            nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
+            partNumber.setValue(record.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO));
+            otherLayout.addMember(new MyDynamicForm(nameOrTitle));
         }
 
         /**

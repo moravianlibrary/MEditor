@@ -35,15 +35,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.client.util.ClientUtils;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.CreateObjectException;
@@ -84,6 +87,9 @@ public class ScanFolderHandler
     /** The input queue dao. */
     @Inject
     private InputQueueItemDAO inputQueueDAO;
+
+    @Inject
+    private Provider<ServletContext> contextProvider;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -159,6 +165,21 @@ public class ScanFolderHandler
 
         try {
             resolvedIdentifiers = imageResolverDAO.resolveItems(imgFileNames);
+
+            //sound hasn't any picture, so copy general one particular picture (for tilegrid view)
+            StringBuffer generalSoundThumbView = new StringBuffer("configuration.getImagesPath()");
+            generalSoundThumbView.append(Constants.UUID_SOUND_THUMBVIEW).append(Constants.JPEG_2000_EXTENSION);
+            if (!(new File(generalSoundThumbView.toString()).exists())) {
+                ServletContext servletContext = contextProvider.get();
+                String path = servletContext.getRealPath("/images/icons/128/sound_recording.jp2"); //TODO-MR: add to constants, test on devel
+                try {
+                    CreateObjectUtils.copyFile(path, generalSoundThumbView.toString());
+                } catch (CreateObjectException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
             for (int i = 0; i < resolvedIdentifiers.size(); i++) {
                 if (imgFileNames.get(i).endsWith(Constants.PDF_EXTENSION)) {
                     throw new ActionException("There is more than one pdf file or one pdf file and some other file with enable extension in "
@@ -166,7 +187,7 @@ public class ScanFolderHandler
                 }
 
 
-                //get mimetype from extension
+                //get mimetype from extension (for audio)
                 int position = imgFileNames.get(i).lastIndexOf('.');
                 String extension = null;
                 if (position > 0) {

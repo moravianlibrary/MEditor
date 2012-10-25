@@ -139,7 +139,7 @@ public class SequentialCreateLayout
     }
 
     public VLayout getSequentialCreateLayout() {
-        //        ATTR_PICTURE_OR_UUID        uuid      uuid        uuid        picture     uuid   
+        //        ATTR_PICTURE_OR_UUID        uuid      uuid        uuid        picture          uuid
         //        ATTR_MODEL_ID               modelId   modelid     modelid     modelid     modelid 
 
         //                                    vol       item        int p       page        int p       mon un
@@ -289,9 +289,11 @@ public class SequentialCreateLayout
                     break;
 
                 //TODO-MR: recording, co zde pridat?
-//                case SOUND_UNIT:
-//                    setCreatePage();
-//                    break;
+                case SOUND_UNIT:
+                    setCreatePage();
+                    break;
+
+
 
                 default:
                     setCreateDefault();
