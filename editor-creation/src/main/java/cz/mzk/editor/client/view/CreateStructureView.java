@@ -653,7 +653,10 @@ public class CreateStructureView
                 public String format(Object value, Record record, DetailViewerField field) {
                     String modelId = record.getAttribute(Constants.ATTR_MODEL_ID);
                     if ("track".equals(modelId)) { //TODO-MR control mimetype
-                        return new String("88e6561e-0cc6-3e56-9f2b-e6679826dc24");    // TODO copy audio image
+                        field.setImageURLPrefix("icons/128/");
+                        return "sound_recording.png";
+                        //String path = servletContext.getRealPath("/images/icons/128/sound_recording.jp2");
+                        //return new String("88e6561e-0cc6-3e56-9f2b-e6679826dc24");
                     } else {
                         return (String) value;
                     }

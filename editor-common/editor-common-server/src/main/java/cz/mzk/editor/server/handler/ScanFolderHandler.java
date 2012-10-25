@@ -166,20 +166,6 @@ public class ScanFolderHandler
         try {
             resolvedIdentifiers = imageResolverDAO.resolveItems(imgFileNames);
 
-            //sound hasn't any picture, so copy general one particular picture (for tilegrid view)
-            StringBuffer generalSoundThumbView = new StringBuffer("configuration.getImagesPath()");
-            generalSoundThumbView.append(Constants.UUID_SOUND_THUMBVIEW).append(Constants.JPEG_2000_EXTENSION);
-            if (!(new File(generalSoundThumbView.toString()).exists())) {
-                ServletContext servletContext = contextProvider.get();
-                String path = servletContext.getRealPath("/images/icons/128/sound_recording.jp2"); //TODO-MR: add to constants, test on devel
-                try {
-                    CreateObjectUtils.copyFile(path, generalSoundThumbView.toString());
-                } catch (CreateObjectException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-
             for (int i = 0; i < resolvedIdentifiers.size(); i++) {
                 if (imgFileNames.get(i).endsWith(Constants.PDF_EXTENSION)) {
                     throw new ActionException("There is more than one pdf file or one pdf file and some other file with enable extension in "
