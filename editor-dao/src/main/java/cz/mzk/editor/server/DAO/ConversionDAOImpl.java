@@ -106,8 +106,10 @@ public class ConversionDAOImpl
 
                 selectSt.setString(1, DAOUtilsImpl.directoryPathToRightFormat(item.getPath()));
                 ResultSet rs = selectSt.executeQuery();
+
                 if (rs.next()) {
-                    item.setConversionDate(formatDate(rs.getDate("lastTimestamp")));
+                    System.err.println();
+                    item.setConversionDate(formatTimestamp(rs.getTimestamp("lastTimestamp")));
                     if (numberOfDays > 0) item.setConverted(!rs.getBoolean("isOlder"));
                 }
 

@@ -38,6 +38,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import java.text.SimpleDateFormat;
 
@@ -76,6 +77,7 @@ import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AbstractDAO.
  * 
@@ -93,6 +95,7 @@ public abstract class AbstractDAO {
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
+    /** The Constant DRIVER. */
     private static final String DRIVER = "org.postgresql.Driver";
 
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
@@ -101,14 +104,23 @@ public abstract class AbstractDAO {
     /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
     public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
+
+    /** The Constant POOLABLE_NO. */
     private static final int POOLABLE_NO = 0;
+
+    /** The poolable. */
     private static int poolable = -1;
+
+    /** The context is correct. */
     private static boolean contextIsCorrect = false;
 
+    /** The pool. */
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
 
+    /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
@@ -116,6 +128,7 @@ public abstract class AbstractDAO {
      * Inits the connection.
      * 
      * @throws DatabaseException
+     *         the database exception
      */
     private void initConnection() throws DatabaseException {
         if (poolable != POOLABLE_NO && pool == null) {
@@ -157,6 +170,12 @@ public abstract class AbstractDAO {
         }
     }
 
+    /**
+     * Inits the connection without pool.
+     * 
+     * @throws DatabaseException
+     *         the database exception
+     */
     private void initConnectionWithoutPool() throws DatabaseException {
         try {
             Class.forName(DRIVER);
@@ -196,6 +215,7 @@ public abstract class AbstractDAO {
      * 
      * @return the connection
      * @throws DatabaseException
+     *         the database exception
      */
     protected Connection getConnection() throws DatabaseException {
         if (conn == null) {
@@ -219,6 +239,18 @@ public abstract class AbstractDAO {
         conn = null;
     }
 
+    /**
+     * Creates the correct context.
+     * 
+     * @param login
+     *        the login
+     * @param password
+     *        the password
+     * @param port
+     *        the port
+     * @param name
+     *        the name
+     */
     private void createCorrectContext(String login, String password, String port, String name) {
         String pathPrefix = System.getProperty("catalina.home");
         boolean changed = false;
@@ -383,6 +415,13 @@ public abstract class AbstractDAO {
         return userId;
     }
 
+    /**
+     * Gets the user id.
+     * 
+     * @return the user id
+     * @throws DatabaseException
+     *         the database exception
+     */
     protected Long getUserId() throws DatabaseException {
         String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
         return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
@@ -395,7 +434,25 @@ public abstract class AbstractDAO {
      *        the date
      * @return the string
      */
-    protected String formatDate(java.util.Date date) {
+    /**
+     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * 
+     * @param date
+     *        the date
+     * @return the string
+     */
+    protected String formatDate(java.sql.Date date) {
         return FORMATTER.format(date);
+    }
+
+    /**
+     * Format timestamp.
+     * 
+     * @param timestamp
+     *        the timestamp
+     * @return the string
+     */
+    protected String formatTimestamp(Timestamp timestamp) {
+        return FORMATTER.format(timestamp);
     }
 }

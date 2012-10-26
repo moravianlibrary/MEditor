@@ -178,8 +178,9 @@ public class InputQueueTree
                 lockImg.setSrc("icons/16/notCon.png");
             }
 
-            lockImg.setPrompt(lang.lastConversion() + ": " + conDate
+            lockImg.setPrompt(lang.lastConversion() + ": " + conDate + "<br>"
                     + (isCon ? lang.stillCon() : lang.notCon()));
+            lockImg.setHoverWidth(400);
             lockImg.setHeight(16);
             lockImg.setWidth(16);
             rollOverCanvas.addChild(lockImg);
