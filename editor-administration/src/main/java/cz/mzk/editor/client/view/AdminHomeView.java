@@ -1,11 +1,11 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or

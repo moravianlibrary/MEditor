@@ -31,9 +31,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -53,14 +50,13 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.MEditor;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.window.IngestInfoWindow;
 import cz.mzk.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.mzk.editor.client.view.window.UuidWindow;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
-import cz.mzk.editor.shared.event.EscKeyPressedEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.event.OpenFirstDigitalObjectEvent;
 import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
@@ -79,10 +75,10 @@ public class AppPresenter
         implements MyUiHandlers {
 
     @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_MAIN_CONTENT = Constants.TYPE_MAIN_CONTENT;
+    public static final Type<RevealContentHandler<?>> TYPE_MEDIT_MAIN_CONTENT = Constants.TYPE_MEDIT_MAIN_CONTENT;
 
     @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_LEFT_CONTENT = Constants.TYPE_LEFT_CONTENT;
+    public static final Type<RevealContentHandler<?>> TYPE_MEDIT_LEFT_CONTENT = Constants.TYPE_MEDIT_LEFT_CONTENT;
 
     private LangConstants lang;
     private volatile boolean unknown = true;
@@ -177,58 +173,6 @@ public class AppPresenter
     protected void onBind() {
         super.onBind();
 
-        /** Hot-keys operations **/
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            private boolean isKnownCtrlAltHotkey(NativePreviewEvent event) {
-                if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
-                    int code = event.getNativeEvent().getKeyCode();
-                    for (Constants.HOT_KEYS_WITH_CTRL_ALT key : Constants.HOT_KEYS_WITH_CTRL_ALT.values()) {
-                        if (code == key.getCode()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-                //                System.out.println("ctrl " + event.getNativeEvent().getCtrlKey());
-                //                System.out.println("alt " + event.getNativeEvent().getAltKey());
-                //                System.out.println("keycode " + event.getNativeEvent().getKeyCode());
-
-                if (event.getTypeInt() != Event.ONKEYDOWN) {
-                    return;
-                }
-                int keyCode = event.getNativeEvent().getKeyCode();
-
-                //                System.err.println("pressed key code: " + event.getNativeEvent().getKeyCode());
-
-                if (keyCode != Constants.CODE_KEY_ESC && keyCode != Constants.CODE_KEY_ENTER
-                        && keyCode != Constants.CODE_KEY_DELETE && !isKnownCtrlAltHotkey(event)) {
-                    return;
-                }
-                if (isHotKeysEnabled) {
-                    if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
-                        StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
-                    }
-                    if (keyCode == Constants.CODE_KEY_ESC) {
-                        escShortCut();
-                        EscKeyPressedEvent.fire(AppPresenter.this);
-
-                    } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
-                        displayEnterPIDWindow();
-                        return;
-                    }
-                    KeyPressedEvent.fire(AppPresenter.this, keyCode);
-                } else {
-                    event.cancel();
-                }
-            }
-
-        });
-
         addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
                              new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
 
@@ -268,8 +212,17 @@ public class AppPresenter
 
             @Override
             public void onKeyPressed(KeyPressedEvent event) {
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
+                    StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
+                    return;
+                }
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
+                    displayEnterPIDWindow();
+                    return;
+                }
                 if (event.getCode() == Constants.CODE_KEY_ESC) {
                     getView().escShortCut();
+                    return;
                 }
             }
         });

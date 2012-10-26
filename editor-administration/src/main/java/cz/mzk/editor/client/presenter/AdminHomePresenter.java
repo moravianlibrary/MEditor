@@ -1,11 +1,11 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@ public class AdminHomePresenter
      * The Interface MyProxy.
      */
     @ProxyCodeSplit
-    @NameToken(NameTokens.HOME)
+    @NameToken(NameTokens.ADMIN_HOME)
     public interface MyProxy
             extends ProxyPlace<AdminHomePresenter> {
 
@@ -71,7 +71,7 @@ public class AdminHomePresenter
     private final DispatchAsync dispatcher;
 
     /** The left presenter. */
-    //    private final DigitalObjectMenuPresenter leftPresenter;
+    private final AdminMenuPresenter leftPresenter;
 
     /** The place manager. */
     private final PlaceManager placeManager;
@@ -95,13 +95,15 @@ public class AdminHomePresenter
      *        the place manager
      */
     @Inject
-    public AdminHomePresenter(final EventBus eventBus, final MyView view, final MyProxy proxy,
-    //                         final DigitalObjectMenuPresenter leftPresenter,
+    public AdminHomePresenter(final EventBus eventBus,
+                              final MyView view,
+                              final MyProxy proxy,
+                              final AdminMenuPresenter leftPresenter,
                               final DispatchAsync dispatcher,
                               final PlaceManager placeManager,
                               final LangConstants lang) {
         super(eventBus, view, proxy);
-        //                this.leftPresenter = leftPresenter;
+        this.leftPresenter = leftPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         this.lang = lang;
@@ -124,7 +126,7 @@ public class AdminHomePresenter
      */
     @Override
     protected void onReset() {
-        //                RevealContentEvent.fire(this, AdminPresenter.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
     }
 
     /*
@@ -133,7 +135,7 @@ public class AdminHomePresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, AdminPresenter.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_MAIN_CONTENT, this);
     }
 
 }

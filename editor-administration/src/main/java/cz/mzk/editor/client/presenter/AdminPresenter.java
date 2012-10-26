@@ -1,11 +1,11 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -53,6 +53,7 @@ import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.event.EscKeyPressedEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
+import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 
@@ -65,10 +66,12 @@ public class AdminPresenter
         implements AdminUiHandlers {
 
     @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_MAIN_CONTENT = Constants.TYPE_MAIN_CONTENT;
+    public static final Type<RevealContentHandler<?>> TYPE_ADMIN_MAIN_CONTENT =
+            Constants.TYPE_ADMIN_MAIN_CONTENT;
 
     @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_LEFT_CONTENT = Constants.TYPE_LEFT_CONTENT;
+    public static final Type<RevealContentHandler<?>> TYPE_ADMIN_LEFT_CONTENT =
+            Constants.TYPE_ADMIN_LEFT_CONTENT;
 
     private LangConstants lang;
     private volatile boolean unknown = true;
@@ -97,15 +100,11 @@ public class AdminPresenter
 
         HTMLFlow getEditUsers();
 
-        void escShortCut();
-
         void changeMenuWidth(String width);
     }
 
     /** The left presenter. */
-    //    private final DigitalObjectMenuPresenter doPresenter;
-    //
-    //    private final CreateObjectMenuPresenter createPresenter;
+    private final AdminMenuPresenter leftPresenter;
 
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
@@ -113,7 +112,7 @@ public class AdminPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
-    private final boolean isHotKeysEnabled = true;
+    private boolean isHotKeysEnabled = true;
 
     /**
      * Instantiates a new app presenter.
@@ -132,19 +131,15 @@ public class AdminPresenter
      *        the place manager
      */
     @Inject
-    // public AppPresenter(final DispatchAsync dispatcher, final HomePresenter
-    // homePresenter, final DigitalObjectMenuPresenter treePresenter,
-    // final DigitalObjectMenuPresenter digitalObjectMenuPresenter, final
-    // EditorClientConfiguration config) {
-    public AdminPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy,
-    //                        final DigitalObjectMenuPresenter doPresenter,
-    //                        final CreateObjectMenuPresenter leftPresenter,
+    public AdminPresenter(final EventBus eventBus,
+                          final MyView view,
+                          final MyProxy proxy,
+                          final AdminMenuPresenter leftPresenter,
                           final DispatchAsync dispatcher,
                           final PlaceManager placeManager) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
-        //        this.doPresenter = doPresenter;
-        //        this.createPresenter = leftPresenter;
+        this.leftPresenter = leftPresenter;
         this.placeManager = placeManager;
         getView().setUiHandlers(this);
         bind();
@@ -175,9 +170,6 @@ public class AdminPresenter
 
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
-                //                System.out.println("ctrl " + event.getNativeEvent().getCtrlKey());
-                //                System.out.println("alt " + event.getNativeEvent().getAltKey());
-                //                System.out.println("keycode " + event.getNativeEvent().getKeyCode());
 
                 if (event.getTypeInt() != Event.ONKEYDOWN) {
                     return;
@@ -191,15 +183,9 @@ public class AdminPresenter
                     return;
                 }
                 if (isHotKeysEnabled) {
-                    if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
-                        //                        StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
-                    }
                     if (keyCode == Constants.CODE_KEY_ESC) {
                         //                        escShortCut();
                         EscKeyPressedEvent.fire(AdminPresenter.this);
-
-                    } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
-                        //                        displayEnterPIDWindow();
                         return;
                     }
                     KeyPressedEvent.fire(AdminPresenter.this, keyCode);
@@ -210,48 +196,19 @@ public class AdminPresenter
 
         });
 
-        //        addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
-        //                             new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
-        //
-        //                                 @Override
-        //                                 public void onOpenFirstDigitalObject(OpenFirstDigitalObjectEvent event) {
-        //                                     StoredItem storedItem = event.getStoredItem();
-        //                                     if (storedItem != null) {
-        //                                         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-        //                                                 .with(Constants.URL_PARAM_UUID, event.getUuid())
-        //                                                 .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
-        //                                                 .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
-        //                                     } else {
-        //                                         openObject(event.getUuid());
-        //                                     }
-        //                                 }
-        //                             });
-        //
-        //        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
-        //                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
-        //
-        //                                 @Override
-        //                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
-        //                                     isHotKeysEnabled = event.isEnable();
-        //                                 }
-        //                             });
-        //
-        //        addRegisteredHandler(ChangeMenuWidthEvent.getType(),
-        //                             new ChangeMenuWidthEvent.ChangeMenuWidthHandler() {
-        //
-        //                                 @Override
-        //                                 public void onChangeMenuWidth(ChangeMenuWidthEvent event) {
-        //                                     getView().changeMenuWidth(event.getWidth());
-        //                                 }
-        //                             });
+        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
+                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
+
+                                 @Override
+                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
+                                     isHotKeysEnabled = event.isEnable();
+                                 }
+                             });
 
         addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
 
             @Override
             public void onKeyPressed(KeyPressedEvent event) {
-                if (event.getCode() == Constants.CODE_KEY_ESC) {
-                    getView().escShortCut();
-                }
             }
         });
     }
@@ -324,18 +281,9 @@ public class AdminPresenter
      * {@inheritDoc}
      */
 
-    //    @Override
-    //    public DigitalObjectMenuPresenter getDoPresenter() {
-    //        return doPresenter;
-    //    }
-    //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //
-    //    @Override
-    //    public CreateObjectMenuPresenter getCreatePresenter() {
-    //        return createPresenter;
-    //    }
+    @Override
+    public AdminMenuPresenter getLeftPresenter() {
+        return leftPresenter;
+    }
 
 }

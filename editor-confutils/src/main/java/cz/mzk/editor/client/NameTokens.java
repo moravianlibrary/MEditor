@@ -52,7 +52,13 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 public class NameTokens {
 
     /** The Constant HOME. */
-    public static final String HOME = "home";
+    public static final String ADMIN_HOME = "adminHome";
+
+    /** The Constant MEDIT_HOME. */
+    public static final String MEDIT_HOME = "meditHome";
+
+    /** The Constant MENU. */
+    public static final String MENU = "menu";
 
     /** The Constant MODIFY. */
     public static final String MODIFY = "modify";
@@ -72,7 +78,9 @@ public class NameTokens {
         return new ArrayList<String>() {
 
             {
-                add(HOME);
+                add(ADMIN_HOME);
+                add(MEDIT_HOME);
+                add(MENU);
                 add(MODIFY);
                 add(CREATE);
                 add(FIND_METADATA);

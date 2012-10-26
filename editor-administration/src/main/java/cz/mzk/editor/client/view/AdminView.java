@@ -1,11 +1,11 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -168,7 +168,7 @@ public class AdminView
 
                     @Override
                     public void onCloseClick(CloseClickEvent event) {
-                        escShortCut();
+                        //                        escShortCut();
                     }
                 });
                 HTMLPane helpPane = new HTMLPane();
@@ -219,10 +219,9 @@ public class AdminView
      */
     @Override
     public void setInSlot(Object slot, Widget content) {
-        if (slot == AdminPresenter.TYPE_MAIN_CONTENT) {
+        if (slot == AdminPresenter.TYPE_ADMIN_MAIN_CONTENT) {
             setMainContent(content);
-            // setTopContent(content);
-        } else if (slot == AdminPresenter.TYPE_LEFT_CONTENT) {
+        } else if (slot == AdminPresenter.TYPE_ADMIN_LEFT_CONTENT) {
             setLeftContent(content);
         } else {
             super.setInSlot(slot, content);
@@ -281,17 +280,6 @@ public class AdminView
     @Override
     public HTMLFlow getEditUsers() {
         return editUsers;
-    }
-
-    /**
-     * Method for close currently displayed window
-     */
-    @Override
-    public void escShortCut() {
-        if (winModal != null) {
-            winModal.hide();
-            winModal = null;
-        }
     }
 
     @Override

@@ -1,8 +1,5 @@
 /*
  * Metadata Editor
- * @author Matous Jobanek
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
  * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
@@ -12,36 +9,42 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *
+ * 
  */
 
-package cz.mzk.editor.client.uihandlers;
+package cz.mzk.editor.client.view;
 
-import com.gwtplatform.mvp.client.UiHandlers;
+import com.google.gwt.user.client.ui.Widget;
+import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 
-import cz.mzk.editor.client.presenter.AdminMenuPresenter;
+import cz.mzk.editor.client.presenter.AdminMenuPresenter.MyView;
+import cz.mzk.editor.client.uihandlers.MenuUiHandlers;
 
 /**
- * The Interface MyUiHandlers.
+ * @author Matous Jobanek
+ * @version Oct 8, 2012
  */
-public interface AdminUiHandlers
-        extends UiHandlers {
+public class MenuView
+        extends ViewWithUiHandlers<MenuUiHandlers>
+        implements MyView {
 
     /**
-     * Logout.
+     * {@inheritDoc}
      */
-    void logout();
-
-    AdminMenuPresenter getLeftPresenter();
+    @Override
+    public Widget asWidget() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

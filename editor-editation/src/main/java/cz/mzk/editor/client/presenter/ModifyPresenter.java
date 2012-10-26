@@ -327,7 +327,7 @@ public class ModifyPresenter
                 previousUuid1 = uuid;
             }
         }
-        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
 
     }
 
@@ -464,7 +464,7 @@ public class ModifyPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_MAIN_CONTENT, this);
     }
 
     /*

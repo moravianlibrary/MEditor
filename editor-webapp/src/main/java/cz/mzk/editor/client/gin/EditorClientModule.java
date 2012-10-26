@@ -82,7 +82,7 @@ public class EditorClientModule
         //        bind(ProxyFailureHandler.class).to(DefaultProxyFailureHandler.class).in(Singleton.class);
 
         // ServerConstants
-        bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.HOME);
+        bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.MEDIT_HOME);
 
         //i18n
         bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);

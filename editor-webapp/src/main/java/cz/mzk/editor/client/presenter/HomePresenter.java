@@ -155,7 +155,7 @@ public class HomePresenter
      * The Interface MyProxy.
      */
     @ProxyCodeSplit
-    @NameToken(NameTokens.HOME)
+    @NameToken(NameTokens.MEDIT_HOME)
     public interface MyProxy
             extends ProxyPlace<HomePresenter> {
 
@@ -278,7 +278,7 @@ public class HomePresenter
      */
     @Override
     protected void onReset() {
-        RevealContentEvent.fire(this, AppPresenter.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, AppPresenter.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
     }
 
     /*
@@ -287,7 +287,7 @@ public class HomePresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, AppPresenter.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, AppPresenter.TYPE_MEDIT_MAIN_CONTENT, this);
     }
 
     /**

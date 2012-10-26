@@ -38,9 +38,17 @@ import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
  */
 public class Constants {
 
-    public static final Type<RevealContentHandler<?>> TYPE_MAIN_CONTENT = new Type<RevealContentHandler<?>>();
+    public static final Type<RevealContentHandler<?>> TYPE_MEDIT_MAIN_CONTENT =
+            new Type<RevealContentHandler<?>>();
 
-    public static final Type<RevealContentHandler<?>> TYPE_LEFT_CONTENT = new Type<RevealContentHandler<?>>();
+    public static final Type<RevealContentHandler<?>> TYPE_MEDIT_LEFT_CONTENT =
+            new Type<RevealContentHandler<?>>();
+
+    public static final Type<RevealContentHandler<?>> TYPE_ADMIN_MAIN_CONTENT =
+            new Type<RevealContentHandler<?>>();
+
+    public static final Type<RevealContentHandler<?>> TYPE_ADMIN_LEFT_CONTENT =
+            new Type<RevealContentHandler<?>>();
 
     /** The Constant SERVLET_IMAGES_PREFIX. */
     public static final String SERVLET_IMAGES_PREFIX = "images/";

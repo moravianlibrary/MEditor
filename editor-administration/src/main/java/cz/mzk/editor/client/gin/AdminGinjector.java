@@ -1,11 +1,11 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -36,8 +36,8 @@ import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 
-import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
+import cz.mzk.editor.client.presenter.AdminPresenter;
 
 // TODO: Auto-generated Javadoc
 /**

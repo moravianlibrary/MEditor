@@ -219,10 +219,10 @@ public class AppView
      */
     @Override
     public void setInSlot(Object slot, Widget content) {
-        if (slot == AppPresenter.TYPE_MAIN_CONTENT) {
+        if (slot == AppPresenter.TYPE_MEDIT_MAIN_CONTENT) {
             setMainContent(content);
             // setTopContent(content);
-        } else if (slot == AppPresenter.TYPE_LEFT_CONTENT) {
+        } else if (slot == AppPresenter.TYPE_MEDIT_LEFT_CONTENT) {
             setLeftContent(content);
         } else {
             super.setInSlot(slot, content);
