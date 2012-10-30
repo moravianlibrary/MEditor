@@ -109,9 +109,12 @@ public class PageBuilder
     @Override
     protected void decorateRelsExtStream() {
         super.decorateRelsExtStream();
-        Element description = FoxmlUtils.findDescriptionElement(getRelsExtXmlContent());
-        Element url = description.addElement(new QName("tiles-url", Namespaces.kramerius));
-        url.addText(getImageUrl());
+
+        if (!getConfiguration().getImageServerInternal()) {
+            Element description = FoxmlUtils.findDescriptionElement(getRelsExtXmlContent());
+            Element url = description.addElement(new QName("tiles-url", Namespaces.kramerius));
+            url.addText(getImageUrl());
+        }
     }
 
     /**

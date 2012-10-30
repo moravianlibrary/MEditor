@@ -734,4 +734,12 @@ public abstract class FoxmlBuilder {
             }
         }
     }
+
+    /**
+     * @return the configuration
+     */
+    protected EditorConfiguration getConfiguration() {
+        return configuration;
+    }
+
 }
