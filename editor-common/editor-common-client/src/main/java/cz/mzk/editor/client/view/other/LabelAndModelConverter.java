@@ -60,6 +60,8 @@ public class LabelAndModelConverter {
         getModelFromLabel().put(lang.map(), DigitalObjectModel.MAP);
         getLabelFromModel().put(DigitalObjectModel.MANUSCRIPT.getValue(), lang.manuscript());
         getModelFromLabel().put(lang.manuscript(), DigitalObjectModel.MANUSCRIPT);
+        getLabelFromModel().put(DigitalObjectModel.ARCHIVE.getValue(), lang.archive());
+        getModelFromLabel().put(lang.archive(), DigitalObjectModel.ARCHIVE);
         getLabelFromModel().put(DigitalObjectModel.GRAPHIC.getValue(), lang.graphic());
         getModelFromLabel().put(lang.graphic(), DigitalObjectModel.GRAPHIC);
         getLabelFromModel().put(DigitalObjectModel.SUPPLEMENT.getValue(), lang.supplement());

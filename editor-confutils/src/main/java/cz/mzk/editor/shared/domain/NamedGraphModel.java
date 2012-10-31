@@ -36,6 +36,7 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARCHIVE;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARTICLE;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.INTERNALPART;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.MANUSCRIPT;
@@ -84,6 +85,11 @@ public class NamedGraphModel
         putRelationship(MANUSCRIPT, hasIntCompPart, INTERNALPART);
         putRelationship(MANUSCRIPT, hasUnit, MONOGRAPHUNIT);
         //        putRelationship(MANUSCRIPT, hasUnit, SUPPLEMENT);
+
+        putRelationship(ARCHIVE, hasPage, PAGE);
+        putRelationship(ARCHIVE, hasIntCompPart, INTERNALPART);
+        putRelationship(ARCHIVE, hasUnit, MONOGRAPHUNIT);
+        //        putRelationship(ARCHIVE, hasUnit, SUPPLEMENT);
 
         putRelationship(MONOGRAPHUNIT, hasPage, PAGE);
         putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);

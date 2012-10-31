@@ -82,6 +82,9 @@ public enum DigitalObjectModel
     /** The MANUSCRIPT */
     MANUSCRIPT("manuscript", "", TopLevelObjectModel.MONOGRAPH),
 
+    /** The ARCHIVE */
+    ARCHIVE("archive", "", TopLevelObjectModel.MONOGRAPH),
+
     /** The SUPPLEMENT */
     SUPPLEMENT("supplement", Constants.INTERNAL_PART_ICON),
 
