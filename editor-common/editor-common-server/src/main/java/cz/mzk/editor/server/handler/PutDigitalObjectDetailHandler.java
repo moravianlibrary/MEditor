@@ -52,7 +52,6 @@ import org.w3c.dom.NodeList;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -128,13 +127,13 @@ public class PutDigitalObjectDetailHandler
 
         String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         boolean write = false;
-        try {
-            write =
-                    userDAO.hasRole(UserDAO.CAN_PUBLISH_STRING, userDAO.getUsersId(openID))
-                            || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
-        }
+        //        try {
+        write = true;
+        //                    userDAO.hasRole(UserDAO.CAN_PUBLISH_STRING, userDAO.getUsersId(openID))
+        //                            || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
+        //        } catch (DatabaseException e) {
+        //            throw new ActionException(e);
+        //        }
 
         boolean shouldReindex = false;
         if (write) {
