@@ -142,11 +142,12 @@ public class DAOUtilsImpl
                                       String model,
                                       String name,
                                       String description,
-                                      String input_queue_directory_path,
+                                      String input_queue_dir_path,
                                       boolean closeCon) throws DatabaseException, SQLException {
 
         PreparedStatement selSt = null;
         boolean successful = false;
+        String input_queue_directory_path = directoryPathToRightFormat(input_queue_dir_path);
         try {
             selSt = getConnection().prepareStatement(DIGITAL_OBJECT_SELECT_ITEM_STATEMENT);
             selSt.setString(1, uuid);
@@ -231,11 +232,18 @@ public class DAOUtilsImpl
         PreparedStatement updateSt = null;
         boolean successful = false;
         try {
+            if (input_queue_directory_path != null) {
+                if (!checkInputQueue(input_queue_directory_path, name, true)) {
+                    throw new DatabaseException("Directory path: " + input_queue_directory_path
+                            + " has not been added.");
+                }
+            }
+
             updateSt = getConnection().prepareStatement(DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT);
             updateSt.setString(1, model);
             updateSt.setString(2, name);
             updateSt.setString(3, description);
-            updateSt.setString(4, input_queue_directory_path);
+            updateSt.setString(4, directoryPathToRightFormat(input_queue_directory_path));
             updateSt.setString(5, uuid);
             int updated = updateSt.executeUpdate();
 
@@ -279,7 +287,7 @@ public class DAOUtilsImpl
             insertSt.setString(2, model);
             insertSt.setString(3, name);
             insertSt.setString(4, description);
-            insertSt.setString(5, input_queue_directory_path);
+            insertSt.setString(5, directoryPathToRightFormat(input_queue_directory_path));
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {
@@ -760,10 +768,18 @@ public class DAOUtilsImpl
                                     String name,
                                     String model,
                                     boolean state,
-                                    String input_queue_directory_path) throws DatabaseException {
+                                    String input_queue_dir_path) throws DatabaseException {
         PreparedStatement insertSt = null;
         Long id = null;
+        String input_queue_directory_path = directoryPathToRightFormat(input_queue_dir_path);
         try {
+            if (input_queue_directory_path != null) {
+                if (!checkInputQueue(input_queue_directory_path, null, true)) {
+                    throw new DatabaseException("Directory path: " + input_queue_directory_path
+                            + " has not been added.");
+                }
+            }
+
             insertSt =
                     getConnection().prepareStatement(TREE_STRUCTURE_INSERT_ITEM_STATEMENT,
                                                      Statement.RETURN_GENERATED_KEYS);
@@ -776,8 +792,8 @@ public class DAOUtilsImpl
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {
-                LOGGER.debug("DB has been updated: The tree structure: " + input_queue_directory_path
-                        + " has been inserted.");
+                LOGGER.debug("DB has been updated: The tree structure: "
+                        + directoryPathToRightFormat(input_queue_directory_path) + " has been inserted.");
                 ResultSet gk = insertSt.getGeneratedKeys();
                 if (gk.next()) {
                     id = gk.getLong(1);
@@ -878,7 +894,11 @@ public class DAOUtilsImpl
     }
 
     public static String directoryPathToRightFormat(String path) {
-        String dirPath = (path.startsWith("/")) ? path : "/".concat(path);
-        return dirPath.endsWith("/") ? dirPath.substring(0, dirPath.length() - 1) : dirPath;
+        if (path != null) {
+            String dirPath = (path.startsWith("/")) ? path : "/".concat(path);
+            return dirPath.endsWith("/") ? dirPath.substring(0, dirPath.length() - 1) : dirPath;
+        } else {
+            return null;
+        }
     }
 }

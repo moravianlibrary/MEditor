@@ -123,7 +123,8 @@ public class DigitalObjectDAOImpl
         boolean successful = false;
 
         try {
-            if (daoUtils.checkDigitalObject(pid, model, name, null, input_queue_directory_path, true))
+            if (daoUtils.checkDigitalObject(pid, model, name, null, DAOUtilsImpl
+                    .directoryPathToRightFormat(input_queue_directory_path), true))
                 successful =
                         daoUtils.insertCrudActionWithTopObject(getUserId(),
                                                                Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
@@ -178,7 +179,11 @@ public class DigitalObjectDAOImpl
                                        String input_queue_directory_path) throws DatabaseException {
 
         boolean successful = false;
-        if (insertNewDigitalObject(newUuid, model, name, input_queue_directory_path, newUuid)) {
+        if (insertNewDigitalObject(newUuid,
+                                   model,
+                                   name,
+                                   DAOUtilsImpl.directoryPathToRightFormat(input_queue_directory_path),
+                                   newUuid)) {
 
             try {
                 getConnection().setAutoCommit(false);

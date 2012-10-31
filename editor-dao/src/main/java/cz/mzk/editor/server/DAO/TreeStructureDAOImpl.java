@@ -383,7 +383,7 @@ public class TreeStructureDAOImpl
                 insertInfoSt.setString(2, info.getDescription() != null ? info.getDescription() : "");
                 insertInfoSt.setString(3, info.getName());
                 insertInfoSt.setString(4, info.getModel());
-                insertInfoSt.setString(5, info.getInputPath());
+                insertInfoSt.setString(5, DAOUtilsImpl.directoryPathToRightFormat(info.getInputPath()));
                 insertInfoSt.executeUpdate();
 
                 ResultSet gk = insertInfoSt.getGeneratedKeys();

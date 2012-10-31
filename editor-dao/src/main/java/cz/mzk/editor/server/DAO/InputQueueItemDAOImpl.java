@@ -248,7 +248,7 @@ public class InputQueueItemDAOImpl
 
         try {
             selectSt = getConnection().prepareStatement(SELECT_INGEST_INFO);
-            selectSt.setString(1, path);
+            selectSt.setString(1, DAOUtilsImpl.directoryPathToRightFormat(path));
             ResultSet rs = selectSt.executeQuery();
 
             while (rs.next()) {
