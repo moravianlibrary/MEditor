@@ -120,6 +120,7 @@ import cz.mzk.editor.client.view.other.ModsTab;
 import cz.mzk.editor.client.view.other.PageNumberingManager;
 import cz.mzk.editor.client.view.other.PdfViewerPane;
 import cz.mzk.editor.client.view.other.ScanRecord;
+import cz.mzk.editor.client.view.window.AudioPlayerWindow;
 import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.RenumberWindow;
@@ -433,21 +434,8 @@ public class CreateStructureView
                         String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
                         String type = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_TYPE);
                         String modelid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID);
-                        Window audioPlayer = new Window();
-                        audioPlayer.setWidth(400);
-                        audioPlayer.setHeight(300);
-                        audioPlayer.setIsModal(true);
-                        audioPlayer.setShowModalMask(true);
-                        audioPlayer.centerInPage();
+                        Window audioPlayer = new AudioPlayerWindow(eventBus, mimeType, uuid, modelid);
                         audioPlayer.show();
-                        HTMLPane audioPane = new HTMLPane();
-                        audioPane.setPadding(15);
-                        audioPane.setContents("<h3>Audio</h3>" +
-                                "mime-type:" + mimeType + "<br/>" +
-                                "uuid:" + uuid + "<br/>" +
-                                "model_id:" + modelid
-                        );
-                        audioPlayer.addItem(audioPane);
 
                     } else {
                         final String uuid =

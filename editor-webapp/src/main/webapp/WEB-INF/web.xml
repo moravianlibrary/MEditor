@@ -103,6 +103,15 @@
 		<url-pattern>/getPdf/*</url-pattern>
 	</servlet-mapping>
 
+    <servlet>
+        <servlet-name>AudioServiceImpl</servlet-name>
+        <servlet-class>cz.mzk.editor.server.AudioServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AudioServiceImpl</servlet-name>
+        <url-pattern>/audio/*</url-pattern>
+    </servlet-mapping>
+
 	<!-- Servlet for images of scans -->
 	<servlet>
 		<servlet-name>ScanImgService</servlet-name>
