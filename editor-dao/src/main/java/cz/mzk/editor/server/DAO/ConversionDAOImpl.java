@@ -110,7 +110,11 @@ public class ConversionDAOImpl
                 if (rs.next()) {
                     System.err.println();
                     item.setConversionDate(formatTimestamp(rs.getTimestamp("lastTimestamp")));
-                    if (numberOfDays > 0) item.setConverted(!rs.getBoolean("isOlder"));
+                    if (numberOfDays > 0) {
+                        item.setConverted(!rs.getBoolean("isOlder"));
+                    } else {
+                        item.setConverted(true);
+                    }
                 }
 
             } catch (SQLException e) {
