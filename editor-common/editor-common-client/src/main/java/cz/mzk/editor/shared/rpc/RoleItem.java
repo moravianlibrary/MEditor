@@ -38,14 +38,14 @@ public class RoleItem
 
     private static final long serialVersionUID = 1940732012984034268L;
 
+    /** The user id. */
+    private Long userId;
+
     /** The name. */
     private String name;
 
     /** The description. */
     private String description;
-
-    /** The id. */
-    private String id;
 
     // @SuppressWarnings("unused")
     /**
@@ -58,18 +58,18 @@ public class RoleItem
     /**
      * Instantiates a new role item.
      * 
+     * @param userId
+     *        the user id
      * @param name
      *        the name
      * @param description
      *        the description
-     * @param id
-     *        the id
      */
-    public RoleItem(String name, String description, String id) {
+    public RoleItem(Long userId, String name, String description) {
         super();
+        this.userId = userId;
         this.name = name;
         this.description = description;
-        this.id = id;
     }
 
     /**
@@ -111,39 +111,35 @@ public class RoleItem
     }
 
     /**
-     * Gets the id.
-     * 
-     * @return the id
+     * @return the userId
      */
-    public String getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
     /**
-     * Sets the id.
-     * 
-     * @param id
-     *        the new id
+     * @param userId
+     *        the userId to set
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public boolean equals(Object obj) {
@@ -151,9 +147,15 @@ public class RoleItem
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         RoleItem other = (RoleItem) obj;
-        if (id == null) {
-            if (other.id != null) return false;
-        } else if (!id.equals(other.id)) return false;
+        if (description == null) {
+            if (other.description != null) return false;
+        } else if (!description.equals(other.description)) return false;
+        if (name == null) {
+            if (other.name != null) return false;
+        } else if (!name.equals(other.name)) return false;
+        if (userId == null) {
+            if (other.userId != null) return false;
+        } else if (!userId.equals(other.userId)) return false;
         return true;
     }
 

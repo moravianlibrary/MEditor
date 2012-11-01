@@ -155,9 +155,11 @@ public class StoredDigitalObjectHandlerImpl
         List<DigitalObjectModel> childrenModel = NamedGraphModel.getChildren(parentModel);
         List<List<DigitalObjectDetail>> children = new ArrayList<List<DigitalObjectDetail>>();
 
-        for (DigitalObjectModel childModel : childrenModel) {
-            FedoraRelationship relation = NamedGraphModel.getRelationship(parentModel, childModel);
-            children.add(getChildren(uuid, foxmlDocument, relation, childModel));
+        if (childrenModel != null) {
+            for (DigitalObjectModel childModel : childrenModel) {
+                FedoraRelationship relation = NamedGraphModel.getRelationship(parentModel, childModel);
+                children.add(getChildren(uuid, foxmlDocument, relation, childModel));
+            }
         }
 
         return children;

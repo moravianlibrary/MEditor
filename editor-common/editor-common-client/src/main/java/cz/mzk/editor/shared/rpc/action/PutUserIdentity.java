@@ -31,7 +31,7 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.shared.rpc.OpenIDItem;
+import cz.mzk.editor.shared.rpc.UserIdentity;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -43,17 +43,9 @@ public class PutUserIdentity {
 
     /** The identity. */
     @In(1)
-    private OpenIDItem identity;
+    private UserIdentity identity;
 
-    /** The user id. */
-    @In(2)
-    private String userId;
-
-    /** The id. */
+    /** If successful. */
     @Out(1)
-    private String id;
-
-    /** The found. */
-    @Out(2)
-    private boolean found;
+    private boolean successful;
 }

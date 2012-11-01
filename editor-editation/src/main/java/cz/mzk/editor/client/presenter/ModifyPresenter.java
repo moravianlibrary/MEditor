@@ -191,11 +191,8 @@ public class ModifyPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
-    /**
-     * The name of the file of the stored digital object which is going to be
-     * opened.
-     */
-    private String fileName;
+    /** The saved edited object. */
+    private StoredItem savedEditedObject;
 
     /** The model of the stored digital object which is going to be opened. */
     private String modelToOpen;
@@ -292,7 +289,10 @@ public class ModifyPresenter
     public void prepareFromRequest(PlaceRequest request) {
         super.prepareFromRequest(request);
         uuid = request.getParameter(Constants.URL_PARAM_UUID, null);
-        fileName = request.getParameter(Constants.ATTR_FILE_NAME, null);
+        String id = request.getParameter(Constants.ATTR_ID, null);
+        savedEditedObject =
+                new StoredItem(id != null ? Long.parseLong(id) : null,
+                               request.getParameter(Constants.ATTR_FILE_NAME, null));
         modelToOpen = request.getParameter(Constants.ATTR_MODEL, null);
         forcedRefresh = ClientUtils.toBoolean(request.getParameter(Constants.URL_PARAM_REFRESH, "no"));
         leftPresenter.getView().showInputQueue(dispatcher, placeManager, true);
@@ -504,7 +504,8 @@ public class ModifyPresenter
      */
     private void getObject(final boolean refresh) {
         DigitalObjectModel model = (modelToOpen != null ? DigitalObjectModel.parseString(modelToOpen) : null);
-        final GetDigitalObjectDetailAction action = new GetDigitalObjectDetailAction(uuid, model, fileName);
+        final GetDigitalObjectDetailAction action =
+                new GetDigitalObjectDetailAction(uuid, model, savedEditedObject);
         final DispatchCallback<GetDigitalObjectDetailResult> callback =
                 new DispatchCallback<GetDigitalObjectDetailResult>() {
 
@@ -517,7 +518,11 @@ public class ModifyPresenter
                                 EditorSC.objectIsLock(lang, detail.getLockInfo());
                             }
 
-                            getView().addDigitalObject(uuid, detail, refresh, fileName != null);
+                            getView().addDigitalObject(uuid,
+                                                       detail,
+                                                       refresh,
+                                                       savedEditedObject != null
+                                                               && savedEditedObject.getId() != null);
                             String title =
                                     (detail.getDc().getTitle() == null || detail.getDc().getTitle().size() == 0) ? "no title"
                                             : detail.getDc().getTitle().get(0);
@@ -529,13 +534,15 @@ public class ModifyPresenter
                                                                                    detail.getModel(),
                                                                                    result.getModified()),
                                                           result.getDetail().getRelated());
-                        } else if (fileName != null) {
+                        } else if (savedEditedObject != null) {
                             SC.ask(lang.operationFailed(), lang.storedNotFound(), new BooleanCallback() {
 
                                 @Override
                                 public void execute(Boolean value) {
                                     if (value != null && value) {
-                                        StoreWorkingCopyWindow.deleteItem(fileName, dispatcher);
+                                        StoreWorkingCopyWindow.deleteItem(savedEditedObject.getId(),
+                                                                          savedEditedObject.getFileName(),
+                                                                          dispatcher);
                                     }
                                 }
                             });
@@ -756,7 +763,8 @@ public class ModifyPresenter
             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
                     .with(Constants.URL_PARAM_UUID, uuid)
                     .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
-                    .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+                    .with(Constants.ATTR_MODEL, storedItem.getModel().getValue())
+                    .with(Constants.ATTR_ID, String.valueOf(storedItem.getId())));
         } else {
             placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
                     .with(Constants.URL_PARAM_UUID, uuid));

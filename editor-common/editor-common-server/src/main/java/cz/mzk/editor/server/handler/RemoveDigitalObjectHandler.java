@@ -51,15 +51,15 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.Foxml;
 import cz.mzk.editor.shared.rpc.action.RemoveDigitalObjectAction;
@@ -93,9 +93,12 @@ public class RemoveDigitalObjectHandler
 
     private static final String ROLLBACK_FLAG = "ROLLBACK_FLAG";
 
-    /** The recently modified dao */
+    /** The top digital object uuid. */
+    private static String topDigitalObjectUuid;
+
+    /** The digital object dao. */
     @Inject
-    private RecentlyModifiedItemDAO recModDao;
+    private DigitalObjectDAO digitalObjectDAO;
 
     private static final class RemovedDigitalObject {
 
@@ -169,7 +172,7 @@ public class RemoveDigitalObjectHandler
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();
-
+        topDigitalObjectUuid = action.getUuid();
         String returnedMessage = remove(action.getUuid(), context, uuidNotToRemove);
         if (!"".equals(returnedMessage)) {
             return new RemoveDigitalObjectResult(returnedMessage, null);
@@ -178,12 +181,6 @@ public class RemoveDigitalObjectHandler
 
         for (RemovedDigitalObject removedObj : removedDigitalObjects) {
             removedUuid.add(removedObj.getUuid());
-            try {
-                recModDao.deleteRemovedItem(removedObj.getUuid());
-            } catch (DatabaseException e) {
-                LOGGER.error("The digital object: " + removedObj.getUuid() + " could not be removed from "
-                        + Constants.TABLE_RECENTLY_MODIFIED_NAME + " " + e);
-            }
         }
 
         return new RemoveDigitalObjectResult(null, removedUuid);
@@ -196,6 +193,7 @@ public class RemoveDigitalObjectHandler
         int childrenToRemove = 0;
         if (children != null) {
             for (ArrayList<String> child : children) {
+
                 if (!uuidNotToRemove.contains(child.get(0)) && getDoModelHandler.getModel(uuid) != null) {
                     String returnedMessage = remove(child.get(0), context, uuidNotToRemove);
                     if (!"".equals(returnedMessage)) {
@@ -205,8 +203,9 @@ public class RemoveDigitalObjectHandler
                 }
             }
         }
-        if (!uuidNotToRemove.contains(uuid) && getDoModelHandler.getModel(uuid) != null) {
-            return removeDigObjAndRel(uuid, removedDigitalObjects, context, childrenToRemove < 20);
+        DigitalObjectModel model = null;
+        if (!uuidNotToRemove.contains(uuid) && (model = getDoModelHandler.getModel(uuid)) != null) {
+            return removeDigObjAndRel(uuid, removedDigitalObjects, context, childrenToRemove < 20, model);
         } else {
             LOGGER.debug("Digital object with uuid: " + uuid + " has not been found.");
             return "";
@@ -217,7 +216,8 @@ public class RemoveDigitalObjectHandler
     private String removeDigObjAndRel(String uuid,
                                       final List<RemovedDigitalObject> removedDigitalObjects,
                                       final ExecutionContext context,
-                                      boolean downloadFoxml) throws ActionException {
+                                      boolean downloadFoxml,
+                                      DigitalObjectModel model) throws ActionException {
         ArrayList<ArrayList<String>> parents = FedoraUtils.getRelated(uuid);
 
         StringBuffer message = new StringBuffer("");
@@ -285,12 +285,17 @@ public class RemoveDigitalObjectHandler
 
             }
             if (successful) {
-                removedDigitalObjects.add(new RemovedDigitalObject(uuid, foxml, removedRelationships));
+                RemovedDigitalObject removedDO = new RemovedDigitalObject(uuid, foxml, removedRelationships);
+                removedDigitalObjects.add(removedDO);
+                disableInDB(removedDO, model);
                 return "";
 
             } else {
                 if (getDoModelHandler.getModel(uuid) == null) {//getDoModelHandler.execute(new GetDOModelAction(uuid), context).getModel() == null) {
-                    removedDigitalObjects.add(new RemovedDigitalObject(uuid, foxml, removedRelationships));
+                    RemovedDigitalObject removedDO =
+                            new RemovedDigitalObject(uuid, foxml, removedRelationships);
+                    removedDigitalObjects.add(removedDO);
+                    disableInDB(removedDO, model);
                     return "";
 
                 } else {
@@ -306,6 +311,16 @@ public class RemoveDigitalObjectHandler
         } else {
             message.append(rollbackRemoval(removedRelationships, uuid, removedDigitalObjects));
             return message.toString();
+        }
+    }
+
+    private void disableInDB(RemovedDigitalObject removedDO, DigitalObjectModel model) {
+        try {
+            digitalObjectDAO.deleteDigitalObject(removedDO.getUuid(), model.getValue(), removedDO.getFoxml()
+                    .getLabel(), topDigitalObjectUuid);
+        } catch (Exception e) {
+            LOGGER.error("Problem with database: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -435,8 +450,8 @@ public class RemoveDigitalObjectHandler
             boolean successful = false;
             while (!successful && attempt++ < 3) {
                 successful =
-                        CreateObjectUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
-                                .getLabel(), removed.getUuid(), ROLLBACK_FLAG);
+                        IngestUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
+                                .getLabel(), removed.getUuid(), ROLLBACK_FLAG, null, null);
             }
 
             if (!successful) {

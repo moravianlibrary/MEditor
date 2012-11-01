@@ -45,19 +45,8 @@ public class PutUserRole {
     @In(1)
     private RoleItem role;
 
-    /** The user id. */
-    @In(2)
-    private String userId;
-
-    /** The id. */
+    /** The successful. */
     @Out(1)
-    private String id;
+    private boolean successful;
 
-    /** The found. */
-    @Out(2)
-    private boolean found;
-
-    /** The description. */
-    @Out(3)
-    private String description;
 }

@@ -138,29 +138,196 @@ public class Constants {
     /** Path to a file with current DB schema version number */
     public static final String SCHEMA_VERSION_PATH = "schemaVersion.txt";
 
-    /** The Constant TABLE_INPUT_QUEUE_ITEM. */
-    public static final String TABLE_INPUT_QUEUE_ITEM = "input_queue_item";
+    public static enum OLD_DB_TABLES {
 
-    /** The Constant TABLE_INPUT_QUEUE_ITEM_NAME. */
-    public static final String TABLE_INPUT_QUEUE_ITEM_NAME = "input_queue_item_name";
+        /** The table input_queue_item. */
+        TABLE_INPUT_QUEUE_ITEM("input_queue_item"),
 
-    /** The Constant TABLE_IMAGE_NAME. */
-    public static final String TABLE_IMAGE_NAME = "image";
+        /** The table input_queue_item_name. */
+        TABLE_INPUT_QUEUE_ITEM_NAME("input_queue_item_name"),
 
-    /** The Constant TABLE_RECENTLY_MODIFIED_NAME. */
-    public static final String TABLE_RECENTLY_MODIFIED_NAME = "recently_modified_item";
+        /** The table image. */
+        TABLE_IMAGE_NAME("image"),
 
-    /** The Constant TABLE_DESCRIPTION. */
+        /** The table recently_modified_item. */
+        TABLE_RECENTLY_MODIFIED_NAME("recently_modified_item"),
+
+        /** The table description. */
+        TABLE_DESCRIPTION("description"),
+
+        /** The table editor_user. */
+        TABLE_EDITOR_USER("editor_user"),
+
+        /** The table lock. */
+        TABLE_LOCK("lock"),
+
+        /** The table stored_files. */
+        TABLE_STORED_FILES("stored_files"),
+
+        /** The table role. */
+        TABLE_ROLE("role"),
+
+        /** The table user_in_role. */
+        TABLE_USER_IN_ROLE("user_in_role"),
+
+        /** The table open_id_identity. */
+        TABLE_OPEN_ID_IDENTITY("open_id_identity"),
+
+        /** The table version. */
+        TABLE_VERSION_NAME("version"),
+
+        /** The table tree_structure_node. */
+        TABLE_TREE_STRUCTURE_NODE_NAME("tree_structure_node"),
+
+        /** The table tree_structure. */
+        TABLE_TREE_STRUCTURE_NAME("tree_structure"),
+
+        /** The table request_for_adding. */
+        TABLE_REQUEST_FOR_ADDING("request_for_adding");
+
+        private final String tableName;
+
+        /**
+         * Instantiates a new old_ db_tables.
+         * 
+         * @param tableName
+         *        the table name
+         */
+        private OLD_DB_TABLES(String tableName) {
+            this.tableName = tableName;
+        }
+
+        /**
+         * @return the tableName
+         */
+        public String getTableName() {
+            return tableName;
+        }
+    }
+
+    /**
+     * The Enum CRUD_ACTION_TYPES.
+     */
+    public static enum CRUD_ACTION_TYPES {
+
+        CREATE("c"), READ("r"), UPDATE("u"), DELETE("d");
+
+        private final String value;
+
+        /**
+         * Instantiates a new crUd_action_types.
+         * 
+         * @param value
+         *        the value
+         */
+        private CRUD_ACTION_TYPES(String value) {
+            this.value = value;
+        }
+
+        /**
+         * @return the value
+         */
+        public String getValue() {
+            return value;
+        }
+
+    }
+
+    /**
+     * The Enum REQUESTS_TO_ADMIN_TYPES.
+     */
+    public static enum REQUESTS_TO_ADMIN_TYPES {
+
+        ADDING_NEW_ACOUNT("adding a new acount");
+
+        private final String value;
+
+        /**
+         * Instantiates a new requests_to_ admin_types.
+         * 
+         * @param value
+         *        the value
+         */
+        private REQUESTS_TO_ADMIN_TYPES(String value) {
+            this.value = value;
+        }
+
+        /**
+         * @return the value
+         */
+        public String getValue() {
+            return value;
+        }
+
+    }
+
+    // tables
+
+    public static enum DEFAULT_SYSTEM_USERS {
+
+        NON_EXISTENT(new Long(1), "non-existent"), TIME(new Long(2), "time");
+
+        private final Long userId;
+        private final String userName;
+
+        /**
+         * @param userId
+         * @param userName
+         */
+        private DEFAULT_SYSTEM_USERS(Long userId, String userName) {
+            this.userId = userId;
+            this.userName = userName;
+        }
+
+        /**
+         * @return the userId
+         */
+        public Long getUserId() {
+            return userId;
+        }
+
+        /**
+         * @return the userName
+         */
+        public String getUserName() {
+            return userName;
+        }
+
+    }
+
+    public static final String TABLE_ACTION = "action";
+    public static final String TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT = "crud_do_action_with_top_object";
+    public static final String TABLE_CONVERSION = "conversion";
+    public static final String TABLE_CRUD_DIGITAL_OBJECT_ACTION = "crud_digital_object_action";
+    public static final String TABLE_CRUD_LOCK_ACTION = "crud_lock_action";
+    public static final String TABLE_CRUD_REQUEST_TO_ADMIN_ACTION = "crud_request_to_admin_action";
+    public static final String TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION = "crud_saved_edited_object_action";
+    public static final String TABLE_CRUD_TREE_STRUCTURE_ACTION = "crud_tree_structure_action";
     public static final String TABLE_DESCRIPTION = "description";
-
-    /** The Constant TABLE_EDITOR_USER. */
+    public static final String TABLE_DIGITAL_OBJECT = "digital_object";
+    public static final String TABLE_EDITOR_RIGHT = "editor_right";
     public static final String TABLE_EDITOR_USER = "editor_user";
+    public static final String TABLE_IMAGE = "image ";
+    public static final String TABLE_INPUT_QUEUE = "input_queue";
+    public static final String TABLE_INPUT_QUEUE_ITEM = "input_queue_item";
+    public static final String TABLE_LDAP_IDENTITY = "ldap_identity";
+    public static final String TABLE_LOCK = "lock  ";
+    public static final String TABLE_LOG_IN_OUT = "log_in_out";
+    public static final String TABLE_LONG_RUNNING_PROCESS = "long_running_process";
+    public static final String TABLE_OPEN_ID_IDENTITY = "open_id_identity";
+    public static final String TABLE_REQUEST_TO_ADMIN = "request_to_admin";
+    public static final String TABLE_RIGHT_IN_ROLE = "right_in_role";
+    public static final String TABLE_ROLE = "role  ";
+    public static final String TABLE_SAVED_EDITED_OBJECT = "saved_edited_object";
+    public static final String TABLE_SHIBBOLETH_IDENTITY = "shibboleth_identity";
+    public static final String TABLE_TREE_STRUCTURE = "tree_structure";
+    public static final String TABLE_TREE_STRUCTURE_NODE = "tree_structure_node";
+    public static final String TABLE_USER_EDIT = "user_edit";
+    public static final String TABLE_USERS_RIGHT = "users_right";
+    public static final String TABLE_USERS_ROLE = "users_role";
+    public static final String TABLE_VERSION = "version";
 
-    /** The Constant TABLE_LOCK. */
-    public static final String TABLE_LOCK = "lock";
-
-    /** The Constant TABLE_STORED_FILES. */
-    public static final String TABLE_STORED_FILES = "stored_files";
+    //new tables
 
     /** The Constant SEQUENCE_EDITOR_USER. */
     public static final String SEQUENCE_EDITOR_USER = "seq_user";
@@ -174,25 +341,6 @@ public class Constants {
     /** The Constant SEQUENCE_ROLE. */
     public static final String SEQUENCE_ROLE = "seq_user_in_role";
 
-    /** The Constant TABLE_ROLE. */
-    public static final String TABLE_ROLE = "role";
-
-    /** The Constant TABLE_USER_IN_ROLE. */
-    public static final String TABLE_USER_IN_ROLE = "user_in_role";
-
-    /** The Constant TABLE_OPEN_ID_IDENTITY. */
-    public static final String TABLE_OPEN_ID_IDENTITY = "open_id_identity";
-
-    /** The Constant TABLE_VERSION_NAME. */
-    public static final String TABLE_VERSION_NAME = "version";
-
-    /** The Constant TABLE_TREE_STRUCTURE_NODE_NAME. */
-    public static final String TABLE_TREE_STRUCTURE_NODE_NAME = "tree_structure_node";
-
-    /** The Constant TABLE_TREE_STRUCTURE_NAME. */
-    public static final String TABLE_TREE_STRUCTURE_NAME = "tree_structure";
-
-    // input queue tree
     /** The Constant ATTR_ID. */
     public static final String ATTR_ID = "path"; // path
 
@@ -272,6 +420,12 @@ public class Constants {
 
     /** The Constant ATTR_INPUT_PATH. */
     public static final String ATTR_INPUT_PATH = "inputPath";
+
+    /** The Constant ATTR_CONVERSION_DATE. */
+    public static final String ATTR_CONVERSION_DATE = "conversionDate";
+
+    /** The Constant ATTR_IS_CONVERTED. */
+    public static final String ATTR_IS_CONVERTED = "isConverted";
 
     /** The Constant DIR_MAX_DEPTH. */
     public static final int DIR_MAX_DEPTH = 5;
@@ -994,6 +1148,18 @@ public class Constants {
         public String getRegex() {
             return regex;
         }
+
+    }
+
+    /**
+     * The Enum USER_IDENTITY_TYPES.
+     */
+    public static enum USER_IDENTITY_TYPES {
+
+        /** The OPE n_ id. */
+        OPEN_ID, /** The SHIBBOLETH. */
+        SHIBBOLETH, /** The LDAP. */
+        LDAP;
 
     }
 

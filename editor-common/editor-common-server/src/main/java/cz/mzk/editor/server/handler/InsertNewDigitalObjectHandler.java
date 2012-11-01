@@ -24,51 +24,30 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import java.text.SimpleDateFormat;
+import java.sql.SQLException;
 
 import javax.servlet.http.HttpSession;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
+import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import org.xml.sax.SAXException;
-
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.InputQueueItemDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.DAO.DigitalObjectDAO;
+import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
+import cz.mzk.editor.server.fedora.FedoraAccess;
+import cz.mzk.editor.server.newObject.CreateObject;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
@@ -86,15 +65,26 @@ public class InsertNewDigitalObjectHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
+    /** The fedora access. */
     @Inject
-    private InputQueueItemDAO inputQueueItemDAO;
+    @Named("securedFedoraAccess")
+    private FedoraAccess fedoraAccess;
 
-    /** The user DAO **/
-    @Inject
-    private UserDAO userDAO;
-
+    /** The config. */
     @Inject
     private EditorConfiguration config;
+
+    /** The dao utils. */
+    @Inject
+    private DigitalObjectDAO digitalObjectDAO;
+
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
+
+    /** The image resolver dao. */
+    @Inject
+    private ImageResolverDAO imageResolverDAO;
 
     public InsertNewDigitalObjectHandler() {
         super();
@@ -119,7 +109,44 @@ public class InsertNewDigitalObjectHandler
         String pid = null;
 
         try {
-            ingestSuccess = CreateObjectUtils.insertAllTheStructureToFOXMLs(object);
+            daoUtils.checkInputQueue(action.getInputPath(), object.getName(), true);
+        } catch (DatabaseException e1) {
+            LOGGER.error(e1.getMessage());
+            e1.printStackTrace();
+        } catch (SQLException e1) {
+            LOGGER.error(e1.getMessage());
+            e1.printStackTrace();
+        }
+
+        try {
+            CreateObject createObject =
+                    new CreateObject(action.getInputPath(),
+                                     config,
+                                     digitalObjectDAO,
+                                     imageResolverDAO,
+                                     fedoraAccess);
+            ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
+
+            if (createObject.getTopLevelUuid() != object.getUuid()) {
+
+                try {
+                    if (digitalObjectDAO.updateTopObjectUuid(createObject.getTopLevelUuid(),
+                                                             object.getUuid(),
+                                                             createObject.getIngestedObjects(),
+                                                             object.getModel().getValue(),
+                                                             object.getName(),
+                                                             object.getPath())) {
+                        digitalObjectDAO.deleteDigitalObject(createObject.getTopLevelUuid(),
+                                                             null,
+                                                             null,
+                                                             createObject.getTopLevelUuid());
+                    }
+                } catch (DatabaseException e) {
+                    LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
+                    e.printStackTrace();
+                }
+
+            }
 
             if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
                 pid = object.getUuid();
@@ -129,123 +156,11 @@ public class InsertNewDigitalObjectHandler
 
             reindexSuccess = ServerUtils.reindex(pid);
 
-            if (ingestSuccess) {
-                String username;
-                try {
-                    username =
-                            userDAO.getName(String.valueOf(String.valueOf(ses
-                                    .getAttribute(HttpCookies.SESSION_ID_KEY))), true);
-                } catch (DatabaseException e) {
-                    throw new ActionException(e);
-                }
-                try {
-                    inputQueueItemDAO.updateIngestInfo(true, action.getInputPath());
-                } catch (DatabaseException e) {
-                    throw new ActionException(e);
-                }
-                if (config.getCreateIngestInfoXmlFile()) {
-                    createInfoXml(username,
-                                  pid.substring(Constants.FEDORA_UUID_PREFIX.length()),
-                                  config.getScanInputQueuePath() + action.getInputPath());
-                }
-            }
-
         } catch (CreateObjectException e) {
             throw new ActionException(e.getMessage());
         }
         return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, pid);
 
-    }
-
-    /**
-     * @param name
-     * @param uuid
-     * @param path
-     */
-
-    private void createInfoXml(String username, String pid, String path) {
-
-        try {
-            File ingestInfoFile = new File(path + "/" + Constants.INGEST_INFO_FILE_NAME);
-            Document doc = null;
-            Element rootElement = null;
-            boolean fileExists = ingestInfoFile.exists();
-            final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
-            if (fileExists) {
-                try {
-                    FileInputStream fileStream = new FileInputStream(ingestInfoFile);
-                    doc = XMLUtils.parseDocument(fileStream);
-                    rootElement =
-                            FoxmlUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]");
-                    fileStream.close();
-                } catch (FileNotFoundException e) {
-                    fileExists = false;
-                } catch (SAXException e) {
-                    fileExists = false;
-                } catch (IOException e) {
-                    fileExists = false;
-                }
-            }
-            if (!fileExists) {
-                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                doc = docBuilder.newDocument();
-                rootElement = null;
-            }
-            int number = 0;
-            if (rootElement == null) {
-                rootElement = doc.createElement(Constants.NAME_ROOT_INGEST_ELEMENT);
-                doc.appendChild(rootElement);
-            } else {
-                number =
-                        Integer.parseInt(FoxmlUtils.getElement(doc,
-                                                               "//" + Constants.NAME_ROOT_INGEST_ELEMENT
-                                                                       + "[1]//"
-                                                                       + Constants.NAME_INGEST_ELEMENT
-                                                                       + "[position()=last()]")
-                                .getAttribute("number"));
-            }
-
-            // ingest elements
-            Element ingest = doc.createElement("ingest");
-            ingest.setAttribute("number", String.valueOf(++number));
-            rootElement.appendChild(ingest);
-
-            // uuid element
-            Element pidEl = doc.createElement(Constants.PARAM_PID);
-            pidEl.appendChild(doc.createTextNode(pid));
-            ingest.appendChild(pidEl);
-
-            // name element
-            Element nameEl = doc.createElement(Constants.PARAM_USER_NAME);
-            nameEl.appendChild(doc.createTextNode(username));
-            ingest.appendChild(nameEl);
-
-            // time element
-            Element time = doc.createElement(Constants.PARAM_TIME);
-            time.appendChild(doc.createTextNode(FORMATTER.format(new java.util.Date())));
-            ingest.appendChild(time);
-
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            Result result = new StreamResult(ingestInfoFile.toURI().getPath());
-            //            StreamResult result = new StreamResult(ingestInfoFile);
-            ingestInfoFile.exists();
-            transformer.transform(source, result);
-
-        } catch (TransformerException e) {
-            LOGGER.error(e);
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            LOGGER.error(e);
-            e.printStackTrace();
-        } catch (XPathExpressionException e) {
-            LOGGER.error(e);
-            e.printStackTrace();
-        }
     }
 
     /**

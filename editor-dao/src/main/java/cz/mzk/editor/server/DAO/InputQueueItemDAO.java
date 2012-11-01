@@ -30,6 +30,7 @@ package cz.mzk.editor.server.DAO;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 
 // TODO: Auto-generated Javadoc
@@ -43,6 +44,8 @@ public interface InputQueueItemDAO {
      * 
      * @param toUpdate
      *        the to update
+     * @throws DatabaseException
+     *         the database exception
      */
     void updateItems(List<InputQueueItem> toUpdate) throws DatabaseException;
 
@@ -52,29 +55,43 @@ public interface InputQueueItemDAO {
      * @param prefix
      *        the prefix
      * @return the items
+     * @throws DatabaseException
+     *         the database exception
      */
     ArrayList<InputQueueItem> getItems(String prefix) throws DatabaseException;
 
     /**
-     * Updates the info about a possible ingest
-     * 
-     * @param ingested
-     *        the info about a possible ingest
-     * @param path
-     *        the path to the (non)ingested images
-     * @throws DatabaseException
-     */
-    void updateIngestInfo(boolean ingested, String path) throws DatabaseException;
-
-    /**
-     * Updates the name of a digital object
+     * Updates the name of a digital object.
      * 
      * @param path
      *        The path to the digital object
      * @param name
      *        The name
      * @throws DatabaseException
+     *         the database exception
      */
 
     public void updateName(String path, String name) throws DatabaseException;
+
+    /**
+     * Gets the ingest info.
+     * 
+     * @param path
+     *        the path
+     * @return the ingest info
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<IngestInfo> getIngestInfo(String path) throws DatabaseException;
+
+    /**
+     * Checks for been ingested.
+     * 
+     * @param path
+     *        the path
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean hasBeenIngested(String path) throws DatabaseException;
 }

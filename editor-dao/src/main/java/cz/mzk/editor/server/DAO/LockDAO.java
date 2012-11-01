@@ -24,7 +24,6 @@
 
 package cz.mzk.editor.server.DAO;
 
-
 /**
  * @author Jiri Kremser
  * @version $Id$
@@ -34,18 +33,17 @@ public interface LockDAO {
 
     /**
      * Tries to lock a digital object with the given
-     * <code>uuid<code>, if fails returns the id of owner of lock, if is successful returns <code>0<code>
+     * <code>uuid<code>, returns whether locking was successful
      * 
      * @param uuid
      *        the uuid of digital object
-     * @param id
-     *        the id of the user
      * @param description
      *        the lock-description
+     * @param insert
      * @return whether locking was successful
      * @throws DatabaseException
      */
-    boolean lockDigitalObject(String uuid, Long id, String description) throws DatabaseException;
+    boolean lockDigitalObject(String uuid, String description, boolean insert) throws DatabaseException;
 
     /**
      * Unlocks the digital object with uuid

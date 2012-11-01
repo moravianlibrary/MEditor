@@ -287,6 +287,9 @@ public final class PageNumberingManager {
         if (data != null && data.length > 0) {
 
             int i = getPageNumberFromText(data[0].getAttributeAsString(Constants.ATTR_NAME));
+            if (i < 0 && useRoman) {
+                i = ClientCreateUtils.romanToDecimal(data[0].getAttributeAsString(Constants.ATTR_NAME));
+            }
             int j = 0;
             for (Record rec : data) {
                 String number =
@@ -317,8 +320,8 @@ public final class PageNumberingManager {
             int j = 0;
             for (Record rec : data) {
                 String number =
-                        !isRoman ? String.valueOf(i + (j / 2)) : ClientCreateUtils.decimalToRoman((i + (j / 2)),
-                                                                                            false);
+                        !isRoman ? String.valueOf(i + (j / 2)) : ClientCreateUtils
+                                .decimalToRoman((i + (j / 2)), false);
                 rec.setAttribute(Constants.ATTR_NAME, number + "" + (j % 2 == 0 ? 'r' : 'v'));
                 j++;
             }

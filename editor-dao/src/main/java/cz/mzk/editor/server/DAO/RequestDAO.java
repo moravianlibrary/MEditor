@@ -37,10 +37,36 @@ import cz.mzk.editor.shared.rpc.RequestItem;
  */
 public interface RequestDAO {
 
+    /**
+     * Adds the open id request.
+     * 
+     * @param name
+     *        the name
+     * @param openID
+     *        the open id
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
     boolean addOpenIDRequest(String name, String openID) throws DatabaseException;
 
+    /**
+     * Removes the open id request.
+     * 
+     * @param id
+     *        the id
+     * @throws DatabaseException
+     *         the database exception
+     */
     void removeOpenIDRequest(long id) throws DatabaseException;
 
+    /**
+     * Gets the all open id requests.
+     * 
+     * @return the all open id requests
+     * @throws DatabaseException
+     *         the database exception
+     */
     ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException;
 
 }

@@ -507,6 +507,7 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolume());
         labelsSingular.put(DigitalObjectModel.ARTICLE.getValue(), lang.article());
         labelsSingular.put(DigitalObjectModel.MANUSCRIPT.getValue(), lang.manuscript());
+        labelsSingular.put(DigitalObjectModel.ARCHIVE.getValue(), lang.archive());
         labelsSingular.put(DigitalObjectModel.MAP.getValue(), lang.map());
         labelsSingular.put(DigitalObjectModel.SUPPLEMENT.getValue(), lang.supplement());
         labelsSingular.put(DigitalObjectModel.GRAPHIC.getValue(), lang.graphic());

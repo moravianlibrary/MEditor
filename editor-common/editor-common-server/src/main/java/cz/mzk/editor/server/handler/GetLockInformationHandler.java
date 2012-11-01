@@ -98,8 +98,9 @@ public class GetLockInformationHandler
                                                                      timeToExpiration));
 
                 } else {
-                    return new GetLockInformationResult(new LockInfo(userDAO.getName(String
-                            .valueOf(lockOwnerId), false), locksDAO.getDescription(uuid), timeToExpiration));
+                    return new GetLockInformationResult(new LockInfo(userDAO.getName(lockOwnerId),
+                                                                     locksDAO.getDescription(uuid),
+                                                                     timeToExpiration));
                 }
             }
         } catch (DatabaseException e) {

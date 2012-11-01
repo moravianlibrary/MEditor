@@ -4,7 +4,7 @@ if [ -z "$GWT_HOME" ] ; then
         exit 1
 fi
 
-APPDIR=`dirname $0`/../../editor-common/editor-common-client;
+APPDIR=`dirname $0`/../../editor-confutils;
 PATH_TO_CONSTANTS=/src/main/resources/cz/mzk/editor/client
 PATH_TO_JAVA_CLASS=/target/generated-sources/gwt
 

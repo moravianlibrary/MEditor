@@ -122,7 +122,9 @@ public class StoredItemsHandler
             File userDir = new File(userDirsPath + File.separator + userId);
             if (!userDir.exists()) userDir.mkdirs();
 
-            String foxmlFile = userDirsPath + userId + File.separator + action.getStoredItem().getFileName();
+            String foxmlFile =
+                    userDirsPath + File.separator + userId + File.separator
+                            + action.getStoredItem().getFileName();
             try {
                 BufferedWriter out = new BufferedWriter(new FileWriter(foxmlFile));
                 out.write(workingCopyFoxml);
@@ -136,7 +138,7 @@ public class StoredItemsHandler
 
             try {
                 action.getStoredItem().setFileName(foxmlFile);
-                if (storeDao.storeDigitalObject(userId, action.getStoredItem())) {
+                if (storeDao.checkStoredDigitalObject(userId, action.getStoredItem())) {
                     return new StoredItemsResult(new ArrayList<StoredItem>());
                 } else {
                     return new StoredItemsResult(null);
@@ -148,9 +150,8 @@ public class StoredItemsHandler
 
         } else if (action.getVerb() == Constants.VERB.DELETE) {
             try {
-                String fileName = action.getStoredItem().getFileName();
-                if (storeDao.deleteItem(fileName)) {
-                    File deleteFile = new File(fileName);
+                if (storeDao.deleteItem(action.getStoredItem().getId())) {
+                    File deleteFile = new File(action.getStoredItem().getFileName());
                     if (deleteFile.exists()) {
                         deleteFile.delete();
                     }

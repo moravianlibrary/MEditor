@@ -29,8 +29,11 @@ package cz.mzk.editor.server.DAO;
 
 import java.util.ArrayList;
 
-import cz.mzk.editor.shared.rpc.OpenIDItem;
+import javax.activation.UnsupportedDataTypeException;
+
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
 
 // TODO: Auto-generated Javadoc
@@ -39,6 +42,7 @@ import cz.mzk.editor.shared.rpc.UserInfoItem;
  */
 public interface UserDAO {
 
+    /** The Constant UNKNOWN. */
     public static final int UNKNOWN = -1;
 
     /** The Constant NOT_PRESENT. */
@@ -65,15 +69,21 @@ public interface UserDAO {
      * @param identifier
      *        the identifier
      * @return the int
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
     int isSupported(String identifier) throws DatabaseException;
 
     /**
-     * Gets the users id
+     * Gets the users id.
      * 
      * @param identifier
      *        the identifier
      * @return the long
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
     long getUsersId(String identifier) throws DatabaseException;
 
@@ -85,69 +95,51 @@ public interface UserDAO {
      * @param userId
      *        the user id
      * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
      */
     boolean hasRole(String role, long userId) throws DatabaseException;
-
-    /**
-     * Open i dhas role.
-     * 
-     * @param role
-     *        the role
-     * @param identifier
-     *        the identifier
-     * @return true, if successful
-     */
-    boolean openIDhasRole(String role, String identifier) throws DatabaseException;
 
     /**
      * Gets the name.
      * 
      * @param key
      *        the key
-     * @param openIdUsed
-     *        <code>openIdUsed == false<code> if the id is used as the key
-     *          <code>openIdUsed == true<code> if the openId is used as the key
      * @return the name
+     * @throws DatabaseException
+     *         the database exception
      */
-    String getName(String key, boolean openIdUsed) throws DatabaseException;
+    String getName(Long key) throws DatabaseException;
 
     /**
-     * Adds the user identity.
+     * Adds the remove user identity.
      * 
-     * @param identity
-     *        the identity
-     * @param userId
-     *        the user id
-     * @return the string
+     * @param userIdentity
+     *        the user identity
+     * @param add
+     *        the add
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
-    String addUserIdentity(OpenIDItem identity, long userId) throws DatabaseException;
+    boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
+            UnsupportedDataTypeException;
 
     /**
-     * Removes the user identity.
+     * Adds the remove role item.
      * 
-     * @param id
-     *        the id
+     * @param roleItem
+     *        the role item
+     * @param add
+     *        the add
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
-    void removeUserIdentity(long id) throws DatabaseException;
-
-    /**
-     * Adds the user role.
-     * 
-     * @param role
-     *        the role
-     * @param userId
-     *        the user id
-     * @return the role item
-     */
-    RoleItem addUserRole(RoleItem role, long userId) throws DatabaseException;
-
-    /**
-     * Removes the user role.
-     * 
-     * @param id
-     *        the id
-     */
-    void removeUserRole(long id) throws DatabaseException;
+    boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+            UnsupportedDataTypeException;
 
     /**
      * Gets the roles of user.
@@ -155,6 +147,8 @@ public interface UserDAO {
      * @param id
      *        the id
      * @return the roles of user
+     * @throws DatabaseException
+     *         the database exception
      */
     ArrayList<RoleItem> getRolesOfUser(long id) throws DatabaseException;
 
@@ -162,39 +156,56 @@ public interface UserDAO {
      * Gets the roles.
      * 
      * @return the roles
+     * @throws DatabaseException
+     *         the database exception
      */
-    ArrayList<String> getRoles() throws DatabaseException;
+    ArrayList<RoleItem> getRoles() throws DatabaseException;
 
     /**
      * Gets the identities.
      * 
      * @param id
      *        the id
+     * @param type
+     *        the type
      * @return the identities
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
-    ArrayList<OpenIDItem> getIdentities(String id) throws DatabaseException;
+    ArrayList<UserIdentity> getIdentities(String userId, USER_IDENTITY_TYPES type) throws DatabaseException,
+            UnsupportedDataTypeException;
 
     /**
      * Removes the user.
      * 
      * @param id
      *        the id
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
-    void removeUser(long id) throws DatabaseException;
+    boolean disableUser(long userId) throws DatabaseException;
 
     /**
-     * Adds the user.
+     * Inser updatet user.
      * 
      * @param user
      *        the user
-     * @return the string
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
      */
-    String addUser(UserInfoItem user) throws DatabaseException;
+    boolean insertUpdatetUser(UserInfoItem user) throws DatabaseException;
 
     /**
      * Gets the users.
      * 
      * @return the users
+     * @throws DatabaseException
+     *         the database exception
      */
     ArrayList<UserInfoItem> getUsers() throws DatabaseException;
 

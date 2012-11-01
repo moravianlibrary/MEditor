@@ -35,10 +35,17 @@ import java.io.InputStream;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
+import java.text.SimpleDateFormat;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import javax.servlet.http.HttpSession;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,6 +61,8 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import com.google.inject.Provider;
+
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
@@ -62,8 +71,13 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AbstractDAO.
  * 
@@ -81,23 +95,40 @@ public abstract class AbstractDAO {
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
+    /** The Constant DRIVER. */
     private static final String DRIVER = "org.postgresql.Driver";
 
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
+    /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
+    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+    /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
+
+    /** The Constant POOLABLE_NO. */
     private static final int POOLABLE_NO = 0;
+
+    /** The poolable. */
     private static int poolable = -1;
+
+    /** The context is correct. */
     private static boolean contextIsCorrect = false;
 
+    /** The pool. */
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
+
+    /** The http session provider. */
+    @Inject
+    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Inits the connection.
      * 
      * @throws DatabaseException
+     *         the database exception
      */
     private void initConnection() throws DatabaseException {
         if (poolable != POOLABLE_NO && pool == null) {
@@ -139,6 +170,12 @@ public abstract class AbstractDAO {
         }
     }
 
+    /**
+     * Inits the connection without pool.
+     * 
+     * @throws DatabaseException
+     *         the database exception
+     */
     private void initConnectionWithoutPool() throws DatabaseException {
         try {
             Class.forName(DRIVER);
@@ -178,6 +215,7 @@ public abstract class AbstractDAO {
      * 
      * @return the connection
      * @throws DatabaseException
+     *         the database exception
      */
     protected Connection getConnection() throws DatabaseException {
         if (conn == null) {
@@ -201,6 +239,18 @@ public abstract class AbstractDAO {
         conn = null;
     }
 
+    /**
+     * Creates the correct context.
+     * 
+     * @param login
+     *        the login
+     * @param password
+     *        the password
+     * @param port
+     *        the port
+     * @param name
+     *        the name
+     */
     private void createCorrectContext(String login, String password, String port, String name) {
         String pathPrefix = System.getProperty("catalina.home");
         boolean changed = false;
@@ -313,5 +363,96 @@ public abstract class AbstractDAO {
 
         contextIsCorrect = true;
         poolable = POOLABLE_YES;
+    }
+
+    /**
+     * Gets the users id.
+     * 
+     * @param identifier
+     *        the identifier
+     * @param type
+     *        the type
+     * @return the users id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    protected long getUsersId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        long userId = -1;
+        try {
+            StringBuffer sql = new StringBuffer("SELECT editor_user_id FROM ");
+
+            switch (type) {
+                case OPEN_ID:
+                    sql.append(Constants.TABLE_OPEN_ID_IDENTITY);
+                    break;
+                case SHIBBOLETH:
+                    sql.append(Constants.TABLE_SHIBBOLETH_IDENTITY);
+                    break;
+                case LDAP:
+                    sql.append(Constants.TABLE_LDAP_IDENTITY);
+                    break;
+                default:
+                    return DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId();
+            }
+            sql.append(" WHERE identity = (?)");
+            selectSt = getConnection().prepareStatement(sql.toString());
+            selectSt.setString(1, identifier);
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                userId = rs.getLong("editor_user_id");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return userId;
+    }
+
+    /**
+     * Gets the user id.
+     * 
+     * @return the user id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    protected Long getUserId() throws DatabaseException {
+        String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
+        return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
+    }
+
+    /**
+     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * 
+     * @param date
+     *        the date
+     * @return the string
+     */
+    /**
+     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * 
+     * @param date
+     *        the date
+     * @return the string
+     */
+    protected String formatDate(java.sql.Date date) {
+        return FORMATTER.format(date);
+    }
+
+    /**
+     * Format timestamp.
+     * 
+     * @param timestamp
+     *        the timestamp
+     * @return the string
+     */
+    protected String formatTimestamp(Timestamp timestamp) {
+        return FORMATTER.format(timestamp);
     }
 }

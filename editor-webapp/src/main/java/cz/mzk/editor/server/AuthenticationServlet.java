@@ -56,6 +56,7 @@ import org.w3c.dom.NodeList;
 
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.LogInOutDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
@@ -79,6 +80,9 @@ public class AuthenticationServlet
     /** The configuration. */
     @Inject
     private static EditorConfiguration configuration;
+
+    @Inject
+    private static LogInOutDAO logInOutDAO;
 
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -170,9 +174,9 @@ public class AuthenticationServlet
             int userStatus = UserDAO.UNKNOWN;
             try {
                 userStatus = userDAO.isSupported(identifier);
-            } catch (DatabaseException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                //                userStatus = userDAO.isSupported(identifier, true);
+            } catch (DatabaseException ex) {
+                ex.printStackTrace();
             }
             switch (userStatus) {
                 case UserDAO.UNKNOWN:
@@ -183,6 +187,12 @@ public class AuthenticationServlet
                     // identifier);
                     session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
                     session.setAttribute(HttpCookies.NAME_KEY, name);
+                    try {
+                        logInOutDAO.logInOut(true);
+                    } catch (DatabaseException e1) {
+                        ACCESS_LOGGER.error(e1.getMessage());
+                        e1.printStackTrace();
+                    }
                     URLS.redirect(resp, url == null ? root : url);
                     break;
                 case UserDAO.ADMIN:
@@ -193,6 +203,12 @@ public class AuthenticationServlet
                     session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
                     session.setAttribute(HttpCookies.NAME_KEY, name);
                     session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
+                    try {
+                        logInOutDAO.logInOut(true);
+                    } catch (DatabaseException e1) {
+                        ACCESS_LOGGER.error(e1.getMessage());
+                        e1.printStackTrace();
+                    }
                     URLS.redirect(resp, url == null ? root : url);
                     break;
                 case UserDAO.NOT_PRESENT:

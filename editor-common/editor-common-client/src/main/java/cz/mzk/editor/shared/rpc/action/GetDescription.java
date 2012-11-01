@@ -27,8 +27,6 @@
 
 package cz.mzk.editor.shared.rpc.action;
 
-import java.util.Date;
-
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
@@ -53,7 +51,4 @@ public class GetDescription {
     @Out(2)
     private String userDescription;
 
-    /** The modified. */
-    @Out(3)
-    private Date modified;
 }

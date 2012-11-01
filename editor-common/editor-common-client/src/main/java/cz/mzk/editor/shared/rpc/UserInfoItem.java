@@ -44,9 +44,6 @@ public class UserInfoItem
     /** The name. */
     private String surname;
 
-    /** The description. */
-    private String sex;
-
     /** The id. */
     private String id;
 
@@ -65,16 +62,13 @@ public class UserInfoItem
      *        the name
      * @param surname
      *        the surname
-     * @param sex
-     *        the sex
      * @param id
      *        the id
      */
-    public UserInfoItem(String name, String surname, String sex, String id) {
+    public UserInfoItem(String name, String surname, String id) {
         super();
         this.name = name;
         this.surname = surname;
-        this.sex = sex;
         this.id = id;
     }
 
@@ -114,25 +108,6 @@ public class UserInfoItem
      */
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    /**
-     * Gets the sex.
-     * 
-     * @return the sex
-     */
-    public String getSex() {
-        return sex;
-    }
-
-    /**
-     * Sets the sex.
-     * 
-     * @param sex
-     *        the new sex
-     */
-    public void setSex(String sex) {
-        this.sex = sex;
     }
 
     /**

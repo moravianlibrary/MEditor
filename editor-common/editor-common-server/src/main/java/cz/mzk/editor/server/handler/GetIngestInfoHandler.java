@@ -24,21 +24,7 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
@@ -47,18 +33,11 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.apache.log4j.Logger;
 
-import org.xml.sax.SAXException;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.FedoraUtils;
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.server.util.XMLUtils;
-import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;
 
@@ -74,21 +53,10 @@ public class GetIngestInfoHandler
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
-    /** The configuration. */
-    private final EditorConfiguration configuration;
-
-    private String prefix;
-
-    /**
-     * Instantiates a new get ingest info handler.
-     * 
-     * @param configuration
-     *        the configuration
-     */
     @Inject
-    public GetIngestInfoHandler(final EditorConfiguration configuration) {
-        this.configuration = configuration;
-    }
+    private InputQueueItemDAO inputQueueDAO;
+
+    private static final Logger LOGGER = Logger.getLogger(GetIngestInfoHandler.class.getPackage().toString());
 
     /**
      * {@inheritDoc}
@@ -101,101 +69,12 @@ public class GetIngestInfoHandler
         HttpSession ses = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(ses);
 
-        prefix = configuration.getScanInputQueuePath();
-        String path = action.getPath();
-
-        ArrayList<IngestInfo> ingestInfoList = new ArrayList<IngestInfo>();
-
-        scanDirectoryStructure(path, ingestInfoList, Constants.DIR_MAX_DEPTH);
-
-        return new GetIngestInfoResult(ingestInfoList);
-    }
-
-    /**
-     * @param rltvpth
-     * @param ingestInfoList
-     * @param i
-     * @return
-     */
-
-    private void scanDirectoryStructure(String path, final ArrayList<IngestInfo> ingestInfoList, int level) {
-        IngestInfo directoryIngestInfo = getDirectoryIngestInfo(path);
-        if (directoryIngestInfo != null) {
-            ingestInfoList.add(directoryIngestInfo);
-        }
-        if (level != 0) {
-            File directory = new File(prefix + path);
-            FileFilter filter = new FileFilter() {
-
-                @Override
-                public boolean accept(File pathname) {
-                    return !pathname.isFile();
-                }
-
-            };
-
-            File[] dirs = directory.listFiles(filter);
-            for (int i = 0; i < dirs.length; i++) {
-                String rltvpth = path + File.separator + dirs[i].getName();
-                scanDirectoryStructure(rltvpth, ingestInfoList, level - 1);
-            }
-        }
-    }
-
-    private IngestInfo getDirectoryIngestInfo(String path) {
-
-        List<String> pid = new ArrayList<String>();
-        List<String> username = new ArrayList<String>();
-        List<String> time = new ArrayList<String>();
-
-        File ingestInfoFile = new File(prefix + path + "/" + Constants.INGEST_INFO_FILE_NAME);
-        boolean fileExists = ingestInfoFile.exists();
-        if (fileExists) {
-            try {
-                FileInputStream fileStream = new FileInputStream(ingestInfoFile);
-                Document doc = XMLUtils.parseDocument(fileStream);
-
-                String xPath =
-                        "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]//" + Constants.NAME_INGEST_ELEMENT;
-
-                XPathExpression all = FedoraUtils.makeNSAwareXpath().compile(xPath);
-
-                NodeList nodesOfStream = (NodeList) all.evaluate(doc, XPathConstants.NODESET);
-                if (nodesOfStream.getLength() != 0) {
-                    for (int i = 0; i < nodesOfStream.getLength(); i++) {
-                        Element parentElement = (Element) nodesOfStream.item(i);
-                        NodeList childNodes = parentElement.getChildNodes();
-                        for (int j = 0; j < childNodes.getLength() && j < 3; j++) {
-                            if (childNodes.item(j).getNodeName().equals(Constants.PARAM_PID)
-                                    && pid.size() < i + 1) pid.add(childNodes.item(j).getTextContent());
-                            if (childNodes.item(j).getNodeName().equals(Constants.PARAM_USER_NAME)
-                                    && username.size() < i + 1)
-                                username.add(childNodes.item(j).getTextContent());
-                            if (childNodes.item(j).getNodeName().equals(Constants.PARAM_TIME)
-                                    && time.size() < i + 1) time.add(childNodes.item(j).getTextContent());
-                        }
-                        if (pid.size() < i + 1) pid.add(Constants.MISSING);
-                        if (username.size() < i + 1) username.add(Constants.MISSING);
-                        if (time.size() < i + 1) time.add(Constants.MISSING);
-                    }
-                }
-                fileStream.close();
-            } catch (FileNotFoundException e) {
-                fileExists = false;
-            } catch (SAXException e) {
-                fileExists = false;
-            } catch (IOException e) {
-                fileExists = false;
-            } catch (ParserConfigurationException e) {
-                fileExists = false;
-            } catch (XPathExpressionException e) {
-                fileExists = false;
-            }
-        }
-        if (fileExists) {
-            return new IngestInfo(path, pid, username, time);
-        } else {
-            return null;
+        try {
+            return new GetIngestInfoResult(inputQueueDAO.getIngestInfo(action.getPath()));
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
         }
     }
 

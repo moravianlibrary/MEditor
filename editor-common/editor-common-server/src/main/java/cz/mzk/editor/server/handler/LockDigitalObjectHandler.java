@@ -36,10 +36,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LockDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
@@ -61,10 +59,6 @@ public class LockDigitalObjectHandler
     /** The locks DAO **/
     @Inject
     private LockDAO locksDAO;
-
-    /** The user DAO **/
-    @Inject
-    private UserDAO userDAO;
 
     /** The http session provider. */
     @Inject
@@ -99,26 +93,19 @@ public class LockDigitalObjectHandler
         LockInfo lockInfo =
                 getLockInformationHandler.execute(new GetLockInformationAction(uuid), context).getLockInfo();
 
-        long usersId = 0;
-        try {
-            usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
-        }
-
         boolean successful = false;
         try {
 
             if (lockInfo.getLockOwner() == null) {
 
-                successful = locksDAO.lockDigitalObject(uuid, usersId, description);
+                successful = locksDAO.lockDigitalObject(uuid, description, true);
                 LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
                         + successful);
                 return new LockDigitalObjectResult(lockInfo);
 
             } else {
                 if ("".equals(lockInfo.getLockOwner())) {
-                    successful = locksDAO.lockDigitalObject(uuid, null, description);
+                    successful = locksDAO.lockDigitalObject(uuid, description, false);
                     LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
                             + successful);
                     return new LockDigitalObjectResult(lockInfo);

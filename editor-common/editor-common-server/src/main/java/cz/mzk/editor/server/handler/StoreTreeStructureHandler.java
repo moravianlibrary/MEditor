@@ -30,6 +30,7 @@ package cz.mzk.editor.server.handler;
 
 import java.text.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -49,6 +50,8 @@ import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
+import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
 
@@ -127,8 +130,15 @@ public class StoreTreeStructureHandler
                     DateFormat dateFormatter =
                             DateFormat.getDateInstance(DateFormat.DEFAULT, new Locale("cs", "CZ"));
                     action.getBundle().getInfo().setCreated(dateFormatter.format(new Date()));
-                    treeDAO.saveStructure(userId, action.getBundle().getInfo(), action.getBundle().getNodes());
-                    return new StoreTreeStructureResult(null, null);
+                    boolean success =
+                            treeDAO.saveStructure(userId, action.getBundle().getInfo(), action.getBundle()
+                                    .getNodes());
+                    if (success) {
+                        return new StoreTreeStructureResult(new ArrayList<TreeStructureInfo>(),
+                                                            new ArrayList<TreeStructureNode>());
+                    } else {
+                        return new StoreTreeStructureResult(null, null);
+                    }
                 case GET:
                     if (action.isAll()) {
                         // for all users

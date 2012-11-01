@@ -38,10 +38,36 @@ import cz.mzk.editor.shared.rpc.ImageItem;
  */
 public interface ImageResolverDAO {
 
+    /**
+     * Insert items.
+     * 
+     * @param toInsert
+     *        the to insert
+     * @throws DatabaseException
+     *         the database exception
+     */
     void insertItems(List<ImageItem> toInsert) throws DatabaseException;
 
+    /**
+     * Resolve items.
+     * 
+     * @param identifiers
+     *        the identifiers
+     * @return the array list
+     * @throws DatabaseException
+     *         the database exception
+     */
     ArrayList<String> resolveItems(List<String> identifiers) throws DatabaseException;
 
+    /**
+     * Cache ageing process.
+     * 
+     * @param numberOfDays
+     *        the number of days
+     * @return the array list
+     * @throws DatabaseException
+     *         the database exception
+     */
     ArrayList<String> cacheAgeingProcess(int numberOfDays) throws DatabaseException;
 
     /**
@@ -50,6 +76,19 @@ public interface ImageResolverDAO {
      * @param imageFile
      *        The path to the new image file
      * @return OldJpgFsPath
+     * @throws DatabaseException
+     *         the database exception
      */
     String getOldJpgFsPath(String imageFile) throws DatabaseException;
+
+    /**
+     * Gets the new image file path.
+     * 
+     * @param identifier
+     *        the identifier
+     * @return the new image file path
+     * @throws DatabaseException
+     *         the database exception
+     */
+    String getNewImageFilePath(String identifier) throws DatabaseException;
 }

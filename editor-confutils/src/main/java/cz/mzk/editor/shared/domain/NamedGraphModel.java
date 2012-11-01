@@ -36,7 +36,21 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.*;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARTICLE;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.INTERNALPART;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.MANUSCRIPT;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.MAP;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.MONOGRAPH;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.MONOGRAPHUNIT;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.PAGE;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICAL;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALITEM;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALVOLUME;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARCHIVE;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.RECORDING;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.TRACK;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.IMAGE_UNIT;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUND_UNIT;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasIntCompPart;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasItem;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasPage;
@@ -75,6 +89,11 @@ public class NamedGraphModel
         putRelationship(MANUSCRIPT, hasIntCompPart, INTERNALPART);
         putRelationship(MANUSCRIPT, hasUnit, MONOGRAPHUNIT);
         //        putRelationship(MANUSCRIPT, hasUnit, SUPPLEMENT);
+
+        putRelationship(ARCHIVE, hasPage, PAGE);
+        putRelationship(ARCHIVE, hasIntCompPart, INTERNALPART);
+        putRelationship(ARCHIVE, hasUnit, MONOGRAPHUNIT);
+        //        putRelationship(ARCHIVE, hasUnit, SUPPLEMENT);
 
         putRelationship(MONOGRAPHUNIT, hasPage, PAGE);
         putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);

@@ -68,10 +68,9 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.mzk.editor.client.gwtrpcds.UsersGwtRPCDS;
-import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.shared.rpc.OpenIDItem;
 import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesResult;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
@@ -80,10 +79,6 @@ import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityResult;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleResult;
-import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
-import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityResult;
-import cz.mzk.editor.shared.rpc.action.RemoveUserRoleAction;
-import cz.mzk.editor.shared.rpc.action.RemoveUserRoleResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -280,7 +275,7 @@ public class UserPresenter
 
             @Override
             public void callback(GetAllRolesResult result) {
-                UserPresenter.this.roles = result.getRoles();
+                //                UserPresenter.this.roles = result.getRoles();
             }
         });
         bind();
@@ -325,7 +320,7 @@ public class UserPresenter
                                                            .setData(new ListGridRecord[] {});
                                                }
 
-                                               ArrayList<OpenIDItem> identities = result.getIdentities();
+                                               ArrayList<UserIdentity> identities = result.getIdentities();
                                                if (identities != null && identities.size() > 0) {
                                                    ListGridRecord[] identityRecords =
                                                            new ListGridRecord[identities.size()];
@@ -490,38 +485,38 @@ public class UserPresenter
         });
 
         // remove identity
-        getView().getRemoveIdentity().addClickHandler(new ClickHandler() {
-
-            private volatile int deletedCounter;
-
-            private void deleteFromGUI(int total, ListGridRecord[] selection) {
-                if (deletedCounter == total) {
-                    ListGridRecord[] oldData = getView().getUserIdentityGrid().getRecords();
-                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
-                    getView().getUserIdentityGrid().setData(newData);
-                }
-            }
-
-            @Override
-            public void onClick(ClickEvent event) {
-                final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelectedRecords();
-                if (selection != null && selection.length > 0) {
-                    final int total = selection.length;
-                    for (final ListGridRecord record : selection) {
-                        dispatcher.execute(new RemoveUserIdentityAction(record
-                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
-                                           new DispatchCallback<RemoveUserIdentityResult>() {
-
-                                               @Override
-                                               public void callback(RemoveUserIdentityResult result) {
-                                                   deletedCounter++;
-                                                   deleteFromGUI(total, selection);
-                                               }
-                                           });
-                    }
-                }
-            }
-        });
+        //        getView().getRemoveIdentity().addClickHandler(new ClickHandler() {
+        //
+        //            private volatile int deletedCounter;
+        //
+        //            private void deleteFromGUI(int total, ListGridRecord[] selection) {
+        //                if (deletedCounter == total) {
+        //                    ListGridRecord[] oldData = getView().getUserIdentityGrid().getRecords();
+        //                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
+        //                    getView().getUserIdentityGrid().setData(newData);
+        //                }
+        //            }
+        //
+        //            @Override
+        //            public void onClick(ClickEvent event) {
+        //                final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelectedRecords();
+        //                if (selection != null && selection.length > 0) {
+        //                    final int total = selection.length;
+        //                    for (final ListGridRecord record : selection) {
+        //                        dispatcher.execute(new RemoveUserIdentityAction(record
+        //                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
+        //                                           new DispatchCallback<RemoveUserIdentityResult>() {
+        //
+        //                                               @Override
+        //                                               public void callback(RemoveUserIdentityResult result) {
+        //                                                   deletedCounter++;
+        //                                                   deleteFromGUI(total, selection);
+        //                                               }
+        //                                           });
+        //                    }
+        //                }
+        //            }
+        //        });
 
         // add identity
         getView().getAddIdentity().addClickHandler(new ClickHandler() {
@@ -546,6 +541,7 @@ public class UserPresenter
                 });
                 final DynamicForm form = new DynamicForm();
                 // form.setNumCols(8);
+
                 form.setMargin(15);
                 form.setWidth(500);
                 form.setHeight(150);
@@ -564,17 +560,17 @@ public class UserPresenter
                                     getView().getUserGrid().getSelectedRecord()
                                             .getAttribute(Constants.ATTR_USER_ID);
                             dispatcher
-                                    .execute(new PutUserIdentityAction(new OpenIDItem(identityValue,
-                                                                                      "PleaseGenerateIDForMe"),
-                                                                       userId),
+                                    .execute(new PutUserIdentityAction(new UserIdentity(identityValue,
+                                                                                        Constants.USER_IDENTITY_TYPES.OPEN_ID,
+                                                                                        Long.parseLong(userId))),
                                              new DispatchCallback<PutUserIdentityResult>() {
 
                                                  @Override
                                                  public void callback(PutUserIdentityResult result) {
-                                                     if (!result.isFound() && !"error".equals(result.getId())) {
+                                                     if (result.isSuccessful()) {
                                                          ListGridRecord record = new ListGridRecord();
-                                                         record.setAttribute(Constants.ATTR_GENERIC_ID,
-                                                                             result.getId());
+                                                         //                                                         record.setAttribute(Constants.ATTR_GENERIC_ID,
+                                                         //                                                                             result.getId());
                                                          record.setAttribute(Constants.ATTR_IDENTITY,
                                                                              identityValue);
                                                          ListGridRecord[] previousData =
@@ -614,38 +610,38 @@ public class UserPresenter
         });
 
         // remove role
-        getView().getRemoveRole().addClickHandler(new ClickHandler() {
-
-            private volatile int deletedCounter;
-
-            private void deleteFromGUI(int total, ListGridRecord[] selection) {
-                if (deletedCounter == total) {
-                    ListGridRecord[] oldData = getView().getUserRoleGrid().getRecords();
-                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
-                    getView().getUserRoleGrid().setData(newData);
-                }
-            }
-
-            @Override
-            public void onClick(ClickEvent event) {
-                final ListGridRecord[] selection = getView().getUserRoleGrid().getSelectedRecords();
-                if (selection != null && selection.length > 0) {
-                    final int total = selection.length;
-                    for (final ListGridRecord record : selection) {
-                        dispatcher.execute(new RemoveUserRoleAction(record
-                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
-                                           new DispatchCallback<RemoveUserRoleResult>() {
-
-                                               @Override
-                                               public void callback(RemoveUserRoleResult result) {
-                                                   deletedCounter++;
-                                                   deleteFromGUI(total, selection);
-                                               }
-                                           });
-                    }
-                }
-            }
-        });
+        //        getView().getRemoveRole().addClickHandler(new ClickHandler() {
+        //
+        //            private volatile int deletedCounter;
+        //
+        //            private void deleteFromGUI(int total, ListGridRecord[] selection) {
+        //                if (deletedCounter == total) {
+        //                    ListGridRecord[] oldData = getView().getUserRoleGrid().getRecords();
+        //                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
+        //                    getView().getUserRoleGrid().setData(newData);
+        //                }
+        //            }
+        //
+        //            @Override
+        //            public void onClick(ClickEvent event) {
+        //                final ListGridRecord[] selection = getView().getUserRoleGrid().getSelectedRecords();
+        //                if (selection != null && selection.length > 0) {
+        //                    final int total = selection.length;
+        //                    for (final ListGridRecord record : selection) {
+        //                        dispatcher.execute(new RemoveUserRoleAction(record
+        //                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
+        //                                           new DispatchCallback<RemoveUserRoleResult>() {
+        //
+        //                                               @Override
+        //                                               public void callback(RemoveUserRoleResult result) {
+        //                                                   deletedCounter++;
+        //                                                   deleteFromGUI(total, selection);
+        //                                               }
+        //                                           });
+        //                    }
+        //                }
+        //            }
+        //        });
 
         // add role
         getView().getAddRole().addClickHandler(new ClickHandler() {
@@ -688,35 +684,34 @@ public class UserPresenter
                             String userId =
                                     getView().getUserGrid().getSelectedRecord()
                                             .getAttribute(Constants.ATTR_USER_ID);
-                            dispatcher.execute(new PutUserRoleAction(new RoleItem(roleValue,
-                                                                                  "",
-                                                                                  "PleaseGenerateIDForMe"),
-                                                                     userId),
+                            dispatcher.execute(new PutUserRoleAction(new RoleItem(Long.parseLong(userId),
+                                                                                  roleValue,
+                                                                                  "")),
                                                new DispatchCallback<PutUserRoleResult>() {
 
                                                    @Override
                                                    public void callback(PutUserRoleResult result) {
-                                                       if (!result.isFound()
-                                                               && !"error".equals(result.getId())) {
-                                                           ListGridRecord record = new ListGridRecord();
-                                                           record.setAttribute(Constants.ATTR_GENERIC_ID,
-                                                                               result.getId());
-                                                           record.setAttribute(Constants.ATTR_NAME, roleValue);
-                                                           record.setAttribute(Constants.ATTR_DESC,
-                                                                               result.getDescription());
-                                                           ListGridRecord[] previousData =
-                                                                   getView().getUserRoleGrid().getRecords();
-                                                           ListGridRecord[] newData =
-                                                                   new ListGridRecord[previousData.length + 1];
-                                                           System.arraycopy(previousData,
-                                                                            0,
-                                                                            newData,
-                                                                            0,
-                                                                            previousData.length);
-                                                           newData[previousData.length] = record;
-                                                           getView().getUserRoleGrid().setData(newData);
-                                                       }
-                                                       winModal.destroy();
+                                                       //                                                       if (!result.isFound()
+                                                       //                                                               && !"error".equals(result.getId())) {
+                                                       //                                                           ListGridRecord record = new ListGridRecord();
+                                                       //                                                           record.setAttribute(Constants.ATTR_GENERIC_ID,
+                                                       //                                                                               result.getId());
+                                                       //                                                           record.setAttribute(Constants.ATTR_NAME, roleValue);
+                                                       //                                                           record.setAttribute(Constants.ATTR_DESC,
+                                                       //                                                                               result.getDescription());
+                                                       //                                                           ListGridRecord[] previousData =
+                                                       //                                                                   getView().getUserRoleGrid().getRecords();
+                                                       //                                                           ListGridRecord[] newData =
+                                                       //                                                                   new ListGridRecord[previousData.length + 1];
+                                                       //                                                           System.arraycopy(previousData,
+                                                       //                                                                            0,
+                                                       //                                                                            newData,
+                                                       //                                                                            0,
+                                                       //                                                                            previousData.length);
+                                                       //                                                           newData[previousData.length] = record;
+                                                       //                                                           getView().getUserRoleGrid().setData(newData);
+                                                       //                                                       }
+                                                       //                                                       winModal.destroy();
                                                    }
                                                });
                         }
@@ -771,7 +766,7 @@ public class UserPresenter
     private static void copyValues(RoleItem from, ListGridRecord to) {
         to.setAttribute(Constants.ATTR_NAME, from.getName());
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
-        to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
+        //        to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
     }
 
     /**
@@ -782,8 +777,8 @@ public class UserPresenter
      * @param to
      *        the to
      */
-    private static void copyValues(OpenIDItem from, ListGridRecord to) {
+    private static void copyValues(UserIdentity from, ListGridRecord to) {
         to.setAttribute(Constants.ATTR_IDENTITY, from.getIdentity());
-        to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
+        //        to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
     }
 }

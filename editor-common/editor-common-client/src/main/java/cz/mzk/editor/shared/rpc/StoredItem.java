@@ -53,6 +53,9 @@ public class StoredItem
     /** The date of the storing */
     private String storedDate;
 
+    /** The id. */
+    private Long id;
+
     /**
      * Instantiates a digital object basic inform.
      */
@@ -61,24 +64,71 @@ public class StoredItem
     }
 
     /**
-     * Instantiates a new digital object basic inform.
+     * Instantiates a new stored item.
      * 
+     * @param id
+     *        the id
      * @param fileName
-     *        the file model
+     *        the file name
      * @param uuid
      *        the uuid
      * @param model
      *        the model
      * @param description
      *        the description
+     * @param storedDate
+     *        the stored date
      */
-    public StoredItem(String file_name,
+    public StoredItem(Long id,
+                      String fileName,
                       String uuid,
                       DigitalObjectModel model,
                       String description,
                       String storedDate) {
         super();
-        this.fileName = file_name;
+        this.fileName = fileName;
+        this.uuid = uuid;
+        this.model = model;
+        this.description = description;
+        this.storedDate = storedDate;
+        this.id = id;
+    }
+
+    /**
+     * Instantiates a new stored item.
+     * 
+     * @param id
+     *        the id
+     * @param fileName
+     *        the file name
+     */
+    public StoredItem(Long id, String fileName) {
+        super();
+        this.id = id;
+        this.fileName = fileName;
+    }
+
+    /**
+     * Instantiates a new stored item.
+     * 
+     * @param fileName
+     *        the file name
+     * @param uuid
+     *        the uuid
+     * @param model
+     *        the model
+     * @param description
+     *        the description
+     * @param storedDate
+     *        the stored date
+     */
+    public StoredItem(String fileName,
+                      String uuid,
+                      DigitalObjectModel model,
+                      String description,
+                      String storedDate) {
+        super();
+        this.fileName = fileName;
         this.uuid = uuid;
         this.model = model;
         this.description = description;
@@ -86,57 +136,13 @@ public class StoredItem
     }
 
     /**
-     * Instantiates a new digital object basic inform.
-     * 
-     * @param fileName
-     */
-
-    public StoredItem(String fileName) {
-        super();
-        this.fileName = fileName;
-    }
-
-    /**
-     * Gets the file model.
-     * 
-     * @return the file model
+     * @return the fileName
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
-     * Sets the file model.
-     * 
-     * @param fileName
-     *        the new file model
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    /**
-     * Gets the date of the last storing.
-     * 
-     * @return the stored date
-     */
-    public String getStoredDate() {
-        return storedDate;
-    }
-
-    /**
-     * Sets the date of the last storing.
-     * 
-     * @param storedDate
-     *        the new stored date
-     */
-    public void setStoredDate(String storedDate) {
-        this.storedDate = storedDate;
-    }
-
-    /**
-     * Gets the uuid.
-     * 
      * @return the uuid
      */
     public String getUuid() {
@@ -144,18 +150,6 @@ public class StoredItem
     }
 
     /**
-     * Sets the uuid.
-     * 
-     * @param uuid
-     *        the new uuid
-     */
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    /**
-     * Gets the model.
-     * 
      * @return the model
      */
     public DigitalObjectModel getModel() {
@@ -163,18 +157,6 @@ public class StoredItem
     }
 
     /**
-     * Sets the model.
-     * 
-     * @param model
-     *        the new model
-     */
-    public void setModel(DigitalObjectModel model) {
-        this.model = model;
-    }
-
-    /**
-     * Gets the description.
-     * 
      * @return the description
      */
     public String getDescription() {
@@ -182,38 +164,109 @@ public class StoredItem
     }
 
     /**
-     * Sets the description.
-     * 
+     * @return the storedDate
+     */
+    public String getStoredDate() {
+        return storedDate;
+    }
+
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param fileName
+     *        the fileName to set
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * @param uuid
+     *        the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    /**
+     * @param model
+     *        the model to set
+     */
+    public void setModel(DigitalObjectModel model) {
+        this.model = model;
+    }
+
+    /**
      * @param description
-     *        the new description
+     *        the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * @param storedDate
+     *        the storedDate to set
+     */
+    public void setStoredDate(String storedDate) {
+        this.storedDate = storedDate;
+    }
+
+    /**
+     * @param id
+     *        the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((model == null) ? 0 : model.hashCode());
+        result = prime * result + ((storedDate == null) ? 0 : storedDate.hashCode());
         result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         StoredItem other = (StoredItem) obj;
+        if (description == null) {
+            if (other.description != null) return false;
+        } else if (!description.equals(other.description)) return false;
+        if (fileName == null) {
+            if (other.fileName != null) return false;
+        } else if (!fileName.equals(other.fileName)) return false;
+        if (id == null) {
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
+        if (model != other.model) return false;
+        if (storedDate == null) {
+            if (other.storedDate != null) return false;
+        } else if (!storedDate.equals(other.storedDate)) return false;
         if (uuid == null) {
             if (other.uuid != null) return false;
         } else if (!uuid.equals(other.uuid)) return false;
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "StoredItem [uuid=" + uuid + ", model=" + model + ", description=" + description
-                + ", storedDate=" + storedDate + "]";
-    }
 }

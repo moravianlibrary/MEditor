@@ -27,15 +27,19 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.StoredItem;
 
@@ -48,32 +52,60 @@ public class StoredItemsDAOImpl
         extends AbstractDAO
         implements StoredItemsDAO {
 
+    //    stored_files (id, user_id, uuid, model, description, stored, file_name) ->
+    //    
+    //        ->  saved_edited_object (digital_object_uuid, file_name, description, state)
+    //                                                uuid, file_name, description, 'true'
+    //
+    //        ->  crud_saved_edited_object_action (editor_user_id, timestamp, saved_edited_object_id, type)
+    //                                                    user_id,    stored,                     id,  'c'
+    //    
+    //        ->  digital_object (uuid, model, name, description, input_queue_directory_path)
+    //  
+
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(StoredItemsDAOImpl.class.getPackage().toString());
+
+    /** The Constant FORMATTER. */
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    private static final String SELECT_STORED_ITEM =
-            "SELECT file_name, uuid, model, description, stored FROM " + Constants.TABLE_STORED_FILES
-                    + " WHERE user_id=(?)";
+    /** The Constant SELECT_STORED_ITEMS_BY_USER. */
+    private static final String SELECT_STORED_ITEMS_BY_USER =
+            "SELECT so.id, so.file_name, so.description, a.timestamp, so.digital_object_uuid, so.model FROM ((SELECT saved_edited_object_id, timestamp FROM "
+                    + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
+                    + " WHERE editor_user_id = (?)) a INNER JOIN ((SELECT uuid, model FROM "
+                    + Constants.TABLE_DIGITAL_OBJECT
+                    + ") o INNER JOIN (SELECT digital_object_uuid, file_name, description, id FROM "
+                    + Constants.TABLE_SAVED_EDITED_OBJECT
+                    + " WHERE state = 'true') s ON o.uuid = s.digital_object_uuid) so ON a.saved_edited_object_id = so.id) ORDER BY a.timestamp";
 
-    private static final String UPDATE_STORED_ITEM = "UPDATE " + Constants.TABLE_STORED_FILES
-            + " SET uuid=(?), model=(?), description=(?), stored=CURRENT_TIMESTAMP WHERE id=(?)";
+    /** The Constant UPDATE_STORED_ITEM. */
+    private static final String UPDATE_STORED_ITEM = "UPDATE " + Constants.TABLE_SAVED_EDITED_OBJECT
+            + " SET digital_object_uuid=(?), description=(?) WHERE id = (?)";
 
-    private static final String SELECT_STORED_ITEM_WITH_SAME_NAME = "SELECT id FROM "
-            + Constants.TABLE_STORED_FILES + " WHERE file_name=(?)";
+    /** The Constant SELECT_STORED_ITEM_WITH_SAME_NAME. */
+    private static final String SELECT_STORED_ITEM_WITH_SAME_NAME =
+            "SELECT o.id FROM ((SELECT saved_edited_object_id FROM "
+                    + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
+                    + " WHERE editor_user_id = (?)) a INNER JOIN (SELECT id FROM "
+                    + Constants.TABLE_SAVED_EDITED_OBJECT
+                    + " WHERE state = 'true' AND file_name = (?)) o ON a.saved_edited_object_id = o.id)";
 
-    private static final String DELETE_STORED_ITEM = "DELETE FROM " + Constants.TABLE_STORED_FILES
-            + " WHERE file_name=(?)";
+    /** The Constant DISABLE_STORED_ITEM. */
+    private static final String DISABLE_STORED_ITEM = "UPDATE " + Constants.TABLE_SAVED_EDITED_OBJECT
+            + " SET state = 'false' WHERE id = (?)";
 
-    private static final String INSERT_STORED_ITEM =
-            "INSERT INTO "
-                    + Constants.TABLE_STORED_FILES
-                    + " (uuid, model, description, stored, file_name, user_id) VALUES ((?),(?),(?),(CURRENT_TIMESTAMP),(?),(?)) ";
+    /** The Constant INSERT_STORED_ITEM. */
+    private static final String INSERT_STORED_ITEM = "INSERT INTO " + Constants.TABLE_SAVED_EDITED_OBJECT
+            + " (digital_object_uuid, description, file_name, state) VALUES ((?),(?),(?),'true') ";
+
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}
      */
-
     @Override
     public List<StoredItem> getStoredItems(long userId) throws DatabaseException {
 
@@ -81,20 +113,21 @@ public class StoredItemsDAOImpl
         List<StoredItem> storedItems = new ArrayList<StoredItem>();
 
         try {
-            selectSt = getConnection().prepareStatement(SELECT_STORED_ITEM);
+            selectSt = getConnection().prepareStatement(SELECT_STORED_ITEMS_BY_USER);
             selectSt.setLong(1, userId);
 
             ResultSet rs = selectSt.executeQuery();
 
             while (rs.next()) {
                 String fileName = rs.getString("file_name");
-                String uuid = rs.getString("uuid");
-                DigitalObjectModel model = DigitalObjectModel.getModel(rs.getInt("model"));
+                String uuid = rs.getString("digital_object_uuid");
+                DigitalObjectModel model = DigitalObjectModel.parseString(rs.getString("model"));
                 String description = rs.getString("description");
-                java.util.Date date = rs.getDate("stored");
+                java.util.Date date = rs.getDate("timestamp");
                 String storedDate = FORMATTER.format(date);
+                long id = rs.getLong("id");
 
-                StoredItem storedItem = new StoredItem(fileName, uuid, model, description, storedDate);
+                StoredItem storedItem = new StoredItem(id, fileName, uuid, model, description, storedDate);
                 storedItems.add(storedItem);
             }
 
@@ -110,54 +143,86 @@ public class StoredItemsDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
-    public boolean storeDigitalObject(long userId, StoredItem storedItem) throws DatabaseException {
+    public boolean checkStoredDigitalObject(long userId, StoredItem storedItem) throws DatabaseException {
         PreparedStatement updateSt = null;
         boolean successful = false;
 
-        int duplicateId = selectDuplicate(userId, storedItem.getFileName());
+        Long id = selectDuplicate(userId, storedItem.getFileName());
 
         try {
 
-            if (duplicateId >= 0) {
+            boolean update = id > 0;
+
+            if (update) {
                 updateSt = getConnection().prepareStatement(UPDATE_STORED_ITEM);
             } else {
-                updateSt = getConnection().prepareStatement(INSERT_STORED_ITEM);
+                updateSt =
+                        getConnection().prepareStatement(INSERT_STORED_ITEM, Statement.RETURN_GENERATED_KEYS);
             }
 
             updateSt.setString(1, storedItem.getUuid());
-            updateSt.setInt(2, storedItem.getModel().ordinal());
-            updateSt.setString(3, storedItem.getDescription());
-            if (duplicateId >= 0) {
-                updateSt.setInt(4, duplicateId);
+            updateSt.setString(2, storedItem.getDescription());
+            if (id >= 0) {
+                updateSt.setLong(3, id);
             } else {
-                updateSt.setString(4, storedItem.getFileName());
-                updateSt.setLong(5, userId);
+                updateSt.setString(3, storedItem.getFileName());
             }
 
-            successful = updateSt.executeUpdate() > 0;
+            if (updateSt.executeUpdate() > 0) {
+                LOGGER.debug("DB has been updated: The file: " + storedItem.getFileName()
+                        + " has been inserted.");
+                if (!update) {
+                    ResultSet gk = updateSt.getGeneratedKeys();
+                    if (gk.next()) {
+                        id = gk.getLong(1);
+                    } else {
+                        throw new DatabaseException("No key has been returned! " + updateSt);
+                    }
+                }
 
+                successful =
+                        daoUtils.insertCrudAction(userId,
+                                                  Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                                  "saved_edited_object_id",
+                                                  id,
+                                                  update ? CRUD_ACTION_TYPES.UPDATE
+                                                          : CRUD_ACTION_TYPES.CREATE,
+                                                  true);
+            } else {
+                LOGGER.error("DB has not been updated! " + updateSt);
+            }
         } catch (SQLException e) {
             LOGGER.error("Query: " + updateSt, e);
-            successful = false;
         } finally {
             closeConnection();
         }
         return successful;
     }
 
-    private int selectDuplicate(long userId, String fileName) throws DatabaseException {
+    /**
+     * Select duplicate.
+     * 
+     * @param userId
+     *        the user id
+     * @param fileName
+     *        the file name
+     * @return the long
+     * @throws DatabaseException
+     *         the database exception
+     */
+    private Long selectDuplicate(long userId, String fileName) throws DatabaseException {
         PreparedStatement selectSt = null;
-        int id = Integer.MIN_VALUE;
+        Long id = Long.MIN_VALUE;
 
         try {
             selectSt = getConnection().prepareStatement(SELECT_STORED_ITEM_WITH_SAME_NAME);
-            selectSt.setString(1, fileName);
+            selectSt.setLong(1, userId);
+            selectSt.setString(2, fileName);
 
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                id = rs.getInt("id");
+                id = rs.getLong("id");
             }
 
         } catch (SQLException e) {
@@ -168,18 +233,29 @@ public class StoredItemsDAOImpl
         return id;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean deleteItem(String fileName) throws DatabaseException {
+    public boolean deleteItem(Long id) throws DatabaseException {
         PreparedStatement deleteSt = null;
-        boolean successful = true;
+        boolean successful = false;
         try {
-            deleteSt = getConnection().prepareStatement(DELETE_STORED_ITEM);
-            deleteSt.setString(1, fileName);
+            deleteSt = getConnection().prepareStatement(DISABLE_STORED_ITEM);
+            deleteSt.setLong(1, id);
 
-            deleteSt.executeUpdate();
+            if (deleteSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The edited stored object: " + id + " has been disabled.");
+                successful =
+                        daoUtils.insertCrudAction(getUserId(),
+                                                  Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                                  "saved_edited_object_id",
+                                                  id,
+                                                  CRUD_ACTION_TYPES.DELETE,
+                                                  true);
+            }
         } catch (SQLException e) {
             LOGGER.error("Query: " + deleteSt, e);
-            successful = false;
         } finally {
             closeConnection();
         }

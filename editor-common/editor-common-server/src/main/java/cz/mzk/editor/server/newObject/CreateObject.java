@@ -27,13 +27,11 @@ package cz.mzk.editor.server.newObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import java.nio.charset.Charset;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +51,10 @@ import org.dom4j.io.DOMReader;
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.DigitalObjectDAO;
+import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -65,44 +65,154 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class CreateObject.
+ * 
  * @author Jiri Kremser
  * @version 29.10.2011
  */
-public class CreateObjectUtils {
+public class CreateObject {
 
+    /** The LOGGER. */
+    public final Logger LOGGER = Logger.getLogger(CreateObject.class);
+
+    /** The fedora access. */
+    private final FedoraAccess fedoraAccess;
+
+    /** The config. */
+    private final EditorConfiguration config;
+
+    /** The dao utils. */
+    private final DigitalObjectDAO digitalObjectDAO;
+
+    /** The image resolver dao. */
+    private final ImageResolverDAO imageResolverDAO;
+
+    /** The top level uuid. */
+    private String topLevelUuid = null;
+
+    /** The input dir path. */
+    private final String inputDirPath;
+
+    /** The processed pages. */
+    private final Map<String, String> processedPages;
+
+    /** The sysno. */
+    private String sysno;
+
+    /** The base. */
+    private String base;
+
+    /** The ingested objects. */
+    private final List<String> ingestedObjects;
+
+    /**
+     * Instantiates a new creates the object.
+     * 
+     * @param inputDirPath
+     *        the input dir path
+     * @param config
+     *        the config
+     * @param digitalObjectDAO
+     *        the digital object dao
+     * @param imageResolverDAO
+     *        the image resolver dao
+     * @param fedoraAccess
+     *        the fedora access
+     */
     @Inject
-    @Named("securedFedoraAccess")
-    private static FedoraAccess fedoraAccess;
-
-    private static final Logger LOGGER = Logger.getLogger(CreateObjectUtils.class);
-    private static final Logger INGEST_LOGGER = Logger.getLogger(ServerConstants.INGEST_LOG_ID);
-    @Inject
-    private static EditorConfiguration config;
-
-    private static String insertFOXML(NewDigitalObject node,
-                                      Document mods,
-                                      Document dc,
-                                      String sysno,
-                                      String base,
-                                      Map<String, String> processedPages) throws CreateObjectException {
-        if (processedPages == null) processedPages = new HashMap<String, String>();
-        return insertFOXML(node,
-                           mods,
-                           dc,
-                           Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS,
-                           sysno,
-                           base,
-                           processedPages);
+    public CreateObject(String inputDirPath,
+                        final EditorConfiguration config,
+                        final DigitalObjectDAO digitalObjectDAO,
+                        final ImageResolverDAO imageResolverDAO,
+                        final @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+        this.inputDirPath = inputDirPath;
+        this.processedPages = new HashMap<String, String>();
+        this.ingestedObjects = new ArrayList<String>();
+        this.fedoraAccess = fedoraAccess;
+        this.config = config;
+        this.digitalObjectDAO = digitalObjectDAO;
+        this.imageResolverDAO = imageResolverDAO;
     }
 
-    private static String insertFOXML(NewDigitalObject node,
-                                      Document mods,
-                                      Document dc,
-                                      int attempt,
-                                      String sysno,
-                                      String base,
-                                      Map<String, String> processedPages) throws CreateObjectException {
+    /**
+     * Insert all the structure to foxm ls.
+     * 
+     * @param node
+     *        the node
+     * @return true, if successful
+     * @throws CreateObjectException
+     *         the create object exception
+     */
+    public boolean insertAllTheStructureToFOXMLs(NewDigitalObject node) throws CreateObjectException {
+        String modsString = FedoraUtils.createNewModsPart(node.getBundle().getMods());
+        String dcString = FedoraUtils.createNewDublinCorePart(node.getBundle().getDc());
+        Document mods = null, dc = null;
+        try {
+            mods = Dom4jUtils.loadDocument(modsString, true);
+            dc = Dom4jUtils.loadDocument(dcString, true);
+        } catch (DocumentException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+
+        sysno = node.getSysno();
+        base = node.getBase();
+        if (node.getExist() && node.getUuid() != null) {
+            try {
+                digitalObjectDAO.insertNewDigitalObject(node.getUuid(),
+                                                        node.getModel().getValue(),
+                                                        node.getName(),
+                                                        inputDirPath,
+                                                        node.getUuid());
+            } catch (DatabaseException e) {
+                LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
+                e.printStackTrace();
+            }
+        }
+
+        checkAccessRightsAndCreateDirectories(sysno, base);
+        insertFOXML(node, mods, dc);
+        return true;
+    }
+
+    /**
+     * Insert foxml.
+     * 
+     * @param node
+     *        the node
+     * @param mods
+     *        the mods
+     * @param dc
+     *        the dc
+     * @return the string
+     * @throws CreateObjectException
+     *         the create object exception
+     */
+    private String insertFOXML(NewDigitalObject node, Document mods, Document dc)
+            throws CreateObjectException {
+        return insertFOXML(node, mods, dc, Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS);
+    }
+
+    /**
+     * Insert foxml.
+     * 
+     * @param node
+     *        the node
+     * @param mods
+     *        the mods
+     * @param dc
+     *        the dc
+     * @param attempt
+     *        the attempt
+     * @return the string
+     * @throws CreateObjectException
+     *         the create object exception
+     */
+    private String insertFOXML(NewDigitalObject node, Document mods, Document dc, int attempt)
+            throws CreateObjectException {
         if (attempt == 0) {
             throw new CreateObjectException("max number of attempts has been reached");
         }
@@ -114,10 +224,15 @@ public class CreateObjectUtils {
 
         if (isPdf && attempt == Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
             PDDocument document = null;
+            String newPdfPath = null;
+
             try {
-                document =
-                        PDDocument.load(new File(config.getImagesPath() + File.separator + node.getPath()
-                                + Constants.PDF_EXTENSION));
+                newPdfPath = imageResolverDAO.getNewImageFilePath(node.getPath());
+                if (!newPdfPath.endsWith(Constants.PDF_EXTENSION)) {
+                    newPdfPath = newPdfPath.concat(Constants.PDF_EXTENSION);
+                }
+
+                document = PDDocument.load(new File(newPdfPath));
                 int numberOfPages = document.getNumberOfPages();
                 if (node.getPageIndex() > numberOfPages - 1)
                     throw new CreateObjectException("The number of page: " + node.getPageIndex()
@@ -127,19 +242,19 @@ public class CreateObjectUtils {
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());
                 e.printStackTrace();
-                throw new CreateObjectException("Unable to read the pdf file: " + config.getImagesPath()
-                        + File.separator + node.getPath() + Constants.PDF_EXTENSION);
+                throw new CreateObjectException("Unable to read the pdf file: " + newPdfPath);
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException(e.getMessage(), e);
             } finally {
-                if (document != null)
-                    try {
-                        document.close();
-                    } catch (IOException e) {
-                        LOGGER.error(e.getMessage());
-                        e.printStackTrace();
-                        throw new CreateObjectException("Unable to close the pdf file: "
-                                + config.getImagesPath() + File.separator + node.getPath()
-                                + Constants.PDF_EXTENSION);
-                    }
+                if (document != null) try {
+                    document.close();
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                    throw new CreateObjectException("Unable to close the pdf file: " + newPdfPath);
+                }
             }
         }
 
@@ -153,7 +268,7 @@ public class CreateObjectUtils {
             if (childrenToAdd != null && !childrenToAdd.isEmpty()) {
                 for (NewDigitalObject child : childrenToAdd) {
                     if (!child.getExist()) {
-                        String uuid = insertFOXML(child, mods, dc, sysno, base, processedPages);
+                        String uuid = insertFOXML(child, mods, dc);
                         child.setUuid(uuid);
                         append(node, child);
                     }
@@ -167,7 +282,22 @@ public class CreateObjectUtils {
         }
 
         if (node.getUuid() == null || attempt != Constants.MAX_NUMBER_OF_INGEST_ATTEMPTS) {
+
             node.setUuid(FoxmlUtils.getRandomUuid());
+
+            if (topLevelUuid == null) {
+                topLevelUuid = node.getUuid();
+                try {
+                    digitalObjectDAO.insertNewDigitalObject(node.getUuid(),
+                                                            node.getModel().getValue(),
+                                                            node.getName(),
+                                                            inputDirPath,
+                                                            node.getUuid());
+                } catch (DatabaseException e) {
+                    LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
+                    e.printStackTrace();
+                }
+            }
         }
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
 
@@ -194,7 +324,7 @@ public class CreateObjectUtils {
             List<RelsExtRelation> relations = builder.getChildren();
             for (NewDigitalObject child : childrenToAdd) {
                 if (!child.getExist()) {
-                    String uuid = insertFOXML(child, mods, dc, sysno, base, processedPages);
+                    String uuid = insertFOXML(child, mods, dc);
                     child.setUuid(uuid);
                 }
                 relations.add(new RelsExtRelation(child.getUuid(), NamedGraphModel.getRelationship(node
@@ -243,18 +373,38 @@ public class CreateObjectUtils {
 
         String foxmlRepresentation = builder.getDocument(false);
         boolean success =
-                ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel().toString());
+                IngestUtils.ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel()
+                        .toString(), topLevelUuid, inputDirPath);
+
+        if (success) ingestedObjects.add(node.getUuid());
 
         if (isPage && success) {
             if (!internal) {
                 // TODO: StringBuffer
-                boolean copySuccess =
-                        internal ? true : copyFile(config.getImagesPath() + node.getPath()
-                                + Constants.JPEG_2000_EXTENSION, newFilePath + Constants.JPEG_2000_EXTENSION);
-                if (copySuccess && LOGGER.isInfoEnabled()) {
-                    LOGGER.info("image " + config.getImagesPath() + node.getPath() + "."
-                            + Constants.JPEG_2000_EXTENSION + "  was copied to  " + newFilePath
-                            + Constants.JPEG_2000_EXTENSION);
+                boolean copySuccess;
+                String newImagePath = null;
+                try {
+                    newImagePath = imageResolverDAO.getNewImageFilePath(node.getPath());
+                    if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
+                        newImagePath = newImagePath.concat(Constants.JPEG_2000_EXTENSION);
+                    }
+
+                    copySuccess =
+                            internal ? true : IOUtils.copyFile(newImagePath, newFilePath
+                                    + Constants.JPEG_2000_EXTENSION);
+
+                    if (copySuccess && LOGGER.isInfoEnabled()) {
+                        LOGGER.info("image " + newImagePath + "  was copied to  " + newFilePath
+                                + Constants.JPEG_2000_EXTENSION);
+                    }
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                    throw new CreateObjectException(e.getMessage(), e);
+                } catch (DatabaseException e) {
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                    throw new CreateObjectException(e.getMessage(), e);
                 }
             }
 
@@ -270,7 +420,7 @@ public class CreateObjectUtils {
         }
 
         if (!success) {
-            insertFOXML(node, mods, dc, attempt - 1, sysno, base, processedPages);
+            insertFOXML(node, mods, dc, attempt - 1);
 
         } else if (isPdf) {
             handlePdf(node);
@@ -280,12 +430,30 @@ public class CreateObjectUtils {
     }
 
     /**
+     * Handle pdf.
+     * 
      * @param node
+     *        the node
      * @throws CreateObjectException
+     *         the create object exception
      */
-    private static void handlePdf(NewDigitalObject node) throws CreateObjectException {
+    private void handlePdf(NewDigitalObject node) throws CreateObjectException {
         String uuid = (node.getUuid().contains("uuid:") ? node.getUuid() : "uuid:".concat(node.getUuid()));
-        String pathWithoutExtension = config.getImagesPath() + File.separator + node.getPath();
+
+        String pathWithoutExtension = null;
+        try {
+            pathWithoutExtension = imageResolverDAO.getNewImageFilePath(node.getPath());
+            if (pathWithoutExtension.endsWith(Constants.PDF_EXTENSION)) {
+                pathWithoutExtension =
+                        pathWithoutExtension.substring(0, pathWithoutExtension.length()
+                                - Constants.PDF_EXTENSION.length());
+            }
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new CreateObjectException(e.getMessage(), e);
+        }
+
         if (insertManagedDatastream(DATASTREAM_ID.IMG_FULL, uuid, pathWithoutExtension
                 + Constants.PDF_EXTENSION, true, Constants.PDF_MIMETYPE)) {
             createThumbPrewFromPdf(DATASTREAM_ID.IMG_THUMB,
@@ -306,18 +474,26 @@ public class CreateObjectUtils {
     }
 
     /**
+     * Creates the thumb prew from pdf.
+     * 
      * @param dsId
+     *        the ds id
      * @param pathWithoutExtension
+     *        the path without extension
      * @param thumbPageNum
+     *        the thumb page num
      * @param uuid
+     *        the uuid
      * @param pageWidth
+     *        the page width
      * @throws CreateObjectException
+     *         the create object exception
      */
-    private static void createThumbPrewFromPdf(DATASTREAM_ID dsId,
-                                               String pathWithoutExtension,
-                                               int thumbPageNum,
-                                               String uuid,
-                                               int pageWidth) throws CreateObjectException {
+    private void createThumbPrewFromPdf(DATASTREAM_ID dsId,
+                                        String pathWithoutExtension,
+                                        int thumbPageNum,
+                                        String uuid,
+                                        int pageWidth) throws CreateObjectException {
         try {
             Process p =
                     Runtime.getRuntime().exec("convert " + pathWithoutExtension + Constants.PDF_EXTENSION
@@ -361,7 +537,17 @@ public class CreateObjectUtils {
         }
     }
 
-    private static void append(NewDigitalObject parrent, NewDigitalObject child) throws CreateObjectException {
+    /**
+     * Append.
+     * 
+     * @param parrent
+     *        the parrent
+     * @param child
+     *        the child
+     * @throws CreateObjectException
+     *         the create object exception
+     */
+    private void append(NewDigitalObject parrent, NewDigitalObject child) throws CreateObjectException {
         org.w3c.dom.Document doc = null;
         try {
             doc = fedoraAccess.getRelsExt(parrent.getUuid());
@@ -381,46 +567,32 @@ public class CreateObjectUtils {
         FedoraUtils.putRelsExt(parrent.getUuid(), document.asXML(), false);
     }
 
-    public static boolean ingest(String foxml, String label, String uuid, String model) {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Ingesting the digital object with PID" + (!uuid.contains("uuid:") ? " uuid:" : " ")
-                    + uuid + " label:" + label + ", model: " + model);
-        }
-        String login = config.getFedoraLogin();
-        String password = config.getFedoraPassword();
-        String url = config.getFedoraHost() + "/objects/new";
-        boolean success = RESTHelper.post(url, foxml, login, password, false);
-
-        if (LOGGER.isInfoEnabled() && success) {
-            LOGGER.info("Object ingested -- uuid:" + uuid + " label: " + label + ", model: " + model);
-        }
-        if (INGEST_LOGGER.isInfoEnabled()) {
-            INGEST_LOGGER.info(String.format("%s %16s %s", uuid, model, label));
-        }
-        if (!success) {
-            LOGGER.error("Unable to ingest object uuid:" + uuid + " label: " + label + ", model: " + model);
-        }
-        return success;
-    }
-
-    private static boolean insertManagedDatastream(DATASTREAM_ID dsId,
-                                                   String uuid,
-                                                   String filePathOrContent,
-                                                   boolean isFile,
-                                                   String mimeType) throws CreateObjectException {
+    /**
+     * Insert managed datastream.
+     * 
+     * @param dsId
+     *        the ds id
+     * @param uuid
+     *        the uuid
+     * @param filePathOrContent
+     *        the file path or content
+     * @param isFile
+     *        the is file
+     * @param mimeType
+     *        the mime type
+     * @return true, if successful
+     * @throws CreateObjectException
+     *         the create object exception
+     */
+    private boolean insertManagedDatastream(DATASTREAM_ID dsId,
+                                            String uuid,
+                                            String filePathOrContent,
+                                            boolean isFile,
+                                            String mimeType) throws CreateObjectException {
 
         String prepUrl =
                 "/objects/" + (uuid.contains("uuid:") ? uuid : "uuid:".concat(uuid)) + "/datastreams/"
                         + dsId.getValue() + "?controlGroup=M&versionable=true&dsState=A&mimeType=" + mimeType;
-
-        //        String content = null;
-        //        try {
-        //            content = new String(IOUtils.bos(new File(filePath)));
-        //        } catch (IOException e1) {
-        //            LOGGER.error("An error occured when an " + dsId.getValue() + " file: " + filePath
-        //                    + " was being read. The Error: " + e1.getMessage());
-        //            return false;
-        //        }
 
         String login = config.getFedoraLogin();
         String password = config.getFedoraPassword();
@@ -461,71 +633,55 @@ public class CreateObjectUtils {
     }
 
     /**
-     * @param path
-     *        from
-     * @param path
-     *        to
-     * @throws CreateObjectException
+     * Gets the sysno path.
+     * 
+     * @param sysno
+     *        the sysno
+     * @return the sysno path
      */
-    public static boolean copyFile(String path, String newFilePath) throws CreateObjectException {
-
-        File inputFile = new File(path);
-        if (!inputFile.exists()) {
-            LOGGER.error("file " + path + " does not exist");
-            return false;
-        }
-        File outputFile = new File(newFilePath);
-
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new FileInputStream(inputFile);
-            out = new FileOutputStream(outputFile);
-            byte[] buf = new byte[1024 * 128];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            return true;
-        } catch (IOException e) {
-            throw new CreateObjectException(e.getMessage(), e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    in = null;
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    out = null;
-                }
-            }
-        }
-    }
-
-    private static String getSysnoPath(String sysno) {
+    private String getSysnoPath(String sysno) {
         StringBuffer sb = new StringBuffer();
         sb.append(sysno.substring(0, 3)).append('/').append(sysno.substring(3, 6)).append('/')
                 .append(sysno.substring(6, 9)).append('/');
         return sb.toString();
     }
 
-    private static String getPathFromNonSysno(String nonSysno) {
+    /**
+     * Gets the path from non sysno.
+     * 
+     * @param nonSysno
+     *        the non sysno
+     * @return the path from non sysno
+     */
+    private String getPathFromNonSysno(String nonSysno) {
         return (nonSysno == null || "".equals(nonSysno) ? "/" : '/' + nonSysno + '/');
     }
 
-    private static String addSlash(String string) {
+    /**
+     * Adds the slash.
+     * 
+     * @param string
+     *        the string
+     * @return the string
+     */
+    private String addSlash(String string) {
         if (!string.endsWith("/")) {
             string += '/';
         }
         return string;
     }
 
-    private static void checkAccessRightsAndCreateDirectories(String sysno, String base)
+    /**
+     * Check access rights and create directories.
+     * 
+     * @param sysno
+     *        the sysno
+     * @param base
+     *        the base
+     * @throws CreateObjectException
+     *         the create object exception
+     */
+    private void checkAccessRightsAndCreateDirectories(String sysno, String base)
             throws CreateObjectException {
         String unknown = config.getImageServerUnknown();
         String known = config.getImageServerKnown();
@@ -573,25 +729,33 @@ public class CreateObjectUtils {
         }
     }
 
-    private static boolean isSysno(String sysno) {
+    /**
+     * Checks if is sysno.
+     * 
+     * @param sysno
+     *        the sysno
+     * @return true, if is sysno
+     */
+    private boolean isSysno(String sysno) {
         return sysno != null && sysno.length() == 9;
     }
 
-    public static boolean insertAllTheStructureToFOXMLs(NewDigitalObject node) throws CreateObjectException {
-        String modsString = FedoraUtils.createNewModsPart(node.getBundle().getMods());
-        String dcString = FedoraUtils.createNewDublinCorePart(node.getBundle().getDc());
-        Document mods = null, dc = null;
-        try {
-            mods = Dom4jUtils.loadDocument(modsString, true);
-            dc = Dom4jUtils.loadDocument(dcString, true);
-        } catch (DocumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-
-        checkAccessRightsAndCreateDirectories(node.getSysno(), node.getBase());
-        insertFOXML(node, mods, dc, node.getSysno(), node.getBase(), null);
-        return true;
+    /**
+     * Gets the top level uuid.
+     * 
+     * @return the topLevelUuid
+     */
+    public String getTopLevelUuid() {
+        return topLevelUuid;
     }
+
+    /**
+     * Gets the ingested objects.
+     * 
+     * @return the ingestedObjects
+     */
+    public List<String> getIngestedObjects() {
+        return ingestedObjects;
+    }
+
 }

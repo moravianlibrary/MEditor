@@ -40,7 +40,8 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.mzk.editor.server.DAO.DescriptionDAO;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutDescriptionAction;
 import cz.mzk.editor.shared.rpc.action.PutDescriptionResult;
@@ -56,9 +57,13 @@ public class PutDescriptionHandler
     private static final Logger LOGGER = Logger
             .getLogger(PutDescriptionHandler.class.getPackage().toString());
 
-    /** The recently modified dao. */
+    /** The description dao. */
     @Inject
-    private RecentlyModifiedItemDAO recentlyModifiedDAO;
+    private DescriptionDAO descriptionDAO;
+
+    /** The user dao. */
+    @Inject
+    UserDAO userDAO;
 
     /** The http session provider. */
     @Inject
@@ -88,12 +93,12 @@ public class PutDescriptionHandler
         HttpSession session = httpSessionProvider.get();
         ServerUtils.checkExpiredSession(session);
 
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         try {
+            long usersId = userDAO.getUsersId((String) session.getAttribute(HttpCookies.SESSION_ID_KEY));
             if (action.isCommon()) {
-                recentlyModifiedDAO.putDescription(action.getUuid(), action.getDescription());
+                descriptionDAO.putCommonDescription(action.getUuid(), action.getDescription(), usersId);
             } else {
-                recentlyModifiedDAO.putUserDescription(openID, action.getUuid(), action.getDescription());
+                descriptionDAO.checkUserDescription(action.getUuid(), usersId, action.getDescription());
             }
         } catch (DatabaseException e) {
             throw new ActionException(e);

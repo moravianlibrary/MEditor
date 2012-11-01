@@ -27,12 +27,17 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.text.SimpleDateFormat;
+
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 
 /**
  * @author Jiri Kremser
@@ -43,110 +48,149 @@ public class LockDAOImpl
         extends AbstractDAO
         implements LockDAO {
 
+    //    lock (id, uuid, description, modified, user_id) ->
+    //    
+    //          lock (id, digital_object_uuid, description, state)
+    //                                   uuid, description, 
+
+    //          crud_lock_action (id, editor_user_id, timestamp, successful, lock_id, type)
+    //                                       user_id,  modified,  
+
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(LockDAOImpl.class.getPackage().toString());
+
+    /** The Constant FORMATTER. */
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    /** The Constant DURATION_LOCK. */
     private static final String DURATION_LOCK = "1 week";
 
-    private static final String SELECT_LOCK_USER_ID = "SELECT user_id FROM  " + Constants.TABLE_LOCK
-            + " WHERE uuid = (?)";
+    /** The Constant SELECT_USER_ID_OF_LOCK. */
+    private static final String SELECT_USER_ID_OF_LOCK =
+            "SELECT editor_user_id, MAX(timestamp) FROM ((SELECT editor_user_id, lock_id, timestamp FROM   "
+                    + Constants.TABLE_CRUD_LOCK_ACTION
+                    + " WHERE type='c' OR type='u') a INNER JOIN (SELECT id FROM "
+                    + Constants.TABLE_LOCK
+                    + "  WHERE digital_object_uuid=(?) AND state='true') l ON a.lock_id=l.id) GROUP BY editor_user_id, timestamp ORDER BY timestamp DESC LIMIT '1'";
 
-    private static final String INSERT_NEW_DIGITAL_OBJECTS_LOCK = "INSERT INTO " + Constants.TABLE_LOCK
-            + " (uuid, description, modified, user_id) VALUES ((?),(?),(CURRENT_TIMESTAMP),(?))";
+    /** The Constant SELECT_OLD_DO_LOCKS. */
+    private static final String SELECT_OLD_DO_LOCKS = "SELECT l.id FROM ((SELECT lock_id FROM "
+            + Constants.TABLE_CRUD_LOCK_ACTION
+            + " WHERE (type='c' OR type='u') AND timestamp < (NOW() - INTERVAL '" + DURATION_LOCK
+            + "')) a INNER JOIN (SELECT digital_object_uuid, id FROM " + Constants.TABLE_LOCK
+            + "lock WHERE state='true') l ON a.lock_id=l.id)";
 
+    /** The Constant DISABLE_DO_LOCK_BY_UUID. */
+    private static final String DISABLE_DO_LOCK_BY_UUID =
+            "UPDATE lock SET state = 'false' WHERE digital_object_uuid = (?)";
+
+    /** The Constant DISABLE_DO_LOCK_BY_ID. */
+    private static final String DISABLE_DO_LOCK_BY_ID = "UPDATE lock SET state = 'false' WHERE id = (?)";
+
+    /** The Constant UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION. */
     private static final String UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION = "UPDATE "
-            + Constants.TABLE_LOCK
-            + " SET description = (?), modified = (CURRENT_TIMESTAMP) WHERE uuid = (?)";
+            + Constants.TABLE_LOCK + " SET description = (?) WHERE id = (?)";
 
+    /** The Constant SELECT_LOCK_DESCRIPTION. */
     private static final String SELECT_LOCK_DESCRIPTION = "SELECT description FROM  " + Constants.TABLE_LOCK
-            + " WHERE uuid = (?)";
+            + " WHERE digital_object_uuid = (?)";
 
-    private static final String DELETE_OLD_DIGITAL_OBJECT = "DELETE FROM " + Constants.TABLE_LOCK
-            + " WHERE modified < (NOW() - INTERVAL '" + DURATION_LOCK + "')";
+    /** The Constant SELECT_TIME_TO_EXPIRATION_LOCK. */
+    private static final String SELECT_TIME_TO_EXPIRATION_LOCK =
+            "SELECT ((MAX(al.timestamp) + INTERVAL '"
+                    + DURATION_LOCK
+                    + "')  - (CURRENT_TIMESTAMP)) AS timeToExpLock FROM ((SELECT lock_id, timestamp FROM "
+                    + Constants.TABLE_CRUD_LOCK_ACTION
+                    + " WHERE type='c' OR type='u') a INNER JOIN (SELECT id FROM "
+                    + Constants.TABLE_LOCK
+                    + " WHERE digital_object_uuid=(?) AND state='true') l ON a.lock_id=l.id) al GROUP BY al.timestamp ORDER BY al.timestamp DESC LIMIT '1'";
 
-    private static final String DELETE_DIGITAL_OBJETCS_LOCK_BY_UUID = "DELETE FROM " + Constants.TABLE_LOCK
-            + " WHERE uuid = (?)";
+    /** The Constant SELECT_ID_OF_LOCK. */
+    private static final String SELECT_ID_OF_LOCK =
+            "SELECT l.id, MAX(timestamp) FROM ((SELECT lock_id, timestamp FROM "
+                    + Constants.TABLE_CRUD_LOCK_ACTION
+                    + " WHERE (type = 'c' OR type = 'u') AND editor_user_id = (?)) a INNER JOIN (SELECT id FROM "
+                    + Constants.TABLE_LOCK
+                    + "  WHERE digital_object_uuid = (?) AND state = 'true') l ON a.lock_id=l.id) "
+                    + "GROUP BY l.id, timestamp ORDER BY timestamp DESC LIMIT '1'";
 
-    private static final String SELECT_TIME_TO_EXPIRATION_LOCK = "SELECT ((modified + INTERVAL '"
-            + DURATION_LOCK + "') - (CURRENT_TIMESTAMP)) AS timeToExpLock FROM " + Constants.TABLE_LOCK
-            + " WHERE uuid = (?)";
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws DatabaseException
      */
-
     @Override
-    public boolean lockDigitalObject(String uuid, Long id, String description) throws DatabaseException {
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+    public boolean lockDigitalObject(String uuid, String description, boolean insert)
+            throws DatabaseException {
+
         PreparedStatement updateSt = null;
         boolean successful = false;
+        Long lockId = null;
 
         try {
-            if (id != null) {
-                updateSt = getConnection().prepareStatement(INSERT_NEW_DIGITAL_OBJECTS_LOCK);
+            if (insert) {
+                updateSt =
+                        getConnection().prepareStatement(DAOUtils.LOCK_INSERT_ITEM_STATEMENT,
+                                                         Statement.RETURN_GENERATED_KEYS);
                 updateSt.setString(1, uuid);
                 updateSt.setString(2, description != null ? description : "");
-                updateSt.setLong(3, id);
+                updateSt.setBoolean(3, true);
             } else {
+                lockId = getLockId(uuid);
                 updateSt = getConnection().prepareStatement(UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION);
                 updateSt.setString(1, description != null ? description : "");
-                updateSt.setString(2, uuid);
+                updateSt.setLong(2, lockId);
             }
-        } catch (SQLException e) {
-            LOGGER.error("Could not get insert statement", e);
-        }
 
-        int modified = 0;
-        try {
-            modified = updateSt.executeUpdate();
-            if (modified == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated. Queries: \"" + updateSt + "\"");
-                successful = true;
-            } else {
-                getConnection().rollback();
-                LOGGER.error("DB has not been updated -> rollback! Queries: \"" + updateSt + "\"");
-                successful = false;
+            if ((insert || lockId != null) && updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The lock of the object: " + uuid + " has been "
+                        + ((insert) ? "insertes." : "updated."));
+                if (insert) {
+                    ResultSet gk = updateSt.getGeneratedKeys();
+                    if (gk.next()) {
+                        lockId = gk.getLong(1);
+                    }
+                }
+                if (lockId != null) {
+                    successful =
+                            (daoUtils.insertCrudAction(getUserId(),
+                                                       Constants.TABLE_CRUD_LOCK_ACTION,
+                                                       "lock_id",
+                                                       lockId,
+                                                       insert ? CRUD_ACTION_TYPES.CREATE
+                                                               : CRUD_ACTION_TYPES.UPDATE,
+                                                       false));
+
+                } else {
+                    LOGGER.error("No key has been returned! " + updateSt);
+                }
             }
+
         } catch (SQLException e) {
-            LOGGER.error("Query: " + updateSt, e);
+            LOGGER.error("Could not get statement: " + updateSt, e);
         } finally {
             closeConnection();
         }
         return successful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getLockOwnersID(String uuid) throws DatabaseException {
         PreparedStatement statement = null;
         long lockOwnersId = 0;
+        disableOldLocks();
 
         try {
-            statement = getConnection().prepareStatement(DELETE_OLD_DIGITAL_OBJECT);
-            int modified = statement.executeUpdate();
-            if (modified > 0) {
-                LOGGER.debug(modified + " digital objects have been unlock at "
-                        + FORMATTER.format(new java.util.Date())
-                        + " because the lock was older than one week");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select statement: " + statement, e);
-        } finally {
-            closeConnection();
-        }
-        try {
-            statement = getConnection().prepareStatement(SELECT_LOCK_USER_ID);
+            statement = getConnection().prepareStatement(SELECT_USER_ID_OF_LOCK);
             statement.setString(1, uuid);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                lockOwnersId = rs.getInt("user_id");
+                lockOwnersId = rs.getLong("editor_user_id");
             }
 
         } catch (SQLException e) {
@@ -158,54 +202,126 @@ public class LockDAOImpl
     }
 
     /**
-     * {@inheritDoc}
+     * Disable old locks.
      * 
      * @throws DatabaseException
+     *         the database exception
      */
+    private void disableOldLocks() throws DatabaseException {
 
-    @Override
-    public boolean unlockDigitalObject(String uuid) throws DatabaseException {
+        PreparedStatement selSt = null, disSt = null;
         try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        PreparedStatement deleteSt = null;
-        boolean successful = false;
-        try {
-            deleteSt = getConnection().prepareStatement(DELETE_DIGITAL_OBJETCS_LOCK_BY_UUID);
-            deleteSt.setString(1, uuid);
-        } catch (SQLException e) {
-            LOGGER.error("Could not get delete statement", e);
-        }
+            selSt = getConnection().prepareStatement(SELECT_OLD_DO_LOCKS);
+            ResultSet rs = selSt.executeQuery();
+            while (rs.next()) {
+                Long id = rs.getLong("id");
+                disSt = getConnection().prepareStatement(DISABLE_DO_LOCK_BY_ID);
+                disSt.setLong(1, id);
+                if (disSt.executeUpdate() == 1) {
+                    LOGGER.debug(id + " digital object have been unlocked at "
+                            + FORMATTER.format(new java.util.Date()) + " because the lock was older than "
+                            + DURATION_LOCK);
 
-        int modified;
-        try {
-            modified = deleteSt.executeUpdate();
-
-            if (modified == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated. Queries: \"" + deleteSt + "\"");
-                successful = true;
-            } else {
-                getConnection().rollback();
-                LOGGER.error("DB has not been updated -> rollback! Queries: \"" + deleteSt + "\"");
-                successful = false;
+                    daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.TIME.getUserId(),
+                                              Constants.TABLE_CRUD_LOCK_ACTION,
+                                              "lock_id",
+                                              id,
+                                              CRUD_ACTION_TYPES.DELETE,
+                                              false);
+                }
             }
-
         } catch (SQLException e) {
-            LOGGER.error("Query: " + deleteSt, e);
+            LOGGER.error("Could not get select statement: " + selSt, e);
         } finally {
             closeConnection();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean unlockDigitalObject(String uuid) throws DatabaseException {
+        PreparedStatement deleteSt = null;
+        boolean successful = false;
+        Long id = getLockId(uuid);
+        if (id != null) {
+            try {
+                getConnection().setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.warn("Unable to set autocommit off", e);
+            }
+            try {
+                deleteSt = getConnection().prepareStatement(DISABLE_DO_LOCK_BY_UUID);
+                deleteSt.setString(1, uuid);
+
+                if (deleteSt.executeUpdate() > 0) {
+                    successful =
+                            daoUtils.insertCrudAction(getUserId(),
+                                                      Constants.TABLE_CRUD_LOCK_ACTION,
+                                                      "lock_id",
+                                                      id,
+                                                      CRUD_ACTION_TYPES.DELETE,
+                                                      false);
+                }
+
+                if (successful) {
+                    getConnection().commit();
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.error("DB has not been updated -> rollback!");
+                }
+
+            } catch (SQLException e) {
+                LOGGER.error("Query: " + deleteSt, e);
+            } finally {
+                closeConnection();
+            }
+        } else {
+            LOGGER.error("No key has been returned! " + deleteSt);
         }
 
         return successful;
     }
 
     /**
+     * Gets the lock id.
+     * 
+     * @param uuid
+     *        the uuid
+     * @return the lock id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    private Long getLockId(String uuid) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        Long userId = getUserId();
+        Long id = null;
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_ID_OF_LOCK);
+            selectSt.setLong(1, userId);
+            selectSt.setString(2, uuid);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                id = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return id;
+    }
+
+    /**
      * {@inheritDoc}
      */
-
     @Override
     public String getDescription(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;
@@ -234,7 +350,6 @@ public class LockDAOImpl
     /**
      * {@inheritDoc}
      */
-
     @Override
     public String[] getTimeToExpirationLock(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;

@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.annotation.Out;
 
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
+import cz.mzk.editor.shared.rpc.StoredItem;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -52,12 +53,11 @@ public class GetDigitalObjectDetail {
     private DigitalObjectModel model;
 
     /**
-     * The path to the stored FOXML file,
-     * <code>storedFOXMLFilePath == null</code> when the digital object has to
-     * be obtained from Fedora.
+     * The stored FOXML file, <code>savedEditedObject == null</code> when the
+     * digital object has to be obtained from Fedora.
      */
     @In(3)
-    private String storedFOXMLFilePath;
+    private StoredItem savedEditedObject;
 
     /** The detail. */
     @Out(1)

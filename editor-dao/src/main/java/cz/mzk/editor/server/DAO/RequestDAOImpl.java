@@ -47,9 +47,11 @@ public class RequestDAOImpl
         extends AbstractDAO
         implements RequestDAO {
 
+    /** The Constant SELECT_IDENTITIES_STATEMENT. */
     public static final String SELECT_IDENTITIES_STATEMENT =
             "SELECT id, name, identity, modified FROM request_for_adding ORDER BY modified";
 
+    /** The Constant SELECT_IDENTITY_STATEMENT. */
     public static final String SELECT_IDENTITY_STATEMENT =
             "SELECT id, name, identity, modified FROM request_for_adding WHERE identity = (?) ORDER BY modified";
 
@@ -60,8 +62,12 @@ public class RequestDAOImpl
     /** The Constant DELETE_IDENTITY. */
     public static final String DELETE_IDENTITY = "DELETE FROM request_for_adding WHERE id = (?)";
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeOpenIDRequest(long id) throws DatabaseException {
         PreparedStatement deleteSt = null;
@@ -76,6 +82,9 @@ public class RequestDAOImpl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addOpenIDRequest(String name, String openID) throws DatabaseException {
         if (name == null) throw new NullPointerException("name");
@@ -111,6 +120,9 @@ public class RequestDAOImpl
         return !found;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException {
         PreparedStatement selectSt = null;

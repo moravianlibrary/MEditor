@@ -39,9 +39,11 @@ import com.smartgwt.client.data.Criteria;
 import com.smartgwt.client.data.DSCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.HoverEvent;
@@ -53,6 +55,7 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -97,6 +100,9 @@ public class InputQueueTree
     // this is not a mistake (the lock should be shared with another presenter)
     private static final Object LOCK = Constants.class;
     private static InputQueueTree inputQueueTree = null;
+
+    /** The roll over canvas */
+    private HLayout rollOverCanvas;
 
     public static void setInputTreeToSection(final DispatchAsync dispatcher,
                                              final LangConstants lang,
@@ -145,6 +151,44 @@ public class InputQueueTree
             sectionStack.addSection(section1, 0);
             section1.setAttribute(Constants.SECTION_INPUT_ID, "yes");
         }
+
+    }
+
+    @Override
+    protected Canvas getRollOverCanvas(Integer rowNum, Integer colNum) {
+        final ListGridRecord rollOverRecord = this.getRecord(rowNum);
+        if (rollOverCanvas == null) {
+            rollOverCanvas = new HLayout();
+            rollOverCanvas.setSnapTo("TR");
+            rollOverCanvas.setWidth(50);
+            rollOverCanvas.setHeight(22);
+        }
+
+        final String conDate = rollOverRecord.getAttributeAsString(Constants.ATTR_CONVERSION_DATE);
+        final Boolean isCon = rollOverRecord.getAttributeAsBoolean(Constants.ATTR_IS_CONVERTED);
+        if (conDate != null) {
+            ImgButton lockImg = new ImgButton();
+            lockImg.setShowDown(false);
+            lockImg.setShowRollOver(false);
+            lockImg.setLayoutAlign(Alignment.CENTER);
+
+            if (rollOverRecord.getAttributeAsBoolean(Constants.ATTR_IS_CONVERTED)) {
+                lockImg.setSrc("icons/16/stillCon.png");
+            } else {
+                lockImg.setSrc("icons/16/notCon.png");
+            }
+
+            lockImg.setPrompt(lang.lastConversion() + ": " + conDate + "<br>"
+                    + (isCon ? lang.stillCon() : lang.notCon()));
+            lockImg.setHoverWidth(400);
+            lockImg.setHeight(16);
+            lockImg.setWidth(16);
+            rollOverCanvas.addChild(lockImg);
+        } else {
+            if (rollOverCanvas.getChildren().length > 0)
+                rollOverCanvas.removeChild(rollOverCanvas.getChildren()[0]);
+        }
+        return rollOverCanvas;
     }
 
     private static ImgButton getRefreshButton(final LangConstants lang,
@@ -245,6 +289,7 @@ public class InputQueueTree
         setAutoFetchData(true);
         setShowRoot(false);
         setSelectionType(SelectionStyle.SINGLE);
+        setShowRollOverCanvas(true);
 
         MenuItem showItem = new MenuItem(lang.show(), "icons/16/structure.png");
         final Menu showMenu = new Menu();

@@ -122,11 +122,10 @@ public class GetRecentlyModifiedHandler
             if (action.isForAllUsers()) {
                 recItems = recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), null);
             } else {
-                recItems = recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(), openID);
+                recItems =
+                        recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(),
+                                                     userDAO.getUsersId(openID));
             }
-
-            @SuppressWarnings("unused")
-            long userId = userDAO.getUsersId(openID);
 
             for (RecentlyModifiedItem item : recItems) {
                 LockInfo lockInfo =

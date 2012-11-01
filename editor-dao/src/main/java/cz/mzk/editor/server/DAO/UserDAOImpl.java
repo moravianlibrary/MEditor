@@ -30,14 +30,20 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.util.ArrayList;
+
+import javax.activation.UnsupportedDataTypeException;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.shared.rpc.OpenIDItem;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
 
 // TODO: Auto-generated Javadoc
@@ -48,112 +54,82 @@ public class UserDAOImpl
         extends AbstractDAO
         implements UserDAO {
 
-    /** The Constant SELECT_LAST_N_STATEMENT. */
-    public static final String SELECT_USERS_STATEMENT = "SELECT id, name, surname, sex FROM "
+    //    editor_user (id, name, surname, sex) -> editor_user (id, name, surname, state)
+    //                                                             name, surname, 'true'
+    //    role (name, description) 
+    //    users_role (editor_user_id, role_name)
+    //    open_id_identity (id, user_id, identity) -> open_id_identity (editor_user_id, identity)
+    //                                                                         user_id, identity
+    //    user_edit (id, editor_user_id, "timestamp", edited_editor_user_id, description, type)
+
+    /** The Constant SELECT_USERS_STATEMENT. */
+    public static final String SELECT_USERS_STATEMENT = "SELECT id, name, surname FROM "
             + Constants.TABLE_EDITOR_USER + " ORDER BY surname";
 
-    /** The Constant SELECT_ROLES_STATEMENT. */
-    public static final String SELECT_ROLES_STATEMENT = "SELECT name FROM " + Constants.TABLE_ROLE
-            + " ORDER BY name";
+    /** The Constant DISABLE_USER. */
+    public static final String DISABLE_USER = "UPDATE " + Constants.TABLE_EDITOR_USER
+            + " SET state='false' WHERE id = (?)";
 
-    /** The Constant SELECT_ROLE_BY_IDENTITY_STATEMENT. */
-    public static final String SELECT_ROLE_BY_IDENTITY_STATEMENT = "SELECT id FROM "
-            + Constants.TABLE_USER_IN_ROLE + " WHERE user_id IN (SELECT user_id FROM "
-            + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?)) AND role_id IN (SELECT id FROM "
-            + Constants.TABLE_ROLE + " WHERE name = (?))";
+    /** The Constant INSERT_ITEM_STATEMENT. */
+    public static final String INSERT_USER_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_EDITOR_USER
+            + " (name, surname, state) VALUES ((?),(?),'true')";
+
+    /** The Constant INSERT_EDIT_USER_ACTION_STATEMENT. */
+    public static final String INSERT_EDIT_USER_ACTION_STATEMENT =
+            "INSERT INTO "
+                    + Constants.TABLE_EDITOR_USER
+                    + " (editor_user_id, timestamp, edited_editor_user_id, description, type) VALUES ((?),(CURRENT_TIMESTAMP),(?),(?),(?))";
+
+    /** The Constant UPDATE_ITEM_STATEMENT. */
+    public static final String UPDATE_USER_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_USER
+            + " SET name = (?), surname = (?) WHERE id = (?)";
 
     /** The Constant SELECT_ROLES_OF_USER_STATEMENT2. */
-    public static final String SELECT_ROLES_OF_USER_STATEMENT2 = "SELECT id, name, description FROM "
-            + Constants.TABLE_ROLE + " WHERE id IN ( SELECT role_id FROM " + Constants.TABLE_USER_IN_ROLE
-            + " WHERE user_id = (?) )";
+    public static final String SELECT_ROLES_OF_USER_STATEMENT = "SELECT name, description FROM "
+            + Constants.TABLE_ROLE + " WHERE name IN ( SELECT role_name FROM " + Constants.TABLE_USERS_ROLE
+            + " WHERE editor_user_id = (?) )";
 
-    /** The Constant SELECT_ROLES_OF_USER_STATEMENT. */
-    public static final String SELECT_ROLES_OF_USER_STATEMENT =
-            "SELECT (SELECT id FROM "
-                    + Constants.TABLE_USER_IN_ROLE
-                    + " WHERE user_id = (?) AND role_id = role.id) AS id, name, description FROM role WHERE id IN ( SELECT role_id FROM user_in_role WHERE user_id = (?))";
+    /** The Constant INSERT_USERS_ROLE_ITEM_STATEMENT. */
+    public static final String INSERT_USERS_ROLE_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_USERS_ROLE
+            + " (editor_user_id, role_name) VALUES ((?),(?))";
 
-    /** The Constant SELECT_IDENTITIES_STATEMENT. */
-    public static final String SELECT_IDENTITIES_STATEMENT = "SELECT id, identity FROM "
-            + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE user_id = (?)";
+    /** The Constant DELETE_USERS_ROLE_ITEM_STATEMENT. */
+    public static final String DELETE_USERS_ROLE_ITEM_STATEMENT = "DELETE FROM " + Constants.TABLE_USERS_ROLE
+            + " WHERE editor_user_id=(?) AND role_name=(?)";
 
-    /** The Constant DELETE_ALL_USER_ROLES. */
-    public static final String DELETE_ALL_USER_ROLES = "DELETE FROM " + Constants.TABLE_USER_IN_ROLE
-            + " WHERE user_id = (?)";
+    /** The Constant SELECT_ROLE_ITEMS_STATEMENT. */
+    public static final String SELECT_ROLE_ITEMS_STATEMENT = "SELECT name, description FROM "
+            + Constants.TABLE_ROLE + " ORDER BY name";
 
-    /** The Constant DELETE_ALL_USER_IDENTITIES. */
-    public static final String DELETE_ALL_USER_IDENTITIES = "DELETE FROM " + Constants.TABLE_OPEN_ID_IDENTITY
-            + " WHERE user_id = (?)";
-
-    /** The Constant DELETE_USER. */
-    public static final String DELETE_USER = "DELETE FROM " + Constants.TABLE_EDITOR_USER + " WHERE id = (?)";
-
-    /** The Constant DELETE_IDENTITY. */
-    public static final String DELETE_IDENTITY = "DELETE FROM " + Constants.TABLE_OPEN_ID_IDENTITY
-            + " WHERE id = (?)";
-
-    /** The Constant DELETE_USER_IN_ROLE. */
-    public static final String DELETE_USER_IN_ROLE = "DELETE FROM " + Constants.TABLE_USER_IN_ROLE
-            + " WHERE id = (?)";
-
-    /** The Constant SELECT_ROLE_DESCRIPTION. */
-    public static final String SELECT_ROLE_DESCRIPTION = "SELECT description FROM " + Constants.TABLE_ROLE
-            + " WHERE name = (?)";
-
-    /** The Constant SELECT_NAME_BY_OPENID. */
-    public static final String SELECT_NAME_BY_OPENID = "SELECT name, surname FROM "
-            + Constants.TABLE_EDITOR_USER + " WHERE id IN (SELECT user_id FROM "
-            + Constants.TABLE_OPEN_ID_IDENTITY + " WHERE identity = (?))";
+    /** The Constant SELECT_USER_NAME. */
+    public static final String SELECT_USER_NAME = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
+            + " WHERE id=(?)";
 
     /** The Constant SELECT_USER_ID_BY_OPENID. */
     public static final String SELECT_USER_ID_BY_OPENID = "SELECT id FROM " + Constants.TABLE_EDITOR_USER
             + " WHERE id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
             + " WHERE identity = (?))";
 
-    /** The Constant INSERT_ITEM_STATEMENT. */
-    public static final String INSERT_USER_STATEMENT = "INSERT INTO " + Constants.TABLE_EDITOR_USER
-            + " (name, surname, sex) VALUES ((?),(?),(?))";
-
-    /** The Constant INSERT_IDENTITY_STATEMENT. */
-    public static final String INSERT_IDENTITY_STATEMENT = "INSERT INTO " + Constants.TABLE_OPEN_ID_IDENTITY
-            + " (user_id, identity) VALUES ((?),(?))";
-
-    /** The Constant INSERT_USER_IN_ROLE_STATEMENT. */
-    public static final String INSERT_USER_IN_ROLE_STATEMENT = "INSERT INTO " + Constants.TABLE_USER_IN_ROLE
-            + " (user_id, role_id, date) VALUES ((?),(SELECT id FROM " + Constants.TABLE_ROLE
-            + " WHERE name = (?)),(CURRENT_TIMESTAMP))";
-
-    /** The Constant USER_CURR_VALUE. */
-    public static final String USER_CURR_VALUE = "SELECT currval('" + Constants.SEQUENCE_EDITOR_USER + "')";
-
-    /** The Constant USER_IDENTITY_VALUE. */
-    public static final String USER_IDENTITY_VALUE = "SELECT currval('" + Constants.SEQUENCE_OPEN_ID_IDENTITY
-            + "')";
-
-    /** The Constant USER_ROLE_VALUE. */
-    public static final String USER_ROLE_VALUE = "SELECT currval('" + Constants.SEQUENCE_ROLE + "')";
-
-    /** The Constant UPDATE_ITEM_STATEMENT. */
-    public static final String UPDATE_USER_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_USER
-            + " SET name = (?), surname = (?) WHERE id = (?)";
-
-    /** The Constant SELECT_NAME_BY_OPENID. */
-    public static final String SELECT_NAME_BY_ID = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
-            + " WHERE id = (?)";
-
-    private static final String DELETE_DIGITAL_OBJETCS_LOCK = "DELETE FROM " + Constants.TABLE_LOCK
-            + " WHERE user_id = (?)";
-
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#isSupported(java.lang.String )
+    /** The dao utils. */
+    @SuppressWarnings("unused")
+    @Inject
+    private DAOUtils daoUtils;
+
+    @Inject
+    private LockDAO lockDAO;
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public int isSupported(String identifier) throws DatabaseException {
 
         long userId = getUsersId(identifier);
+
+        if (userId == -1) userId = getUsersIdOld(identifier);
 
         if (userId != -1) {
             if (hasRole(UserDAO.ADMIN_STRING, userId)) {
@@ -166,8 +142,25 @@ public class UserDAOImpl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getUsersId(String identifier) throws DatabaseException {
+
+        return getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID);
+    }
+
+    /**
+     * Gets the users id old.
+     * 
+     * @param identifier
+     *        the identifier
+     * @return the users id old
+     * @throws DatabaseException
+     *         the database exception
+     */
+    private long getUsersIdOld(String identifier) throws DatabaseException {
         PreparedStatement selectSt = null;
         long userId = -1;
         try {
@@ -189,9 +182,8 @@ public class UserDAOImpl
         return userId;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getUsers()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public ArrayList<UserInfoItem> getUsers() throws DatabaseException {
@@ -206,123 +198,6 @@ public class UserDAOImpl
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
                 retList.add(new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs
-                        .getBoolean("sex") ? "m" : "f", rs.getString("id")));
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-        return retList;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#removeUser(long)
-     */
-    @Override
-    public void removeUser(long id) throws DatabaseException {
-        PreparedStatement deleteSt = null;
-        try {
-            deleteSt = getConnection().prepareStatement(DELETE_ALL_USER_IDENTITIES);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-            deleteSt = getConnection().prepareStatement(DELETE_ALL_USER_ROLES);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-            deleteSt = getConnection().prepareStatement(DELETE_USER);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-            deleteSt = getConnection().prepareStatement(DELETE_DIGITAL_OBJETCS_LOCK);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Could not delete user with id " + id + ". Query: " + deleteSt, e);
-        } finally {
-            closeConnection();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#addUser(cz.fi.muni.xkremser
-     * .editor.shared.rpc.UserInfoItem)
-     */
-    @Override
-    public String addUser(UserInfoItem user) throws DatabaseException {
-        if (user == null) throw new NullPointerException("user");
-        if (user.getSurname() == null || "".equals(user.getSurname()))
-            throw new NullPointerException("user.getSurname()");
-
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-        String retID = "exist";
-        PreparedStatement insSt = null, updSt = null, seqSt = null;
-        try {
-            // TX start
-            int modified = 0;
-            if (user.getId() != null) { // is allready in DB
-                long id = Long.parseLong(user.getId());
-                updSt = getConnection().prepareStatement(UPDATE_USER_STATEMENT);
-                updSt.setString(1, user.getName());
-                updSt.setString(2, user.getSurname());
-                updSt.setLong(3, id);
-                modified = updSt.executeUpdate();
-            } else {
-                insSt = getConnection().prepareStatement(INSERT_USER_STATEMENT);
-                insSt.setString(1, user.getName());
-                insSt.setString(2, user.getSurname());
-                insSt.setBoolean(3, "m".equalsIgnoreCase(user.getSex()));
-                modified = insSt.executeUpdate();
-                seqSt = getConnection().prepareStatement(USER_CURR_VALUE);
-                ResultSet rs = seqSt.executeQuery();
-                while (rs.next()) {
-                    retID = rs.getString(1);
-                }
-            }
-            if (modified == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated. Queries: \"" + seqSt + "\" and \""
-                        + (user.getId() != null ? updSt : insSt) + "\"");
-            } else {
-                getConnection().rollback();
-                LOGGER.debug("DB has not been updated. -> rollback! Queries: \"" + seqSt + "\" and \""
-                        + (user.getId() != null ? updSt : insSt) + "\"");
-                retID = "error";
-            }
-            // TX end
-
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            retID = "error";
-        } finally {
-            closeConnection();
-        }
-        return retID;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getRolesOfUser(long)
-     */
-    @Override
-    public ArrayList<RoleItem> getRolesOfUser(long userId) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        ArrayList<RoleItem> retList = new ArrayList<RoleItem>();
-        try {
-            selectSt = getConnection().prepareStatement(SELECT_ROLES_OF_USER_STATEMENT);
-            selectSt.setLong(1, userId);
-            selectSt.setLong(2, userId);
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select statement", e);
-        }
-        try {
-            ResultSet rs = selectSt.executeQuery();
-            while (rs.next()) {
-                retList.add(new RoleItem(rs.getString("name"), rs.getString("description"), rs
                         .getString("id")));
             }
         } catch (SQLException e) {
@@ -333,24 +208,196 @@ public class UserDAOImpl
         return retList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getIdentities(java.lang .String )
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public ArrayList<OpenIDItem> getIdentities(String id) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        ArrayList<OpenIDItem> retList = new ArrayList<OpenIDItem>();
+    public boolean disableUser(long userId) throws DatabaseException {
+        PreparedStatement updateSt = null;
+        boolean successful = false;
+
         try {
-            selectSt = getConnection().prepareStatement(SELECT_IDENTITIES_STATEMENT);
-            selectSt.setLong(1, Long.parseLong(id));
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
+            updateSt = getConnection().prepareStatement(DISABLE_USER);
+            updateSt.setLong(1, userId);
+            int updated = updateSt.executeUpdate();
+
+            if (updated == 1) {
+                LOGGER.debug("DB has been updated: The user: " + userId + " has been disabled.");
+
+                //                lockDAO.un
+
+                boolean crudSucc =
+                        insertEditUserActionItem(getUserId(),
+                                                 userId,
+                                                 "The role has been disabled.",
+                                                 CRUD_ACTION_TYPES.DELETE,
+                                                 false);
+                if (crudSucc) {
+                    getConnection().commit();
+                    successful = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+
+            } else {
+                LOGGER.error("DB has not been updated! " + updateSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not delete user with id " + userId + ". Query: " + updateSt, e);
+        } finally {
+            closeConnection();
+        }
+        return successful;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean insertUpdatetUser(UserInfoItem user) throws DatabaseException {
+        if (user == null) throw new NullPointerException("user");
+        if (user.getSurname() == null || "".equals(user.getSurname()))
+            throw new NullPointerException("user.getSurname()");
+
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        PreparedStatement updateSt = null;
+        boolean successful = false;
+        Long id = null;
+        try {
+            if (user.getId() == null) {
+                updateSt =
+                        getConnection().prepareStatement(INSERT_USER_ITEM_STATEMENT,
+                                                         Statement.RETURN_GENERATED_KEYS);
+                updateSt.setString(1, user.getName());
+                updateSt.setString(2, user.getSurname());
+
+            } else {
+                updateSt = getConnection().prepareStatement(UPDATE_USER_STATEMENT);
+                id = Long.parseLong(user.getId());
+                updateSt.setString(1, user.getName());
+                updateSt.setString(2, user.getSurname());
+                updateSt.setLong(3, id);
+            }
+
+            if (updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The editor user: " + user.getName() + " "
+                        + user.getSurname() + " has been inserted.");
+                ResultSet gk = updateSt.getGeneratedKeys();
+                if (gk.next()) {
+                    id = gk.getLong(1);
+                } else {
+                    LOGGER.error("No key has been returned! " + updateSt);
+                }
+            } else {
+                LOGGER.error("DB has not been updated! " + updateSt);
+            }
+
+            if (id != null) {
+                boolean crudSucc =
+                        insertEditUserActionItem(getUserId(),
+                                                 id,
+                                                 user.getId() == null ? "New user has been added"
+                                                         : "User has been updated",
+                                                 user.getId() == null ? CRUD_ACTION_TYPES.CREATE
+                                                         : CRUD_ACTION_TYPES.UPDATE,
+                                                 false);
+
+                if (crudSucc) {
+                    successful = true;
+                    getConnection().commit();
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated. -> rollback!");
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not get insert item statement " + updateSt, e);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return successful;
+    }
+
+    /**
+     * Insert edit user action item.
+     * 
+     * @param user_id
+     *        the user_id
+     * @param edited_user_id
+     *        the edited_user_id
+     * @param description
+     *        the description
+     * @param type
+     *        the type
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    private boolean insertEditUserActionItem(Long user_id,
+                                             Long edited_user_id,
+                                             String description,
+                                             CRUD_ACTION_TYPES type,
+                                             boolean closeCon) throws DatabaseException {
+        PreparedStatement insSt = null;
+        boolean successful = false;
+        try {
+            insSt = getConnection().prepareStatement(INSERT_EDIT_USER_ACTION_STATEMENT);
+            insSt.setLong(1, user_id);
+            insSt.setLong(2, edited_user_id);
+            insSt.setString(3, description);
+            insSt.setString(4, type.toString());
+
+            if (insSt.executeUpdate() == 1) {
+                successful = true;
+                LOGGER.debug("DB has been updated by commit.: The edit_user action: " + type.toString()
+                        + " of user: " + user_id + " has been inserted.");
+            } else {
+                LOGGER.debug("DB has not been updated!");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Could not get insert item statement " + insSt, e);
+        } finally {
+            if (closeCon) closeConnection();
+        }
+        return successful;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ArrayList<RoleItem> getRolesOfUser(long userId) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        ArrayList<RoleItem> retList = new ArrayList<RoleItem>();
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_ROLES_OF_USER_STATEMENT);
+            selectSt.setLong(1, userId);
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement", e);
         }
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                retList.add(new OpenIDItem(rs.getString("identity"), rs.getString("id")));
+                retList.add(new RoleItem(userId, rs.getString("name"), rs.getString("description")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -360,158 +407,189 @@ public class UserDAOImpl
         return retList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#addUserIdentity(cz.fi.muni
-     * .xkremser.editor.shared.rpc.OpenIDItem, long)
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public String addUserIdentity(OpenIDItem identity, long userId) throws DatabaseException {
-        if (identity == null) throw new NullPointerException("identity");
-        if (identity.getIdentity() == null || "".equals(identity.getIdentity()))
-            throw new NullPointerException("identity.getIdentity()");
+    public ArrayList<UserIdentity> getIdentities(String id, USER_IDENTITY_TYPES type)
+            throws DatabaseException, UnsupportedDataTypeException {
+        PreparedStatement selectSt = null;
+        ArrayList<UserIdentity> retList = new ArrayList<UserIdentity>();
+        long userId = Long.parseLong(id);
+        try {
+
+            StringBuffer sql = new StringBuffer("SELECT identity FROM ");
+            switch (type) {
+                case OPEN_ID:
+                    sql.append(Constants.TABLE_OPEN_ID_IDENTITY);
+                    break;
+                case SHIBBOLETH:
+                    sql.append(Constants.TABLE_SHIBBOLETH_IDENTITY);
+                    break;
+                case LDAP:
+                    sql.append(Constants.TABLE_LDAP_IDENTITY);
+                    break;
+                default:
+                    throw new UnsupportedDataTypeException(type.toString());
+            }
+            sql.append(" WHERE user_id = (?)");
+            selectSt = getConnection().prepareStatement(sql.toString());
+            selectSt.setLong(1, userId);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                retList.add(new UserIdentity(rs.getString("identity"), type, userId));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return retList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
+            UnsupportedDataTypeException {
+        if (userIdentity == null) throw new NullPointerException("identity");
+        if (userIdentity.getIdentity() == null || "".equals(userIdentity.getIdentity())
+                || userIdentity.getUserId() == null) throw new NullPointerException();
 
         try {
             getConnection().setAutoCommit(false);
         } catch (SQLException e) {
             LOGGER.warn("Unable to set autocommit off", e);
         }
-        String retID = "exist";
-        PreparedStatement insSt = null, seqSt = null;
+        boolean success = false;
+        PreparedStatement updateSt = null;
         try {
-            // TX start
-            int modified = 0;
-            insSt = getConnection().prepareStatement(INSERT_IDENTITY_STATEMENT);
-            insSt.setLong(1, userId);
-            insSt.setString(2, identity.getIdentity());
-            modified = insSt.executeUpdate();
-            seqSt = getConnection().prepareStatement(USER_IDENTITY_VALUE);
-            ResultSet rs = seqSt.executeQuery();
-            while (rs.next()) {
-                retID = rs.getString(1);
+            StringBuffer sql = new StringBuffer(add ? "INSERT INTO " : "DELETE FROM ");
+            switch (userIdentity.getType()) {
+                case OPEN_ID:
+                    sql.append(Constants.TABLE_OPEN_ID_IDENTITY);
+                    break;
+                case SHIBBOLETH:
+                    sql.append(Constants.TABLE_SHIBBOLETH_IDENTITY);
+                    break;
+                case LDAP:
+                    sql.append(Constants.TABLE_LDAP_IDENTITY);
+                    break;
+                default:
+                    throw new UnsupportedDataTypeException(userIdentity.getType().toString());
             }
-            if (modified == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated. Queries: \"" + seqSt + "\" and \"" + insSt + "\"");
+            if (add) {
+                sql.append(" (editor_user_id, identity) VALUES ((?),(?))");
             } else {
-                getConnection().rollback();
-                LOGGER.debug("DB has not been updated -> rollback! Queries: \"" + seqSt + "\" and \"" + insSt
-                        + "\"");
-                retID = "error";
+                sql.append(" WHERE editor_user_id = (?) AND identity = (?)");
             }
-            // TX end
+            updateSt = getConnection().prepareStatement(sql.toString());
+
+            updateSt.setLong(1, userIdentity.getUserId());
+            updateSt.setString(2, userIdentity.getIdentity());
+
+            if (updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The " + userIdentity.getType().toString() + " identity "
+                        + userIdentity.getIdentity() + " has been " + (add ? "added to" : "removed from")
+                        + " the user: " + userIdentity.getUserId());
+
+                boolean crudSucc =
+                        insertEditUserActionItem(getUserId(),
+                                                 userIdentity.getUserId(),
+                                                 "An identity has been " + (add ? "added." : "removed."),
+                                                 CRUD_ACTION_TYPES.UPDATE,
+                                                 true);
+
+                if (crudSucc) {
+                    getConnection().commit();
+                    success = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+
+            } else {
+                LOGGER.error("DB has not been updated! " + updateSt);
+            }
 
         } catch (SQLException e) {
             LOGGER.error(e);
-            retID = "error";
+            e.printStackTrace();
         } finally {
             closeConnection();
         }
-        return retID;
+        return success;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#removeUserIdentity(long)
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public void removeUserIdentity(long id) throws DatabaseException {
-        PreparedStatement deleteSt = null;
-        try {
-            deleteSt = getConnection().prepareStatement(DELETE_IDENTITY);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Could not delete openID identity with id " + id + ". Query: " + deleteSt, e);
-        } finally {
-            closeConnection();
-        }
-    }
+    public boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+            UnsupportedDataTypeException {
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#addUserRole(cz.fi.muni. xkremser
-     * .editor.shared.rpc.RoleItem, long)
-     */
-    @Override
-    public RoleItem addUserRole(RoleItem role, long userId) throws DatabaseException {
-
-        if (role == null) throw new NullPointerException("role");
-        if (role.getName() == null || "".equals(role.getName()))
-            throw new NullPointerException("role.getName()");
-        if (hasRole(role.getName(), userId)) {
-            return new RoleItem(role.getName(), "", "exist");
+        if (roleItem == null) throw new NullPointerException("role");
+        if (roleItem.getName() == null || "".equals(roleItem.getName()) || roleItem.getUserId() == null)
+            throw new NullPointerException();
+        if (hasRole(roleItem.getName(), roleItem.getUserId())) {
+            return true;
         }
-        RoleItem defaultRole = new RoleItem(role.getName(), "", "exist");
+
         try {
             getConnection().setAutoCommit(false);
         } catch (SQLException e) {
             LOGGER.warn("Unable to set autocommit off", e);
         }
-        String retID = "exist";
-        String roleDesc = "";
-        PreparedStatement seqSt = null, roleDescSt = null;
+
+        boolean success = false;
+        PreparedStatement updateSt = null;
         try {
-            // TX start
-            int modified = 0;
-            PreparedStatement insSt = getConnection().prepareStatement(INSERT_USER_IN_ROLE_STATEMENT);
-            insSt.setLong(1, userId);
-            insSt.setString(2, role.getName());
-            modified = insSt.executeUpdate();
-            seqSt = getConnection().prepareStatement(USER_ROLE_VALUE);
-            ResultSet rs = seqSt.executeQuery();
-            while (rs.next()) {
-                retID = rs.getString(1);
-            }
-            roleDescSt = getConnection().prepareStatement(SELECT_ROLE_DESCRIPTION);
-            roleDescSt.setString(1, role.getName());
-            ResultSet rs2 = roleDescSt.executeQuery();
-            while (rs2.next()) {
-                roleDesc = rs2.getString(1);
-            }
-            if (modified == 1) {
-                getConnection().commit();
-                LOGGER.debug("DB has been updated. Queries: \"" + seqSt + "\" and \"" + roleDescSt + "\"");
+
+            updateSt =
+                    getConnection().prepareStatement(add ? INSERT_USERS_ROLE_ITEM_STATEMENT
+                            : DELETE_USERS_ROLE_ITEM_STATEMENT);
+            updateSt.setLong(1, roleItem.getUserId());
+            updateSt.setString(2, roleItem.getName());
+
+            if (updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The role " + roleItem.getName() + " has been "
+                        + (add ? "added to" : "removed from") + " the user: " + roleItem.getUserId());
+
+                boolean crudSucc =
+                        insertEditUserActionItem(getUserId(), roleItem.getUserId(), "The role has been "
+                                + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
+
+                if (crudSucc) {
+                    getConnection().commit();
+                    success = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+
             } else {
-                getConnection().rollback();
-                LOGGER.error("DB has not been updated -> rollback! Queries: \"" + seqSt + "\" and \""
-                        + roleDescSt + "\"");
-                retID = "error";
+                LOGGER.error("DB has not been updated! " + updateSt);
             }
-            // TX end
 
         } catch (SQLException e) {
             LOGGER.error(e);
-            retID = "error";
+            e.printStackTrace();
         } finally {
             closeConnection();
         }
-        defaultRole.setId(retID);
-        defaultRole.setDescription(roleDesc);
-        return defaultRole;
+
+        return success;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#removeUserRole(long)
-     */
-    @Override
-    public void removeUserRole(long id) throws DatabaseException {
-        PreparedStatement deleteSt = null;
-        try {
-            deleteSt = getConnection().prepareStatement(DELETE_USER_IN_ROLE);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error("Could not delete user_in_role item with id " + id + ". Query: " + deleteSt, e);
-        } finally {
-            closeConnection();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#hasRole(java.lang.String, long)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public boolean hasRole(String role, long userId) throws DatabaseException {
@@ -526,23 +604,22 @@ public class UserDAOImpl
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getRoles()
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public ArrayList<String> getRoles() throws DatabaseException {
+    public ArrayList<RoleItem> getRoles() throws DatabaseException {
         PreparedStatement selectSt = null;
-        ArrayList<String> retList = new ArrayList<String>();
+        ArrayList<RoleItem> retList = new ArrayList<RoleItem>();
         try {
-            selectSt = getConnection().prepareStatement(SELECT_ROLES_STATEMENT);
+            selectSt = getConnection().prepareStatement(SELECT_ROLE_ITEMS_STATEMENT);
         } catch (SQLException e) {
             LOGGER.error("Could not get select roles statement", e);
         }
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                retList.add(rs.getString("name"));
+                retList.add(new RoleItem(null, rs.getString("name"), rs.getString("description")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -552,23 +629,18 @@ public class UserDAOImpl
         return retList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#getName(java.lang.String)
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public String getName(String key, boolean openIdUsed) throws DatabaseException {
+    public String getName(Long key) throws DatabaseException {
         PreparedStatement selectSt = null;
         String name = "unknown";
         try {
 
-            if (openIdUsed) {
-                selectSt = getConnection().prepareStatement(SELECT_NAME_BY_OPENID);
-                selectSt.setString(1, key);
-            } else {
-                selectSt = getConnection().prepareStatement(SELECT_NAME_BY_ID);
-                selectSt.setLong(1, Long.valueOf(key));
-            }
+            selectSt = getConnection().prepareStatement(SELECT_USER_NAME);
+            selectSt.setLong(1, Long.valueOf(key));
+
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement", e);
         }
@@ -585,32 +657,4 @@ public class UserDAOImpl
         return name;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.server.DAO.UserDAO#openIDhasRole(java.lang .String ,
-     * java.lang.String)
-     */
-    @Override
-    public boolean openIDhasRole(String role, String identifier) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        boolean ret = false;
-        try {
-            selectSt = getConnection().prepareStatement(SELECT_ROLE_BY_IDENTITY_STATEMENT);
-            selectSt.setString(1, identifier);
-            selectSt.setString(2, role);
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select roles statement", e);
-        }
-        try {
-            ResultSet rs = selectSt.executeQuery();
-            while (rs.next()) {
-                ret = true;
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-        return ret;
-    }
 }

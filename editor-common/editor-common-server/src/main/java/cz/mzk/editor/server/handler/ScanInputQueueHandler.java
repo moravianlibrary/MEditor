@@ -29,9 +29,6 @@ package cz.mzk.editor.server.handler;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,9 +36,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
@@ -53,20 +47,14 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import org.xml.sax.SAXException;
-
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
-import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
@@ -101,6 +89,9 @@ public class ScanInputQueueHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    @Inject
+    private ConversionDAO conversionDAO;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -142,21 +133,25 @@ public class ScanInputQueueHandler
             ArrayList<InputQueueItem> list; // due to gwt performance issues, more
                                             // concrete interface is used
             try {
+
                 if (id == null || "".equals(id)) { // top level
 
                     if ((list = inputQueueDAO.getItems(id)).size() == 0) { // empty db
                         ArrayList<ArrayList<InputQueueItem>> completeScanResult = updateDb(base);
                         result =
-                                new ScanInputQueueResult(completeScanResult.get(0),
+                                new ScanInputQueueResult(conversionDAO.getConversionInfo(completeScanResult
+                                                                 .get(0), getImageLifeTime()),
                                                          createServerActionResult(completeScanResult.get(1)));
                     } else {
                         result =
-                                new ScanInputQueueResult(list,
+                                new ScanInputQueueResult(conversionDAO.getConversionInfo(list,
+                                                                                         getImageLifeTime()),
                                                          new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
                     }
                 } else {
                     result =
-                            new ScanInputQueueResult(inputQueueDAO.getItems(id),
+                            new ScanInputQueueResult(conversionDAO.getConversionInfo(inputQueueDAO
+                                                             .getItems(id), getImageLifeTime()),
                                                      new ServerActionResult(Constants.SERVER_ACTION_RESULT.OK));
                 }
             } catch (DatabaseException e) {
@@ -168,7 +163,8 @@ public class ScanInputQueueHandler
             try {
                 ArrayList<ArrayList<InputQueueItem>> completeScanResult = updateDb(base);
                 result =
-                        new ScanInputQueueResult(completeScanResult.get(0),
+                        new ScanInputQueueResult(conversionDAO.getConversionInfo(completeScanResult.get(0),
+                                                                                 getImageLifeTime()),
                                                  createServerActionResult(completeScanResult.get(1)));
             } catch (DatabaseException e) {
                 throw new ActionException(e);
@@ -193,6 +189,20 @@ public class ScanInputQueueHandler
             }
             return new ServerActionResult(Constants.SERVER_ACTION_RESULT.WRONG_FILE_NAME, sb.toString());
         }
+    }
+
+    private int getImageLifeTime() {
+        int numberOfDays = 0;
+        String numberString = configuration.getGenImagesLifetime();
+
+        if (numberString != null) {
+            try {
+                int number = Integer.parseInt(numberString);
+                if (number > 0) numberOfDays = number;
+            } catch (NumberFormatException nfe) {
+            }
+        }
+        return numberOfDays;
     }
 
     /**
@@ -221,7 +231,8 @@ public class ScanInputQueueHandler
      * @return the array list
      * @throws DatabaseException
      */
-    private ArrayList<ArrayList<InputQueueItem>> updateDb(String base) throws DatabaseException {
+    private ArrayList<ArrayList<InputQueueItem>> updateDb(String base) throws DatabaseException,
+            ActionException {
 
         String[] types = configuration.getDocumentTypes();
         try {
@@ -272,8 +283,10 @@ public class ScanInputQueueHandler
      * @param relativePath
      *        the relative path
      * @return the list
+     * @throws ActionException
      */
-    private List<List<InputQueueItem>> scanDirectoryStructure(String pathPrefix, String relativePath) {
+    private List<List<InputQueueItem>> scanDirectoryStructure(String pathPrefix, String relativePath)
+            throws ActionException {
         List<List<InputQueueItem>> inputQueueList = new ArrayList<List<InputQueueItem>>();
         inputQueueList.add(new ArrayList<InputQueueItem>());
         inputQueueList.add(new ArrayList<InputQueueItem>());
@@ -293,11 +306,12 @@ public class ScanInputQueueHandler
      * @param level
      *        the level
      * @return the list
+     * @throws ActionException
      */
     private boolean scanDirectoryStructure(String pathPrefix,
                                            String relativePath,
                                            final List<List<InputQueueItem>> inputQueueList,
-                                           int level) {
+                                           int level) throws ActionException {
         List<InputQueueItem> list = inputQueueList.get(0);
         if (level == 0) return false;
         File path = new File(pathPrefix + relativePath);
@@ -313,55 +327,63 @@ public class ScanInputQueueHandler
         if (dirs == null) {
             return false;
         }
-        boolean hasBeenIngested = dirs.length > 0 || hasBeenIngested(relativePath);
-        for (int i = 0; i < dirs.length; i++) {
-            String name = dirs[i].getName();
-            String rltvpth = relativePath + File.separator + name;
+        boolean hasBeenIngested = false;
+        try {
+            hasBeenIngested = dirs.length > 0 || inputQueueDAO.hasBeenIngested(relativePath);
 
-            if (!IOUtils.containsIllegalCharacter(name)) {
-                boolean lowerLevelIngested =
-                        scanDirectoryStructure(pathPrefix, rltvpth, inputQueueList, level - 1);
-                list.add(new InputQueueItem(rltvpth, dirs[i].getName(), hasBeenIngested(rltvpth)
-                        || lowerLevelIngested, null));
+            for (int i = 0; i < dirs.length; i++) {
+                String name = dirs[i].getName();
+                String rltvpth = relativePath + File.separator + name;
 
-                hasBeenIngested = list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
-            } else {
-                LOGGER.error("This directory contains some illegal character(s) in its name: " + rltvpth);
-                InputQueueItem inputQueueItem = new InputQueueItem();
-                inputQueueItem.setPath(rltvpth);
-                inputQueueList.get(1).add(inputQueueItem);
+                if (!IOUtils.containsIllegalCharacter(name)) {
+                    boolean lowerLevelIngested =
+                            scanDirectoryStructure(pathPrefix, rltvpth, inputQueueList, level - 1);
+                    list.add(new InputQueueItem(rltvpth, dirs[i].getName(), inputQueueDAO
+                            .hasBeenIngested(rltvpth) || lowerLevelIngested, null));
+
+                    hasBeenIngested = list.get(list.size() - 1).getIngestInfo() && hasBeenIngested;
+                } else {
+                    LOGGER.error("This directory contains some illegal character(s) in its name: " + rltvpth);
+                    InputQueueItem inputQueueItem = new InputQueueItem();
+                    inputQueueItem.setPath(rltvpth);
+                    inputQueueList.get(1).add(inputQueueItem);
+                }
             }
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
         }
         return hasBeenIngested;
     }
 
-    private boolean hasBeenIngested(String path) {
-        File ingestInfoFile =
-                new File(configuration.getScanInputQueuePath() + path + "/" + Constants.INGEST_INFO_FILE_NAME);
-        boolean fileExists = ingestInfoFile.exists();
-        Element element = null;
-        if (fileExists) {
-            try {
-                FileInputStream fileStream = new FileInputStream(ingestInfoFile);
-                Document doc = XMLUtils.parseDocument(fileStream);
-                element =
-                        FoxmlUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]//"
-                                + Constants.NAME_INGEST_ELEMENT);
-                fileStream.close();
-            } catch (FileNotFoundException e) {
-                fileExists = false;
-            } catch (SAXException e) {
-                fileExists = false;
-            } catch (IOException e) {
-                fileExists = false;
-            } catch (ParserConfigurationException e) {
-                fileExists = false;
-            } catch (XPathExpressionException e) {
-                fileExists = false;
-            }
-        }
-        return fileExists && element != null;
-    }
+    //    private boolean hasBeenIngested(String path) {
+    //        File ingestInfoFile =
+    //                new File(configuration.getScanInputQueuePath() + path + "/" + Constants.INGEST_INFO_FILE_NAME);
+    //        boolean fileExists = ingestInfoFile.exists();
+    //        Element element = null;
+    //        if (fileExists) {
+    //            try {
+    //                FileInputStream fileStream = new FileInputStream(ingestInfoFile);
+    //                Document doc = XMLUtils.parseDocument(fileStream);
+    //                element =
+    //                        FoxmlUtils.getElement(doc, "//" + Constants.NAME_ROOT_INGEST_ELEMENT + "[1]//"
+    //                                + Constants.NAME_INGEST_ELEMENT);
+    //                fileStream.close();
+    //            } catch (FileNotFoundException e) {
+    //                fileExists = false;
+    //            } catch (SAXException e) {
+    //                fileExists = false;
+    //            } catch (IOException e) {
+    //                fileExists = false;
+    //            } catch (ParserConfigurationException e) {
+    //                fileExists = false;
+    //            } catch (XPathExpressionException e) {
+    //                fileExists = false;
+    //            }
+    //        }
+    //        return fileExists && element != null;
+    //    }
 
     /*
      * (non-Javadoc)

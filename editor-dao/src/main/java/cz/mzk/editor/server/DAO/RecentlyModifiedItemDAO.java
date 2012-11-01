@@ -42,74 +42,25 @@ public interface RecentlyModifiedItemDAO {
      * 
      * @param toPut
      *        the to put
-     * @param openID
-     *        the open id
+     * @param user_id
+     *        the user_id
      * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
      */
-    boolean put(RecentlyModifiedItem toPut, String openID) throws DatabaseException;
-
-    /**
-     * Put description.
-     * 
-     * @param uuid
-     *        the uuid
-     * @param description
-     *        the description
-     * @return true, if successful
-     */
-    boolean putDescription(String uuid, String description) throws DatabaseException;
-
-    /**
-     * Gets the description.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the description
-     */
-    String getDescription(String uuid) throws DatabaseException;
-
-    /**
-     * Put user description.
-     * 
-     * @param openID
-     *        the open id
-     * @param uuid
-     *        the uuid
-     * @param description
-     *        the description
-     * @return true, if successful
-     */
-    boolean putUserDescription(String openID, String uuid, String description) throws DatabaseException;
-
-    /**
-     * Gets the user description.
-     * 
-     * @param openID
-     *        the open id
-     * @param uuid
-     *        the uuid
-     * @return the RecentlyModifiedItem
-     */
-    RecentlyModifiedItem getUserDescriptionAndDate(String openID, String uuid) throws DatabaseException;
+    boolean put(RecentlyModifiedItem toPut, long user_id) throws DatabaseException;
 
     /**
      * Gets the items.
      * 
      * @param nLatest
      *        the n latest
-     * @param openID
-     *        the open id
+     * @param user_id
+     *        the user_id
      * @return the items
-     */
-    ArrayList<RecentlyModifiedItem> getItems(int nLatest, String openID) throws DatabaseException;
-
-    /**
-     * Deletes the removed item
-     * 
-     * @param uuid
-     * @return
      * @throws DatabaseException
+     *         the database exception
      */
+    ArrayList<RecentlyModifiedItem> getItems(int nLatest, Long user_id) throws DatabaseException;
 
-    boolean deleteRemovedItem(String uuid) throws DatabaseException;
 }

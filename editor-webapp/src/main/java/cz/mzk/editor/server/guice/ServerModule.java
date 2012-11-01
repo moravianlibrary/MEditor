@@ -42,14 +42,24 @@ import cz.mzk.editor.server.OAIPMHClientImpl;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.Z3950ClientImpl;
+import cz.mzk.editor.server.DAO.ConversionDAO;
+import cz.mzk.editor.server.DAO.ConversionDAOImpl;
+import cz.mzk.editor.server.DAO.DAOUtils;
+import cz.mzk.editor.server.DAO.DAOUtilsImpl;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DBSchemaDAOImpl;
+import cz.mzk.editor.server.DAO.DescriptionDAO;
+import cz.mzk.editor.server.DAO.DescriptionDAOImpl;
+import cz.mzk.editor.server.DAO.DigitalObjectDAO;
+import cz.mzk.editor.server.DAO.DigitalObjectDAOImpl;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.ImageResolverDAOImpl;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAOImpl;
 import cz.mzk.editor.server.DAO.LockDAO;
 import cz.mzk.editor.server.DAO.LockDAOImpl;
+import cz.mzk.editor.server.DAO.LogInOutDAO;
+import cz.mzk.editor.server.DAO.LogInOutDAOImpl;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.mzk.editor.server.DAO.RequestDAO;
@@ -118,8 +128,8 @@ import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
-import cz.mzk.editor.server.newObject.CreateObjectUtils;
 import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
+import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.quartz.GuiceJobFactory;
 import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -240,6 +250,11 @@ public class ServerModule
         bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
         bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
+        bind(DAOUtils.class).to(DAOUtilsImpl.class);
+        bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
+        bind(DigitalObjectDAO.class).to(DigitalObjectDAOImpl.class);
+        bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
+        bind(ConversionDAO.class).to(ConversionDAOImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
@@ -264,7 +279,7 @@ public class ServerModule
         requestStaticInjection(FedoraUtils.class);
         requestStaticInjection(AuthenticationServlet.class);
         requestStaticInjection(URLS.class);
-        requestStaticInjection(CreateObjectUtils.class);
+        requestStaticInjection(IngestUtils.class);
         requestStaticInjection(ServerUtils.class);
         requestStaticInjection(FOXMLBuilderMapping.class);
 

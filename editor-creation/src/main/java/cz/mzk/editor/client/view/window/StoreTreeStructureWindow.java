@@ -44,7 +44,6 @@ import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
 
-
 /**
  * @author Jiri Kremser
  * @version 1.2.2012
@@ -128,7 +127,12 @@ public class StoreTreeStructureWindow
 
                                        @Override
                                        public void callback(StoreTreeStructureResult result) {
-                                           hide();
+                                           if (result.getInfos() != null) {
+                                               EditorSC.operationSuccessful(lang, "");
+                                               hide();
+                                           } else {
+                                               EditorSC.operationFailed(lang, "");
+                                           }
                                        }
                                    });
             }

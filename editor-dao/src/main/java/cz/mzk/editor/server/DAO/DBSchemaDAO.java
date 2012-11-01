@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.util.Map;
+
 /**
  * @author Jiri Kremser
  * @version 17. 1. 2011
@@ -45,11 +47,13 @@ public interface DBSchemaDAO {
      * 
      * @param version
      *        the version of DB
-     * @return true if the version of the current deployed DB is the same as
-     *         param version
+     * @return 1 if the version of the current deployed DB is the same as param
+     *         version, 0 if the version of the current deployed DB is not same
+     *         as param version, -1 if the version of the current deployed DB is
+     *         the old version (there is no action table and so on)
      * @throws DatabaseException
      */
-    boolean checkVersion(int version) throws DatabaseException;
+    int checkVersion(int version) throws DatabaseException;
 
     /**
      * Updates the schema and writes the new version number into DB
@@ -62,5 +66,149 @@ public interface DBSchemaDAO {
      * @throws DatabaseException
      */
     void updateSchema(int version, String pathPrefix) throws DatabaseException;
+
+    /**
+     * Gets the all data from table.
+     * 
+     * @param tableName
+     *        the table name
+     * @return the all data from table
+     * @throws ClassNotFoundException
+     *         the class not found exception
+     */
+    Map<Long, Object[]> getAllDataFromTable(String tableName) throws ClassNotFoundException;
+
+    /**
+     * Transform and put description.
+     * 
+     * @param map
+     *        the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutDescription(Map<Long, Object[]> map) throws DatabaseException;
+
+    /**
+     * Transform and put editor user.
+     * 
+     * @param map
+     *        the map
+     * @return the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    Map<Long, Long> transformAndPutEditorUser(Map<Long, Object[]> map) throws DatabaseException;
+
+    /**
+     * Transform and put image.
+     * 
+     * @param map
+     *        the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutImage(Map<Long, Object[]> map) throws DatabaseException;
+
+    /**
+     * Transform and put input queue item.
+     * 
+     * @param map
+     *        the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutInputQueueItem(Map<Long, Object[]> map) throws DatabaseException;
+
+    /**
+     * Transform and put input queue.
+     * 
+     * @param map
+     *        the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutInputQueue(Map<Long, Object[]> map) throws DatabaseException;
+
+    /**
+     * Transform and put open id identity.
+     * 
+     * @param map
+     *        the map
+     * @param editorUserIdMapping
+     *        the editor user id mapping
+     * @throws NumberFormatException
+     *         the number format exception
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutOpenIdIdentity(Map<Long, Object[]> map, Map<Long, Long> editorUserIdMapping)
+            throws NumberFormatException, DatabaseException;
+
+    /**
+     * Transform and recently modified.
+     * 
+     * @param map
+     *        the map
+     * @param editorUserIdMapping
+     *        the editor user id mapping
+     * @throws NumberFormatException
+     *         the number format exception
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndRecentlyModified(Map<Long, Object[]> map, Map<Long, Long> editorUserIdMapping)
+            throws NumberFormatException, DatabaseException;
+
+    /**
+     * Transform and put request for adding.
+     * 
+     * @param map
+     *        the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutRequestForAdding(Map<Long, Object[]> map) throws DatabaseException;
+
+    /**
+     * Transform and put stored files.
+     * 
+     * @param map
+     *        the map
+     * @param editorUserIdMapping
+     *        the editor user id mapping
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutStoredFiles(Map<Long, Object[]> map, Map<Long, Long> editorUserIdMapping)
+            throws DatabaseException;
+
+    /**
+     * Transform and put tree structure.
+     * 
+     * @param map
+     *        the map
+     * @param editorUserIdMapping
+     *        the editor user id mapping
+     * @return the map
+     * @throws DatabaseException
+     *         the database exception
+     */
+    Map<Long, Long> transformAndPutTreeStructure(Map<Long, Object[]> map, Map<Long, Long> editorUserIdMapping)
+            throws DatabaseException;
+
+    /**
+     * Transform and put tree struc node.
+     * 
+     * @param map
+     *        the map
+     * @param treeStrucIdMapping
+     *        the tree struc id mapping
+     * @throws NumberFormatException
+     *         the number format exception
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void transformAndPutTreeStrucNode(Map<Long, Object[]> map, Map<Long, Long> treeStrucIdMapping)
+            throws NumberFormatException, DatabaseException;
 
 }
