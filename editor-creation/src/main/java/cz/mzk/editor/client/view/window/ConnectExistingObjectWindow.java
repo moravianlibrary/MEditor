@@ -41,7 +41,7 @@ import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 

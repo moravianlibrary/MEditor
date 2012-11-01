@@ -47,7 +47,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.UserPresenter;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -36,7 +36,7 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 
 /**
  * @author Matous Jobanek

@@ -43,6 +43,11 @@
 			<artifactId>editor-common-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-administration</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -273,7 +278,7 @@
 									</includes>
 								</resource>
 							</webResources>
-							<webXml>${basedir}/../editor-administration/src/main/administration/WEB-INF/web.xml</webXml>
+							<webXml>${basedir}/../editor-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -351,21 +356,19 @@
 							</archive>
 							<webResources>
 								<resource>
-									<directory>${basedir}/src/main/administration</directory>
+									<directory>${basedir}/../editor-administration/src/main/administration</directory>
+									<includes>
+										<include>Administration.css</include>
+										<include>Administration.html</include>
+									</includes>
 									<filtering>true</filtering>
 								</resource>
 								<resource>
 									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
 									<filtering>true</filtering>
-									<includes>
-										<include>login.html</include>
-										<include>viewer/viewer.html</include>
-										<include>MEditor.css</include>
-										<include>MEditor.html</include>
-									</includes>
 								</resource>
 							</webResources>
-							<webXml>${basedir}/../editor-administration/src/main/administration/WEB-INF/web.xml</webXml>
+							<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
 					</plugin>
 				</plugins>

@@ -31,29 +31,38 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
+import cz.mzk.editor.client.uihandlers.AdminHomeUiHandlers;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent.MenuButtonClickedHandler;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HomePresenter.
+ * 
+ * @author Matous Jobanek
+ * @version Oct 30, 2012
  */
 public class AdminHomePresenter
-        extends Presenter<AdminHomePresenter.MyView, AdminHomePresenter.MyProxy> {
+        extends Presenter<AdminHomePresenter.MyView, AdminHomePresenter.MyProxy>
+        implements AdminHomeUiHandlers {
 
     /**
      * The Interface MyView.
      */
     public interface MyView
-            extends View {
+            extends View, HasUiHandlers<AdminHomeUiHandlers> {
 
     }
 
@@ -76,6 +85,7 @@ public class AdminHomePresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
+    /** The lang. */
     private final LangConstants lang;
 
     /**
@@ -93,6 +103,8 @@ public class AdminHomePresenter
      *        the dispatcher
      * @param placeManager
      *        the place manager
+     * @param lang
+     *        the lang
      */
     @Inject
     public AdminHomePresenter(final EventBus eventBus,
@@ -110,32 +122,46 @@ public class AdminHomePresenter
         bind();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+    /**
+     * On bind. {@inheritDoc}
      */
     @Override
     protected void onBind() {
         super.onBind();
+        addRegisteredHandler(MenuButtonClickedEvent.getType(), new MenuButtonClickedHandler() {
 
+            @Override
+            public void onMenuButtonClicked(MenuButtonClickedEvent event) {
+                placeManager.revealRelativePlace(new PlaceRequest(event.getMenuButtonType()));
+            }
+        });
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.gwtplatform.mvp.client.PresenterWidget#onReset()
+    /**
+     * {@inheritDoc}
      */
     @Override
     protected void onReset() {
+        super.onReset();
         RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.gwtplatform.mvp.client.Presenter#revealInParent()
+    /**
+     * {@inheritDoc}
      */
     @Override
     protected void revealInParent() {
         RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_MAIN_CONTENT, this);
+    }
+
+    /**
+     * Open medit. {@inheritDoc}
+     */
+    @Override
+    public void openMedit() {
+        System.err.println(placeManager);
+        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MEDIT_HOME));
+
     }
 
 }

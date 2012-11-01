@@ -86,7 +86,21 @@ public class NameTokens {
                 add(FIND_METADATA);
                 add(ADJUST_PAGES);
                 add(USERS);
+
+                add(ADMIN_MENU_BUTTONS.MY_ACOUNT);
+                add(ADMIN_MENU_BUTTONS.HISTORY);
+                add(ADMIN_MENU_BUTTONS.STORED);
+                add(ADMIN_MENU_BUTTONS.STATISTIC);
             }
         };
+    }
+
+    public static final class ADMIN_MENU_BUTTONS {
+
+        public static final String MY_ACOUNT = "myAcount";
+        public static final String HISTORY = "history";
+        public static final String STORED = "stored";
+        public static final String STATISTIC = "statistic";
+
     }
 }

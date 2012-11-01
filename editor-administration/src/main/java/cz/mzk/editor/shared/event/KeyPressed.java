@@ -32,12 +32,13 @@ import com.gwtplatform.dispatch.annotation.Order;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ConfigReceived.
+ * The Class KeyPressed.
  */
 @GenEvent
 @SuppressWarnings("unused")
 public class KeyPressed {
 
+    /** The code. */
     @Order(1)
     private int code;
 }

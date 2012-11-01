@@ -61,7 +61,6 @@ import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ScriptRunner;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
@@ -126,7 +125,7 @@ public class CheckAndUpdateDBSchemaHandler
                 ses.setAttribute(HttpCookies.NAME_KEY, "4321");
                 ses.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
             }
-            ServerUtils.checkExpiredSession(ses);
+            //            ServerUtils.checkExpiredSession(ses);
             ServletContext servletContext = contextProvider.get();
             String pathPrefix = servletContext.getRealPath("/WEB-INF/classes/");
             if (dbSchemaDao.canConnect()) {

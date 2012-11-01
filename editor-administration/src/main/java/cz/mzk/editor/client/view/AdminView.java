@@ -29,6 +29,7 @@ package cz.mzk.editor.client.view;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -39,8 +40,6 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.events.CloseClickEvent;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -50,6 +49,9 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.other.LangSelectionHTMLFlow;
+import cz.mzk.editor.client.view.window.UniversalWindow;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,6 +60,9 @@ import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
 public class AdminView
         extends ViewWithUiHandlers<AdminUiHandlers>
         implements MyView {
+
+    /** The is en. */
+    private static boolean isEn;
 
     /** The left container. */
     private final Layout leftContainer;
@@ -69,7 +74,7 @@ public class AdminView
     private final Layout mainContainer;
 
     /** The widget. */
-    public VLayout widget;
+    private final VLayout widget;
 
     /** The username. */
     private final HTMLFlow username;
@@ -85,6 +90,7 @@ public class AdminView
     private Window winModal;
 
     private Widget leftWidget;
+    private final EventBus eventBus;
 
     // private HasWidgets mainContainer;
 
@@ -92,8 +98,9 @@ public class AdminView
      * Instantiates a new app view.
      */
     @Inject
-    public AdminView(final LangConstants lang) {
+    public AdminView(final LangConstants lang, final EventBus eventBus) {
         this.lang = lang;
+        this.eventBus = eventBus;
         widget = new VLayout();
         leftContainer = new VLayout();
         leftContainer.setWidth(275);
@@ -107,10 +114,8 @@ public class AdminView
         topContainer.setWidth100();
         topContainer.setHeight(45);
 
-        HTMLFlow logo =
-                new HTMLFlow("<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
-        // Img logo = new Img("logo_bw.png", 140, 40);
-        // Img logo = new Img("mzk_logo.gif", 283, 87);
+        HTMLFlow logo = new HTMLFlow(Constants.LOGO_HTML);
+
         topContainer.addMember(logo);
 
         HLayout logged = new HLayout();
@@ -118,21 +123,17 @@ public class AdminView
         username.setWidth(150);
         username.setStyleName("username");
         username.setHeight(15);
-        langSelection = new HTMLFlow();
-        langSelection.setWidth(63);
-        langSelection.setHeight(16);
-        final boolean en =
+        isEn =
                 LocaleInfo.getCurrentLocale().getLocaleName() != null
                         && LocaleInfo.getCurrentLocale().getLocaleName().startsWith("en");
-        langSelection.setStyleName(en ? "langSelectionEN" : "langSelectionCZ");
-        langSelection.setCursor(Cursor.HAND);
-        langSelection.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+        langSelection = new LangSelectionHTMLFlow() {
 
             @Override
-            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                Administration.langRefresh(en ? "cs_CZ" : "en_US");
+            protected void afterChangeAction(boolean isEn) {
+                AdminView.isEn = isEn;
+                Administration.langRefresh(isEn ? "cs_CZ" : "en_US");
             }
-        });
+        };
         HTMLFlow anchor = new HTMLFlow(lang.logout());
         anchor.setCursor(Cursor.HAND);
         anchor.setWidth(60);
@@ -156,26 +157,21 @@ public class AdminView
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                winModal = new Window();
-                winModal.setWidth(600);
-                winModal.setHeight(800);
-                winModal.setTitle(lang.help());
-                winModal.setShowMinimizeButton(false);
-                winModal.setIsModal(true);
-                winModal.setShowModalMask(true);
-                winModal.centerInPage();
-                winModal.addCloseClickHandler(new CloseClickHandler() {
+                winModal = new UniversalWindow(800, 600, lang.help(), eventBus, 50);
+                //                winModal.setWidth(600);
+                //                winModal.setHeight(800);
+                //                winModal.setTitle(lang.help());
+                //                winModal.setShowMinimizeButton(false);
+                //                winModal.setIsModal(true);
+                //                winModal.setShowModalMask(true);
 
-                    @Override
-                    public void onCloseClick(CloseClickEvent event) {
-                        //                        escShortCut();
-                    }
-                });
                 HTMLPane helpPane = new HTMLPane();
                 helpPane.setPadding(15);
-                helpPane.setContentsURL("./help_" + (en ? "en.html" : "cs.html"));
+                helpPane.setContentsURL("./help_" + (isEn ? "en.html" : "cs.html"));
                 helpPane.setContentsType(ContentsType.FRAGMENT);
                 winModal.addItem(helpPane);
+                winModal.centerInPage();
+                winModal.focus();
                 winModal.show();
             }
         });
@@ -252,9 +248,9 @@ public class AdminView
         if (content != null) {
             if (leftWidget != null) {
                 if (leftWidget != content) {
-                    //                    if (getUiHandlers().getDoPresenter().getView().asWidget() == content) {
-                    //                        getUiHandlers().getDoPresenter().onShowInputQueue();
-                    //                    }
+                    if (getUiHandlers().getLeftPresenter().getView().asWidget() == content) {
+                        //                        getUiHandlers().getLeftPresenter().onShowInputQueue();
+                    }
                     leftContainer.removeMember(leftContainer.getMember(0));
 
                 }

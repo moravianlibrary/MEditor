@@ -52,7 +52,7 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.IngestInfoWindow;
 import cz.mzk.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.mzk.editor.client.view.window.UuidWindow;

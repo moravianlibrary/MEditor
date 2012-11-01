@@ -102,7 +102,10 @@ public abstract class AbstractDAO {
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
     /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
-    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+    //    /** The Constant FORMATTER with format: yyyy/MM/dd. */
+    //    public static final SimpleDateFormat FORMATTER_TO_DAYS = new SimpleDateFormat("yyyy/MM/dd");
 
     /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
@@ -428,31 +431,35 @@ public abstract class AbstractDAO {
     }
 
     /**
-     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * Format date to seconds, the format: yyyy/MM/dd HH:mm:ss.
      * 
      * @param date
      *        the date
      * @return the string
      */
-    /**
-     * Format date with format: yyyy/MM/dd HH:mm:ss.
-     * 
-     * @param date
-     *        the date
-     * @return the string
-     */
-    protected String formatDate(java.sql.Date date) {
-        return FORMATTER.format(date);
+    protected String formatDateToSeconds(java.sql.Date date) {
+        return FORMATTER_TO_SECONDS.format(date);
     }
 
     /**
-     * Format timestamp.
+     * Format timestamp to seconds, the format: yyyy/MM/dd HH:mm:ss.
      * 
      * @param timestamp
      *        the timestamp
      * @return the string
      */
-    protected String formatTimestamp(Timestamp timestamp) {
-        return FORMATTER.format(timestamp);
+    protected String formatTimestampToSeconds(Timestamp timestamp) {
+        return FORMATTER_TO_SECONDS.format(timestamp);
     }
+
+    //    /**
+    //     * Format timestamp to days, the format: yyyy/MM/dd.
+    //     * 
+    //     * @param timestamp
+    //     *        the timestamp
+    //     * @return the string
+    //     */
+    //    protected String formatTimestampToDays(Timestamp timestamp) {
+    //        return FORMATTER_TO_DAYS.format(timestamp);
+    //    }
 }

@@ -30,10 +30,15 @@ package cz.mzk.editor.shared.event;
 import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Order;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SetEnabledHotKeys.
+ */
 @GenEvent
 @SuppressWarnings("unused")
 public class SetEnabledHotKeys {
 
+    /** The enable. */
     @Order(1)
     private boolean enable;
 }

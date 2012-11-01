@@ -50,6 +50,9 @@ public class Constants {
     public static final Type<RevealContentHandler<?>> TYPE_ADMIN_LEFT_CONTENT =
             new Type<RevealContentHandler<?>>();
 
+    public static final String LOGO_HTML =
+            "<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>";
+
     /** The Constant SERVLET_IMAGES_PREFIX. */
     public static final String SERVLET_IMAGES_PREFIX = "images/";
     // must be the same as in web.xml
@@ -239,6 +242,10 @@ public class Constants {
             return value;
         }
 
+    }
+
+    public static enum ACTION_SUBJECTS {
+        DIGITAL_OBJECT, LOG_IN_OUT, USER, LONG_PROCESS, LOCK, SAVED_EDITED, CONVERSION, TREE_STRUCTURE;
     }
 
     /**

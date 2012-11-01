@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -25,26 +22,15 @@
  * 
  */
 
-package cz.mzk.editor.server.guice;
+package cz.mzk.editor.client.uihandlers;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
+import com.gwtplatform.mvp.client.UiHandlers;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class MyGuiceServletConfig.
+ * @author Matous Jobanek
+ * @version Oct 30, 2012
  */
-public class MyGuiceServletConfig
-        extends GuiceServletContextListener {
+public interface HistoryUiHandlers
+        extends UiHandlers {
 
-    /*
-     * (non-Javadoc)
-     * @see com.google.inject.servlet.GuiceServletContextListener#getInjector()
-     */
-    @Override
-    protected Injector getInjector() {
-        return Guice.createInjector(new ServerModule(), new DispatchServletModule());
-
-    }
 }

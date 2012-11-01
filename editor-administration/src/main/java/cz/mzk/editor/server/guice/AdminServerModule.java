@@ -29,8 +29,18 @@ package cz.mzk.editor.server.guice;
 
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
+import cz.mzk.editor.server.DAO.ActionDAO;
+import cz.mzk.editor.server.DAO.ActionDAOImpl;
+import cz.mzk.editor.server.DAO.DAOUtils;
+import cz.mzk.editor.server.DAO.DAOUtilsImpl;
+import cz.mzk.editor.server.DAO.DBSchemaDAO;
+import cz.mzk.editor.server.DAO.DBSchemaDAOImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
+import cz.mzk.editor.server.handler.CheckAndUpdateDBSchemaHandler;
+import cz.mzk.editor.server.handler.GetHistoryDaysHandler;
+import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
+import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -80,7 +90,7 @@ public class AdminServerModule
         //        bindHandler(GetRelationshipsAction.class, GetRelationshipsHandler.class);
         //        bindHandler(RemoveDigitalObjectAction.class, RemoveDigitalObjectHandler.class);
         //        bindHandler(GetIngestInfoAction.class, GetIngestInfoHandler.class);
-        //        bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
+        bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
         //        bindHandler(LogoutAction.class, LogoutHandler.class);
         //        bindHandler(FindAltoOcrFilesAction.class, FindAltoOcrFilesHandler.class);
         //        bindHandler(FindAltoOcrFilesBatchAction.class, FindAltoOcrFilesBatchHandler.class);
@@ -88,12 +98,13 @@ public class AdminServerModule
         //        bindHandler(ChangeRightsAction.class, ChangeRightsHandler.class);
         //        bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
         //        bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
-        //        bindHandler(GetOcrFromPdfAction.class, GetOcrFromPdfHandler.class);
+
         //        bindHandler(QuartzConvertImagesAction.class, QuartzConvertImagesHandler.class);
         //        bindHandler(QuartzScheduleJobsAction.class, QuartzScheduleJobsHandler.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
-        //
-        //        // DAO
+        bindHandler(GetHistoryDaysAction.class, GetHistoryDaysHandler.class);
+
+        // DAO
         //        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
         //        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class);
         //        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class);
@@ -101,8 +112,13 @@ public class AdminServerModule
         //        bind(RequestDAO.class).to(RequestDAOImpl.class);
         //        bind(LockDAO.class).to(LockDAOImpl.class);
         //        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
-        //        bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
+        bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
         //        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
+        bind(DAOUtils.class).to(DAOUtilsImpl.class);
+        //        bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
+        bind(ActionDAO.class).to(ActionDAOImpl.class);
+        //        bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
+        //        bind(ConversionDAO.class).to(ConversionDAOImpl.class);
         //
         //        // Fedora
         //        bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)

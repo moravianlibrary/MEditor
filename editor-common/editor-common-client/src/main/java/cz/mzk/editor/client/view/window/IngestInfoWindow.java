@@ -39,7 +39,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.event.OpenFirstDigitalObjectEvent;
 import cz.mzk.editor.shared.rpc.IngestInfo;
 

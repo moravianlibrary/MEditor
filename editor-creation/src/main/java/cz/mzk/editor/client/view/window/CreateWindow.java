@@ -39,8 +39,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.mods.ModsTypeClient;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.EditorTabSet;
-import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.other.ModsTab;
 import cz.mzk.editor.shared.rpc.DublinCore;
 

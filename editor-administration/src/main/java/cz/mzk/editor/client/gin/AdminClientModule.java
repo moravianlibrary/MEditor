@@ -44,9 +44,13 @@ import cz.mzk.editor.client.config.EditorClientConfigurationImpl;
 import cz.mzk.editor.client.dispatcher.CachingDispatchAsync;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
+import cz.mzk.editor.client.presenter.AdminMenuPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
+import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.view.AdminHomeView;
+import cz.mzk.editor.client.view.AdminMenuView;
 import cz.mzk.editor.client.view.AdminView;
+import cz.mzk.editor.client.view.HistoryView;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -82,6 +86,14 @@ public class AdminClientModule
                       AdminHomePresenter.MyView.class,
                       AdminHomeView.class,
                       AdminHomePresenter.MyProxy.class);
+        bindPresenter(AdminMenuPresenter.class,
+                      AdminMenuPresenter.MyView.class,
+                      AdminMenuView.class,
+                      AdminMenuPresenter.MyProxy.class);
+        bindPresenter(HistoryPresenter.class,
+                      HistoryPresenter.MyView.class,
+                      HistoryView.class,
+                      HistoryPresenter.MyProxy.class);
 
         bind(CachingDispatchAsync.class);
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);

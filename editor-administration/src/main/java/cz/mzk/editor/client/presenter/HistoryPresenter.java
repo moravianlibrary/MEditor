@@ -33,69 +33,76 @@ import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
-import cz.mzk.editor.client.uihandlers.MenuUiHandlers;
+import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class HistoryPresenter.
+ * 
  * @author Matous Jobanek
- * @version Oct 8, 2012
+ * @version Oct 30, 2012
  */
-public class AdminMenuPresenter
-        extends Presenter<AdminMenuPresenter.MyView, AdminMenuPresenter.MyProxy> {
+public class HistoryPresenter
+        extends Presenter<HistoryPresenter.MyView, HistoryPresenter.MyProxy>
+        implements HistoryUiHandlers {
+
+    /** The lang. */
+    private final LangConstants lang;
+
+    /** The dispatcher. */
+    private final DispatchAsync dispatcher;
+
+    /** The left presenter. */
+    private final AdminMenuPresenter leftPresenter;
 
     /**
-     * @author Matous Jobanek
-     * @version Oct 8, 2012 The Interface MyProxy.
-     */
-    @ProxyCodeSplit
-    @NameToken(NameTokens.MENU)
-    public interface MyProxy
-            extends ProxyPlace<AdminHomePresenter> {
-
-    }
-
-    /**
-     * @author Matous Jobanek
-     * @version Oct 8, 2012 The Interface MyView.
+     * The Interface MyView.
      */
     public interface MyView
-            extends View, HasUiHandlers<MenuUiHandlers> {
+            extends View, HasUiHandlers<HistoryUiHandlers> {
+
+        //        void setHistoryDays(List<EditorDate> history);
+    }
+
+    /**
+     * The Interface MyProxy.
+     */
+    @ProxyCodeSplit
+    @NameToken(NameTokens.ADMIN_MENU_BUTTONS.HISTORY)
+    public interface MyProxy
+            extends ProxyPlace<HistoryPresenter> {
 
     }
 
-    private final LangConstants lang;
-    private final DispatchAsync dispatcher;
-    private final PlaceManager placeManager;
-
     /**
+     * Instantiates a new history presenter.
+     * 
      * @param eventBus
+     *        the event bus
      * @param view
+     *        the view
      * @param proxy
+     *        the proxy
+     * @param lang
+     *        the lang
      */
     @Inject
-    public AdminMenuPresenter(EventBus eventBus,
-                              MyView view,
-                              MyProxy proxy,
-                              final DispatchAsync dispatcher,
-                              final PlaceManager placeManager,
-                              final LangConstants lang) {
+    public HistoryPresenter(EventBus eventBus,
+                            MyView view,
+                            MyProxy proxy,
+                            final LangConstants lang,
+                            final DispatchAsync dispatcher,
+                            final AdminMenuPresenter leftPresenter) {
         super(eventBus, view, proxy);
-        this.dispatcher = dispatcher;
-        this.placeManager = placeManager;
         this.lang = lang;
-    }
+        this.dispatcher = dispatcher;
+        this.leftPresenter = leftPresenter;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void revealInParent() {
-        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_LEFT_CONTENT, this);
     }
 
     /**
@@ -112,6 +119,15 @@ public class AdminMenuPresenter
     @Override
     protected void onReset() {
         super.onReset();
+        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
+    }
+
+    /**
+     * Reveal in parent. {@inheritDoc}
+     */
+    @Override
+    protected void revealInParent() {
+        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_MAIN_CONTENT, this);
     }
 
 }

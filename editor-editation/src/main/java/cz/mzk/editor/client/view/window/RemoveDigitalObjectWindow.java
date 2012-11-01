@@ -60,8 +60,8 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.util.Constants.CONFLICT;
-import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.shared.event.OpenDigitalObjectEvent;
 import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;

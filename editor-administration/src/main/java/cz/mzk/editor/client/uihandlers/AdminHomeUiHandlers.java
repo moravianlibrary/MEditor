@@ -1,50 +1,39 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * 
+ *
  */
 
-package cz.mzk.editor.server.guice;
+package cz.mzk.editor.client.uihandlers;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
+import com.gwtplatform.mvp.client.UiHandlers;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class MyGuiceServletConfig.
+ * The Interface MyUiHandlers.
  */
-public class MyGuiceServletConfig
-        extends GuiceServletContextListener {
+public interface AdminHomeUiHandlers
+        extends UiHandlers {
 
-    /*
-     * (non-Javadoc)
-     * @see com.google.inject.servlet.GuiceServletContextListener#getInjector()
-     */
-    @Override
-    protected Injector getInjector() {
-        return Guice.createInjector(new ServerModule(), new DispatchServletModule());
-
-    }
+    void openMedit();
 }

@@ -50,6 +50,8 @@ import cz.mzk.editor.client.MEditor;
 import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.AppPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.other.LangSelectionHTMLFlow;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,6 +60,9 @@ import cz.mzk.editor.client.uihandlers.MyUiHandlers;
 public class AppView
         extends ViewWithUiHandlers<MyUiHandlers>
         implements MyView {
+
+    /** The is en. */
+    private static boolean isEn;
 
     /** The left container. */
     private final Layout leftContainer;
@@ -69,7 +74,7 @@ public class AppView
     private final Layout mainContainer;
 
     /** The widget. */
-    public VLayout widget;
+    private final VLayout widget;
 
     /** The username. */
     private final HTMLFlow username;
@@ -107,8 +112,7 @@ public class AppView
         topContainer.setWidth100();
         topContainer.setHeight(45);
 
-        HTMLFlow logo =
-                new HTMLFlow("<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>");
+        HTMLFlow logo = new HTMLFlow(Constants.LOGO_HTML);
         // Img logo = new Img("logo_bw.png", 140, 40);
         // Img logo = new Img("mzk_logo.gif", 283, 87);
         topContainer.addMember(logo);
@@ -118,21 +122,18 @@ public class AppView
         username.setWidth(150);
         username.setStyleName("username");
         username.setHeight(15);
-        langSelection = new HTMLFlow();
-        langSelection.setWidth(63);
-        langSelection.setHeight(16);
-        final boolean en =
+        isEn =
                 LocaleInfo.getCurrentLocale().getLocaleName() != null
                         && LocaleInfo.getCurrentLocale().getLocaleName().startsWith("en");
-        langSelection.setStyleName(en ? "langSelectionEN" : "langSelectionCZ");
-        langSelection.setCursor(Cursor.HAND);
-        langSelection.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+        langSelection = new LangSelectionHTMLFlow() {
 
             @Override
-            public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                MEditor.langRefresh(en ? "cs_CZ" : "en_US");
+            protected void afterChangeAction(boolean isEn) {
+                AppView.isEn = isEn;
+                MEditor.langRefresh(isEn ? "cs_CZ" : "en_US");
             }
-        });
+        };
+
         HTMLFlow anchor = new HTMLFlow(lang.logout());
         anchor.setCursor(Cursor.HAND);
         anchor.setWidth(60);
@@ -173,7 +174,7 @@ public class AppView
                 });
                 HTMLPane helpPane = new HTMLPane();
                 helpPane.setPadding(15);
-                helpPane.setContentsURL("./help_" + (en ? "en.html" : "cs.html"));
+                helpPane.setContentsURL("./help_" + (isEn ? "en.html" : "cs.html"));
                 helpPane.setContentsType(ContentsType.FRAGMENT);
                 winModal.addItem(helpPane);
                 winModal.show();

@@ -38,6 +38,7 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
+import cz.mzk.editor.client.presenter.HistoryPresenter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,17 +71,7 @@ public interface AdminGinjector
 
     AsyncProvider<AdminHomePresenter> getAdminHomePresenter();
 
-    //    AsyncProvider<UserPresenter> getUserPresenter();
-
-    //    AsyncProvider<ModifyPresenter> getModifyPresenter();
-
-    //    AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
-
-    //    AsyncProvider<CreateStructurePresenter> getCreatePresenterPresenter();
-
-    //    Provider<DigitalObjectMenuPresenter> getDigitalObjectMenuPresenterPresenter();
-
-    //    Provider<CreateObjectMenuPresenter> getCreateObjectMenuPresenterPresenter();
+    AsyncProvider<HistoryPresenter> getHistoryPresenter();
 
     DispatchAsync getDispatcher();
 

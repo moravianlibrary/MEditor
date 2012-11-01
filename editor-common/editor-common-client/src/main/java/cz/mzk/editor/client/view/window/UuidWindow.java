@@ -38,7 +38,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 
 public abstract class UuidWindow
         extends UniversalWindow {

@@ -38,8 +38,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.EditorTabSet;
-import cz.mzk.editor.client.view.other.HtmlCode;
 
 import static cz.mzk.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
 import static cz.mzk.editor.client.util.Constants.DATASTREAM_ID.DC;

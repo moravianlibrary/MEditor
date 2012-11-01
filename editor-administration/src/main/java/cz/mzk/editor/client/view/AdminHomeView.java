@@ -30,34 +30,31 @@ package cz.mzk.editor.client.view;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtplatform.mvp.client.ViewImpl;
-import com.smartgwt.client.data.DataSource;
-import com.smartgwt.client.types.VerticalAlignment;
+import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.layout.VStack;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.HStack;
+import com.smartgwt.client.widgets.layout.Layout;
+import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
+import cz.mzk.editor.client.uihandlers.AdminHomeUiHandlers;
+import cz.mzk.editor.client.util.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HomeView.
  */
 public class AdminHomeView
-        extends ViewImpl
+        extends ViewWithUiHandlers<AdminHomeUiHandlers>
         implements AdminHomePresenter.MyView {
 
-    /** The Constant LOADING. */
-    private static final int LOADING = -1;
-
-    /** The Constant NOT_AVAIL. */
-    private static final int NOT_AVAIL = 0;
-
-    /** The Constant AVAIL. */
-    private static final int AVAIL = 1;
-
     /** The layout. */
-    private final VStack layout;
+    private final HStack layout;
 
     private final LangConstants lang;
 
@@ -72,32 +69,99 @@ public class AdminHomeView
     @Inject
     public AdminHomeView(LangConstants lang) {
         this.lang = lang;
-        layout = new VStack();
+        layout = new HStack();
         layout.setHeight100();
+        layout.setWidth100();
         layout.setPadding(15);
-        HTMLFlow html1 = new HTMLFlow();
-        html1.setContents(lang.introduction());
-        html1.setExtraSpace(15);
+        layout.setAlign(Alignment.CENTER);
 
-        HTMLFlow meditTest =
-                new HTMLFlow("<ul><li><a href='http://127.0.0.1:8888/MEditor.html?gwt.codesvr=127.0.0.1:9997'>Meditor test</a> </li></ul>");
+        layout.addMember(getMeditLayout());
+    }
 
-        //        checkButton = new IButton(lang.checkAvailability());
-        //        checkButton.setAutoFit(true);
-        //        checkButton.setExtraSpace(60);
+    private VLayout getMeditLayout() {
 
-        DataSource dataSource = new DataSource();
-        dataSource.setID("regularExpression");
+        VLayout meditLayout = new VLayout(2);
+        meditLayout.setWidth("75%");
+        meditLayout.setLayoutAlign(Alignment.CENTER);
+        meditLayout.setAlign(Alignment.CENTER);
 
-        HTMLFlow html3 = new HTMLFlow();
-        html3.setHeight("*");
-        html3.setLayoutAlign(VerticalAlignment.BOTTOM);
-        //        html3.setContents(lang.credits());
-        html3.setHeight(20);
+        ImgButton meditImg = new ImgButton();
+        meditImg.setSrc("MEdit.png");
+        meditImg.setHeight(330);
+        meditImg.setWidth(500);
+        meditImg.setShowRollOver(false);
+        meditImg.setShowDown(false);
+        meditImg.setShowEdges(true);
+        meditImg.setEdgeSize(3);
 
-        layout.addMember(html1);
-        layout.addMember(meditTest);
-        layout.addMember(html3);
+        meditImg.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                getUiHandlers().openMedit();
+            }
+        });
+
+        meditLayout.addMember(getInfo(lang.introduction()));
+        meditLayout.addMember(meditImg);
+        meditLayout.addMember(getNews());
+
+        return meditLayout;
+    }
+
+    private VLayout getNews() {
+
+        VLayout newsLayout = new VLayout();
+        newsLayout.addMember(new HTMLFlow(HtmlCode.title(lang.news() + ":", 3)));
+
+        //      TODO
+
+        return newsLayout;
+    }
+
+    private Layout getInfo(final String infoText) {
+        final Layout info = new VLayout(1);
+        info.setExtraSpace(20);
+        info.setHeight(100);
+        info.setLayoutAlign(Alignment.RIGHT);
+
+        final HTMLFlow infoTextFlow = new HTMLFlow();
+        infoTextFlow.setContents(infoText.substring(0, 200) + "...");
+        infoTextFlow.setExtraSpace(15);
+
+        final ImgButton readMoreLess = new ImgButton();
+        readMoreLess.setSrc("icons/16/unwrap.png");
+        readMoreLess.setShowRollOver(false);
+        readMoreLess.setShowDown(false);
+        readMoreLess.setWidth(16);
+        readMoreLess.setHeight(16);
+        readMoreLess.setPrompt(lang.readMore());
+        readMoreLess.setShowHover(true);
+        readMoreLess.setShowEdges(false);
+
+        readMoreLess.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                info.removeMember(infoTextFlow);
+                if (readMoreLess.getSrc().equals("icons/16/unwrap.png")) {
+                    readMoreLess.setSrc("icons/16/wrap.png");
+                    readMoreLess.setPrompt(lang.readLess());
+                    infoTextFlow.setContents(infoText);
+                } else {
+                    readMoreLess.setSrc("icons/16/unwrap.png");
+                    readMoreLess.setPrompt(lang.readMore());
+                    infoTextFlow.setContents(infoText.substring(0, 200) + "...");
+                }
+
+                info.addMember(infoTextFlow, 0);
+                infoTextFlow.redraw();
+            }
+        });
+
+        info.addMember(infoTextFlow);
+        info.addMember(readMoreLess);
+        return info;
     }
 
     /**

@@ -45,7 +45,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.HomePresenter;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -113,7 +113,7 @@ public class HomeView
         layout.setHeight100();
         layout.setPadding(15);
         HTMLFlow html1 = new HTMLFlow();
-        html1.setContents(lang.introduction());
+        html1.setContents(lang.introduction() + HtmlCode.title(lang.availCoopSys(), 2));
         html1.setExtraSpace(15);
 
         status = new HTMLFlow(getStatusString());

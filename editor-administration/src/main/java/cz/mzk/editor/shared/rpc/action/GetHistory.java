@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -25,26 +22,35 @@
  * 
  */
 
-package cz.mzk.editor.server.guice;
+package cz.mzk.editor.shared.rpc.action;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
+import java.util.List;
 
-// TODO: Auto-generated Javadoc
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
+
+import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.HistoryItem;
+
 /**
- * The Class MyGuiceServletConfig.
+ * @author Matous Jobanek
+ * @version Oct 31, 2012
  */
-public class MyGuiceServletConfig
-        extends GuiceServletContextListener {
+@GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
+public class GetHistory {
 
-    /*
-     * (non-Javadoc)
-     * @see com.google.inject.servlet.GuiceServletContextListener#getInjector()
-     */
-    @Override
-    protected Injector getInjector() {
-        return Guice.createInjector(new ServerModule(), new DispatchServletModule());
+    /** The lower limit. */
+    @In(1)
+    private EditorDate lowerLimit;
 
-    }
+    /** The uppper limit. */
+    @In(2)
+    private EditorDate uppperLimit;
+
+    /** The history item. */
+    @Out(1)
+    private List<HistoryItem> historyItem;
+
 }
