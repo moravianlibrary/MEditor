@@ -41,16 +41,20 @@ import cz.mzk.editor.shared.rpc.HistoryItem;
 @SuppressWarnings("unused")
 public class GetHistory {
 
-    /** The lower limit. */
+    /** The editor used id. */
     @In(1)
+    private Long editorUsedId;
+
+    /** The lower limit. */
+    @In(2)
     private EditorDate lowerLimit;
 
-    /** The uppper limit. */
-    @In(2)
-    private EditorDate uppperLimit;
+    /** The upper limit. */
+    @In(3)
+    private EditorDate upperLimit;
 
-    /** The history item. */
+    /** The history items. */
     @Out(1)
-    private List<HistoryItem> historyItem;
+    private List<HistoryItem> historyItems;
 
 }

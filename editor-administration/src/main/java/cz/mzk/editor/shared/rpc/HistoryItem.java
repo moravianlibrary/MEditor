@@ -26,8 +26,6 @@ package cz.mzk.editor.shared.rpc;
 
 import java.io.Serializable;
 
-import java.util.Date;
-
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 
 /**
@@ -39,7 +37,8 @@ public class HistoryItem
 
     private static final long serialVersionUID = 8547925472051690544L;
 
-    private Date timestamp;
+    private Long id;
+    private String timestamp;
     private CRUD_ACTION_TYPES action;
     private String tableName;
     private String object;
@@ -52,18 +51,21 @@ public class HistoryItem
     }
 
     /**
+     * @param id
      * @param timestamp
      * @param action
      * @param tableName
      * @param object
      * @param moreInformation
      */
-    public HistoryItem(Date timestamp,
+    public HistoryItem(Long id,
+                       String timestamp,
                        CRUD_ACTION_TYPES action,
                        String tableName,
                        String object,
                        boolean moreInformation) {
         super();
+        this.id = id;
         this.timestamp = timestamp;
         this.action = action;
         this.tableName = tableName;
@@ -72,9 +74,16 @@ public class HistoryItem
     }
 
     /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
      * @return the timestamp
      */
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
@@ -107,10 +116,18 @@ public class HistoryItem
     }
 
     /**
+     * @param id
+     *        the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
      * @param timestamp
      *        the timestamp to set
      */
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -154,6 +171,7 @@ public class HistoryItem
         final int prime = 31;
         int result = 1;
         result = prime * result + ((action == null) ? 0 : action.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + (moreInformation ? 1231 : 1237);
         result = prime * result + ((object == null) ? 0 : object.hashCode());
         result = prime * result + ((tableName == null) ? 0 : tableName.hashCode());
@@ -171,6 +189,9 @@ public class HistoryItem
         if (getClass() != obj.getClass()) return false;
         HistoryItem other = (HistoryItem) obj;
         if (action != other.action) return false;
+        if (id == null) {
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
         if (moreInformation != other.moreInformation) return false;
         if (object == null) {
             if (other.object != null) return false;
@@ -182,15 +203,6 @@ public class HistoryItem
             if (other.timestamp != null) return false;
         } else if (!timestamp.equals(other.timestamp)) return false;
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return "HistoryItem [timestamp=" + timestamp + ", action=" + action + ", tableName=" + tableName
-                + ", object=" + object + ", moreInformation=" + moreInformation + "]";
     }
 
 }

@@ -24,6 +24,10 @@
 
 package cz.mzk.editor.client.presenter;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
@@ -38,7 +42,14 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
+import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
+import cz.mzk.editor.shared.event.GetHistoryEvent;
+import cz.mzk.editor.shared.event.GetHistoryEvent.GetHistoryHandler;
+import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.HistoryItem;
+import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
+import cz.mzk.editor.shared.rpc.action.GetHistoryResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -60,13 +71,19 @@ public class HistoryPresenter
     /** The left presenter. */
     private final AdminMenuPresenter leftPresenter;
 
+    Map<String, List<HistoryItem>> downloadedHistory = new HashMap<String, List<HistoryItem>>();
+
     /**
      * The Interface MyView.
      */
     public interface MyView
             extends View, HasUiHandlers<HistoryUiHandlers> {
 
-        //        void setHistoryDays(List<EditorDate> history);
+        /**
+         * @param historyItems
+         */
+        void setHistoryItems(List<HistoryItem> historyItems);
+
     }
 
     /**
@@ -111,6 +128,44 @@ public class HistoryPresenter
     @Override
     protected void onBind() {
         super.onBind();
+
+        addRegisteredHandler(GetHistoryEvent.getType(), new GetHistoryHandler() {
+
+            @Override
+            public void onGetHistory(GetHistoryEvent event) {
+                final Long editorUsedId = event.getEditorUsedId();
+                final EditorDate lowerLimit = event.getLowerLimit();
+                final EditorDate upperLimit = event.getUpperLimit();
+                final String keyOfMapped = getKeyOfMapped(editorUsedId, lowerLimit, upperLimit);
+                if (downloadedHistory.containsKey(keyOfMapped)) {
+                    getView().setHistoryItems(downloadedHistory.get(keyOfMapped));
+                } else {
+                    GetHistoryAction historyAction =
+                            new GetHistoryAction(editorUsedId, lowerLimit, upperLimit);
+                    DispatchCallback<GetHistoryResult> historyCallback =
+                            new DispatchCallback<GetHistoryResult>() {
+
+                                @Override
+                                public void callback(GetHistoryResult result) {
+                                    List<HistoryItem> historyItems = result.getHistoryItems();
+                                    downloadedHistory.put(keyOfMapped, historyItems);
+                                    getView().setHistoryItems(historyItems);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    super.onFailure(caught);
+                                }
+                            };
+                    dispatcher.execute(historyAction, historyCallback);
+                }
+            }
+        });
+
+    }
+
+    private String getKeyOfMapped(Long editorUsedId, EditorDate lowerLimit, EditorDate upperLimit) {
+        return editorUsedId.toString() + lowerLimit.toString() + upperLimit.toString();
     }
 
     /**

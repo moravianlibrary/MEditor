@@ -101,8 +101,8 @@ public abstract class AbstractDAO {
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
-    /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
-    public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    /** The Constant FORMATTER with format: dd.MM.yyyy HH:mm:ss. */
+    public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     //    /** The Constant FORMATTER with format: yyyy/MM/dd. */
     //    public static final SimpleDateFormat FORMATTER_TO_DAYS = new SimpleDateFormat("yyyy/MM/dd");
@@ -431,7 +431,7 @@ public abstract class AbstractDAO {
     }
 
     /**
-     * Format date to seconds, the format: yyyy/MM/dd HH:mm:ss.
+     * Format date to seconds, the format: dd.MM.yyyy HH:mm:ss.
      * 
      * @param date
      *        the date
@@ -442,7 +442,7 @@ public abstract class AbstractDAO {
     }
 
     /**
-     * Format timestamp to seconds, the format: yyyy/MM/dd HH:mm:ss.
+     * Format timestamp to seconds, the format: dd.MM.yyyy HH:mm:ss.
      * 
      * @param timestamp
      *        the timestamp

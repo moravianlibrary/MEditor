@@ -27,6 +27,7 @@ package cz.mzk.editor.server.DAO;
 import java.util.List;
 
 import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.HistoryItem;
 
 /**
  * @author Matous Jobanek
@@ -34,6 +35,31 @@ import cz.mzk.editor.shared.rpc.EditorDate;
  */
 public interface ActionDAO {
 
+    /**
+     * Gets the history days.
+     * 
+     * @param userId
+     *        the user id
+     * @return the history days
+     * @throws DatabaseException
+     *         the database exception
+     */
     public List<EditorDate> getHistoryDays(Long userId) throws DatabaseException;
+
+    /**
+     * Gets the history items.
+     * 
+     * @param editorUserId
+     *        the editor user id
+     * @param lowerLimit
+     *        the lower limit
+     * @param upperLimit
+     *        the upper limit
+     * @return the history items
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<HistoryItem> getHistoryItems(Long editorUserId, EditorDate lowerLimit, EditorDate upperLimit)
+            throws DatabaseException;
 
 }

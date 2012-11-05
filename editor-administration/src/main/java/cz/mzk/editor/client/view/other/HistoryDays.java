@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.util.SC;
@@ -43,6 +44,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.shared.event.GetHistoryEvent;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
@@ -51,7 +53,7 @@ import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
  * @author Matous Jobanek
  * @version Oct 30, 2012
  */
-public class HistoryGrid
+public class HistoryDays
         extends VLayout {
 
     private final DispatchAsync dispatcher;
@@ -69,6 +71,7 @@ public class HistoryGrid
 
     private List<EditorDate> thisMonth = null;
     private static Map<Integer, String> months = null;
+    private final EventBus eventBus;
 
     private List<EditorDate> historyData = new ArrayList<EditorDate>();
 
@@ -105,12 +108,13 @@ public class HistoryGrid
                         String text = event.getRecord().getAttributeAsString(attrTextToShow);
                         if (months.containsValue(text)) {
                             addNewHistoryGrid(thisYearMonths.get(getIntMonth(text)), text, true, !showHeader);
+
                         } else if (lang.thisMonth().equals(text)) {
                             addNewHistoryGrid(thisMonth, text, true, !showHeader);
                         } else if (lang.allItems().equals(text)) {
                             if (allData == null) {
                                 allData = new ArrayList<EditorDate>();
-                                allData.addAll(thisMonth);
+                                if (thisMonth != null) allData.addAll(thisMonth);
                                 allData.addAll(historyData);
                             }
                             addNewHistoryGrid(allData, text, true, !showHeader);
@@ -120,7 +124,8 @@ public class HistoryGrid
                             SC.warn("There is a problem with history mapping. Please contact the administrator!");
                         }
                     } else {
-                        removeAllSubgrids();
+                        if (!showHeader) removeAllSubgrids();
+                        eventBus.fireEvent(new GetHistoryEvent(new Long(13), selDay, selDay));
                     }
                 }
             });
@@ -186,6 +191,7 @@ public class HistoryGrid
             historyYearGrid.analyzeHistoryData(history, 0, new ListGridRecord[history.size()]);
             addMember(historyYearGrid);
         }
+        eventBus.fireEvent(new GetHistoryEvent(new Long(13), history.get(history.size() - 1), history.get(0)));
     }
 
     /**
@@ -206,16 +212,17 @@ public class HistoryGrid
      * @param dispatcher
      *        the dispatcher
      */
-    public HistoryGrid(LangConstants lang, DispatchAsync dispatcher) {
+    public HistoryDays(LangConstants lang, DispatchAsync dispatcher, EventBus eventBus) {
         super();
         this.dispatcher = dispatcher;
         this.lang = lang;
+        this.eventBus = eventBus;
 
         setMonth();
 
         setWidth("20%");
         setHeight("90%");
-        setMargin(20);
+        setMargin(5);
         setShowEdges(true);
         setEdgeSize(4);
         setEdgeOpacity(60);
@@ -233,6 +240,7 @@ public class HistoryGrid
                                Integer.parseInt(DateTimeFormat.getFormat("yyyy").format(yesterdayDate)));
 
         historyTopGrid = new HistoryListGrid(today, ATTR_TEXT_TO_SHOW, false);
+
         GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(new Long(13));
         DispatchCallback<GetHistoryDaysResult> callback = new DispatchCallback<GetHistoryDaysResult>() {
 
@@ -252,8 +260,6 @@ public class HistoryGrid
             }
         };
         dispatcher.execute(getHistoryDaysAction, callback);
-
-        //        historyTopGrid.
 
         addMember(historyTopGrid);
 
@@ -293,11 +299,14 @@ public class HistoryGrid
                     break;
                 }
             }
-            historyData.removeAll(thisMonth);
+            if (thisMonth != null) {
+                historyData.removeAll(thisMonth);
+            }
             if (!historyData.isEmpty()) {
                 historyTopGrid.analyzeHistoryData(historyData, historyDataIndex, historyItems);
             }
         }
+        historyTopGrid.selectRecord(0);
     }
 
     private ListGridRecord getDayItem(EditorDate day, String attrToShow) {

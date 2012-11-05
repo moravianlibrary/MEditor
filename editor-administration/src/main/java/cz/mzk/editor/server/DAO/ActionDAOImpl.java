@@ -37,6 +37,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 
@@ -49,15 +50,20 @@ public class ActionDAOImpl
         implements ActionDAO {
 
     /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(ActionDAOImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(ActionDAOImpl.class.getPackage().toString());
 
     public static final String SELECT_USER_ACTIONS_TIMESTAMP = "SELECT timestamp FROM "
             + Constants.TABLE_ACTION + " WHERE editor_user_id = (?)";
 
-    public static final String SELECT_CHILD_TABLES_OF_INTERVAL =
-            "SELECT p.relname AS tableName FROM "
-                    + Constants.TABLE_ACTION
-                    + " a, pg_class p WHERE editor_user_id = (?) AND a.timestamp > (?) AND a.timestamp < (timestamp (?) + INTERVAL '1 day') AND a.tableoid = p.oid GROUP BY p.relname";
+    private static final String USER_ID_AND_INTERVAL_CONSTRAINTS =
+            "editor_user_id = (?) AND a.timestamp > '%lowerTimestamp' AND a.timestamp < (timestamp '%s' + INTERVAL '1 day')";
+
+    public static final String SELECT_CHILD_TABLES_OF_INTERVAL = "SELECT p.relname AS tableName FROM "
+            + Constants.TABLE_ACTION + " a, pg_class p WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS
+            + " AND a.tableoid = p.oid GROUP BY p.relname";
+
+    public static final String SELECT_LOG_IN_OUT_ACTION = "SELECT * FROM " + Constants.TABLE_LOG_IN_OUT
+            + " a WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS;
 
     public static final SimpleDateFormat FORMATTER_TO_DAY = new SimpleDateFormat("dd");
     public static final SimpleDateFormat FORMATTER_TO_MOUNTH = new SimpleDateFormat("MM");
@@ -96,26 +102,80 @@ public class ActionDAOImpl
         return days;
     }
 
+    @Override
     public List<HistoryItem> getHistoryItems(Long editorUserId, EditorDate lowerLimit, EditorDate upperLimit)
             throws DatabaseException {
 
         List<String> tableNames = getTableNames(editorUserId, lowerLimit, upperLimit);
+        List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
 
+        for (String tableName : tableNames) {
+
+            if (tableName.equals(Constants.TABLE_LOG_IN_OUT)) {
+                historyItems.addAll(handleLogInOutAction(editorUserId, lowerLimit, upperLimit));
+            } else if (tableName.equals(Constants.TABLE_CONVERSION)) {
+
+            } else if (tableName.equals(Constants.TABLE_CRUD_LOCK_ACTION)) {
+
+            } else if (tableName.equals(Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION)) {
+
+            } else if (tableName.equals(Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION)) {
+
+            } else if (tableName.equals(Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT)) {
+
+            } else if (tableName.equals(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION)) {
+
+            } else if (tableName.equals(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION)) {
+
+            } else if (tableName.equals(Constants.TABLE_LONG_RUNNING_PROCESS)) {
+
+            } else {
+
+            }
+        }
+        return historyItems;
+    }
+
+    /**
+     * @param editorUserId
+     * @param lowerLimit
+     * @param upperLimit
+     * @throws DatabaseException
+     */
+    private List<HistoryItem> handleLogInOutAction(Long editorUserId,
+                                                   EditorDate lowerLimit,
+                                                   EditorDate upperLimit) throws DatabaseException {
+        List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
+
+        try {
+            ResultSet rs =
+                    getAnyActionSelSt(editorUserId, lowerLimit, upperLimit, SELECT_LOG_IN_OUT_ACTION)
+                            .executeQuery();
+
+            while (rs.next()) {
+                historyItems.add(new HistoryItem(rs.getLong("id"), formatTimestampToSeconds(rs
+                        .getTimestamp("timestamp")), (rs.getBoolean("type")) ? CRUD_ACTION_TYPES.CREATE
+                        : CRUD_ACTION_TYPES.DELETE, Constants.TABLE_LOG_IN_OUT, null, false));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return historyItems;
     }
 
     private List<String> getTableNames(Long editorUserId, EditorDate lowerLimit, EditorDate upperLimit)
             throws DatabaseException {
 
-        PreparedStatement selectSt = null;
         List<String> tableNames = new ArrayList<String>();
 
         try {
-            selectSt = getConnection().prepareStatement(SELECT_CHILD_TABLES_OF_INTERVAL);
-            selectSt.setLong(1, editorUserId);
-            selectSt.setString(2, getSqlTimestamp(lowerLimit));
-            selectSt.setString(3, getSqlTimestamp(upperLimit));
-
-            ResultSet rs = selectSt.executeQuery();
+            ResultSet rs =
+                    getAnyActionSelSt(editorUserId, lowerLimit, upperLimit, SELECT_CHILD_TABLES_OF_INTERVAL)
+                            .executeQuery();
             while (rs.next()) {
                 tableNames.add(rs.getString("tableName"));
             }
@@ -123,11 +183,34 @@ public class ActionDAOImpl
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
         return tableNames;
     }
 
-    private String getSqlTimestamp(EditorDate date) {
+    private PreparedStatement getAnyActionSelSt(Long editorUserId,
+                                                EditorDate lowerLimit,
+                                                EditorDate upperLimit,
+                                                String sql) throws DatabaseException {
+        PreparedStatement selectSt = null;
+
+        try {
+            selectSt =
+                    getConnection()
+                            .prepareStatement(String.format(sql.replace("%lowerTimestamp",
+                                                                        getStringTimestamp(lowerLimit)),
+                                                            getStringTimestamp(upperLimit)));
+            selectSt.setLong(1, editorUserId);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get any action select statement: " + selectSt + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+        return selectSt;
+    }
+
+    private String getStringTimestamp(EditorDate date) {
         return date.getYear() + "-" + date.getMonth() + "-" + date.getDay();
     }
+
 }

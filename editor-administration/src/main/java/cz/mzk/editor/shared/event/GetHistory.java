@@ -25,7 +25,7 @@
 package cz.mzk.editor.shared.event;
 
 import com.gwtplatform.dispatch.annotation.GenEvent;
-import com.gwtplatform.dispatch.annotation.Order;
+import com.gwtplatform.dispatch.annotation.In;
 
 import cz.mzk.editor.shared.rpc.EditorDate;
 
@@ -37,12 +37,16 @@ import cz.mzk.editor.shared.rpc.EditorDate;
 @SuppressWarnings("unused")
 public class GetHistory {
 
+    /** The editor used id. */
+    @In(1)
+    private Long editorUsedId;
+
     /** The lower limit. */
-    @Order(1)
+    @In(2)
     private EditorDate lowerLimit;
 
-    /** The uppper limit. */
-    @Order(2)
-    private EditorDate uppperLimit;
+    /** The upper limit. */
+    @In(3)
+    private EditorDate upperLimit;
 
 }
