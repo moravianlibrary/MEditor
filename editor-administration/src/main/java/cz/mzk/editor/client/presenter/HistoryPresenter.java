@@ -76,6 +76,7 @@ public class HistoryPresenter
     /** The left presenter. */
     private final AdminMenuPresenter leftPresenter;
 
+    /** The downloaded history. */
     Map<String, List<HistoryItem>> downloadedHistory = new HashMap<String, List<HistoryItem>>();
 
     /**
@@ -181,7 +182,7 @@ public class HistoryPresenter
     }
 
     private String getKeyOfMapped(Long editorUsedId, EditorDate lowerLimit, EditorDate upperLimit) {
-        return editorUsedId.toString() + lowerLimit.toString() + upperLimit.toString();
+        return editorUsedId.toString() + "#" + lowerLimit.toString() + "#" + upperLimit.toString();
     }
 
     private void getHistoryItemInfo(final HistoryItem eventHistoryItem) {

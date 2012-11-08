@@ -111,15 +111,15 @@ public class UserDAOImpl
             + " WHERE identity = (?))";
 
     /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(UserDAOImpl.class.getPackage().toString());
 
     /** The dao utils. */
     @SuppressWarnings("unused")
     @Inject
     private DAOUtils daoUtils;
 
-    @Inject
-    private LockDAO lockDAO;
+    //    @Inject
+    //    private LockDAO lockDAO;
 
     /**
      * {@inheritDoc}
@@ -197,8 +197,7 @@ public class UserDAOImpl
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                retList.add(new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs
-                        .getString("id")));
+                retList.add(new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs.getLong("id")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -287,10 +286,9 @@ public class UserDAOImpl
 
             } else {
                 updateSt = getConnection().prepareStatement(UPDATE_USER_STATEMENT);
-                id = Long.parseLong(user.getId());
                 updateSt.setString(1, user.getName());
                 updateSt.setString(2, user.getSurname());
-                updateSt.setLong(3, id);
+                updateSt.setLong(3, user.getId());
             }
 
             if (updateSt.executeUpdate() == 1) {

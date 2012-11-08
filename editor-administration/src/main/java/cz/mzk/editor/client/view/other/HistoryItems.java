@@ -30,7 +30,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.GroupStartOpen;
 import com.smartgwt.client.types.ListGridFieldType;
-import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
@@ -53,6 +52,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.client.view.window.SubobjectsWindow;
 import cz.mzk.editor.shared.event.GetHistoryItemInfoEvent;
+import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
 
@@ -94,8 +94,6 @@ public class HistoryItems
         historyItemsGrid.setTop(20);
         historyItemsGrid.setBottom(20);
         historyItemsGrid.setMargin(5);
-        historyItemsGrid.setSortDirection(SortDirection.DESCENDING);
-        historyItemsGrid.setSortField(Constants.ATTR_TIMESTAMP);
         historyItemsGrid.setGroupStartOpen(GroupStartOpen.ALL);
         historyItemsGrid.setCanHover(true);
         historyItemsGrid.setHoverWidth(200);
@@ -125,13 +123,17 @@ public class HistoryItems
 
             @Override
             public void onCellClick(CellClickEvent event) {
+                ListGridRecord record = event.getRecord();
 
-                if (!"".equals(event.getRecord().getAttributeAsString(Constants.ATTR_IS_MORE_INFO))) {
+                if (!"".equals(record.getAttributeAsString(Constants.ATTR_IS_MORE_INFO))) {
                     HistoryItem eventHistoryItem =
-                            new HistoryItem(event.getRecord().getAttributeAsLong(Constants.ATTR_ID), event
-                                    .getRecord().getAttributeAsString(Constants.ATTR_TIMESTAMP), null, event
-                                    .getRecord().getAttributeAsString(Constants.ATTR_TABLE_NAME), event
-                                    .getRecord().getAttributeAsString(Constants.ATTR_ACTION), true);
+                            new HistoryItem(record.getAttributeAsLong(Constants.ATTR_ID),
+                                            new EditorDate(record
+                                                    .getAttributeAsString(Constants.ATTR_TIMESTAMP)),
+                                            null,
+                                            record.getAttributeAsString(Constants.ATTR_TABLE_NAME),
+                                            record.getAttributeAsString(Constants.ATTR_ACTION),
+                                            true);
                     eventBus.fireEvent(new GetHistoryItemInfoEvent(eventHistoryItem));
                 } else {
                     hideDetailViewer();
@@ -196,7 +198,7 @@ public class HistoryItems
 
     private ListGridRecord getHistoryItemRecord(HistoryItem historyItem) {
         ListGridRecord historyItemRecord = new ListGridRecord();
-        historyItemRecord.setAttribute(Constants.ATTR_TIMESTAMP, historyItem.getTimestamp());
+        historyItemRecord.setAttribute(Constants.ATTR_TIMESTAMP, historyItem.getTimestamp().toString());
         historyItemRecord.setAttribute(Constants.ATTR_ACTION, formatRecordOutput(historyItem));
         historyItemRecord.setAttribute(Constants.ATTR_TABLE_NAME, historyItem.getTableName());
         historyItemRecord.setAttribute(Constants.ATTR_OBJECT, historyItem.getObject());
@@ -411,5 +413,10 @@ public class HistoryItems
 
     private String getState(String prefix, boolean state) {
         return prefix + " " + (state ? lang.stilExist() : lang.noExist());
+    }
+
+    public void removeAllData() {
+        hideDetailViewer();
+        historyItemsGrid.setData(new ListGridRecord[] {});
     }
 }

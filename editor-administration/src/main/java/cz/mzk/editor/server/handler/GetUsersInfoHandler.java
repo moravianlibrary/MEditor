@@ -1,6 +1,7 @@
 /*
  * Metadata Editor
  * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
@@ -41,19 +42,18 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.GetUserInfoAction;
-import cz.mzk.editor.shared.rpc.action.GetUserInfoResult;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
-// TODO: Auto-generated Javadoc
+// TODO: Auto-generated Javadoc 
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetUserInfoHandler
-        implements ActionHandler<GetUserInfoAction, GetUserInfoResult> {
+public class GetUsersInfoHandler
+        implements ActionHandler<GetUsersInfoAction, GetUsersInfoResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(GetUserInfoHandler.class.getPackage().toString());
+    private static final Logger LOGGER = Logger.getLogger(GetUsersInfoHandler.class.getPackage().toString());
 
     /** The configuration. */
     @SuppressWarnings("unused")
@@ -77,52 +77,40 @@ public class GetUserInfoHandler
      *        the user dao
      */
     @Inject
-    public GetUserInfoHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
+    public GetUsersInfoHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
         this.configuration = configuration;
         this.userDAO = userDAO;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-     * .gwtplatform.dispatch.shared.Action,
-     * com.gwtplatform.dispatch.server.ExecutionContext)
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public GetUserInfoResult execute(final GetUserInfoAction action, final ExecutionContext context)
+    public GetUsersInfoResult execute(final GetUsersInfoAction action, final ExecutionContext context)
             throws ActionException {
         LOGGER.debug("Processing action: GetUserInfoAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        //        ServerUtils.checkExpiredSession(httpSessionProvider);
 
         try {
-            return new GetUserInfoResult(userDAO.getUsers());
+            return new GetUsersInfoResult(userDAO.getUsers());
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
-     * ()
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public Class<GetUserInfoAction> getActionType() {
-        return GetUserInfoAction.class;
+    public Class<GetUsersInfoAction> getActionType() {
+        return GetUsersInfoAction.class;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-     * gwtplatform.dispatch.shared.Action,
-     * com.gwtplatform.dispatch.shared.Result,
-     * com.gwtplatform.dispatch.server.ExecutionContext)
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public void undo(GetUserInfoAction action, GetUserInfoResult result, ExecutionContext context)
+    public void undo(GetUsersInfoAction action, GetUsersInfoResult result, ExecutionContext context)
             throws ActionException {
         // TODO Auto-generated method stub
 

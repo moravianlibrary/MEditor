@@ -35,16 +35,20 @@ import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DAOUtilsImpl;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DBSchemaDAOImpl;
+import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.DAO.UserDAOImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.mzk.editor.server.handler.GetHistoryDaysHandler;
 import cz.mzk.editor.server.handler.GetHistoryHandler;
 import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
+import cz.mzk.editor.server.handler.GetUsersInfoHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,7 +74,7 @@ public class AdminServerModule
         //        bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
         //        bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
         //        bindHandler(CheckAvailabilityAction.class, CheckAvailabilityHandler.class);
-        //        bindHandler(GetUserInfoAction.class, GetUserInfoHandler.class);
+        bindHandler(GetUsersInfoAction.class, GetUsersInfoHandler.class);
         //        bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
         //        bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
         //        bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
@@ -112,7 +116,7 @@ public class AdminServerModule
         //        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
         //        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class);
         //        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class);
-        //        bind(UserDAO.class).to(UserDAOImpl.class);
+        bind(UserDAO.class).to(UserDAOImpl.class);
         //        bind(RequestDAO.class).to(RequestDAOImpl.class);
         //        bind(LockDAO.class).to(LockDAOImpl.class);
         //        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);

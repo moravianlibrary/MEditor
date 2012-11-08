@@ -141,6 +141,9 @@ public class ActionDAOImpl
     public static final SimpleDateFormat FORMATTER_TO_DAY = new SimpleDateFormat("dd");
     public static final SimpleDateFormat FORMATTER_TO_MOUNTH = new SimpleDateFormat("MM");
     public static final SimpleDateFormat FORMATTER_TO_YEAR = new SimpleDateFormat("yyyy");
+    public static final SimpleDateFormat FORMATTER_TO_HOUR = new SimpleDateFormat("hh");
+    public static final SimpleDateFormat FORMATTER_TO_MINUTE = new SimpleDateFormat("mm");
+    public static final SimpleDateFormat FORMATTER_TO_SECOND = new SimpleDateFormat("ss");
 
     private abstract class ActionDAOHandler
             extends AbstractDAO {
@@ -205,11 +208,7 @@ public class ActionDAOImpl
 
             while (rs.next()) {
                 Timestamp timestamp = rs.getTimestamp("timestamp");
-
-                EditorDate date =
-                        new EditorDate(Integer.parseInt(FORMATTER_TO_DAY.format(timestamp)),
-                                       Integer.parseInt(FORMATTER_TO_MOUNTH.format(timestamp)),
-                                       Integer.parseInt(FORMATTER_TO_YEAR.format(timestamp)));
+                EditorDate date = getEditorDate(timestamp, true);
                 if (!days.contains(date)) days.add(date);
             }
 
@@ -221,6 +220,19 @@ public class ActionDAOImpl
         }
 
         return days;
+    }
+
+    private EditorDate getEditorDate(Timestamp timestamp, boolean onlyDay) {
+        EditorDate date =
+                new EditorDate(Integer.parseInt(FORMATTER_TO_DAY.format(timestamp)),
+                               Integer.parseInt(FORMATTER_TO_MOUNTH.format(timestamp)),
+                               Integer.parseInt(FORMATTER_TO_YEAR.format(timestamp)));
+        if (!onlyDay) {
+            date.setHour(Integer.parseInt(FORMATTER_TO_HOUR.format(timestamp)));
+            date.setMinute(Integer.parseInt(FORMATTER_TO_MINUTE.format(timestamp)));
+            date.setSecond(Integer.parseInt(FORMATTER_TO_SECOND.format(timestamp)));
+        }
+        return date;
     }
 
     @Override
@@ -276,7 +288,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        null,
                                        Constants.TABLE_ACTION,
                                        null,
@@ -295,7 +307,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.CREATE,
                                        Constants.TABLE_LONG_RUNNING_PROCESS,
                                        rs.getTimestamp("finished").toString(),
@@ -314,7 +326,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
                                        rs.getString("reqType"),
@@ -337,7 +349,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
                                        rs.getString("name") + " ["
@@ -361,7 +373,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
                                        rs.getString("digital_object_uuid"),
@@ -380,7 +392,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_LOCK_ACTION,
                                        rs.getString("digital_object_uuid"),
@@ -403,7 +415,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
                                        rs.getString("name") + " [PID: " + rs.getString("digital_object_uuid")
@@ -427,7 +439,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
                                        rs.getString("name") + " [PID: " + rs.getString("digital_object_uuid")
@@ -447,7 +459,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.CREATE,
                                        Constants.TABLE_CONVERSION,
                                        rs.getString("input_queue_directory_path"),
@@ -466,7 +478,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       formatTimestampToSeconds(rs.getTimestamp("timestamp")),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
                                        (rs.getBoolean("type")) ? CRUD_ACTION_TYPES.CREATE
                                                : CRUD_ACTION_TYPES.DELETE,
                                        Constants.TABLE_LOG_IN_OUT,

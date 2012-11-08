@@ -24,6 +24,7 @@
 
 package cz.mzk.editor.client.view;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,11 +35,16 @@ import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
 import cz.mzk.editor.client.util.HtmlCode;
@@ -46,6 +52,9 @@ import cz.mzk.editor.client.view.other.HistoryDays;
 import cz.mzk.editor.client.view.other.HistoryItems;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
+import cz.mzk.editor.shared.rpc.UserInfoItem;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
 /**
  * @author Matous Jobanek
@@ -61,6 +70,8 @@ public class HistoryView
     private final HistoryDays historyDays;
     private final DispatchAsync dispatcher;
     private final HistoryItems historyItems;
+    private SelectItem users;
+    private final HTMLFlow title;
 
     @Inject
     public HistoryView(EventBus eventBus, final LangConstants lang, DispatchAsync dispatcher) {
@@ -70,7 +81,7 @@ public class HistoryView
 
         this.mainLayout = new VStack();
 
-        HTMLFlow title = new HTMLFlow(HtmlCode.title(lang.historyMenu(), 2));
+        title = new HTMLFlow(HtmlCode.title(lang.my() + " " + lang.historyMenu(), 2));
         Layout titleLayout = new Layout();
         titleLayout.addMember(title);
         titleLayout.setAlign(VerticalAlignment.TOP);
@@ -78,13 +89,14 @@ public class HistoryView
         titleLayout.setMargin(10);
 
         mainLayout.addMember(titleLayout);
+        setUserSelect();
 
         historyDays = new HistoryDays(lang, dispatcher, eventBus);
         historyItems = new HistoryItems(lang, eventBus);
 
         HLayout historyLayout = new HLayout(2);
         historyLayout.setAnimateMembers(true);
-        historyLayout.setHeight("95%");
+        historyLayout.setHeight("90%");
         historyLayout.setMargin(10);
 
         historyLayout.addMember(historyDays);
@@ -92,6 +104,42 @@ public class HistoryView
 
         mainLayout.addMember(historyLayout);
 
+    }
+
+    private void setUserSelect() {
+        //        TODO
+        if (true) {
+            users = new SelectItem("users", lang.users());
+            GetUsersInfoAction getUsersAction = new GetUsersInfoAction();
+            DispatchCallback<GetUsersInfoResult> usersCallback = new DispatchCallback<GetUsersInfoResult>() {
+
+                @Override
+                public void callback(GetUsersInfoResult result) {
+                    LinkedHashMap<String, String> allUsers = new LinkedHashMap<String, String>();
+                    for (UserInfoItem userItem : result.getItems()) {
+                        allUsers.put(userItem.getId().toString(),
+                                     userItem.getSurname() + " " + userItem.getName());
+                    }
+                    users.setValueMap(allUsers);
+                }
+            };
+
+            users.addChangedHandler(new ChangedHandler() {
+
+                @Override
+                public void onChanged(ChangedEvent event) {
+                    historyItems.removeAllData();
+                    historyDays.getUserHistory(Long.parseLong(event.getValue().toString()));
+                    title.setContents(HtmlCode.title(lang.historyMenu() + " " + lang.ofUser(), 2));
+                }
+            });
+
+            dispatcher.execute(getUsersAction, usersCallback);
+            DynamicForm usersForm = new DynamicForm();
+            usersForm.setItems(users);
+
+            mainLayout.addMember(usersForm);
+        }
     }
 
     /**

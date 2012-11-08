@@ -40,7 +40,7 @@ import cz.mzk.editor.shared.rpc.UserInfoItem;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetUserInfo {
+public class GetUsersInfo {
 
     /** The items. */
     @Out(1)

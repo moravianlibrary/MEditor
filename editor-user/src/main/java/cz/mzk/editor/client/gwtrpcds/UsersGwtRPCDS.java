@@ -210,7 +210,7 @@ public class UsersGwtRPCDS
         final ListGridRecord rec = new ListGridRecord(data);
         final UserInfoItem testRec = new UserInfoItem();
         copyValues(rec, testRec);
-        dispatcher.execute(new RemoveUserInfoAction(testRec.getId()),
+        dispatcher.execute(new RemoveUserInfoAction(testRec.getId().toString()),
                            new DispatchCallback<RemoveUserInfoResult>() {
 
                                @Override
@@ -246,7 +246,7 @@ public class UsersGwtRPCDS
     private static void copyValues(ListGridRecord from, UserInfoItem to) {
         to.setSurname(from.getAttributeAsString(Constants.ATTR_SURNAME));
         to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-        to.setId(from.getAttributeAsString(Constants.ATTR_USER_ID));
+        to.setId(Long.parseLong(from.getAttributeAsString(Constants.ATTR_USER_ID)));
     }
 
     /**

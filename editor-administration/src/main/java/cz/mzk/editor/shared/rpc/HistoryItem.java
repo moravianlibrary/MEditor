@@ -38,7 +38,7 @@ public class HistoryItem
     private static final long serialVersionUID = 8547925472051690544L;
 
     private Long id;
-    private String timestamp;
+    private EditorDate timestamp;
     private CRUD_ACTION_TYPES action;
     private String tableName;
     private String object;
@@ -59,7 +59,7 @@ public class HistoryItem
      * @param moreInformation
      */
     public HistoryItem(Long id,
-                       String timestamp,
+                       EditorDate timestamp,
                        CRUD_ACTION_TYPES action,
                        String tableName,
                        String object,
@@ -83,7 +83,7 @@ public class HistoryItem
     /**
      * @return the timestamp
      */
-    public String getTimestamp() {
+    public EditorDate getTimestamp() {
         return timestamp;
     }
 
@@ -127,7 +127,7 @@ public class HistoryItem
      * @param timestamp
      *        the timestamp to set
      */
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(EditorDate timestamp) {
         this.timestamp = timestamp;
     }
 

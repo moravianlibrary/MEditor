@@ -72,7 +72,7 @@ public class HistoryDays
     private List<EditorDate> thisMonth = null;
     private static Map<Integer, String> months = null;
     private final EventBus eventBus;
-
+    private Long userId = new Long(8);
     private List<EditorDate> historyData = new ArrayList<EditorDate>();
 
     private final class HistoryListGrid
@@ -124,10 +124,16 @@ public class HistoryDays
                         }
                     } else {
                         if (!showHeader) removeAllSubgrids();
-                        eventBus.fireEvent(new GetHistoryEvent(new Long(8), selDay, selDay));
+                        eventBus.fireEvent(new GetHistoryEvent(userId, selDay, selDay));
                     }
                 }
             });
+        }
+
+        public void clean() {
+            thisYearMonths = null;
+            years = null;
+            allData = null;
         }
 
         public void analyzeHistoryData(List<EditorDate> historyDataToAnalyze,
@@ -190,7 +196,7 @@ public class HistoryDays
             historyYearGrid.analyzeHistoryData(history, 0, new ListGridRecord[history.size()]);
             addMember(historyYearGrid);
         }
-        eventBus.fireEvent(new GetHistoryEvent(new Long(8), history.get(history.size() - 1), history.get(0)));
+        eventBus.fireEvent(new GetHistoryEvent(userId, history.get(history.size() - 1), history.get(0)));
     }
 
     /**
@@ -239,7 +245,19 @@ public class HistoryDays
 
         historyTopGrid = new HistoryListGrid(today, ATTR_TEXT_TO_SHOW, false);
 
-        GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(new Long(8));
+        getUserHistory(userId);
+
+        addMember(historyTopGrid);
+
+    }
+
+    public void getUserHistory(Long id) {
+        userId = id;
+        removeAllSubgrids();
+        thisMonth = null;
+        historyTopGrid.clean();
+
+        GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(id);
         DispatchCallback<GetHistoryDaysResult> callback = new DispatchCallback<GetHistoryDaysResult>() {
 
             @Override
@@ -258,8 +276,6 @@ public class HistoryDays
             }
         };
         dispatcher.execute(getHistoryDaysAction, callback);
-
-        addMember(historyTopGrid);
 
     }
 
@@ -307,7 +323,7 @@ public class HistoryDays
     }
 
     private ListGridRecord getDayItem(EditorDate day, String attrToShow) {
-        return getDayItem(day, day.getDay() + ". " + day.getMonth() + ". " + day.getYear(), attrToShow);
+        return getDayItem(day, day.toString(), attrToShow);
     }
 
     private ListGridRecord getDayItem(EditorDate day, String textToShow, String attrToShow) {

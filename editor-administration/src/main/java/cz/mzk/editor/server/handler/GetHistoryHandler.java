@@ -83,6 +83,7 @@ public class GetHistoryHandler
             e.printStackTrace();
             throw new ActionException(e);
         }
+        java.util.Collections.sort(historyItems);
         return new GetHistoryResult(historyItems);
     }
 
