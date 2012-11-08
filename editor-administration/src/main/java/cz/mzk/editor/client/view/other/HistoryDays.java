@@ -82,7 +82,6 @@ public class HistoryDays
         private Map<Integer, List<EditorDate>> thisYearMonths = null;
         private Map<String, List<EditorDate>> years = null;
         private String attrTextToShow = "";
-        private boolean isTop;
         List<EditorDate> allData = null;
 
         /**
@@ -125,7 +124,7 @@ public class HistoryDays
                         }
                     } else {
                         if (!showHeader) removeAllSubgrids();
-                        eventBus.fireEvent(new GetHistoryEvent(new Long(13), selDay, selDay));
+                        eventBus.fireEvent(new GetHistoryEvent(new Long(8), selDay, selDay));
                     }
                 }
             });
@@ -191,7 +190,7 @@ public class HistoryDays
             historyYearGrid.analyzeHistoryData(history, 0, new ListGridRecord[history.size()]);
             addMember(historyYearGrid);
         }
-        eventBus.fireEvent(new GetHistoryEvent(new Long(13), history.get(history.size() - 1), history.get(0)));
+        eventBus.fireEvent(new GetHistoryEvent(new Long(8), history.get(history.size() - 1), history.get(0)));
     }
 
     /**
@@ -221,7 +220,6 @@ public class HistoryDays
         setMonth();
 
         setWidth("20%");
-        setHeight("90%");
         setMargin(5);
         setShowEdges(true);
         setEdgeSize(4);
@@ -241,7 +239,7 @@ public class HistoryDays
 
         historyTopGrid = new HistoryListGrid(today, ATTR_TEXT_TO_SHOW, false);
 
-        GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(new Long(13));
+        GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(new Long(8));
         DispatchCallback<GetHistoryDaysResult> callback = new DispatchCallback<GetHistoryDaysResult>() {
 
             @Override
@@ -306,7 +304,6 @@ public class HistoryDays
                 historyTopGrid.analyzeHistoryData(historyData, historyDataIndex, historyItems);
             }
         }
-        historyTopGrid.selectRecord(0);
     }
 
     private ListGridRecord getDayItem(EditorDate day, String attrToShow) {

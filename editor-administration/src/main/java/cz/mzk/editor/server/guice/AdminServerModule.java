@@ -40,9 +40,11 @@ import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.mzk.editor.server.handler.GetHistoryDaysHandler;
 import cz.mzk.editor.server.handler.GetHistoryHandler;
+import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
+import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -101,7 +103,7 @@ public class AdminServerModule
         //        bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
         //        bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
 
-        //        bindHandler(QuartzConvertImagesAction.class, QuartzConvertImagesHandler.class);
+        bindHandler(GetHistoryItemInfoAction.class, GetHistoryItemInfoHandler.class);
         bindHandler(GetHistoryAction.class, GetHistoryHandler.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
         bindHandler(GetHistoryDaysAction.class, GetHistoryDaysHandler.class);

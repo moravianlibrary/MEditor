@@ -242,6 +242,13 @@ public class Constants {
             return value;
         }
 
+        public static CRUD_ACTION_TYPES parseString(String s) {
+            for (CRUD_ACTION_TYPES action : CRUD_ACTION_TYPES.values()) {
+                if (action.getValue().equalsIgnoreCase(s)) return action;
+            }
+            throw new RuntimeException("Unsupported CRUD action type: " + s);
+        }
+
     }
 
     public static enum ACTION_SUBJECTS {
@@ -473,6 +480,9 @@ public class Constants {
     /** The Constant ATTR_FILE_NAME. */
     public static final String ATTR_FILE_NAME = "fileName";
 
+    /** The Constant ATTR_STATE. */
+    public static final String ATTR_STATE = "state";
+
     /**
      * The Constant ATTR_LOCK_OWNER.
      * <code>value == null<code> when there is no lock
@@ -489,6 +499,21 @@ public class Constants {
 
     /** The Constant ATTR_ALL. */
     public static final String ATTR_ALL = "all";
+
+    /** The Constant ATTR_TIMESTAMP. */
+    public static final String ATTR_TIMESTAMP = "timestamp";
+
+    /** The Constant ATTR_ACTION. */
+    public static final String ATTR_ACTION = "action";
+
+    /** The Constant ATTR_TABLE_NAME. */
+    public static final String ATTR_TABLE_NAME = "tableName";
+
+    /** The Constant ATTR_OBJECT. */
+    public static final String ATTR_OBJECT = "object";
+
+    /** The Constant ATTR_IS_MORE_INFO. */
+    public static final String ATTR_IS_MORE_INFO = "isMoreInfo";
 
     // fedora
     /** The Constant FEDORA_MODEL_PREFIX. */

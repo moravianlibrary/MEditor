@@ -22,31 +22,31 @@
  * 
  */
 
-package cz.mzk.editor.shared.event;
+package cz.mzk.editor.shared.rpc.action;
 
-import com.gwtplatform.dispatch.annotation.GenEvent;
-import com.gwtplatform.dispatch.annotation.Order;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.HistoryItemInfo;
 
 /**
  * @author Matous Jobanek
- * @version Oct 31, 2012
+ * @version Nov 7, 2012
  */
-@GenEvent
+@GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetHistory {
+public class GetHistoryItemInfo {
 
-    /** The editor used id. */
-    @Order(1)
-    private Long editorUsedId;
+    /** The id. */
+    @In(1)
+    private Long id;
 
-    /** The lower limit. */
-    @Order(2)
-    private EditorDate lowerLimit;
+    /** The table name. */
+    @In(2)
+    private String tableName;
 
-    /** The upper limit. */
-    @Order(3)
-    private EditorDate upperLimit;
-
+    /** The history item info. */
+    @Out(1)
+    private HistoryItemInfo historyItemInfo;
 }

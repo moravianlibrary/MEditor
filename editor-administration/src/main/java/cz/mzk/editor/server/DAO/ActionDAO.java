@@ -28,6 +28,7 @@ import java.util.List;
 
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
+import cz.mzk.editor.shared.rpc.HistoryItemInfo;
 
 /**
  * @author Matous Jobanek
@@ -62,4 +63,14 @@ public interface ActionDAO {
     List<HistoryItem> getHistoryItems(Long editorUserId, EditorDate lowerLimit, EditorDate upperLimit)
             throws DatabaseException;
 
+    
+    /**
+     * Gets the history item info.
+     *
+     * @param id the id
+     * @param tableName the table name
+     * @return the history item info
+     * @throws DatabaseException the database exception
+     */
+    HistoryItemInfo getHistoryItemInfo(Long id, String tableName) throws DatabaseException;
 }

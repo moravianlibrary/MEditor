@@ -27,26 +27,17 @@ package cz.mzk.editor.shared.event;
 import com.gwtplatform.dispatch.annotation.GenEvent;
 import com.gwtplatform.dispatch.annotation.Order;
 
-import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.HistoryItem;
 
 /**
  * @author Matous Jobanek
- * @version Oct 31, 2012
+ * @version Nov 7, 2012
  */
 @GenEvent
 @SuppressWarnings("unused")
-public class GetHistory {
+public class GetHistoryItemInfo {
 
-    /** The editor used id. */
+    /** The history item. */
     @Order(1)
-    private Long editorUsedId;
-
-    /** The lower limit. */
-    @Order(2)
-    private EditorDate lowerLimit;
-
-    /** The upper limit. */
-    @Order(3)
-    private EditorDate upperLimit;
-
+    private HistoryItem historyItem;
 }

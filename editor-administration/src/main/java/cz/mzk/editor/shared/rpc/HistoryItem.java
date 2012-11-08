@@ -33,7 +33,7 @@ import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
  * @version Oct 31, 2012
  */
 public class HistoryItem
-        implements Serializable {
+        implements Serializable, Comparable<HistoryItem> {
 
     private static final long serialVersionUID = 8547925472051690544L;
 
@@ -203,6 +203,14 @@ public class HistoryItem
             if (other.timestamp != null) return false;
         } else if (!timestamp.equals(other.timestamp)) return false;
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(HistoryItem hItem) {
+        return this.getTimestamp().compareTo(hItem.getTimestamp());
     }
 
 }

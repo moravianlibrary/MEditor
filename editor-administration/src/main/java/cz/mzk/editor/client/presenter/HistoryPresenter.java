@@ -39,6 +39,7 @@ import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.util.SC;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
@@ -46,9 +47,13 @@ import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
 import cz.mzk.editor.shared.event.GetHistoryEvent;
 import cz.mzk.editor.shared.event.GetHistoryEvent.GetHistoryHandler;
+import cz.mzk.editor.shared.event.GetHistoryItemInfoEvent;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
+import cz.mzk.editor.shared.rpc.HistoryItemInfo;
 import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
+import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoResult;
 import cz.mzk.editor.shared.rpc.action.GetHistoryResult;
 
 // TODO: Auto-generated Javadoc
@@ -83,6 +88,8 @@ public class HistoryPresenter
          * @param historyItems
          */
         void setHistoryItems(List<HistoryItem> historyItems);
+
+        void showHistoryItemInfo(HistoryItemInfo historyItemInfo, HistoryItem eventHistoryItem);
 
     }
 
@@ -162,10 +169,43 @@ public class HistoryPresenter
             }
         });
 
+        addRegisteredHandler(GetHistoryItemInfoEvent.getType(),
+                             new GetHistoryItemInfoEvent.GetHistoryItemInfoHandler() {
+
+                                 @Override
+                                 public void onGetHistoryItemInfo(GetHistoryItemInfoEvent event) {
+                                     getHistoryItemInfo(event.getHistoryItem());
+                                 }
+                             });
+
     }
 
     private String getKeyOfMapped(Long editorUsedId, EditorDate lowerLimit, EditorDate upperLimit) {
         return editorUsedId.toString() + lowerLimit.toString() + upperLimit.toString();
+    }
+
+    private void getHistoryItemInfo(final HistoryItem eventHistoryItem) {
+        GetHistoryItemInfoAction itemInfoAction =
+                new GetHistoryItemInfoAction(eventHistoryItem.getId(), eventHistoryItem.getTableName());
+
+        DispatchCallback<GetHistoryItemInfoResult> itemInfoCallback =
+                new DispatchCallback<GetHistoryItemInfoResult>() {
+
+                    @Override
+                    public void callback(GetHistoryItemInfoResult result) {
+                        if (result.getHistoryItemInfo() != null) {
+                            getView().showHistoryItemInfo(result.getHistoryItemInfo(), eventHistoryItem);
+                        } else {
+                            SC.warn(lang.operationFailed());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        super.onFailure(caught);
+                    }
+                };
+        dispatcher.execute(itemInfoAction, itemInfoCallback);
     }
 
     /**
