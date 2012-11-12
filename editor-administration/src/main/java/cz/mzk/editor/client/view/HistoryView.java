@@ -24,7 +24,6 @@
 
 package cz.mzk.editor.client.view;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,28 +32,17 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
-import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VStack;
+import com.smartgwt.client.widgets.tab.TabSet;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
-import cz.mzk.editor.client.util.HtmlCode;
-import cz.mzk.editor.client.view.other.HistoryDays;
-import cz.mzk.editor.client.view.other.HistoryItems;
+import cz.mzk.editor.client.view.other.DOHistoryTab;
+import cz.mzk.editor.client.view.other.HistoryTab;
+import cz.mzk.editor.client.view.other.UserHistoryTab;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
-import cz.mzk.editor.shared.rpc.UserInfoItem;
-import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
-import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
 /**
  * @author Matous Jobanek
@@ -64,82 +52,27 @@ public class HistoryView
         extends ViewWithUiHandlers<HistoryUiHandlers>
         implements HistoryPresenter.MyView {
 
-    private final EventBus eventBus;
-    private final LangConstants lang;
     private final VStack mainLayout;
-    private final HistoryDays historyDays;
-    private final DispatchAsync dispatcher;
-    private final HistoryItems historyItems;
-    private SelectItem users;
-    private final HTMLFlow title;
+    private final HistoryTab userHistoryTab;
+    private final HistoryTab digObjHistoryTab;
 
     @Inject
     public HistoryView(EventBus eventBus, final LangConstants lang, DispatchAsync dispatcher) {
-        this.eventBus = eventBus;
-        this.lang = lang;
-        this.dispatcher = dispatcher;
-
         this.mainLayout = new VStack();
 
-        title = new HTMLFlow(HtmlCode.title(lang.my() + " " + lang.historyMenu(), 2));
-        Layout titleLayout = new Layout();
-        titleLayout.addMember(title);
-        titleLayout.setAlign(VerticalAlignment.TOP);
-        titleLayout.setHeight(30);
-        titleLayout.setMargin(10);
+        mainLayout.setWidth100();
+        mainLayout.setHeight100();
 
-        mainLayout.addMember(titleLayout);
-        setUserSelect();
+        userHistoryTab = new UserHistoryTab(eventBus, lang, dispatcher, new Long(8));
+        digObjHistoryTab = new DOHistoryTab(eventBus, lang, dispatcher);
 
-        historyDays = new HistoryDays(lang, dispatcher, eventBus);
-        historyItems = new HistoryItems(lang, eventBus);
+        TabSet historyTabs = new TabSet();
+        historyTabs.setAnimateTabScrolling(true);
+        historyTabs.setShowPaneContainerEdges(false);
+        historyTabs.setHeight100();
+        historyTabs.setTabs(userHistoryTab, digObjHistoryTab);
 
-        HLayout historyLayout = new HLayout(2);
-        historyLayout.setAnimateMembers(true);
-        historyLayout.setHeight("90%");
-        historyLayout.setMargin(10);
-
-        historyLayout.addMember(historyDays);
-        historyLayout.addMember(historyItems);
-
-        mainLayout.addMember(historyLayout);
-
-    }
-
-    private void setUserSelect() {
-        //        TODO
-        if (true) {
-            users = new SelectItem("users", lang.users());
-            GetUsersInfoAction getUsersAction = new GetUsersInfoAction();
-            DispatchCallback<GetUsersInfoResult> usersCallback = new DispatchCallback<GetUsersInfoResult>() {
-
-                @Override
-                public void callback(GetUsersInfoResult result) {
-                    LinkedHashMap<String, String> allUsers = new LinkedHashMap<String, String>();
-                    for (UserInfoItem userItem : result.getItems()) {
-                        allUsers.put(userItem.getId().toString(),
-                                     userItem.getSurname() + " " + userItem.getName());
-                    }
-                    users.setValueMap(allUsers);
-                }
-            };
-
-            users.addChangedHandler(new ChangedHandler() {
-
-                @Override
-                public void onChanged(ChangedEvent event) {
-                    historyItems.removeAllData();
-                    historyDays.getUserHistory(Long.parseLong(event.getValue().toString()));
-                    title.setContents(HtmlCode.title(lang.historyMenu() + " " + lang.ofUser(), 2));
-                }
-            });
-
-            dispatcher.execute(getUsersAction, usersCallback);
-            DynamicForm usersForm = new DynamicForm();
-            usersForm.setItems(users);
-
-            mainLayout.addMember(usersForm);
-        }
+        mainLayout.addMember(historyTabs);
     }
 
     /**
@@ -154,17 +87,26 @@ public class HistoryView
      * {@inheritDoc}
      */
     @Override
-    public void setHistoryItems(List<HistoryItem> hItems) {
-        historyItems.setHistoryItems(hItems);
-
+    public void setHistoryItems(List<HistoryItem> hItems, boolean isUserH) {
+        if (isUserH) {
+            userHistoryTab.getHistoryItems().setHistoryItems(hItems);
+        } else {
+            digObjHistoryTab.getHistoryItems().setHistoryItems(hItems);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void showHistoryItemInfo(HistoryItemInfo historyItemInfo, HistoryItem eventHistoryItem) {
-        historyItems.showHistoryItemInfo(historyItemInfo, eventHistoryItem);
+    public void showHistoryItemInfo(HistoryItemInfo historyItemInfo,
+                                    HistoryItem eventHistoryItem,
+                                    boolean isUserH) {
+        if (isUserH) {
+            userHistoryTab.getHistoryItems().showHistoryItemInfo(historyItemInfo, eventHistoryItem);
+        } else {
+            digObjHistoryTab.getHistoryItems().showHistoryItemInfo(historyItemInfo, eventHistoryItem);
+        }
     }
 
 }

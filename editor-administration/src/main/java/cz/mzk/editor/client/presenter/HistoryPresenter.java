@@ -88,9 +88,11 @@ public class HistoryPresenter
         /**
          * @param historyItems
          */
-        void setHistoryItems(List<HistoryItem> historyItems);
+        void setHistoryItems(List<HistoryItem> historyItems, boolean isUserH);
 
-        void showHistoryItemInfo(HistoryItemInfo historyItemInfo, HistoryItem eventHistoryItem);
+        void showHistoryItemInfo(HistoryItemInfo historyItemInfo,
+                                 HistoryItem eventHistoryItem,
+                                 boolean isUserH);
 
     }
 
@@ -142,14 +144,18 @@ public class HistoryPresenter
             @Override
             public void onGetHistory(GetHistoryEvent event) {
                 final Long editorUsedId = event.getEditorUsedId();
+                String uuid = event.getUuid();
                 final EditorDate lowerLimit = event.getLowerLimit();
                 final EditorDate upperLimit = event.getUpperLimit();
-                final String keyOfMapped = getKeyOfMapped(editorUsedId, lowerLimit, upperLimit);
+                final String keyOfMapped =
+                        getKeyOfMapped(editorUsedId != null ? editorUsedId.toString() : uuid,
+                                       lowerLimit,
+                                       upperLimit);
                 if (downloadedHistory.containsKey(keyOfMapped)) {
-                    getView().setHistoryItems(downloadedHistory.get(keyOfMapped));
+                    getView().setHistoryItems(downloadedHistory.get(keyOfMapped), editorUsedId != null);
                 } else {
                     GetHistoryAction historyAction =
-                            new GetHistoryAction(editorUsedId, lowerLimit, upperLimit);
+                            new GetHistoryAction(editorUsedId, uuid, lowerLimit, upperLimit);
                     DispatchCallback<GetHistoryResult> historyCallback =
                             new DispatchCallback<GetHistoryResult>() {
 
@@ -157,7 +163,7 @@ public class HistoryPresenter
                                 public void callback(GetHistoryResult result) {
                                     List<HistoryItem> historyItems = result.getHistoryItems();
                                     downloadedHistory.put(keyOfMapped, historyItems);
-                                    getView().setHistoryItems(historyItems);
+                                    getView().setHistoryItems(historyItems, editorUsedId != null);
                                 }
 
                                 @Override
@@ -175,17 +181,17 @@ public class HistoryPresenter
 
                                  @Override
                                  public void onGetHistoryItemInfo(GetHistoryItemInfoEvent event) {
-                                     getHistoryItemInfo(event.getHistoryItem());
+                                     getHistoryItemInfo(event.getHistoryItem(), event.isUserH());
                                  }
                              });
 
     }
 
-    private String getKeyOfMapped(Long editorUsedId, EditorDate lowerLimit, EditorDate upperLimit) {
-        return editorUsedId.toString() + "#" + lowerLimit.toString() + "#" + upperLimit.toString();
+    private String getKeyOfMapped(String id, EditorDate lowerLimit, EditorDate upperLimit) {
+        return id + "#" + lowerLimit.toString() + "#" + upperLimit.toString();
     }
 
-    private void getHistoryItemInfo(final HistoryItem eventHistoryItem) {
+    private void getHistoryItemInfo(final HistoryItem eventHistoryItem, final boolean isUserH) {
         GetHistoryItemInfoAction itemInfoAction =
                 new GetHistoryItemInfoAction(eventHistoryItem.getId(), eventHistoryItem.getTableName());
 
@@ -195,7 +201,9 @@ public class HistoryPresenter
                     @Override
                     public void callback(GetHistoryItemInfoResult result) {
                         if (result.getHistoryItemInfo() != null) {
-                            getView().showHistoryItemInfo(result.getHistoryItemInfo(), eventHistoryItem);
+                            getView().showHistoryItemInfo(result.getHistoryItemInfo(),
+                                                          eventHistoryItem,
+                                                          isUserH);
                         } else {
                             SC.warn(lang.operationFailed());
                         }

@@ -44,6 +44,10 @@ public class GetHistoryDays {
     @In(1)
     private Long userId;
 
+    /** The uuid. */
+    @In(2)
+    private String uuid;
+
     @Out(1)
     private List<EditorDate> days;
 

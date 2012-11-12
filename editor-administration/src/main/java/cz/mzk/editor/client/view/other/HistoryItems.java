@@ -70,14 +70,17 @@ public class HistoryItems
     private final EventBus eventBus;
     private DetailViewer detailViewer;
     private IButton showChildren;
+    private final boolean isUserH;
 
     /**
      * 
      */
-    public HistoryItems(LangConstants lang, EventBus eventBus) {
+    public HistoryItems(LangConstants lang, EventBus eventBus, boolean isUserH) {
         super();
         this.eventBus = eventBus;
         this.lang = lang;
+        this.isUserH = isUserH;
+
         setHistoryItemsGrid();
         setAnimateMembers(true);
         setAnimateResizeTime(200);
@@ -134,7 +137,7 @@ public class HistoryItems
                                             record.getAttributeAsString(Constants.ATTR_TABLE_NAME),
                                             record.getAttributeAsString(Constants.ATTR_ACTION),
                                             true);
-                    eventBus.fireEvent(new GetHistoryItemInfoEvent(eventHistoryItem));
+                    eventBus.fireEvent(new GetHistoryItemInfoEvent(eventHistoryItem, isUserH));
                 } else {
                     hideDetailViewer();
                 }
@@ -159,7 +162,7 @@ public class HistoryItems
         nameField.setWidth("20%");
 
         ListGridField objectField = new ListGridField(Constants.ATTR_OBJECT);
-        objectField.setTitle(lang.object());
+        objectField.setTitle(isUserH ? lang.object() : lang.user());
         objectField.setWidth("65%");
 
         ListGridField isMoreInfoField = new ListGridField(Constants.ATTR_IS_MORE_INFO);

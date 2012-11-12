@@ -76,6 +76,7 @@ public class GetHistoryHandler
         try {
             historyItems =
                     actionDAO.getHistoryItems(action.getEditorUsedId(),
+                                              action.getUuid(),
                                               action.getLowerLimit(),
                                               action.getUpperLimit());
         } catch (DatabaseException e) {

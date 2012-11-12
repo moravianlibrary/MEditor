@@ -44,6 +44,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.event.GetHistoryEvent;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
@@ -53,7 +54,7 @@ import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
  * @author Matous Jobanek
  * @version Oct 30, 2012
  */
-public class HistoryDays
+public abstract class HistoryDays
         extends VLayout {
 
     private final DispatchAsync dispatcher;
@@ -72,7 +73,8 @@ public class HistoryDays
     private List<EditorDate> thisMonth = null;
     private static Map<Integer, String> months = null;
     private final EventBus eventBus;
-    private Long userId = new Long(8);
+    private Long userId;
+    private String uuid;
     private List<EditorDate> historyData = new ArrayList<EditorDate>();
 
     private final class HistoryListGrid
@@ -124,7 +126,7 @@ public class HistoryDays
                         }
                     } else {
                         if (!showHeader) removeAllSubgrids();
-                        eventBus.fireEvent(new GetHistoryEvent(userId, selDay, selDay));
+                        eventBus.fireEvent(new GetHistoryEvent(userId, uuid, selDay, selDay));
                     }
                 }
             });
@@ -134,6 +136,7 @@ public class HistoryDays
             thisYearMonths = null;
             years = null;
             allData = null;
+            setData(new ListGridRecord[] {});
         }
 
         public void analyzeHistoryData(List<EditorDate> historyDataToAnalyze,
@@ -196,11 +199,11 @@ public class HistoryDays
             historyYearGrid.analyzeHistoryData(history, 0, new ListGridRecord[history.size()]);
             addMember(historyYearGrid);
         }
-        eventBus.fireEvent(new GetHistoryEvent(userId, history.get(history.size() - 1), history.get(0)));
+        eventBus.fireEvent(new GetHistoryEvent(userId, uuid, history.get(history.size() - 1), history.get(0)));
     }
 
     /**
-     * 
+     * Removes the all subgrids.
      */
     private void removeAllSubgrids() {
         if (historyMonthGrid != null && contains(historyMonthGrid)) {
@@ -217,7 +220,11 @@ public class HistoryDays
      * @param dispatcher
      *        the dispatcher
      */
-    public HistoryDays(LangConstants lang, DispatchAsync dispatcher, EventBus eventBus) {
+    public HistoryDays(LangConstants lang,
+                       DispatchAsync dispatcher,
+                       EventBus eventBus,
+                       Long userId,
+                       String uuid) {
         super();
         this.dispatcher = dispatcher;
         this.lang = lang;
@@ -245,38 +252,26 @@ public class HistoryDays
 
         historyTopGrid = new HistoryListGrid(today, ATTR_TEXT_TO_SHOW, false);
 
-        getUserHistory(userId);
+        getHistory(userId, uuid);
 
         addMember(historyTopGrid);
 
     }
 
-    public void getUserHistory(Long id) {
-        userId = id;
+    /**
+     * Gets the history.
+     * 
+     * @param id
+     *        the id
+     * @param uuid2
+     * @return the history
+     */
+    protected abstract void getHistory(Long id, String uuid2);
+
+    protected void clean() {
         removeAllSubgrids();
         thisMonth = null;
         historyTopGrid.clean();
-
-        GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(id);
-        DispatchCallback<GetHistoryDaysResult> callback = new DispatchCallback<GetHistoryDaysResult>() {
-
-            @Override
-            public void callback(GetHistoryDaysResult result) {
-                List<EditorDate> days = result.getDays();
-                Collections.sort(days);
-                setHistoryDays(days);
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void callbackError(Throwable t) {
-                super.callbackError(t);
-            }
-        };
-        dispatcher.execute(getHistoryDaysAction, callback);
-
     }
 
     public void setHistoryDays(List<EditorDate> hisData) {
@@ -362,4 +357,62 @@ public class HistoryDays
         months.put(11, lang.november());
         months.put(12, lang.december());
     }
+
+    /**
+     * @param userId
+     *        the userId to set
+     */
+    protected void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * @return the historyTopGrid
+     */
+    protected HistoryListGrid getHistoryTopGrid() {
+        return historyTopGrid;
+    }
+
+    /**
+     * @return the dispatcher
+     */
+    public DispatchAsync getDispatcher() {
+        return dispatcher;
+    }
+
+    /**
+     * @param uuid
+     *        the uuid to set
+     */
+    protected void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    protected void callForDays() {
+        final ModalWindow mw = new ModalWindow(getHistoryTopGrid());
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+
+        GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(userId, uuid);
+        DispatchCallback<GetHistoryDaysResult> callback = new DispatchCallback<GetHistoryDaysResult>() {
+
+            @Override
+            public void callback(GetHistoryDaysResult result) {
+                List<EditorDate> days = result.getDays();
+                Collections.sort(days);
+                setHistoryDays(days);
+                mw.hide();
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void callbackError(Throwable t) {
+                super.callbackError(t);
+            }
+        };
+        getDispatcher().execute(getHistoryDaysAction, callback);
+    }
+
 }

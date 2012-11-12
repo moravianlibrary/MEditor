@@ -22,43 +22,42 @@
  * 
  */
 
-package cz.mzk.editor.shared.rpc.action;
+package cz.mzk.editor.client.view.other;
 
-import java.util.List;
+import com.google.gwt.event.shared.EventBus;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 
-import com.gwtplatform.dispatch.annotation.GenDispatch;
-import com.gwtplatform.dispatch.annotation.In;
-import com.gwtplatform.dispatch.annotation.Out;
-
-import cz.mzk.editor.shared.rpc.EditorDate;
-import cz.mzk.editor.shared.rpc.HistoryItem;
+import cz.mzk.editor.client.LangConstants;
 
 /**
  * @author Matous Jobanek
- * @version Oct 31, 2012
+ * @version Nov 9, 2012
  */
-@GenDispatch(isSecure = false)
-@SuppressWarnings("unused")
-public class GetHistory {
+public class UserHistoryDays
+        extends HistoryDays {
 
-    /** The editor used id. */
-    @In(1)
-    private Long editorUsedId;
+    /**
+     * @param lang
+     * @param dispatcher
+     * @param eventBus
+     */
+    public UserHistoryDays(LangConstants lang, DispatchAsync dispatcher, EventBus eventBus, Long userId) {
+        super(lang, dispatcher, eventBus, userId, null);
+    }
 
-    /** The uuid. */
-    @In(2)
-    private String uuid;
+    public void getUserHistory(Long id) {
+        setUserId(id);
+        clean();
 
-    /** The lower limit. */
-    @In(3)
-    private EditorDate lowerLimit;
+        callForDays();
 
-    /** The upper limit. */
-    @In(4)
-    private EditorDate upperLimit;
+    }
 
-    /** The history items. */
-    @Out(1)
-    private List<HistoryItem> historyItems;
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void getHistory(Long id, String uuid) {
+        getUserHistory(id);
+    }
 }

@@ -40,4 +40,7 @@ public class GetHistoryItemInfo {
     /** The history item. */
     @Order(1)
     private HistoryItem historyItem;
+
+    @Order(2)
+    private boolean userH;
 }

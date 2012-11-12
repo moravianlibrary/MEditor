@@ -57,8 +57,11 @@ public class ActionDAOImpl
     public static final String SELECT_USER_ACTIONS_TIMESTAMP = "SELECT timestamp FROM "
             + Constants.TABLE_ACTION + " WHERE editor_user_id = (?)";
 
-    private static final String USER_ID_AND_INTERVAL_CONSTRAINTS =
-            "editor_user_id = (?) AND a.timestamp > '%lowerTimestamp' AND a.timestamp < (timestamp '%s' + INTERVAL '1 day')";
+    private static final String INTERVAL_CONSTRAINTS =
+            "a.timestamp > '%lowerTimestamp' AND a.timestamp < (timestamp '%s' + INTERVAL '1 day')";
+
+    private static final String USER_ID_AND_INTERVAL_CONSTRAINTS = "editor_user_id = (?) AND "
+            + INTERVAL_CONSTRAINTS;
 
     public static final String SELECT_CHILD_TABLES_OF_INTERVAL = "SELECT p.relname AS tableName FROM "
             + Constants.TABLE_ACTION + " a, pg_class p WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS
@@ -138,6 +141,43 @@ public class ActionDAOImpl
             + Constants.TABLE_TREE_STRUCTURE + " WHERE id = (SELECT tree_structure_id FROM "
             + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION + " WHERE id = (?))";
 
+    public static final String SELECT_DO_LOCK_DAYS = "SELECT timestamp FROM "
+            + Constants.TABLE_CRUD_LOCK_ACTION + " a WHERE a.lock_id = (SELECT id FROM "
+            + Constants.TABLE_LOCK + " l WHERE digital_object_uuid = (?))";
+
+    public static final String SELECT_DO_EDIT_SAVED_DAYS = "SELECT timestamp FROM "
+            + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
+            + " a WHERE a.saved_edited_object_id = (SELECT id FROM " + Constants.TABLE_SAVED_EDITED_OBJECT
+            + " s WHERE digital_object_uuid = (?))";
+
+    public static final String SELECT_DO_DAYS = "SELECT timestamp FROM "
+            + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION + " WHERE digital_object_uuid = (?)";
+
+    //    
+
+    public static final String SELECT_DO_LOCK_ACTION =
+            "SELECT au.id, au.name, au.surname, au.timestamp, au.type FROM ((SELECT * FROM "
+                    + Constants.TABLE_CRUD_LOCK_ACTION + " a WHERE a.lock_id = (SELECT id FROM "
+                    + Constants.TABLE_LOCK + " l WHERE digital_object_uuid = (?)) AND "
+                    + INTERVAL_CONSTRAINTS + ") al LEFT JOIN (SELECT id AS user_id, name, surname FROM "
+                    + Constants.TABLE_EDITOR_USER + ") u ON al.editor_user_id = u.user_id) au";
+
+    public static final String SELECT_DO_EDIT_SAVED_ACTION =
+            "SELECT au.id, au.name, au.surname, au.timestamp, au.type FROM ((SELECT * FROM "
+                    + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
+                    + " a WHERE a.saved_edited_object_id = (SELECT id FROM "
+                    + Constants.TABLE_SAVED_EDITED_OBJECT + " s WHERE digital_object_uuid = (?)) AND "
+                    + INTERVAL_CONSTRAINTS + ") aso LEFT JOIN (SELECT id AS user_id, name, surname FROM "
+                    + Constants.TABLE_EDITOR_USER + ") u ON aso.editor_user_id = u.user_id) au";
+
+    public static final String SELECT_DO_ACTION =
+            "SELECT  uo.id, uo.name, uo.surname, uo.timestamp, uo.type, uo.tableName FROM ((SELECT * FROM (SELECT t.id, t.editor_user_id, t.timestamp, t.type, t.digital_object_uuid, p.relname AS tableName FROM "
+                    + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
+                    + " t INNER JOIN pg_class p ON t.tableoid = p.oid) a WHERE a.digital_object_uuid = (?) AND "
+                    + INTERVAL_CONSTRAINTS
+                    + ") o LEFT JOIN (SELECT id AS user_id, name, surname FROM "
+                    + Constants.TABLE_EDITOR_USER + ") u ON o.editor_user_id = u.user_id) uo";
+
     public static final SimpleDateFormat FORMATTER_TO_DAY = new SimpleDateFormat("dd");
     public static final SimpleDateFormat FORMATTER_TO_MOUNTH = new SimpleDateFormat("MM");
     public static final SimpleDateFormat FORMATTER_TO_YEAR = new SimpleDateFormat("yyyy");
@@ -165,6 +205,7 @@ public class ActionDAOImpl
          *         the database exception
          */
         public ActionDAOHandler(Long editorUserId,
+                                String uuid,
                                 EditorDate lowerLimit,
                                 EditorDate upperLimit,
                                 String sql,
@@ -172,7 +213,8 @@ public class ActionDAOImpl
                 throws DatabaseException {
 
             try {
-                ResultSet rs = getAnyActionSelSt(editorUserId, lowerLimit, upperLimit, sql).executeQuery();
+                ResultSet rs =
+                        getAnyActionSelSt(editorUserId, uuid, lowerLimit, upperLimit, sql).executeQuery();
 
                 while (rs.next()) {
                     historyItems.add(getHistoryItemFromResultSet(rs));
@@ -194,32 +236,79 @@ public class ActionDAOImpl
     }
 
     @Override
-    public List<EditorDate> getHistoryDays(Long userId) throws DatabaseException {
+    public List<EditorDate> getHistoryDays(Long userId, String uuid) throws DatabaseException {
         List<EditorDate> days = new ArrayList<EditorDate>();
-        PreparedStatement selSt = null;
 
-        long editorUserId = (userId == null) ? getUserId() : userId;
+        if (userId != null) {
+            PreparedStatement selSt = null;
+
+            long editorUserId = (userId == null) ? getUserId() : userId;
+
+            try {
+                selSt = getConnection().prepareStatement(SELECT_USER_ACTIONS_TIMESTAMP);
+                selSt.setLong(1, editorUserId);
+
+                ResultSet rs = selSt.executeQuery();
+
+                while (rs.next()) {
+                    Timestamp timestamp = rs.getTimestamp("timestamp");
+                    EditorDate date = getEditorDate(timestamp, true);
+                    if (!days.contains(date)) days.add(date);
+                }
+
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            } finally {
+                closeConnection();
+            }
+
+        } else if (uuid != null) {
+            handleDigitalObjectDays(uuid, days);
+        }
+
+        return days;
+    }
+
+    /**
+     * @param uuid
+     * @param days
+     * @throws DatabaseException
+     */
+    private void handleDigitalObjectDays(String uuid, List<EditorDate> days) throws DatabaseException {
+        PreparedStatement selectSt = null;
+
+        //        TODO
 
         try {
-            selSt = getConnection().prepareStatement(SELECT_USER_ACTIONS_TIMESTAMP);
-            selSt.setLong(1, editorUserId);
+            selectSt = getConnection().prepareStatement(SELECT_DO_DAYS);
+            selectSt.setString(1, uuid);
 
-            ResultSet rs = selSt.executeQuery();
-
+            ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                Timestamp timestamp = rs.getTimestamp("timestamp");
-                EditorDate date = getEditorDate(timestamp, true);
-                if (!days.contains(date)) days.add(date);
+                days.add(getEditorDate(rs.getTimestamp("timestamp"), true));
+            }
+
+            selectSt = getConnection().prepareStatement(SELECT_DO_EDIT_SAVED_DAYS);
+            selectSt.setString(1, uuid);
+
+            rs = selectSt.executeQuery();
+            while (rs.next()) {
+                days.add(getEditorDate(rs.getTimestamp("timestamp"), true));
+            }
+
+            selectSt = getConnection().prepareStatement(SELECT_DO_LOCK_DAYS);
+            selectSt.setString(1, uuid);
+
+            rs = selectSt.executeQuery();
+            while (rs.next()) {
+                days.add(getEditorDate(rs.getTimestamp("timestamp"), true));
             }
 
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
-
-        return days;
     }
 
     private EditorDate getEditorDate(Timestamp timestamp, boolean onlyDay) {
@@ -236,46 +325,106 @@ public class ActionDAOImpl
     }
 
     @Override
-    public List<HistoryItem> getHistoryItems(Long editorUserId, EditorDate lowerLimit, EditorDate upperLimit)
-            throws DatabaseException {
+    public List<HistoryItem> getHistoryItems(Long editorUserId,
+                                             String uuid,
+                                             EditorDate lowerLimit,
+                                             EditorDate upperLimit) throws DatabaseException {
 
-        List<String> tableNames = getTableNames(editorUserId, lowerLimit, upperLimit);
         List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
 
-        for (String tableName : tableNames) {
+        if (editorUserId != null) {
+            List<String> tableNames = getTableNames(editorUserId, lowerLimit, upperLimit);
+            for (String tableName : tableNames) {
 
-            if (tableName.equals(Constants.TABLE_LOG_IN_OUT)) {
-                handleLogInOutAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                if (tableName.equals(Constants.TABLE_LOG_IN_OUT)) {
+                    handleLogInOutAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CONVERSION)) {
-                handleConversionAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CONVERSION)) {
+                    handleConversionAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CRUD_LOCK_ACTION)) {
-                handleCrudLockAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CRUD_LOCK_ACTION)) {
+                    handleCrudLockAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION)) {
-                handleCrudTreeStrucAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION)) {
+                    handleCrudTreeStrucAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION)) {
-                handleCrudDigitalObjectAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION)) {
+                    handleCrudDigitalObjectAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT)) {
-                handleCrudDOWithTopObjAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT)) {
+                    handleCrudDOWithTopObjAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION)) {
-                handleCrudRequestAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION)) {
+                    handleCrudRequestAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION)) {
-                handleCrudSavedEditObjAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION)) {
+                    handleCrudSavedEditObjAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else if (tableName.equals(Constants.TABLE_LONG_RUNNING_PROCESS)) {
-                handleLongProcessAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else if (tableName.equals(Constants.TABLE_LONG_RUNNING_PROCESS)) {
+                    handleLongProcessAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
-            } else {
-                handleDefaultAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                } else {
+                    handleDefaultAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                }
             }
+        } else if (uuid != null) {
+
+            handleDigitalObjectAction(uuid, lowerLimit, upperLimit, historyItems);
+
         }
         return historyItems;
+    }
+
+    /**
+     * @param uuid
+     * @param historyItems
+     * @throws DatabaseException
+     */
+    private void handleDigitalObjectAction(String uuid,
+                                           EditorDate lowerLimit,
+                                           EditorDate upperLimit,
+                                           List<HistoryItem> historyItems) throws DatabaseException {
+
+        new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_ACTION, historyItems) {
+
+            @Override
+            protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
+                //        TODO
+                return new HistoryItem(rs.getLong("id"),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
+                                       rs.getString("tableName"),
+                                       rs.getString("surname") + " " + rs.getString("name"),
+                                       true);
+            }
+        };
+        new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_EDIT_SAVED_ACTION, historyItems) {
+
+            @Override
+            protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
+                //        TODO
+                return new HistoryItem(rs.getLong("id"),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
+                                       Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                       rs.getString("surname") + " " + rs.getString("name"),
+                                       true);
+            }
+        };
+        new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_LOCK_ACTION, historyItems) {
+
+            @Override
+            protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
+                //        TODO
+                return new HistoryItem(rs.getLong("id"),
+                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
+                                       Constants.TABLE_CRUD_LOCK_ACTION,
+                                       rs.getString("surname") + " " + rs.getString("name"),
+                                       true);
+            }
+        };
+
     }
 
     private void handleDefaultAction(Long editorUserId,
@@ -283,7 +432,7 @@ public class ActionDAOImpl
                                      EditorDate upperLimit,
                                      List<HistoryItem> historyItems) throws DatabaseException {
 
-        new ActionDAOHandler(editorUserId, lowerLimit, upperLimit, SELECT_DEFAULT_ACTION, historyItems) {
+        new ActionDAOHandler(editorUserId, null, lowerLimit, upperLimit, SELECT_DEFAULT_ACTION, historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -302,7 +451,12 @@ public class ActionDAOImpl
                                          EditorDate upperLimit,
                                          List<HistoryItem> historyItems) throws DatabaseException {
 
-        new ActionDAOHandler(editorUserId, lowerLimit, upperLimit, SELECT_LONG_PROCESS_ACTION, historyItems) {
+        new ActionDAOHandler(editorUserId,
+                             null,
+                             lowerLimit,
+                             upperLimit,
+                             SELECT_LONG_PROCESS_ACTION,
+                             historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -321,7 +475,12 @@ public class ActionDAOImpl
                                          EditorDate upperLimit,
                                          List<HistoryItem> historyItems) throws DatabaseException {
 
-        new ActionDAOHandler(editorUserId, lowerLimit, upperLimit, SELECT_CRUD_REQUEST_ACTION, historyItems) {
+        new ActionDAOHandler(editorUserId,
+                             null,
+                             lowerLimit,
+                             upperLimit,
+                             SELECT_CRUD_REQUEST_ACTION,
+                             historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -341,6 +500,7 @@ public class ActionDAOImpl
                                            List<HistoryItem> historyItems) throws DatabaseException {
 
         new ActionDAOHandler(editorUserId,
+                             null,
                              lowerLimit,
                              upperLimit,
                              SELECT_CRUD_TREE_STRUC_ACTION,
@@ -365,6 +525,7 @@ public class ActionDAOImpl
                                               List<HistoryItem> historyItems) throws DatabaseException {
 
         new ActionDAOHandler(editorUserId,
+                             null,
                              lowerLimit,
                              upperLimit,
                              SELECT_CRUD_SAVED_EDIT_OBJ_ACTION,
@@ -387,7 +548,12 @@ public class ActionDAOImpl
                                       EditorDate upperLimit,
                                       List<HistoryItem> historyItems) throws DatabaseException {
 
-        new ActionDAOHandler(editorUserId, lowerLimit, upperLimit, SELECT_CRUD_LOCK_ACTION, historyItems) {
+        new ActionDAOHandler(editorUserId,
+                             null,
+                             lowerLimit,
+                             upperLimit,
+                             SELECT_CRUD_LOCK_ACTION,
+                             historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -407,6 +573,7 @@ public class ActionDAOImpl
                                               List<HistoryItem> historyItems) throws DatabaseException {
 
         new ActionDAOHandler(editorUserId,
+                             null,
                              lowerLimit,
                              upperLimit,
                              SELECT_CRUD_DO_WITH_TOP_OBJ_ACTION,
@@ -431,6 +598,7 @@ public class ActionDAOImpl
                                                List<HistoryItem> historyItems) throws DatabaseException {
 
         new ActionDAOHandler(editorUserId,
+                             null,
                              lowerLimit,
                              upperLimit,
                              SELECT_CRUD_DIGITAL_OBJECT_ACTION,
@@ -454,7 +622,12 @@ public class ActionDAOImpl
                                         EditorDate upperLimit,
                                         List<HistoryItem> historyItems) throws DatabaseException {
 
-        new ActionDAOHandler(editorUserId, lowerLimit, upperLimit, SELECT_CONVERSION_ACTION, historyItems) {
+        new ActionDAOHandler(editorUserId,
+                             null,
+                             lowerLimit,
+                             upperLimit,
+                             SELECT_CONVERSION_ACTION,
+                             historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -473,7 +646,12 @@ public class ActionDAOImpl
                                       EditorDate upperLimit,
                                       List<HistoryItem> historyItems) throws DatabaseException {
 
-        new ActionDAOHandler(editorUserId, lowerLimit, upperLimit, SELECT_LOG_IN_OUT_ACTION, historyItems) {
+        new ActionDAOHandler(editorUserId,
+                             null,
+                             lowerLimit,
+                             upperLimit,
+                             SELECT_LOG_IN_OUT_ACTION,
+                             historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -495,8 +673,11 @@ public class ActionDAOImpl
 
         try {
             ResultSet rs =
-                    getAnyActionSelSt(editorUserId, lowerLimit, upperLimit, SELECT_CHILD_TABLES_OF_INTERVAL)
-                            .executeQuery();
+                    getAnyActionSelSt(editorUserId,
+                                      null,
+                                      lowerLimit,
+                                      upperLimit,
+                                      SELECT_CHILD_TABLES_OF_INTERVAL).executeQuery();
             while (rs.next()) {
                 tableNames.add(rs.getString("tableName"));
             }
@@ -511,6 +692,7 @@ public class ActionDAOImpl
     }
 
     private PreparedStatement getAnyActionSelSt(Long editorUserId,
+                                                String uuid,
                                                 EditorDate lowerLimit,
                                                 EditorDate upperLimit,
                                                 String sql) throws DatabaseException {
@@ -522,7 +704,11 @@ public class ActionDAOImpl
                             .prepareStatement(String.format(sql.replace("%lowerTimestamp",
                                                                         getStringTimestamp(lowerLimit)),
                                                             getStringTimestamp(upperLimit)));
-            selectSt.setLong(1, editorUserId);
+            if (editorUserId != null) {
+                selectSt.setLong(1, editorUserId);
+            } else {
+                selectSt.setString(1, uuid);
+            }
         } catch (SQLException e) {
             LOGGER.error("Could not get any action select statement: " + selectSt + ": " + e.getMessage());
             e.printStackTrace();

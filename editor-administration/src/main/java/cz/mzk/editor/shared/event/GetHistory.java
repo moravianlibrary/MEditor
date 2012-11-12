@@ -41,12 +41,16 @@ public class GetHistory {
     @Order(1)
     private Long editorUsedId;
 
-    /** The lower limit. */
+    /** The uuid. */
     @Order(2)
+    private String uuid;
+
+    /** The lower limit. */
+    @Order(3)
     private EditorDate lowerLimit;
 
     /** The upper limit. */
-    @Order(3)
+    @Order(4)
     private EditorDate upperLimit;
 
 }

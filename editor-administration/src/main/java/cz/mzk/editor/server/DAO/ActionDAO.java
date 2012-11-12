@@ -41,17 +41,21 @@ public interface ActionDAO {
      * 
      * @param userId
      *        the user id
+     * @param uuid
+     *        the uuid
      * @return the history days
      * @throws DatabaseException
      *         the database exception
      */
-    public List<EditorDate> getHistoryDays(Long userId) throws DatabaseException;
+    public List<EditorDate> getHistoryDays(Long userId, String uuid) throws DatabaseException;
 
     /**
      * Gets the history items.
      * 
      * @param editorUserId
      *        the editor user id
+     * @param uuid
+     *        the uuid
      * @param lowerLimit
      *        the lower limit
      * @param upperLimit
@@ -60,17 +64,21 @@ public interface ActionDAO {
      * @throws DatabaseException
      *         the database exception
      */
-    List<HistoryItem> getHistoryItems(Long editorUserId, EditorDate lowerLimit, EditorDate upperLimit)
-            throws DatabaseException;
+    List<HistoryItem> getHistoryItems(Long editorUserId,
+                                      String uuid,
+                                      EditorDate lowerLimit,
+                                      EditorDate upperLimit) throws DatabaseException;
 
-    
     /**
      * Gets the history item info.
-     *
-     * @param id the id
-     * @param tableName the table name
+     * 
+     * @param id
+     *        the id
+     * @param tableName
+     *        the table name
      * @return the history item info
-     * @throws DatabaseException the database exception
+     * @throws DatabaseException
+     *         the database exception
      */
     HistoryItemInfo getHistoryItemInfo(Long id, String tableName) throws DatabaseException;
 }

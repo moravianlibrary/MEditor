@@ -62,7 +62,7 @@ public class GetHistoryDaysHandler
 
         List<EditorDate> historyDays = null;
         try {
-            historyDays = actionDAO.getHistoryDays(action.getUserId());
+            historyDays = actionDAO.getHistoryDays(action.getUserId(), action.getUuid());
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
