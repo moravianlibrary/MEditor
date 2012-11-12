@@ -43,7 +43,6 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigResult;
 
@@ -86,7 +85,7 @@ public class GetClientConfigHandler
     public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context)
             throws ActionException {
         LOGGER.debug("Processing action: GetClientConfigAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        //        ServerUtils.checkExpiredSession(httpSessionProvider);
         HashMap<String, Object> result = new HashMap<String, Object>();
         Iterator<String> it = configuration.getClientConfiguration().getKeys();
         while (it.hasNext()) {

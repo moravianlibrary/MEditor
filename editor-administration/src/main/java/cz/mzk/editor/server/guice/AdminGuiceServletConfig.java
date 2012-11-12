@@ -1,11 +1,11 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
+ * @author Matous Jobanek
  * 
  * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (Matous Jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class MyGuiceServletConfig.
+ * The Class AdminGuiceServletConfig.
  */
 public class AdminGuiceServletConfig
         extends GuiceServletContextListener {

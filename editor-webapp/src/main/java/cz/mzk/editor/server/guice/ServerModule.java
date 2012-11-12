@@ -68,6 +68,8 @@ import cz.mzk.editor.server.DAO.StoredItemsDAO;
 import cz.mzk.editor.server.DAO.StoredItemsDAOImpl;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
+import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.DAO.UserDAOImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -249,6 +251,7 @@ public class ServerModule
         bind(DigitalObjectDAO.class).to(DigitalObjectDAOImpl.class);
         bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
         bind(ConversionDAO.class).to(ConversionDAOImpl.class);
+        bind(UserDAO.class).to(UserDAOImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)

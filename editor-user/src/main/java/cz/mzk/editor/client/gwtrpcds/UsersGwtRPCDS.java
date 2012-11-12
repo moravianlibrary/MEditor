@@ -27,9 +27,6 @@
 
 package cz.mzk.editor.client.gwtrpcds;
 
-import java.util.ArrayList;
-
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
@@ -44,8 +41,6 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
-import cz.mzk.editor.shared.rpc.action.GetUserInfoAction;
-import cz.mzk.editor.shared.rpc.action.GetUserInfoResult;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoResult;
 import cz.mzk.editor.shared.rpc.action.RemoveUserInfoAction;
@@ -101,28 +96,28 @@ public class UsersGwtRPCDS
      */
     @Override
     protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-        dispatcher.execute(new GetUserInfoAction(), new DispatchCallback<GetUserInfoResult>() {
-
-            @Override
-            public void callbackError(final Throwable cause) {
-                Log.error("Handle Failure:", cause);
-                response.setStatus(RPCResponse.STATUS_FAILURE);
-            }
-
-            @Override
-            public void callback(final GetUserInfoResult result) {
-                ArrayList<UserInfoItem> items = result.getItems();
-                ListGridRecord[] list = new ListGridRecord[items.size()];
-                for (int i = 0; i < items.size(); i++) {
-                    ListGridRecord record = new ListGridRecord();
-                    copyValues(items.get(i), record);
-                    list[i] = record;
-                }
-                response.setData(list);
-                response.setTotalRows(items.size());
-                processResponse(requestId, response);
-            }
-        });
+        //        dispatcher.execute(new GetUserInfoAction(), new DispatchCallback<GetUserInfoResult>() {
+        //
+        //            @Override
+        //            public void callbackError(final Throwable cause) {
+        //                Log.error("Handle Failure:", cause);
+        //                response.setStatus(RPCResponse.STATUS_FAILURE);
+        //            }
+        //
+        //            @Override
+        //            public void callback(final GetUserInfoResult result) {
+        //                ArrayList<UserInfoItem> items = result.getItems();
+        //                ListGridRecord[] list = new ListGridRecord[items.size()];
+        //                for (int i = 0; i < items.size(); i++) {
+        //                    ListGridRecord record = new ListGridRecord();
+        //                    copyValues(items.get(i), record);
+        //                    list[i] = record;
+        //                }
+        //                response.setData(list);
+        //                response.setTotalRows(items.size());
+        //                processResponse(requestId, response);
+        //            }
+        //        });
     }
 
     /*

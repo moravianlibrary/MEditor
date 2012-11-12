@@ -28,14 +28,14 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 
 import cz.mzk.editor.client.presenter.AdminMenuPresenter.MyView;
-import cz.mzk.editor.client.uihandlers.MenuUiHandlers;
+import cz.mzk.editor.client.uihandlers.AdminMenuUiHandlers;
 
 /**
  * @author Matous Jobanek
  * @version Oct 8, 2012
  */
 public class AdminMenuView
-        extends ViewWithUiHandlers<MenuUiHandlers>
+        extends ViewWithUiHandlers<AdminMenuUiHandlers>
         implements MyView {
 
     /**

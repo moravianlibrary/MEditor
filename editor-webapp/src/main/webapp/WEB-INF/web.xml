@@ -22,8 +22,12 @@
 		<url-pattern>/medit/*</url-pattern>
 	</filter-mapping> -->
 
-	<listener>
+<!-- 	<listener>
 		<listener-class>cz.mzk.editor.server.guice.AdminGuiceServletConfig</listener-class>
+	</listener> -->
+
+	<listener>
+		<listener-class>cz.mzk.editor.server.guice.MyGuiceServletConfig</listener-class>
 	</listener>
 
 	<!-- <listener>

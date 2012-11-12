@@ -39,7 +39,7 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
-import cz.mzk.editor.client.uihandlers.MenuUiHandlers;
+import cz.mzk.editor.client.uihandlers.AdminMenuUiHandlers;
 
 /**
  * @author Matous Jobanek
@@ -64,7 +64,7 @@ public class AdminMenuPresenter
      * @version Oct 8, 2012 The Interface MyView.
      */
     public interface MyView
-            extends View, HasUiHandlers<MenuUiHandlers> {
+            extends View, HasUiHandlers<AdminMenuUiHandlers> {
 
     }
 

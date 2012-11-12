@@ -33,7 +33,7 @@ import com.gwtplatform.mvp.client.UiHandlers;
  * @author Matous Jobanek
  * @version Oct 8, 2012
  */
-public interface MenuUiHandlers
+public interface AdminMenuUiHandlers
         extends UiHandlers {
 
 }

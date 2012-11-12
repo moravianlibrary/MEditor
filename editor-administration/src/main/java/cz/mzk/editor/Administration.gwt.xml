@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module>
 
-<module rename-to='administration'>
+<module rename-to='admin'>
 	<!-- Inherit the core Web Toolkit stuff. -->
 
 	<!-- Pure GWT -->
