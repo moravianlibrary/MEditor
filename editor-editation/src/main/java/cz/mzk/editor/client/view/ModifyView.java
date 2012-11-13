@@ -1137,15 +1137,15 @@ public class ModifyView
         }
 
         DetailViewerField nameField = new DetailViewerField(Constants.ATTR_NAME);
-        nameField.setDetailFormatter(new DetailFormatter() {
-
-            @Override
-            public String format(Object value, Record record, DetailViewerField field) {
-                StringBuffer sb = new StringBuffer();
-                sb.append(lang.title()).append(": ").append(value);
-                return sb.toString();
-            }
-        });
+        //nameField.setDetailFormatter(new DetailFormatter() {
+        //
+        //    @Override
+        //    public String format(Object value, Record record, DetailViewerField field) {
+        //        StringBuffer sb = new StringBuffer();
+        //        sb.append(lang.title()).append(": ").append(value);
+        //        return sb.toString();
+        //    }
+        //});
         DetailViewerField descField = new DetailViewerField(Constants.ATTR_DESC);
 
         tileGrid.setFields(pictureField, nameField, descField);
