@@ -106,6 +106,7 @@ public class InsertNewDigitalObjectHandler
 
         boolean ingestSuccess;
         boolean reindexSuccess;
+        boolean deepZoomSuccess = true;
         String pid = null;
 
         try {
@@ -156,10 +157,14 @@ public class InsertNewDigitalObjectHandler
 
             reindexSuccess = ServerUtils.reindex(pid);
 
+            if (config.getImageServerInternal()) {
+                deepZoomSuccess = ServerUtils.generateDeepZoom(pid);
+            }
+
         } catch (CreateObjectException e) {
             throw new ActionException(e.getMessage());
         }
-        return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, pid);
+        return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, deepZoomSuccess, pid);
 
     }
 

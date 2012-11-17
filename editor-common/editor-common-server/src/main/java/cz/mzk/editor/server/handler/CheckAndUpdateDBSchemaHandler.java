@@ -237,7 +237,7 @@ public class CheckAndUpdateDBSchemaHandler
             if (configuration.isLocalhost()) {
                 p =
                         ScriptRunner.runRemoteCommandViaSsh(dirPath + File.separator + "bin",
-                                                            configuration.getDBName(),
+                                                            configuration.getSshUser(),
                                                             configuration.getDBHost(),
                                                             command,
                                                             backupFile);

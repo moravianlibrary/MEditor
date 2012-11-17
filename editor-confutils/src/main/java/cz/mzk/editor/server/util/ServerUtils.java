@@ -113,32 +113,72 @@ public class ServerUtils {
         return fields;
     }
 
+    private enum KRAMERIUS_ACTION {
+        REINDEX("reindex"), GENERATE_DEEP_ZOOM("generate deep zoom");
+        private String actionName;
+        private KRAMERIUS_ACTION(String actionName) {
+            this.actionName  =  actionName;
+        }
+        public String getActionName() {
+            return this.actionName;
+        }
+    }
+
+
+    public static boolean reindex(String pid) {
+        return krameriusRest(KRAMERIUS_ACTION.REINDEX, pid);
+    }
+
+    /**  */
+    public static boolean generateDeepZoom(String pid) {
+        return krameriusRest(KRAMERIUS_ACTION.GENERATE_DEEP_ZOOM, pid);
+    }
+
     /**
      * Reindex.
-     * 
+     *
      * @param pid
      *        the pid
      */
-    public static boolean reindex(String pid) {
+    //TODO-MR: Rest api via lrservlet must be authenticated since version 4.6 of Kramerius. Look at new Remote API!
+    private static boolean krameriusRest(KRAMERIUS_ACTION action, String pid) {
         String host = config.getKrameriusHost();
         String login = config.getKrameriusLogin();
         String password = config.getKrameriusPassword();
         if (host == null || login == null || password == null) {
             return false;
         }
-        String url =
-                host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
+        String url;
+        switch (action) {
+            case REINDEX:
+                url =
+                        host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
+                                + "&userName=" + login + "&pswd=" + password;
+                break;
+            case GENERATE_DEEP_ZOOM:
+                url = host + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid + "," + pid
                         + "&userName=" + login + "&pswd=" + password;
-        LOGGER.info("Reindexing " + pid + " sending HTTP GET to " + host
-                + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
-                + "&userName=***&pswd=***");
+                break;
+            default: throw new IllegalArgumentException("Undefined rest action");
+        }
+
+        if (KRAMERIUS_ACTION.REINDEX.equals(action)) {
+            LOGGER.info(action.getActionName() + pid + " sending HTTP GET to " + host
+                    + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
+                    + "&userName=***&pswd=***");
+        }
+        if (KRAMERIUS_ACTION.GENERATE_DEEP_ZOOM.equals(action)) {
+            LOGGER.info(action.getActionName() + pid + " sending HTTP GET to " + host
+                    + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid + "," + pid
+                    + "&userName=***&pswd=***");
+        }
         try {
             RESTHelper.get(url, login, password, false);
         } catch (MalformedURLException e) {
-            LOGGER.error("Unable to reindex", e);
+            LOGGER.error("Unable to " + action.getActionName(), e);
             return false;
         } catch (IOException e) {
-            LOGGER.error("Unable to reindex", e);
+            LOGGER.error("Unable to " + action.getActionName(), e);
             return false;
         }
         return true;

@@ -52,7 +52,11 @@ public class InsertNewDigitalObject {
     @Out(2)
     private boolean reindexSuccess;
 
+    /** It's used only if the internal image server is enabled */
     @Out(3)
+    private boolean deepZoomSuccess;
+
+    @Out(4)
     private String newPid;
 
 }

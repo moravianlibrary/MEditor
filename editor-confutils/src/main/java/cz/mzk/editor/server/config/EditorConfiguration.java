@@ -215,6 +215,9 @@ public abstract class EditorConfiguration {
         /** The Constant DB_NAME. */
         public static final String DB_NAME = "dbName";
 
+        /** The Constant SSH USER. */
+        public static final String SSH_USER = "sshUser";
+
         /** The Constant DB_HOST_DEFAULT. */
         public static final String DB_HOST_DEFAULT = "localhost";
 
@@ -226,6 +229,9 @@ public abstract class EditorConfiguration {
 
         /** The Constant DB_NAME_DEFAULT. */
         public static final String DB_NAME_DEFAULT = "meditor";
+
+        /** The Constant SSH_USER_DEFAULT. */
+        public static final String SSH_USER_DEFAULT = "meditor";
 
         /** The Constant JANRAIN_API_KEY. */
         public static final String JANRAIN_API_KEY = "openIdApiKey";
@@ -605,6 +611,15 @@ public abstract class EditorConfiguration {
      */
     public String getDBName() {
         return getConfiguration().getString(ServerConstants.DB_NAME, ServerConstants.DB_NAME_DEFAULT);
+    }
+
+    /**
+     * Gets the ssh user name.
+     *
+     * @return the ssh user name
+     */
+    public String getSshUser() {
+        return getConfiguration().getString(ServerConstants.SSH_USER, ServerConstants.SSH_USER_DEFAULT);
     }
 
     /**
