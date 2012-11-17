@@ -132,6 +132,9 @@ public class Constants {
     /** Path to directory of backed up schemas */
     public static final String DB_BACKUP_DIR = "backupDB";
 
+    /** Path to directory of audio converter */
+    public static final String CONVERT_AUDIO_DIR = "convertAudio";
+
     /** A name of the script for running a process via ssh on a remote machine */
     public static final String SCRIPT_FOR_REMOTE_PROCESS = "runRemoteProcess.sh";
 

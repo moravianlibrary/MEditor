@@ -85,7 +85,11 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.*;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
+import com.smartgwt.client.widgets.menu.MenuItemSeparator;
+import com.smartgwt.client.widgets.menu.MenuItemStringFunction;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
@@ -414,8 +418,8 @@ public class CreateStructureView
             viewItem.setDynamicTitleFunction(new MenuItemStringFunction() {
                 @Override
                 public String execute(Canvas canvas, Menu menu, MenuItem menuItem) {
-                    String possibleAudioMimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
-                    if (Constants.AUDIO_MIMETYPES.isAudio(possibleAudioMimeType)) {
+                    String modelId = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID);
+                    if ("track".equals(modelId)) {
                         return "audio";
                     }
                     return lang.menuView();

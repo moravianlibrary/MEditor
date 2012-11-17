@@ -116,6 +116,8 @@ public class NamedGraphModel
         putRelationship(RECORDING, hasUnit, IMAGE_UNIT);
         putRelationship(RECORDING, hasUnit, SOUND_UNIT);
         putRelationship(IMAGE_UNIT, hasUnit, PAGE);
+        putRelationship(SOUND_UNIT, hasUnit, TRACK);
+        putRelationship(SOUND_UNIT, isOnPage, PAGE);
     }
 
     private static void putRelationship(DigitalObjectModel source,

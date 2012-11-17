@@ -30,9 +30,10 @@ public class AudioPlayerWindow extends UniversalWindow {
         SC.say(Location.getPath() + "audio/"
                 + uuid + mim.getExtension());
         audioPane.setContents("<audio controls>"
-                + "<source src=\"" + Location.getPath() + "audio/"
-                + uuid + mim.getExtension() + "\" type=\"" +
-                mim.getMimeType() + "\">" + "</source></audio>"
+                + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.OGG_MIMETYPE)
+                + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.MP3_MIMETYPE)
+                + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.WAV_MIMETYPE)
+                + "</audio>"
         );
 
 
@@ -40,5 +41,13 @@ public class AudioPlayerWindow extends UniversalWindow {
 
         this.show();
 
+    }
+
+    private String sourceBuilder(String uuid, Constants.AUDIO_MIMETYPES mimetype) {
+        StringBuilder sb = new StringBuilder("<source src=\"");
+        sb.append("http://localhost/").append("audio/").append(uuid)
+                .append(mimetype.getExtension()).append("\" type=\"")
+                .append(mimetype.getMimeType()).append("\"></source>");
+        return sb.toString();
     }
 }

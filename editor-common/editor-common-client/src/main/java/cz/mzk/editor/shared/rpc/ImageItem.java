@@ -42,7 +42,7 @@ public class ImageItem
     private String identifier;
 
     /** The jpeg2000FsPath. */
-    private String jpeg2000FsPath;
+    private String jpeg2000FsPath; //TODO-MR: possible refactor. Audio fspath can be in this value :-(
 
     /** The jpgFsPath. */
     private String jpgFsPath;

@@ -29,6 +29,7 @@ import java.util.List;
 import com.google.inject.Injector;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.shared.rpc.ImageItem;
 import org.apache.log4j.Logger;
 
 import org.quartz.InterruptableJob;
@@ -39,7 +40,6 @@ import org.quartz.UnableToInterruptJobException;
 
 import cz.mzk.editor.server.handler.ConvertToJPEG2000Handler;
 import cz.mzk.editor.server.handler.ScanFolderHandler;
-import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
 import cz.mzk.editor.shared.rpc.action.ScanFolderResult;

@@ -45,6 +45,7 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.shared.rpc.ImageItem;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
@@ -56,32 +57,40 @@ import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
 import cz.mzk.editor.shared.rpc.action.ScanFolderResult;
 
 // TODO: Auto-generated Javadoc
+
 /**
  * The Class ScanFolderHandler.
  */
 public class ScanFolderHandler
         implements ActionHandler<ScanFolderAction, ScanFolderResult> {
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(ScanFolderHandler.class.getPackage().toString());
 
-    /** The configuration. */
+    /**
+     * The configuration.
+     */
     private final EditorConfiguration configuration;
 
-    /** The input queue dao. */
+    /**
+     * The input queue dao.
+     */
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
     @Inject
     private Provider<HttpServletRequest> requestProvider;
 
-    /** The input queue dao. */
+    /**
+     * The input queue dao.
+     */
     @Inject
     private InputQueueItemDAO inputQueueDAO;
 
@@ -91,8 +100,7 @@ public class ScanFolderHandler
     /**
      * Instantiates a new scan input queue handler.
      *
-     * @param configuration
-     * the configuration
+     * @param configuration the configuration
      */
     @Inject
     public ScanFolderHandler(final EditorConfiguration configuration) {
@@ -166,6 +174,15 @@ public class ScanFolderHandler
                     throw new ActionException("There is more than one pdf file or one pdf file and some other file with enable extension in "
                             + prefix);
                 }
+
+                //get mimetype from extension (for audio)
+                int position = imgFileNames.get(i).lastIndexOf('.');
+                String extension = null;
+                if (position > 0) {
+                    extension = imgFileNames.get(i).substring(position);
+                }
+                Constants.AUDIO_MIMETYPES audioMimeType = Constants.AUDIO_MIMETYPES.findByExtension(extension);
+
                 String newIdentifier = null;
                 String resolvedIdentifier = resolvedIdentifiers.get(i);
                 if (resolvedIdentifier == null) {
@@ -176,13 +193,29 @@ public class ScanFolderHandler
                     sb.append(configuration.getImagesPath()).append(newIdentifier)
                             .append(Constants.JPEG_2000_EXTENSION);
                     resolvedIdentifier = sb.toString();
-                    toAdd.add(new ImageItem(newIdentifier, resolvedIdentifier, imgFileNames.get(i)));
+
+                    ImageItem item = new ImageItem(newIdentifier, resolvedIdentifier, imgFileNames.get(i));
+                    if (!audioMimeType.equals(Constants.AUDIO_MIMETYPES.UNKOWN_MIMETYPE)) {
+                        item.setMimeType(audioMimeType.getMimeType());
+                        sb = new StringBuffer();
+                        //TODO-MR: record should be have a special directory (no imagesDir)
+                        StringBuffer sbA;
+                        sb.append(configuration.getImagesPath()).append(newIdentifier)
+                                .append(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());
+                        item.setJpeg2000FsPath(sb.toString());
+                    }
+
+                    toAdd.add(item);
                 }
                 String uuid =
                         newIdentifier != null ? newIdentifier : resolvedIdentifier
                                 .substring(resolvedIdentifier.lastIndexOf('/') + 1,
                                         resolvedIdentifier.lastIndexOf('.'));
-                result.add(new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i)));
+                ImageItem item = new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i));
+                if (imgFileNames.get(i).endsWith(".wav")) {
+                    item.setMimeType(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType());
+                }
+                result.add(item);
             }
             if (!toAdd.isEmpty()) {
                 imageResolverDAO.insertItems(toAdd);
@@ -277,14 +310,10 @@ public class ScanFolderHandler
      * Scan directory structure.
      *
      * @param wrongNames
-     * @param pathPrefix
-     * the path prefix
-     * @param relativePath
-     * the relative path
-     * @param list
-     * the list
-     * @param level
-     * the level
+     * @param pathPrefix   the path prefix
+     * @param relativePath the relative path
+     * @param list         the list
+     * @param level        the level
      * @return the list
      */
     private List<String> scanDirectoryStructure(String path,

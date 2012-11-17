@@ -41,35 +41,42 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.convert.Converter;
+import cz.mzk.editor.shared.rpc.ImageItem;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
-import cz.mzk.editor.server.convert.Converter;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
 
 // TODO: Auto-generated Javadoc
+
 /**
  * The Class ScanFolderHandler.
  */
 public class ConvertToJPEG2000Handler
         implements ActionHandler<ConvertToJPEG2000Action, ConvertToJPEG2000Result> {
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(ConvertToJPEG2000Handler.class.getPackage()
             .toString());
 
     private static final Object LOCK = ConvertToJPEG2000Handler.class;
 
-    /** The configuration. */
+    /**
+     * The configuration.
+     */
     private final EditorConfiguration configuration;
 
-    /** The http session provider. */
+    /**
+     * The http session provider.
+     */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
@@ -77,9 +84,8 @@ public class ConvertToJPEG2000Handler
 
     /**
      * Instantiates a new scan input queue handler.
-     * 
-     * @param configuration
-     *        the configuration
+     *
+     * @param configuration the configuration
      */
     @Inject
     public ConvertToJPEG2000Handler(final EditorConfiguration configuration) {
@@ -102,14 +108,19 @@ public class ConvertToJPEG2000Handler
         if (context != null) {
             ServerUtils.checkExpiredSession(httpSessionProvider);
         }
-        if (configuration.getAkkaOn()) {
-            Converter converter = Converter.getInstance();
-            boolean success = converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
-            if (!success) {
+
+        if (item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {
+            convertToAudio(item);
+        } else {
+            if (configuration.getAkkaOn()) {
+                Converter converter = Converter.getInstance();
+                boolean success = converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());
+                if (!success) {
+                    convertToJpeg2000(item);
+                }
+            } else {
                 convertToJpeg2000(item);
             }
-        } else {
-            convertToJpeg2000(item);
         }
         return new ConvertToJPEG2000Result();
     }
@@ -138,6 +149,66 @@ public class ConvertToJPEG2000Handler
             throws ActionException {
         // TODO Auto-generated method stub
 
+    }
+
+    private boolean convertToAudio(ImageItem item) throws ActionException {
+        System.out.println("audio" + item.toString());
+
+//        if (item.getJpgFsPath().toLowerCase().endsWith(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension())) {
+//            try {
+//                IOUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());
+//                LOGGER.info(item.getJpgFsPath() + "  was copied to  " + item.getJpeg2000FsPath());
+//            } catch (IOException e) {
+//                LOGGER.error("Unable to copy record" + item.getJpgFsPath()
+//                        + "  to  " + item.getJpeg2000FsPath(), e);
+//                return false;
+//            }
+//        }
+
+        String path = item.getJpgFsPath();
+        String pathWithoutExtension =path.substring(0, path.lastIndexOf('.'));
+        String pathJpeg2000 = item.getJpeg2000FsPath();
+        String jpeg2000fspathWithoutExtension = pathJpeg2000.substring(0,pathJpeg2000.lastIndexOf('.'));
+        String dirPath = EditorConfigurationImpl.WORKING_DIR + File.separator + Constants.CONVERT_AUDIO_DIR;
+        StringBuffer sb = new StringBuffer();
+        sb.append(dirPath).append(File.separator).append("bin").append(File.separator)
+                .append("convert.").append("sh")
+                .append(" ");
+        sb.append(path).append(" ");
+        String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).append(".ogg").append(" ").append("ogg").toString();
+        //String execMp3 = new StringBuffer(sb).append(pathWithoutExtension).append(".mp3").append(" ").append("mp3").toString();
+        Process p;
+        try {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath());
+            }
+            synchronized (LOCK) {
+                p = Runtime.getRuntime().exec(command.toString());
+            }
+
+            if (processTimeout(p, 100, 20000)) {
+                int exitValue = p.exitValue();
+                p.getInputStream().close();
+                p.getOutputStream().close();
+                if (exitValue != 0) {
+                    LOGGER.warn("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath()
+                            + " returns non-zero exitValue: " + exitValue + " with error output: "
+                            + IOUtils.readAsString(p.getErrorStream(), Charset.defaultCharset(), true));
+                    p.getErrorStream().close();
+                    return false;
+                } else {
+                    p.getErrorStream().close();
+                    return true;
+                }
+            } else {
+                LOGGER.warn("Converting " + item.getJpgFsPath() + " into " + item.getJpeg2000FsPath()
+                        + " took very long time.");
+                return false;
+            }
+
+        } catch (IOException e) {
+            throw new ActionException(e);
+        }
     }
 
     private boolean convertToJpeg2000(ImageItem item) throws ActionException {
