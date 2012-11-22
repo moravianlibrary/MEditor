@@ -50,7 +50,6 @@ public class LogInOutDAOImpl
     /**
      * {@inheritDoc}
      */
-    @Override
     public void logInOut(Long userId, boolean logIn) throws DatabaseException {
         PreparedStatement insSt = null;
 
@@ -74,7 +73,6 @@ public class LogInOutDAOImpl
     /**
      * {@inheritDoc}
      */
-    @Override
     public void logInOut(boolean logIn) throws DatabaseException {
         logInOut(getUserId(), logIn);
     }

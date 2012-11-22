@@ -71,10 +71,11 @@ public abstract class HistoryTab
         titleFlow = new HTMLFlow(label);
         Layout titleLayout = new Layout();
         titleLayout.addMember(titleFlow);
+        titleFlow.setWidth(300);
         titleLayout.setAlign(VerticalAlignment.TOP);
-        titleLayout.setHeight(30);
+        titleLayout.setHeight(10);
         titleLayout.setMargin(10);
-        titleLayout.setExtraSpace(5);
+        titleLayout.setWidth(300);
 
         mainLayout.setWidth100();
         mainLayout.setHeight100();
@@ -90,7 +91,7 @@ public abstract class HistoryTab
 
         HLayout historyLayout = new HLayout(2);
         historyLayout.setAnimateMembers(true);
-        historyLayout.setHeight("90%");
+        historyLayout.setHeight("85%");
         historyLayout.setMargin(10);
 
         historyLayout.addMember(historyDays);

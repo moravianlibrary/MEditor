@@ -48,6 +48,11 @@
 			<artifactId>editor-administration</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-security</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -240,6 +245,13 @@
 										<include>MEditor.html</include>
 									</includes>
 								</resource>
+								<resource>
+									<directory>${basedir}/../editor-security/src/main/security</directory>
+									<includes>
+										<include>applicationContext.xml</include>
+									</includes>
+									<targetPath>WEB-INF</targetPath>
+								</resource>
 							</webResources>
 							<webXml>${basedir}/../editor-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
@@ -329,6 +341,13 @@
 								<resource>
 									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
 									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${basedir}/../editor-security/src/main/security</directory>
+									<includes>
+										<include>applicationContext.xml</include>
+									</includes>
+									<targetPath>WEB-INF</targetPath>
 								</resource>
 							</webResources>
 							<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>

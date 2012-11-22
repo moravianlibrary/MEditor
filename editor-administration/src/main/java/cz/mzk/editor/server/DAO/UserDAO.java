@@ -80,11 +80,14 @@ public interface UserDAO {
      * 
      * @param identifier
      *        the identifier
-     * @return the long
+     * @param identityType
+     *        the identity type
+     * @return the users id
      * @throws DatabaseException
      *         the database exception
-     * @throws UnsupportedDataTypeException
      */
+    long getUsersId(String identifier, USER_IDENTITY_TYPES identityType) throws DatabaseException;
+
     long getUsersId(String identifier) throws DatabaseException;
 
     /**

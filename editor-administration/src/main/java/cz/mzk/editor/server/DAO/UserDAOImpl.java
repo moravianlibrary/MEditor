@@ -127,7 +127,7 @@ public class UserDAOImpl
     @Override
     public int isSupported(String identifier) throws DatabaseException {
 
-        long userId = getUsersId(identifier);
+        long userId = getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID);
 
         if (userId == -1) userId = getUsersIdOld(identifier);
 
@@ -145,6 +145,12 @@ public class UserDAOImpl
     /**
      * {@inheritDoc}
      */
+    @Override
+    public long getUsersId(String identifier, USER_IDENTITY_TYPES identityType) throws DatabaseException {
+
+        return super.getUsersId(identifier, identityType);
+    }
+
     @Override
     public long getUsersId(String identifier) throws DatabaseException {
 

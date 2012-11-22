@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+
+	<http pattern="/info.html" security="none" />
+	<http pattern="/info.html?gwt.codesvr=127.0.0.1:9997" security="none" />
+	<http pattern="/login.html" security="none" />
+	<http pattern="/loginLocal.html?gwt.codesvr=127.0.0.1:9997"
+		security="none" />
+	<http pattern="/Shibboleth.sso/Login" security="none" />
+	<!-- <http pattern="/auth" security="none" /> <http pattern="/auth/?gwt.codesvr=127.0.0.1:9997" 
+		security="none" /> <http pattern="/auth/*" security="none" /> -->
+	<http pattern="/images/mzk_logo.gif" security="none" />
+	<http pattern="/images/mzk_shibboleth.gif" security="none" />
+	
+
+
+	<http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/*/**" access="isAuthenticated()" />
+		<intercept-url pattern="/gwt/**" access="isAuthenticated()" />
+		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
+		<intercept-url pattern="/**" access="isAuthenticated()" />
+		<form-login login-page="/login.html" />
+		<custom-filter position="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
+	</http>
+
+	<beans:bean id="editorAuthenticationProvider"
+		class="cz.mzk.editor.server.EditorAuthenticationProvider" />
+
+	<beans:bean id="janrainAuthenticationProvider"
+		class="cz.mzk.editor.server.janrain.JanrainAuthenticationProvider">
+	</beans:bean>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref="editorAuthenticationProvider" />
+		<authentication-provider ref="janrainAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="janrainAuthenticationFilter"
+		class="cz.mzk.editor.server.janrain.JanrainAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
+
+</beans:beans>

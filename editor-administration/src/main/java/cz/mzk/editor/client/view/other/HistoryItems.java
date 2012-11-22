@@ -319,6 +319,7 @@ public class HistoryItems
             }
             detailLayout.addMember(showChildren);
         }
+        bottomLayout.redraw();
     }
 
     private void hideDetailViewer() {

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Usage:
-   mvn install [-Denv=editor]       for generating war for editor.mzk.cz
-   mvn install -Denv=editor-devel   for generating war for editor-devel.mzk.cz
-   mvn install -P dev               for development purposes (1 locale, 1 browser, shorter compilation)
-   mvn install -Dfilter.hostname=X  for generating war for hostname X
--->
+<!-- Usage: mvn install [-Denv=editor] for generating war for editor.mzk.cz 
+	mvn install -Denv=editor-devel for generating war for editor-devel.mzk.cz 
+	mvn install -P dev for development purposes (1 locale, 1 browser, shorter 
+	compilation) mvn install -Dfilter.hostname=X for generating war for hostname 
+	X -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -58,16 +56,17 @@ Usage:
 	</developers>
 
 	<modules>
-                <module>editor-dao</module>
-                <module>editor-converter</module>
-                <module>editor-common</module>
-                <module>editor-confutils</module>
-                <module>editor-editation</module>
-                <module>editor-creation</module>
-                <module>editor-user</module>
-                <module>editor-request</module>
-                <module>editor-webapp</module>
-                <module>editor-administration</module>
+		<module>editor-dao</module>
+		<module>editor-converter</module>
+		<module>editor-common</module>
+		<module>editor-confutils</module>
+		<module>editor-editation</module>
+		<module>editor-creation</module>
+		<module>editor-user</module>
+		<module>editor-request</module>
+		<module>editor-webapp</module>
+		<module>editor-administration</module>
+		<module>editor-security</module>
 	</modules>
 
 	<properties>
@@ -142,18 +141,9 @@ Usage:
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-<!--
-		<repository>
-			<id>jboss</id>
-			<url>http://repository.jboss.com/maven2/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
--->
+		<!-- <repository> <id>jboss</id> <url>http://repository.jboss.com/maven2/</url> 
+			<releases> <enabled>true</enabled> </releases> <snapshots> <enabled>false</enabled> 
+			</snapshots> </repository> -->
 		<repository>
 			<id>duraspace-releases</id>
 			<name>DuraSpace Releases Maven Repository</name>
@@ -170,6 +160,15 @@ Usage:
 			<name>JBoss Thirdparty Uploads</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads
 			</url>
+		</repository>
+		<repository>
+			<id>spring-release</id>
+			<url>http://maven.springframework.org/release</url>
+		</repository>
+		<repository>
+			<id>maven-oss-insula</id>
+			<name>Insula Maven OSS Releases Repository</name>
+			<url>http://maven-oss.insula.com.br/releases</url>
 		</repository>
 	</repositories>
 
@@ -208,6 +207,11 @@ Usage:
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>editor-administration</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>editor-security</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -310,7 +314,7 @@ Usage:
 					</exclusion>
 				</exclusions>
 				<scope>runtime</scope>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
@@ -326,8 +330,8 @@ Usage:
 				<artifactId>commons-codec</artifactId>
 				<version>1.6</version>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950
-			     -Dversion=1.2.3 -Dpackaging=jar -Dfile=path -->
+			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 
+				-Dversion=1.2.3 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>ki-jzkit-z3950</artifactId>
@@ -340,8 +344,8 @@ Usage:
 				<artifactId>ki-jzkit-iface</artifactId>
 				<version>1.2.3</version>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=ki -DartifactId=ki-util 
-				-Dversion=1.0 -Dpackaging=jar -Dfile=path -->
+			<!-- mvn install:install-file -DgroupId=ki -DartifactId=ki-util -Dversion=1.0 
+				-Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>ki</groupId>
 				<artifactId>ki-util</artifactId>
@@ -386,8 +390,8 @@ Usage:
 				<version>1.2.1</version>
 			</dependency>
 			<dependency>
-	                        <!-- mvn install:install-file -DgroupId=com.foxtrottechnologies -DartifactId=javadjvu 
-        	                	-Dversion=0.8.09 -Dpackaging=jar -Dfile=path -->
+				<!-- mvn install:install-file -DgroupId=com.foxtrottechnologies -DartifactId=javadjvu 
+					-Dversion=0.8.09 -Dpackaging=jar -Dfile=path -->
 				<!-- Not present in any Maven repo, please download it from http://sourceforge.net/projects/javadjvu/files/ 
 					and install to local maven repository -->
 				<groupId>com.foxtrottechnologies</groupId>
@@ -419,6 +423,64 @@ Usage:
 				<artifactId>akka-remote</artifactId>
 				<version>${akka.version}</version>
 			</dependency>
+
+			<!-- LDAP -->
+			<dependency>
+				<groupId>org.springframework.ldap</groupId>
+				<artifactId>spring-ldap-core</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.ldap</groupId>
+				<artifactId>spring-ldap-core-tiger</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.ldap</groupId>
+				<artifactId>spring-ldap-odm</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.ldap</groupId>
+				<artifactId>spring-ldap-ldif-core</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.ldap</groupId>
+				<artifactId>spring-ldap-ldif-batch</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
+			<!-- LDAP -->
+			<!-- OpenID -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-openid</artifactId>
+				<version>3.1.2.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.json-simple</groupId>
+				<artifactId>json-simple</artifactId>
+				<version>1.1</version>
+			</dependency>
+			<!-- OpenID -->
+			<!-- Spring sec -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>3.1.3.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>3.1.3.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>3.1.3.RELEASE</version>
+			</dependency>
+			<!-- Spring sec -->
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -506,11 +568,11 @@ Usage:
 					<artifactId>maven-replacer-plugin</artifactId>
 					<version>1.4.1</version>
 				</plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <version>${gwt.version}</version>
-                </plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>gwt-maven-plugin</artifactId>
+					<version>${gwt.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 

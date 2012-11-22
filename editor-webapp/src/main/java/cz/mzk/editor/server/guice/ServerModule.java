@@ -64,12 +64,15 @@ import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAOImpl;
 import cz.mzk.editor.server.DAO.RequestDAO;
 import cz.mzk.editor.server.DAO.RequestDAOImpl;
+import cz.mzk.editor.server.DAO.SecurityUserDAO;
+import cz.mzk.editor.server.DAO.SecurityUserDAOImpl;
 import cz.mzk.editor.server.DAO.StoredItemsDAO;
 import cz.mzk.editor.server.DAO.StoredItemsDAOImpl;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.DAO.UserDAOImpl;
+import cz.mzk.editor.server.LDAP.LDAPClient;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -123,6 +126,8 @@ import cz.mzk.editor.server.handler.ScanInputQueueHandler;
 import cz.mzk.editor.server.handler.StoreTreeStructureHandler;
 import cz.mzk.editor.server.handler.StoredItemsHandler;
 import cz.mzk.editor.server.handler.UnlockDigitalObjectHandler;
+import cz.mzk.editor.server.janrain.JanrainAuthenticationFilter;
+import cz.mzk.editor.server.janrain.JanrainClient;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
@@ -252,6 +257,7 @@ public class ServerModule
         bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
         bind(ConversionDAO.class).to(ConversionDAOImpl.class);
         bind(UserDAO.class).to(UserDAOImpl.class);
+        bind(SecurityUserDAO.class).to(SecurityUserDAOImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
@@ -279,6 +285,9 @@ public class ServerModule
         requestStaticInjection(IngestUtils.class);
         requestStaticInjection(ServerUtils.class);
         requestStaticInjection(FOXMLBuilderMapping.class);
+        requestStaticInjection(LDAPClient.class);
+        requestStaticInjection(JanrainClient.class);
+        requestStaticInjection(JanrainAuthenticationFilter.class);
 
     }
 }
