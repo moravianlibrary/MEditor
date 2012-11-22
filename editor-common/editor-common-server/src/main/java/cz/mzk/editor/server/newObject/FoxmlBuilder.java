@@ -638,7 +638,7 @@ public abstract class FoxmlBuilder {
     }
 
     protected void addRootPublisher(Element originInfoEl) {
-        if (getBundle().getMarc() != null) {
+        if (getBundle() != null && getBundle().getMarc() != null) {
             String name = getBundle().getMarc().getPublisher();
             if (isNotNullOrEmpty(name)) {
                 Element publisher = originInfoEl.addElement(new QName("publisher", Namespaces.mods));
@@ -690,7 +690,7 @@ public abstract class FoxmlBuilder {
     }
 
     protected void addRootTopic(Element modsRootEl) {
-        if (getBundle().getMarc() != null) {
+        if (getBundle() != null && getBundle().getMarc() != null) {
             String topic = getBundle().getMarc().getTopic();
             if (topic != null) {
                 Element subjectEl = modsRootEl.addElement(new QName("subject", Namespaces.mods));
@@ -701,7 +701,7 @@ public abstract class FoxmlBuilder {
     }
 
     protected void addRootPhysicalLocation(Element locationEl, boolean doDetach) {
-        if (getBundle().getMarc() != null) {
+        if (getBundle() != null && getBundle().getMarc() != null) {
             String location = getBundle().getMarc().getLocation();
 
             if (location != null) {
@@ -721,7 +721,7 @@ public abstract class FoxmlBuilder {
     }
 
     protected void addRootUdcOrDdc(Element modsRootEl) {
-        if (getBundle().getMarc() != null) {
+        if (getBundle() != null && getBundle().getMarc() != null) {
             if (getBundle().getMarc().getUdcs() == null) {
                 return;
             }
