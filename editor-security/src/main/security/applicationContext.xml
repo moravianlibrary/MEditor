@@ -18,7 +18,7 @@
 		security="none" /> <http pattern="/auth/*" security="none" /> -->
 	<http pattern="/images/mzk_logo.gif" security="none" />
 	<http pattern="/images/mzk_shibboleth.gif" security="none" />
-	
+
 
 
 	<http auto-config="true" use-expressions="true">
@@ -27,23 +27,34 @@
 		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 		<form-login login-page="/login.html" />
-		<custom-filter position="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
+		<custom-filter position="FIRST" ref="janrainAuthenticationFilter" />
+		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
 	</http>
 
 	<beans:bean id="editorAuthenticationProvider"
-		class="cz.mzk.editor.server.EditorAuthenticationProvider" />
+		class="cz.mzk.editor.server.LDAP.EditorAuthenticationProvider" />
 
 	<beans:bean id="janrainAuthenticationProvider"
 		class="cz.mzk.editor.server.janrain.JanrainAuthenticationProvider">
 	</beans:bean>
 
+	<beans:bean id="shibbolethAuthenticationProvider"
+		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationProvider">
+	</beans:bean>
+
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider ref="editorAuthenticationProvider" />
 		<authentication-provider ref="janrainAuthenticationProvider" />
+		<authentication-provider ref="shibbolethAuthenticationProvider" />
 	</authentication-manager>
 
 	<beans:bean id="janrainAuthenticationFilter"
 		class="cz.mzk.editor.server.janrain.JanrainAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
+
+	<beans:bean id="shibbolethAuthenticationFilter"
+		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter">
 		<beans:property name="authenticationManager" ref="authenticationManager" />
 	</beans:bean>
 

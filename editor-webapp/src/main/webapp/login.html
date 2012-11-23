@@ -61,12 +61,12 @@
 						</tr>
 					</table>
 				</form></td>
-			<td>
+			<td>127.0.0.1:8888
 				<center>
 					<form name='f' action='/meditor/j_spring_security_check'
 						method='POST'>
 						<iframe
-							src="https://metaeditor.rpxnow.com/openid/embed?token_url=http%3A%2F%2F127.0.0.1:8888%2Fjanrain_spring_security_check"
+							src="https://metaeditor.rpxnow.com/openid/embed?token_url=http%3A%2F%2F${filter.hostname}%2Fmeditor%2Fjanrain_spring_security_check"
 							scrolling="no" frameBorder="no" allowtransparency="true"
 							style="width: 400px; height: 240px"
 							action='/meditor/janrain_spring_security_check' method='POST'></iframe>
@@ -75,7 +75,7 @@
 				</center>
 			</td>
 			<td width="33%"><a class="login"
-				href="https://${filter.hostname}/Shibboleth.sso/Login?target=https%3A%2F%2F${filter.hostname}%2FMyResearch%2FHome%3Fredirect%3Dhttps%253A%252F%252F${filter.hostname}%252Fauth">
+				href="${filter.hostname}/Shibboleth.sso/Login?target=https%3A%2F%2F${filter.hostname}%2FMyResearch%2FHome%3Fredirect%3Dhttps%253A%252F%252F${filter.hostname}%2Fmeditor%2Fshibboleth_spring_security_check">
 					<img border="0" src="./images/mzk_shibboleth.gif"
 					alt="mzk shibboleth logo" width="80%" /> </a></td>
 		</tr>

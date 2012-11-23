@@ -1,5 +1,5 @@
 
-package cz.mzk.editor.server;
+package cz.mzk.editor.server.LDAP;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,7 +9,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
-import cz.mzk.editor.server.LDAP.LDAPClient;
+import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.URLS;
 
 /*
  * Metadata Editor
