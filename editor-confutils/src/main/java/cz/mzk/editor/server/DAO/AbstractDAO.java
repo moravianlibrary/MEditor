@@ -71,10 +71,13 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
+import org.springframework.security.core.context.SecurityContext;
+
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -426,8 +429,16 @@ public abstract class AbstractDAO {
      *         the database exception
      */
     protected Long getUserId() throws DatabaseException {
-        String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
-        return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
+        SecurityContext secContext =
+                (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
+        EditorUserAuthentication authentication = null;
+        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+        if (authentication != null) {
+            return getUsersId((String) authentication.getPrincipal(), authentication.getIdentityType());
+        } else {
+            throw new DatabaseException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
+                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
     }
 
     /**

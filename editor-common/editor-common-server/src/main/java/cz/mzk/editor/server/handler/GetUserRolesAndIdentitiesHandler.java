@@ -97,7 +97,7 @@ public class GetUserRolesAndIdentitiesHandler
                                                    final ExecutionContext context) throws ActionException {
         if (action.getId() == null) return null;
         LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         try {
             return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())),

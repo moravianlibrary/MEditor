@@ -82,7 +82,7 @@ public class PutUserRoleHandler
         if (action.getRole().getUserId() == null || "".equals(action.getRole().getUserId()))
             throw new NullPointerException("getUserId()");
         LOGGER.debug("Processing action: PutUserRoleAction role:" + action.getRole());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         boolean successful = false;
         //        try {

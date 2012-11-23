@@ -88,7 +88,7 @@ public class RemoveUserInfoHandler
             throws ActionException {
         if (action.getId() == null) throw new NullPointerException("getId()");
         LOGGER.debug("Processing action: RemoveUserInfoAction user id:" + action.getId());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         try {
             userDAO.disableUser(Long.parseLong(action.getId()));

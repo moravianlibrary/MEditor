@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
@@ -88,8 +89,9 @@ public class GetUsersInfoHandler
     @Override
     public GetUsersInfoResult execute(final GetUsersInfoAction action, final ExecutionContext context)
             throws ActionException {
+
         LOGGER.debug("Processing action: GetUserInfoAction");
-        //        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession();
 
         try {
             return new GetUsersInfoResult(userDAO.getUsers());

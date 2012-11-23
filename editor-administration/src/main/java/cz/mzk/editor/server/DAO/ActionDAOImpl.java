@@ -239,6 +239,10 @@ public class ActionDAOImpl
     public List<EditorDate> getHistoryDays(Long userId, String uuid) throws DatabaseException {
         List<EditorDate> days = new ArrayList<EditorDate>();
 
+        if (userId == null && uuid == null) {
+            userId = getUserId();
+        }
+
         if (userId != null) {
             PreparedStatement selSt = null;
 

@@ -168,7 +168,7 @@ public class RemoveDigitalObjectHandler
     public RemoveDigitalObjectResult execute(final RemoveDigitalObjectAction action,
                                              final ExecutionContext context) throws ActionException {
 
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();

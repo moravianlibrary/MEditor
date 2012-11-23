@@ -53,9 +53,13 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.springframework.security.core.context.SecurityContext;
+
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
+import cz.mzk.editor.server.DAO.DAOUtils;
+import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -69,6 +73,12 @@ public class ServerUtils {
 
     @Inject
     private static EditorConfiguration config;
+
+    @Inject
+    private static DAOUtils daoUtils;
+
+    @Inject
+    private static Provider<HttpSession> httpSessionProvider;
 
     /**
      * Checks if is caused by exception.
@@ -89,15 +99,39 @@ public class ServerUtils {
         return false;
     }
 
-    public static void checkExpiredSession(Provider<HttpSession> httpSessionProvider) throws ActionException {
-        checkExpiredSession(httpSessionProvider.get());
+    private static EditorUserAuthentication getEditorUserAuthentication(HttpSession session) {
+        SecurityContext secContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        EditorUserAuthentication authentication = null;
+        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+        return authentication;
+    }
+
+    public static EditorUserAuthentication getEditorUserAuthentication() {
+        return getEditorUserAuthentication(httpSessionProvider.get());
+    }
+
+    public static Long checkExpiredSessionAndGetId(Provider<HttpSession> httpSessionProvider)
+            throws ActionException {
+        checkExpiredSession();
+        try {
+            return daoUtils.getUserId();
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        }
     }
 
     public static void checkExpiredSession(HttpSession session) throws ActionException {
-        if (session.getAttribute(HttpCookies.SESSION_ID_KEY) == null) {
+        EditorUserAuthentication authentication = getEditorUserAuthentication(session);
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
                     + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
         }
+    }
+
+    public static void checkExpiredSession() throws ActionException {
+        checkExpiredSession(httpSessionProvider.get());
     }
 
     private static List<Field> getAllFields(Class<?> clazz) {

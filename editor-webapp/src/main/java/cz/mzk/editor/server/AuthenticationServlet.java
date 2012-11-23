@@ -188,7 +188,7 @@ public class AuthenticationServlet
                     session.setAttribute(HttpCookies.SESSION_ID_KEY, identifier);
                     session.setAttribute(HttpCookies.NAME_KEY, name);
                     try {
-                        logInOutDAO.logInOut(true);
+                        logInOutDAO.logInOut(true, new Long(0));
                     } catch (DatabaseException e1) {
                         ACCESS_LOGGER.error(e1.getMessage());
                         e1.printStackTrace();
@@ -204,7 +204,7 @@ public class AuthenticationServlet
                     session.setAttribute(HttpCookies.NAME_KEY, name);
                     session.setAttribute(HttpCookies.ADMIN, HttpCookies.ADMIN_YES);
                     try {
-                        logInOutDAO.logInOut(true);
+                        logInOutDAO.logInOut(true, new Long(0));
                     } catch (DatabaseException e1) {
                         ACCESS_LOGGER.error(e1.getMessage());
                         e1.printStackTrace();

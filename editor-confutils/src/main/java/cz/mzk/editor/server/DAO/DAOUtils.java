@@ -635,4 +635,13 @@ public interface DAOUtils {
                                  String prop_aditional_info_or_ocr,
                                  boolean prop_exist) throws DatabaseException;
 
+    /**
+     * Gets the user id.
+     * 
+     * @return the user id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    Long getUserId() throws DatabaseException;
+
 }

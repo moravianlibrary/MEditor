@@ -85,7 +85,8 @@ public class ChangeRightsHandler
     public ChangeRightsResult execute(ChangeRightsAction action, ExecutionContext context)
             throws ActionException {
 
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        LOGGER.debug("Processing action: ");
+        ServerUtils.checkExpiredSession();
 
         if (action.isForChildren()) {
             setChildrenRights(action.getParentUuid(), action.getRight());

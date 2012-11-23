@@ -80,7 +80,7 @@ public class PutUserInfoHandler
             throws ActionException {
         if (action.getUser() == null) throw new NullPointerException("getUser()");
         LOGGER.debug("Processing action: PutUserInfoAction user:" + action.getUser());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         String id = "";
         //        try {

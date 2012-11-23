@@ -119,7 +119,7 @@ public class ScanInputQueueHandler
         final boolean refresh = action.isRefresh();
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Processing input queue: " + base + id);
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         ScanInputQueueResult result = null;
 

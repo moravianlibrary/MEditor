@@ -44,6 +44,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 
+import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 /**
@@ -112,13 +113,13 @@ public class JanrainAuthenticationFilter
         token.setDetails(authenticationDetailsSource.buildDetails(request));
 
         // delegate to the authentication provider
-        Authentication authentication = this.getAuthenticationManager().authenticate(token);
+        EditorUserAuthentication authentication =
+                (EditorUserAuthentication) this.getAuthenticationManager().authenticate(token);
 
         if (authentication.isAuthenticated()) {
             setLastUsername(token.getIdentityUrl(), request);
         }
 
-        UsernamePasswordAuthenticationFilter f;
         return authentication;
     }
 

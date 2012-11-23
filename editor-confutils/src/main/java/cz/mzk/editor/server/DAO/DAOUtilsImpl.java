@@ -901,4 +901,12 @@ public class DAOUtilsImpl
             return null;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long getUserId() throws DatabaseException {
+        return super.getUserId();
+    }
 }

@@ -82,7 +82,7 @@ public class RemoveUserRoleHandler
             throws ActionException {
         if (action.getRoleItem() == null) throw new NullPointerException("getId()");
         LOGGER.debug("Processing action: RemoveUserRoleAction user id:" + action.getRoleItem());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         boolean successful = false;
         //        try {

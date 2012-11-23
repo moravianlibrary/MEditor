@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.ActionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
 import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoResult;
@@ -57,6 +58,10 @@ public class GetHistoryItemInfoHandler
     @Override
     public GetHistoryItemInfoResult execute(GetHistoryItemInfoAction action, ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: GetHistoryItemInfoAction");
+        ServerUtils.checkExpiredSession();
+
         HistoryItemInfo historyItemInfo = null;
         try {
             historyItemInfo = actionDAO.getHistoryItemInfo(action.getId(), action.getTableName());

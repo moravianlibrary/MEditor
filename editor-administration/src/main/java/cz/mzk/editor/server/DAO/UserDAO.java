@@ -115,6 +115,15 @@ public interface UserDAO {
     String getName(Long key) throws DatabaseException;
 
     /**
+     * Gets the name.
+     * 
+     * @return the name
+     * @throws DatabaseException
+     *         the database exception
+     */
+    String getName() throws DatabaseException;
+
+    /**
      * Adds the remove user identity.
      * 
      * @param userIdentity

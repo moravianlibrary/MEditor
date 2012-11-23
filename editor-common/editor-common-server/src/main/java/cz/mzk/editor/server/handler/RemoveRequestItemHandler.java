@@ -82,7 +82,7 @@ public class RemoveRequestItemHandler
                                            final ExecutionContext context) throws ActionException {
         if (action.getId() == null) throw new NullPointerException("getId()");
         LOGGER.debug("Processing action: RemoveRequestItemAction request id:" + action.getId());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         try {
             requestDAO.removeOpenIDRequest(action.getId());

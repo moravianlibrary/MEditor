@@ -110,7 +110,7 @@ public class FindMetadataHandler
             LOGGER.debug("Processing action: FindMetadataAction: for id (" + action.getSearchType() + ") "
                     + action.getId());
         }
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
         ArrayList<MetadataBundle> bundle = null;
         ArrayList<MetadataBundle> enrichedBundle = null;
         boolean isOai = action.isOai();

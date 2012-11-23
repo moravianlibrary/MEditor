@@ -83,7 +83,7 @@ public class RemoveUserIdentityHandler
                                             final ExecutionContext context) throws ActionException {
         if (action.getUserIdentity() == null) throw new NullPointerException("getId()");
         LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getUserIdentity());
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
         boolean successful = false;
         //        try {
         //            successful = userDAO.addRemoveUserIdentity(action.getUserIdentity(), false);

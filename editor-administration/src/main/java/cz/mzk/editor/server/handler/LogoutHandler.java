@@ -43,8 +43,12 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
+import org.springframework.security.core.context.SecurityContext;
+
+import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
@@ -66,6 +70,9 @@ public class LogoutHandler
     private final Provider<HttpSession> httpSessionProvider;
 
     private final Provider<HttpServletRequest> reqProvider;
+
+    @Inject
+    private UserDAO userDAO;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -89,16 +96,25 @@ public class LogoutHandler
     @Override
     public LogoutResult execute(final LogoutAction action, final ExecutionContext context)
             throws ActionException {
-        HttpSession session = httpSessionProvider.get();
-        LOGGER.debug("Processing action: LogoutAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
 
-        ACCESS_LOGGER.info("LOG OUT: [" + FORMATTER.format(new Date()) + "] User "
-                + session.getAttribute(HttpCookies.NAME_KEY) + " with openID "
-                + session.getAttribute(HttpCookies.SESSION_ID_KEY) + " and IP "
-                + reqProvider.get().getRemoteAddr());
-        session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
-        session.invalidate();
+        LOGGER.debug("Processing action: LogoutAction");
+        ServerUtils.checkExpiredSession();
+
+        HttpSession session = httpSessionProvider.get();
+        EditorUserAuthentication authentication = ServerUtils.getEditorUserAuthentication();
+
+        try {
+            ACCESS_LOGGER.info("LOG OUT: [" + FORMATTER.format(new Date()) + "] User " + userDAO.getName()
+                    + " with " + authentication.getIdentityType().toString() + " identifier "
+                    + authentication.getPrincipal() + " and IP " + reqProvider.get().getRemoteAddr());
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+
+        SecurityContext secContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        if (secContext != null) secContext.setAuthentication(null);
+
         return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
     }
 

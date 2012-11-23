@@ -100,7 +100,7 @@ public class ConvertToJPEG2000Handler
         final ImageItem item = action.getItem();
 
         if (context != null) {
-            ServerUtils.checkExpiredSession(httpSessionProvider);
+            ServerUtils.checkExpiredSession(httpSessionProvider.get());
         }
         if (configuration.getAkkaOn()) {
             Converter converter = Converter.getInstance();

@@ -93,7 +93,7 @@ public class GetAllRequestItemsHandler
     public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action,
                                             final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetAllRequestItemsAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
         try {
             return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
         } catch (DatabaseException e) {

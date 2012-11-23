@@ -34,10 +34,10 @@
 			<td width="25%">
 				<table>
 					<tr>
-						<td align="left" width="30%"><h1>LDAP</h1>
-						</td>
+						<td align="left" width="30%"><h1>LDAP</h1></td>
 						<td valign="top"><img alt="mzk logo"
-							src="./images/mzk_logo.gif" width="60%"></td>
+							src="./images/mzk_logo.gif" width="60%" />
+						</td>
 
 					</tr>
 				</table>
@@ -46,35 +46,37 @@
 					<table>
 						<tr>
 							<td>User:</td>
-							<td><input type='text' name='j_username' value=''>
-							</td>
+							<td><input type='text' name='j_username' value='' /></td>
 						</tr>
 						<tr>
 							<td>Password:</td>
-							<td><input type='password' name='j_password' />
-							</td>
+							<td><input type='password' name='j_password' /></td>
 						</tr>
 						<tr>
 							<td colspan='2'><input name="submit" type="submit"
-								value="Login" />
-							</td>
+								value="Login" /></td>
 						</tr>
 					</table>
-				</form></td>
+				</form>
+			</td>
 			<td>
 				<center>
-					<iframe
-						src="https://metaeditor.rpxnow.com/openid/embed?token_url=http%3A%2F%2F127.0.0.1:8888%2Fauth%2F?gwt.codesvr=127.0.0.1%3A9997"
-						scrolling="no" frameBorder="no" allowtransparency="true"
-						style="width: 400px; height: 240px"></iframe>
-
-				</center>
-			</td>
+					<form name='f' action='/meditor/j_spring_security_check'
+						method='POST'>
+						<iframe
+							src="https://metaeditor.rpxnow.com/openid/embed?token_url=http%3A%2F%2F127.0.0.1:8888%2Fjanrain_spring_security_check"
+							scrolling="no" frameBorder="no" allowtransparency="true"
+							style="width: 400px; height: 240px"
+							action='/meditor/janrain_spring_security_check' method='POST'></iframe>
+					</form>
+					<!-- src="https://metaeditor.rpxnow.com/openid/embed?token_url=https%3A%2F%2F127.0.0.1:8888%2Fmeditor%2Fauth" -->
+				</center></td>
 			<td width="33%"><a class="login"
-				href="https://${filter.hostname}/Shibboleth.sso/Login?target=https%3A%2F%2Fvufind.mzk.cz%2FMyResearch%2FHome%3Fredirect%3Dhttps%253A%252F%252F${filter.hostname}%252F">
-					<img border="0" src="./images/mzk_shibboleth.gif" alt="mzk shibboleth logo"
-					width="80%">
-			</a></td>
+				href="http://127.0.0.1:8888/Shibboleth.sso/Login?target=https%3A%2F%2F127.0.0.1:8888%2shibboleth_spring_security_check">
+
+					<img border="0" src="./images/mzk_shibboleth.gif"
+					alt="mzk shibboleth logo" width="80%" /> </a>
+			</td>
 		</tr>
 	</table>
 </body>

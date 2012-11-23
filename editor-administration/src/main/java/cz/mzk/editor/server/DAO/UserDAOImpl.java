@@ -661,4 +661,12 @@ public class UserDAOImpl
         return name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName() throws DatabaseException {
+        return getName(getUserId());
+    }
+
 }

@@ -87,7 +87,7 @@ public class GetAllRolesHandler
     public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context)
             throws ActionException {
         LOGGER.debug("Processing action: GetAllRolesResult");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        ServerUtils.checkExpiredSession(httpSessionProvider.get());
         try {
             return new GetAllRolesResult(userDAO.getRoles());
         } catch (DatabaseException e) {

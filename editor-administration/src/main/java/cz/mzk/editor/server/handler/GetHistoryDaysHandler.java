@@ -37,12 +37,10 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import org.springframework.security.core.context.SecurityContext;
-
-import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.DAO.ActionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
@@ -73,26 +71,27 @@ public class GetHistoryDaysHandler
     public GetHistoryDaysResult execute(GetHistoryDaysAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession httpSession = httpSessionProvider.get();
+        LOGGER.debug("Processing action: GetHistoryDaysAction");
+        ServerUtils.checkExpiredSession();
 
-        SecurityContext secContext = (SecurityContext) httpSession.getAttribute("SPRING_SECURITY_CONTEXT");
-        EditorUserAuthentication authentication = null;
-        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
-
-        if (authentication == null) {
-            System.out.println("Not logged in");
-            return null;
-        } else {
-            System.err.println(authentication.getName());
-            System.err.println(authentication.getDetails());
-            System.err.println(authentication.getPrincipal());
-            System.err.println(authentication.getAuthorities());
-            System.err.println(authentication.getCredentials());
-        }
+        //        HttpSession httpSession = httpSessionProvider.get();
+        //                SecurityContext secContext = (SecurityContext) httpSession.getAttribute("SPRING_SECURITY_CONTEXT");
+        //                EditorUserAuthentication authentication = null;
+        //                if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+        //
+        //        if (authentication == null) {
+        //            System.out.println("Not logged in");
+        //            return null;
+        //        } else {
+        //            System.err.println(authentication.getName());
+        //            System.err.println(authentication.getDetails());
+        //            System.err.println(authentication.getPrincipal());
+        //            System.err.println(authentication.getAuthorities());
+        //            System.err.println(authentication.getCredentials());
+        //        }
 
         List<EditorDate> historyDays = null;
         try {
-            userDAO.getUsersId((String) authentication.getPrincipal(), authentication.getIdentityType());
             historyDays = actionDAO.getHistoryDays(action.getUserId(), action.getUuid());
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
