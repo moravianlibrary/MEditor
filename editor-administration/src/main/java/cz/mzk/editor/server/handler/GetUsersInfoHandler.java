@@ -28,11 +28,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -63,10 +60,6 @@ public class GetUsersInfoHandler
     /** The recently modified dao. */
     private final UserDAO userDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -90,7 +83,7 @@ public class GetUsersInfoHandler
     public GetUsersInfoResult execute(final GetUsersInfoAction action, final ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: GetUserInfoAction");
+        LOGGER.debug("Processing action: GetUsersInfoAction");
         ServerUtils.checkExpiredSession();
 
         try {

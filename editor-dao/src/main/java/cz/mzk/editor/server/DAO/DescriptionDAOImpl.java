@@ -130,15 +130,14 @@ public class DescriptionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public String getUserDescription(String digital_object_uuid, Long editor_user_id)
-            throws DatabaseException {
+    public String getUserDescription(String digital_object_uuid) throws DatabaseException {
 
         PreparedStatement selSt = null;
         String desc = null;
         try {
             selSt = getConnection().prepareStatement(DESCRIPTION_SELECT_DESC_STATEMENT);
             selSt.setString(1, digital_object_uuid);
-            selSt.setLong(2, editor_user_id);
+            selSt.setLong(2, getUserId());
             ResultSet rs = selSt.executeQuery();
             if (rs.next()) {
                 desc = rs.getString("description");
@@ -159,10 +158,10 @@ public class DescriptionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean checkUserDescription(String digital_object_uuid, Long editor_user_id, String description)
+    public boolean checkUserDescription(String digital_object_uuid, String description)
             throws DatabaseException {
 
-        String desc = getUserDescription(digital_object_uuid, editor_user_id);
+        String desc = getUserDescription(digital_object_uuid);
         boolean successful = false;
         PreparedStatement updateSt = null;
 
@@ -172,6 +171,7 @@ public class DescriptionDAOImpl
             LOGGER.warn("Unable to set autocommit off", e);
         }
 
+        Long editor_user_id = getUserId();
         try {
             if (desc == null) {
                 successful = daoUtils.insertDescription(editor_user_id, digital_object_uuid, description);

@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
 
@@ -83,10 +82,6 @@ public class CheckAndUpdateDBSchemaHandler
 
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     @Inject
     private Provider<ServletContext> contextProvider;

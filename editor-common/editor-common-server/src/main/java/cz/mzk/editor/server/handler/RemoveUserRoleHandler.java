@@ -27,18 +27,14 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.RemoveUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserRoleResult;
@@ -54,10 +50,6 @@ public class RemoveUserRoleHandler
     private static final Logger LOGGER = Logger
             .getLogger(RemoveUserRoleHandler.class.getPackage().toString());
 
-    /** The recently modified dao. */
-    @Inject
-    private UserDAO userDAO;
-
     /**
      * Instantiates a new put recently modified handler.
      */
@@ -65,10 +57,6 @@ public class RemoveUserRoleHandler
     public RemoveUserRoleHandler() {
 
     }
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /*
      * (non-Javadoc)
@@ -80,9 +68,11 @@ public class RemoveUserRoleHandler
     @Override
     public RemoveUserRoleResult execute(final RemoveUserRoleAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: RemoveUserRoleAction " + action.getRoleItem());
+        ServerUtils.checkExpiredSession();
+
         if (action.getRoleItem() == null) throw new NullPointerException("getId()");
-        LOGGER.debug("Processing action: RemoveUserRoleAction user id:" + action.getRoleItem());
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         boolean successful = false;
         //        try {

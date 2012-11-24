@@ -27,11 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -66,10 +63,6 @@ public class RemoveRequestItemHandler
     public RemoveRequestItemHandler() {
     }
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /*
      * (non-Javadoc)
      * @see
@@ -80,9 +73,11 @@ public class RemoveRequestItemHandler
     @Override
     public RemoveRequestItemResult execute(final RemoveRequestItemAction action,
                                            final ExecutionContext context) throws ActionException {
+
+        LOGGER.debug("Processing action: RemoveRequestItemAction " + action.getId());
+        ServerUtils.checkExpiredSession();
+
         if (action.getId() == null) throw new NullPointerException("getId()");
-        LOGGER.debug("Processing action: RemoveRequestItemAction request id:" + action.getId());
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         try {
             requestDAO.removeOpenIDRequest(action.getId());

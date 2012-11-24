@@ -27,11 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -59,10 +56,6 @@ public class CheckAvailabilityHandler
 
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -94,7 +87,7 @@ public class CheckAvailabilityHandler
             }
             LOGGER.debug("Processing action: CheckAvailability: " + serverName);
         }
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
+        ServerUtils.checkExpiredSession();
 
         String url = null;
         String usr = "";

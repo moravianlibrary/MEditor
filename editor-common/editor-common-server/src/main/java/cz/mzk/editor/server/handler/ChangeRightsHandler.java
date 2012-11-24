@@ -28,14 +28,11 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpSession;
-
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -63,10 +60,6 @@ import cz.mzk.editor.shared.rpc.action.ChangeRightsResult;
 public class ChangeRightsHandler
         implements ActionHandler<ChangeRightsAction, ChangeRightsResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     @Inject
     private @Named("securedFedoraAccess")
     FedoraAccess fedoraAccess;
@@ -85,7 +78,8 @@ public class ChangeRightsHandler
     public ChangeRightsResult execute(ChangeRightsAction action, ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: ");
+        LOGGER.debug("Processing action: ChangeRightsAction " + action.getParentUuid() + " "
+                + action.getRight());
         ServerUtils.checkExpiredSession();
 
         if (action.isForChildren()) {

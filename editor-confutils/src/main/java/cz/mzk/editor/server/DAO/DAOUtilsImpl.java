@@ -55,7 +55,42 @@ public class DAOUtilsImpl
      * @throws SQLException
      */
     @Override
-    public boolean insertCrudAction(long editor_user_id,
+    public boolean insertCrudAction(String tableName,
+                                    String fkNameCol,
+                                    Object foreignKey,
+                                    CRUD_ACTION_TYPES type,
+                                    boolean closeCon) throws DatabaseException, SQLException {
+        return insertAnyCrudAction(getUserId(), tableName, fkNameCol, foreignKey, type, null, closeCon);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws SQLException
+     */
+    @Override
+    public boolean insertCrudActionWithTopObject(String tableName,
+                                                 String fkNameCol,
+                                                 Object foreignKey,
+                                                 CRUD_ACTION_TYPES type,
+                                                 String top_digital_object_uuid,
+                                                 boolean closeCon) throws DatabaseException, SQLException {
+        return insertAnyCrudAction(getUserId(),
+                                   tableName,
+                                   fkNameCol,
+                                   foreignKey,
+                                   type,
+                                   top_digital_object_uuid,
+                                   closeCon);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws SQLException
+     */
+    @Override
+    public boolean insertCrudAction(Long editor_user_id,
                                     String tableName,
                                     String fkNameCol,
                                     Object foreignKey,
@@ -70,7 +105,7 @@ public class DAOUtilsImpl
      * @throws SQLException
      */
     @Override
-    public boolean insertCrudActionWithTopObject(long editor_user_id,
+    public boolean insertCrudActionWithTopObject(Long editor_user_id,
                                                  String tableName,
                                                  String fkNameCol,
                                                  Object foreignKey,
@@ -86,7 +121,7 @@ public class DAOUtilsImpl
                                    closeCon);
     }
 
-    private boolean insertAnyCrudAction(long editor_user_id,
+    private boolean insertAnyCrudAction(Long editor_user_id,
                                         String tableName,
                                         String fkNameCol,
                                         Object foreignKey,
@@ -104,7 +139,7 @@ public class DAOUtilsImpl
 
         try {
             insertSt = getConnection().prepareStatement(sql);
-            insertSt.setLong(1, editor_user_id);
+            insertSt.setLong(1, getUserId());
             insertSt.setObject(2, foreignKey);
             insertSt.setString(3, type.getValue());
             if (top_digital_object_uuid != null) insertSt.setString(4, top_digital_object_uuid);

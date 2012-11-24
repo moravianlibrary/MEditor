@@ -71,12 +71,15 @@ public class ServerUtils {
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(ServerUtils.class);
 
+    /** The config. */
     @Inject
     private static EditorConfiguration config;
 
+    /** The dao utils. */
     @Inject
     private static DAOUtils daoUtils;
 
+    /** The http session provider. */
     @Inject
     private static Provider<HttpSession> httpSessionProvider;
 
@@ -122,7 +125,7 @@ public class ServerUtils {
         }
     }
 
-    public static void checkExpiredSession(HttpSession session) throws ActionException {
+    private static void checkExpiredSession(HttpSession session) throws ActionException {
         EditorUserAuthentication authentication = getEditorUserAuthentication(session);
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()

@@ -27,18 +27,14 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -65,10 +61,6 @@ public class PutDescriptionHandler
     @Inject
     UserDAO userDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new put recently modified handler.
      */
@@ -86,20 +78,16 @@ public class PutDescriptionHandler
     @Override
     public PutDescriptionResult execute(final PutDescriptionAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: PutDescriptionAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
         if (action.getUuid() == null || "".equals(action.getUuid()))
             throw new NullPointerException("getUuid()");
         if (action.getDescription() == null) throw new NullPointerException("getDescription()");
-        LOGGER.debug("Processing action: PutDescription: " + action.getUuid());
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
 
         try {
-            long usersId = userDAO.getUsersId((String) session.getAttribute(HttpCookies.SESSION_ID_KEY));
-            if (action.isCommon()) {
-                descriptionDAO.putCommonDescription(action.getUuid(), action.getDescription(), usersId);
-            } else {
-                descriptionDAO.checkUserDescription(action.getUuid(), usersId, action.getDescription());
-            }
+            descriptionDAO.checkUserDescription(action.getUuid(), action.getDescription());
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

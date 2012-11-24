@@ -62,7 +62,7 @@ public class ShibbolethClient {
             Long userId = securityUserDAO.getUserId(openId, USER_IDENTITY_TYPES.OPEN_ID);
             if (userId > 0) {
                 ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] LDAP User " + openId);
-                logInOutDAO.logInOut(true, userId);
+                logInOutDAO.logInOut(userId, true);
                 return userId;
             } else {
                 return new Long(0);

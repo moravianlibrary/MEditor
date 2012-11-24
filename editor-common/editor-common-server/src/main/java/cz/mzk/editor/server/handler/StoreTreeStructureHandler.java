@@ -34,18 +34,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -72,10 +68,6 @@ public class StoreTreeStructureHandler
     @Inject
     private UserDAO userDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     @Inject
     public StoreTreeStructureHandler() {
     }
@@ -90,6 +82,14 @@ public class StoreTreeStructureHandler
     @Override
     public StoreTreeStructureResult execute(final StoreTreeStructureAction action,
                                             final ExecutionContext context) throws ActionException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Processing action: StoreTreeStructureResult role:"
+                    + action
+                    + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
+                            .getBundle().getInfo().getInputPath()) : ""));
+        }
+        ServerUtils.checkExpiredSession();
+
         switch (action.getVerb()) {
             case PUT:
                 if (action.getBundle() == null || action.getBundle().getInfo() == null
@@ -108,18 +108,10 @@ public class StoreTreeStructureHandler
                 throw new IllegalArgumentException("bad verb");
 
         }
-        if (LOGGER.isDebugEnabled()) {
 
-            LOGGER.debug("Processing action: StoreTreeStructureResult role:"
-                    + action
-                    + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
-                            .getBundle().getInfo().getInputPath()) : ""));
-        }
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
         long userId = 0;
         try {
-            userId = userDAO.getUsersId(String.valueOf(session.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            userId = userDAO.getUsersId();
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

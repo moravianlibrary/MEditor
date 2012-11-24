@@ -152,9 +152,8 @@ public class UserDAOImpl
     }
 
     @Override
-    public long getUsersId(String identifier) throws DatabaseException {
-
-        return getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID);
+    public long getUsersId() throws DatabaseException {
+        return super.getUserId();
     }
 
     /**

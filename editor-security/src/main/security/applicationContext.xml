@@ -23,7 +23,7 @@
 		<intercept-url pattern="/gwt/**" access="isAuthenticated()" />
 		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
-		<form-login login-page="/loginLocal.html"/>
+		<form-login login-page="/login.html"/>
 		<custom-filter position="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
 		<custom-filter position="LAST" ref="shibbolethAuthenticationFilter" />
 	</http>

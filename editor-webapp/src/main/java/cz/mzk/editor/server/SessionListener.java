@@ -35,16 +35,29 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
+import org.springframework.security.core.context.SecurityContext;
+
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.LogInOutDAOImpl;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 
 public class SessionListener
         implements HttpSessionListener {
 
-    //    private static final Logger LOGGER = Logger.getLogger(SessionListener.class);
+    private static final Logger LOGGER = Logger.getLogger(SessionListener.class);
     private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+    @Inject
+    private static LogInOutDAOImpl logInOutDAO;
+
+    @Inject
+    private static UserDAO userDAO;
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
@@ -53,12 +66,32 @@ public class SessionListener
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession session = se.getSession();
-        if (session.getAttribute(HttpCookies.SESSION_ID_KEY) != null) {
-            ACCESS_LOGGER.info("LOG OUT: User " + session.getAttribute(HttpCookies.NAME_KEY)
-                    + " with openID " + session.getAttribute(HttpCookies.SESSION_ID_KEY) + " at "
-                    + FORMATTER.format(new Date()));
-            session.setAttribute(HttpCookies.SESSION_ID_KEY, null);
+
+        SecurityContext secContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        EditorUserAuthentication authentication = null;
+        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+
+        if (authentication != null) {
+
+            try {
+                Long usersId =
+                        userDAO.getUsersId((String) authentication.getPrincipal(),
+                                           authentication.getIdentityType());
+
+                String name = userDAO.getName(usersId);
+                ACCESS_LOGGER.info("LOG OUT: User " + name + " with "
+                        + authentication.getIdentityType().toString() + " identifier "
+                        + authentication.getPrincipal() + " at " + FORMATTER.format(new Date()));
+                logInOutDAO.logInOut(usersId, false);
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
+
+            if (secContext != null) secContext.setAuthentication(null);
+
+        } else {
+            LOGGER.debug("Session expired.");
         }
-        // LOGGER.debug("Session expired.");
     }
 }

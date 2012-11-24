@@ -59,7 +59,7 @@ public class GetHistoryItemInfoHandler
     public GetHistoryItemInfoResult execute(GetHistoryItemInfoAction action, ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: GetHistoryItemInfoAction");
+        LOGGER.debug("Processing action: GetHistoryItemInfoAction " + action.getId());
         ServerUtils.checkExpiredSession();
 
         HistoryItemInfo historyItemInfo = null;

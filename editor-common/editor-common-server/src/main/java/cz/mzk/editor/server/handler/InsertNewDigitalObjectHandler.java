@@ -26,11 +26,8 @@ package cz.mzk.editor.server.handler;
 
 import java.sql.SQLException;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -60,10 +57,6 @@ public class InsertNewDigitalObjectHandler
         implements ActionHandler<InsertNewDigitalObjectAction, InsertNewDigitalObjectResult> {
 
     private static final Logger LOGGER = Logger.getLogger(InsertNewDigitalObjectHandler.class);
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /** The fedora access. */
     @Inject
@@ -96,8 +89,10 @@ public class InsertNewDigitalObjectHandler
     @Override
     public InsertNewDigitalObjectResult execute(InsertNewDigitalObjectAction action, ExecutionContext context)
             throws ActionException {
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
+
+        LOGGER.debug("Processing action: InsertNewDigitalObjectAction " + action.getObject().getUuid());
+        ServerUtils.checkExpiredSession();
+
         NewDigitalObject object = action.getObject();
         if (object == null) throw new NullPointerException("object");
         if (LOGGER.isInfoEnabled()) {

@@ -32,11 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -44,7 +41,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredItemsDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -72,10 +68,6 @@ public class StoredItemsHandler
     @Inject
     private UserDAO userDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /** The configuration. */
     private final EditorConfiguration configuration;
 
@@ -95,12 +87,12 @@ public class StoredItemsHandler
     public StoredItemsResult execute(StoredItemsAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
+        LOGGER.debug("Processing action: StoredItemsAction " + action.getStoredItem().getFileName());
+        ServerUtils.checkExpiredSession();
 
         long userId = 0;
         try {
-            userId = userDAO.getUsersId(String.valueOf(session.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            userId = userDAO.getUsersId();
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

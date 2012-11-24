@@ -27,18 +27,14 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -58,9 +54,6 @@ public class GetLoggedUserHandler
     /** The recently modified dao. */
     private final UserDAO userDAO;
 
-    /** The http session provider. */
-    private final Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -70,9 +63,8 @@ public class GetLoggedUserHandler
      *        the http session provider
      */
     @Inject
-    public GetLoggedUserHandler(final UserDAO userDAO, Provider<HttpSession> httpSessionProvider) {
+    public GetLoggedUserHandler(final UserDAO userDAO) {
         this.userDAO = userDAO;
-        this.httpSessionProvider = httpSessionProvider;
     }
 
     /*
@@ -85,17 +77,14 @@ public class GetLoggedUserHandler
     @Override
     public GetLoggedUserResult execute(final GetLoggedUserAction action, final ExecutionContext context)
             throws ActionException {
-        LOGGER.debug("Processing action: GetLoggedUserAction");
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
 
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        LOGGER.debug("Processing action: GetLoggedUserAction");
+        ServerUtils.checkExpiredSession();
+
         boolean editUsers;
         try {
             editUsers = true;
-            //                    HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN))
-            //                            || userDAO.openIDhasRole(UserDAO.EDIT_USERS_STRING, openID);
-            return new GetLoggedUserResult(userDAO.getName(userDAO.getUsersId(openID)), editUsers);
+            return new GetLoggedUserResult(userDAO.getName(userDAO.getUsersId()), editUsers);
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

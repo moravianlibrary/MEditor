@@ -27,11 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -72,10 +69,6 @@ public class RemoveUserInfoHandler
 
     }
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /*
      * (non-Javadoc)
      * @see
@@ -86,9 +79,11 @@ public class RemoveUserInfoHandler
     @Override
     public RemoveUserInfoResult execute(final RemoveUserInfoAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: RemoveUserInfoAction " + action.getId());
+        ServerUtils.checkExpiredSession();
+
         if (action.getId() == null) throw new NullPointerException("getId()");
-        LOGGER.debug("Processing action: RemoveUserInfoAction user id:" + action.getId());
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         try {
             userDAO.disableUser(Long.parseLong(action.getId()));

@@ -36,34 +36,21 @@
 
 
 
-<!-- 
-	<servlet>
-		<servlet-name>janrain</servlet-name>
-		<servlet-class>cz.mzk.editor.server.janrain.JanrainAuthenticationFilter</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>janrain</servlet-name>
-		<url-pattern>/janrain_spring_security_check</url-pattern>
-	</servlet-mapping>
-
- -->
-<!-- 	<filter>
-		<filter-name>auth-filter</filter-name>
-		<filter-class>cz.mzk.editor.server.janrain.JanrainAuthenticationFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>auth-filter</filter-name>
-		<url-pattern>/janrain_spring_security_check</url-pattern>
-	</filter-mapping> -->
+	<!-- <servlet> <servlet-name>janrain</servlet-name> <servlet-class>cz.mzk.editor.server.janrain.JanrainAuthenticationFilter</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>janrain</servlet-name> <url-pattern>/janrain_spring_security_check</url-pattern> 
+		</servlet-mapping> -->
+	<!-- <filter> <filter-name>auth-filter</filter-name> <filter-class>cz.mzk.editor.server.janrain.JanrainAuthenticationFilter</filter-class> 
+		</filter> <filter-mapping> <filter-name>auth-filter</filter-name> <url-pattern>/janrain_spring_security_check</url-pattern> 
+		</filter-mapping> -->
 
 
 
 
 
 
-	<!-- <listener> <listener-class>cz.mzk.editor.server.SessionListener</listener-class> 
-		</listener> -->
+	<listener>
+		<listener-class>cz.mzk.editor.server.SessionListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
@@ -150,7 +137,7 @@
 	</servlet-mapping>
 
 	<session-config>
-		<session-timeout>60</session-timeout>
+		<session-timeout>2</session-timeout>
 	</session-config>
 
 	<welcome-file-list>

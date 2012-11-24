@@ -27,18 +27,15 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityResult;
 
@@ -52,14 +49,6 @@ public class PutUserIdentityHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutUserIdentityHandler.class.getPackage()
             .toString());
-
-    /** The recently modified dao. */
-    @Inject
-    private UserDAO userDAO;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -84,6 +73,10 @@ public class PutUserIdentityHandler
     @Override
     public PutUserIdentityResult execute(final PutUserIdentityAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: PutUserIdentityAction " + action.getIdentity());
+        ServerUtils.checkExpiredSession();
+
         if (action.getIdentity() == null) throw new NullPointerException("getIdentity()");
         if (action.getIdentity().getUserId() == null || "".equals(action.getIdentity().getUserId()))
             throw new NullPointerException("getUserId()");

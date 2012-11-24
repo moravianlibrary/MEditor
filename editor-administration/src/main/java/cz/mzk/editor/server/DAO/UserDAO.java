@@ -88,7 +88,14 @@ public interface UserDAO {
      */
     long getUsersId(String identifier, USER_IDENTITY_TYPES identityType) throws DatabaseException;
 
-    long getUsersId(String identifier) throws DatabaseException;
+    /**
+     * Gets the users id.
+     * 
+     * @return the users id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    long getUsersId() throws DatabaseException;
 
     /**
      * Checks for role.

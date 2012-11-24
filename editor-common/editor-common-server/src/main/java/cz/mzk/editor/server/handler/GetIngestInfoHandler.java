@@ -24,11 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -49,10 +46,6 @@ import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;
 public class GetIngestInfoHandler
         implements ActionHandler<GetIngestInfoAction, GetIngestInfoResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     @Inject
     private InputQueueItemDAO inputQueueDAO;
 
@@ -66,8 +59,8 @@ public class GetIngestInfoHandler
     public GetIngestInfoResult execute(GetIngestInfoAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
+        LOGGER.debug("Processing action: GetIngestInfoAction " + action.getPath());
+        ServerUtils.checkExpiredSession();
 
         try {
             return new GetIngestInfoResult(inputQueueDAO.getIngestInfo(action.getPath()));

@@ -36,9 +36,9 @@ import com.gwtplatform.dispatch.server.guice.HandlerModule;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
-import cz.mzk.editor.server.AuthenticationServlet;
 import cz.mzk.editor.server.OAIPMHClient;
 import cz.mzk.editor.server.OAIPMHClientImpl;
+import cz.mzk.editor.server.SessionListener;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.Z3950ClientImpl;
@@ -280,7 +280,6 @@ public class ServerModule
 
         // static injection
         requestStaticInjection(FedoraUtils.class);
-        requestStaticInjection(AuthenticationServlet.class);
         requestStaticInjection(URLS.class);
         requestStaticInjection(IngestUtils.class);
         requestStaticInjection(ServerUtils.class);
@@ -288,6 +287,6 @@ public class ServerModule
         requestStaticInjection(LDAPClient.class);
         requestStaticInjection(JanrainClient.class);
         requestStaticInjection(JanrainAuthenticationFilter.class);
-
+        requestStaticInjection(SessionListener.class);
     }
 }

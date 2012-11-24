@@ -32,11 +32,8 @@ import java.io.IOException;
 
 import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -69,10 +66,6 @@ public class ConvertToJPEG2000Handler
     /** The configuration. */
     private final EditorConfiguration configuration;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     private String djatokaHome = null;
 
     /**
@@ -98,10 +91,12 @@ public class ConvertToJPEG2000Handler
                                            final ExecutionContext context) throws ActionException {
         // parse input
         final ImageItem item = action.getItem();
+        LOGGER.debug("Processing action: ConvertToJPEG2000Action " + action.getItem());
 
         if (context != null) {
-            ServerUtils.checkExpiredSession(httpSessionProvider.get());
+            ServerUtils.checkExpiredSession();
         }
+
         if (configuration.getAkkaOn()) {
             Converter converter = Converter.getInstance();
             boolean success = converter.convert(item.getJpgFsPath(), item.getJpeg2000FsPath());

@@ -60,12 +60,12 @@ public class LockDigitalObjectHandler
     @Inject
     private LockDAO locksDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /** The GetLockInformationHandler handler */
     private final GetLockInformationHandler getLockInformationHandler;
+
+    /** The http session provider. */
+    @Inject
+    private static Provider<HttpSession> httpSessionProvider;
 
     /** Instantiate a new lock digital object handler **/
     @Inject
@@ -81,13 +81,15 @@ public class LockDigitalObjectHandler
     public LockDigitalObjectResult execute(LockDigitalObjectAction action, ExecutionContext context)
             throws ActionException {
 
+        LOGGER.debug("Processing action: LockDigitalObjectAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
         String uuid = action.getUuid();
         String description = (action.getDescription() == null ? "" : action.getDescription());
 
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
-
-        Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
+        Injector injector =
+                (Injector) httpSessionProvider.get().getServletContext()
+                        .getAttribute(Injector.class.getName());
         injector.injectMembers(getLockInformationHandler);
 
         LockInfo lockInfo =

@@ -27,11 +27,8 @@ package cz.mzk.editor.server.handler;
 import java.io.File;
 import java.io.FileInputStream;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -57,10 +54,6 @@ import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult;
 public class GetOcrFromPdfHandler
         implements ActionHandler<GetOcrFromPdfAction, GetOcrFromPdfResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     @Inject
     private EditorConfiguration conf;
 
@@ -73,8 +66,8 @@ public class GetOcrFromPdfHandler
     public GetOcrFromPdfResult execute(GetOcrFromPdfAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
+        LOGGER.debug("Processing action: GetOcrFromPdfAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
 
         return new GetOcrFromPdfResult(pdftoText(conf.getImagesPath() + File.separator + action.getUuid()
                 + Constants.PDF_EXTENSION));

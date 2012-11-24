@@ -47,11 +47,9 @@ public interface LogInOutDAO {
      * 
      * @param logIn
      *        the log in
-     * @param userId
-     *        the user id
      * @throws DatabaseException
      *         the database exception
      */
-    void logInOut(boolean logIn, Long userId) throws DatabaseException;
+    void logInOut(boolean logIn) throws DatabaseException;
 
 }

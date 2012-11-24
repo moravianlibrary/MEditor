@@ -36,11 +36,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -78,9 +75,6 @@ public class ScanFolderHandler
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
-    @Inject
-    private Provider<HttpServletRequest> requestProvider;
-
     /** The input queue dao. */
     @Inject
     private InputQueueItemDAO inputQueueDAO;
@@ -109,6 +103,9 @@ public class ScanFolderHandler
     @Override
     public ScanFolderResult execute(final ScanFolderAction action, final ExecutionContext context)
             throws ActionException {
+
+        ServerUtils.checkExpiredSession();
+
         // parse input
         final String model = action.getModel();
         final String code = action.getCode();
@@ -117,10 +114,6 @@ public class ScanFolderHandler
         }
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Scanning folder: (model = " + model + ", code = " + code + ")");
-        if (context != null) {
-            HttpServletRequest req = requestProvider.get();
-            ServerUtils.checkExpiredSession(req.getSession());
-        }
 
         try {
             String name = action.getName();

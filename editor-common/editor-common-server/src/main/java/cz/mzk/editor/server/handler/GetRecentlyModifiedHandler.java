@@ -41,7 +41,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -108,13 +107,11 @@ public class GetRecentlyModifiedHandler
     public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action,
                                              final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetRecentlyModified");
+        ServerUtils.checkExpiredSession();
 
         HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
         Injector injector = (Injector) session.getServletContext().getAttribute(Injector.class.getName());
         injector.injectMembers(getLockInformationHandler);
-
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 
         try {
 
@@ -124,7 +121,7 @@ public class GetRecentlyModifiedHandler
             } else {
                 recItems =
                         recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(),
-                                                     userDAO.getUsersId(openID));
+                                                     userDAO.getUsersId());
             }
 
             for (RecentlyModifiedItem item : recItems) {

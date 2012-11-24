@@ -73,7 +73,7 @@ public class LogInOutDAOImpl
     /**
      * {@inheritDoc}
      */
-    public void logInOut(boolean logIn, Long userId) throws DatabaseException {
-        logInOut(userId, logIn);
+    public void logInOut(boolean logIn) throws DatabaseException {
+        logInOut(getUserId(), logIn);
     }
 }

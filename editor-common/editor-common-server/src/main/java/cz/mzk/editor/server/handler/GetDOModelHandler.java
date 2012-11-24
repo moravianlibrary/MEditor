@@ -29,11 +29,6 @@ package cz.mzk.editor.server.handler;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpSession;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -56,11 +51,6 @@ public class GetDOModelHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(GetDOModelHandler.class.getPackage().toString());
 
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /*
      * (non-Javadoc)
      * @see
@@ -71,11 +61,12 @@ public class GetDOModelHandler
     @Override
     public GetDOModelResult execute(final GetDOModelAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: GetDOModelAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
         // parse input
         String uuid = action.getUuid();
-        LOGGER.debug("Processing action: GetDOModelAction: " + action.getUuid());
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
         return new GetDOModelResult(getModel(uuid));
     }
 

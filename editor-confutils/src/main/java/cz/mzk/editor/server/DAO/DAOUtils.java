@@ -187,6 +187,59 @@ public interface DAOUtils {
     /**
      * Insert crud action.
      * 
+     * @param tableName
+     *        the table name
+     * @param fkNameCol
+     *        the fk name col
+     * @param foreignKey
+     *        the foreign key
+     * @param type
+     *        the type
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws SQLException
+     *         the sQL exception
+     */
+    public boolean insertCrudAction(String tableName,
+                                    String fkNameCol,
+                                    Object foreignKey,
+                                    CRUD_ACTION_TYPES type,
+                                    boolean closeCon) throws DatabaseException, SQLException;
+
+    /**
+     * Insert crud action with top object.
+     * 
+     * @param tableName
+     *        the table name
+     * @param fkNameCol
+     *        the fk name col
+     * @param foreignKey
+     *        the foreign key
+     * @param type
+     *        the type
+     * @param top_digital_object_uuid
+     *        the top_digital_object_uuid
+     * @param closeCon
+     *        the close con
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws SQLException
+     *         the sQL exception
+     */
+    public boolean insertCrudActionWithTopObject(String tableName,
+                                                 String fkNameCol,
+                                                 Object foreignKey,
+                                                 CRUD_ACTION_TYPES type,
+                                                 String top_digital_object_uuid,
+                                                 boolean closeCon) throws DatabaseException, SQLException;
+
+    /**
+     * Insert crud action.
+     * 
      * @param editor_user_id
      *        the editor_user_id
      * @param tableName
@@ -204,7 +257,7 @@ public interface DAOUtils {
      *         the database exception
      * @throws SQLException
      */
-    boolean insertCrudAction(long editor_user_id,
+    boolean insertCrudAction(Long editor_user_id,
                              String tableName,
                              String fkNameCol,
                              Object foreignKey,
@@ -233,7 +286,7 @@ public interface DAOUtils {
      *         the database exception
      * @throws SQLException
      */
-    boolean insertCrudActionWithTopObject(long editor_user_id,
+    boolean insertCrudActionWithTopObject(Long editor_user_id,
                                           String tableName,
                                           String fkNameCol,
                                           Object foreignKey,

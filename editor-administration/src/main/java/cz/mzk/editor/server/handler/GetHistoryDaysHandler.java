@@ -26,11 +26,8 @@ package cz.mzk.editor.server.handler;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -39,7 +36,6 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.ActionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
@@ -55,14 +51,8 @@ public class GetHistoryDaysHandler
     @Inject
     private ActionDAO actionDAO;
 
-    @Inject
-    private UserDAO userDAO;
-
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(GetHistoryDaysHandler.class);
-
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * {@inheritDoc}

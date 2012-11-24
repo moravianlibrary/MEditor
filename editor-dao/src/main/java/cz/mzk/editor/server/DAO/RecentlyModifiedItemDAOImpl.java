@@ -99,10 +99,12 @@ public class RecentlyModifiedItemDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean put(RecentlyModifiedItem toPut, long user_id) throws DatabaseException {
+    public boolean put(RecentlyModifiedItem toPut) throws DatabaseException {
         if (toPut == null) throw new NullPointerException("toPut");
         if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
             throw new NullPointerException("toPut.getUuid()");
+
+        Long userId = getUserId();
 
         try {
             getConnection().setAutoCommit(false);
@@ -122,7 +124,7 @@ public class RecentlyModifiedItemDAOImpl
 
             if (successful)
                 successful =
-                        daoUtils.insertCrudAction(user_id,
+                        daoUtils.insertCrudAction(userId,
                                                   Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
                                                   "digital_object_uuid",
                                                   toPut.getUuid(),

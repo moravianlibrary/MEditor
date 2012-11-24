@@ -61,27 +61,22 @@ public interface DescriptionDAO {
      * 
      * @param digital_object_uuid
      *        the digital_object_uuid
-     * @param editor_user_id
-     *        the editor_user_id
      * @return the user description
      * @throws DatabaseException
      *         the database exception
      */
-    String getUserDescription(String digital_object_uuid, Long editor_user_id) throws DatabaseException;
+    String getUserDescription(String digital_object_uuid) throws DatabaseException;
 
     /**
      * Check user description.
      * 
      * @param digital_object_uuid
      *        the digital_object_uuid
-     * @param editor_user_id
-     *        the editor_user_id
      * @param description
      *        the description
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      */
-    boolean checkUserDescription(String digital_object_uuid, Long editor_user_id, String description)
-            throws DatabaseException;
+    boolean checkUserDescription(String digital_object_uuid, String description) throws DatabaseException;
 }

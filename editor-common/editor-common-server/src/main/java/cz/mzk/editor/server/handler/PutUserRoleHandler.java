@@ -27,18 +27,14 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleResult;
@@ -53,13 +49,9 @@ public class PutUserRoleHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutUserRoleHandler.class.getPackage().toString());
 
-    /** The recently modified dao. */
-    @Inject
-    private UserDAO userDAO;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    //    /** The recently modified dao. */
+    //    @Inject
+    //    private UserDAO userDAO;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -78,11 +70,13 @@ public class PutUserRoleHandler
     @Override
     public PutUserRoleResult execute(final PutUserRoleAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: PutUserRoleAction " + action.getRole().getUserId());
+        ServerUtils.checkExpiredSession();
+
         if (action.getRole() == null) throw new NullPointerException("getRole()");
         if (action.getRole().getUserId() == null || "".equals(action.getRole().getUserId()))
             throw new NullPointerException("getUserId()");
-        LOGGER.debug("Processing action: PutUserRoleAction role:" + action.getRole());
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         boolean successful = false;
         //        try {

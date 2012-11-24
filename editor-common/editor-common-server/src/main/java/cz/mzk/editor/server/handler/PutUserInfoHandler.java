@@ -27,18 +27,14 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoResult;
@@ -52,14 +48,6 @@ public class PutUserInfoHandler
 
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutUserInfoHandler.class.getPackage().toString());
-
-    /** The recently modified dao. */
-    @Inject
-    private UserDAO userDAO;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -78,9 +66,11 @@ public class PutUserInfoHandler
     @Override
     public PutUserInfoResult execute(final PutUserInfoAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: PutUserInfoAction " + action.getUser().getId());
+        ServerUtils.checkExpiredSession();
+
         if (action.getUser() == null) throw new NullPointerException("getUser()");
-        LOGGER.debug("Processing action: PutUserInfoAction user:" + action.getUser());
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         String id = "";
         //        try {

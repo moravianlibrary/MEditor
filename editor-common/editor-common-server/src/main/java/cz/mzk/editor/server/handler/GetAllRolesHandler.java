@@ -27,11 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -58,9 +55,6 @@ public class GetAllRolesHandler
     /** The recently modified dao. */
     private final UserDAO userDAO;
 
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -86,8 +80,10 @@ public class GetAllRolesHandler
     @Override
     public GetAllRolesResult execute(final GetAllRolesAction action, final ExecutionContext context)
             throws ActionException {
+
         LOGGER.debug("Processing action: GetAllRolesResult");
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
+        ServerUtils.checkExpiredSession();
+
         try {
             return new GetAllRolesResult(userDAO.getRoles());
         } catch (DatabaseException e) {

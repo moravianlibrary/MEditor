@@ -27,18 +27,14 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
@@ -55,9 +51,9 @@ public class RemoveUserIdentityHandler
     private static final Logger LOGGER = Logger.getLogger(RemoveUserIdentityHandler.class.getPackage()
             .toString());
 
-    /** The recently modified dao. */
-    @Inject
-    private UserDAO userDAO;
+    //    /** The recently modified dao. */
+    //    @Inject
+    //    private UserDAO userDAO;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -66,10 +62,6 @@ public class RemoveUserIdentityHandler
     public RemoveUserIdentityHandler(final EditorConfiguration configuration) {
 
     }
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /*
      * (non-Javadoc)
@@ -81,9 +73,11 @@ public class RemoveUserIdentityHandler
     @Override
     public RemoveUserIdentityResult execute(final RemoveUserIdentityAction action,
                                             final ExecutionContext context) throws ActionException {
+
+        LOGGER.debug("Processing action: RemoveUserIdentityAction " + action.getUserIdentity());
+        ServerUtils.checkExpiredSession();
+
         if (action.getUserIdentity() == null) throw new NullPointerException("getId()");
-        LOGGER.debug("Processing action: RemoveUserIdentityAction user id:" + action.getUserIdentity());
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
         boolean successful = false;
         //        try {
         //            successful = userDAO.addRemoveUserIdentity(action.getUserIdentity(), false);

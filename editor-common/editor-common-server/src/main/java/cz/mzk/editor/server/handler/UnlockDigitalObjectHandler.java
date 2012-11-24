@@ -24,11 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -53,10 +50,6 @@ public class UnlockDigitalObjectHandler
     private static final Logger LOGGER = Logger.getLogger(UnlockDigitalObjectHandler.class.getPackage()
             .toString());
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /** The locks DAO **/
     @Inject
     private LockDAO locksDAO;
@@ -74,11 +67,10 @@ public class UnlockDigitalObjectHandler
     public UnlockDigitalObjectResult execute(UnlockDigitalObjectAction action, ExecutionContext context)
             throws ActionException {
 
-        String uuid = action.getUuid();
         LOGGER.debug("Processing action: UnlockDigitalObject: " + action.getUuid());
+        ServerUtils.checkExpiredSession();
 
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
+        String uuid = action.getUuid();
 
         try {
             return new UnlockDigitalObjectResult(locksDAO.unlockDigitalObject(uuid));

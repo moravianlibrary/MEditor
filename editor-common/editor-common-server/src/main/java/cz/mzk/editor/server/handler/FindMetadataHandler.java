@@ -32,11 +32,8 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -73,10 +70,6 @@ public class FindMetadataHandler
     /** The configuration. */
     private final EditorConfiguration configuration;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     private final Z3950Client z39Client;
 
     private final OAIPMHClient oaiClient;
@@ -110,7 +103,8 @@ public class FindMetadataHandler
             LOGGER.debug("Processing action: FindMetadataAction: for id (" + action.getSearchType() + ") "
                     + action.getId());
         }
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
+        ServerUtils.checkExpiredSession();
+
         ArrayList<MetadataBundle> bundle = null;
         ArrayList<MetadataBundle> enrichedBundle = null;
         boolean isOai = action.isOai();

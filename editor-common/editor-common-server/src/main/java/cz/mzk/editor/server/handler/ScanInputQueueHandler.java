@@ -35,11 +35,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -86,10 +83,6 @@ public class ScanInputQueueHandler
     @Inject
     private InputQueueItemDAO inputQueueDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     @Inject
     private ConversionDAO conversionDAO;
 
@@ -114,12 +107,14 @@ public class ScanInputQueueHandler
     @Override
     public ScanInputQueueResult execute(final ScanInputQueueAction action, final ExecutionContext context)
             throws ActionException {
+
+        ServerUtils.checkExpiredSession();
+
         // parse input
         final String id = action.getId() == null ? "" : action.getId();
         final boolean refresh = action.isRefresh();
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Processing input queue: " + base + id);
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         ScanInputQueueResult result = null;
 

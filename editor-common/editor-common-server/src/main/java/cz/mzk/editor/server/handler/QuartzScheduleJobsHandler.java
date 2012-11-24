@@ -65,6 +65,11 @@ public class QuartzScheduleJobsHandler
     public QuartzScheduleJobsResult execute(QuartzScheduleJobsAction action, ExecutionContext context)
             throws ActionException {
 
+        //        TODO
+        //        LOGGER.debug("Processing action: ");
+        //        ServerUtils.checkExpiredSession();
+        //
+
         if (action.getKillItem() != null) {
             JobKey key =
                     new JobKey(action.getKillItem().getProcessName(), action.getKillItem().getProcessGroup());

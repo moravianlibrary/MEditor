@@ -27,12 +27,9 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -65,10 +62,6 @@ public class GetUserRolesAndIdentitiesHandler
     /** The recently modified dao. */
     private final UserDAO userDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -95,9 +88,11 @@ public class GetUserRolesAndIdentitiesHandler
     @Override
     public GetUserRolesAndIdentitiesResult execute(final GetUserRolesAndIdentitiesAction action,
                                                    final ExecutionContext context) throws ActionException {
+
+        LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction " + action.getId());
+        ServerUtils.checkExpiredSession();
+
         if (action.getId() == null) return null;
-        LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
 
         try {
             return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())),

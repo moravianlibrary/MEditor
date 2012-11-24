@@ -99,7 +99,7 @@ public class LDAPClient {
                 Long userId = securityUserDAO.getUserId(login, USER_IDENTITY_TYPES.LDAP);
                 if (userId > 0) {
                     ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] LDAP User " + login);
-                    logInOutDAO.logInOut(true, userId);
+                    logInOutDAO.logInOut(userId, true);
                     return userId;
                 } else {
                     return new Long(0);

@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
 
@@ -42,8 +41,6 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
-
-import org.springframework.security.core.context.SecurityContext;
 
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
@@ -66,9 +63,6 @@ public class LogoutHandler
     private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
-    /** The http session provider. */
-    private final Provider<HttpSession> httpSessionProvider;
-
     private final Provider<HttpServletRequest> reqProvider;
 
     @Inject
@@ -81,8 +75,7 @@ public class LogoutHandler
      *        the http session provider
      */
     @Inject
-    public LogoutHandler(Provider<HttpSession> httpSessionProvider, Provider<HttpServletRequest> reqProvider) {
-        this.httpSessionProvider = httpSessionProvider;
+    public LogoutHandler(Provider<HttpServletRequest> reqProvider) {
         this.reqProvider = reqProvider;
     }
 
@@ -100,7 +93,6 @@ public class LogoutHandler
         LOGGER.debug("Processing action: LogoutAction");
         ServerUtils.checkExpiredSession();
 
-        HttpSession session = httpSessionProvider.get();
         EditorUserAuthentication authentication = ServerUtils.getEditorUserAuthentication();
 
         try {
@@ -111,9 +103,6 @@ public class LogoutHandler
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
-
-        SecurityContext secContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
-        if (secContext != null) secContext.setAuthentication(null);
 
         return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
     }

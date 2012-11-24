@@ -27,21 +27,16 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedResult;
@@ -61,13 +56,6 @@ public class PutRecentlyModifiedHandler
     @Inject
     private RecentlyModifiedItemDAO recentlyModifiedDAO;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
-    @Inject
-    private UserDAO userDAO;
-
     /**
      * Instantiates a new put recently modified handler.
      */
@@ -86,17 +74,17 @@ public class PutRecentlyModifiedHandler
     @Override
     public PutRecentlyModifiedResult execute(final PutRecentlyModifiedAction action,
                                              final ExecutionContext context) throws ActionException {
+
+        LOGGER.debug("Processing action: PutRecentlyModifiedAction " + action.getItem().getUuid());
+        ServerUtils.checkExpiredSession();
+
         if (action.getItem() == null) throw new NullPointerException("getItem()");
         if (action.getItem().getUuid() == null || "".equals(action.getItem().getUuid()))
             throw new NullPointerException("getItem().getUuid()");
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
 
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
         LOGGER.debug("Processing action: PutRecentlyModified item:" + action.getItem());
         try {
-            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(),
-                                                                         userDAO.getUsersId(openID)));
+            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem()));
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

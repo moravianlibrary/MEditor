@@ -27,11 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -63,9 +60,6 @@ public class GetAllRequestItemsHandler
     /** The recently modified dao. */
     private final RequestDAO requestDAO;
 
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -93,7 +87,8 @@ public class GetAllRequestItemsHandler
     public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action,
                                             final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetAllRequestItemsAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider.get());
+        ServerUtils.checkExpiredSession();
+
         try {
             return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
         } catch (DatabaseException e) {
