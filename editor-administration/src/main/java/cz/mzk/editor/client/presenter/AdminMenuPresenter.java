@@ -55,7 +55,7 @@ public class AdminMenuPresenter
     @ProxyCodeSplit
     @NameToken(NameTokens.MENU)
     public interface MyProxy
-            extends ProxyPlace<AdminHomePresenter> {
+            extends ProxyPlace<AdminMenuPresenter> {
 
     }
 

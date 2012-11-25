@@ -224,7 +224,7 @@ public class UserPresenter
      * The Interface MyProxy.
      */
     @ProxyCodeSplit
-    @NameToken(NameTokens.USERS)
+    @NameToken(NameTokens.ADMIN_MENU_BUTTONS.USERS)
     public interface MyProxy
             extends ProxyPlace<UserPresenter> {
 
@@ -233,15 +233,15 @@ public class UserPresenter
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
-    //    /** The left presenter. */
-    //    private final DigitalObjectMenuPresenter leftPresenter;
+    /** The left presenter. */
+    //    private final AdminMenuPresenter leftPresenter;
 
     /** The place manager. */
     @SuppressWarnings("unused")
     private final PlaceManager placeManager;
 
     /** The roles. */
-    private List<String> roles;
+    private List<RoleItem> roles;
 
     /**
      * Instantiates a new home presenter.
@@ -265,6 +265,7 @@ public class UserPresenter
                          final MyProxy proxy,
                          final DispatchAsync dispatcher,
                          final PlaceManager placeManager,
+                         //                         AdminMenuPresenter leftPresenter,
                          LangConstants lang) {
         super(eventBus, view, proxy);
         //        this.leftPresenter = leftPresenter;
@@ -275,7 +276,7 @@ public class UserPresenter
 
             @Override
             public void callback(GetAllRolesResult result) {
-                //                UserPresenter.this.roles = result.getRoles();
+                UserPresenter.this.roles = result.getRoles();
             }
         });
         bind();
@@ -743,7 +744,7 @@ public class UserPresenter
     @Override
     protected void onReset() {
         super.onReset();
-        //        RevealContentEvent.fire(this, Constants.TYPE_SetLeftContent, leftPresenter);
+        //        RevealContentEvent.fire(this, Constants.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
     }
 
     /*

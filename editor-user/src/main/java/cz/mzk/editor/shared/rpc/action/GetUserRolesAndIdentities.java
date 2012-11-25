@@ -33,8 +33,8 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.UserIdentity;
 
 // TODO: Auto-generated Javadoc
 /**

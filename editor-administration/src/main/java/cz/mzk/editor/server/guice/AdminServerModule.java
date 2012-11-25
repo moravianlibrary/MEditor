@@ -40,15 +40,37 @@ import cz.mzk.editor.server.DAO.UserDAOImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.handler.CheckAndUpdateDBSchemaHandler;
+import cz.mzk.editor.server.handler.GetAllRequestItemsHandler;
+import cz.mzk.editor.server.handler.GetAllRolesHandler;
 import cz.mzk.editor.server.handler.GetHistoryDaysHandler;
 import cz.mzk.editor.server.handler.GetHistoryHandler;
 import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
+import cz.mzk.editor.server.handler.GetLoggedUserHandler;
+import cz.mzk.editor.server.handler.GetUserRolesAndIdentitiesHandler;
 import cz.mzk.editor.server.handler.GetUsersInfoHandler;
+import cz.mzk.editor.server.handler.PutUserIdentityHandler;
+import cz.mzk.editor.server.handler.PutUserInfoHandler;
+import cz.mzk.editor.server.handler.PutUserRoleHandler;
+import cz.mzk.editor.server.handler.RemoveRequestItemHandler;
+import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
+import cz.mzk.editor.server.handler.RemoveUserInfoHandler;
+import cz.mzk.editor.server.handler.RemoveUserRoleHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
+import cz.mzk.editor.shared.rpc.action.GetAllRequestItemsAction;
+import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
+import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
+import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
+import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
+import cz.mzk.editor.shared.rpc.action.RemoveRequestItemAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserInfoAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserRoleAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,48 +86,19 @@ public class AdminServerModule
      */
     @Override
     protected void configureHandlers() {
-        //        bindHandler(ScanInputQueueAction.class, ScanInputQueueHandler.class);
-        //        bindHandler(ScanFolderAction.class, ScanFolderHandler.class);
-        //        bindHandler(GetClientConfigAction.class, GetClientConfigHandler.class);
-        //        bindHandler(GetDigitalObjectDetailAction.class, GetDigitalObjectDetailHandler.class);
-        //        bindHandler(PutDigitalObjectDetailAction.class, PutDigitalObjectDetailHandler.class);
-        //        bindHandler(GetRecentlyModifiedAction.class, GetRecentlyModifiedHandler.class);
-        //        bindHandler(PutRecentlyModifiedAction.class, PutRecentlyModifiedHandler.class);
-        //        bindHandler(GetDescriptionAction.class, GetDescriptionHandler.class);
-        //        bindHandler(PutDescriptionAction.class, PutDescriptionHandler.class);
-        //        bindHandler(CheckAvailabilityAction.class, CheckAvailabilityHandler.class);
         bindHandler(GetUsersInfoAction.class, GetUsersInfoHandler.class);
-        //        bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
-        //        bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
-        //        bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
-        //        bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
-        //        bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);
-        //        bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
-        //        bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
-        //        bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
-        //        bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
-        //        bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
-        //        bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
-        //        bindHandler(FindMetadataAction.class, FindMetadataHandler.class);
-        //        bindHandler(ConvertToJPEG2000Action.class, ConvertToJPEG2000Handler.class);
-        //        bindHandler(LockDigitalObjectAction.class, LockDigitalObjectHandler.class);
-        //        bindHandler(UnlockDigitalObjectAction.class, UnlockDigitalObjectHandler.class);
-        //        bindHandler(DownloadDigitalObjectDetailAction.class, DownloadDigitalObjectDetailHandler.class);
-        //        bindHandler(StoredItemsAction.class, StoredItemsHandler.class);
-        //        bindHandler(GetDOModelAction.class, GetDOModelHandler.class);
-        //        bindHandler(GetLockInformationAction.class, GetLockInformationHandler.class);
-        //        bindHandler(InsertNewDigitalObjectAction.class, InsertNewDigitalObjectHandler.class);
-        //        bindHandler(GetRelationshipsAction.class, GetRelationshipsHandler.class);
-        //        bindHandler(RemoveDigitalObjectAction.class, RemoveDigitalObjectHandler.class);
-        //        bindHandler(GetIngestInfoAction.class, GetIngestInfoHandler.class);
+        bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
+        bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
+        bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
+        bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
+        bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);
+        bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
+        bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
+        bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
+        bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
+        bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
+        bindHandler(RemoveRequestItemAction.class, RemoveRequestItemHandler.class);
         bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
-        //        bindHandler(LogoutAction.class, LogoutHandler.class);
-        //        bindHandler(FindAltoOcrFilesAction.class, FindAltoOcrFilesHandler.class);
-        //        bindHandler(FindAltoOcrFilesBatchAction.class, FindAltoOcrFilesBatchHandler.class);
-        //        bindHandler(StoreTreeStructureAction.class, StoreTreeStructureHandler.class);
-        //        bindHandler(ChangeRightsAction.class, ChangeRightsHandler.class);
-        //        bindHandler(GetFullImgMetadataAction.class, GetFullImgMetadataHandler.class);
-        //        bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
 
         bindHandler(GetHistoryItemInfoAction.class, GetHistoryItemInfoHandler.class);
         bindHandler(GetHistoryAction.class, GetHistoryHandler.class);
@@ -113,40 +106,11 @@ public class AdminServerModule
         bindHandler(GetHistoryDaysAction.class, GetHistoryDaysHandler.class);
 
         // DAO
-        //        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
-        //        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class);
-        //        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class);
         bind(UserDAO.class).to(UserDAOImpl.class);
-        //        bind(RequestDAO.class).to(RequestDAOImpl.class);
-        //        bind(LockDAO.class).to(LockDAOImpl.class);
-        //        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
-        //        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
         bind(DAOUtils.class).to(DAOUtilsImpl.class);
-        //        bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
         bind(ActionDAO.class).to(ActionDAOImpl.class);
-        //        bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
-        //        bind(ConversionDAO.class).to(ConversionDAOImpl.class);
-        //
-        //        // Fedora
-        //        bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
-        //                .in(Scopes.SINGLETON);
-        //        bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess"))
-        //                .to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
-        //        bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
-        //
-        //        bind(FedoraDigitalObjectHandler.class).to(FedoraDigitalObjectHandlerImpl.class);
-        //        bind(StoredDigitalObjectHandler.class).to(StoredDigitalObjectHandlerImpl.class);
-        //        bind(Z3950Client.class).to(Z3950ClientImpl.class);
-        //        bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
-        //
-        //        bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
-        //
-        //        // Quartz
-        //        bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(Scopes.SINGLETON);
-        //        bind(GuiceJobFactory.class).in(Scopes.SINGLETON);
-        //        bind(Quartz.class).in(Scopes.SINGLETON);
-        //
+
         //        // static injection
         //        requestStaticInjection(FedoraUtils.class);
         //        requestStaticInjection(AuthenticationServlet.class);

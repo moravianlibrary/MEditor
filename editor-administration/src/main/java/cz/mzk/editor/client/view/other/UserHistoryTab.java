@@ -75,6 +75,7 @@ public class UserHistoryTab
                 @Override
                 public void callback(GetUsersInfoResult result) {
                     LinkedHashMap<String, String> allUsers = new LinkedHashMap<String, String>();
+
                     for (UserInfoItem userItem : result.getItems()) {
                         allUsers.put(userItem.getId().toString(),
                                      userItem.getSurname() + " " + userItem.getName());

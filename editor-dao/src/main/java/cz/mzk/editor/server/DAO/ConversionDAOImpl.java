@@ -108,7 +108,7 @@ public class ConversionDAOImpl
                 ResultSet rs = selectSt.executeQuery();
 
                 if (rs.next()) {
-                    item.setConversionDate(formatTimestamp(rs.getTimestamp("lastTimestamp")));
+                    item.setConversionDate(formatDate(rs.getTimestamp("lastTimestamp")));
                     if (numberOfDays > 0) {
                         item.setConverted(!rs.getBoolean("isOlder"));
                     } else {

@@ -70,9 +70,6 @@ public class NameTokens {
 
     public static final String ADJUST_PAGES = "adjust";
 
-    /** The Constant USERS. */
-    public static final String USERS = "users";
-
     @SuppressWarnings("serial")
     public static List<String> getAllNameTokens() {
         return new ArrayList<String>() {
@@ -85,12 +82,12 @@ public class NameTokens {
                 add(CREATE);
                 add(FIND_METADATA);
                 add(ADJUST_PAGES);
-                add(USERS);
 
                 add(ADMIN_MENU_BUTTONS.MY_ACOUNT);
                 add(ADMIN_MENU_BUTTONS.HISTORY);
                 add(ADMIN_MENU_BUTTONS.STORED);
                 add(ADMIN_MENU_BUTTONS.STATISTIC);
+                add(ADMIN_MENU_BUTTONS.USERS);
             }
         };
     }
@@ -101,6 +98,7 @@ public class NameTokens {
         public static final String HISTORY = "history";
         public static final String STORED = "stored";
         public static final String STATISTIC = "statistic";
+        public static final String USERS = "users";
 
     }
 }

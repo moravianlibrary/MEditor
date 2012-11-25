@@ -38,7 +38,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import java.text.SimpleDateFormat;
 
@@ -71,13 +70,10 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
-import org.springframework.security.core.context.SecurityContext;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
-import cz.mzk.editor.server.EditorUserAuthentication;
-import cz.mzk.editor.server.URLS;
+import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -98,35 +94,22 @@ public abstract class AbstractDAO {
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
-    /** The Constant DRIVER. */
     private static final String DRIVER = "org.postgresql.Driver";
 
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
-    /** The Constant FORMATTER with format: dd.MM.yyyy HH:mm:ss. */
-    public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
+    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    //    /** The Constant FORMATTER with format: yyyy/MM/dd. */
-    //    public static final SimpleDateFormat FORMATTER_TO_DAYS = new SimpleDateFormat("yyyy/MM/dd");
-
-    /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
-
-    /** The Constant POOLABLE_NO. */
     private static final int POOLABLE_NO = 0;
-
-    /** The poolable. */
     private static int poolable = -1;
-
-    /** The context is correct. */
     private static boolean contextIsCorrect = false;
 
-    /** The pool. */
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
 
-    /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
@@ -134,7 +117,6 @@ public abstract class AbstractDAO {
      * Inits the connection.
      * 
      * @throws DatabaseException
-     *         the database exception
      */
     private void initConnection() throws DatabaseException {
         if (poolable != POOLABLE_NO && pool == null) {
@@ -176,12 +158,6 @@ public abstract class AbstractDAO {
         }
     }
 
-    /**
-     * Inits the connection without pool.
-     * 
-     * @throws DatabaseException
-     *         the database exception
-     */
     private void initConnectionWithoutPool() throws DatabaseException {
         try {
             Class.forName(DRIVER);
@@ -221,7 +197,6 @@ public abstract class AbstractDAO {
      * 
      * @return the connection
      * @throws DatabaseException
-     *         the database exception
      */
     protected Connection getConnection() throws DatabaseException {
         if (conn == null) {
@@ -245,18 +220,6 @@ public abstract class AbstractDAO {
         conn = null;
     }
 
-    /**
-     * Creates the correct context.
-     * 
-     * @param login
-     *        the login
-     * @param password
-     *        the password
-     * @param port
-     *        the port
-     * @param name
-     *        the name
-     */
     private void createCorrectContext(String login, String password, String port, String name) {
         String pathPrefix = System.getProperty("catalina.home");
         boolean changed = false;
@@ -421,56 +384,19 @@ public abstract class AbstractDAO {
         return userId;
     }
 
-    /**
-     * Gets the user id.
-     * 
-     * @return the user id
-     * @throws DatabaseException
-     *         the database exception
-     */
     protected Long getUserId() throws DatabaseException {
-        SecurityContext secContext =
-                (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
-        EditorUserAuthentication authentication = null;
-        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
-        if (authentication != null) {
-            return getUsersId((String) authentication.getPrincipal(), authentication.getIdentityType());
-        } else {
-            throw new DatabaseException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
-                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
-        }
+        String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
+        return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
     }
 
     /**
-     * Format date to seconds, the format: dd.MM.yyyy HH:mm:ss.
+     * Format date with format: yyyy/MM/dd HH:mm:ss.
      * 
      * @param date
      *        the date
      * @return the string
      */
-    protected String formatDateToSeconds(java.sql.Date date) {
-        return FORMATTER_TO_SECONDS.format(date);
+    protected String formatDate(java.util.Date date) {
+        return FORMATTER.format(date);
     }
-
-    /**
-     * Format timestamp to seconds, the format: dd.MM.yyyy HH:mm:ss.
-     * 
-     * @param timestamp
-     *        the timestamp
-     * @return the string
-     */
-    protected String formatTimestampToSeconds(Timestamp timestamp) {
-        return FORMATTER_TO_SECONDS.format(timestamp);
-    }
-
-    //    /**
-    //     * Format timestamp to days, the format: yyyy/MM/dd.
-    //     * 
-    //     * @param timestamp
-    //     *        the timestamp
-    //     * @return the string
-    //     */
-    //    protected String formatTimestampToDays(Timestamp timestamp) {
-    //        return FORMATTER_TO_DAYS.format(timestamp);
-    //    }
 }

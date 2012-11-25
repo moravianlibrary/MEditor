@@ -43,7 +43,6 @@ import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
 import cz.mzk.editor.client.presenter.HomePresenter;
 import cz.mzk.editor.client.presenter.ModifyPresenter;
-import cz.mzk.editor.client.presenter.UserPresenter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -75,8 +74,6 @@ public interface EditorGinjector
     Provider<AppPresenter> getAppPresenter();
 
     AsyncProvider<HomePresenter> getHomePresenter();
-
-    AsyncProvider<UserPresenter> getUserPresenter();
 
     AsyncProvider<ModifyPresenter> getModifyPresenter();
 

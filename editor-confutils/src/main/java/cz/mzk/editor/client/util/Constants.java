@@ -136,6 +136,11 @@ public class Constants {
     /** The Constant PATH_TO_PDF_VIEWER. */
     public static final String PATH_TO_PDF_VIEWER = "pdfViewer/web/viewer.html";
 
+    public static enum EDITOR_RULES {
+
+        EDIT_USERS, SHOW_ALL_HISTORY, PUBLISH, DELETE, CREATE_NEW_OBJECTS, RUN_LONG_RUNNING_PROCESS;
+    }
+
     // db
     /** Path to a file with current DB schema */
     public static final String SCHEMA_PATH = "schema.sql";
