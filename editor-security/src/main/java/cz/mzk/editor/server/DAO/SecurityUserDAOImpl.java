@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.DAO;
 
+import javax.inject.Inject;
+
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 
 /**
@@ -34,6 +36,9 @@ public class SecurityUserDAOImpl
         extends AbstractDAO
         implements SecurityUserDAO {
 
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -41,4 +46,10 @@ public class SecurityUserDAOImpl
         return super.getUsersId(identifier, type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getName(Long userId) throws DatabaseException {
+        return daoUtils.getName(userId);
+    }
 }

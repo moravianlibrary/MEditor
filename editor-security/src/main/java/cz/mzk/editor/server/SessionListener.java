@@ -43,7 +43,7 @@ import org.springframework.security.core.context.SecurityContext;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LogInOutDAOImpl;
-import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.DAO.SecurityUserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 
 public class SessionListener
@@ -57,13 +57,17 @@ public class SessionListener
     private static LogInOutDAOImpl logInOutDAO;
 
     @Inject
-    private static UserDAO userDAO;
+    private static SecurityUserDAO securityUserDAO;
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void sessionCreated(HttpSessionEvent se) {
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession session = se.getSession();
 
@@ -75,10 +79,10 @@ public class SessionListener
 
             try {
                 Long usersId =
-                        userDAO.getUsersId((String) authentication.getPrincipal(),
-                                           authentication.getIdentityType());
+                        securityUserDAO.getUserId((String) authentication.getPrincipal(),
+                                                  authentication.getIdentityType());
 
-                String name = userDAO.getName(usersId);
+                String name = securityUserDAO.getName(usersId);
                 ACCESS_LOGGER.info("LOG OUT: User " + name + " with "
                         + authentication.getIdentityType().toString() + " identifier "
                         + authentication.getPrincipal() + " at " + FORMATTER.format(new Date()));

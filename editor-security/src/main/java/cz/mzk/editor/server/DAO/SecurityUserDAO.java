@@ -44,4 +44,15 @@ public interface SecurityUserDAO {
      *         the database exception
      */
     Long getUserId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException;
+
+    /**
+     * Gets the name.
+     * 
+     * @param userId
+     *        the user id
+     * @return the name
+     * @throws DatabaseException
+     *         the database exception
+     */
+    String getName(Long userId) throws DatabaseException;
 }

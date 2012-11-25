@@ -101,10 +101,6 @@ public class UserDAOImpl
     public static final String SELECT_ROLE_ITEMS_STATEMENT = "SELECT name, description FROM "
             + Constants.TABLE_ROLE + " ORDER BY name";
 
-    /** The Constant SELECT_USER_NAME. */
-    public static final String SELECT_USER_NAME = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
-            + " WHERE id=(?)";
-
     /** The Constant SELECT_USER_ID_BY_OPENID. */
     public static final String SELECT_USER_ID_BY_OPENID = "SELECT id FROM " + Constants.TABLE_EDITOR_USER
             + " WHERE id IN (SELECT editor_user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
@@ -114,7 +110,6 @@ public class UserDAOImpl
     private static final Logger LOGGER = Logger.getLogger(UserDAOImpl.class.getPackage().toString());
 
     /** The dao utils. */
-    @SuppressWarnings("unused")
     @Inject
     private DAOUtils daoUtils;
 
@@ -637,27 +632,7 @@ public class UserDAOImpl
      */
     @Override
     public String getName(Long key) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        String name = "unknown";
-        try {
-
-            selectSt = getConnection().prepareStatement(SELECT_USER_NAME);
-            selectSt.setLong(1, Long.valueOf(key));
-
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select statement", e);
-        }
-        try {
-            ResultSet rs = selectSt.executeQuery();
-            while (rs.next()) {
-                name = rs.getString("name") + " " + rs.getString("surname");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-        return name;
+        return daoUtils.getName(key);
     }
 
     /**
@@ -665,7 +640,7 @@ public class UserDAOImpl
      */
     @Override
     public String getName() throws DatabaseException {
-        return getName(getUserId());
+        return daoUtils.getName(getUserId());
     }
 
 }

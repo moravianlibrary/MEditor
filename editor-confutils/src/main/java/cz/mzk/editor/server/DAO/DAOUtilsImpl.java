@@ -49,6 +49,10 @@ public class DAOUtilsImpl
     public static final String ACTION_UPDATE_SUCCESS_STATEMENT = "UPDATE " + Constants.TABLE_ACTION
             + " (editor_user_id, timestamp, successful) VALUES ((?),(?),(?))";
 
+    /** The Constant SELECT_USER_NAME. */
+    public static final String SELECT_USER_NAME = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
+            + " WHERE id=(?)";
+
     /**
      * {@inheritDoc}
      * 
@@ -943,5 +947,33 @@ public class DAOUtilsImpl
     @Override
     public Long getUserId() throws DatabaseException {
         return super.getUserId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName(Long key) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        String name = "unknown";
+        try {
+
+            selectSt = getConnection().prepareStatement(SELECT_USER_NAME);
+            selectSt.setLong(1, Long.valueOf(key));
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                name = rs.getString("name") + " " + rs.getString("surname");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return name;
     }
 }

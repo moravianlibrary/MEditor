@@ -697,4 +697,14 @@ public interface DAOUtils {
      */
     Long getUserId() throws DatabaseException;
 
+    /**
+     * Gets the name.
+     * 
+     * @param key
+     *        the key
+     * @return the name
+     * @throws DatabaseException
+     *         the database exception
+     */
+    String getName(Long key) throws DatabaseException;
 }

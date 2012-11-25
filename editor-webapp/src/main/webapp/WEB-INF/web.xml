@@ -8,14 +8,12 @@
 		<filter-name>guiceFilter</filter-name>
 		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
 	</filter>
+	
 	<filter-mapping>
 		<filter-name>guiceFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!-- <filter> <filter-name>auth-filter</filter-name> <filter-class>cz.mzk.editor.server.AuthenticationFilter</filter-class> 
-		</filter> <filter-mapping> <filter-name>auth-filter</filter-name> <url-pattern>/medit/*</url-pattern> 
-		</filter-mapping> -->
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -26,43 +24,16 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!-- <listener> <listener-class>cz.mzk.editor.server.guice.AdminGuiceServletConfig</listener-class> 
-		</listener> -->
-
 	<listener>
 		<listener-class>cz.mzk.editor.server.guice.MyGuiceServletConfig</listener-class>
 	</listener>
 
-
-
-
-	<!-- <servlet> <servlet-name>janrain</servlet-name> <servlet-class>cz.mzk.editor.server.janrain.JanrainAuthenticationFilter</servlet-class> 
-		</servlet> <servlet-mapping> <servlet-name>janrain</servlet-name> <url-pattern>/janrain_spring_security_check</url-pattern> 
-		</servlet-mapping> -->
-	<!-- <filter> <filter-name>auth-filter</filter-name> <filter-class>cz.mzk.editor.server.janrain.JanrainAuthenticationFilter</filter-class> 
-		</filter> <filter-mapping> <filter-name>auth-filter</filter-name> <url-pattern>/janrain_spring_security_check</url-pattern> 
-		</filter-mapping> -->
-
-
-
-
-
-
-	<listener>
+<!-- 	<listener>
 		<listener-class>cz.mzk.editor.server.SessionListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
-	<!-- authentication servlet -->
-	<servlet>
-		<servlet-name>AuthenticationServlet</servlet-name>
-		<servlet-class>cz.mzk.editor.server.AuthenticationServlet</servlet-class>
-	</servlet>
-
-	<!-- <servlet-mapping> <servlet-name>AuthenticationServlet</servlet-name> 
-		<url-pattern>/auth/*</url-pattern> </servlet-mapping> -->
+	</listener> -->
 
 	<!-- request 4 adding servlet -->
 	<servlet>
@@ -137,7 +108,7 @@
 	</servlet-mapping>
 
 	<session-config>
-		<session-timeout>2</session-timeout>
+		<session-timeout>60</session-timeout>
 	</session-config>
 
 	<welcome-file-list>
