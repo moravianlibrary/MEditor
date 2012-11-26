@@ -90,6 +90,8 @@ public class AdminView
     private Window winModal;
 
     private Widget leftWidget;
+
+    @SuppressWarnings("unused")
     private final EventBus eventBus;
 
     // private HasWidgets mainContainer;
@@ -158,13 +160,6 @@ public class AdminView
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                 winModal = new UniversalWindow(800, 600, lang.help(), eventBus, 50);
-                //                winModal.setWidth(600);
-                //                winModal.setHeight(800);
-                //                winModal.setTitle(lang.help());
-                //                winModal.setShowMinimizeButton(false);
-                //                winModal.setIsModal(true);
-                //                winModal.setShowModalMask(true);
-
                 HTMLPane helpPane = new HTMLPane();
                 helpPane.setPadding(15);
                 helpPane.setContentsURL("./help_" + (isEn ? "en.html" : "cs.html"));

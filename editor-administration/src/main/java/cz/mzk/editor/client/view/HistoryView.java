@@ -63,7 +63,7 @@ public class HistoryView
         mainLayout.setWidth100();
         mainLayout.setHeight100();
 
-        userHistoryTab = new UserHistoryTab(eventBus, lang, dispatcher, new Long(8));
+        userHistoryTab = new UserHistoryTab(eventBus, lang, dispatcher);
         digObjHistoryTab = new DOHistoryTab(eventBus, lang, dispatcher);
 
         TabSet historyTabs = new TabSet();

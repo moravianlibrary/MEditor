@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
@@ -77,16 +78,21 @@ public class UserDAOImpl
     /** The Constant INSERT_EDIT_USER_ACTION_STATEMENT. */
     public static final String INSERT_EDIT_USER_ACTION_STATEMENT =
             "INSERT INTO "
-                    + Constants.TABLE_EDITOR_USER
+                    + Constants.TABLE_USER_EDIT
                     + " (editor_user_id, timestamp, edited_editor_user_id, description, type) VALUES ((?),(CURRENT_TIMESTAMP),(?),(?),(?))";
 
     /** The Constant UPDATE_ITEM_STATEMENT. */
     public static final String UPDATE_USER_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_USER
             + " SET name = (?), surname = (?) WHERE id = (?)";
 
-    /** The Constant SELECT_ROLES_OF_USER_STATEMENT2. */
+    /** The Constant SELECT_ROLES_OF_USER_STATEMENT. */
     public static final String SELECT_ROLES_OF_USER_STATEMENT = "SELECT name, description FROM "
             + Constants.TABLE_ROLE + " WHERE name IN ( SELECT role_name FROM " + Constants.TABLE_USERS_ROLE
+            + " WHERE editor_user_id = (?) )";
+
+    /** The Constant SELECT_RIGHTS_OF_USER_STATEMENT. */
+    public static final String SELECT_RIGHTS_OF_USER_STATEMENT = "SELECT name FROM " + Constants.TABLE_ROLE
+            + " WHERE name IN ( SELECT editor_right_name FROM " + Constants.TABLE_USERS_RIGHT
             + " WHERE editor_user_id = (?) )";
 
     /** The Constant INSERT_USERS_ROLE_ITEM_STATEMENT. */
@@ -362,7 +368,7 @@ public class UserDAOImpl
             insSt.setLong(1, user_id);
             insSt.setLong(2, edited_user_id);
             insSt.setString(3, description);
-            insSt.setString(4, type.toString());
+            insSt.setString(4, type.getValue());
 
             if (insSt.executeUpdate() == 1) {
                 successful = true;
@@ -405,14 +411,38 @@ public class UserDAOImpl
         return retList;
     }
 
+    @Override
+    public ArrayList<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        ArrayList<Constants.EDITOR_RIGHTS> retList = new ArrayList<Constants.EDITOR_RIGHTS>();
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_RIGHTS_OF_USER_STATEMENT);
+            selectSt.setLong(1, userId);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                EDITOR_RIGHTS right = EDITOR_RIGHTS.parseString(rs.getString("name"));
+                if (right != null) retList.add(right);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return retList;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public ArrayList<UserIdentity> getIdentities(String id, USER_IDENTITY_TYPES type)
-            throws DatabaseException, UnsupportedDataTypeException {
+    public UserIdentity getIdentities(String id, USER_IDENTITY_TYPES type) throws DatabaseException,
+            UnsupportedDataTypeException {
         PreparedStatement selectSt = null;
-        ArrayList<UserIdentity> retList = new ArrayList<UserIdentity>();
+        UserIdentity identity = new UserIdentity();
         long userId = Long.parseLong(id);
         try {
 
@@ -430,7 +460,7 @@ public class UserDAOImpl
                 default:
                     throw new UnsupportedDataTypeException(type.toString());
             }
-            sql.append(" WHERE user_id = (?)");
+            sql.append(" WHERE editor_user_id = (?)");
             selectSt = getConnection().prepareStatement(sql.toString());
             selectSt.setLong(1, userId);
         } catch (SQLException e) {
@@ -438,15 +468,17 @@ public class UserDAOImpl
         }
         try {
             ResultSet rs = selectSt.executeQuery();
+            ArrayList<String> idents = new ArrayList<String>();
             while (rs.next()) {
-                retList.add(new UserIdentity(rs.getString("identity"), type, userId));
+                idents.add(rs.getString("identity"));
             }
+            identity = new UserIdentity(idents, type, userId);
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
         } finally {
             closeConnection();
         }
-        return retList;
+        return identity;
     }
 
     /**
@@ -456,14 +488,15 @@ public class UserDAOImpl
     public boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
             UnsupportedDataTypeException {
         if (userIdentity == null) throw new NullPointerException("identity");
-        if (userIdentity.getIdentity() == null || "".equals(userIdentity.getIdentity())
-                || userIdentity.getUserId() == null) throw new NullPointerException();
+        if (userIdentity.getIdentities() == null || userIdentity.getIdentities().get(0) == null
+                || "".equals(userIdentity.getIdentities()) || userIdentity.getUserId() == null)
+            throw new NullPointerException();
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+        //        try {
+        //            getConnection().setAutoCommit(false);
+        //        } catch (SQLException e) {
+        //            LOGGER.warn("Unable to set autocommit off", e);
+        //        }
         boolean success = false;
         PreparedStatement updateSt = null;
         try {
@@ -489,12 +522,12 @@ public class UserDAOImpl
             updateSt = getConnection().prepareStatement(sql.toString());
 
             updateSt.setLong(1, userIdentity.getUserId());
-            updateSt.setString(2, userIdentity.getIdentity());
+            updateSt.setString(2, userIdentity.getIdentities().get(0));
 
             if (updateSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The " + userIdentity.getType().toString() + " identity "
-                        + userIdentity.getIdentity() + " has been " + (add ? "added to" : "removed from")
-                        + " the user: " + userIdentity.getUserId());
+                        + userIdentity.getIdentities().get(0) + " has been "
+                        + (add ? "added to" : "removed from") + " the user: " + userIdentity.getUserId());
 
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(),
@@ -504,11 +537,11 @@ public class UserDAOImpl
                                                  true);
 
                 if (crudSucc) {
-                    getConnection().commit();
+                    //                    getConnection().commit();
                     success = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    getConnection().rollback();
+                    //                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 

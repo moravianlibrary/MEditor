@@ -49,6 +49,8 @@ import cz.mzk.editor.shared.event.GetHistoryEvent;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
+import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.mzk.editor.shared.rpc.action.GetLoggedUserResult;
 
 /**
  * @author Matous Jobanek
@@ -393,9 +395,42 @@ public abstract class HistoryDays
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
 
+        if (userId != null && userId < 0) {
+            GetLoggedUserAction getLoggedUserAction = new GetLoggedUserAction();
+            DispatchCallback<GetLoggedUserResult> callback = new DispatchCallback<GetLoggedUserResult>() {
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                public void callback(GetLoggedUserResult result) {
+                    setUserId(result.getUserId());
+                    callForDays(mw);
+                }
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                public void callbackError(Throwable t) {
+                    super.callbackError(t);
+                    mw.hide();
+                }
+            };
+            dispatcher.execute(getLoggedUserAction, callback);
+        } else {
+            callForDays(mw);
+        }
+
+    }
+
+    private void callForDays(final ModalWindow mw) {
         GetHistoryDaysAction getHistoryDaysAction = new GetHistoryDaysAction(userId, uuid);
         DispatchCallback<GetHistoryDaysResult> callback = new DispatchCallback<GetHistoryDaysResult>() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void callback(GetHistoryDaysResult result) {
                 List<EditorDate> days = result.getDays();
@@ -410,6 +445,7 @@ public abstract class HistoryDays
             @Override
             public void callbackError(Throwable t) {
                 super.callbackError(t);
+                mw.hide();
             }
         };
         getDispatcher().execute(getHistoryDaysAction, callback);

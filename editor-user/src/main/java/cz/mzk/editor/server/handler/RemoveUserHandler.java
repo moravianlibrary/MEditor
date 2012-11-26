@@ -38,19 +38,18 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.RemoveUserInfoAction;
-import cz.mzk.editor.shared.rpc.action.RemoveUserInfoResult;
+import cz.mzk.editor.shared.rpc.action.RemoveUserAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
-public class RemoveUserInfoHandler
-        implements ActionHandler<RemoveUserInfoAction, RemoveUserInfoResult> {
+public class RemoveUserHandler
+        implements ActionHandler<RemoveUserAction, RemoveUserResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger
-            .getLogger(RemoveUserInfoHandler.class.getPackage().toString());
+    private static final Logger LOGGER = Logger.getLogger(RemoveUserHandler.class.getPackage().toString());
 
     /** The recently modified dao. */
     @Inject
@@ -65,7 +64,7 @@ public class RemoveUserInfoHandler
      *        the configuration
      */
     @Inject
-    public RemoveUserInfoHandler() {
+    public RemoveUserHandler() {
 
     }
 
@@ -77,22 +76,24 @@ public class RemoveUserInfoHandler
      * com.gwtplatform.dispatch.server.ExecutionContext)
      */
     @Override
-    public RemoveUserInfoResult execute(final RemoveUserInfoAction action, final ExecutionContext context)
+    public RemoveUserResult execute(final RemoveUserAction action, final ExecutionContext context)
             throws ActionException {
 
         LOGGER.debug("Processing action: RemoveUserInfoAction " + action.getId());
         ServerUtils.checkExpiredSession();
 
+        boolean successful = false;
+
         if (action.getId() == null) throw new NullPointerException("getId()");
 
         try {
-            userDAO.disableUser(Long.parseLong(action.getId()));
+            successful = userDAO.disableUser(Long.parseLong(action.getId()));
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }
-        return new RemoveUserInfoResult();
+        return new RemoveUserResult(successful);
     }
 
     /*
@@ -102,8 +103,8 @@ public class RemoveUserInfoHandler
      * ()
      */
     @Override
-    public Class<RemoveUserInfoAction> getActionType() {
-        return RemoveUserInfoAction.class;
+    public Class<RemoveUserAction> getActionType() {
+        return RemoveUserAction.class;
     }
 
     /*
@@ -115,7 +116,7 @@ public class RemoveUserInfoHandler
      * com.gwtplatform.dispatch.server.ExecutionContext)
      */
     @Override
-    public void undo(RemoveUserInfoAction action, RemoveUserInfoResult result, ExecutionContext context)
+    public void undo(RemoveUserAction action, RemoveUserResult result, ExecutionContext context)
             throws ActionException {
         // TODO undo method
 

@@ -27,6 +27,9 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
@@ -36,27 +39,29 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
-import cz.mzk.editor.shared.rpc.action.GetUserRolesAndIdentitiesResult;
+import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.UserIdentity;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetRecentlyModifiedHandler.
  */
-public class GetUserRolesAndIdentitiesHandler
-        implements ActionHandler<GetUserRolesAndIdentitiesAction, GetUserRolesAndIdentitiesResult> {
+public class GetUserRolesRightsIdentitiesHandler
+        implements ActionHandler<GetUserRolesRightsIdentitiesAction, GetUserRolesRightsIdentitiesResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(GetUserRolesAndIdentitiesHandler.class.getPackage()
-            .toString());
+    private static final Logger LOGGER = Logger.getLogger(GetUserRolesRightsIdentitiesHandler.class
+            .getPackage().toString());
 
     /** The configuration. */
-    @SuppressWarnings("unused")
     private final EditorConfiguration configuration;
 
     /** The recently modified dao. */
@@ -73,7 +78,7 @@ public class GetUserRolesAndIdentitiesHandler
      *        the user dao
      */
     @Inject
-    public GetUserRolesAndIdentitiesHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
+    public GetUserRolesRightsIdentitiesHandler(final EditorConfiguration configuration, final UserDAO userDAO) {
         this.configuration = configuration;
         this.userDAO = userDAO;
     }
@@ -86,18 +91,47 @@ public class GetUserRolesAndIdentitiesHandler
      * com.gwtplatform.dispatch.server.ExecutionContext)
      */
     @Override
-    public GetUserRolesAndIdentitiesResult execute(final GetUserRolesAndIdentitiesAction action,
-                                                   final ExecutionContext context) throws ActionException {
+    public GetUserRolesRightsIdentitiesResult execute(final GetUserRolesRightsIdentitiesAction action,
+                                                      final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction " + action.getId());
         ServerUtils.checkExpiredSession();
 
         if (action.getId() == null) return null;
+        boolean getAll = true;
 
         try {
-            return new GetUserRolesAndIdentitiesResult(userDAO.getRolesOfUser(Long.parseLong(action.getId())),
-                                                       userDAO.getIdentities(action.getId(),
-                                                                             USER_IDENTITY_TYPES.OPEN_ID));
+            ArrayList<UserIdentity> identities = null;
+            List<USER_IDENTITY_TYPES> identityTypes;
+            if (action.getIdentityTypes() != null) {
+                if (action.getIdentityTypes().isEmpty()) {
+                    identityTypes = configuration.getIdentityTypes();
+                } else {
+                    identityTypes = action.getIdentityTypes();
+                }
+                identities = new ArrayList<UserIdentity>(identityTypes.size());
+
+                for (USER_IDENTITY_TYPES type : identityTypes) {
+                    identities.add(userDAO.getIdentities(action.getId(), type));
+                }
+                getAll = !getAll;
+            }
+
+            long userId = Long.parseLong(action.getId());
+
+            ArrayList<RoleItem> rolesOfUser = null;
+            ArrayList<EDITOR_RIGHTS> rightsOfUser = null;
+
+            if (action.isGetRoles()) {
+                rolesOfUser = userDAO.getRolesOfUser(userId);
+                getAll = !getAll;
+            }
+            if ((!action.isGetRoles() && action.getIdentityTypes() == null) || getAll) {
+                rightsOfUser = userDAO.getRightsOfUser(userId);
+            }
+
+            return new GetUserRolesRightsIdentitiesResult(rolesOfUser, rightsOfUser, identities);
+
         } catch (NumberFormatException e) {
             throw new ActionException(e);
         } catch (DatabaseException e) {
@@ -107,28 +141,20 @@ public class GetUserRolesAndIdentitiesHandler
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
-     * ()
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public Class<GetUserRolesAndIdentitiesAction> getActionType() {
-        return GetUserRolesAndIdentitiesAction.class;
+    public Class<GetUserRolesRightsIdentitiesAction> getActionType() {
+        return GetUserRolesRightsIdentitiesAction.class;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-     * gwtplatform.dispatch.shared.Action,
-     * com.gwtplatform.dispatch.shared.Result,
-     * com.gwtplatform.dispatch.server.ExecutionContext)
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public void undo(GetUserRolesAndIdentitiesAction action,
-                     GetUserRolesAndIdentitiesResult result,
+    public void undo(GetUserRolesRightsIdentitiesAction action,
+                     GetUserRolesRightsIdentitiesResult result,
                      ExecutionContext context) throws ActionException {
         // TODO Auto-generated method stub
 

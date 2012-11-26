@@ -62,12 +62,13 @@ public class ShibbolethAuthenticationFilter
         RememberMeAuthenticationToken token;
 
         HttpSession session = request.getSession();
-        System.err.println(session);
-        Enumeration attributeNames = session.getAttributeNames();
-        System.err.println(attributeNames);
-        String[] valueNames = session.getValueNames();
-        for (String value : valueNames) {
-            System.err.println(value);
+        Enumeration headerNames = request.getHeaderNames();
+
+        while (headerNames.hasMoreElements()) {
+            String element = headerNames.nextElement().toString();
+            System.err.println(element);
+            System.err.println(request.getHeader(element));
+            System.err.println(" ");
         }
 
         //        token = consumer.consume(rpxBaseUrl, rpxApiKey, request);

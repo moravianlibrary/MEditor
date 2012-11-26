@@ -8,7 +8,7 @@
 		<filter-name>guiceFilter</filter-name>
 		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
 	</filter>
-	
+
 	<filter-mapping>
 		<filter-name>guiceFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -28,12 +28,12 @@
 		<listener-class>cz.mzk.editor.server.guice.MyGuiceServletConfig</listener-class>
 	</listener>
 
-<!-- 	<listener>
+	<listener>
 		<listener-class>cz.mzk.editor.server.SessionListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener> -->
+	</listener>
 
 	<!-- request 4 adding servlet -->
 	<servlet>

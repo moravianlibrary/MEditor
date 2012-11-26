@@ -72,7 +72,7 @@ public class RequestsGwtRPCDS
         field.setRequired(true);
         field.setAttribute("width", "25%");
         addField(field);
-        field = new DataSourceTextField(Constants.ATTR_IDENTITY, lang.identity());
+        field = new DataSourceTextField(Constants.ATTR_IDENTITY, lang.identities());
         field.setRequired(true);
         field.setAttribute("width", "*");
         addField(field);

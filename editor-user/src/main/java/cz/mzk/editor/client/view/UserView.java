@@ -29,26 +29,21 @@ package cz.mzk.editor.client.view;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewImpl;
-import com.smartgwt.client.data.DataSource;
-import com.smartgwt.client.data.DataSourceField;
-import com.smartgwt.client.data.fields.DataSourceTextField;
-import com.smartgwt.client.types.SortArrow;
-import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.other.RequestsLayout;
+import cz.mzk.editor.client.other.UsersLayout;
 import cz.mzk.editor.client.presenter.UserPresenter;
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,26 +65,17 @@ public class UserView
     /** The uuid field. */
     private TextItem uuidField;
 
-    /** The user grid. */
-    private ListGrid userGrid;
-
     /** The user roles grid. */
     private ListGrid userRolesGrid;
 
     /** The user identities grid. */
     private ListGrid userIdentitiesGrid;
 
-    /** The remove user. */
-    private IButton removeUser;
-
     /** The remove role. */
     private IButton removeRole;
 
     /** The remove identity. */
     private IButton removeIdentity;
-
-    /** The add user. */
-    private IButton addUser;
 
     /** The add role. */
     private IButton addRole;
@@ -101,172 +87,26 @@ public class UserView
 
     private final RequestsLayout requestsLayout;
 
+    private final UsersLayout usersLayout;
+
+    //    private final EditorClientConfiguration config;
+
     /**
      * Instantiates a new home view.
      */
     @Inject
-    public UserView(LangConstants lang) {
+    public UserView(LangConstants lang, final DispatchAsync dispatcher, EventBus eventBus) {
         this.lang = lang;
         this.layout = new VLayout();
         this.layout.setPadding(10);
         this.layout.setHeight100();
-        HLayout hLayout = new HLayout();
-        hLayout.setWidth(610);
-        hLayout.setExtraSpace(10);
-        // hLayout.setPadding(10);
 
-        hLayout.addMember(getUserLayout());
-        hLayout.addMember(getDetailLayout());
+        usersLayout = new UsersLayout(lang, dispatcher, eventBus);
 
-        layout.addMember(hLayout);
+        layout.addMember(usersLayout);
 
         requestsLayout = new RequestsLayout(lang);
         layout.addMember(requestsLayout);
-    }
-
-    private VLayout getUserLayout() {
-        VLayout userLayout = new VLayout();
-        HTMLFlow users = new HTMLFlow(HtmlCode.bold(lang.users()));
-        users.setHeight(15);
-
-        this.userGrid = new ListGrid();
-        userGrid.setWidth(400);
-        userGrid.setHeight(380);
-        userGrid.setShowSortArrow(SortArrow.CORNER);
-        userGrid.setShowAllRecords(true);
-        userGrid.setAutoFetchData(true);
-        userGrid.setCanHover(true);
-        userGrid.setCanSort(false); // TODO: sort by date (define in datasource)
-        userGrid.setHoverOpacity(75);
-        userGrid.setHoverStyle("interactImageHover");
-        userGrid.setCanEdit(true);
-        userGrid.setMargin(5);
-
-        userLayout.addMember(users);
-        userLayout.addMember(userGrid);
-        HLayout buttonLayout = new HLayout();
-        buttonLayout.setPadding(5);
-        addUser = new IButton(lang.addUser());
-        addUser.setExtraSpace(10);
-        removeUser = new IButton(lang.removeSelected());
-        removeUser.setAutoFit(true);
-        removeUser.setDisabled(true);
-        buttonLayout.addMember(addUser);
-        buttonLayout.addMember(removeUser);
-        userLayout.addMember(buttonLayout);
-
-        return userLayout;
-    }
-
-    private VLayout getDetailLayout() {
-        VLayout detailLayout = new VLayout();
-        detailLayout.setPadding(0);
-        detailLayout.setMargin(0);
-
-        VLayout rolesLayout = getRolesLayout();
-
-        HLayout buttonLayout = new HLayout();
-        buttonLayout.setPadding(5);
-        addRole = new IButton(lang.addRole());
-        addRole.setExtraSpace(10);
-        addRole.setDisabled(true);
-        removeRole = new IButton(lang.removeSelected());
-        removeRole.setAutoFit(true);
-        removeRole.setDisabled(true);
-        buttonLayout.addMember(addRole);
-        buttonLayout.addMember(removeRole);
-        rolesLayout.addMember(buttonLayout);
-
-        detailLayout.addMember(rolesLayout);
-        detailLayout.addMember(getIdentitiesLayout());
-
-        return detailLayout;
-    }
-
-    private VLayout getRolesLayout() {
-        VLayout rolesLayout = new VLayout();
-        rolesLayout.setHeight(200);
-        rolesLayout.setPadding(0);
-        rolesLayout.setMargin(0);
-
-        this.userRolesGrid = new ListGrid();
-        userRolesGrid.setWidth(290);
-        userRolesGrid.setHeight(145);
-        userRolesGrid.setShowSortArrow(SortArrow.CORNER);
-        userRolesGrid.setShowAllRecords(true);
-        userRolesGrid.setCanHover(true);
-        userRolesGrid.setCanSort(true);
-        userRolesGrid.setHoverOpacity(75);
-        userRolesGrid.setHoverStyle("interactImageHover");
-        userRolesGrid.setMargin(5);
-
-        HTMLFlow roles = new HTMLFlow(HtmlCode.bold(lang.roles()));
-        roles.setHeight(15);
-
-        DataSource source = new DataSource();
-        DataSourceField field;
-        field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
-        field.setRequired(true);
-        field.setAttribute("width", "40%");
-        source.addField(field);
-        field = new DataSourceTextField(Constants.ATTR_DESC, lang.description());
-        field.setRequired(true);
-        field.setAttribute("width", "*");
-        source.addField(field);
-        userRolesGrid.setDataSource(source);
-
-        rolesLayout.addMember(roles);
-        rolesLayout.addMember(userRolesGrid);
-
-        return rolesLayout;
-    }
-
-    private VLayout getIdentitiesLayout() {
-
-        VLayout identitiesLayout = new VLayout();
-        identitiesLayout.setPadding(0);
-        identitiesLayout.setMargin(0);
-        identitiesLayout.setHeight(200);
-        this.userIdentitiesGrid = new ListGrid();
-        userIdentitiesGrid.setWidth(290);
-        userIdentitiesGrid.setHeight(145);
-        userIdentitiesGrid.setShowSortArrow(SortArrow.CORNER);
-        userIdentitiesGrid.setShowAllRecords(true);
-        userIdentitiesGrid.setCanHover(true);
-        userIdentitiesGrid.setCanSort(false);
-        userIdentitiesGrid.setHoverOpacity(75);
-        userIdentitiesGrid.setHoverStyle("interactImageHover");
-        userIdentitiesGrid.setMargin(5);
-        userIdentitiesGrid.setCanSelectText(true);
-        // userIdentitiesGrid.setCanEdit(true);
-        DataSource source = new DataSource();
-        DataSourceField field = new DataSourceTextField(Constants.ATTR_IDENTITY, lang.identity());
-        field.setRequired(true);
-        source.addField(field);
-        field = new DataSourceTextField(Constants.ATTR_GENERIC_ID, "id");
-        field.setPrimaryKey(true);
-        field.setHidden(true);
-        field.setRequired(true);
-        source.addField(field);
-        userIdentitiesGrid.setDataSource(source);
-        HTMLFlow openIds = new HTMLFlow(HtmlCode.bold(lang.openIds()));
-        openIds.setHeight(15);
-        identitiesLayout.addMember(openIds);
-        identitiesLayout.addMember(userIdentitiesGrid);
-        HLayout buttonLayout = new HLayout();
-        buttonLayout.setPadding(5);
-        // buttonLayout.setAlign(Alignment.CENTER);
-        addIdentity = new IButton(lang.addIdentity());
-        addIdentity.setExtraSpace(10);
-        addIdentity.setDisabled(true);
-        removeIdentity = new IButton(lang.removeSelected());
-        removeIdentity.setAutoFit(true);
-        removeIdentity.setDisabled(true);
-        buttonLayout.addMember(addIdentity);
-        buttonLayout.addMember(removeIdentity);
-        identitiesLayout.addMember(buttonLayout);
-
-        return identitiesLayout;
     }
 
     /**
@@ -349,13 +189,12 @@ public class UserView
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#getUserGrid ()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public ListGrid getUserGrid() {
-        return userGrid;
+        return usersLayout.getUserGrid();
     }
 
     /*
@@ -378,16 +217,17 @@ public class UserView
         return userIdentitiesGrid;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView# getRemoveUser
-     * ()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public IButton getRemoveUser() {
-        return removeUser;
+        return usersLayout.getRemoveUser();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IButton getRemoveRequest() {
         return requestsLayout.getRemoveRequest();
@@ -413,13 +253,12 @@ public class UserView
         return removeIdentity;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#getAddUser ()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public IButton getAddUser() {
-        return addUser;
+        return usersLayout.getAddUser();
     }
 
     /*
@@ -441,9 +280,20 @@ public class UserView
         return addIdentity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ListGrid getRequestsGrid() {
         return requestsLayout.getRequestsGrid();
+    }
+
+    /**
+     * @return the usersLayout
+     */
+    @Override
+    public UsersLayout getUsersLayout() {
+        return usersLayout;
     }
 
 }

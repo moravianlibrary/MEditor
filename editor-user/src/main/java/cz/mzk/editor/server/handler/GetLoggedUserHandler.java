@@ -84,7 +84,9 @@ public class GetLoggedUserHandler
         boolean editUsers;
         try {
             editUsers = true;
-            return new GetLoggedUserResult(userDAO.getName(userDAO.getUsersId()), editUsers);
+            return new GetLoggedUserResult(userDAO.getName(userDAO.getUsersId()),
+                                           editUsers,
+                                           userDAO.getUsersId());
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

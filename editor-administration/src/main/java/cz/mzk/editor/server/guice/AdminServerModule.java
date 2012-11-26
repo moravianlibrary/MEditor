@@ -46,14 +46,14 @@ import cz.mzk.editor.server.handler.GetHistoryDaysHandler;
 import cz.mzk.editor.server.handler.GetHistoryHandler;
 import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
 import cz.mzk.editor.server.handler.GetLoggedUserHandler;
-import cz.mzk.editor.server.handler.GetUserRolesAndIdentitiesHandler;
+import cz.mzk.editor.server.handler.GetUserRolesRightsIdentitiesHandler;
 import cz.mzk.editor.server.handler.GetUsersInfoHandler;
 import cz.mzk.editor.server.handler.PutUserIdentityHandler;
 import cz.mzk.editor.server.handler.PutUserInfoHandler;
 import cz.mzk.editor.server.handler.PutUserRoleHandler;
 import cz.mzk.editor.server.handler.RemoveRequestItemHandler;
+import cz.mzk.editor.server.handler.RemoveUserHandler;
 import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
-import cz.mzk.editor.server.handler.RemoveUserInfoHandler;
 import cz.mzk.editor.server.handler.RemoveUserRoleHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRequestItemsAction;
@@ -62,14 +62,14 @@ import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
-import cz.mzk.editor.shared.rpc.action.GetUserRolesAndIdentitiesAction;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.RemoveRequestItemAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
-import cz.mzk.editor.shared.rpc.action.RemoveUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserRoleAction;
 
 // TODO: Auto-generated Javadoc
@@ -87,8 +87,8 @@ public class AdminServerModule
     @Override
     protected void configureHandlers() {
         bindHandler(GetUsersInfoAction.class, GetUsersInfoHandler.class);
-        bindHandler(RemoveUserInfoAction.class, RemoveUserInfoHandler.class);
-        bindHandler(GetUserRolesAndIdentitiesAction.class, GetUserRolesAndIdentitiesHandler.class);
+        bindHandler(RemoveUserAction.class, RemoveUserHandler.class);
+        bindHandler(GetUserRolesRightsIdentitiesAction.class, GetUserRolesRightsIdentitiesHandler.class); 
         bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
         bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
         bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);

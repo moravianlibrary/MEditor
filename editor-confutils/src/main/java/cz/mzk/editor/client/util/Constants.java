@@ -136,9 +136,31 @@ public class Constants {
     /** The Constant PATH_TO_PDF_VIEWER. */
     public static final String PATH_TO_PDF_VIEWER = "pdfViewer/web/viewer.html";
 
-    public static enum EDITOR_RULES {
+    public static enum EDITOR_RIGHTS {
 
-        EDIT_USERS, SHOW_ALL_HISTORY, PUBLISH, DELETE, CREATE_NEW_OBJECTS, RUN_LONG_RUNNING_PROCESS;
+        EDIT_USERS(""), SHOW_ALL_HISTORY(""), PUBLISH(""), DELETE(""), CREATE_NEW_OBJECTS(""),
+        RUN_LONG_RUNNING_PROCESS("");
+
+        private final String desc;
+
+        private EDITOR_RIGHTS(String desc) {
+            this.desc = desc;
+        }
+
+        /**
+         * @return the desc
+         */
+        public String getDesc() {
+            return desc;
+        }
+
+        public static EDITOR_RIGHTS parseString(String s) {
+            for (EDITOR_RIGHTS right : EDITOR_RIGHTS.values()) {
+                if (right.toString().equalsIgnoreCase(s)) return right;
+            }
+            return null;
+        }
+
     }
 
     // db

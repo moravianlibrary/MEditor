@@ -73,6 +73,7 @@ public class AdminPresenter
     public static final Type<RevealContentHandler<?>> TYPE_ADMIN_LEFT_CONTENT =
             Constants.TYPE_ADMIN_LEFT_CONTENT;
 
+    @SuppressWarnings("unused")
     private LangConstants lang;
     private volatile boolean unknown = true;
 
@@ -110,6 +111,7 @@ public class AdminPresenter
     private final DispatchAsync dispatcher;
 
     /** The place manager. */
+    @SuppressWarnings("unused")
     private final PlaceManager placeManager;
 
     private boolean isHotKeysEnabled = true;

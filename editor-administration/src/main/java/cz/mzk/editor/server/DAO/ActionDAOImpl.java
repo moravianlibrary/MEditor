@@ -87,8 +87,8 @@ public class ActionDAOImpl
     public static final String SELECT_CRUD_SAVED_EDIT_OBJ_ACTION =
             "SELECT * FROM (SELECT ac.id, ac.timestamp, ac.type, o.digital_object_uuid, ac.editor_user_id FROM "
                     + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION + " ac INNER JOIN "
-                    + Constants.TABLE_SAVED_EDITED_OBJECT + " o ON ac.saved_edited_id = o.id) a WHERE "
-                    + USER_ID_AND_INTERVAL_CONSTRAINTS;
+                    + Constants.TABLE_SAVED_EDITED_OBJECT
+                    + " o ON ac.saved_edited_object_id = o.id) a WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS;
 
     public static final String SELECT_CRUD_TREE_STRUC_ACTION =
             "SELECT * FROM (SELECT ac.id, ac.timestamp, ac.type, s.name, ac.editor_user_id, s.input_queue_directory_path FROM "

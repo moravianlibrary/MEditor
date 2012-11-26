@@ -28,11 +28,13 @@
 package cz.mzk.editor.shared.rpc.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 
@@ -42,17 +44,28 @@ import cz.mzk.editor.shared.rpc.UserIdentity;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetUserRolesAndIdentities {
+public class GetUserRolesRightsIdentities {
 
     /** The id. */
     @In(1)
     private String id;
 
+    /** The identity types. */
+    @In(2)
+    private List<Constants.USER_IDENTITY_TYPES> identityTypes;
+
+    @In(3)
+    private boolean getRoles;
+
     /** The roles. */
     @Out(1)
     private ArrayList<RoleItem> roles;
 
-    /** The identities. */
+    /** The rights. */
     @Out(2)
+    private ArrayList<Constants.EDITOR_RIGHTS> rights;
+
+    /** The identities. */
+    @Out(3)
     private ArrayList<UserIdentity> identities;
 }

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 import javax.activation.UnsupportedDataTypeException;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
@@ -172,6 +173,17 @@ public interface UserDAO {
     ArrayList<RoleItem> getRolesOfUser(long id) throws DatabaseException;
 
     /**
+     * Gets the rights of user.
+     * 
+     * @param userId
+     *        the user id
+     * @return the rights of user
+     * @throws DatabaseException
+     *         the database exception
+     */
+    ArrayList<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException;
+
+    /**
      * Gets the roles.
      * 
      * @return the roles
@@ -183,16 +195,17 @@ public interface UserDAO {
     /**
      * Gets the identities.
      * 
-     * @param id
-     *        the id
+     * @param userId
+     *        the user id
      * @param type
      *        the type
      * @return the identities
      * @throws DatabaseException
      *         the database exception
      * @throws UnsupportedDataTypeException
+     *         the unsupported data type exception
      */
-    ArrayList<UserIdentity> getIdentities(String userId, USER_IDENTITY_TYPES type) throws DatabaseException,
+    UserIdentity getIdentities(String userId, USER_IDENTITY_TYPES type) throws DatabaseException,
             UnsupportedDataTypeException;
 
     /**

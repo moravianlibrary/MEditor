@@ -54,12 +54,12 @@ public class UserHistoryTab
      * @param lang
      * @param dispatcher
      */
-    public UserHistoryTab(EventBus eventBus, LangConstants lang, DispatchAsync dispatcher, Long userId) {
+    public UserHistoryTab(EventBus eventBus, LangConstants lang, DispatchAsync dispatcher) {
         super(eventBus,
               lang,
               dispatcher,
               HtmlCode.title(lang.my() + " " + lang.historyMenu(), 2),
-              userId,
+              new Long(-1),
               null,
               lang.historyMenu() + " " + lang.ofUser());
         setIcon("pieces/16/pawn_green.png");

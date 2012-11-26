@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.RequestItem;
 
 // TODO: Auto-generated Javadoc
@@ -49,7 +50,13 @@ public class RequestDAOImpl
 
     /** The Constant SELECT_IDENTITIES_STATEMENT. */
     public static final String SELECT_IDENTITIES_STATEMENT =
-            "SELECT id, name, identity, modified FROM request_for_adding ORDER BY modified";
+            "SELECT r.type, r.id, object, description, editor_user_id, timestamp FROM ("
+                    + Constants.TABLE_REQUEST_TO_ADMIN
+                    + " r INNER JOIN (SELECT * FROM "
+                    + Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION
+                    + " WHERE type = 'c') a ON r.id = a.request_to_admin_id) WHERE solved = 'false' AND (admin_editor_user_id = '"
+                    + Constants.DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId()
+                    + "' OR admin_editor_user_id = (?))";
 
     /** The Constant SELECT_IDENTITY_STATEMENT. */
     public static final String SELECT_IDENTITY_STATEMENT =
@@ -127,8 +134,10 @@ public class RequestDAOImpl
     public ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException {
         PreparedStatement selectSt = null;
         ArrayList<RequestItem> retList = new ArrayList<RequestItem>();
+        Long userId = getUserId();
         try {
             selectSt = getConnection().prepareStatement(SELECT_IDENTITIES_STATEMENT);
+            selectSt.setLong(1, userId);
         } catch (SQLException e) {
             LOGGER.error("Could not get select roles statement", e);
         }
@@ -136,10 +145,9 @@ public class RequestDAOImpl
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                retList.add(new RequestItem(rs.getLong("id"),
-                                            rs.getString("name"),
-                                            rs.getString("identity"),
-                                            formatter.format(rs.getTimestamp("modified"))));
+                //                r.type, r.id, object, description, editor_user_id, timestamp
+                retList.add(new RequestItem(rs.getLong("id"), rs.getString("description"), rs
+                        .getString("object"), formatter.format(rs.getTimestamp("timestamp"))));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);

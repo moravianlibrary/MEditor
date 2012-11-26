@@ -27,6 +27,7 @@
 
 package cz.mzk.editor.server.handler;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -35,6 +36,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityResult;
@@ -49,6 +52,10 @@ public class PutUserIdentityHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutUserIdentityHandler.class.getPackage()
             .toString());
+
+    /** The user dao. */
+    @Inject
+    private UserDAO userDAO;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -83,17 +90,17 @@ public class PutUserIdentityHandler
         LOGGER.debug("Processing action: PutUserIdentityAction identity:" + action.getIdentity());
 
         boolean succ = false;
-        //        try {
-        //            try {
-        //                succ = userDAO.addRemoveUserIdentity(action.getIdentity(), true);
-        //            } catch (UnsupportedDataTypeException e) {
-        //                throw new ActionException(e);
-        //            }
-        //        } catch (NumberFormatException e) {
-        //            throw new ActionException(e);
-        //        } catch (DatabaseException e) {
-        //            throw new ActionException(e);
-        //        }
+        try {
+            try {
+                succ = userDAO.addRemoveUserIdentity(action.getIdentity(), true);
+            } catch (UnsupportedDataTypeException e) {
+                throw new ActionException(e);
+            }
+        } catch (NumberFormatException e) {
+            throw new ActionException(e);
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
         return new PutUserIdentityResult(succ);
     }
 

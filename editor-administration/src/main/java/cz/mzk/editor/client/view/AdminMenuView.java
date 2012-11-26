@@ -54,6 +54,7 @@ public class AdminMenuView
         extends ViewWithUiHandlers<AdminMenuUiHandlers>
         implements MyView {
 
+    @SuppressWarnings("unused")
     private final LangConstants lang;
     private static EventBus eventBus;
 
@@ -65,14 +66,11 @@ public class AdminMenuView
 
         private IButton menuButton = null;
 
-        private final String buttonType;
-
         /**
          * 
          */
         public MenuButtonLayout(final String buttonType, String title) {
             super();
-            this.buttonType = buttonType;
             final VLayout buttonLayout = new VLayout(1);
             buttonLayout.setAlign(VerticalAlignment.CENTER);
             buttonLayout.setLayoutAlign(Alignment.LEFT);
@@ -92,7 +90,6 @@ public class AdminMenuView
             int vSize = 1;
             hr.setContents("<HR WIDTH=\"98%\" SIZE=\"" + vSize + "\">");
             hr.setHeight(vSize + "px");
-            //            htmlPane.setOverflow(Overflow.);
 
             addMember(buttonLayout);
             addMember(hr);
@@ -123,6 +120,7 @@ public class AdminMenuView
     /**
      * 
      */
+    @SuppressWarnings("static-access")
     @Inject
     public AdminMenuView(EventBus eventBus, LangConstants lang) {
         this.lang = lang;

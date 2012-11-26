@@ -45,6 +45,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.event.GetHistoryEvent;
 import cz.mzk.editor.shared.event.GetHistoryEvent.GetHistoryHandler;
 import cz.mzk.editor.shared.event.GetHistoryItemInfoEvent;
@@ -223,7 +224,7 @@ public class HistoryPresenter
     @Override
     protected void onReset() {
         super.onReset();
-        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
     }
 
     /**
@@ -231,7 +232,7 @@ public class HistoryPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, Constants.TYPE_ADMIN_MAIN_CONTENT, this);
     }
 
 }

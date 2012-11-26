@@ -29,11 +29,15 @@ package cz.mzk.editor.server.config;
 
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.configuration.Configuration;
 
 import cz.mzk.editor.client.config.EditorClientConfiguration;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -274,6 +278,9 @@ public abstract class EditorConfiguration {
         /** The Constant DEFAULT_IMAGES_LOCATION. */
         public static final String DEFAULT_IMAGES_LOCATION = System.getProperty("user.home") + File.separator
                 + "output" + File.separator;
+
+        /** The Constant IDENTITIES. */
+        public static final String IDENTITIES = "identities";
     }
 
     /**
@@ -553,6 +560,35 @@ public abstract class EditorConfiguration {
             return ServerConstants.DOCUMENT_TYPES_DEFAULT;
         } else
             return foo;
+    }
+
+    public List<Constants.USER_IDENTITY_TYPES> getIdentityTypes() {
+        String[] identities = getConfiguration().getStringArray(ServerConstants.IDENTITIES);
+        if (identities == null || identities.length == 0) {
+            ArrayList<USER_IDENTITY_TYPES> idents = new ArrayList<Constants.USER_IDENTITY_TYPES>();
+            idents.add(USER_IDENTITY_TYPES.OPEN_ID);
+            return idents;
+        } else {
+
+            ArrayList<USER_IDENTITY_TYPES> idents =
+                    new ArrayList<Constants.USER_IDENTITY_TYPES>(identities.length);
+            for (int i = 0; i < identities.length; i++) {
+                if (identities[i].toLowerCase().equals("openid")
+                        && !idents.contains(USER_IDENTITY_TYPES.OPEN_ID)) {
+                    idents.add(USER_IDENTITY_TYPES.OPEN_ID);
+                }
+                if (identities[i].toLowerCase().equals("ldap") && !idents.contains(USER_IDENTITY_TYPES.LDAP)) {
+                    idents.add(USER_IDENTITY_TYPES.LDAP);
+                }
+                if (identities[i].toLowerCase().equals("shibboleth")
+                        && !idents.contains(USER_IDENTITY_TYPES.SHIBBOLETH)) {
+                    idents.add(USER_IDENTITY_TYPES.SHIBBOLETH);
+                }
+            }
+            if (idents.isEmpty()) idents.add(USER_IDENTITY_TYPES.OPEN_ID);
+
+            return idents;
+        }
     }
 
     /**

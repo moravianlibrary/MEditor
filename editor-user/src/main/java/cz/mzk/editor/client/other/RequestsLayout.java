@@ -56,10 +56,12 @@ public class RequestsLayout
         HTMLFlow requests = new HTMLFlow(HtmlCode.bold(lang.requests()));
         requests.setHeight(15);
         addMember(requests);
+        setWidth("90%");
+        setHeight("*");
 
         requestsGrid = new ListGrid();
-        requestsGrid.setWidth(690);
-        requestsGrid.setHeight(180);
+        requestsGrid.setWidth100();
+        requestsGrid.setHeight100();
         requestsGrid.setShowSortArrow(SortArrow.CORNER);
         requestsGrid.setShowAllRecords(true);
         requestsGrid.setAutoFetchData(true);

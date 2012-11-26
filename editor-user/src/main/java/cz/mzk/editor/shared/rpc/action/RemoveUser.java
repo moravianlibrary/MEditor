@@ -28,6 +28,7 @@
 package cz.mzk.editor.shared.rpc.action;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
 // TODO: Auto-generated Javadoc
@@ -36,16 +37,14 @@ import com.gwtplatform.dispatch.annotation.Out;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetLoggedUser {
+public class RemoveUser {
 
-    /** The items. */
+    /** The id. */
+    @In(1)
+    private String id;
+
+    /** The successful. */
     @Out(1)
-    private String name;
+    private boolean successful;
 
-    /** The edit users. */
-    @Out(2)
-    private boolean editUsers;
-
-    @Out(3)
-    private Long userId;
 }

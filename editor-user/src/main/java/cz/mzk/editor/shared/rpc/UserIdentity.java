@@ -29,6 +29,8 @@ package cz.mzk.editor.shared.rpc;
 
 import java.io.Serializable;
 
+import java.util.List;
+
 import cz.mzk.editor.client.util.Constants;
 
 // TODO: Auto-generated Javadoc
@@ -41,8 +43,8 @@ public class UserIdentity
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8562338344074874962L;
 
-    /** The identity. */
-    private String identity;
+    /** The identities. */
+    private List<String> identities;
 
     /** The type. */
     private Constants.USER_IDENTITY_TYPES type;
@@ -50,7 +52,6 @@ public class UserIdentity
     /** The user id. */
     private Long userId;
 
-    // @SuppressWarnings("unused")
     /**
      * Instantiates a new recently modified item.
      */
@@ -68,30 +69,26 @@ public class UserIdentity
      * @param userId
      *        the user id
      */
-    public UserIdentity(String identity, Constants.USER_IDENTITY_TYPES type, Long userId) {
+    public UserIdentity(List<String> identities, Constants.USER_IDENTITY_TYPES type, Long userId) {
         super();
-        this.identity = identity;
+        this.identities = identities;
         this.type = type;
         this.userId = userId;
     }
 
     /**
-     * Gets the identity.
-     * 
-     * @return the identity
+     * @return the identities
      */
-    public String getIdentity() {
-        return identity;
+    public List<String> getIdentities() {
+        return identities;
     }
 
     /**
-     * Sets the identity.
-     * 
-     * @param identity
-     *        the new identity
+     * @param identities
+     *        the identities to set
      */
-    public void setIdentity(String identity) {
-        this.identity = identity;
+    public void setIdentities(List<String> identities) {
+        this.identities = identities;
     }
 
     /**
@@ -114,6 +111,8 @@ public class UserIdentity
     }
 
     /**
+     * Gets the user id.
+     * 
      * @return the userId
      */
     public Long getUserId() {
@@ -121,6 +120,8 @@ public class UserIdentity
     }
 
     /**
+     * Sets the user id.
+     * 
      * @param userId
      *        the userId to set
      */
@@ -129,25 +130,20 @@ public class UserIdentity
     }
 
     /**
-     * Hash code.
-     * 
-     * @return the int {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((identity == null) ? 0 : identity.hashCode());
+        result = prime * result + ((identities == null) ? 0 : identities.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
         return result;
     }
 
     /**
-     * Equals.
-     * 
-     * @param obj
-     *        the obj
-     * @return true, if successful {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public boolean equals(Object obj) {
@@ -155,10 +151,13 @@ public class UserIdentity
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         UserIdentity other = (UserIdentity) obj;
-        if (identity == null) {
-            if (other.identity != null) return false;
-        } else if (!identity.equals(other.identity)) return false;
+        if (identities == null) {
+            if (other.identities != null) return false;
+        } else if (!identities.equals(other.identities)) return false;
         if (type != other.type) return false;
+        if (userId == null) {
+            if (other.userId != null) return false;
+        } else if (!userId.equals(other.userId)) return false;
         return true;
     }
 

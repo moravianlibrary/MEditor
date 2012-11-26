@@ -50,7 +50,6 @@ import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
 import cz.mzk.editor.client.presenter.HomePresenter;
 import cz.mzk.editor.client.presenter.ModifyPresenter;
-import cz.mzk.editor.client.presenter.UserPresenter;
 import cz.mzk.editor.client.view.AppView;
 import cz.mzk.editor.client.view.CreateObjectMenuView;
 import cz.mzk.editor.client.view.CreateStructureView;
@@ -58,7 +57,6 @@ import cz.mzk.editor.client.view.DigitalObjectMenuView;
 import cz.mzk.editor.client.view.FindMetadataView;
 import cz.mzk.editor.client.view.HomeView;
 import cz.mzk.editor.client.view.ModifyView;
-import cz.mzk.editor.client.view.UserView;
 import cz.mzk.editor.client.view.other.DCTab;
 
 // TODO: Auto-generated Javadoc
@@ -96,10 +94,6 @@ public class EditorClientModule
                       HomePresenter.MyView.class,
                       HomeView.class,
                       HomePresenter.MyProxy.class);
-        bindPresenter(UserPresenter.class,
-                      UserPresenter.MyView.class,
-                      UserView.class,
-                      UserPresenter.MyProxy.class);
         bindPresenter(ModifyPresenter.class,
                       ModifyPresenter.MyView.class,
                       ModifyView.class,
