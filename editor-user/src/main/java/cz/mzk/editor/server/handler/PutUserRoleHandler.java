@@ -27,6 +27,7 @@
 
 package cz.mzk.editor.server.handler;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -35,6 +36,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.PutUserRoleResult;
@@ -49,9 +52,9 @@ public class PutUserRoleHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutUserRoleHandler.class.getPackage().toString());
 
-    //    /** The recently modified dao. */
-    //    @Inject
-    //    private UserDAO userDAO;
+    /** The recently modified dao. */
+    @Inject
+    private UserDAO userDAO;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -79,15 +82,15 @@ public class PutUserRoleHandler
             throw new NullPointerException("getUserId()");
 
         boolean successful = false;
-        //        try {
-        //            successful = userDAO.addRemoveRoleItem(action.getRole(), true);
-        //        } catch (NumberFormatException e) {
-        //            throw new ActionException(e);
-        //        } catch (DatabaseException e) {
-        //            throw new ActionException(e);
-        //        } catch (UnsupportedDataTypeException e) {
-        //            throw new ActionException(e);
-        //        }
+        try {
+            successful = userDAO.addRemoveUserRoleItem(action.getRole(), true);
+        } catch (NumberFormatException e) {
+            throw new ActionException(e);
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        } catch (UnsupportedDataTypeException e) {
+            throw new ActionException(e);
+        }
         return new PutUserRoleResult(successful);
     }
 

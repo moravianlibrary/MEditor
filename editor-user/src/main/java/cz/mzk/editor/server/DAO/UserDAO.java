@@ -28,10 +28,12 @@
 package cz.mzk.editor.server.DAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.activation.UnsupportedDataTypeException;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
@@ -72,7 +74,6 @@ public interface UserDAO {
      * @return the int
      * @throws DatabaseException
      *         the database exception
-     * @throws UnsupportedDataTypeException
      */
     int isSupported(String identifier) throws DatabaseException;
 
@@ -142,6 +143,7 @@ public interface UserDAO {
      * @throws DatabaseException
      *         the database exception
      * @throws UnsupportedDataTypeException
+     *         the unsupported data type exception
      */
     boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
             UnsupportedDataTypeException;
@@ -157,8 +159,27 @@ public interface UserDAO {
      * @throws DatabaseException
      *         the database exception
      * @throws UnsupportedDataTypeException
+     *         the unsupported data type exception
      */
-    boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+    boolean addRemoveUserRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+            UnsupportedDataTypeException;
+
+    /**
+     * Adds the remove user right item.
+     * 
+     * @param rightName
+     *        the right name
+     * @param userId
+     *        the user id
+     * @param add
+     *        the add
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     * @throws UnsupportedDataTypeException
+     *         the unsupported data type exception
+     */
+    boolean addRemoveUserRightItem(String rightName, Long userId, boolean add) throws DatabaseException,
             UnsupportedDataTypeException;
 
     /**
@@ -181,7 +202,47 @@ public interface UserDAO {
      * @throws DatabaseException
      *         the database exception
      */
-    ArrayList<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException;
+    List<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException;
+
+    /**
+     * Check all rights.
+     * 
+     * @return the list
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<String> checkAllRights() throws DatabaseException;
+
+    /**
+     * Removes the right.
+     * 
+     * @param toRemove
+     *        the to remove
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean removeRight(String toRemove) throws DatabaseException;
+
+    /**
+     * Update right.
+     * 
+     * @param toUpdate
+     *        the to update
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void updateRight(EDITOR_RIGHTS toUpdate) throws DatabaseException;
+
+    /**
+     * Insert right.
+     * 
+     * @param toInsert
+     *        the to insert
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void insertRight(EDITOR_RIGHTS toInsert) throws DatabaseException;
 
     /**
      * Gets the roles.
@@ -211,12 +272,11 @@ public interface UserDAO {
     /**
      * Removes the user.
      * 
-     * @param id
-     *        the id
+     * @param userId
+     *        the user id
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
-     * @throws UnsupportedDataTypeException
      */
     boolean disableUser(long userId) throws DatabaseException;
 
@@ -228,7 +288,6 @@ public interface UserDAO {
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
-     * @throws UnsupportedDataTypeException
      */
     boolean insertUpdatetUser(UserInfoItem user) throws DatabaseException;
 

@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -33,38 +30,27 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.shared.rpc.RoleItem;
-import cz.mzk.editor.shared.rpc.UserIdentity;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class GetRecentlyModified.
+ * @author Matous Jobanek
+ * @version Nov 27, 2012
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetUserRolesRightsIdentities {
+public class PutRemoveUserRights {
 
-    /** The id. */
+    /** The user id. */
     @In(1)
-    private String id;
+    private String userId;
 
-    /** The identity types. */
+    /** The right names. */
     @In(2)
-    private List<Constants.USER_IDENTITY_TYPES> identityTypes;
+    private List<String> rightNames;
 
+    /** The put. */
     @In(3)
-    private boolean getRoles;
+    private boolean put;
 
-    /** The roles. */
+    /** The successful. */
     @Out(1)
-    private List<RoleItem> roles;
-
-    /** The rights. */
-    @Out(2)
-    private List<Constants.EDITOR_RIGHTS> rights;
-
-    /** The identities. */
-    @Out(3)
-    private List<UserIdentity> identities;
+    private boolean successful;
 }

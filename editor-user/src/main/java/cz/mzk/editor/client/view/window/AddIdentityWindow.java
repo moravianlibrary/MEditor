@@ -84,6 +84,10 @@ public abstract class AddIdentityWindow
             @Override
             public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
                 final String identityValue = (String) identity.getValue();
+                final ModalWindow mw = new ModalWindow(form);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
+
                 if (identityValue != null && !"".equals(identityValue.trim())) {
                     ArrayList<String> ident = new ArrayList<String>();
                     ident.add(identityValue);
@@ -94,18 +98,21 @@ public abstract class AddIdentityWindow
                         @Override
                         public void callback(PutUserIdentityResult result) {
                             if (result.isSuccessful()) {
-                                //                                ListGridRecord record = new ListGridRecord();
-                                //                                record.setAttribute(Constants.ATTR_IDENTITY, identityValue);
-                                //                                ListGridRecord[] previousData = getView().getUserIdentityGrid().getRecords();
-                                //                                ListGridRecord[] newData = new ListGridRecord[previousData.length + 1];
-                                //                                System.arraycopy(previousData, 0, newData, 0, previousData.length);
-                                //                                newData[previousData.length] = record;
-                                //                                getView().getUserIdentityGrid().setData(newData);
                                 afterSuccessAction();
                                 hide();
                             } else {
                                 SC.warn("The insertion was not successful. The identity can be already used, please change it a try again.");
                             }
+                            mw.hide();
+                        }
+
+                        /**
+                         * {@inheritDoc}
+                         */
+                        @Override
+                        public void callbackError(Throwable t) {
+                            super.callbackError(t);
+                            mw.hide();
                         }
 
                     });
@@ -120,7 +127,7 @@ public abstract class AddIdentityWindow
 
             @Override
             public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-                destroy();
+                hide();
             }
         });
 
@@ -128,6 +135,7 @@ public abstract class AddIdentityWindow
         addItem(form);
         centerInPage();
         show();
+        focus();
     }
 
     protected abstract void afterSuccessAction();

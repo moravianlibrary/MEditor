@@ -33,6 +33,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
@@ -91,17 +93,36 @@ public class UserDAOImpl
             + " WHERE editor_user_id = (?) )";
 
     /** The Constant SELECT_RIGHTS_OF_USER_STATEMENT. */
-    public static final String SELECT_RIGHTS_OF_USER_STATEMENT = "SELECT name FROM " + Constants.TABLE_ROLE
-            + " WHERE name IN ( SELECT editor_right_name FROM " + Constants.TABLE_USERS_RIGHT
-            + " WHERE editor_user_id = (?) )";
+    public static final String SELECT_RIGHTS_OF_USER_STATEMENT = "SELECT name FROM "
+            + Constants.TABLE_EDITOR_RIGHT + " WHERE name IN ( SELECT editor_right_name FROM "
+            + Constants.TABLE_USERS_RIGHT + " WHERE editor_user_id = (?) )";
+
+    /** The Constant SELECT_ALL_RIGHTS_STATEMENT. */
+    public static final String SELECT_ALL_RIGHTS_STATEMENT = "SELECT * FROM " + Constants.TABLE_EDITOR_RIGHT;
+
+    /** The Constant UPDATE_RIGHT_STATEMENT. */
+    public static final String UPDATE_RIGHT_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_RIGHT
+            + " SET description=(?) WHERE name=(?)";
+
+    /** The Constant INSERT_RIGHT_STATEMENT. */
+    public static final String INSERT_RIGHT_STATEMENT = "INSERT INTO " + Constants.TABLE_EDITOR_RIGHT
+            + " (name, description) VALUES ((?),(?))";
 
     /** The Constant INSERT_USERS_ROLE_ITEM_STATEMENT. */
     public static final String INSERT_USERS_ROLE_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_USERS_ROLE
             + " (editor_user_id, role_name) VALUES ((?),(?))";
 
+    /** The Constant INSERT_USERS_RIGHT_ITEM_STATEMENT. */
+    public static final String INSERT_USERS_RIGHT_ITEM_STATEMENT = "INSERT INTO "
+            + Constants.TABLE_USERS_RIGHT + " (editor_user_id, editor_right_name) VALUES ((?),(?))";
+
     /** The Constant DELETE_USERS_ROLE_ITEM_STATEMENT. */
     public static final String DELETE_USERS_ROLE_ITEM_STATEMENT = "DELETE FROM " + Constants.TABLE_USERS_ROLE
             + " WHERE editor_user_id=(?) AND role_name=(?)";
+
+    /** The Constant DELETE_USERS_RIGHT_ITEM_STATEMENT. */
+    public static final String DELETE_USERS_RIGHT_ITEM_STATEMENT = "DELETE FROM "
+            + Constants.TABLE_USERS_RIGHT + " WHERE editor_user_id=(?) AND role_name=(?)";
 
     /** The Constant SELECT_ROLE_ITEMS_STATEMENT. */
     public static final String SELECT_ROLE_ITEMS_STATEMENT = "SELECT name, description FROM "
@@ -411,8 +432,11 @@ public class UserDAOImpl
         return retList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ArrayList<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException {
+    public List<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException {
         PreparedStatement selectSt = null;
         ArrayList<Constants.EDITOR_RIGHTS> retList = new ArrayList<Constants.EDITOR_RIGHTS>();
         try {
@@ -433,6 +457,153 @@ public class UserDAOImpl
             closeConnection();
         }
         return retList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> checkAllRights() throws DatabaseException {
+        PreparedStatement selectSt = null;
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_ALL_RIGHTS_STATEMENT);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+
+        List<EDITOR_RIGHTS> toUpdate = new ArrayList<Constants.EDITOR_RIGHTS>();
+        List<String> toRemove = new ArrayList<String>();
+        List<EDITOR_RIGHTS> sysRights = Arrays.asList(EDITOR_RIGHTS.values());
+
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString("name");
+                EDITOR_RIGHTS right = EDITOR_RIGHTS.parseString(name);
+                if (right != null) {
+                    String desc = rs.getString("description");
+                    if (!desc.equals(right.getDesc())) {
+                        toUpdate.add(right);
+                    }
+                    sysRights.remove(right);
+                } else {
+                    toRemove.add(name);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+
+        for (EDITOR_RIGHTS toUpRight : toUpdate) {
+            updateRight(toUpRight);
+        }
+
+        for (String toRemRight : toRemove) {
+            if (removeRight(toRemRight)) {
+                toRemove.remove(toRemRight);
+            }
+        }
+
+        for (EDITOR_RIGHTS toAddRight : sysRights) {
+            insertRight(toAddRight);
+        }
+
+        return toRemove;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeRight(String toRemove) throws DatabaseException {
+        PreparedStatement updateSt = null;
+        try {
+            updateSt = getConnection().prepareStatement(UPDATE_RIGHT_STATEMENT);
+            updateSt.setString(1, toRemove);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get update statement", e);
+        }
+
+        boolean successful = false;
+
+        try {
+            int updated = updateSt.executeUpdate();
+
+            if (updated == 1) {
+                LOGGER.error("The right " + toRemove + " has been updated");
+                successful = true;
+            } else {
+                LOGGER.error("The right " + toRemove + " could not be updated. " + updateSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + updateSt, e);
+        } finally {
+            closeConnection();
+        }
+
+        return successful;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateRight(EDITOR_RIGHTS toUpdate) throws DatabaseException {
+        PreparedStatement updateSt = null;
+        try {
+            updateSt = getConnection().prepareStatement(UPDATE_RIGHT_STATEMENT);
+            updateSt.setString(1, toUpdate.getDesc());
+            updateSt.setString(2, toUpdate.toString());
+        } catch (SQLException e) {
+            LOGGER.error("Could not get update statement", e);
+        }
+        try {
+            int updated = updateSt.executeUpdate();
+
+            if (updated == 1) {
+                LOGGER.error("The right " + toUpdate + " has been updated");
+            } else {
+                LOGGER.error("The right " + toUpdate + " could not be updated. " + updateSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + updateSt, e);
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void insertRight(EDITOR_RIGHTS toInsert) throws DatabaseException {
+        PreparedStatement insertSt = null;
+        try {
+            insertSt = getConnection().prepareStatement(INSERT_RIGHT_STATEMENT);
+            insertSt.setString(1, toInsert.toString());
+            insertSt.setString(2, toInsert.getDesc());
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not get update statement", e);
+        }
+        try {
+            int updated = insertSt.executeUpdate();
+
+            if (updated == 1) {
+                LOGGER.error("The right " + toInsert + " has been updated");
+            } else {
+                LOGGER.error("The right " + toInsert + " could not be updated. " + insertSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + insertSt, e);
+        } finally {
+            closeConnection();
+        }
     }
 
     /**
@@ -492,11 +663,6 @@ public class UserDAOImpl
                 || "".equals(userIdentity.getIdentities()) || userIdentity.getUserId() == null)
             throw new NullPointerException();
 
-        //        try {
-        //            getConnection().setAutoCommit(false);
-        //        } catch (SQLException e) {
-        //            LOGGER.warn("Unable to set autocommit off", e);
-        //        }
         boolean success = false;
         PreparedStatement updateSt = null;
         try {
@@ -523,6 +689,12 @@ public class UserDAOImpl
 
             updateSt.setLong(1, userIdentity.getUserId());
             updateSt.setString(2, userIdentity.getIdentities().get(0));
+
+            //            try {
+            //                getConnection().setAutoCommit(false);
+            //            } catch (SQLException e) {
+            //                LOGGER.warn("Unable to set autocommit off", e);
+            //            }
 
             if (updateSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The " + userIdentity.getType().toString() + " identity "
@@ -562,7 +734,7 @@ public class UserDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+    public boolean addRemoveUserRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
             UnsupportedDataTypeException {
 
         if (roleItem == null) throw new NullPointerException("role");
@@ -572,11 +744,11 @@ public class UserDAOImpl
             return true;
         }
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+        //        try {
+        //            getConnection().setAutoCommit(false);
+        //        } catch (SQLException e) {
+        //            LOGGER.warn("Unable to set autocommit off", e);
+        //        }
 
         boolean success = false;
         PreparedStatement updateSt = null;
@@ -594,6 +766,59 @@ public class UserDAOImpl
 
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(), roleItem.getUserId(), "The role has been "
+                                + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
+
+                if (crudSucc) {
+                    //                    getConnection().commit();
+                    success = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    //                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+
+            } else {
+                LOGGER.error("DB has not been updated! " + updateSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+
+        return success;
+    }
+
+    @Override
+    public boolean addRemoveUserRightItem(String rightName, Long userId, boolean add)
+            throws DatabaseException {
+
+        if (rightName == null || "".equals(rightName)) throw new NullPointerException("right");
+
+        boolean success = false;
+        PreparedStatement updateSt = null;
+        try {
+
+            updateSt =
+                    getConnection().prepareStatement(add ? INSERT_USERS_RIGHT_ITEM_STATEMENT
+                            : DELETE_USERS_RIGHT_ITEM_STATEMENT);
+            updateSt.setLong(1, userId);
+            updateSt.setString(2, rightName);
+
+            try {
+                getConnection().setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.warn("Unable to set autocommit off", e);
+            }
+
+            if (updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The right " + rightName + " has been "
+                        + (add ? "added to" : "removed from") + " the user: " + userId);
+
+                boolean crudSucc =
+                        insertEditUserActionItem(getUserId(), userId, "The right has been "
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
 
                 if (crudSucc) {

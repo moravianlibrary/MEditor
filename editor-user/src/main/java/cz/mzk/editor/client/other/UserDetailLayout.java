@@ -56,6 +56,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.AddIdentityWindow;
+import cz.mzk.editor.client.view.window.AddRightsWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
@@ -160,7 +161,7 @@ public class UserDetailLayout
          *        the is role
          * @return the adds the button
          */
-        private ImgButton getAddButton(final Constants.USER_IDENTITY_TYPES identType, boolean isRole) {
+        private ImgButton getAddButton(final Constants.USER_IDENTITY_TYPES identType, final boolean isRole) {
             ImgButton add = new ImgButton();
             add.setSrc("icons/16/add.png");
             add.setWidth(16);
@@ -170,7 +171,7 @@ public class UserDetailLayout
                 @Override
                 public void onClick(ClickEvent event) {
                     if (identType != null) {
-                        new AddIdentityWindow(getIdentityTitle(identType),
+                        new AddIdentityWindow(UserClientUtils.getIdentityTitle(identType),
                                               eventBus,
                                               lang,
                                               userId,
@@ -186,7 +187,24 @@ public class UserDetailLayout
 
                                     @Override
                                     protected void afterGetAction(GetUserRolesRightsIdentitiesResult result) {
-                                        grid.setData(copyIdentities(result.getIdentities().get(0)));
+                                        grid.setData(UserClientUtils.copyIdentities(result.getIdentities()
+                                                .get(0)));
+                                    }
+                                };
+                            }
+                        };
+                    } else if (isRole) {
+
+                    } else {
+                        new AddRightsWindow(lang.roles(), userId, eventBus, lang, dispatcher) {
+
+                            @Override
+                            protected void afterAddAction() {
+                                new GetNewDataHandler(grid, userId, null, false) {
+
+                                    @Override
+                                    protected void afterGetAction(GetUserRolesRightsIdentitiesResult result) {
+                                        grid.setData(UserClientUtils.copyRights(result.getRights()));
                                     }
                                 };
                             }
@@ -360,7 +378,7 @@ public class UserDetailLayout
      *        the data
      * @return the roles layout
      */
-    private VLayout getRolesLayout(ArrayList<RoleItem> roles) {
+    private VLayout getRolesLayout(List<RoleItem> roles) {
         VLayout hLayout = new VLayout();
 
         HTMLFlow roleFlow = new HTMLFlow(HtmlCode.bold(lang.roles()));
@@ -372,7 +390,7 @@ public class UserDetailLayout
         ListGridField descField = new ListGridField(Constants.ATTR_DESC, lang.description());
         userRoleGrid.setFields(nameField, descField);
 
-        userRoleGrid.setData(copyRoles(roles));
+        userRoleGrid.setData(UserClientUtils.copyRoles(roles));
 
         hLayout.addMember(roleFlow);
         hLayout.addMember(userRoleGrid);
@@ -388,22 +406,22 @@ public class UserDetailLayout
      *        the rights
      * @return the rights layout
      */
-    private VLayout getRightsLayout(ArrayList<Constants.EDITOR_RIGHTS> rights) {
+    private VLayout getRightsLayout(List<Constants.EDITOR_RIGHTS> rights) {
         VLayout hLayout = new VLayout();
 
-        HTMLFlow flow = new HTMLFlow(HtmlCode.bold(lang.otherRights()));
-        flow.setHeight(15);
+        HTMLFlow right = new HTMLFlow(HtmlCode.bold(lang.otherRights()));
+        right.setHeight(15);
 
-        UniversalSectionGrid userDataGrid = new UniversalSectionGrid(lang.right(), null, false);
+        UniversalSectionGrid userRightsGrid = new UniversalSectionGrid(lang.right(), null, false);
 
         ListGridField nameField = new ListGridField(Constants.ATTR_NAME, lang.name());
         ListGridField descField = new ListGridField(Constants.ATTR_DESC, lang.description());
-        userDataGrid.setFields(nameField, descField);
+        userRightsGrid.setFields(nameField, descField);
 
-        userDataGrid.setData(copyRights(rights));
+        userRightsGrid.setData(UserClientUtils.copyRights(rights));
 
-        hLayout.addMember(flow);
-        hLayout.addMember(userDataGrid);
+        hLayout.addMember(right);
+        hLayout.addMember(userRightsGrid);
 
         return hLayout;
 
@@ -416,110 +434,26 @@ public class UserDetailLayout
      *        the identities
      * @return the identities layout
      */
-    private HLayout getIdentitiesLayout(ArrayList<UserIdentity> identities) {
+    private HLayout getIdentitiesLayout(List<UserIdentity> identities) {
         HLayout hLayout = new HLayout();
 
         if (identities != null && identities.size() > 0) {
             for (UserIdentity userIdentity : identities) {
 
                 UniversalSectionGrid identityGrid =
-                        new UniversalSectionGrid(getIdentityTitle(userIdentity.getType()) + " "
-                                + lang.identities(), userIdentity.getType(), false);
+                        new UniversalSectionGrid(UserClientUtils.getIdentityTitle(userIdentity.getType())
+                                + " " + lang.identities(), userIdentity.getType(), false);
 
                 ListGridField identityField = new ListGridField(Constants.ATTR_IDENTITY);
                 identityGrid.setFields(identityField);
 
-                identityGrid.setData(copyIdentities(userIdentity));
+                identityGrid.setData(UserClientUtils.copyIdentities(userIdentity));
                 hLayout.addMember(identityGrid);
             }
         } else {
             hLayout.addMember(new HTMLFlow(HtmlCode.title("WARN: There is no identity", 1)));
         }
         return hLayout;
-    }
-
-    /**
-     * Gets the identity title.
-     * 
-     * @param type
-     *        the type
-     * @return the identity title
-     */
-    private String getIdentityTitle(Constants.USER_IDENTITY_TYPES type) {
-        switch (type) {
-            case OPEN_ID:
-                return "OpenID";
-
-            case LDAP:
-                return "LDAP";
-
-            case SHIBBOLETH:
-                return "Shibboleth";
-
-            default:
-                return "Unknown";
-        }
-    }
-
-    /**
-     * Copy identities.
-     * 
-     * @param userIdentity
-     *        the user identity
-     * @return the list grid record[]
-     */
-    private ListGridRecord[] copyIdentities(UserIdentity userIdentity) {
-        ListGridRecord[] identityRecords = new ListGridRecord[userIdentity.getIdentities().size()];
-        if (userIdentity.getIdentities() != null) {
-            for (int i = 0, lastIndex = userIdentity.getIdentities().size(); i < lastIndex; i++) {
-                ListGridRecord rec = new ListGridRecord();
-                rec.setAttribute(Constants.ATTR_IDENTITY, userIdentity.getIdentities().get(i));
-                identityRecords[i] = rec;
-            }
-        }
-        return identityRecords;
-    }
-
-    /**
-     * Copy values.
-     * 
-     * @param roles
-     *        the role
-     * @return the list grid record[]
-     */
-    private ListGridRecord[] copyRoles(ArrayList<RoleItem> roles) {
-
-        ListGridRecord[] roleRecords = new ListGridRecord[roles.size()];
-        if (roles != null && roles.size() > 0) {
-            for (int i = 0, lastIndex = roles.size(); i < lastIndex; i++) {
-                ListGridRecord rec = new ListGridRecord();
-                rec.setAttribute(Constants.ATTR_NAME, roles.get(i).getName());
-                rec.setAttribute(Constants.ATTR_DESC, roles.get(i).getDescription());
-                roleRecords[i] = rec;
-            }
-        }
-
-        return roleRecords;
-    }
-
-    /**
-     * Copy rights.
-     * 
-     * @param rights
-     *        the rights
-     * @return the list grid record[]
-     */
-    private ListGridRecord[] copyRights(ArrayList<Constants.EDITOR_RIGHTS> rights) {
-        ListGridRecord[] rightsRecords = new ListGridRecord[rights.size()];
-        if (rights != null && rights.size() > 0) {
-            for (int i = 0, lastIndex = rights.size(); i < lastIndex; i++) {
-                ListGridRecord rec = new ListGridRecord();
-                rec.setAttribute(Constants.ATTR_NAME, rights.get(i).toString());
-                rec.setAttribute(Constants.ATTR_DESC, rights.get(i).getDesc());
-                rightsRecords[i] = rec;
-            }
-        }
-        return rightsRecords;
     }
 
 }

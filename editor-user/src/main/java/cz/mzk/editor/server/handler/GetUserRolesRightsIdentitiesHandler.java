@@ -101,7 +101,7 @@ public class GetUserRolesRightsIdentitiesHandler
         boolean getAll = true;
 
         try {
-            ArrayList<UserIdentity> identities = null;
+            List<UserIdentity> identities = null;
             List<USER_IDENTITY_TYPES> identityTypes;
             if (action.getIdentityTypes() != null) {
                 if (action.getIdentityTypes().isEmpty()) {
@@ -119,8 +119,8 @@ public class GetUserRolesRightsIdentitiesHandler
 
             long userId = Long.parseLong(action.getId());
 
-            ArrayList<RoleItem> rolesOfUser = null;
-            ArrayList<EDITOR_RIGHTS> rightsOfUser = null;
+            List<RoleItem> rolesOfUser = null;
+            List<EDITOR_RIGHTS> rightsOfUser = null;
 
             if (action.isGetRoles()) {
                 rolesOfUser = userDAO.getRolesOfUser(userId);
