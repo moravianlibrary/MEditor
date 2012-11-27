@@ -24,7 +24,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -36,70 +35,68 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
-import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsResult;
+import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.action.PutRemoveRolesAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveRolesResult;
 
 /**
  * @author Matous Jobanek
  * @version Nov 27, 2012
  */
-public class PutRemoveUserRightsHandler
-        implements ActionHandler<PutRemoveUserRightsAction, PutRemoveUserRightsResult> {
+public class PutRemoveRolesHandler
+        implements ActionHandler<PutRemoveRolesAction, PutRemoveRolesResult> {
 
+    /** The logger. */
+    private static final Logger LOGGER = Logger
+            .getLogger(PutRemoveRolesHandler.class.getPackage().toString());
+
+    /** The recently modified dao. */
     @Inject
     private UserDAO userDAO;
 
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(PutRemoveUserRightsHandler.class.getPackage()
-            .toString());
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public PutRemoveUserRightsResult execute(PutRemoveUserRightsAction action, ExecutionContext context)
+    public PutRemoveRolesResult execute(PutRemoveRolesAction action, ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: PutRemoveUserRightsAction");
+        LOGGER.debug("Processing action: PutRemoveRolesResult");
         ServerUtils.checkExpiredSession();
 
-        boolean successful = true;
-        for (String right : action.getRightNames()) {
-            try {
+        boolean success = true;
 
-                successful &=
-                        userDAO.addRemoveUserRightItem(right,
-                                                       Long.parseLong(action.getUserId()),
-                                                       action.isPut());
-
-            } catch (NumberFormatException e) {
-                throw new ActionException(e);
-            } catch (DatabaseException e) {
-                throw new ActionException(e);
-            } catch (UnsupportedDataTypeException e) {
-                throw new ActionException(e);
+        if (action.getRoleItems() != null) {
+            for (RoleItem roleItem : action.getRoleItems()) {
+                try {
+                    success &= userDAO.addRemoveRoleItem(roleItem, action.isToPut());
+                } catch (DatabaseException e) {
+                    success = false;
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
 
-        return new PutRemoveUserRightsResult(successful);
+        return new PutRemoveRolesResult(success);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Class<PutRemoveUserRightsAction> getActionType() {
-        return PutRemoveUserRightsAction.class;
+    public Class<PutRemoveRolesAction> getActionType() {
+        return PutRemoveRolesAction.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void undo(PutRemoveUserRightsAction action,
-                     PutRemoveUserRightsResult result,
-                     ExecutionContext context) throws ActionException {
+    public void undo(PutRemoveRolesAction action, PutRemoveRolesResult result, ExecutionContext context)
+            throws ActionException {
         // TODO Auto-generated method stub
+
     }
 
 }

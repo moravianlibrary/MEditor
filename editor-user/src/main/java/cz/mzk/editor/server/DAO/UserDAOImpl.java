@@ -104,9 +104,19 @@ public class UserDAOImpl
     public static final String UPDATE_RIGHT_STATEMENT = "UPDATE " + Constants.TABLE_EDITOR_RIGHT
             + " SET description=(?) WHERE name=(?)";
 
+    public static final String DELETE_RIGHT_STATEMENT = "DELETE FROM " + Constants.TABLE_EDITOR_RIGHT
+            + " WHERE name=(?)";
+
     /** The Constant INSERT_RIGHT_STATEMENT. */
     public static final String INSERT_RIGHT_STATEMENT = "INSERT INTO " + Constants.TABLE_EDITOR_RIGHT
             + " (name, description) VALUES ((?),(?))";
+
+    /** The Constant INSERT_ROLE_STATEMENT. */
+    public static final String INSERT_ROLE_STATEMENT = "INSERT INTO " + Constants.TABLE_ROLE
+            + " (name, description) VALUES ((?),(?))";
+
+    public static final String DELETE_ROLE_STATEMENT = "DELETE FROM " + Constants.TABLE_ROLE
+            + " WHERE name=(?)";
 
     /** The Constant INSERT_USERS_ROLE_ITEM_STATEMENT. */
     public static final String INSERT_USERS_ROLE_ITEM_STATEMENT = "INSERT INTO " + Constants.TABLE_USERS_ROLE
@@ -473,7 +483,7 @@ public class UserDAOImpl
 
         List<EDITOR_RIGHTS> toUpdate = new ArrayList<Constants.EDITOR_RIGHTS>();
         List<String> toRemove = new ArrayList<String>();
-        List<EDITOR_RIGHTS> sysRights = Arrays.asList(EDITOR_RIGHTS.values());
+        List<EDITOR_RIGHTS> sysRights = new ArrayList<EDITOR_RIGHTS>(Arrays.asList(EDITOR_RIGHTS.values()));
 
         try {
             ResultSet rs = selectSt.executeQuery();
@@ -520,7 +530,7 @@ public class UserDAOImpl
     public boolean removeRight(String toRemove) throws DatabaseException {
         PreparedStatement updateSt = null;
         try {
-            updateSt = getConnection().prepareStatement(UPDATE_RIGHT_STATEMENT);
+            updateSt = getConnection().prepareStatement(DELETE_RIGHT_STATEMENT);
             updateSt.setString(1, toRemove);
         } catch (SQLException e) {
             LOGGER.error("Could not get update statement", e);
@@ -777,6 +787,41 @@ public class UserDAOImpl
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
+            } else {
+                LOGGER.error("DB has not been updated! " + updateSt);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+
+        return success;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException {
+
+        if (roleItem == null) throw new NullPointerException("role");
+        if (roleItem.getName() == null || "".equals(roleItem.getName())) throw new NullPointerException();
+
+        boolean success = false;
+        PreparedStatement updateSt = null;
+        try {
+
+            updateSt = getConnection().prepareStatement(add ? INSERT_ROLE_STATEMENT : DELETE_ROLE_STATEMENT);
+            updateSt.setString(1, roleItem.getName());
+            if (add) updateSt.setString(2, roleItem.getDescription());
+
+            if (updateSt.executeUpdate() == 1) {
+                LOGGER.debug("DB has been updated: The role " + roleItem.getName() + " has been "
+                        + (add ? "added" : "removed"));
+                success = true;
             } else {
                 LOGGER.error("DB has not been updated! " + updateSt);
             }

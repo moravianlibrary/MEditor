@@ -24,15 +24,20 @@
 
 package cz.mzk.editor.client.other;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class UserClientUtils.
+ * 
  * @author Matous Jobanek
  * @version Nov 27, 2012
  */
@@ -120,6 +125,23 @@ public class UserClientUtils {
             }
         }
         return rightsRecords;
+    }
+
+    /**
+     * Copy to rights.
+     * 
+     * @param rightsRecords
+     *        the rights records
+     * @return the list
+     */
+    public static List<Constants.EDITOR_RIGHTS> copyToRights(ListGridRecord[] rightsRecords) {
+        List<Constants.EDITOR_RIGHTS> rights = new ArrayList<Constants.EDITOR_RIGHTS>(rightsRecords.length);
+        if (rightsRecords != null && rightsRecords.length > 0) {
+            for (int i = 0, lastIndex = rightsRecords.length; i < lastIndex; i++) {
+                rights.add(EDITOR_RIGHTS.parseString(rightsRecords[i].getAttribute(Constants.ATTR_NAME)));
+            }
+        }
+        return rights;
     }
 
 }

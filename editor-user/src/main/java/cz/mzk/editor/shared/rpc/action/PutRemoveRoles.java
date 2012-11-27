@@ -1,11 +1,8 @@
 /*
  * Metadata Editor
- * @author Jiri Kremser
- * 
- * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -27,25 +24,28 @@
 
 package cz.mzk.editor.shared.rpc.action;
 
+import java.util.List;
+
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
 import cz.mzk.editor.shared.rpc.RoleItem;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GetRecentlyModified.
+ * @author Matous Jobanek
+ * @version Nov 27, 2012
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class PutUserRole {
+public class PutRemoveRoles {
 
-    /** The role. */
     @In(1)
-    private RoleItem role;
+    private List<RoleItem> roleItems;
 
-    /** The successful. */
+    @In(2)
+    private boolean toPut;
+
     @Out(1)
     private boolean successful;
 

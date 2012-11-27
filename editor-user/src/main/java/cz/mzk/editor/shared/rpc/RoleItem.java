@@ -29,6 +29,10 @@ package cz.mzk.editor.shared.rpc;
 
 import java.io.Serializable;
 
+import java.util.List;
+
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecentlyModifiedItem.
@@ -36,6 +40,7 @@ import java.io.Serializable;
 public class RoleItem
         implements Serializable {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1940732012984034268L;
 
     /** The user id. */
@@ -46,6 +51,9 @@ public class RoleItem
 
     /** The description. */
     private String description;
+
+    /** The rights. */
+    private List<EDITOR_RIGHTS> rights;
 
     // @SuppressWarnings("unused")
     /**
@@ -70,6 +78,23 @@ public class RoleItem
         this.userId = userId;
         this.name = name;
         this.description = description;
+    }
+
+    /**
+     * Instantiates a new role item.
+     * 
+     * @param name
+     *        the name
+     * @param description
+     *        the description
+     * @param rights
+     *        the rights
+     */
+    public RoleItem(String name, String description, List<EDITOR_RIGHTS> rights) {
+        super();
+        this.name = name;
+        this.description = description;
+        this.rights = rights;
     }
 
     /**
@@ -111,6 +136,8 @@ public class RoleItem
     }
 
     /**
+     * Gets the user id.
+     * 
      * @return the userId
      */
     public Long getUserId() {
@@ -118,6 +145,8 @@ public class RoleItem
     }
 
     /**
+     * Sets the user id.
+     * 
      * @param userId
      *        the userId to set
      */
@@ -126,37 +155,27 @@ public class RoleItem
     }
 
     /**
-     * {@inheritDoc}
+     * @return the rights
      */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
-        return result;
+    public List<EDITOR_RIGHTS> getRights() {
+        return rights;
+    }
+
+    /**
+     * @param rights
+     *        the rights to set
+     */
+    public void setRights(List<EDITOR_RIGHTS> rights) {
+        this.rights = rights;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        RoleItem other = (RoleItem) obj;
-        if (description == null) {
-            if (other.description != null) return false;
-        } else if (!description.equals(other.description)) return false;
-        if (name == null) {
-            if (other.name != null) return false;
-        } else if (!name.equals(other.name)) return false;
-        if (userId == null) {
-            if (other.userId != null) return false;
-        } else if (!userId.equals(other.userId)) return false;
-        return true;
+    public String toString() {
+        return "RoleItem [userId=" + userId + ", name=" + name + ", description=" + description + ", rights="
+                + rights + "]";
     }
 
 }

@@ -26,22 +26,22 @@ package cz.mzk.editor.client.view.window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.other.UniversalListGrid;
 import cz.mzk.editor.client.other.UserClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
@@ -50,46 +50,52 @@ import cz.mzk.editor.shared.rpc.action.CheckRightsResult;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsResult;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class AddRightsWindow.
+ * 
  * @author Matous Jobanek
  * @version Nov 27, 2012
  */
 public abstract class AddRightsWindow
         extends UniversalWindow {
 
+    private final UniversalListGrid grid;
+
     /**
-     * @param height
-     * @param width
-     * @param title
+     * Instantiates a new adds the rights window.
+     * 
+     * @param userId
+     *        the user id
      * @param eventBus
-     * @param milisToWait
+     *        the event bus
+     * @param lang
+     *        the lang
+     * @param dispatcher
+     *        the dispatcher
+     * @param currentRights
+     *        the current rights
      */
-    public AddRightsWindow(String title,
-                           final String userId,
+    public AddRightsWindow(final String userId,
                            EventBus eventBus,
                            LangConstants lang,
-                           final DispatchAsync dispatcher) {
-        super(300, 600, title, eventBus, 20);
+                           final DispatchAsync dispatcher,
+                           List<ListGridRecord> currentRights) {
+        super(500, 600, lang.roles(), eventBus, 20);
 
-        final ListGrid grid = new ListGrid();
-        grid.setShowSortArrow(SortArrow.CORNER);
-        grid.setShowAllRecords(true);
-        grid.setCanSort(true);
-        grid.setCanHover(true);
-        grid.setHoverOpacity(75);
-        grid.setHoverWidth(400);
-        grid.setHoverStyle("interactImageHover");
-        grid.setCanSelectText(true);
-        grid.setCanDragSelectText(true);
+        grid = new UniversalListGrid();
         grid.setMargin(10);
-        grid.setHeight(200);
+        grid.setHeight(400);
         grid.setWidth100();
 
-        ListGridField nameField = new ListGridField(Constants.ATTR_NAME, lang.name() + " " + lang.role());
+        ListGridField nameField =
+                new ListGridField(Constants.ATTR_NAME, lang.name() + " " + lang.role().toLowerCase());
         ListGridField descField =
-                new ListGridField(Constants.ATTR_DESC, lang.description() + " " + lang.role());
+                new ListGridField(Constants.ATTR_DESC, lang.description() + " " + lang.role().toLowerCase());
         grid.setFields(nameField, descField);
-        grid.setData(UserClientUtils.copyRights(Arrays.asList(EDITOR_RIGHTS.values())));
+        List<EDITOR_RIGHTS> sysRights = Arrays.asList(EDITOR_RIGHTS.values());
+        sysRights.removeAll(currentRights);
+        grid.setData(UserClientUtils.copyRights(sysRights));
 
         final ModalWindow mw = new ModalWindow(grid);
         mw.setLoadingIcon("loadingAnimation.gif");
@@ -120,7 +126,7 @@ public abstract class AddRightsWindow
             }
         });
 
-        IButton add = new IButton(lang.addIdentity());
+        IButton add = new IButton(lang.addRight());
         add.setExtraSpace(5);
         add.addClickHandler(new ClickHandler() {
 
@@ -129,37 +135,46 @@ public abstract class AddRightsWindow
              */
             @Override
             public void onClick(ClickEvent event) {
-                final ModalWindow mw = new ModalWindow(grid);
-                mw.setLoadingIcon("loadingAnimation.gif");
-                mw.show(true);
 
-                ArrayList<String> toAdd = new ArrayList<String>();
-                for (ListGridRecord rec : grid.getSelectedRecords()) {
-                    toAdd.add(rec.getAttributeAsString(Constants.ATTR_NAME));
+                if (userId != null) {
+
+                    final ModalWindow mw = new ModalWindow(grid);
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+
+                    ArrayList<String> toAdd = new ArrayList<String>();
+                    for (ListGridRecord rec : grid.getSelectedRecords()) {
+                        toAdd.add(rec.getAttributeAsString(Constants.ATTR_NAME));
+                    }
+
+                    PutRemoveUserRightsAction putRightsAction =
+                            new PutRemoveUserRightsAction(userId, toAdd, true);
+
+                    dispatcher.execute(putRightsAction, new DispatchCallback<PutRemoveUserRightsResult>() {
+
+                        /**
+                         * {@inheritDoc}
+                         */
+                        @Override
+                        public void callback(PutRemoveUserRightsResult result) {
+                            afterAddAction();
+                            mw.hide();
+                            hide();
+                        }
+
+                        /**
+                         * {@inheritDoc}
+                         */
+                        @Override
+                        public void callbackError(Throwable t) {
+                            super.callbackError(t);
+                            mw.hide();
+                        }
+                    });
+                } else {
+                    afterAddAction();
+                    hide();
                 }
-
-                PutRemoveUserRightsAction putRightsAction =
-                        new PutRemoveUserRightsAction(userId, toAdd, true);
-
-                dispatcher.execute(putRightsAction, new DispatchCallback<PutRemoveUserRightsResult>() {
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    @Override
-                    public void callback(PutRemoveUserRightsResult result) {
-                        afterAddAction();
-                    }
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    @Override
-                    public void callbackError(Throwable t) {
-                        super.callbackError(t);
-                        mw.hide();
-                    }
-                });
             }
 
         });
@@ -187,5 +202,15 @@ public abstract class AddRightsWindow
         focus();
     }
 
+    /**
+     * @return the grid
+     */
+    protected UniversalListGrid getGrid() {
+        return grid;
+    }
+
+    /**
+     * After add action.
+     */
     protected abstract void afterAddAction();
 }

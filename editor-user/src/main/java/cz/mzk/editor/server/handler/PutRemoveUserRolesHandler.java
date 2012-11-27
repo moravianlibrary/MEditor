@@ -1,8 +1,11 @@
 /*
  * Metadata Editor
+ * @author Matous Jobanek
+ * 
+ * 
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (Matous.Jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -36,42 +39,41 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
-import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsResult;
+import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesResult;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author Matous Jobanek
- * @version Nov 27, 2012
+ * The Class PutRecentlyModifiedHandler.
  */
-public class PutRemoveUserRightsHandler
-        implements ActionHandler<PutRemoveUserRightsAction, PutRemoveUserRightsResult> {
+public class PutRemoveUserRolesHandler
+        implements ActionHandler<PutRemoveUserRolesAction, PutRemoveUserRolesResult> {
+
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(PutRemoveUserRolesHandler.class.getPackage()
+            .toString());
 
     @Inject
     private UserDAO userDAO;
-
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(PutRemoveUserRightsHandler.class.getPackage()
-            .toString());
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public PutRemoveUserRightsResult execute(PutRemoveUserRightsAction action, ExecutionContext context)
-            throws ActionException {
+    public PutRemoveUserRolesResult execute(final PutRemoveUserRolesAction action,
+                                            final ExecutionContext context) throws ActionException {
 
-        LOGGER.debug("Processing action: PutRemoveUserRightsAction");
+        LOGGER.debug("Processing action: PutRemoveUserRolesAction");
         ServerUtils.checkExpiredSession();
 
+        if (action.getRoleItems() == null) throw new NullPointerException("getRoleItems()");
+
         boolean successful = true;
-        for (String right : action.getRightNames()) {
+        for (RoleItem role : action.getRoleItems()) {
+
             try {
-
-                successful &=
-                        userDAO.addRemoveUserRightItem(right,
-                                                       Long.parseLong(action.getUserId()),
-                                                       action.isPut());
-
+                successful &= userDAO.addRemoveUserRoleItem(role, action.isToAdd());
             } catch (NumberFormatException e) {
                 throw new ActionException(e);
             } catch (DatabaseException e) {
@@ -81,25 +83,25 @@ public class PutRemoveUserRightsHandler
             }
         }
 
-        return new PutRemoveUserRightsResult(successful);
+        return new PutRemoveUserRolesResult(successful);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Class<PutRemoveUserRightsAction> getActionType() {
-        return PutRemoveUserRightsAction.class;
+    public Class<PutRemoveUserRolesAction> getActionType() {
+        return PutRemoveUserRolesAction.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void undo(PutRemoveUserRightsAction action,
-                     PutRemoveUserRightsResult result,
+    public void undo(PutRemoveUserRolesAction action,
+                     PutRemoveUserRolesResult result,
                      ExecutionContext context) throws ActionException {
-        // TODO Auto-generated method stub
-    }
+        // TODO undo method
 
+    }
 }

@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.shared.rpc.action;
 
+import java.util.List;
+
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
@@ -39,11 +41,15 @@ import cz.mzk.editor.shared.rpc.RoleItem;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class RemoveUserRole {
+public class PutRemoveUserRoles {
 
-    /** The role item. */
+    /** The role items. */
     @In(1)
-    private RoleItem roleItem;
+    private List<RoleItem> roleItems;
+
+    /** The to add. */
+    @In(2)
+    private boolean toAdd;
 
     /** The successful. */
     @Out(1)

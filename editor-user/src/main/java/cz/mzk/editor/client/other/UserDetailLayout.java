@@ -25,12 +25,12 @@
 package cz.mzk.editor.client.other;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -57,6 +57,7 @@ import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.AddIdentityWindow;
 import cz.mzk.editor.client.view.window.AddRightsWindow;
+import cz.mzk.editor.client.view.window.AddRoleWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
@@ -109,7 +110,7 @@ public class UserDetailLayout
             extends SectionStack {
 
         /** The grid. */
-        private final ListGrid grid;
+        private final UniversalListGrid grid;
 
         /**
          * Instantiates a new universal section grid.
@@ -128,16 +129,7 @@ public class UserDetailLayout
             setHeight(100);
             setMargin(5);
 
-            grid = new ListGrid();
-            grid.setShowSortArrow(SortArrow.CORNER);
-            grid.setShowAllRecords(true);
-            grid.setCanSort(true);
-            grid.setCanHover(true);
-            grid.setHoverOpacity(75);
-            grid.setHoverWidth(400);
-            grid.setHoverStyle("interactImageHover");
-            grid.setShowHeader(false);
-            grid.setCanSelectText(true);
+            grid = new UniversalListGrid();
             grid.setCanDragSelectText(true);
 
             SectionStackSection sectionStackSection = new SectionStackSection(title);
@@ -194,9 +186,26 @@ public class UserDetailLayout
                             }
                         };
                     } else if (isRole) {
+                        new AddRoleWindow(userId,
+                                          lang,
+                                          eventBus,
+                                          dispatcher,
+                                          Arrays.asList(grid.getRecords())) {
 
+                            @Override
+                            protected void afterAddAction() {
+                                new GetNewDataHandler(grid, userId, null, true) {
+
+                                    @Override
+                                    protected void afterGetAction(GetUserRolesRightsIdentitiesResult result) {
+                                        grid.setData(UserClientUtils.copyRoles(result.getRoles()));
+                                    }
+                                };
+                            }
+                        };
                     } else {
-                        new AddRightsWindow(lang.roles(), userId, eventBus, lang, dispatcher) {
+                        new AddRightsWindow(userId, eventBus, lang, dispatcher, Arrays.asList(grid
+                                .getRecords())) {
 
                             @Override
                             protected void afterAddAction() {

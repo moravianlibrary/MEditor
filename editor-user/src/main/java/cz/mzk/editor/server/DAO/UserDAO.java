@@ -300,4 +300,16 @@ public interface UserDAO {
      */
     ArrayList<UserInfoItem> getUsers() throws DatabaseException;
 
+    /**
+     * Adds the remove role item.
+     * 
+     * @param roleItem
+     *        the role item
+     * @param add
+     *        the add
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException;
 }

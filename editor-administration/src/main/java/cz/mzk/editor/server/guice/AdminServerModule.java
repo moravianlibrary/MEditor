@@ -49,14 +49,14 @@ import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
 import cz.mzk.editor.server.handler.GetLoggedUserHandler;
 import cz.mzk.editor.server.handler.GetUserRolesRightsIdentitiesHandler;
 import cz.mzk.editor.server.handler.GetUsersInfoHandler;
+import cz.mzk.editor.server.handler.PutRemoveRolesHandler;
 import cz.mzk.editor.server.handler.PutRemoveUserRightsHandler;
+import cz.mzk.editor.server.handler.PutRemoveUserRolesHandler;
 import cz.mzk.editor.server.handler.PutUserIdentityHandler;
 import cz.mzk.editor.server.handler.PutUserInfoHandler;
-import cz.mzk.editor.server.handler.PutUserRoleHandler;
 import cz.mzk.editor.server.handler.RemoveRequestItemHandler;
 import cz.mzk.editor.server.handler.RemoveUserHandler;
 import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
-import cz.mzk.editor.server.handler.RemoveUserRoleHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckRightsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRequestItemsAction;
@@ -67,14 +67,14 @@ import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveRolesAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
-import cz.mzk.editor.shared.rpc.action.PutUserRoleAction;
 import cz.mzk.editor.shared.rpc.action.RemoveRequestItemAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
-import cz.mzk.editor.shared.rpc.action.RemoveUserRoleAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -96,8 +96,7 @@ public class AdminServerModule
         bindHandler(PutUserIdentityAction.class, PutUserIdentityHandler.class);
         bindHandler(PutUserInfoAction.class, PutUserInfoHandler.class);
         bindHandler(RemoveUserIdentityAction.class, RemoveUserIdentityHandler.class);
-        bindHandler(PutUserRoleAction.class, PutUserRoleHandler.class);
-        bindHandler(RemoveUserRoleAction.class, RemoveUserRoleHandler.class);
+        bindHandler(PutRemoveUserRolesAction.class, PutRemoveUserRolesHandler.class);
         bindHandler(GetAllRolesAction.class, GetAllRolesHandler.class);
         bindHandler(GetLoggedUserAction.class, GetLoggedUserHandler.class);
         bindHandler(GetAllRequestItemsAction.class, GetAllRequestItemsHandler.class);
@@ -105,6 +104,7 @@ public class AdminServerModule
         bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
         bindHandler(CheckRightsAction.class, CheckRightsHandler.class);
         bindHandler(PutRemoveUserRightsAction.class, PutRemoveUserRightsHandler.class);
+        bindHandler(PutRemoveRolesAction.class, PutRemoveRolesHandler.class);
 
         bindHandler(GetHistoryItemInfoAction.class, GetHistoryItemInfoHandler.class);
         bindHandler(GetHistoryAction.class, GetHistoryHandler.class);
