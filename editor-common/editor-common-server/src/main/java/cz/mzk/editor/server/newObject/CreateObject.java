@@ -98,6 +98,9 @@ public class CreateObject {
     /** The processed pages. */
     private final Map<String, String> processedPages;
 
+    /** The processed records */
+    private final Map<String, String> processedTracks;
+
     /** The sysno. */
     private String sysno;
 
@@ -129,6 +132,7 @@ public class CreateObject {
                         final @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.inputDirPath = inputDirPath;
         this.processedPages = new HashMap<String, String>();
+        this.processedTracks = new HashMap<String, String>();
         this.ingestedObjects = new ArrayList<String>();
         this.fedoraAccess = fedoraAccess;
         this.config = config;
@@ -262,6 +266,10 @@ public class CreateObject {
             node.setExist(true);
             node.setUuid(processedPages.get(node.getPath()));
         }
+        if (processedTracks.containsKey(node.getPath())) {
+            node.setExist(true);
+            node.setUuid(processedTracks.get(node.getPath()));
+        }
         if (node.getExist()) {
             // do not create, but append only 
             List<NewDigitalObject> childrenToAdd = node.getChildren();
@@ -300,6 +308,7 @@ public class CreateObject {
             }
         }
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
+        boolean isTrack = node.getModel() == DigitalObjectModel.TRACK;
 
         builder.setSignature(node.getSignature());
         builder.setBase(base);
@@ -334,6 +343,11 @@ public class CreateObject {
         boolean internal = config.getImageServerInternal();
         String imageUrl = null;
         String newFilePath = null;
+
+        if (isTrack) {
+            //newFilePath = addSlash(config.getSoundRecordingServ)
+            //builder.setUuid(node.getUuid());
+        }
 
         if (isPage) {
             String url = config.getImageServerUrl();
@@ -419,6 +433,11 @@ public class CreateObject {
             }
         }
 
+        if (isTrack && success) {
+            //TODO-MR
+            node.getPath();
+        }
+
         if (!success) {
             insertFOXML(node, mods, dc, attempt - 1);
 
@@ -426,6 +445,7 @@ public class CreateObject {
             handlePdf(node);
         }
         if (node.getModel() == DigitalObjectModel.PAGE) processedPages.put(node.getPath(), node.getUuid());
+        if (node.getModel() == DigitalObjectModel.TRACK) processedTracks.put(node.getPath(), node.getUuid());
         return node.getUuid();
     }
 

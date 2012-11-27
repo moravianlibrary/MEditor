@@ -431,14 +431,11 @@ public class CreateStructureView
 
                 @Override
                 public void onClick(MenuItemClickEvent event) {
-                    String possibleAudioMimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
 
-                    if (Constants.AUDIO_MIMETYPES.isAudio(possibleAudioMimeType)) {
-                        String mimeType = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR);
+                    if ("track".equals(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID))) {
                         String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
-                        String type = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_TYPE);
                         String modelid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID);
-                        Window audioPlayer = new AudioPlayerWindow(eventBus, mimeType, uuid, modelid);
+                        Window audioPlayer = new AudioPlayerWindow(eventBus, uuid, modelid);
                         audioPlayer.show();
 
                     } else {
@@ -644,12 +641,12 @@ public class CreateStructureView
             pictureField.setDetailFormatter(new DetailFormatter() {  // TODO audio image
                 public String format(Object value, Record record, DetailViewerField field) {
                     String modelId = record.getAttribute(Constants.ATTR_MODEL_ID);
-                    if ("track".equals(modelId)) { //TODO-MR control mimetype
+
+                    if ("track".equals(modelId)) {
                         field.setImageURLPrefix("icons/128/");
                         return "sound_recording.png";
-                        //String path = servletContext.getRealPath("/images/icons/128/sound_recording.jp2");
-                        //return new String("88e6561e-0cc6-3e56-9f2b-e6679826dc24");
                     } else {
+                        field.setImageURLPrefix(getImageURLPrefix());
                         return (String) value;
                     }
                 }
@@ -747,6 +744,9 @@ public class CreateStructureView
         ToolStrip toolStrip = new ToolStrip();
         toolStrip.setWidth100();
         ToolStripMenuButton menuButton = getToolStripMenuButton();
+
+
+
         toolStrip.addMenuButton(menuButton);
 
         imageThumbnailHeight = Constants.IMAGE_THUMBNAIL_HEIGHT;

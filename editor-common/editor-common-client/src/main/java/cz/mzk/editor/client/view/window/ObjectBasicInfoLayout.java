@@ -223,7 +223,7 @@ public abstract class ObjectBasicInfoLayout
                         setEditPage();
                         break;
                     case SOUND_UNIT:
-                        setEditSoundUnit(); //TODO-MR: rychla editace
+                        setEditSoundUnit();
                         break;
                     case TRACK:
                         setEditTrack();
@@ -260,7 +260,9 @@ public abstract class ObjectBasicInfoLayout
         public void setEditTrack() {
             nameOrTitle.setTitle(lang.dcTitle());
             nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
+            partNumber.setValue(record.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO));
             otherLayout.addMember(new MyDynamicForm(nameOrTitle));
+            otherLayout.addMember(new MyDynamicForm(partNumber));
         }
 
         private void setEditSoundUnit() {
@@ -268,6 +270,7 @@ public abstract class ObjectBasicInfoLayout
             nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
             partNumber.setValue(record.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO));
             otherLayout.addMember(new MyDynamicForm(nameOrTitle));
+            //otherLayout.addMember(partNumber);
         }
 
         /**

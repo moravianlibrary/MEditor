@@ -54,6 +54,8 @@ public interface CreateObjectMenuUiHandlers
 
     void loadStructure();
 
+    void createAudioStructure();
+
     HasHandlers getBus();
 
     void addPages(List<Record> pages, String parent, boolean isAtOnce);

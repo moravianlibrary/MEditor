@@ -109,7 +109,7 @@ public class ConvertToJPEG2000Handler
             ServerUtils.checkExpiredSession(httpSessionProvider);
         }
 
-        if (item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {
+        if (item != null && item.getMimeType() != null && item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {
             convertToAudio(item);
         } else {
             if (configuration.getAkkaOn()) {

@@ -259,6 +259,22 @@ public abstract class FoxmlBuilder {
             case IMG_THUMB:
                 dataStreamVersion =
                         createDatastreamVersionElement(datastreamEl, null, "image/jpeg", "", versionId);
+                break;
+            case WAV:
+                dataStreamVersion =
+                        createDatastreamVersionElement(datastreamEl, null, "audio/wav",
+                                "Wav version of this audio track", versionId);
+                break;
+            case MP3:
+                dataStreamVersion =
+                        createDatastreamVersionElement(datastreamEl, null, "audio/mpeg",
+                                "Ogg Vorbis version of this audio track", versionId);
+                break;
+            case OGG:
+                dataStreamVersion =
+                        createDatastreamVersionElement(datastreamEl, null, "audio/ogg",
+                                "Mp3 version of this audio track", versionId);
+
         }
         switch (dsCGroup) {
             case X:

@@ -88,6 +88,10 @@ public class SequentialCreateLayout
 
     private CreateDynamicForm partNameForm;
 
+    private TextItem relatedItemPartNumber;
+
+    private CreateDynamicForm relatedItemPartNumberForm;
+
     private TextItem xOfSequence;
 
     private CreateDynamicForm xOfSequenceForm;
@@ -139,16 +143,16 @@ public class SequentialCreateLayout
     }
 
     public VLayout getSequentialCreateLayout() {
-        //        ATTR_PICTURE_OR_UUID        uuid      uuid        uuid        picture          uuid
-        //        ATTR_MODEL_ID               modelId   modelid     modelid     modelid     modelid 
+        //        ATTR_PICTURE_OR_UUID        uuid      uuid        uuid        picture        uuid                 uuid
+        //        ATTR_MODEL_ID               modelId   modelid     modelid     modelid     modelid                 modelid
 
-        //                                    vol       item        int p       page        int p       mon un
+        //                                    vol       item        int p       page        int p       mon un      sound un
 
-        //        ATTR_NAME                             part name   title       name        title       part name
+        //        ATTR_NAME                             part name   title       name        title       part name   title
         //        ATTR_TYPE                             genre       genre       spec type   genre    
-        //        ATTR_DATE_OR_INT_PART_NAME  date      date        part name               part name   date
-        //        ATTR_NOTE_OR_INT_SUBTITLE   note      note        subtitle                subtitle    note
-        //        ATTR_PART_NUMBER_OR_ALTO    part num  part num    part num    alto        part num    part num
+        //        ATTR_DATE_OR_INT_PART_NAME  date      date        part name               part name   date        part name
+        //        ATTR_NOTE_OR_INT_SUBTITLE   note      note        subtitle                subtitle    note        related part num
+        //        ATTR_PART_NUMBER_OR_ALTO    part num  part num    part num    alto        part num    part num    part num
         //        ATTR_ADITIONAL_INFO_OR_OCR            item/suppl  art/pic     ocr         pict/chapt  suppl
 
         nameOrTitle = new TextItem("name", lang.name());
@@ -159,6 +163,9 @@ public class SequentialCreateLayout
 
         levelNames = new SelectItem("levelNames", lang.levelName());
         levelNamesForm = new CreateDynamicForm(levelNames);
+
+        relatedItemPartNumber = new TextItem("relatedItemPartName", "");
+        relatedItemPartNumberForm = new CreateDynamicForm(relatedItemPartNumber);
 
         xOfLevelNames = new TextItem("xOfLevelNames", "XXXX");
         xOfLevelNames.setWidth(50);
@@ -290,10 +297,11 @@ public class SequentialCreateLayout
 
                 //TODO-MR: recording, co zde pridat?
                 case SOUND_UNIT:
-                    setCreateDefault();
+                    setCreateSoundUnit();
                     break;
-
-
+                case TRACK:
+                    setCreateTrack();
+                    break;
 
                 default:
                     setCreateDefault();
@@ -303,6 +311,13 @@ public class SequentialCreateLayout
             setCreateDefault();
         }
         createLayout.addMember(otherLayout, 0);
+    }
+
+    private void setCreateTrack() {
+        nameOrTitle.setTitle(lang.dcTitle());
+        partNumber.setTitle(lang.partNumber());
+        otherLayout.addMember(partNameForm);
+        otherLayout.addMember(nameOrTitleForm);
     }
 
     /**
@@ -329,7 +344,7 @@ public class SequentialCreateLayout
         otherLayout.addMember(levelNamesLayout);
 
         nameOrTitle.setTitle(lang.supplementName());
-        otherLayout.addMember(nameOrTitleForm);
+        otherLayout.addMember(nameOrTitleForm);;
 
         partNumberForm.setWidth100();
         otherLayout.addMember(partNumberForm);
@@ -337,6 +352,20 @@ public class SequentialCreateLayout
         dateIssued.setPrompt(getDateFormatHint(DigitalObjectModel.MONOGRAPHUNIT));
         otherLayout.addMember(dateIssuedForm);
         otherLayout.addMember(addNoteButtonLyout);
+
+    }
+
+    private void setCreateSoundUnit() {
+        nameOrTitle.setTitle(lang.title());
+        //subtitle.setTitle(lang.subtitle());
+        otherLayout.addMember(nameOrTitleForm);
+        //otherLayout.addMember(subtitleForm);
+        partName.setTitle(lang.intPartPartName());
+        otherLayout.addMember(partNumberForm);
+        otherLayout.addMember(partNameForm);
+
+
+
 
     }
 

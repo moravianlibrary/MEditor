@@ -47,7 +47,7 @@ import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICAL;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALITEM;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALVOLUME;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARCHIVE;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.RECORDING;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUNDRECORDING;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.TRACK;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.IMAGE_UNIT;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUND_UNIT;
@@ -111,10 +111,10 @@ public class NamedGraphModel
         putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
 
         /** The Sound recording */
-        putRelationship(RECORDING, hasUnit, TRACK);
-        putRelationship(RECORDING, hasUnit, PAGE);
-        putRelationship(RECORDING, hasUnit, IMAGE_UNIT);
-        putRelationship(RECORDING, hasUnit, SOUND_UNIT);
+        putRelationship(SOUNDRECORDING, hasUnit, TRACK);
+        putRelationship(SOUNDRECORDING, hasUnit, PAGE);
+        putRelationship(SOUNDRECORDING, hasUnit, IMAGE_UNIT);
+        putRelationship(SOUNDRECORDING, hasUnit, SOUND_UNIT);
         putRelationship(IMAGE_UNIT, hasUnit, PAGE);
         putRelationship(SOUND_UNIT, hasUnit, TRACK);
         putRelationship(SOUND_UNIT, isOnPage, PAGE);

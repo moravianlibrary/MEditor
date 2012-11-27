@@ -276,6 +276,8 @@ public class CreateObjectMenuView
             }
         });
 
+
+
         structureTreeGrid.addDropHandler(new DropHandler() {
 
             @Override
@@ -798,7 +800,7 @@ public class CreateObjectMenuView
 
 
         //exclusivity relationship, page is on IMAGE_UNIT xor RECORDING. Not both!
-        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.RECORDING) {
+        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.SOUNDRECORDING) {
             //TreeNode parentNode = structureTreeGrid.getTree().getParent(targetNode);
             SC.say(getPagesWithRedundantRelationship(targetNode, selection, true).toString());
         }

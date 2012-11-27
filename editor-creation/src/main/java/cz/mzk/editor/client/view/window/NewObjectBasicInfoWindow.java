@@ -161,6 +161,10 @@ public abstract class NewObjectBasicInfoWindow
                 record.setAttribute(Constants.ATTR_TYPE, managerLayout.getType(model, null));
                 break;
 
+            case TRACK:
+                record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
+                record.setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, managerLayout.getPartNumber());
+
             default:
                 record.setAttribute(Constants.ATTR_NAME, managerLayout.getNameOrTitle());
                 break;

@@ -15,9 +15,10 @@ import cz.mzk.editor.client.util.Constants;
  */
 public class AudioPlayerWindow extends UniversalWindow {
 
-    public AudioPlayerWindow(EventBus eventBus, String mimeType, String uuid, String modelid) {
+    public AudioPlayerWindow(EventBus eventBus, String uuid, String modelid) {
         super(200, 400, "Audio player", eventBus, 50);
         setLayoutAlign(Alignment.CENTER);
+        Label label = new Label(uuid);
 
         this.setWidth(400);
         this.setHeight(300);
@@ -26,9 +27,6 @@ public class AudioPlayerWindow extends UniversalWindow {
         this.centerInPage();
         HTMLPane audioPane = new HTMLPane();
         audioPane.setPadding(15);
-        Constants.AUDIO_MIMETYPES mim = Constants.AUDIO_MIMETYPES.findByMimetype(mimeType);
-        SC.say(Location.getPath() + "audio/"
-                + uuid + mim.getExtension());
         audioPane.setContents("<audio controls>"
                 + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.OGG_MIMETYPE)
                 + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.MP3_MIMETYPE)
@@ -38,7 +36,7 @@ public class AudioPlayerWindow extends UniversalWindow {
 
 
         this.addItem(audioPane);
-
+        this.addItem(label);
         this.show();
 
     }

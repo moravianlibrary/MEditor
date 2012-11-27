@@ -66,14 +66,14 @@ public class LabelAndModelConverter {
         getModelFromLabel().put(lang.graphic(), DigitalObjectModel.GRAPHIC);
         getLabelFromModel().put(DigitalObjectModel.SUPPLEMENT.getValue(), lang.supplement());
         getModelFromLabel().put(lang.supplement(), DigitalObjectModel.SUPPLEMENT);
-        getLabelFromModel().put(DigitalObjectModel.RECORDING.getValue(), "recording");
-        getModelFromLabel().put("recording", DigitalObjectModel.RECORDING);
-        getLabelFromModel().put(DigitalObjectModel.IMAGE_UNIT.getValue(), "image_unit");
-        getModelFromLabel().put("image_unit", DigitalObjectModel.IMAGE_UNIT);
-        getLabelFromModel().put(DigitalObjectModel.SOUND_UNIT.getValue(), "sound_unit");
-        getModelFromLabel().put("sound_unit", DigitalObjectModel.SOUND_UNIT);
-        getLabelFromModel().put(DigitalObjectModel.TRACK.getValue(), "track");
-        getModelFromLabel().put("track", DigitalObjectModel.TRACK);
+        getLabelFromModel().put(DigitalObjectModel.SOUNDRECORDING.getValue(), lang.soundrecording());
+        getModelFromLabel().put(lang.soundrecording(), DigitalObjectModel.SOUNDRECORDING);
+        getLabelFromModel().put(DigitalObjectModel.IMAGE_UNIT.getValue(), lang.imageUnit());
+        getModelFromLabel().put(lang.imageUnit(), DigitalObjectModel.IMAGE_UNIT);
+        getLabelFromModel().put(DigitalObjectModel.SOUND_UNIT.getValue(), lang.soundUnit());
+        getModelFromLabel().put(lang.soundUnit(), DigitalObjectModel.SOUND_UNIT);
+        getLabelFromModel().put(DigitalObjectModel.TRACK.getValue(), lang.track());
+        getModelFromLabel().put(lang.track(), DigitalObjectModel.TRACK);
     }
 
     public static Map<String, DigitalObjectModel> getModelFromLabel() {

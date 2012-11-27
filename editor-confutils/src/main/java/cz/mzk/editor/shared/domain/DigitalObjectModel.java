@@ -47,9 +47,9 @@ public enum DigitalObjectModel
     MONOGRAPHUNIT("monographunit", Constants.MONOGRAPH_UNIT_ICON),
 
     /** The SOUND RECORDING. */
-    RECORDING("recording", "", TopLevelObjectModel.MONOGRAPH),
-    SOUND_UNIT("sound_unit", Constants.MONOGRAPH_UNIT_ICON), //TODO-MR: icon
-    IMAGE_UNIT("image_unit", Constants.MONOGRAPH_UNIT_ICON),
+    SOUNDRECORDING("soundrecording", "", TopLevelObjectModel.MONOGRAPH),
+    SOUND_UNIT("soundunit", Constants.MONOGRAPH_UNIT_ICON), //TODO-MR: icon
+    IMAGE_UNIT("imageunit", Constants.MONOGRAPH_UNIT_ICON),
     TRACK("track", ""),
 
     /**

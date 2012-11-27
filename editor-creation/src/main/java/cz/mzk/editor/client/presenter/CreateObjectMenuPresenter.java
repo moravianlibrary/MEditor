@@ -549,6 +549,11 @@ public class CreateObjectMenuPresenter
     }
 
     @Override
+    public void createAudioStructure() {
+        //TODO-MR automatic structure
+    }
+
+    @Override
     public HasHandlers getBus() {
         return getEventBus();
     }

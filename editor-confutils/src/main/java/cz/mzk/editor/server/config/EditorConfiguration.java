@@ -69,6 +69,10 @@ public abstract class EditorConfiguration {
 
         public static final String EDITOR_HOME = "editor.home";
 
+        public static final String SOUND_RECORDING_SERVER_URL = "soundRecordingServer.url";
+
+        public static final String SOUND_RECORDING_HOME = "soundRecordingServer.path";
+
         /** The Constant IMAGE_EXTENSIONS. */
         public static final String IMAGE_EXTENSIONS = "imageExtension";
 
@@ -359,6 +363,10 @@ public abstract class EditorConfiguration {
      */
     public String getDjatokaHome() {
         return getConfiguration().getString(ServerConstants.DJATOKA_HOME);
+    }
+
+    public String getSoundRecordingServerUrl() {
+        return getConfiguration().getString(ServerConstants.SOUND_RECORDING_SERVER_URL);
     }
 
     /**
