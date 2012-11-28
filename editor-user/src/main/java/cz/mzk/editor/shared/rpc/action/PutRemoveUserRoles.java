@@ -55,4 +55,8 @@ public class PutRemoveUserRoles {
     @Out(1)
     private boolean successful;
 
+    /** The roles. */
+    @Out(2)
+    private List<RoleItem> roles;
+
 }

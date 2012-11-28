@@ -94,10 +94,10 @@ public class GetUserRolesRightsIdentitiesHandler
     public GetUserRolesRightsIdentitiesResult execute(final GetUserRolesRightsIdentitiesAction action,
                                                       final ExecutionContext context) throws ActionException {
 
-        LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction " + action.getId());
+        LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction " + action.getUserId());
         ServerUtils.checkExpiredSession();
 
-        if (action.getId() == null) return null;
+        if (action.getUserId() == null) return null;
         boolean getAll = true;
 
         try {
@@ -112,12 +112,12 @@ public class GetUserRolesRightsIdentitiesHandler
                 identities = new ArrayList<UserIdentity>(identityTypes.size());
 
                 for (USER_IDENTITY_TYPES type : identityTypes) {
-                    identities.add(userDAO.getIdentities(action.getId(), type));
+                    identities.add(userDAO.getIdentities(action.getUserId(), type));
                 }
                 getAll = !getAll;
             }
 
-            long userId = Long.parseLong(action.getId());
+            long userId = Long.parseLong(action.getUserId());
 
             List<RoleItem> rolesOfUser = null;
             List<EDITOR_RIGHTS> rightsOfUser = null;

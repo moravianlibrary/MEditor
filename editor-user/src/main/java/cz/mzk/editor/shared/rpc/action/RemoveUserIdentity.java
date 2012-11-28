@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.shared.rpc.action;
 
+import java.util.List;
+
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
@@ -45,7 +47,7 @@ public class RemoveUserIdentity {
     @In(1)
     private UserIdentity userIdentity;
 
-    /** The successful. */
+    /** The identities. */
     @Out(1)
-    private boolean successful;
+    private List<UserIdentity> identities;
 }

@@ -98,6 +98,26 @@ public class RoleItem
     }
 
     /**
+     * Instantiates a new role item.
+     * 
+     * @param userId
+     *        the user id
+     * @param name
+     *        the name
+     * @param description
+     *        the description
+     * @param rights
+     *        the rights
+     */
+    public RoleItem(Long userId, String name, String description, List<EDITOR_RIGHTS> rights) {
+        super();
+        this.userId = userId;
+        this.name = name;
+        this.description = description;
+        this.rights = rights;
+    }
+
+    /**
      * Gets the name.
      * 
      * @return the name
@@ -176,6 +196,32 @@ public class RoleItem
     public String toString() {
         return "RoleItem [userId=" + userId + ", name=" + name + ", description=" + description + ", rights="
                 + rights + "]";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        RoleItem other = (RoleItem) obj;
+        if (name == null) {
+            if (other.name != null) return false;
+        } else if (!name.equals(other.name)) return false;
+        return true;
     }
 
 }

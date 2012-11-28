@@ -189,8 +189,8 @@ public abstract class CreateNewRoleWindow
 
         HLayout imgLayout = new HLayout(2);
         imgLayout.setAlign(Alignment.CENTER);
-        imgLayout.addMember(getAddRoleButton());
-        imgLayout.addMember(getRemoveRoleButton());
+        imgLayout.addMember(getAddRightButton());
+        imgLayout.addMember(getRemoveRightButton());
         imgLayout.setHeight(10);
 
         return imgLayout;
@@ -201,9 +201,9 @@ public abstract class CreateNewRoleWindow
      * 
      * @return the adds the right button
      */
-    private IButton getAddRoleButton() {
+    private IButton getAddRightButton() {
         IButton add = new IButton();
-        add.setTitle(lang.addRole());
+        add.setTitle(lang.addRight());
         add.setShowTitle(true);
         add.setIcon("icons/16/add.png");
         add.setShowRollOver(true);
@@ -216,7 +216,8 @@ public abstract class CreateNewRoleWindow
             public void onClick(ClickEvent event) {
                 final List<ListGridRecord> currentRights =
                         new ArrayList<ListGridRecord>(Arrays.asList(rightsGrid.getRecords()));
-                new AddRightsWindow(null, eventBus, lang, dispatcher, currentRights) {
+                new AddRightsWindow(null, eventBus, lang, dispatcher, UserClientUtils.copyToRights(rightsGrid
+                        .getRecords())) {
 
                     @Override
                     protected void afterAddAction() {
@@ -238,9 +239,9 @@ public abstract class CreateNewRoleWindow
      * 
      * @return the removes the right button
      */
-    private IButton getRemoveRoleButton() {
+    private IButton getRemoveRightButton() {
         IButton remove = new IButton();
-        remove.setTitle(lang.removeRole());
+        remove.setTitle(lang.remove() + " " + lang.right().toLowerCase());
         remove.setShowTitle(true);
         remove.setIcon("icons/16/remove.png");
         remove.setShowRollOver(true);

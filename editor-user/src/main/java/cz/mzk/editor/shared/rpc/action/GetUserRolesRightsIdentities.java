@@ -45,9 +45,9 @@ import cz.mzk.editor.shared.rpc.UserIdentity;
 @SuppressWarnings("unused")
 public class GetUserRolesRightsIdentities {
 
-    /** The id. */
+    /** The user id. */
     @In(1)
-    private String id;
+    private String userId;
 
     /** The identity types. */
     @In(2)

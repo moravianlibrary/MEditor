@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.List;
+
 import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
@@ -38,8 +40,11 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.RoleItem;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesResult;
 
@@ -54,8 +59,13 @@ public class PutRemoveUserRolesHandler
     private static final Logger LOGGER = Logger.getLogger(PutRemoveUserRolesHandler.class.getPackage()
             .toString());
 
+    /** The user dao. */
     @Inject
     private UserDAO userDAO;
+
+    /** The configuration. */
+    @Inject
+    private EditorConfiguration configuration;
 
     /**
      * {@inheritDoc}
@@ -75,15 +85,29 @@ public class PutRemoveUserRolesHandler
             try {
                 successful &= userDAO.addRemoveUserRoleItem(role, action.isToAdd());
             } catch (NumberFormatException e) {
+                LOGGER.warn(e);
                 throw new ActionException(e);
             } catch (DatabaseException e) {
+                LOGGER.warn(e);
                 throw new ActionException(e);
             } catch (UnsupportedDataTypeException e) {
+                LOGGER.warn(e);
                 throw new ActionException(e);
             }
         }
 
-        return new PutRemoveUserRolesResult(successful);
+        List<RoleItem> roles = null;
+        if (!action.isToAdd()) {
+            GetUserRolesRightsIdentitiesHandler getRolesHandler =
+                    new GetUserRolesRightsIdentitiesHandler(configuration, userDAO);
+            GetUserRolesRightsIdentitiesAction getRolesAction =
+                    new GetUserRolesRightsIdentitiesAction(action.getRoleItems().get(0).getUserId()
+                            .toString(), null, true);
+            GetUserRolesRightsIdentitiesResult rolesResult = getRolesHandler.execute(getRolesAction, context);
+            roles = rolesResult.getRoles();
+        }
+
+        return new PutRemoveUserRolesResult(successful, roles);
     }
 
     /**

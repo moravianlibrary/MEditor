@@ -74,7 +74,8 @@ public abstract class AddIdentityWindow
         form.setWidth(500);
         form.setHeight(150);
 
-        final TextItem identity = new TextItem(Constants.ATTR_IDENTITY, lang.openId());
+        final TextItem identity =
+                new TextItem(Constants.ATTR_IDENTITY, title + " " + lang.identity().toLowerCase());
         identity.setWidth(320);
         ButtonItem add = new ButtonItem();
         add.setEndRow(false);

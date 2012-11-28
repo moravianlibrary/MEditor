@@ -91,7 +91,7 @@ public abstract class AddRoleWindow
                          final LangConstants lang,
                          EventBus eventBus,
                          final DispatchAsync dispatcher,
-                         final List<ListGridRecord> currentRoles) {
+                         final List<RoleItem> currentRoles) {
         super(450, 600, lang.addRole(), eventBus, 100);
         this.lang = lang;
         this.eventBus = eventBus;
@@ -119,6 +119,7 @@ public abstract class AddRoleWindow
                 ArrayList<RoleItem> roles = result.getRoles();
                 if (roles != null) {
                     roles.removeAll(currentRoles);
+
                     grid.setData(UserClientUtils.copyRoles(roles));
                 }
                 mw.hide();
@@ -135,7 +136,7 @@ public abstract class AddRoleWindow
 
         });
 
-        IButton add = new IButton(lang.addRight());
+        IButton add = new IButton(lang.addRole());
         add.setExtraSpace(5);
         add.addClickHandler(new ClickHandler() {
 

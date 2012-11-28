@@ -31,6 +31,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 
@@ -85,6 +86,16 @@ public class UserClientUtils {
         return identityRecords;
     }
 
+    public static UserIdentity copyToIdentities(ListGridRecord[] identityRec,
+                                                USER_IDENTITY_TYPES type,
+                                                Long userId) {
+        List<String> identityRecords = new ArrayList<String>(identityRec.length);
+        for (int i = 0, lastIndex = identityRec.length; i < lastIndex; i++) {
+            identityRecords.add(identityRec[i].getAttribute(Constants.ATTR_IDENTITY));
+        }
+        return new UserIdentity(identityRecords, type, userId);
+    }
+
     /**
      * Copy values.
      * 
@@ -105,6 +116,18 @@ public class UserClientUtils {
         }
 
         return roleRecords;
+    }
+
+    public static List<RoleItem> copyToRoles(Long userId, ListGridRecord[] records) {
+
+        List<RoleItem> roles = new ArrayList<RoleItem>(records.length);
+        if (records != null && records.length > 0) {
+            for (int i = 0, lastIndex = records.length; i < lastIndex; i++) {
+                roles.add(new RoleItem(userId, records[i].getAttribute(Constants.ATTR_NAME), records[i]
+                        .getAttribute(Constants.ATTR_DESC)));
+            }
+        }
+        return roles;
     }
 
     /**
@@ -139,6 +162,23 @@ public class UserClientUtils {
         if (rightsRecords != null && rightsRecords.length > 0) {
             for (int i = 0, lastIndex = rightsRecords.length; i < lastIndex; i++) {
                 rights.add(EDITOR_RIGHTS.parseString(rightsRecords[i].getAttribute(Constants.ATTR_NAME)));
+            }
+        }
+        return rights;
+    }
+
+    /**
+     * Copy to rights.
+     * 
+     * @param rightsRecords
+     *        the rights records
+     * @return the list
+     */
+    public static List<String> copyToRightsString(ListGridRecord[] rightsRecords) {
+        List<String> rights = new ArrayList<String>(rightsRecords.length);
+        if (rightsRecords != null && rightsRecords.length > 0) {
+            for (int i = 0, lastIndex = rightsRecords.length; i < lastIndex; i++) {
+                rights.add(rightsRecords[i].getAttribute(Constants.ATTR_NAME));
             }
         }
         return rights;

@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.List;
+
 import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
@@ -33,9 +35,13 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsResult;
 
@@ -52,6 +58,10 @@ public class PutRemoveUserRightsHandler
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(PutRemoveUserRightsHandler.class.getPackage()
             .toString());
+
+    /** The configuration. */
+    @Inject
+    private EditorConfiguration configuration;
 
     /**
      * {@inheritDoc}
@@ -73,15 +83,29 @@ public class PutRemoveUserRightsHandler
                                                        action.isPut());
 
             } catch (NumberFormatException e) {
+                LOGGER.warn(e);
                 throw new ActionException(e);
             } catch (DatabaseException e) {
+                LOGGER.warn(e);
                 throw new ActionException(e);
             } catch (UnsupportedDataTypeException e) {
+                LOGGER.warn(e);
                 throw new ActionException(e);
             }
         }
 
-        return new PutRemoveUserRightsResult(successful);
+        List<EDITOR_RIGHTS> rights = null;
+        if (!action.isPut()) {
+            GetUserRolesRightsIdentitiesHandler getRightsHandler =
+                    new GetUserRolesRightsIdentitiesHandler(configuration, userDAO);
+            GetUserRolesRightsIdentitiesAction getRightsAction =
+                    new GetUserRolesRightsIdentitiesAction(action.getUserId(), null, false);
+            GetUserRolesRightsIdentitiesResult rightsResult =
+                    getRightsHandler.execute(getRightsAction, context);
+            rights = rightsResult.getRights();
+        }
+
+        return new PutRemoveUserRightsResult(successful, rights);
     }
 
     /**

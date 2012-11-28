@@ -30,6 +30,8 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
+import cz.mzk.editor.client.util.Constants;
+
 /**
  * @author Matous Jobanek
  * @version Nov 27, 2012
@@ -53,4 +55,8 @@ public class PutRemoveUserRights {
     /** The successful. */
     @Out(1)
     private boolean successful;
+
+    /** The rights. */
+    @Out(2)
+    private List<Constants.EDITOR_RIGHTS> rights;
 }

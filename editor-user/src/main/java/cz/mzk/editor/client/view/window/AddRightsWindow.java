@@ -80,7 +80,7 @@ public abstract class AddRightsWindow
                            EventBus eventBus,
                            LangConstants lang,
                            final DispatchAsync dispatcher,
-                           List<ListGridRecord> currentRights) {
+                           List<EDITOR_RIGHTS> currentRights) {
         super(500, 600, lang.roles(), eventBus, 20);
 
         grid = new UniversalListGrid();
@@ -93,7 +93,8 @@ public abstract class AddRightsWindow
         ListGridField descField =
                 new ListGridField(Constants.ATTR_DESC, lang.description() + " " + lang.role().toLowerCase());
         grid.setFields(nameField, descField);
-        List<EDITOR_RIGHTS> sysRights = Arrays.asList(EDITOR_RIGHTS.values());
+        List<EDITOR_RIGHTS> sysRights =
+                new ArrayList<Constants.EDITOR_RIGHTS>(Arrays.asList(EDITOR_RIGHTS.values()));
         sysRights.removeAll(currentRights);
         grid.setData(UserClientUtils.copyRights(sysRights));
 

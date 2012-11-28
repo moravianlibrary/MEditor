@@ -27,6 +27,10 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.activation.UnsupportedDataTypeException;
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -35,8 +39,15 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.rpc.UserIdentity;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
+import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityResult;
 
@@ -51,17 +62,13 @@ public class RemoveUserIdentityHandler
     private static final Logger LOGGER = Logger.getLogger(RemoveUserIdentityHandler.class.getPackage()
             .toString());
 
-    //    /** The recently modified dao. */
-    //    @Inject
-    //    private UserDAO userDAO;
-
-    /**
-     * Instantiates a new put recently modified handler.
-     */
+    /** The recently modified dao. */
     @Inject
-    public RemoveUserIdentityHandler(final EditorConfiguration configuration) {
+    private UserDAO userDAO;
 
-    }
+    /** The configuration. */
+    @Inject
+    private EditorConfiguration configuration;
 
     /*
      * (non-Javadoc)
@@ -77,18 +84,34 @@ public class RemoveUserIdentityHandler
         LOGGER.debug("Processing action: RemoveUserIdentityAction " + action.getUserIdentity());
         ServerUtils.checkExpiredSession();
 
-        if (action.getUserIdentity() == null) throw new NullPointerException("getId()");
-        boolean successful = false;
-        //        try {
-        //            successful = userDAO.addRemoveUserIdentity(action.getUserIdentity(), false);
-        //        } catch (NumberFormatException e) {
-        //            throw new ActionException(e);
-        //        } catch (DatabaseException e) {
-        //            throw new ActionException(e);
-        //        } catch (UnsupportedDataTypeException e) {
-        //            throw new ActionException(e);
-        //        }
-        return new RemoveUserIdentityResult(successful);
+        if (action.getUserIdentity() == null) throw new NullPointerException("getUserIdentity()");
+        for (String identity : action.getUserIdentity().getIdentities()) {
+            try {
+                UserIdentity userIdentity = action.getUserIdentity();
+                userIdentity.getIdentities().removeAll(userIdentity.getIdentities());
+                userIdentity.getIdentities().add(identity);
+                userDAO.addRemoveUserIdentity(action.getUserIdentity(), false);
+            } catch (NumberFormatException e) {
+                throw new ActionException(e);
+            } catch (DatabaseException e) {
+                throw new ActionException(e);
+            } catch (UnsupportedDataTypeException e) {
+                throw new ActionException(e);
+            }
+        }
+
+        GetUserRolesRightsIdentitiesHandler getIdentitiesHandler =
+                new GetUserRolesRightsIdentitiesHandler(configuration, userDAO);
+        List<USER_IDENTITY_TYPES> type = new ArrayList<Constants.USER_IDENTITY_TYPES>(1);
+        type.add(action.getUserIdentity().getType());
+        GetUserRolesRightsIdentitiesAction getIdentitiesAction =
+                new GetUserRolesRightsIdentitiesAction(action.getUserIdentity().getUserId().toString(),
+                                                       type,
+                                                       false);
+        GetUserRolesRightsIdentitiesResult identitiesResult =
+                getIdentitiesHandler.execute(getIdentitiesAction, context);
+
+        return new RemoveUserIdentityResult(identitiesResult.getIdentities());
     }
 
     /*

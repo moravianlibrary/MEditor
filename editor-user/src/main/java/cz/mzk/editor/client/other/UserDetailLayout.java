@@ -25,12 +25,12 @@
 package cz.mzk.editor.client.other;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -41,6 +41,8 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.DrawEvent;
 import com.smartgwt.client.widgets.events.DrawHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.events.ItemChangedEvent;
+import com.smartgwt.client.widgets.form.events.ItemChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -63,6 +65,12 @@ import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsResult;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesResult;
+import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -87,6 +95,9 @@ public class UserDetailLayout
             dispatcher.execute(new GetUserRolesRightsIdentitiesAction(userId, types, getRoles),
                                new DispatchCallback<GetUserRolesRightsIdentitiesResult>() {
 
+                                   /**
+                                    * {@inheritDoc}
+                                    */
                                    @Override
                                    public void callback(GetUserRolesRightsIdentitiesResult result) {
                                        if (result != null) {
@@ -97,6 +108,14 @@ public class UserDetailLayout
                                        }
                                    }
 
+                                   /**
+                                    * {@inheritDoc}
+                                    */
+                                   @Override
+                                   public void callbackError(Throwable t) {
+                                       super.callbackError(t);
+                                       mw.hide();
+                                   }
                                });
         }
 
@@ -138,7 +157,7 @@ public class UserDetailLayout
             sectionStackSection.setExpanded(true);
 
             ImgButton add = getAddButton(identType, isRole);
-            ImgButton remove = getRemoveButton();
+            ImgButton remove = getRemoveButton(identType, isRole);
 
             sectionStackSection.setControls(add, remove);
             addSection(sectionStackSection);
@@ -186,14 +205,12 @@ public class UserDetailLayout
                             }
                         };
                     } else if (isRole) {
-                        new AddRoleWindow(userId,
-                                          lang,
-                                          eventBus,
-                                          dispatcher,
-                                          Arrays.asList(grid.getRecords())) {
+                        new AddRoleWindow(userId, lang, eventBus, dispatcher, UserClientUtils
+                                .copyToRoles(Long.parseLong(userId), grid.getRecords())) {
 
                             @Override
                             protected void afterAddAction() {
+
                                 new GetNewDataHandler(grid, userId, null, true) {
 
                                     @Override
@@ -204,8 +221,8 @@ public class UserDetailLayout
                             }
                         };
                     } else {
-                        new AddRightsWindow(userId, eventBus, lang, dispatcher, Arrays.asList(grid
-                                .getRecords())) {
+                        new AddRightsWindow(userId, eventBus, lang, dispatcher, UserClientUtils
+                                .copyToRights(grid.getRecords())) {
 
                             @Override
                             protected void afterAddAction() {
@@ -230,7 +247,7 @@ public class UserDetailLayout
          * 
          * @return the removes the button
          */
-        private ImgButton getRemoveButton() {
+        private ImgButton getRemoveButton(final Constants.USER_IDENTITY_TYPES identType, final boolean isRole) {
             ImgButton remove = new ImgButton();
             remove.setSrc("icons/16/remove.png");
             remove.setWidth(16);
@@ -239,7 +256,92 @@ public class UserDetailLayout
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    grid.removeSelectedData();
+                    ListGridRecord[] selectedRecords = grid.getSelectedRecords();
+                    if (selectedRecords.length == 0) return;
+                    final ModalWindow mw = new ModalWindow(grid);
+                    mw.setLoadingIcon("loadingAnimation.gif");
+                    mw.show(true);
+
+                    if (identType != null) {
+                        RemoveUserIdentityAction remIdentity =
+                                new RemoveUserIdentityAction(UserClientUtils
+                                        .copyToIdentities(selectedRecords, identType, Long.parseLong(userId)));
+                        dispatcher.execute(remIdentity, new DispatchCallback<RemoveUserIdentityResult>() {
+
+                            /**
+                             * {@inheritDoc}
+                             */
+                            @Override
+                            public void callback(RemoveUserIdentityResult result) {
+                                if (result.getIdentities() != null) {
+                                    grid.setData(UserClientUtils
+                                            .copyIdentities(result.getIdentities().get(0)));
+                                } else {
+                                    SC.warn(lang.operationFailed());
+                                }
+                                mw.hide();
+                            }
+
+                            /**
+                             * {@inheritDoc}
+                             */
+                            @Override
+                            public void callbackError(Throwable t) {
+                                super.callbackError(t);
+                                mw.hide();
+                            }
+                        });
+                    } else if (isRole) {
+                        PutRemoveUserRolesAction remRolesAction =
+                                new PutRemoveUserRolesAction(UserClientUtils.copyToRoles(Long
+                                        .parseLong(userId), selectedRecords), false);
+                        dispatcher.execute(remRolesAction, new DispatchCallback<PutRemoveUserRolesResult>() {
+
+                            @Override
+                            public void callback(PutRemoveUserRolesResult result) {
+                                if (result.getRoles() != null) {
+                                    grid.setData(UserClientUtils.copyRoles(result.getRoles()));
+                                } else {
+                                    SC.warn(lang.operationFailed());
+                                }
+                                mw.hide();
+                            }
+
+                            /**
+                             * {@inheritDoc}
+                             */
+                            @Override
+                            public void callbackError(Throwable t) {
+                                super.callbackError(t);
+                                mw.hide();
+                            }
+                        });
+                    } else {
+                        PutRemoveUserRightsAction remRolesAction =
+                                new PutRemoveUserRightsAction(userId, UserClientUtils
+                                        .copyToRightsString(selectedRecords), false);
+                        dispatcher.execute(remRolesAction, new DispatchCallback<PutRemoveUserRightsResult>() {
+
+                            @Override
+                            public void callback(PutRemoveUserRightsResult result) {
+                                if (result.getRights() != null) {
+                                    grid.setData(UserClientUtils.copyRights(result.getRights()));
+                                } else {
+                                    SC.warn(lang.operationFailed());
+                                }
+                                mw.hide();
+                            }
+
+                            /**
+                             * {@inheritDoc}
+                             */
+                            @Override
+                            public void callbackError(Throwable t) {
+                                super.callbackError(t);
+                                mw.hide();
+                            }
+                        });
+                    }
                 }
             });
 
@@ -323,7 +425,9 @@ public class UserDetailLayout
             }
         });
 
-        IButton saveButton = new IButton("Save");
+        final IButton saveButton = new IButton("Save");
+        saveButton.setDisabled(true);
+        saveButton.setLayoutAlign(Alignment.RIGHT);
         saveButton.addClickHandler(new ClickHandler() {
 
             @Override
@@ -332,31 +436,28 @@ public class UserDetailLayout
             }
         });
 
-        IButton cancelButton = new IButton("Close");
-        cancelButton.addClickHandler(new ClickHandler() {
+        nameForm.addItemChangedHandler(new ItemChangedHandler() {
 
             @Override
-            public void onClick(ClickEvent event) {
-                grid.collapseRecord(record);
+            public void onItemChanged(ItemChangedEvent event) {
+                saveButton.setDisabled(false);
             }
         });
 
-        HLayout buttonsLayout = new HLayout(10);
-        buttonsLayout.setAlign(Alignment.CENTER);
-        buttonsLayout.addMember(saveButton);
-        buttonsLayout.addMember(cancelButton);
-
         addMember(nameForm);
 
-        setIdentitiesAndRoles();
+        setIdentitiesAndRoles(grid, record);
 
-        addMember(buttonsLayout);
+        addMember(saveButton);
     }
 
     /**
      * Sets the identities and roles.
+     * 
+     * @param record
+     * @param grid
      */
-    private void setIdentitiesAndRoles() {
+    private void setIdentitiesAndRoles(final ListGrid grid, final ListGridRecord record) {
         if (gridsLayout == null) gridsLayout = new VLayout();
         if (gridsLayout.getMembers().length > 0) gridsLayout.removeMembers(gridsLayout.getMembers());
 
@@ -375,6 +476,17 @@ public class UserDetailLayout
 
                 hLayout.addMember(getRightsLayout(result.getRights()));
 
+                IButton cancelButton = new IButton("Close");
+                cancelButton.setLayoutAlign(VerticalAlignment.BOTTOM);
+                cancelButton.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        grid.collapseRecord(record);
+                    }
+                });
+
+                hLayout.addMember(cancelButton);
                 addMember(hLayout);
             }
         };

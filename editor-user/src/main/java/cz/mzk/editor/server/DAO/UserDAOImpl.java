@@ -132,7 +132,7 @@ public class UserDAOImpl
 
     /** The Constant DELETE_USERS_RIGHT_ITEM_STATEMENT. */
     public static final String DELETE_USERS_RIGHT_ITEM_STATEMENT = "DELETE FROM "
-            + Constants.TABLE_USERS_RIGHT + " WHERE editor_user_id=(?) AND role_name=(?)";
+            + Constants.TABLE_USERS_RIGHT + " WHERE editor_user_id=(?) AND editor_right_name=(?)";
 
     /** The Constant SELECT_ROLE_ITEMS_STATEMENT. */
     public static final String SELECT_ROLE_ITEMS_STATEMENT = "SELECT name, description FROM "
@@ -750,7 +750,7 @@ public class UserDAOImpl
         if (roleItem == null) throw new NullPointerException("role");
         if (roleItem.getName() == null || "".equals(roleItem.getName()) || roleItem.getUserId() == null)
             throw new NullPointerException();
-        if (hasRole(roleItem.getName(), roleItem.getUserId())) {
+        if (add && hasRole(roleItem.getName(), roleItem.getUserId())) {
             return true;
         }
 
@@ -852,11 +852,11 @@ public class UserDAOImpl
             updateSt.setLong(1, userId);
             updateSt.setString(2, rightName);
 
-            try {
-                getConnection().setAutoCommit(false);
-            } catch (SQLException e) {
-                LOGGER.warn("Unable to set autocommit off", e);
-            }
+            //            try {
+            //                getConnection().setAutoCommit(false);
+            //            } catch (SQLException e) {
+            //                LOGGER.warn("Unable to set autocommit off", e);
+            //            }
 
             if (updateSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The right " + rightName + " has been "
@@ -867,11 +867,11 @@ public class UserDAOImpl
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
 
                 if (crudSucc) {
-                    getConnection().commit();
+                    //                    getConnection().commit();
                     success = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    getConnection().rollback();
+                    //                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
