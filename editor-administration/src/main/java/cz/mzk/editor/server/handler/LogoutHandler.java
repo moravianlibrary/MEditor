@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,8 @@ import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
@@ -102,6 +105,12 @@ public class LogoutHandler
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+        }
+
+        SecurityContextHolder.clearContext();
+        HttpSession session = reqProvider.get().getSession(false);
+        if (session != null) {
+            session.invalidate();
         }
 
         return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));

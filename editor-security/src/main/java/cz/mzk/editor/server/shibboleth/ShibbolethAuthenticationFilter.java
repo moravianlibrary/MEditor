@@ -27,12 +27,15 @@ package cz.mzk.editor.server.shibboleth;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
 
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,12 +44,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.config.EditorConfigurationImpl;
+
 /**
  * @author Matous Jobanek
  * @version Nov 22, 2012
  */
 public class ShibbolethAuthenticationFilter
         extends AbstractAuthenticationProcessingFilter {
+
+    /** The configuration. */
+    @Inject
+    private static EditorConfiguration configuration;
+
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(ShibbolethAuthenticationFilter.class.getPackage()
+            .toString());
 
     /**
      * @param defaultFilterProcessesUrl
@@ -55,46 +70,46 @@ public class ShibbolethAuthenticationFilter
         super("/shibboleth_spring_security_check");
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-        RememberMeAuthenticationToken token;
 
-        HttpSession session = request.getSession();
-        Enumeration headerNames = request.getHeaderNames();
-
-        while (headerNames.hasMoreElements()) {
-            String element = headerNames.nextElement().toString();
-            System.err.println(element);
-            System.err.println(request.getHeader(element));
-            System.err.println(" ");
+        if (!configuration.getIdentityTypes().contains(USER_IDENTITY_TYPES.SHIBBOLETH)) {
+            LOGGER.warn("The LDAP authentication is not allowed in the "
+                    + EditorConfigurationImpl.DEFAULT_CONF_LOCATION + " file.");
+            return null;
         }
 
-        //        token = consumer.consume(rpxBaseUrl, rpxApiKey, request);
-        token = new RememberMeAuthenticationToken("Key", "princ", new ArrayList<GrantedAuthority>());
+        RememberMeAuthenticationToken token;
+
+        String shibbolethIdentifier = request.getHeader(configuration.getShibbolethUid());
+
+        token =
+                new RememberMeAuthenticationToken(ShibbolethAuthenticationFilter.class.getPackage()
+                        .toString(), shibbolethIdentifier, new ArrayList<GrantedAuthority>());
 
         token.setDetails(authenticationDetailsSource.buildDetails(request));
 
         // delegate to the authentication provider
         Authentication authentication = this.getAuthenticationManager().authenticate(token);
 
-        //        if (authentication.isAuthenticated()) {
-        //            setLastUsername(token.getIdentityUrl(), request);
-        //        }
+        if (authentication.isAuthenticated()) {
+            setLastUsername(token.getName(), request);
+        }
 
         UsernamePasswordAuthenticationFilter f;
         return authentication;
     }
 
-    //    private void setLastUsername(String username, HttpServletRequest request) {
-    //        HttpSession session = request.getSession(false);
-    //
-    //        if (session != null || getAllowSessionCreation()) {
-    //            request.getSession()
-    //                    .setAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_LAST_USERNAME_KEY,
-    //                                  username);
-    //        }
-    //    }
+    @SuppressWarnings("deprecation")
+    private void setLastUsername(String username, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null || getAllowSessionCreation()) {
+            request.getSession()
+                    .setAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_LAST_USERNAME_KEY,
+                                  username);
+        }
+    }
 
 }

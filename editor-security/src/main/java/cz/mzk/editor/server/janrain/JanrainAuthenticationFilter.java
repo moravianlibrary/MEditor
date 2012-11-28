@@ -37,6 +37,8 @@ import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
@@ -44,8 +46,10 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
 /**
  * @author Matous Jobanek
@@ -68,14 +72,16 @@ public class JanrainAuthenticationFilter
 
     private RpxConsumer consumer;
     private Set<String> returnToUrlParameters = Collections.emptySet();
-    private String rpxBaseUrl = "https://metaeditor.rpxnow.com";
+    private String rpxBaseUrl = "https://rpxnow.com";
     private String rpxApiKey = null;
+
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(JanrainAuthenticationFilter.class.getPackage()
+            .toString());
 
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
-
-        //        Assert.notNull(rpxApiKey, "rpxApiKey must be specified.");
 
         if (consumer == null) {
             consumer = new RpxConsumerImpl();
@@ -103,6 +109,13 @@ public class JanrainAuthenticationFilter
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
+
+        if (!configuration.getIdentityTypes().contains(USER_IDENTITY_TYPES.OPEN_ID)) {
+            LOGGER.warn("The LDAP authentication is not allowed in the "
+                    + EditorConfigurationImpl.DEFAULT_CONF_LOCATION + " file.");
+            return null;
+        }
+
         OpenIDAuthenticationToken token;
 
         this.rpxApiKey = configuration.getOpenIDApiKey();

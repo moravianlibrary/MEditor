@@ -57,11 +57,12 @@ public class ShibbolethClient {
     @Inject
     private static SecurityUserDAO securityUserDAO;
 
-    public static Long getUserId(String openId) {
+    public static Long getUserId(String shibboleth) {
         try {
-            Long userId = securityUserDAO.getUserId(openId, USER_IDENTITY_TYPES.OPEN_ID);
+            Long userId = securityUserDAO.getUserId(shibboleth, USER_IDENTITY_TYPES.SHIBBOLETH);
             if (userId > 0) {
-                ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] LDAP User " + openId);
+                ACCESS_LOGGER
+                        .info("LOG IN: [" + FORMATTER.format(new Date()) + "] Shibboleth User " + shibboleth);
                 logInOutDAO.logInOut(userId, true);
                 return userId;
             } else {

@@ -47,10 +47,10 @@ public class ShibbolethAuthenticationProvider
      * {@inheritDoc}
      */
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String openId = (String) authentication.getPrincipal();
+        String shibbolethIdentifier = (String) authentication.getPrincipal();
         Long userId = new Long(-1);
 
-        if (openId != null) userId = ShibbolethClient.getUserId(openId);
+        if (shibbolethIdentifier != null) userId = ShibbolethClient.getUserId(shibbolethIdentifier);
 
         if (userId < 0) {
             throw new BadCredentialsException("Invalid login or password");
@@ -61,7 +61,7 @@ public class ShibbolethAuthenticationProvider
         } else {
 
             Authentication customAuthentication =
-                    new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.OPEN_ID);
+                    new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.SHIBBOLETH);
             customAuthentication.setAuthenticated(true);
             return customAuthentication;
         }

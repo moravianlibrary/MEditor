@@ -1,6 +1,10 @@
 
 package cz.mzk.editor.server.LDAP;
 
+import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
 /*
  * Metadata Editor
@@ -43,10 +49,24 @@ import cz.mzk.editor.server.URLS;
 public class EditorAuthenticationProvider
         implements AuthenticationProvider {
 
+    @Inject
+    private static EditorConfiguration configuration;
+
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(EditorAuthenticationProvider.class.getPackage()
+            .toString());
+
     /**
      * {@inheritDoc}
      */
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+        if (!configuration.getIdentityTypes().contains(USER_IDENTITY_TYPES.LDAP)) {
+            LOGGER.warn("The LDAP authentication is not allowed in the "
+                    + EditorConfigurationImpl.DEFAULT_CONF_LOCATION + " file.");
+            return null;
+        }
+
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 

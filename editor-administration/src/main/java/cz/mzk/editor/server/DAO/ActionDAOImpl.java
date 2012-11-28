@@ -181,7 +181,7 @@ public class ActionDAOImpl
     public static final SimpleDateFormat FORMATTER_TO_DAY = new SimpleDateFormat("dd");
     public static final SimpleDateFormat FORMATTER_TO_MOUNTH = new SimpleDateFormat("MM");
     public static final SimpleDateFormat FORMATTER_TO_YEAR = new SimpleDateFormat("yyyy");
-    public static final SimpleDateFormat FORMATTER_TO_HOUR = new SimpleDateFormat("hh");
+    public static final SimpleDateFormat FORMATTER_TO_HOUR = new SimpleDateFormat("HH");
     public static final SimpleDateFormat FORMATTER_TO_MINUTE = new SimpleDateFormat("mm");
     public static final SimpleDateFormat FORMATTER_TO_SECOND = new SimpleDateFormat("ss");
 

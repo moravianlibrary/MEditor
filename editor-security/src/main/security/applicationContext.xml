@@ -24,8 +24,8 @@
 		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 		<form-login login-page="/loginLocal.html"/>
-		<custom-filter position="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
-		<custom-filter position="FIRST" ref="shibbolethAuthenticationFilter" />
+		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
+		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
 	</http>
 
 	<beans:bean id="editorAuthenticationProvider"

@@ -72,6 +72,7 @@ import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.DAO.UserDAOImpl;
+import cz.mzk.editor.server.LDAP.EditorAuthenticationProvider;
 import cz.mzk.editor.server.LDAP.LDAPClient;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
@@ -125,6 +126,8 @@ import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
 import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.quartz.GuiceJobFactory;
 import cz.mzk.editor.server.quartz.Quartz;
+import cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter;
+import cz.mzk.editor.server.shibboleth.ShibbolethClient;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
@@ -255,5 +258,8 @@ public class ServerModule
         requestStaticInjection(JanrainClient.class);
         requestStaticInjection(JanrainAuthenticationFilter.class);
         requestStaticInjection(SessionListener.class);
+        requestStaticInjection(ShibbolethAuthenticationFilter.class);
+        requestStaticInjection(ShibbolethClient.class);
+        requestStaticInjection(EditorAuthenticationProvider.class);
     }
 }
