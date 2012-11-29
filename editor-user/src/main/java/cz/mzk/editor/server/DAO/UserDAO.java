@@ -289,7 +289,7 @@ public interface UserDAO {
      * @throws DatabaseException
      *         the database exception
      */
-    boolean insertUpdatetUser(UserInfoItem user) throws DatabaseException;
+    Long insertUpdatetUser(UserInfoItem user) throws DatabaseException;
 
     /**
      * Gets the users.

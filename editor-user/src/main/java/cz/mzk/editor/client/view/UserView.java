@@ -65,12 +65,6 @@ public class UserView
     /** The uuid field. */
     private TextItem uuidField;
 
-    /** The user roles grid. */
-    private ListGrid userRolesGrid;
-
-    /** The user identities grid. */
-    private ListGrid userIdentitiesGrid;
-
     /** The remove role. */
     private IButton removeRole;
 
@@ -195,26 +189,6 @@ public class UserView
     @Override
     public ListGrid getUserGrid() {
         return usersLayout.getUserGrid();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#
-     * getUserRoleGrid()
-     */
-    @Override
-    public ListGrid getUserRoleGrid() {
-        return userRolesGrid;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#
-     * getUserIdentityGrid()
-     */
-    @Override
-    public ListGrid getUserIdentityGrid() {
-        return userIdentitiesGrid;
     }
 
     /**

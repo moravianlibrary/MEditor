@@ -59,7 +59,7 @@ public class RpxConsumerImpl
         // Check if authentication failed.
         String stat = (String) rpxAuth.get("stat");
         if (!"ok".equals(stat)) {
-            String error = "User authentication failed";
+//            String error = "User authentication failed";
             //logger.info(error);
             //response.sendError(HttpServletResponse.SC_FORBIDDEN, error);
             return null;

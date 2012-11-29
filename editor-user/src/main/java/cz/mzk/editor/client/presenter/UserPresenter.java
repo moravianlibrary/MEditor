@@ -27,8 +27,6 @@
 
 package cz.mzk.editor.client.presenter;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
@@ -62,15 +60,12 @@ import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.NameTokens.ADMIN_MENU_BUTTONS;
-import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.mzk.editor.client.other.UsersLayout;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
 import cz.mzk.editor.shared.event.OpenUserPresenterEvent;
-import cz.mzk.editor.shared.rpc.RoleItem;
-import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
-import cz.mzk.editor.shared.rpc.action.GetAllRolesResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -143,20 +138,6 @@ public class UserPresenter
          * @return the requests grid
          */
         public ListGrid getRequestsGrid();
-
-        /**
-         * Gets the user role grid.
-         * 
-         * @return the user role grid
-         */
-        public ListGrid getUserRoleGrid();
-
-        /**
-         * Gets the user identity grid.
-         * 
-         * @return the user identity grid
-         */
-        public ListGrid getUserIdentityGrid();
 
         /**
          * Gets the removes the user.
@@ -238,14 +219,12 @@ public class UserPresenter
     private final DispatchAsync dispatcher;
 
     /** The left presenter. */
+    @SuppressWarnings("rawtypes")
     private Presenter leftPresenter;
 
     /** The place manager. */
     @SuppressWarnings("unused")
     private final PlaceManager placeManager;
-
-    /** The roles. */
-    private List<RoleItem> roles;
 
     /**
      * Instantiates a new home presenter.
@@ -269,26 +248,16 @@ public class UserPresenter
                          final MyProxy proxy,
                          final DispatchAsync dispatcher,
                          final PlaceManager placeManager,
-                         //                         AdminMenuPresenter leftPresenter,
                          LangConstants lang) {
         super(eventBus, view, proxy);
-        //        this.leftPresenter = leftPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         this.lang = lang;
-        dispatcher.execute(new GetAllRolesAction(), new DispatchCallback<GetAllRolesResult>() {
-
-            @Override
-            public void callback(GetAllRolesResult result) {
-                UserPresenter.this.roles = result.getRoles();
-            }
-        });
         bind();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.gwtplatform.mvp.client.HandlerContainerImpl#onBind()
+    /**
+     * {@inheritDoc}
      */
     @Override
     protected void onBind() {
@@ -320,15 +289,6 @@ public class UserPresenter
         });
 
         // remove user
-        getView().getRemoveUser().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                getView().getUserGrid().removeSelectedData();
-                getView().getUserRoleGrid().setData(new ListGridRecord[] {});
-                getView().getUserIdentityGrid().setData(new ListGridRecord[] {});
-            }
-        });
 
         // add user
         getView().getAddUser().addClickHandler(new ClickHandler() {
@@ -338,7 +298,6 @@ public class UserPresenter
                 final Window winModal = new Window();
                 winModal.setHeight(200);
                 winModal.setWidth(550);
-                // winModal.setPadding(15);
                 winModal.setCanDragResize(true);
                 winModal.setShowEdges(true);
                 winModal.setTitle(lang.newUser());
@@ -363,19 +322,26 @@ public class UserPresenter
                 name.setWidth(320);
                 TextItem surname = new TextItem(Constants.ATTR_SURNAME, lang.lastName());
                 surname.setWidth(320);
-                // CheckboxItem sex = new CheckboxItem(ServerConstants.ATTR_SEX,
-                // "Male");
                 ButtonItem add = new ButtonItem();
                 add.setTitle(lang.addUser());
                 add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
                     @Override
                     public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+                        final ModalWindow mw = new ModalWindow(getView().getUserGrid());
+                        mw.setLoadingIcon("loadingAnimation.gif");
+                        mw.show(true);
+
                         form.saveData(new DSCallback() {
 
                             @Override
                             public void execute(DSResponse response, Object rawData, DSRequest request) {
                                 winModal.destroy();
+                                getView().getUserGrid().selectRecords(response.getData());
+                                getView().getUserGrid().expandRecord((ListGridRecord) response.getData()[0]);
+                                getView().getUserGrid().scrollToRow(getView().getUserGrid()
+                                        .getRecordIndex(response.getData()[0]));
+                                mw.hide();
                             }
                         });
                     }

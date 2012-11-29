@@ -342,6 +342,13 @@ public class Constants {
             return userName;
         }
 
+        public static boolean isDefaultSysUser(Long userId) {
+            for (DEFAULT_SYSTEM_USERS user : DEFAULT_SYSTEM_USERS.values()) {
+                if (user.getUserId().equals(userId)) return true;
+            }
+            return false;
+        }
+
     }
 
     public static final String TABLE_ACTION = "action";

@@ -35,6 +35,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoResult;
@@ -49,12 +51,8 @@ public class PutUserInfoHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(PutUserInfoHandler.class.getPackage().toString());
 
-    /**
-     * Instantiates a new put recently modified handler.
-     */
     @Inject
-    public PutUserInfoHandler() {
-    }
+    private UserDAO userDAO;
 
     /*
      * (non-Javadoc)
@@ -72,13 +70,14 @@ public class PutUserInfoHandler
 
         if (action.getUser() == null) throw new NullPointerException("getUser()");
 
-        String id = "";
-        //        try {
-        //            id = userDAO.addUser(action.getUser());
-        //        } catch (DatabaseException e) {
-        //            throw new ActionException(e);
-        //        }
-        return new PutUserInfoResult(id, "exist".equals(id));
+        Long id = new Long(-1);
+        try {
+            id = userDAO.insertUpdatetUser(action.getUser());
+        } catch (DatabaseException e) {
+            throw new ActionException(e);
+        }
+
+        return new PutUserInfoResult(id);
     }
 
     /*

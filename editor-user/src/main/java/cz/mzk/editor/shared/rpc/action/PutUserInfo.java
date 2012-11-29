@@ -47,9 +47,5 @@ public class PutUserInfo {
 
     /** The id. */
     @Out(1)
-    private String id;
-
-    /** The found. */
-    @Out(2)
-    private boolean found;
+    private Long id;
 }

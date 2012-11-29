@@ -26,13 +26,20 @@ package cz.mzk.editor.client.other;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.smartgwt.client.data.DSCallback;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -40,6 +47,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.gwtrpcds.UsersGwtRPCDS;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.HtmlCode;
+import cz.mzk.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -145,6 +153,34 @@ public class UsersLayout
         removeUser = new IButton(lang.removeSelected());
         removeUser.setAutoFit(true);
         removeUser.setDisabled(true);
+        removeUser.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final ModalWindow mw = new ModalWindow(userGrid);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
+                userGrid.removeSelectedData(new DSCallback() {
+
+                    @Override
+                    public void execute(DSResponse response, Object rawData, DSRequest request) {
+                        removeUser.setDisabled(true);
+                        mw.hide();
+                    }
+                }, null);
+            }
+        });
+        userGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                if (userGrid.getSelectedRecords().length > 0) {
+                    removeUser.setDisabled(false);
+                } else {
+                    removeUser.setDisabled(true);
+                }
+            }
+        });
         buttonLayout.addMember(addUser);
         buttonLayout.addMember(removeUser);
         addMember(buttonLayout);

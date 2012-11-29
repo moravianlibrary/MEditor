@@ -38,6 +38,7 @@ import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.JSOHelper;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.LangConstants;
@@ -88,7 +89,7 @@ public class UsersGwtRPCDS
         field.setPrimaryKey(true);
         field.setHidden(true);
         field.setRequired(true);
-
+        addField(field);
     }
 
     /*
@@ -149,15 +150,18 @@ public class UsersGwtRPCDS
 
             @Override
             public void callback(PutUserInfoResult result) {
-                if (!result.isFound()) {
+                if (result.getId() > 0) {
                     ListGridRecord[] list = new ListGridRecord[1];
                     ListGridRecord newRec = new ListGridRecord();
                     copyValues(testRec, newRec);
                     newRec.setAttribute(Constants.ATTR_USER_ID, result.getId());
                     list[0] = newRec;
                     response.setData(list);
+                    processResponse(requestId, response);
+                } else {
+                    SC.warn(lang.operationFailed());
+                    processResponse(requestId, response);
                 }
-                processResponse(requestId, response);
             }
         });
 
@@ -185,15 +189,18 @@ public class UsersGwtRPCDS
 
             @Override
             public void callback(PutUserInfoResult result) {
-                if (!result.isFound()) {
+                if (result.getId() > 0) {
                     ListGridRecord[] list = new ListGridRecord[1];
                     ListGridRecord updRec = new ListGridRecord();
+                    testRec.setId(result.getId());
                     copyValues(testRec, updRec);
                     list[0] = updRec;
                     response.setData(list);
                     processResponse(requestId, response);
+                } else {
+                    SC.warn(lang.operationFailed());
+                    processResponse(requestId, response);
                 }
-                processResponse(requestId, response);
             }
         });
     }
@@ -246,7 +253,8 @@ public class UsersGwtRPCDS
     private static void copyValues(ListGridRecord from, UserInfoItem to) {
         to.setSurname(from.getAttributeAsString(Constants.ATTR_SURNAME));
         to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-        to.setId(Long.parseLong(from.getAttributeAsString(Constants.ATTR_USER_ID)));
+        if (from.getAttribute(Constants.ATTR_USER_ID) != null)
+            to.setId(Long.parseLong(from.getAttributeAsString(Constants.ATTR_USER_ID)));
     }
 
     /**

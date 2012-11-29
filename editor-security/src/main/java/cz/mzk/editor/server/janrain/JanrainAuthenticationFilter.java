@@ -136,6 +136,7 @@ public class JanrainAuthenticationFilter
         return authentication;
     }
 
+    @SuppressWarnings("deprecation")
     private void setLastUsername(String username, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 

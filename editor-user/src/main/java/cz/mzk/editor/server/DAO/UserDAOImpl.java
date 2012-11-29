@@ -67,7 +67,7 @@ public class UserDAOImpl
 
     /** The Constant SELECT_USERS_STATEMENT. */
     public static final String SELECT_USERS_STATEMENT = "SELECT id, name, surname FROM "
-            + Constants.TABLE_EDITOR_USER + " ORDER BY surname";
+            + Constants.TABLE_EDITOR_USER + " WHERE state='true' ORDER BY surname";
 
     /** The Constant DISABLE_USER. */
     public static final String DISABLE_USER = "UPDATE " + Constants.TABLE_EDITOR_USER
@@ -234,7 +234,10 @@ public class UserDAOImpl
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                retList.add(new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs.getLong("id")));
+                if (!Constants.DEFAULT_SYSTEM_USERS.isDefaultSysUser(rs.getLong("id"))) {
+                    retList.add(new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs
+                            .getLong("id")));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -252,11 +255,11 @@ public class UserDAOImpl
         PreparedStatement updateSt = null;
         boolean successful = false;
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+        //        try {
+        //            getConnection().setAutoCommit(false);
+        //        } catch (SQLException e) {
+        //            LOGGER.warn("Unable to set autocommit off", e);
+        //        }
 
         try {
             updateSt = getConnection().prepareStatement(DISABLE_USER);
@@ -266,7 +269,7 @@ public class UserDAOImpl
             if (updated == 1) {
                 LOGGER.debug("DB has been updated: The user: " + userId + " has been disabled.");
 
-                //                lockDAO.un
+                //                TODO unlock locked DO
 
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(),
@@ -275,11 +278,11 @@ public class UserDAOImpl
                                                  CRUD_ACTION_TYPES.DELETE,
                                                  false);
                 if (crudSucc) {
-                    getConnection().commit();
+                    //                    getConnection().commit();
                     successful = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    getConnection().rollback();
+                    //                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
@@ -299,19 +302,19 @@ public class UserDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean insertUpdatetUser(UserInfoItem user) throws DatabaseException {
+    public Long insertUpdatetUser(UserInfoItem user) throws DatabaseException {
         if (user == null) throw new NullPointerException("user");
         if (user.getSurname() == null || "".equals(user.getSurname()))
             throw new NullPointerException("user.getSurname()");
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+        //        try {
+        //            getConnection().setAutoCommit(false);
+        //        } catch (SQLException e) {
+        //            LOGGER.warn("Unable to set autocommit off", e);
+        //        }
 
         PreparedStatement updateSt = null;
-        boolean successful = false;
+        Long toReturn = new Long(-1);
         Long id = null;
         try {
             if (user.getId() == null) {
@@ -322,7 +325,9 @@ public class UserDAOImpl
                 updateSt.setString(2, user.getSurname());
 
             } else {
-                updateSt = getConnection().prepareStatement(UPDATE_USER_STATEMENT);
+                updateSt =
+                        getConnection().prepareStatement(UPDATE_USER_STATEMENT,
+                                                         Statement.RETURN_GENERATED_KEYS);
                 updateSt.setString(1, user.getName());
                 updateSt.setString(2, user.getSurname());
                 updateSt.setLong(3, user.getId());
@@ -334,6 +339,7 @@ public class UserDAOImpl
                 ResultSet gk = updateSt.getGeneratedKeys();
                 if (gk.next()) {
                     id = gk.getLong(1);
+                    toReturn = id;
                 } else {
                     LOGGER.error("No key has been returned! " + updateSt);
                 }
@@ -352,11 +358,11 @@ public class UserDAOImpl
                                                  false);
 
                 if (crudSucc) {
-                    successful = true;
-                    getConnection().commit();
+                    //                    getConnection().commit();
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    getConnection().rollback();
+                    if (user.getId() != null) toReturn = new Long(-1);
+                    //                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated. -> rollback!");
                 }
             }
@@ -367,7 +373,7 @@ public class UserDAOImpl
         } finally {
             closeConnection();
         }
-        return successful;
+        return toReturn;
     }
 
     /**
