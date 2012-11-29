@@ -41,6 +41,7 @@ import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ContentSlot;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
@@ -53,6 +54,9 @@ import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.event.EscKeyPressedEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent.MenuButtonClickedHandler;
+import cz.mzk.editor.shared.event.OpenUserPresenterEvent;
 import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
@@ -213,6 +217,16 @@ public class AdminPresenter
             public void onKeyPressed(KeyPressedEvent event) {
             }
         });
+
+        addRegisteredHandler(MenuButtonClickedEvent.getType(), new MenuButtonClickedHandler() {
+
+            @Override
+            public void onMenuButtonClicked(MenuButtonClickedEvent event) {
+                if (event.isToOpenPresenter())
+                    placeManager.revealRelativePlace(new PlaceRequest(event.getMenuButtonType()));
+            }
+        });
+
     }
 
     /*
@@ -247,6 +261,7 @@ public class AdminPresenter
             //                }
             //            });
         }
+        getEventBus().fireEvent(new OpenUserPresenterEvent(leftPresenter));
     }
 
     //    private void openObject(String uuid) {

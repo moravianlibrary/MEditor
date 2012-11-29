@@ -58,7 +58,7 @@ public class ActionDAOImpl
             + Constants.TABLE_ACTION + " WHERE editor_user_id = (?)";
 
     private static final String INTERVAL_CONSTRAINTS =
-            "a.timestamp > '%lowerTimestamp' AND a.timestamp < (timestamp '%s' + INTERVAL '1 day')";
+            "a.timestamp > '%s' AND a.timestamp < (timestamp '%s' + INTERVAL '1 day')";
 
     private static final String USER_ID_AND_INTERVAL_CONSTRAINTS = "editor_user_id = (?) AND "
             + INTERVAL_CONSTRAINTS;
@@ -76,8 +76,8 @@ public class ActionDAOImpl
     public static final String SELECT_LONG_PROCESS_ACTION = "SELECT * FROM "
             + Constants.TABLE_LONG_RUNNING_PROCESS + " a WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS;
 
-    public static final String SELECT_DEFAULT_ACTION = "SELECT * FROM " + Constants.TABLE_ACTION
-            + " a WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS;
+    public static final String SELECT_DEFAULT_ACTION = "SELECT * FROM  (SELECT ac.* from "
+            + Constants.TABLE_ACTION + " ac INNER JOIN %s t on ac.id = t.id) a WHERE ";
 
     public static final String SELECT_CRUD_LOCK_ACTION =
             "SELECT * FROM (SELECT ac.id, ac.timestamp, ac.type, l.digital_object_uuid, ac.editor_user_id FROM "
@@ -368,7 +368,7 @@ public class ActionDAOImpl
                     handleLongProcessAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
                 } else {
-                    handleDefaultAction(editorUserId, lowerLimit, upperLimit, historyItems);
+                    handleDefaultAction(editorUserId, lowerLimit, upperLimit, historyItems, tableName);
                 }
             }
         } else if (uuid != null) {
@@ -434,9 +434,10 @@ public class ActionDAOImpl
     private void handleDefaultAction(Long editorUserId,
                                      EditorDate lowerLimit,
                                      EditorDate upperLimit,
-                                     List<HistoryItem> historyItems) throws DatabaseException {
-
-        new ActionDAOHandler(editorUserId, null, lowerLimit, upperLimit, SELECT_DEFAULT_ACTION, historyItems) {
+                                     List<HistoryItem> historyItems,
+                                     String tableName) throws DatabaseException {
+        String sql = String.format(SELECT_DEFAULT_ACTION, tableName) + USER_ID_AND_INTERVAL_CONSTRAINTS;
+        new ActionDAOHandler(editorUserId, null, lowerLimit, upperLimit, sql, historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
@@ -704,10 +705,9 @@ public class ActionDAOImpl
 
         try {
             selectSt =
-                    getConnection()
-                            .prepareStatement(String.format(sql.replace("%lowerTimestamp",
-                                                                        getStringTimestamp(lowerLimit)),
-                                                            getStringTimestamp(upperLimit)));
+                    getConnection().prepareStatement(String.format(sql,
+                                                                   getStringTimestamp(lowerLimit),
+                                                                   getStringTimestamp(upperLimit)));
             if (editorUserId != null) {
                 selectSt.setLong(1, editorUserId);
             } else {

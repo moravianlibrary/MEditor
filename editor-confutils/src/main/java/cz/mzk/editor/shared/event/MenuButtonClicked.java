@@ -39,4 +39,7 @@ public class MenuButtonClicked {
     /** The menu button type. */
     @Order(1)
     private String menuButtonType;
+
+    @Order(2)
+    private boolean toOpenPresenter;
 }

@@ -44,8 +44,6 @@ import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.uihandlers.AdminHomeUiHandlers;
-import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
-import cz.mzk.editor.shared.event.MenuButtonClickedEvent.MenuButtonClickedHandler;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -128,13 +126,7 @@ public class AdminHomePresenter
     @Override
     protected void onBind() {
         super.onBind();
-        addRegisteredHandler(MenuButtonClickedEvent.getType(), new MenuButtonClickedHandler() {
 
-            @Override
-            public void onMenuButtonClicked(MenuButtonClickedEvent event) {
-                placeManager.revealRelativePlace(new PlaceRequest(event.getMenuButtonType()));
-            }
-        });
     }
 
     /**

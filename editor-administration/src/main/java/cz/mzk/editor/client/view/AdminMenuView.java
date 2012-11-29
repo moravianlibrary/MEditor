@@ -98,7 +98,7 @@ public class AdminMenuView
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    eventBus.fireEvent(new MenuButtonClickedEvent(buttonType));
+                    eventBus.fireEvent(new MenuButtonClickedEvent(buttonType, true));
                 }
             });
 
@@ -108,8 +108,10 @@ public class AdminMenuView
                 public void onMenuButtonClicked(MenuButtonClickedEvent event) {
                     if (event.getMenuButtonType() != buttonType) {
                         buttonLayout.setBackgroundColor("#ffffff");
+                        menuButton.setDisabled(false);
                     } else {
                         buttonLayout.setBackgroundColor("#c7c7c7");
+                        menuButton.setDisabled(true);
                     }
                     MenuButtonLayout.this.redraw();
                 }
@@ -138,7 +140,6 @@ public class AdminMenuView
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED, lang.storedMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STATISTIC, lang.statisticsMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.USERS, lang.users()));
-
     }
 
     /**

@@ -43,12 +43,14 @@ import com.smartgwt.client.util.SC;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
+import cz.mzk.editor.client.NameTokens.ADMIN_MENU_BUTTONS;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.HistoryUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.event.GetHistoryEvent;
 import cz.mzk.editor.shared.event.GetHistoryEvent.GetHistoryHandler;
 import cz.mzk.editor.shared.event.GetHistoryItemInfoEvent;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
@@ -225,6 +227,7 @@ public class HistoryPresenter
     protected void onReset() {
         super.onReset();
         RevealContentEvent.fire(this, Constants.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
+        getEventBus().fireEvent(new MenuButtonClickedEvent(ADMIN_MENU_BUTTONS.HISTORY, false));
     }
 
     /**

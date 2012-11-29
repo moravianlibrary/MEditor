@@ -61,10 +61,13 @@ import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
+import cz.mzk.editor.client.NameTokens.ADMIN_MENU_BUTTONS;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.gwtrpcds.RequestsGwtRPCDS;
 import cz.mzk.editor.client.other.UsersLayout;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
+import cz.mzk.editor.shared.event.OpenUserPresenterEvent;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesResult;
@@ -294,39 +297,6 @@ public class UserPresenter
         final RequestsGwtRPCDS reqSource = new RequestsGwtRPCDS(dispatcher, lang);
         getView().getRequestsGrid().setDataSource(reqSource);
 
-        // fetch roles and identities
-        //        getView().getUserGrid().addRecordClickHandler(new RecordClickHandler() {
-        //
-        //            @Override
-        //            public void onRecordClick(RecordClickEvent event) {
-        //                
-        //            }
-        //        });
-        //        getView().getUserRoleGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-        //
-        //            @Override
-        //            public void onSelectionChanged(SelectionEvent event) {
-        //                ListGridRecord[] selection = event.getSelection();
-        //                if (selection != null && selection.length > 0) {
-        //                    getView().getRemoveRole().setDisabled(false);
-        //                } else {
-        //                    getView().getRemoveRole().setDisabled(true);
-        //                }
-        //            }
-        //        });
-
-        //        getView().getUserIdentityGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-        //
-        //            @Override
-        //            public void onSelectionChanged(SelectionEvent event) {
-        //                ListGridRecord[] selection = event.getSelection();
-        //                if (selection != null && selection.length > 0) {
-        //                    getView().getRemoveIdentity().setDisabled(false);
-        //                } else {
-        //                    getView().getRemoveIdentity().setDisabled(true);
-        //                }
-        //            }
-        //        });
         getView().getRequestsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
 
             @Override
@@ -420,7 +390,7 @@ public class UserPresenter
                         winModal.destroy();
                     }
                 });
-                form.setFields(name, surname/* , sex */, add, cancel, id);
+                form.setFields(name, surname, add, cancel, id);
                 winModal.addItem(form);
 
                 winModal.centerInPage();
@@ -428,181 +398,14 @@ public class UserPresenter
             }
         });
 
-        // remove identity
-        //        getView().getRemoveIdentity().addClickHandler(new ClickHandler() {
-        //
-        //            private volatile int deletedCounter;
-        //
-        //            private void deleteFromGUI(int total, ListGridRecord[] selection) {
-        //                if (deletedCounter == total) {
-        //                    ListGridRecord[] oldData = getView().getUserIdentityGrid().getRecords();
-        //                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
-        //                    getView().getUserIdentityGrid().setData(newData);
-        //                }
-        //            }
-        //
-        //            @Override
-        //            public void onClick(ClickEvent event) {
-        //                final ListGridRecord[] selection = getView().getUserIdentityGrid().getSelectedRecords();
-        //                if (selection != null && selection.length > 0) {
-        //                    final int total = selection.length;
-        //                    for (final ListGridRecord record : selection) {
-        //                        dispatcher.execute(new RemoveUserIdentityAction(record
-        //                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
-        //                                           new DispatchCallback<RemoveUserIdentityResult>() {
-        //
-        //                                               @Override
-        //                                               public void callback(RemoveUserIdentityResult result) {
-        //                                                   deletedCounter++;
-        //                                                   deleteFromGUI(total, selection);
-        //                                               }
-        //                                           });
-        //                    }
-        //                }
-        //            }
-        //        });
+        addRegisteredHandler(OpenUserPresenterEvent.getType(),
+                             new OpenUserPresenterEvent.OpenUserPresenterHandler() {
 
-        // add identity
-        //        getView().getAddIdentity().addClickHandler(new ClickHandler() {
-        //
-        //            @Override
-        //            public void onClick(ClickEvent event) {
-        //                
-        //            }
-        //        });
-
-        // remove role
-        //        getView().getRemoveRole().addClickHandler(new ClickHandler() {
-        //
-        //            private volatile int deletedCounter;
-        //
-        //            private void deleteFromGUI(int total, ListGridRecord[] selection) {
-        //                if (deletedCounter == total) {
-        //                    ListGridRecord[] oldData = getView().getUserRoleGrid().getRecords();
-        //                    ListGridRecord[] newData = ClientCreateUtils.subtract(oldData, selection);
-        //                    getView().getUserRoleGrid().setData(newData);
-        //                }
-        //            }
-        //
-        //            @Override
-        //            public void onClick(ClickEvent event) {
-        //                final ListGridRecord[] selection = getView().getUserRoleGrid().getSelectedRecords();
-        //                if (selection != null && selection.length > 0) {
-        //                    final int total = selection.length;
-        //                    for (final ListGridRecord record : selection) {
-        //                        dispatcher.execute(new RemoveUserRoleAction(record
-        //                                                   .getAttribute(Constants.ATTR_GENERIC_ID)),
-        //                                           new DispatchCallback<RemoveUserRoleResult>() {
-        //
-        //                                               @Override
-        //                                               public void callback(RemoveUserRoleResult result) {
-        //                                                   deletedCounter++;
-        //                                                   deleteFromGUI(total, selection);
-        //                                               }
-        //                                           });
-        //                    }
-        //                }
-        //            }
-        //        });
-
-        // add role
-        //        getView().getAddRole().addClickHandler(new ClickHandler() {
-        //
-        //            @Override
-        //            public void onClick(ClickEvent event) {
-        //                final Window winModal = new Window();
-        //                winModal.setHeight(200);
-        //                winModal.setWidth(550);
-        //                winModal.setCanDragResize(true);
-        //                winModal.setShowEdges(true);
-        //                winModal.setTitle(lang.newRole());
-        //                winModal.setShowMinimizeButton(false);
-        //                winModal.setIsModal(true);
-        //                winModal.setShowModalMask(true);
-        //                winModal.addCloseClickHandler(new CloseClickHandler() {
-        //
-        //                    @Override
-        //                    public void onCloseClick(CloseClickEvent event) {
-        //                        winModal.destroy();
-        //                    }
-        //                });
-        //                final DynamicForm form = new DynamicForm();
-        //                // form.setNumCols(8);
-        //                form.setMargin(15);
-        //                form.setWidth(500);
-        //                form.setHeight(150);
-        //                final SelectItem role = new SelectItem(Constants.ATTR_NAME, lang.role());
-        //                role.setWidth(320);
-        //                role.setValueMap(roles.toArray(new String[] {}));
-        //                ButtonItem add = new ButtonItem();
-        //                add.setEndRow(false);
-        //                add.setTitle(lang.addRole());
-        //                add.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-        //
-        //                    @Override
-        //                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-        //                        final String roleValue = (String) role.getValue();
-        //                        if (roleValue != null && !"".equals(roleValue.trim())) {
-        //                            String userId =
-        //                                    getView().getUserGrid().getSelectedRecord()
-        //                                            .getAttribute(Constants.ATTR_USER_ID);
-        //                            dispatcher.execute(new PutUserRoleAction(new RoleItem(Long.parseLong(userId),
-        //                                                                                  roleValue,
-        //                                                                                  "")),
-        //                                               new DispatchCallback<PutUserRoleResult>() {
-        //
-        //                                                   @Override
-        //                                                   public void callback(PutUserRoleResult result) {
-        //                                                       //                                                       if (!result.isFound()
-        //                                                       //                                                               && !"error".equals(result.getId())) {
-        //                                                       //                                                           ListGridRecord record = new ListGridRecord();
-        //                                                       //                                                           record.setAttribute(Constants.ATTR_GENERIC_ID,
-        //                                                       //                                                                               result.getId());
-        //                                                       //                                                           record.setAttribute(Constants.ATTR_NAME, roleValue);
-        //                                                       //                                                           record.setAttribute(Constants.ATTR_DESC,
-        //                                                       //                                                                               result.getDescription());
-        //                                                       //                                                           ListGridRecord[] previousData =
-        //                                                       //                                                                   getView().getUserRoleGrid().getRecords();
-        //                                                       //                                                           ListGridRecord[] newData =
-        //                                                       //                                                                   new ListGridRecord[previousData.length + 1];
-        //                                                       //                                                           System.arraycopy(previousData,
-        //                                                       //                                                                            0,
-        //                                                       //                                                                            newData,
-        //                                                       //                                                                            0,
-        //                                                       //                                                                            previousData.length);
-        //                                                       //                                                           newData[previousData.length] = record;
-        //                                                       //                                                           getView().getUserRoleGrid().setData(newData);
-        //                                                       //                                                       }
-        //                                                       //                                                       winModal.destroy();
-        //                                                   }
-        //                                               });
-        //                        }
-        //                    }
-        //                });
-        //                ButtonItem cancel = new ButtonItem();
-        //                cancel.setEndRow(false);
-        //                cancel.setTitle(lang.cancel());
-        //                cancel.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-        //
-        //                    @Override
-        //                    public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-        //                        winModal.destroy();
-        //                    }
-        //                });
-        //                form.setFields(role, add, cancel);
-        //                winModal.addItem(form);
-        //                winModal.centerInPage();
-        //                winModal.show();
-        //            }
-        //        });
-        //
-        //        addRegisteredHandler(OpenUserPresenterEvent.getType(), new OpenUserPresenterHandler() {
-        //
-        //            @Override
-        //            public void onOpenUserPresenter(OpenUserPresenterEvent event) {
-        //                leftPresenter = event.getLeftPresenter();
-        //            }
-        //        });
+                                 @Override
+                                 public void onOpenUserPresenter(OpenUserPresenterEvent event) {
+                                     leftPresenter = event.getLeftPresenter();
+                                 }
+                             });
     }
 
     /*
@@ -615,6 +418,7 @@ public class UserPresenter
         if (leftPresenter != null) {
             RevealContentEvent.fire(this, Constants.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
         }
+        getEventBus().fireEvent(new MenuButtonClickedEvent(ADMIN_MENU_BUTTONS.USERS, false));
     }
 
     /*

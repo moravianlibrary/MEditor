@@ -128,7 +128,8 @@ public class HistoryItems
             public void onCellClick(CellClickEvent event) {
                 ListGridRecord record = event.getRecord();
 
-                if (!"".equals(record.getAttributeAsString(Constants.ATTR_IS_MORE_INFO))) {
+                if (null != record.getAttribute(Constants.ATTR_IS_MORE_INFO)
+                        && !"".equals(record.getAttributeAsString(Constants.ATTR_IS_MORE_INFO))) {
                     HistoryItem eventHistoryItem =
                             new HistoryItem(record.getAttributeAsLong(Constants.ATTR_ID),
                                             new EditorDate(record
