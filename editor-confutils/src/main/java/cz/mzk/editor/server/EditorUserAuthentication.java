@@ -47,6 +47,7 @@ public class EditorUserAuthentication
     private final GrantedAuthority grantedAuthority;
     private final Authentication authentication;
     private final USER_IDENTITY_TYPES identityType;
+    private boolean toAdd = false;
 
     /**
      * @param role
@@ -124,6 +125,21 @@ public class EditorUserAuthentication
      */
     public USER_IDENTITY_TYPES getIdentityType() {
         return identityType;
+    }
+
+    /**
+     * @return the toAdd
+     */
+    public boolean isToAdd() {
+        return toAdd;
+    }
+
+    /**
+     * @param toAdd
+     *        the toAdd to set
+     */
+    public void setToAdd(boolean toAdd) {
+        this.toAdd = toAdd;
     }
 
 }

@@ -29,6 +29,7 @@ package cz.mzk.editor.server.DAO;
 
 import java.util.ArrayList;
 
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RequestItem;
 
 // TODO: Auto-generated Javadoc
@@ -38,35 +39,38 @@ import cz.mzk.editor.shared.rpc.RequestItem;
 public interface RequestDAO {
 
     /**
-     * Adds the open id request.
+     * Adds the new identifier request.
      * 
      * @param name
      *        the name
-     * @param openID
-     *        the open id
-     * @return true, if successful
+     * @param identifier
+     *        the identifier
+     * @param idType
+     *        the id type
+     * @return the int
      * @throws DatabaseException
      *         the database exception
      */
-    boolean addOpenIDRequest(String name, String openID) throws DatabaseException;
+    int addNewIdentifierRequest(String name, String identifier, USER_IDENTITY_TYPES idType)
+            throws DatabaseException;
 
     /**
-     * Removes the open id request.
+     * Solve request.
      * 
      * @param id
      *        the id
      * @throws DatabaseException
      *         the database exception
      */
-    void removeOpenIDRequest(long id) throws DatabaseException;
+    void solveRequest(long id) throws DatabaseException;
 
     /**
-     * Gets the all open id requests.
+     * Gets the all requests.
      * 
-     * @return the all open id requests
+     * @return the all requests
      * @throws DatabaseException
      *         the database exception
      */
-    ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException;
+    ArrayList<RequestItem> getAllRequests() throws DatabaseException;
 
 }

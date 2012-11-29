@@ -24,15 +24,24 @@
 
 package cz.mzk.editor.client.other;
 
+import com.smartgwt.client.data.DSCallback;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.HtmlCode;
+import cz.mzk.editor.client.view.window.ModalWindow;
 
 /**
  * @author Matous Jobanek
@@ -78,6 +87,35 @@ public class RequestsLayout
         removeRequest = new IButton(lang.removeSelected());
         removeRequest.setAutoFit(true);
         removeRequest.setDisabled(true);
+        removeRequest.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final ModalWindow mw = new ModalWindow(requestsGrid);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
+                requestsGrid.removeSelectedData(new DSCallback() {
+
+                    @Override
+                    public void execute(DSResponse response, Object rawData, DSRequest request) {
+                        mw.hide();
+                    }
+                }, null);
+            }
+        });
+        requestsGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selection = event.getSelection();
+                if (selection != null && selection.length > 0) {
+                    removeRequest.setDisabled(false);
+                } else {
+                    removeRequest.setDisabled(true);
+                }
+            }
+        });
+
         buttonLayout.addMember(removeRequest);
         addMember(buttonLayout);
     }
@@ -87,13 +125,6 @@ public class RequestsLayout
      */
     public ListGrid getRequestsGrid() {
         return requestsGrid;
-    }
-
-    /**
-     * @return the removeRequest
-     */
-    public IButton getRemoveRequest() {
-        return removeRequest;
     }
 
 }

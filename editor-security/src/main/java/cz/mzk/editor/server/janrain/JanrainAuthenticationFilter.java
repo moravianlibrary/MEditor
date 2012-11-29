@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -48,6 +49,8 @@ import org.springframework.security.web.authentication.rememberme.AbstractRememb
 
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
@@ -128,11 +131,25 @@ public class JanrainAuthenticationFilter
         // delegate to the authentication provider
         EditorUserAuthentication authentication =
                 (EditorUserAuthentication) this.getAuthenticationManager().authenticate(token);
-
-        if (authentication.isAuthenticated()) {
-            setLastUsername(token.getIdentityUrl(), request);
+        if (authentication != null) {
+            if (authentication.isAuthenticated()) {
+                setLastUsername(token.getIdentityUrl(), request);
+            } else if (authentication.isToAdd()) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute(HttpCookies.UNKNOWN_ID_KEY, token.getIdentityUrl());
+                session.setAttribute(HttpCookies.NAME_KEY, token.getName());
+                //                String root =
+                //                        (URLS.LOCALHOST() ? "http://" : "https://")
+                //                                + request.getServerName()
+                //                                + (URLS.LOCALHOST() ? (request.getServerPort() == 80
+                //                                        || request.getServerPort() == 443 ? "" : (":" + request
+                //                                        .getServerPort())) : "") + URLS.ROOT()
+                //                                + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+                //                URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?"))
+                //                        + URLS.INFO_PAGE + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
+                throw new UsernameNotFoundException("");
+            }
         }
-
         return authentication;
     }
 
@@ -144,6 +161,31 @@ public class JanrainAuthenticationFilter
             request.getSession()
                     .setAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_LAST_USERNAME_KEY,
                                   username);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException,
+            ServletException {
+        HttpSession session = request.getSession(true);
+        Object openId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
+        if (openId != null) {
+            String root =
+                    (URLS.LOCALHOST() ? "http://" : "https://")
+                            + request.getServerName()
+                            + (URLS.LOCALHOST() ? (request.getServerPort() == 80
+                                    || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
+                                    : "") + URLS.ROOT()
+                            + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+            URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?")) + URLS.INFO_PAGE
+                    + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
+        } else {
+            super.unsuccessfulAuthentication(request, response, failed);
         }
     }
 

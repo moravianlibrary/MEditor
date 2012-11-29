@@ -32,6 +32,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.request4Adding.client.RequestForAddingService;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RequestDAO;
@@ -52,7 +53,7 @@ public class RequestForAddingServiceImpl
         RequestDAO reqDAO = new RequestDAOImpl();
         boolean success = false;
         try {
-            success = reqDAO.addOpenIDRequest(name, openID);
+            success = (reqDAO.addNewIdentifierRequest(name, openID, USER_IDENTITY_TYPES.OPEN_ID) >= 0);
         } catch (DatabaseException e) {
             return "Database problem: " + e.getMessage();
         }

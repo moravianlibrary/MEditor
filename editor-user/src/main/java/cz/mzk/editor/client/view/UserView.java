@@ -34,9 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -56,41 +53,15 @@ public class UserView
     /** The layout. */
     private final VLayout layout;
 
-    /** The form. */
-    private DynamicForm form;
-
-    /** The open. */
-    private IButton open;
-
-    /** The uuid field. */
-    private TextItem uuidField;
-
-    /** The remove role. */
-    private IButton removeRole;
-
-    /** The remove identity. */
-    private IButton removeIdentity;
-
-    /** The add role. */
-    private IButton addRole;
-
-    /** The add identity. */
-    private IButton addIdentity;
-
-    private final LangConstants lang;
-
     private final RequestsLayout requestsLayout;
 
     private final UsersLayout usersLayout;
-
-    //    private final EditorClientConfiguration config;
 
     /**
      * Instantiates a new home view.
      */
     @Inject
     public UserView(LangConstants lang, final DispatchAsync dispatcher, EventBus eventBus) {
-        this.lang = lang;
         this.layout = new VLayout();
         this.layout.setPadding(10);
         this.layout.setHeight100();
@@ -113,76 +84,6 @@ public class UserView
         return layout;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#getOpen ()
-     */
-    @Override
-    public IButton getOpen() {
-        return open;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#getForm ()
-     */
-    @Override
-    public DynamicForm getForm() {
-        return form;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#getUuidItem ()
-     */
-    @Override
-    public HasChangedHandlers getUuidItem() {
-        return uuidField;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView# refreshFedora
-     * (boolean, java.lang.String)
-     */
-    @Override
-    public void refreshFedora(boolean fedoraRunning, String url) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#
-     * refreshKramerius(boolean, java.lang.String)
-     */
-    @Override
-    public void refreshKramerius(boolean krameriusRunning, String url) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#setURLs
-     * (java.lang.String, java.lang.String)
-     */
-    @Override
-    public void setURLs(String fedoraUrl, String krameriusUrl) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#setLoading ()
-     */
-    @Override
-    public void setLoading() {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -195,63 +96,8 @@ public class UserView
      * {@inheritDoc}
      */
     @Override
-    public IButton getRemoveUser() {
-        return usersLayout.getRemoveUser();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IButton getRemoveRequest() {
-        return requestsLayout.getRemoveRequest();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView# getRemoveRole
-     * ()
-     */
-    @Override
-    public IButton getRemoveRole() {
-        return removeRole;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#
-     * getRemoveIdentity()
-     */
-    @Override
-    public IButton getRemoveIdentity() {
-        return removeIdentity;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public IButton getAddUser() {
         return usersLayout.getAddUser();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView#getAddRole ()
-     */
-    @Override
-    public IButton getAddRole() {
-        return addRole;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.UserPresenter.MyView# getAddIdentity
-     * ()
-     */
-    @Override
-    public IButton getAddIdentity() {
-        return addIdentity;
     }
 
     /**

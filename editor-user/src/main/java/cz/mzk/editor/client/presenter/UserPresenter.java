@@ -51,11 +51,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.HiddenItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.HasChangedHandlers;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
-import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
@@ -83,42 +80,6 @@ public class UserPresenter
             extends View {
 
         /**
-         * Gets the name.
-         * 
-         * @param fedoraRunning
-         *        the fedora running
-         * @param url
-         *        the url
-         * @return the name
-         */
-        public void refreshFedora(boolean fedoraRunning, String url);
-
-        /**
-         * Refresh kramerius.
-         * 
-         * @param krameriusRunning
-         *        the kramerius running
-         * @param url
-         *        the url
-         */
-        public void refreshKramerius(boolean krameriusRunning, String url);
-
-        /**
-         * Sets the ur ls.
-         * 
-         * @param fedoraUrl
-         *        the fedora url
-         * @param krameriusUrl
-         *        the kramerius url
-         */
-        public void setURLs(String fedoraUrl, String krameriusUrl);
-
-        /**
-         * Sets the loading.
-         */
-        public void setLoading();
-
-        /**
          * Gets the user grid.
          * 
          * @return the user grid
@@ -140,69 +101,12 @@ public class UserPresenter
         public ListGrid getRequestsGrid();
 
         /**
-         * Gets the removes the user.
-         * 
-         * @return the removes the user
-         */
-        public IButton getRemoveUser();
-
-        /**
          * Gets the adds the user.
          * 
          * @return the adds the user
          */
         public IButton getAddUser();
 
-        /**
-         * Gets the removes the role.
-         * 
-         * @return the removes the role
-         */
-        public IButton getRemoveRole();
-
-        /**
-         * Gets the adds the role.
-         * 
-         * @return the adds the role
-         */
-        public IButton getAddRole();
-
-        /**
-         * Gets the removes the identity.
-         * 
-         * @return the removes the identity
-         */
-        public IButton getRemoveIdentity();
-
-        public IButton getRemoveRequest();
-
-        /**
-         * Gets the adds the identity.
-         * 
-         * @return the adds the identity
-         */
-        public IButton getAddIdentity();
-
-        /**
-         * Gets the uuid item.
-         * 
-         * @return the uuid item
-         */
-        public HasChangedHandlers getUuidItem();
-
-        /**
-         * Gets the open.
-         * 
-         * @return the open
-         */
-        public IButton getOpen();
-
-        /**
-         * Gets the form.
-         * 
-         * @return the form
-         */
-        public DynamicForm getForm();
     }
 
     /**
@@ -265,30 +169,6 @@ public class UserPresenter
 
         final RequestsGwtRPCDS reqSource = new RequestsGwtRPCDS(dispatcher, lang);
         getView().getRequestsGrid().setDataSource(reqSource);
-
-        getView().getRequestsGrid().addSelectionChangedHandler(new SelectionChangedHandler() {
-
-            @Override
-            public void onSelectionChanged(SelectionEvent event) {
-                ListGridRecord[] selection = event.getSelection();
-                if (selection != null && selection.length > 0) {
-                    getView().getRemoveRequest().setDisabled(false);
-                } else {
-                    getView().getRemoveRequest().setDisabled(true);
-                }
-            }
-        });
-
-        // remove request
-        getView().getRemoveRequest().addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                getView().getRequestsGrid().removeSelectedData();
-            }
-        });
-
-        // remove user
 
         // add user
         getView().getAddUser().addClickHandler(new ClickHandler() {

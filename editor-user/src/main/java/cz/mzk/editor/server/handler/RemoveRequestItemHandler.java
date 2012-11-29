@@ -80,7 +80,7 @@ public class RemoveRequestItemHandler
         if (action.getId() == null) throw new NullPointerException("getId()");
 
         try {
-            requestDAO.removeOpenIDRequest(action.getId());
+            requestDAO.solveRequest(action.getId());
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

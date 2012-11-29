@@ -27,57 +27,222 @@
 
 package cz.mzk.editor.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RequestItem.
+ */
 public class RequestItem
-        implements IsSerializable {
+        implements Serializable {
 
-    private long id;
-    private String name;
-    private String openID;
-    private String date;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = -6447185495167665282L;
 
+    /** The id. */
+    private Long id;
+
+    /** The user name. */
+    private String userName;
+
+    /** The user id. */
+    private Long userId;
+
+    /** The object. */
+    private String object;
+
+    /** The timestamp. */
+    private String timestamp;
+
+    /** The description. */
+    private String description;
+
+    /** The type. */
+    private String type;
+
+    /**
+     * Instantiates a new request item.
+     */
     public RequestItem() {
+        // TODO Auto-generated constructor stub
     }
 
-    public RequestItem(long id, String name, String openID, String date) {
+    /**
+     * Instantiates a new request item.
+     * 
+     * @param id
+     *        the id
+     * @param userName
+     *        the user name
+     * @param userId
+     *        the user id
+     * @param object
+     *        the object
+     * @param timestamp
+     *        the timestamp
+     * @param description
+     *        the description
+     * @param type
+     *        the type
+     */
+    public RequestItem(Long id,
+                       String userName,
+                       Long userId,
+                       String object,
+                       String timestamp,
+                       String description,
+                       String type) {
         super();
         this.id = id;
-        this.name = name;
-        this.openID = openID;
-        this.date = date;
+        this.userName = userName;
+        this.userId = userId;
+        this.object = object;
+        this.timestamp = timestamp;
+        this.description = description;
+        this.type = type;
     }
 
-    public long getId() {
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    /**
+     * Gets the user name.
+     * 
+     * @return the userName
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * Gets the user id.
+     * 
+     * @return the userId
+     */
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * Gets the object.
+     * 
+     * @return the object
+     */
+    public String getObject() {
+        return object;
+    }
+
+    /**
+     * Gets the timestamp.
+     * 
+     * @return the timestamp
+     */
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Gets the description.
+     * 
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *        the id to set
+     */
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    /**
+     * Sets the user name.
+     * 
+     * @param userName
+     *        the userName to set
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Sets the user id.
+     * 
+     * @param userId
+     *        the userId to set
+     */
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getOpenID() {
-        return openID;
+    /**
+     * Sets the object.
+     * 
+     * @param object
+     *        the object to set
+     */
+    public void setObject(String object) {
+        this.object = object;
     }
 
-    public void setOpenID(String openID) {
-        this.openID = openID;
+    /**
+     * Sets the timestamp.
+     * 
+     * @param timestamp
+     *        the timestamp to set
+     */
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getTimestamp() {
-        return date;
+    /**
+     * Sets the description.
+     * 
+     * @param description
+     *        the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setTimestamp(String date) {
-        this.date = date;
+    /**
+     * Sets the type.
+     * 
+     * @param type
+     *        the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "RequestItem [id=" + id + ", userName=" + userName + ", userId=" + userId + ", object="
+                + object + ", timestamp=" + timestamp + ", description=" + description + ", type=" + type
+                + "]";
     }
 
 }

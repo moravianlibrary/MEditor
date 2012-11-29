@@ -70,18 +70,30 @@ public class RequestsGwtRPCDS
         DataSourceField field;
         field = new DataSourceTextField(Constants.ATTR_NAME, lang.name());
         field.setRequired(true);
-        field.setAttribute("width", "25%");
+        field.setAttribute("width", "15%");
         addField(field);
-        field = new DataSourceTextField(Constants.ATTR_IDENTITY, lang.identities());
+        field = new DataSourceTextField(Constants.ATTR_OBJECT, lang.identities());
         field.setRequired(true);
         field.setAttribute("width", "*");
         addField(field);
-        field = new DataSourceTextField(Constants.ATTR_DATE, lang.date());
+        field = new DataSourceTextField(Constants.ATTR_DESC, lang.description());
         field.setRequired(true);
         field.setAttribute("width", "20%");
         addField(field);
-        field = new DataSourceTextField(Constants.ATTR_GENERIC_ID, "request id");
+        field = new DataSourceTextField(Constants.ATTR_TIMESTAMP, lang.date());
+        field.setRequired(true);
+        field.setAttribute("width", "15%");
+        addField(field);
+        field = new DataSourceTextField(Constants.ATTR_TYPE, "Type");
+        field.setRequired(true);
+        field.setAttribute("width", "15%");
+        addField(field);
+        field = new DataSourceTextField(Constants.ATTR_GENERIC_ID, "requestId");
         field.setPrimaryKey(true);
+        field.setHidden(true);
+        field.setRequired(true);
+        addField(field);
+        field = new DataSourceTextField(Constants.ATTR_USER_ID, "userId");
         field.setHidden(true);
         field.setRequired(true);
         addField(field);
@@ -188,10 +200,13 @@ public class RequestsGwtRPCDS
      *        the to
      */
     private static void copyValues(ListGridRecord from, RequestItem to) {
-        to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-        to.setOpenID(from.getAttributeAsString(Constants.ATTR_IDENTITY));
-        to.setTimestamp(null);
-        to.setId(Long.parseLong(from.getAttributeAsString(Constants.ATTR_GENERIC_ID)));
+        to.setUserName(from.getAttributeAsString(Constants.ATTR_NAME));
+        to.setObject(from.getAttributeAsString(Constants.ATTR_OBJECT));
+        to.setDescription(from.getAttributeAsString(Constants.ATTR_DESC));
+        to.setTimestamp(from.getAttributeAsString(Constants.ATTR_TIMESTAMP));
+        to.setType(from.getAttributeAsString(Constants.ATTR_TYPE));
+        to.setId(from.getAttributeAsLong(Constants.ATTR_GENERIC_ID));
+        to.setUserId(from.getAttributeAsLong(Constants.ATTR_USER_ID));
     }
 
     /**
@@ -203,10 +218,13 @@ public class RequestsGwtRPCDS
      *        the to
      */
     private static void copyValues(RequestItem from, ListGridRecord to) {
-        to.setAttribute(Constants.ATTR_IDENTITY, from.getOpenID());
-        to.setAttribute(Constants.ATTR_NAME, from.getName());
+        to.setAttribute(Constants.ATTR_NAME, from.getUserName());
+        to.setAttribute(Constants.ATTR_OBJECT, from.getObject());
+        to.setAttribute(Constants.ATTR_DESC, from.getDescription());
+        to.setAttribute(Constants.ATTR_TIMESTAMP, from.getTimestamp());
+        to.setAttribute(Constants.ATTR_TYPE, from.getType());
         to.setAttribute(Constants.ATTR_GENERIC_ID, from.getId());
-        to.setAttribute(Constants.ATTR_DATE, from.getTimestamp());
+        to.setAttribute(Constants.ATTR_USER_ID, from.getUserId());
     }
 
     /**

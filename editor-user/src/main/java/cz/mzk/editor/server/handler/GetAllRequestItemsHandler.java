@@ -90,7 +90,7 @@ public class GetAllRequestItemsHandler
         ServerUtils.checkExpiredSession();
 
         try {
-            return new GetAllRequestItemsResult(requestDAO.getAllOpenIDRequests());
+            return new GetAllRequestItemsResult(requestDAO.getAllRequests());
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

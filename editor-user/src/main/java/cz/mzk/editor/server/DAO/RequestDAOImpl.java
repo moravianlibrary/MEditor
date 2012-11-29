@@ -30,14 +30,19 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import java.text.SimpleDateFormat;
+import java.sql.Statement;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
+import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RequestItem;
 
 // TODO: Auto-generated Javadoc
@@ -49,94 +54,144 @@ public class RequestDAOImpl
         implements RequestDAO {
 
     /** The Constant SELECT_IDENTITIES_STATEMENT. */
-    public static final String SELECT_IDENTITIES_STATEMENT =
-            "SELECT r.type, r.id, object, description, editor_user_id, timestamp FROM ("
+    public static final String SELECT_REQUESTS_STATEMENT =
+            "SELECT r.type, r.id, object, description, editor_user_id, surname || ' ' || name as fullUserName, timestamp FROM ("
                     + Constants.TABLE_REQUEST_TO_ADMIN
-                    + " r INNER JOIN (SELECT * FROM "
+                    + " r INNER JOIN (SELECT * FROM ("
                     + Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION
-                    + " WHERE type = 'c') a ON r.id = a.request_to_admin_id) WHERE solved = 'false' AND (admin_editor_user_id = '"
+                    + " cra INNER JOIN "
+                    + Constants.TABLE_EDITOR_USER
+                    + " eu ON cra.editor_user_id = eu.id) WHERE type = 'c') a ON r.id = a.request_to_admin_id) WHERE solved = 'false' AND (admin_editor_user_id = '"
                     + Constants.DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId()
                     + "' OR admin_editor_user_id = (?))";
 
-    /** The Constant SELECT_IDENTITY_STATEMENT. */
-    public static final String SELECT_IDENTITY_STATEMENT =
-            "SELECT id, name, identity, modified FROM request_for_adding WHERE identity = (?) ORDER BY modified";
+    public static final String SELECT_IDENTITY_STATEMENT = "SELECT * FROM "
+            + Constants.TABLE_REQUEST_TO_ADMIN + " WHERE object = (?)";
 
-    /** The Constant INSERT_IDENTITY_STATEMENT. */
-    public static final String INSERT_IDENTITY_STATEMENT =
-            "INSERT INTO request_for_adding (name, identity, modified) VALUES ((?),(?), (CURRENT_TIMESTAMP))";
+    public static final String INSERT_REQUEST_STATEMENT = "INSERT INTO " + Constants.TABLE_REQUEST_TO_ADMIN
+            + " (admin_editor_user_id, type, object, description, solved) VALUES ((?),(?),(?),(?),(?))";
 
-    /** The Constant DELETE_IDENTITY. */
-    public static final String DELETE_IDENTITY = "DELETE FROM request_for_adding WHERE id = (?)";
+    /** The Constant SOLVE_REQUEST. */
+    public static final String SOLVE_REQUEST = "UPDATE " + Constants.TABLE_REQUEST_TO_ADMIN
+            + " SET solved = 'true' WHERE id = (?)";
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(RequestDAOImpl.class);
 
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void removeOpenIDRequest(long id) throws DatabaseException {
-        PreparedStatement deleteSt = null;
+    public void solveRequest(long id) throws DatabaseException {
+        PreparedStatement solveSt = null;
+        int updated = 0;
         try {
-            deleteSt = getConnection().prepareStatement(DELETE_IDENTITY);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
+            solveSt = getConnection().prepareStatement(SOLVE_REQUEST);
+            solveSt.setLong(1, id);
+            updated = solveSt.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Could not delete request for adding with id " + id + " Query: " + deleteSt, e);
+            LOGGER.error("Could not solve request with id " + id + " Query: " + solveSt, e);
         } finally {
             closeConnection();
         }
+        if (updated > 0) {
+            try {
+                daoUtils.insertCrudAction(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
+                                          "request_to_admin_id",
+                                          id,
+                                          CRUD_ACTION_TYPES.UPDATE,
+                                          true);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public boolean addOpenIDRequest(String name, String openID) throws DatabaseException {
+    public int addNewIdentifierRequest(String name, String identifier, USER_IDENTITY_TYPES idType)
+            throws DatabaseException {
         if (name == null) throw new NullPointerException("name");
-        if (openID == null || "".equals(openID)) throw new NullPointerException("openID");
+        if (identifier == null || "".equals(identifier)) throw new NullPointerException("identifier");
 
-        boolean found = false;
+        int toReturn = -1;
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+        //        try {
+        //            getConnection().setAutoCommit(false);
+        //        } catch (SQLException e) {
+        //            LOGGER.warn("Unable to set autocommit off", e);
+        //        }
         PreparedStatement findSt = null, insSt = null;
         try {
-            // TX start
-            findSt = getConnection().prepareStatement(SELECT_IDENTITY_STATEMENT);
-            findSt.setString(1, openID);
+
+            StringBuffer sqlSb = new StringBuffer(SELECT_IDENTITY_STATEMENT);
+            if (idType == USER_IDENTITY_TYPES.OPEN_ID) sqlSb.append(" OR object = (?)");
+            findSt = getConnection().prepareStatement(sqlSb.toString());
+
+            findSt.setString(1, getIdentifierRequest(idType, identifier));
+            if (idType == USER_IDENTITY_TYPES.OPEN_ID) findSt.setString(2, identifier);
+
             ResultSet rs = findSt.executeQuery();
-            found = rs.next();
-            if (!found) {
-                insSt = getConnection().prepareStatement(INSERT_IDENTITY_STATEMENT);
-                insSt.setString(1, name);
-                insSt.setString(2, openID);
-                insSt.executeUpdate();
+            if (!rs.next()) {
+                insSt =
+                        getConnection().prepareStatement(INSERT_REQUEST_STATEMENT,
+                                                         Statement.RETURN_GENERATED_KEYS);
+                insSt.setLong(1, DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId());
+                insSt.setString(2, REQUESTS_TO_ADMIN_TYPES.ADDING_NEW_ACOUNT.getValue());
+                insSt.setString(3, getIdentifierRequest(idType, identifier));
+                insSt.setString(4, name);
+
+                if (insSt.executeUpdate() == 1) {
+                    LOGGER.debug("DB has been updated: The request of " + name + " with " + idType
+                            + " identifier: " + identifier + " has been inserted.");
+                    ResultSet gk = insSt.getGeneratedKeys();
+                    if (gk.next()) {
+                        if (daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId(),
+                                                      Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
+                                                      "request_to_admin_id",
+                                                      gk.getLong(1),
+                                                      CRUD_ACTION_TYPES.CREATE,
+                                                      false)) {
+                            toReturn = 1;
+                        }
+                    } else {
+                        LOGGER.error("No key has been returned! " + insSt);
+                    }
+
+                } else {
+                    LOGGER.error("DB has not been updated! " + insSt);
+                }
+            } else {
+                toReturn = 0;
             }
-            getConnection().commit();
+            //            getConnection().commit();
             // TX end
         } catch (SQLException e) {
             LOGGER.error("Queries: \"" + findSt + "\" and \"" + insSt + "\"", e);
         } finally {
             closeConnection();
         }
-        return !found;
+        return toReturn;
+    }
+
+    private String getIdentifierRequest(USER_IDENTITY_TYPES idType, String identifier) {
+        return idType.toString() + ": " + identifier;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ArrayList<RequestItem> getAllOpenIDRequests() throws DatabaseException {
+    public ArrayList<RequestItem> getAllRequests() throws DatabaseException {
         PreparedStatement selectSt = null;
         ArrayList<RequestItem> retList = new ArrayList<RequestItem>();
         Long userId = getUserId();
         try {
-            selectSt = getConnection().prepareStatement(SELECT_IDENTITIES_STATEMENT);
+            selectSt = getConnection().prepareStatement(SELECT_REQUESTS_STATEMENT);
             selectSt.setLong(1, userId);
         } catch (SQLException e) {
             LOGGER.error("Could not get select roles statement", e);
@@ -144,10 +199,22 @@ public class RequestDAOImpl
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                //                r.type, r.id, object, description, editor_user_id, timestamp
-                retList.add(new RequestItem(rs.getLong("id"), rs.getString("description"), rs
-                        .getString("object"), formatter.format(rs.getTimestamp("timestamp"))));
+                long user = rs.getLong("id");
+                String userName = rs.getString("fullUserName");
+                String description = rs.getString("description");
+                if (DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId().equals(user)) {
+                    userName = description;
+                    //                    TODO
+                    description = "";
+                }
+
+                retList.add(new RequestItem(user,
+                                            userName,
+                                            rs.getLong("editor_user_id"),
+                                            rs.getString("object"),
+                                            FORMATTER_TO_SECONDS.format(rs.getTimestamp("timestamp")),
+                                            description,
+                                            rs.getString("type")));
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
@@ -156,5 +223,4 @@ public class RequestDAOImpl
         }
         return retList;
     }
-
 }

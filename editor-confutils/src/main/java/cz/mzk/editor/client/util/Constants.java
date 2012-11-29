@@ -287,7 +287,7 @@ public class Constants {
      */
     public static enum REQUESTS_TO_ADMIN_TYPES {
 
-        ADDING_NEW_ACOUNT("adding a new acount");
+        ADDING_NEW_ACOUNT("Adding a new acount");
 
         private final String value;
 
@@ -306,6 +306,13 @@ public class Constants {
          */
         public String getValue() {
             return value;
+        }
+
+        public static REQUESTS_TO_ADMIN_TYPES parseString(String s) {
+            for (REQUESTS_TO_ADMIN_TYPES request : REQUESTS_TO_ADMIN_TYPES.values()) {
+                if (request.getValue().equalsIgnoreCase(s)) return request;
+            }
+            return null;
         }
 
     }
