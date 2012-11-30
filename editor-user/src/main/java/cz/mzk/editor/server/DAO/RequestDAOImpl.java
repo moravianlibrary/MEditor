@@ -66,10 +66,10 @@ public class RequestDAOImpl
                     + "' OR admin_editor_user_id = (?))";
 
     public static final String SELECT_IDENTITY_STATEMENT = "SELECT * FROM "
-            + Constants.TABLE_REQUEST_TO_ADMIN + " WHERE object = (?)";
+            + Constants.TABLE_REQUEST_TO_ADMIN + " WHERE solved = 'false' AND object = (?)";
 
     public static final String INSERT_REQUEST_STATEMENT = "INSERT INTO " + Constants.TABLE_REQUEST_TO_ADMIN
-            + " (admin_editor_user_id, type, object, description, solved) VALUES ((?),(?),(?),(?),(?))";
+            + " (admin_editor_user_id, type, object, description, solved) VALUES ((?),(?),(?),(?),'false')";
 
     /** The Constant SOLVE_REQUEST. */
     public static final String SOLVE_REQUEST = "UPDATE " + Constants.TABLE_REQUEST_TO_ADMIN
@@ -189,17 +189,16 @@ public class RequestDAOImpl
     public ArrayList<RequestItem> getAllRequests() throws DatabaseException {
         PreparedStatement selectSt = null;
         ArrayList<RequestItem> retList = new ArrayList<RequestItem>();
-        Long userId = getUserId();
         try {
             selectSt = getConnection().prepareStatement(SELECT_REQUESTS_STATEMENT);
-            selectSt.setLong(1, userId);
+            selectSt.setLong(1, getUserId(false));
         } catch (SQLException e) {
             LOGGER.error("Could not get select roles statement", e);
         }
         try {
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                long user = rs.getLong("id");
+                long user = rs.getLong("editor_user_id");
                 String userName = rs.getString("fullUserName");
                 String description = rs.getString("description");
                 if (DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId().equals(user)) {
@@ -208,9 +207,9 @@ public class RequestDAOImpl
                     description = "";
                 }
 
-                retList.add(new RequestItem(user,
+                retList.add(new RequestItem(rs.getLong("id"),
                                             userName,
-                                            rs.getLong("editor_user_id"),
+                                            user,
                                             rs.getString("object"),
                                             FORMATTER_TO_SECONDS.format(rs.getTimestamp("timestamp")),
                                             description,

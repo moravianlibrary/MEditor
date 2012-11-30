@@ -37,6 +37,8 @@ import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -117,8 +119,12 @@ public class ServerUtils {
             throws ActionException {
         checkExpiredSession();
         try {
-            return daoUtils.getUserId();
+            return daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);

@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -35,6 +37,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -54,6 +57,9 @@ public class GetLoggedUserHandler
     /** The recently modified dao. */
     private final UserDAO userDAO;
 
+    /** The dao utils. */
+    private final DAOUtils daoUtils;
+
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -63,8 +69,9 @@ public class GetLoggedUserHandler
      *        the http session provider
      */
     @Inject
-    public GetLoggedUserHandler(final UserDAO userDAO) {
+    public GetLoggedUserHandler(final UserDAO userDAO, final DAOUtils daoUtils) {
         this.userDAO = userDAO;
+        this.daoUtils = daoUtils;
     }
 
     /*
@@ -84,10 +91,16 @@ public class GetLoggedUserHandler
         boolean editUsers;
         try {
             editUsers = true;
-            return new GetLoggedUserResult(userDAO.getName(userDAO.getUsersId()),
+            return new GetLoggedUserResult(userDAO.getName(daoUtils.getUserId(true)),
                                            editUsers,
-                                           userDAO.getUsersId());
+                                           daoUtils.getUserId(true));
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
     }

@@ -64,7 +64,7 @@ public class DAOUtilsImpl
                                     Object foreignKey,
                                     CRUD_ACTION_TYPES type,
                                     boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(getUserId(), tableName, fkNameCol, foreignKey, type, null, closeCon);
+        return insertAnyCrudAction(getUserId(false), tableName, fkNameCol, foreignKey, type, null, closeCon);
     }
 
     /**
@@ -79,7 +79,7 @@ public class DAOUtilsImpl
                                                  CRUD_ACTION_TYPES type,
                                                  String top_digital_object_uuid,
                                                  boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(getUserId(),
+        return insertAnyCrudAction(getUserId(false),
                                    tableName,
                                    fkNameCol,
                                    foreignKey,
@@ -143,7 +143,7 @@ public class DAOUtilsImpl
 
         try {
             insertSt = getConnection().prepareStatement(sql);
-            insertSt.setLong(1, getUserId());
+            insertSt.setLong(1, getUserId(false));
             insertSt.setObject(2, foreignKey);
             insertSt.setString(3, type.getValue());
             if (top_digital_object_uuid != null) insertSt.setString(4, top_digital_object_uuid);
@@ -943,10 +943,12 @@ public class DAOUtilsImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
     @Override
-    public Long getUserId() throws DatabaseException {
-        return super.getUserId();
+    public Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
+        return super.getUserId(closeCon);
     }
 
     /**

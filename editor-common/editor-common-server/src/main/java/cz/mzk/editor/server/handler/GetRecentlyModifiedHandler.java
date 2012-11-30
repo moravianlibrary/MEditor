@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -41,6 +43,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -79,6 +82,10 @@ public class GetRecentlyModifiedHandler
     /** The user DAO **/
     @Inject
     private UserDAO userDAO;
+
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
 
     /**
      * Instantiates a new gets the recently modified handler.
@@ -121,7 +128,7 @@ public class GetRecentlyModifiedHandler
             } else {
                 recItems =
                         recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(),
-                                                     userDAO.getUsersId());
+                                                     daoUtils.getUserId(true));
             }
 
             for (RecentlyModifiedItem item : recItems) {
@@ -132,6 +139,12 @@ public class GetRecentlyModifiedHandler
             }
             return new GetRecentlyModifiedResult(recItems);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
     }

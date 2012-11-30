@@ -240,15 +240,22 @@ public class ActionDAOImpl
         List<EditorDate> days = new ArrayList<EditorDate>();
 
         if (userId == null && uuid == null) {
-            userId = getUserId();
+            try {
+                userId = getUserId(true);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                return days;
+            }
         }
 
         if (userId != null) {
             PreparedStatement selSt = null;
 
-            long editorUserId = (userId == null) ? getUserId() : userId;
-
             try {
+
+                long editorUserId = (userId == null) ? getUserId(true) : userId;
+
                 selSt = getConnection().prepareStatement(SELECT_USER_ACTIONS_TIMESTAMP);
                 selSt.setLong(1, editorUserId);
 

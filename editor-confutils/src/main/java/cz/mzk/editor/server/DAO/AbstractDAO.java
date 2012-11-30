@@ -38,6 +38,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import java.text.SimpleDateFormat;
 
@@ -70,10 +71,13 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
+import org.springframework.security.core.context.SecurityContext;
+
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -99,8 +103,8 @@ public abstract class AbstractDAO {
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
-    /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
-    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    /** The Constant FORMATTER with format: dd.MM.yyyy HH:mm:ss. */
+    public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     private static final int POOLABLE_YES = 1;
     private static final int POOLABLE_NO = 0;
@@ -344,8 +348,10 @@ public abstract class AbstractDAO {
      * @return the users id
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
-    protected long getUsersId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException {
+    protected long getUsersId(String identifier, USER_IDENTITY_TYPES type, boolean closeCon)
+            throws DatabaseException, SQLException {
         PreparedStatement selectSt = null;
         long userId = -1;
         try {
@@ -378,25 +384,72 @@ public abstract class AbstractDAO {
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
+            if (closeCon) {
+                e.printStackTrace();
+            } else {
+                throw new SQLException(e);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
         return userId;
     }
 
-    protected Long getUserId() throws DatabaseException {
-        String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
-        return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
+    /**
+     * Gets the user id.
+     * 
+     * @param closeCon
+     *        the close con
+     * @return the user id
+     * @throws DatabaseException
+     *         the database exception
+     * @throws SQLException
+     */
+    protected Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
+        SecurityContext secContext =
+                (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
+        EditorUserAuthentication authentication = null;
+        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+        if (authentication != null) {
+            return getUsersId((String) authentication.getPrincipal(),
+                              authentication.getIdentityType(),
+                              closeCon);
+        } else {
+            throw new DatabaseException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
+                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
     }
 
     /**
-     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * Format date to seconds, the format: dd.MM.yyyy HH:mm:ss.
      * 
      * @param date
      *        the date
      * @return the string
      */
-    protected String formatDate(java.util.Date date) {
-        return FORMATTER.format(date);
+    protected String formatDateToSeconds(java.sql.Date date) {
+        return FORMATTER_TO_SECONDS.format(date);
     }
+
+    /**
+     * Format timestamp to seconds, the format: dd.MM.yyyy HH:mm:ss.
+     * 
+     * @param timestamp
+     *        the timestamp
+     * @return the string
+     */
+    protected String formatTimestampToSeconds(Timestamp timestamp) {
+        return FORMATTER_TO_SECONDS.format(timestamp);
+    }
+
+    // /**
+    // * Format timestamp to days, the format: yyyy/MM/dd.
+    // *
+    // * @param timestamp
+    // * the timestamp
+    // * @return the string
+    // */
+    // protected String formatTimestampToDays(Timestamp timestamp) {
+    // return FORMATTER_TO_DAYS.format(timestamp);
+    // }
 }

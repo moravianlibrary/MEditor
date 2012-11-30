@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -32,6 +34,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LockDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -60,6 +63,10 @@ public class GetLockInformationHandler
     @Inject
     private LockDAO locksDAO;
 
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -75,8 +82,14 @@ public class GetLockInformationHandler
 
         long usersId = 0;
         try {
-            usersId = userDAO.getUsersId();
+            usersId = daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
 

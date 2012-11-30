@@ -247,7 +247,7 @@ public class StoredItemsDAOImpl
             if (deleteSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The edited stored object: " + id + " has been disabled.");
                 successful =
-                        daoUtils.insertCrudAction(getUserId(),
+                        daoUtils.insertCrudAction(getUserId(false),
                                                   Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
                                                   "saved_edited_object_id",
                                                   id,

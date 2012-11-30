@@ -137,7 +137,7 @@ public class DescriptionDAOImpl
         try {
             selSt = getConnection().prepareStatement(DESCRIPTION_SELECT_DESC_STATEMENT);
             selSt.setString(1, digital_object_uuid);
-            selSt.setLong(2, getUserId());
+            selSt.setLong(2, getUserId(false));
             ResultSet rs = selSt.executeQuery();
             if (rs.next()) {
                 desc = rs.getString("description");
@@ -171,8 +171,8 @@ public class DescriptionDAOImpl
             LOGGER.warn("Unable to set autocommit off", e);
         }
 
-        Long editor_user_id = getUserId();
         try {
+            Long editor_user_id = getUserId(false);
             if (desc == null) {
                 successful = daoUtils.insertDescription(editor_user_id, digital_object_uuid, description);
                 if (successful)

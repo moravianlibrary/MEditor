@@ -111,6 +111,15 @@ public class UserClientUtils {
                 ListGridRecord rec = new ListGridRecord();
                 rec.setAttribute(Constants.ATTR_NAME, roles.get(i).getName());
                 rec.setAttribute(Constants.ATTR_DESC, roles.get(i).getDescription());
+
+                StringBuffer sb = new StringBuffer();
+                if (roles.get(i).getRights() != null) {
+                    for (EDITOR_RIGHTS right : roles.get(i).getRights()) {
+                        sb.append(right.toString() + ": " + right.getDesc() + "<br>");
+                    }
+                }
+                rec.setAttribute(Constants.ATTR_RIGHT_IN_ROLE, sb.toString());
+
                 roleRecords[i] = rec;
             }
         }

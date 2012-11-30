@@ -159,7 +159,13 @@ public class UserDAOImpl
     @Override
     public int isSupported(String identifier) throws DatabaseException {
 
-        long userId = getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID);
+        long userId = -1;
+        try {
+            userId = getUsersId(identifier, USER_IDENTITY_TYPES.OPEN_ID, true);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
 
         if (userId == -1) userId = getUsersIdOld(identifier);
 
@@ -174,19 +180,22 @@ public class UserDAOImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getUsersId(String identifier, USER_IDENTITY_TYPES identityType) throws DatabaseException {
-
-        return super.getUsersId(identifier, identityType);
-    }
-
-    @Override
-    public long getUsersId() throws DatabaseException {
-        return super.getUserId();
-    }
+    //    /**
+    //     * {@inheritDoc}
+    //     * 
+    //     * @throws SQLException
+    //     */
+    //    @Override
+    //    public long getUsersId(String identifier, USER_IDENTITY_TYPES identityType, boolean closeCon)
+    //            throws DatabaseException, SQLException {
+    //
+    //        return super.getUsersId(identifier, identityType, closeCon);
+    //    }
+    //
+    //    @Override
+    //    public long getUsersId(boolean closeCon) throws DatabaseException, SQLException {
+    //        return super.getUserId(closeCon);
+    //    }
 
     /**
      * Gets the users id old.
@@ -272,7 +281,7 @@ public class UserDAOImpl
                 //                TODO unlock locked DO
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(),
+                        insertEditUserActionItem(getUserId(false),
                                                  userId,
                                                  "The role has been disabled.",
                                                  CRUD_ACTION_TYPES.DELETE,
@@ -349,7 +358,7 @@ public class UserDAOImpl
 
             if (id != null) {
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(),
+                        insertEditUserActionItem(getUserId(false),
                                                  id,
                                                  user.getId() == null ? "New user has been added"
                                                          : "User has been updated",
@@ -392,12 +401,13 @@ public class UserDAOImpl
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
     private boolean insertEditUserActionItem(Long user_id,
                                              Long edited_user_id,
                                              String description,
                                              CRUD_ACTION_TYPES type,
-                                             boolean closeCon) throws DatabaseException {
+                                             boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement insSt = null;
         boolean successful = false;
         try {
@@ -416,6 +426,11 @@ public class UserDAOImpl
             }
         } catch (SQLException e) {
             LOGGER.error("Could not get insert item statement " + insSt, e);
+            if (closeCon) {
+                e.printStackTrace();
+            } else {
+                throw new SQLException(e);
+            }
         } finally {
             if (closeCon) closeConnection();
         }
@@ -718,7 +733,7 @@ public class UserDAOImpl
                         + (add ? "added to" : "removed from") + " the user: " + userIdentity.getUserId());
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(),
+                        insertEditUserActionItem(getUserId(false),
                                                  userIdentity.getUserId(),
                                                  "An identity has been " + (add ? "added." : "removed."),
                                                  CRUD_ACTION_TYPES.UPDATE,
@@ -760,11 +775,11 @@ public class UserDAOImpl
             return true;
         }
 
-        //        try {
-        //            getConnection().setAutoCommit(false);
-        //        } catch (SQLException e) {
-        //            LOGGER.warn("Unable to set autocommit off", e);
-        //        }
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
 
         boolean success = false;
         PreparedStatement updateSt = null;
@@ -781,8 +796,8 @@ public class UserDAOImpl
                         + (add ? "added to" : "removed from") + " the user: " + roleItem.getUserId());
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(), roleItem.getUserId(), "The role has been "
-                                + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
+                        insertEditUserActionItem(getUserId(false), roleItem.getUserId(), "The role has been "
+                                + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, false);
 
                 if (crudSucc) {
                     //                    getConnection().commit();
@@ -869,7 +884,7 @@ public class UserDAOImpl
                         + (add ? "added to" : "removed from") + " the user: " + userId);
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(), userId, "The right has been "
+                        insertEditUserActionItem(getUserId(false), userId, "The right has been "
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
 
                 if (crudSucc) {
@@ -949,7 +964,13 @@ public class UserDAOImpl
      */
     @Override
     public String getName() throws DatabaseException {
-        return daoUtils.getName(getUserId());
+        try {
+            return daoUtils.getName(getUserId(true));
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

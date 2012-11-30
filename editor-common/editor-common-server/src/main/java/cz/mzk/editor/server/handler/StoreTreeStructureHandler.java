@@ -28,6 +28,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.text.DateFormat;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -67,6 +70,10 @@ public class StoreTreeStructureHandler
 
     @Inject
     private UserDAO userDAO;
+
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
 
     @Inject
     public StoreTreeStructureHandler() {
@@ -111,10 +118,17 @@ public class StoreTreeStructureHandler
 
         long userId = 0;
         try {
-            userId = userDAO.getUsersId();
+            userId = daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
+
         try {
             switch (action.getVerb()) {
                 case PUT:

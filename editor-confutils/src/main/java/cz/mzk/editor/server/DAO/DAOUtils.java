@@ -691,11 +691,15 @@ public interface DAOUtils {
     /**
      * Gets the user id.
      * 
+     * @param closeCon
+     *        the close con
      * @return the user id
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
+     *         the sQL exception
      */
-    Long getUserId() throws DatabaseException;
+    Long getUserId(boolean closeCon) throws DatabaseException, SQLException;
 
     /**
      * Gets the name.

@@ -269,7 +269,7 @@ public class TreeStructureDAOImpl
             if (disableSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The tree structure info: " + id + " has been disabled.");
                 boolean success =
-                        daoUtils.insertCrudAction(getUserId(),
+                        daoUtils.insertCrudAction(getUserId(false),
                                                   Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
                                                   "tree_structure_id",
                                                   id,
@@ -335,7 +335,7 @@ public class TreeStructureDAOImpl
             if (retList.isEmpty()) {
                 LOGGER.debug("DB has been updated: The tree structure: " + structureId + " has been read.");
                 boolean success =
-                        daoUtils.insertCrudAction(getUserId(),
+                        daoUtils.insertCrudAction(getUserId(false),
                                                   Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
                                                   "tree_structure_id",
                                                   structureId,

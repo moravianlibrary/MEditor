@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredItemsDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -68,6 +71,10 @@ public class StoredItemsHandler
     @Inject
     private UserDAO userDAO;
 
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
+
     /** The configuration. */
     private final EditorConfiguration configuration;
 
@@ -92,8 +99,14 @@ public class StoredItemsHandler
 
         long userId = 0;
         try {
-            userId = userDAO.getUsersId();
+            userId = daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
 

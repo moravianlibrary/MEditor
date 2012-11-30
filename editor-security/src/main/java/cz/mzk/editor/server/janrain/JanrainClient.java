@@ -59,7 +59,7 @@ public class JanrainClient {
 
     public static Long getUserId(String openId) {
         try {
-            Long userId = securityUserDAO.getUserId(openId, USER_IDENTITY_TYPES.OPEN_ID);
+            Long userId = securityUserDAO.getUserId(openId, USER_IDENTITY_TYPES.OPEN_ID, true);
             if (userId > 0) {
                 ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] OpenID User " + openId);
                 logInOutDAO.logInOut(userId, true);

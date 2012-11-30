@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
@@ -41,9 +43,12 @@ public class SecurityUserDAOImpl
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws SQLException
      */
-    public Long getUserId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException {
-        return super.getUsersId(identifier, type);
+    public Long getUserId(String identifier, USER_IDENTITY_TYPES type, boolean closeCon)
+            throws DatabaseException, SQLException {
+        return super.getUsersId(identifier, type, closeCon);
     }
 
     /**

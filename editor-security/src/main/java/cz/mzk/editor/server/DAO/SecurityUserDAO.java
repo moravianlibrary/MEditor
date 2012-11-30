@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.sql.SQLException;
+
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 
 /**
@@ -39,11 +41,16 @@ public interface SecurityUserDAO {
      *        the identifier
      * @param type
      *        the type
+     * @param closeCon
+     *        the close con
      * @return the user id
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
+     *         the sQL exception
      */
-    Long getUserId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException;
+    Long getUserId(String identifier, USER_IDENTITY_TYPES type, boolean closeCon) throws DatabaseException,
+            SQLException;
 
     /**
      * Gets the name.

@@ -96,7 +96,7 @@ public class LDAPClient {
             boolean isAuth = ldapSearch.auth(password, query);
 
             if (isAuth) {
-                Long userId = securityUserDAO.getUserId(login, USER_IDENTITY_TYPES.LDAP);
+                Long userId = securityUserDAO.getUserId(login, USER_IDENTITY_TYPES.LDAP, true);
                 if (userId > 0) {
                     ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] LDAP User " + login);
                     logInOutDAO.logInOut(userId, true);

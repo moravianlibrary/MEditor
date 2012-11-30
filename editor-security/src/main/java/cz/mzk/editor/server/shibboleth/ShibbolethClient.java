@@ -59,10 +59,10 @@ public class ShibbolethClient {
 
     public static Long getUserId(String shibboleth) {
         try {
-            Long userId = securityUserDAO.getUserId(shibboleth, USER_IDENTITY_TYPES.SHIBBOLETH);
+            Long userId = securityUserDAO.getUserId(shibboleth, USER_IDENTITY_TYPES.SHIBBOLETH, true);
             if (userId > 0) {
-                ACCESS_LOGGER
-                        .info("LOG IN: [" + FORMATTER.format(new Date()) + "] Shibboleth User " + shibboleth);
+                ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] Shibboleth User "
+                        + shibboleth);
                 logInOutDAO.logInOut(userId, true);
                 return userId;
             } else {

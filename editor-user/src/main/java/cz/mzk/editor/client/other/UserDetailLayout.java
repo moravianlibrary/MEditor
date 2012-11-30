@@ -43,6 +43,7 @@ import com.smartgwt.client.widgets.events.DrawHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.events.ItemChangedEvent;
 import com.smartgwt.client.widgets.form.events.ItemChangedHandler;
+import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -150,6 +151,16 @@ public class UserDetailLayout
 
             grid = new UniversalListGrid();
             grid.setCanDragSelectText(true);
+
+            if (isRole) {
+                grid.setHoverCustomizer(new HoverCustomizer() {
+
+                    @Override
+                    public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
+                        return lang.dcRights() + ":<br>";
+                    }
+                });
+            }
 
             SectionStackSection sectionStackSection = new SectionStackSection(title);
             sectionStackSection.setItems(grid);

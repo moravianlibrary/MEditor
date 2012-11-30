@@ -104,8 +104,6 @@ public class RecentlyModifiedItemDAOImpl
         if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
             throw new NullPointerException("toPut.getUuid()");
 
-        Long userId = getUserId();
-
         try {
             getConnection().setAutoCommit(false);
         } catch (SQLException e) {
@@ -124,7 +122,7 @@ public class RecentlyModifiedItemDAOImpl
 
             if (successful)
                 successful =
-                        daoUtils.insertCrudAction(userId,
+                        daoUtils.insertCrudAction(getUserId(false),
                                                   Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
                                                   "digital_object_uuid",
                                                   toPut.getUuid(),

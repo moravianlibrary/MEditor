@@ -88,7 +88,7 @@ public class DigitalObjectDAOImpl
                 if (deleteSt.executeUpdate() == 1) {
                     LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been disabled.");
                     successful =
-                            daoUtils.insertCrudActionWithTopObject(getUserId(),
+                            daoUtils.insertCrudActionWithTopObject(getUserId(false),
                                                                    Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
                                                                    "digital_object_uuid",
                                                                    uuid,
@@ -126,7 +126,7 @@ public class DigitalObjectDAOImpl
             if (daoUtils.checkDigitalObject(pid, model, name, null, DAOUtilsImpl
                     .directoryPathToRightFormat(input_queue_directory_path), true))
                 successful =
-                        daoUtils.insertCrudActionWithTopObject(getUserId(),
+                        daoUtils.insertCrudActionWithTopObject(getUserId(false),
                                                                Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
                                                                "digital_object_uuid",
                                                                pid,

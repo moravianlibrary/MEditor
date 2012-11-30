@@ -74,6 +74,11 @@ public class LogInOutDAOImpl
      * {@inheritDoc}
      */
     public void logInOut(boolean logIn) throws DatabaseException {
-        logInOut(getUserId(), logIn);
+        try {
+            logInOut(getUserId(true), logIn);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

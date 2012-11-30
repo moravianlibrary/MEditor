@@ -155,7 +155,7 @@ public class LockDAOImpl
                 }
                 if (lockId != null) {
                     successful =
-                            (daoUtils.insertCrudAction(getUserId(),
+                            (daoUtils.insertCrudAction(getUserId(false),
                                                        Constants.TABLE_CRUD_LOCK_ACTION,
                                                        "lock_id",
                                                        lockId,
@@ -257,7 +257,7 @@ public class LockDAOImpl
 
                 if (deleteSt.executeUpdate() > 0) {
                     successful =
-                            daoUtils.insertCrudAction(getUserId(),
+                            daoUtils.insertCrudAction(getUserId(false),
                                                       Constants.TABLE_CRUD_LOCK_ACTION,
                                                       "lock_id",
                                                       id,
@@ -296,11 +296,10 @@ public class LockDAOImpl
      */
     private Long getLockId(String uuid) throws DatabaseException {
         PreparedStatement selectSt = null;
-        Long userId = getUserId();
         Long id = null;
         try {
             selectSt = getConnection().prepareStatement(SELECT_ID_OF_LOCK);
-            selectSt.setLong(1, userId);
+            selectSt.setLong(1, getUserId(false));
             selectSt.setString(2, uuid);
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement", e);

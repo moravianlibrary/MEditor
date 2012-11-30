@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server;
 
+import java.sql.SQLException;
+
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
@@ -80,7 +82,8 @@ public class SessionListener
             try {
                 Long usersId =
                         securityUserDAO.getUserId((String) authentication.getPrincipal(),
-                                                  authentication.getIdentityType());
+                                                  authentication.getIdentityType(),
+                                                  true);
 
                 String name = securityUserDAO.getName(usersId);
                 ACCESS_LOGGER.info("LOG OUT: User " + name + " with "
@@ -88,6 +91,9 @@ public class SessionListener
                         + authentication.getPrincipal() + " at " + FORMATTER.format(new Date()));
                 logInOutDAO.logInOut(usersId, false);
             } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
                 e.printStackTrace();
             }

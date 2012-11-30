@@ -154,6 +154,7 @@ public abstract class CreateNewRoleWindow
                             SC.warn(lang.operationFailed());
                         }
                         mw.hide();
+                        hide();
                     }
 
                     /**

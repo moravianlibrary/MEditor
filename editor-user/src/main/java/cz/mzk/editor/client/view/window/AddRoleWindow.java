@@ -29,13 +29,13 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
-import com.smartgwt.client.data.Record;
 import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -108,6 +108,14 @@ public abstract class AddRoleWindow
                 new ListGridField(Constants.ATTR_DESC, lang.description() + " " + lang.role().toLowerCase());
         grid.setFields(nameField, descField);
 
+        grid.setHoverCustomizer(new HoverCustomizer() {
+
+            @Override
+            public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
+                return lang.dcRights() + ":<br>";
+            }
+        });
+
         final ModalWindow mw = new ModalWindow(grid);
         mw.setLoadingIcon("loadingAnimation.gif");
         mw.show(true);
@@ -119,7 +127,6 @@ public abstract class AddRoleWindow
                 ArrayList<RoleItem> roles = result.getRoles();
                 if (roles != null) {
                     roles.removeAll(currentRoles);
-
                     grid.setData(UserClientUtils.copyRoles(roles));
                 }
                 mw.hide();
@@ -242,7 +249,7 @@ public abstract class AddRoleWindow
                     @Override
                     protected void afterAddAction(ArrayList<RoleItem> rightList) {
                         RecordList currRoles = grid.getRecordList();
-                        currRoles.addList((Record[]) rightList.toArray());
+                        currRoles.addList(UserClientUtils.copyRoles(rightList));
                         grid.setData(currRoles);
                     }
                 };
