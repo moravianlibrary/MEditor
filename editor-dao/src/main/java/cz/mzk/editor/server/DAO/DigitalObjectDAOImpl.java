@@ -81,20 +81,33 @@ public class DigitalObjectDAOImpl
         boolean successful = false;
 
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
             if (daoUtils.checkDigitalObject(uuid, model, name, null, null, true)) {
                 deleteSt = getConnection().prepareStatement(DISABLE_DIGITAL_OBJECT_ITEM);
                 deleteSt.setString(1, uuid);
 
                 if (deleteSt.executeUpdate() == 1) {
                     LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been disabled.");
-                    successful =
-                            daoUtils.insertCrudActionWithTopObject(getUserId(false),
-                                                                   Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
-                                                                   "digital_object_uuid",
-                                                                   uuid,
-                                                                   CRUD_ACTION_TYPES.DELETE,
-                                                                   topObjectUuid,
-                                                                   true);
+                    if (daoUtils
+                            .insertCrudActionWithTopObject(getUserId(false),
+                                                           Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                           "digital_object_uuid",
+                                                           uuid,
+                                                           CRUD_ACTION_TYPES.DELETE,
+                                                           topObjectUuid,
+                                                           true)) {
+                        getConnection().commit();
+                        successful = true;
+                        LOGGER.debug("DB has been updated by commit.");
+                    } else {
+                        getConnection().rollback();
+                        LOGGER.debug("DB has not been updated -> rollback!");
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -103,6 +116,7 @@ public class DigitalObjectDAOImpl
             closeConnection();
         }
         return successful;
+
     }
 
     /**
@@ -123,21 +137,34 @@ public class DigitalObjectDAOImpl
         boolean successful = false;
 
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
             if (daoUtils.checkDigitalObject(pid, model, name, null, DAOUtilsImpl
                     .directoryPathToRightFormat(input_queue_directory_path), true))
-                successful =
-                        daoUtils.insertCrudActionWithTopObject(getUserId(false),
-                                                               Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
-                                                               "digital_object_uuid",
-                                                               pid,
-                                                               CRUD_ACTION_TYPES.CREATE,
-                                                               top_digital_object_pid,
-                                                               true);
+                if (daoUtils.insertCrudActionWithTopObject(getUserId(false),
+                                                           Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                           "digital_object_uuid",
+                                                           pid,
+                                                           CRUD_ACTION_TYPES.CREATE,
+                                                           top_digital_object_pid,
+                                                           true)) {
+                    getConnection().commit();
+                    successful = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
         return successful;
+
     }
 
     /**

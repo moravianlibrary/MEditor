@@ -151,6 +151,12 @@ public class StoredItemsDAOImpl
         Long id = selectDuplicate(userId, storedItem.getFileName());
 
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
 
             boolean update = id > 0;
 
@@ -181,14 +187,19 @@ public class StoredItemsDAOImpl
                     }
                 }
 
-                successful =
-                        daoUtils.insertCrudAction(userId,
-                                                  Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                                  "saved_edited_object_id",
-                                                  id,
-                                                  update ? CRUD_ACTION_TYPES.UPDATE
-                                                          : CRUD_ACTION_TYPES.CREATE,
-                                                  true);
+                if (daoUtils.insertCrudAction(userId,
+                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                              "saved_edited_object_id",
+                                              id,
+                                              update ? CRUD_ACTION_TYPES.UPDATE : CRUD_ACTION_TYPES.CREATE,
+                                              true)) {
+                    getConnection().commit();
+                    successful = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
             } else {
                 LOGGER.error("DB has not been updated! " + updateSt);
             }
@@ -198,6 +209,7 @@ public class StoredItemsDAOImpl
             closeConnection();
         }
         return successful;
+
     }
 
     /**
@@ -240,19 +252,35 @@ public class StoredItemsDAOImpl
     public boolean deleteItem(Long id) throws DatabaseException {
         PreparedStatement deleteSt = null;
         boolean successful = false;
+
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
         try {
             deleteSt = getConnection().prepareStatement(DISABLE_STORED_ITEM);
             deleteSt.setLong(1, id);
 
             if (deleteSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The edited stored object: " + id + " has been disabled.");
-                successful =
-                        daoUtils.insertCrudAction(getUserId(false),
-                                                  Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                                  "saved_edited_object_id",
-                                                  id,
-                                                  CRUD_ACTION_TYPES.DELETE,
-                                                  true);
+                if (daoUtils.insertCrudAction(getUserId(false),
+                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                              "saved_edited_object_id",
+                                              id,
+                                              CRUD_ACTION_TYPES.DELETE,
+                                              true)) {
+                    getConnection().commit();
+                    successful = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+            } else {
+                LOGGER.warn("DB has NOT been updated: The edited stored object: " + id
+                        + " was trying to be disabled.");
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + deleteSt, e);
@@ -260,5 +288,6 @@ public class StoredItemsDAOImpl
             closeConnection();
         }
         return successful;
+
     }
 }

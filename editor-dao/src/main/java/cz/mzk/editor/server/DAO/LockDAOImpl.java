@@ -130,6 +130,12 @@ public class LockDAOImpl
         Long lockId = null;
 
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
             if (insert) {
                 updateSt =
                         getConnection().prepareStatement(DAOUtils.LOCK_INSERT_ITEM_STATEMENT,
@@ -166,6 +172,14 @@ public class LockDAOImpl
                 } else {
                     LOGGER.error("No key has been returned! " + updateSt);
                 }
+
+                if (successful) {
+                    getConnection().commit();
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
             }
 
         } catch (SQLException e) {
@@ -173,6 +187,7 @@ public class LockDAOImpl
         } finally {
             closeConnection();
         }
+
         return successful;
     }
 
@@ -211,6 +226,12 @@ public class LockDAOImpl
 
         PreparedStatement selSt = null, disSt = null;
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
             selSt = getConnection().prepareStatement(SELECT_OLD_DO_LOCKS);
             ResultSet rs = selSt.executeQuery();
             while (rs.next()) {
@@ -222,12 +243,18 @@ public class LockDAOImpl
                             + FORMATTER.format(new java.util.Date()) + " because the lock was older than "
                             + DURATION_LOCK);
 
-                    daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.TIME.getUserId(),
-                                              Constants.TABLE_CRUD_LOCK_ACTION,
-                                              "lock_id",
-                                              id,
-                                              CRUD_ACTION_TYPES.DELETE,
-                                              false);
+                    if (daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.TIME.getUserId(),
+                                                  Constants.TABLE_CRUD_LOCK_ACTION,
+                                                  "lock_id",
+                                                  id,
+                                                  CRUD_ACTION_TYPES.DELETE,
+                                                  false)) {
+                        getConnection().commit();
+                        LOGGER.debug("DB has been updated by commit.");
+                    } else {
+                        getConnection().rollback();
+                        LOGGER.debug("DB has not been updated -> rollback!");
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -235,6 +262,7 @@ public class LockDAOImpl
         } finally {
             closeConnection();
         }
+
     }
 
     /**

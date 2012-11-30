@@ -89,6 +89,13 @@ public class RequestDAOImpl
     public void solveRequest(long id) throws DatabaseException {
         PreparedStatement solveSt = null;
         int updated = 0;
+
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
         try {
             solveSt = getConnection().prepareStatement(SOLVE_REQUEST);
             solveSt.setLong(1, id);
@@ -100,16 +107,24 @@ public class RequestDAOImpl
         }
         if (updated > 0) {
             try {
-                daoUtils.insertCrudAction(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
-                                          "request_to_admin_id",
-                                          id,
-                                          CRUD_ACTION_TYPES.UPDATE,
-                                          true);
+                if (daoUtils.insertCrudAction(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
+                                              "request_to_admin_id",
+                                              id,
+                                              CRUD_ACTION_TYPES.UPDATE,
+                                              true)) {
+                    getConnection().commit();
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
+
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override
@@ -120,11 +135,11 @@ public class RequestDAOImpl
 
         int toReturn = -1;
 
-        //        try {
-        //            getConnection().setAutoCommit(false);
-        //        } catch (SQLException e) {
-        //            LOGGER.warn("Unable to set autocommit off", e);
-        //        }
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
         PreparedStatement findSt = null, insSt = null;
         try {
 
@@ -157,6 +172,11 @@ public class RequestDAOImpl
                                                       CRUD_ACTION_TYPES.CREATE,
                                                       false)) {
                             toReturn = 1;
+                            getConnection().commit();
+                            LOGGER.debug("DB has been updated by commit.");
+                        } else {
+                            getConnection().rollback();
+                            LOGGER.debug("DB has not been updated -> rollback!");
                         }
                     } else {
                         LOGGER.error("No key has been returned! " + insSt);
@@ -168,7 +188,7 @@ public class RequestDAOImpl
             } else {
                 toReturn = 0;
             }
-            //            getConnection().commit();
+
             // TX end
         } catch (SQLException e) {
             LOGGER.error("Queries: \"" + findSt + "\" and \"" + insSt + "\"", e);

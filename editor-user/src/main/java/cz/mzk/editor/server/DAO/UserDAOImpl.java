@@ -873,11 +873,11 @@ public class UserDAOImpl
             updateSt.setLong(1, userId);
             updateSt.setString(2, rightName);
 
-            //            try {
-            //                getConnection().setAutoCommit(false);
-            //            } catch (SQLException e) {
-            //                LOGGER.warn("Unable to set autocommit off", e);
-            //            }
+            try {
+                getConnection().setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.warn("Unable to set autocommit off", e);
+            }
 
             if (updateSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The right " + rightName + " has been "
@@ -888,11 +888,11 @@ public class UserDAOImpl
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
 
                 if (crudSucc) {
-                    //                    getConnection().commit();
+                    getConnection().commit();
                     success = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    //                    getConnection().rollback();
+                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
