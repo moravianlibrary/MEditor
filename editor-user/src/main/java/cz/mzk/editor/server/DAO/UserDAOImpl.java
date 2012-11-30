@@ -115,6 +115,15 @@ public class UserDAOImpl
     public static final String INSERT_ROLE_STATEMENT = "INSERT INTO " + Constants.TABLE_ROLE
             + " (name, description) VALUES ((?),(?))";
 
+    public static final String INSERT_RIGHT_IN_ROLE_STATEMENT = "INSERT INTO "
+            + Constants.TABLE_RIGHT_IN_ROLE + " (editor_right_name, role_name) VALUES ((?),(?))";
+
+    public static final String DELETE_RIGHT_IN_ROLE_STATEMENT = "DELETE FROM "
+            + Constants.TABLE_RIGHT_IN_ROLE + " WHERE editor_right_name = (?) AND role_name = (?)";
+
+    public static final String SELECT_RIGHT_IN_ROLE_STATEMENT = "SELECT editor_right_name FROM "
+            + Constants.TABLE_RIGHT_IN_ROLE + " WHERE  role_name = (?)";
+
     public static final String DELETE_ROLE_STATEMENT = "DELETE FROM " + Constants.TABLE_ROLE
             + " WHERE name=(?)";
 
@@ -264,11 +273,11 @@ public class UserDAOImpl
         PreparedStatement updateSt = null;
         boolean successful = false;
 
-        //        try {
-        //            getConnection().setAutoCommit(false);
-        //        } catch (SQLException e) {
-        //            LOGGER.warn("Unable to set autocommit off", e);
-        //        }
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
 
         try {
             updateSt = getConnection().prepareStatement(DISABLE_USER);
@@ -287,11 +296,11 @@ public class UserDAOImpl
                                                  CRUD_ACTION_TYPES.DELETE,
                                                  false);
                 if (crudSucc) {
-                    //                    getConnection().commit();
+                    getConnection().commit();
                     successful = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    //                    getConnection().rollback();
+                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
@@ -316,11 +325,11 @@ public class UserDAOImpl
         if (user.getSurname() == null || "".equals(user.getSurname()))
             throw new NullPointerException("user.getSurname()");
 
-        //        try {
-        //            getConnection().setAutoCommit(false);
-        //        } catch (SQLException e) {
-        //            LOGGER.warn("Unable to set autocommit off", e);
-        //        }
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
 
         PreparedStatement updateSt = null;
         Long toReturn = new Long(-1);
@@ -367,11 +376,11 @@ public class UserDAOImpl
                                                  false);
 
                 if (crudSucc) {
-                    //                    getConnection().commit();
+                    getConnection().commit();
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
                     if (user.getId() != null) toReturn = new Long(-1);
-                    //                    getConnection().rollback();
+                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated. -> rollback!");
                 }
             }
@@ -455,6 +464,11 @@ public class UserDAOImpl
             while (rs.next()) {
                 retList.add(new RoleItem(userId, rs.getString("name"), rs.getString("description")));
             }
+
+            for (RoleItem role : retList) {
+                role.setRights(selectRightInRoleItems(role.getName()));
+            }
+
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
         } finally {
@@ -697,6 +711,12 @@ public class UserDAOImpl
         boolean success = false;
         PreparedStatement updateSt = null;
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
             StringBuffer sql = new StringBuffer(add ? "INSERT INTO " : "DELETE FROM ");
             switch (userIdentity.getType()) {
                 case OPEN_ID:
@@ -721,12 +741,6 @@ public class UserDAOImpl
             updateSt.setLong(1, userIdentity.getUserId());
             updateSt.setString(2, userIdentity.getIdentities().get(0));
 
-            //            try {
-            //                getConnection().setAutoCommit(false);
-            //            } catch (SQLException e) {
-            //                LOGGER.warn("Unable to set autocommit off", e);
-            //            }
-
             if (updateSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The " + userIdentity.getType().toString() + " identity "
                         + userIdentity.getIdentities().get(0) + " has been "
@@ -740,11 +754,11 @@ public class UserDAOImpl
                                                  true);
 
                 if (crudSucc) {
-                    //                    getConnection().commit();
+                    getConnection().commit();
                     success = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    //                    getConnection().rollback();
+                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
@@ -759,6 +773,7 @@ public class UserDAOImpl
             closeConnection();
         }
         return success;
+
     }
 
     /**
@@ -800,11 +815,11 @@ public class UserDAOImpl
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, false);
 
                 if (crudSucc) {
-                    //                    getConnection().commit();
+                    getConnection().commit();
                     success = true;
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
-                    //                    getConnection().rollback();
+                    getConnection().rollback();
                     LOGGER.debug("DB has not been updated -> rollback!");
                 }
 
@@ -833,20 +848,39 @@ public class UserDAOImpl
 
         boolean success = false;
         PreparedStatement updateSt = null;
+
+        List<EDITOR_RIGHTS> rights = roleItem.getRights();
+        if (!add) rights = selectRightInRoleItems(roleItem.getName());
+
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
 
-            updateSt = getConnection().prepareStatement(add ? INSERT_ROLE_STATEMENT : DELETE_ROLE_STATEMENT);
-            updateSt.setString(1, roleItem.getName());
-            if (add) updateSt.setString(2, roleItem.getDescription());
+        try {
+            if (addRemoveRightInRoleItems(rights, roleItem.getName(), add)) {
+                updateSt =
+                        getConnection().prepareStatement(add ? INSERT_ROLE_STATEMENT : DELETE_ROLE_STATEMENT);
+                updateSt.setString(1, roleItem.getName());
+                if (add) updateSt.setString(2, roleItem.getDescription());
 
-            if (updateSt.executeUpdate() == 1) {
-                LOGGER.debug("DB has been updated: The role " + roleItem.getName() + " has been "
-                        + (add ? "added" : "removed"));
-                success = true;
-            } else {
-                LOGGER.error("DB has not been updated! " + updateSt);
+                if (updateSt.executeUpdate() == 1) {
+                    LOGGER.debug("DB has been updated: The role " + roleItem.getName() + " has been "
+                            + (add ? "added" : "removed"));
+                    success = true;
+                } else {
+                    LOGGER.error("DB has not been updated! " + updateSt);
+                }
             }
 
+            if (success) {
+                getConnection().commit();
+                LOGGER.debug("DB has been updated by commit.");
+            } else {
+                getConnection().rollback();
+                LOGGER.debug("DB has not been updated -> rollback!");
+            }
         } catch (SQLException e) {
             LOGGER.error(e);
             e.printStackTrace();
@@ -858,6 +892,60 @@ public class UserDAOImpl
     }
 
     @Override
+    public List<EDITOR_RIGHTS> selectRightInRoleItems(String roleName) throws DatabaseException {
+        List<EDITOR_RIGHTS> rights = new ArrayList<EDITOR_RIGHTS>();
+        PreparedStatement selectSt = null;
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_RIGHT_IN_ROLE_STATEMENT);
+            selectSt.setString(1, roleName);
+
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                rights.add(EDITOR_RIGHTS.parseString(rs.getString("editor_right_name")));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+
+        return rights;
+    }
+
+    private boolean addRemoveRightInRoleItems(List<EDITOR_RIGHTS> rights, String roleName, boolean add)
+            throws DatabaseException {
+
+        if (rights == null) return true;
+        PreparedStatement updateSt = null;
+        try {
+            for (EDITOR_RIGHTS right : rights) {
+                updateSt =
+                        getConnection().prepareStatement(add ? INSERT_RIGHT_IN_ROLE_STATEMENT
+                                : DELETE_RIGHT_IN_ROLE_STATEMENT);
+                updateSt.setString(1, right.toString());
+                updateSt.setString(2, roleName);
+
+                if (updateSt.executeUpdate() == 1) {
+                    LOGGER.debug("DB has been updated: The right " + right.toString() + " in role "
+                            + roleName + " has been " + (add ? "added" : "removed"));
+                } else {
+                    LOGGER.error("DB has not been updated! " + updateSt);
+                    return false;
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean addRemoveUserRightItem(String rightName, Long userId, boolean add)
             throws DatabaseException {
 
@@ -866,18 +954,18 @@ public class UserDAOImpl
         boolean success = false;
         PreparedStatement updateSt = null;
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
 
             updateSt =
                     getConnection().prepareStatement(add ? INSERT_USERS_RIGHT_ITEM_STATEMENT
                             : DELETE_USERS_RIGHT_ITEM_STATEMENT);
             updateSt.setLong(1, userId);
             updateSt.setString(2, rightName);
-
-            try {
-                getConnection().setAutoCommit(false);
-            } catch (SQLException e) {
-                LOGGER.warn("Unable to set autocommit off", e);
-            }
 
             if (updateSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The right " + rightName + " has been "
@@ -943,6 +1031,11 @@ public class UserDAOImpl
             while (rs.next()) {
                 retList.add(new RoleItem(null, rs.getString("name"), rs.getString("description")));
             }
+
+            for (RoleItem role : retList) {
+                role.setRights(selectRightInRoleItems(role.getName()));
+            }
+
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
         } finally {

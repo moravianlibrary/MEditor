@@ -157,7 +157,7 @@ public class UserDetailLayout
 
                     @Override
                     public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-                        return lang.dcRights() + ":<br>";
+                        return lang.dcRights() + ":<br>" + record.getAttribute(Constants.ATTR_RIGHT_IN_ROLE);
                     }
                 });
             }

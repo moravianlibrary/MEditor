@@ -77,36 +77,6 @@ public interface UserDAO {
      */
     int isSupported(String identifier) throws DatabaseException;
 
-    //    /**
-    //     * Gets the users id.
-    //     * 
-    //     * @param identifier
-    //     *        the identifier
-    //     * @param identityType
-    //     *        the identity type
-    //     * @param closeCon
-    //     *        the close con
-    //     * @return the users id
-    //     * @throws DatabaseException
-    //     *         the database exception
-    //     * @throws SQLException
-    //     *         the sQL exception
-    //     */
-    //    long getUsersId(String identifier, USER_IDENTITY_TYPES identityType, boolean closeCon)
-    //            throws DatabaseException, SQLException;
-    //
-    //    /**
-    //     * Gets the users id.
-    //     * 
-    //     * @param closeCon
-    //     *        the close con
-    //     * @return the users id
-    //     * @throws DatabaseException
-    //     *         the database exception
-    //     * @throws SQLException
-    //     */
-    //    long getUsersId(boolean closeCon) throws DatabaseException, SQLException;
-
     /**
      * Checks for role.
      * 
@@ -320,4 +290,15 @@ public interface UserDAO {
      *         the database exception
      */
     boolean addRemoveRoleItem(RoleItem roleItem, boolean add) throws DatabaseException;
+
+    /**
+     * Select right in role items.
+     * 
+     * @param roleName
+     *        the role name
+     * @return the list
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<EDITOR_RIGHTS> selectRightInRoleItems(String roleName) throws DatabaseException;
 }

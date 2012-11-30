@@ -48,6 +48,8 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesResult;
+import cz.mzk.editor.shared.rpc.action.PutRemoveRolesAction;
+import cz.mzk.editor.shared.rpc.action.PutRemoveRolesResult;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesResult;
 
@@ -112,7 +114,7 @@ public abstract class AddRoleWindow
 
             @Override
             public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-                return lang.dcRights() + ":<br>";
+                return lang.dcRights() + ":<br>" + record.getAttribute(Constants.ATTR_RIGHT_IN_ROLE);
             }
         });
 
@@ -277,7 +279,37 @@ public abstract class AddRoleWindow
 
             @Override
             public void onClick(ClickEvent event) {
+                final ModalWindow mw = new ModalWindow(grid);
+                mw.setLoadingIcon("loadingAnimation.gif");
+                mw.show(true);
 
+                PutRemoveRolesAction removeRolesAction =
+                        new PutRemoveRolesAction(UserClientUtils.copyToRoles(null, grid.getSelectedRecords()),
+                                                 false);
+                dispatcher.execute(removeRolesAction, new DispatchCallback<PutRemoveRolesResult>() {
+
+                    /**
+                     * {@inheritDoc}
+                     */
+                    @Override
+                    public void callback(PutRemoveRolesResult result) {
+                        if (result.isSuccessful()) {
+                            grid.removeSelectedData();
+                            mw.hide();
+                        } else {
+                            SC.warn(lang.operationFailed());
+                        }
+                    }
+
+                    /**
+                     * {@inheritDoc}
+                     */
+                    @Override
+                    public void callbackError(Throwable t) {
+                        super.callbackError(t);
+                        mw.hide();
+                    }
+                });
             }
         });
 
