@@ -59,8 +59,8 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.shared.event.LoadStructureEvent;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
 

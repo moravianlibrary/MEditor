@@ -135,8 +135,8 @@ import cz.mzk.editor.shared.rpc.MetadataBundle;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
@@ -351,7 +351,8 @@ public class CreateStructurePresenter
                                             .getTree().findById(SubstructureTreeNode.ROOT_ID)
                                             .getAttribute(Constants.ATTR_NAME));
                         else
-                            object.setName(ClientCreateUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+                            object.setName(ClientCreateUtils.trimLabel(object.getName(),
+                                                                       Constants.MAX_LABEL_LENGTH));
 
                         for (TreeNode node : leftPresenter.getView().getSubelementsGrid().getTree()
                                 .getAllNodes()) {
@@ -361,8 +362,8 @@ public class CreateStructurePresenter
                         }
 
                         List<TreeStructureNode> nodes =
-                                ClientCreateUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
-                                        .getAllNodes());
+                                ClientCreateUtils.toNodes(leftPresenter.getView().getSubelementsGrid()
+                                        .getTree().getAllNodes());
 
                         if (nodes != null) {
                             bundle.getNodes().addAll(nodes);

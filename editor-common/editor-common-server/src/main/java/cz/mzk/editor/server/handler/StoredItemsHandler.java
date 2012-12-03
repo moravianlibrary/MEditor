@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -111,14 +110,14 @@ public class StoredItemsHandler
         }
 
         if (action.getVerb() == Constants.VERB.GET) {
-            List<StoredItem> storedItems = new ArrayList<StoredItem>();
-            try {
-                storedItems = storeDao.getStoredItems(userId);
-            } catch (DatabaseException e) {
-                throw new ActionException(e);
-            }
-
-            return new StoredItemsResult(storedItems);
+            //            List<StoredItem> storedItems = new ArrayList<StoredItem>();
+            //            try {
+            //            storedItems = storeDao.getStoredItems(userId);
+            //            } catch (DatabaseException e) {
+            //                throw new ActionException(e);
+            //            }
+            //
+            //            return new StoredItemsResult(storedItems);
 
         } else if (action.getVerb() == Constants.VERB.PUT) {
             String workingCopyFoxml =
@@ -154,19 +153,19 @@ public class StoredItemsHandler
             }
 
         } else if (action.getVerb() == Constants.VERB.DELETE) {
-            try {
-                if (storeDao.deleteItem(action.getStoredItem().getId())) {
-                    File deleteFile = new File(action.getStoredItem().getFileName());
-                    if (deleteFile.exists()) {
-                        deleteFile.delete();
-                    }
-                    return new StoredItemsResult(new ArrayList<StoredItem>());
-                } else {
-                    return new StoredItemsResult(null);
-                }
-            } catch (DatabaseException e) {
-                throw new ActionException(e);
-            }
+            //            try {
+            //                            if (storeDao.deleteItem(action.getStoredItem().getId())) {
+            //                    File deleteFile = new File(action.getStoredItem().getFileName());
+            //                    if (deleteFile.exists()) {
+            //                        deleteFile.delete();
+            //                    }
+            //                    return new StoredItemsResult(new ArrayList<StoredItem>());
+            //                } else {
+            //                    return new StoredItemsResult(null);
+            //                }
+            //            } catch (DatabaseException e) {
+            //                throw new ActionException(e);
+            //            }
         }
         return null;
     }

@@ -30,8 +30,8 @@ package cz.mzk.editor.server.DAO;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 
 /**
  * @author Jiri Kremser

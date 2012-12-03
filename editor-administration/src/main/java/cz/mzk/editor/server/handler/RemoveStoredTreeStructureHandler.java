@@ -24,8 +24,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -34,63 +32,67 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.ActionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.EditorDate;
-import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
-import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
+import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsAction;
+import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsResult;
 
 /**
  * @author Matous Jobanek
- * @version Oct 30, 2012
+ * @version Dec 3, 2012
  */
-public class GetHistoryDaysHandler
-        implements ActionHandler<GetHistoryDaysAction, GetHistoryDaysResult> {
+public class RemoveStoredTreeStructureHandler
+        implements ActionHandler<RemoveStoredTreeStructureItemsAction, RemoveStoredTreeStructureItemsResult> {
 
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(RemoveStoredTreeStructureHandler.class.getPackage()
+            .toString());
+
+    /** The stored and locks dao. */
     @Inject
-    private ActionDAO actionDAO;
-
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(GetHistoryDaysHandler.class);
+    private StoredAndLocksDAO storedAndLocksDAO;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public GetHistoryDaysResult execute(GetHistoryDaysAction action, ExecutionContext context)
-            throws ActionException {
+    public RemoveStoredTreeStructureItemsResult execute(RemoveStoredTreeStructureItemsAction action,
+                                                        ExecutionContext context) throws ActionException {
 
-        LOGGER.debug("Processing action: GetHistoryDaysAction");
+        LOGGER.debug("Processing action: RemoveStoredTreeStructureItemsAction");
         ServerUtils.checkExpiredSession();
 
-        List<EditorDate> historyDays = null;
+        boolean successful = true;
         try {
-            historyDays = actionDAO.getHistoryDays(action.getUserId(), action.getUuid());
+            for (TreeStructureInfo item : action.getItems()) {
+                successful &= storedAndLocksDAO.removeSavedStructure(item.getId());
+            }
         } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e);
             e.printStackTrace();
             throw new ActionException(e);
         }
 
-        return new GetHistoryDaysResult(historyDays);
+        return new RemoveStoredTreeStructureItemsResult(successful);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Class<GetHistoryDaysAction> getActionType() {
-        // TODO Auto-generated method stub
-        return GetHistoryDaysAction.class;
+    public Class<RemoveStoredTreeStructureItemsAction> getActionType() {
+        return RemoveStoredTreeStructureItemsAction.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void undo(GetHistoryDaysAction action, GetHistoryDaysResult result, ExecutionContext context)
-            throws ActionException {
+    public void undo(RemoveStoredTreeStructureItemsAction action,
+                     RemoveStoredTreeStructureItemsResult result,
+                     ExecutionContext context) throws ActionException {
         // TODO Auto-generated method stub
 
     }

@@ -40,6 +40,7 @@ import cz.mzk.editor.client.presenter.AdminHomePresenter;
 import cz.mzk.editor.client.presenter.AdminMenuPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
+import cz.mzk.editor.client.presenter.StoredAndLocksPresenter;
 import cz.mzk.editor.client.presenter.UserPresenter;
 
 // TODO: Auto-generated Javadoc
@@ -76,6 +77,8 @@ public interface AdminGinjector
     AsyncProvider<AdminMenuPresenter> getAdminMenuPresenter();
 
     AsyncProvider<HistoryPresenter> getHistoryPresenter();
+
+    AsyncProvider<StoredAndLocksPresenter> getStoredAndLocksPresenter();
 
     AsyncProvider<UserPresenter> getUserPresenter();
 

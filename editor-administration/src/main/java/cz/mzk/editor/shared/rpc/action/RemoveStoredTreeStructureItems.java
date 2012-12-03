@@ -30,8 +30,7 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.shared.rpc.EditorDate;
-import cz.mzk.editor.shared.rpc.StoredItem;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 
 /**
  * @author Matous Jobanek
@@ -39,20 +38,12 @@ import cz.mzk.editor.shared.rpc.StoredItem;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetHistoryDays {
+public class RemoveStoredTreeStructureItems {
 
-    @Out(1)
-    private List<StoredItem> storedItems;
-
-    /** The user id. */
     @In(1)
-    private Long userId;
-
-    /** The uuid. */
-    @In(2)
-    private String uuid;
+    private List<TreeStructureInfo> items;
 
     @Out(1)
-    private List<EditorDate> days;
+    private boolean successful;
 
 }

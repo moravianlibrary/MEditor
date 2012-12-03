@@ -44,8 +44,8 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -73,34 +73,25 @@ public class TreeStructureDAOImpl
     //    tree_structure_node (id, tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist)
 
     /** The Constant SELECT_INFOS. */
-    public static final String SELECT_INFOS =
-            "SELECT eu.surname || ', ' || eu.name as full_name, ts.* FROM ((SELECT timestamp, editor_user_id, tree_structure_id FROM "
-                    + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
-                    + " WHERE type='c') a INNER JOIN (SELECT * FROM "
-                    + Constants.TABLE_TREE_STRUCTURE
-                    + " WHERE state='true') t ON a.tree_structure_id = t.id) ts LEFT JOIN "
-                    + Constants.TABLE_EDITOR_USER + " eu ON eu.id = ts.editor_user_id";
+    //    public static final String SELECT_INFOS =
+    //            "SELECT eu.surname || ', ' || eu.name as full_name, ts.* FROM ((SELECT timestamp, editor_user_id, tree_structure_id FROM "
+    //                    + Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION
+    //                    + " WHERE type='c') a INNER JOIN (SELECT * FROM "
+    //                    + Constants.TABLE_TREE_STRUCTURE
+    //                    + " WHERE state='true') t ON a.tree_structure_id = t.id) ts LEFT JOIN "
+    //                    + Constants.TABLE_EDITOR_USER + " eu ON eu.id = ts.editor_user_id";
 
     /** The Constant SELECT_INFOS_WITH_CODE. */
-    public static final String SELECT_INFOS_WITH_CODE = SELECT_INFOS + " WHERE ts.barcode = (?)";
-
-    /** The Constant SELECT_INFOS_BY_USER. */
-    public static final String SELECT_INFOS_BY_USER = SELECT_INFOS + " WHERE eu.id = (?)";
+    public static final String SELECT_INFOS_WITH_CODE = StoredAndLocksDAO.SELECT_INFOS
+            + " WHERE ts.barcode = (?)";
 
     /** The Constant SELECT_INFOS_BY_USER_AND_CODE. */
-    public static final String SELECT_INFOS_BY_USER_AND_CODE = SELECT_INFOS_BY_USER + " AND ts.barcode = (?)";
+    public static final String SELECT_INFOS_BY_USER_AND_CODE = StoredAndLocksDAO.SELECT_INFOS_BY_USER
+            + " AND ts.barcode = (?)";
 
     /** The Constant SELECT_NODES. */
     public static final String SELECT_NODES = "SELECT * FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
             + " WHERE tree_structure_id = (?) ORDER BY id";
-
-    /** The Constant DELETE_NODES. */
-    public static final String DELETE_NODES = "DELETE FROM " + Constants.TABLE_TREE_STRUCTURE_NODE
-            + " WHERE tree_structure_id = (?)";
-
-    /** The Constant DISABLE_INFO. */
-    public static final String DISABLE_INFO = "UPDATE " + Constants.TABLE_TREE_STRUCTURE
-            + " SET state = 'false' WHERE id = (?)";
 
     /** The Constant INSERT_INFO. */
     public static final String INSERT_INFO =
@@ -123,6 +114,9 @@ public class TreeStructureDAOImpl
     /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
+
+    @Inject
+    private StoredAndLocksDAO storedAndLocksDAO;
 
     /**
      * The Enum DISCRIMINATOR.
@@ -206,11 +200,11 @@ public class TreeStructureDAOImpl
                         selectSt = getConnection().prepareStatement(SELECT_INFOS_WITH_CODE);
                         selectSt.setString(1, code);
                     } else {
-                        selectSt = getConnection().prepareStatement(SELECT_INFOS);
+                        selectSt = getConnection().prepareStatement(StoredAndLocksDAO.SELECT_INFOS);
                     }
                     break;
                 case ALL_OF_USER:
-                    selectSt = getConnection().prepareStatement(SELECT_INFOS_BY_USER);
+                    selectSt = getConnection().prepareStatement(StoredAndLocksDAO.SELECT_INFOS_BY_USER);
                     selectSt.setLong(1, userId);
                     break;
                 case BARCODE_OF_USER:
@@ -251,49 +245,8 @@ public class TreeStructureDAOImpl
      */
     @Override
     public boolean removeSavedStructure(long id) throws DatabaseException {
-        PreparedStatement deleteSt = null, disableSt = null;
-        boolean successful = false;
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
 
-        try {
-            deleteSt = getConnection().prepareStatement(DELETE_NODES);
-            deleteSt.setLong(1, id);
-            deleteSt.executeUpdate();
-
-            disableSt = getConnection().prepareStatement(DISABLE_INFO);
-            disableSt.setLong(1, id);
-            if (disableSt.executeUpdate() == 1) {
-                LOGGER.debug("DB has been updated: The tree structure info: " + id + " has been disabled.");
-                boolean success =
-                        daoUtils.insertCrudAction(getUserId(false),
-                                                  Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
-                                                  "tree_structure_id",
-                                                  id,
-                                                  CRUD_ACTION_TYPES.DELETE,
-                                                  false);
-                if (success) {
-                    getConnection().commit();
-                    successful = true;
-                    LOGGER.debug("DB has been updated by commit.");
-                } else {
-                    getConnection().rollback();
-                    LOGGER.debug("DB has not been updated -> rollback!");
-                }
-            } else {
-                LOGGER.error("DB has not been updated! " + deleteSt + "\n" + disableSt);
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Could not delete tree structure (info) with id " + id + "\n Query1: " + deleteSt
-                    + "\n Query2: " + disableSt, e);
-        } finally {
-            closeConnection();
-        }
-        return successful;
+        return storedAndLocksDAO.removeSavedStructure(id);
     }
 
     /**

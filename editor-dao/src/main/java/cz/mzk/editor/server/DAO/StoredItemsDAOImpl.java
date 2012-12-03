@@ -29,18 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.StoredItem;
 
 /**
@@ -60,24 +54,11 @@ public class StoredItemsDAOImpl
     //        ->  crud_saved_edited_object_action (editor_user_id, timestamp, saved_edited_object_id, type)
     //                                                    user_id,    stored,                     id,  'c'
     //    
-    //        ->  digital_object (uuid, model, name, description, input_queue_directory_path)
+    //        ->  digital_object (uuid, model, name, description, input_queue_directory_path) 
     //  
 
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(StoredItemsDAOImpl.class.getPackage().toString());
-
-    /** The Constant FORMATTER. */
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-    /** The Constant SELECT_STORED_ITEMS_BY_USER. */
-    private static final String SELECT_STORED_ITEMS_BY_USER =
-            "SELECT so.id, so.file_name, so.description, a.timestamp, so.digital_object_uuid, so.model FROM ((SELECT saved_edited_object_id, timestamp FROM "
-                    + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
-                    + " WHERE editor_user_id = (?)) a INNER JOIN ((SELECT uuid, model FROM "
-                    + Constants.TABLE_DIGITAL_OBJECT
-                    + ") o INNER JOIN (SELECT digital_object_uuid, file_name, description, id FROM "
-                    + Constants.TABLE_SAVED_EDITED_OBJECT
-                    + " WHERE state = 'true') s ON o.uuid = s.digital_object_uuid) so ON a.saved_edited_object_id = so.id) ORDER BY a.timestamp";
 
     /** The Constant UPDATE_STORED_ITEM. */
     private static final String UPDATE_STORED_ITEM = "UPDATE " + Constants.TABLE_SAVED_EDITED_OBJECT
@@ -91,10 +72,6 @@ public class StoredItemsDAOImpl
                     + Constants.TABLE_SAVED_EDITED_OBJECT
                     + " WHERE state = 'true' AND file_name = (?)) o ON a.saved_edited_object_id = o.id)";
 
-    /** The Constant DISABLE_STORED_ITEM. */
-    private static final String DISABLE_STORED_ITEM = "UPDATE " + Constants.TABLE_SAVED_EDITED_OBJECT
-            + " SET state = 'false' WHERE id = (?)";
-
     /** The Constant INSERT_STORED_ITEM. */
     private static final String INSERT_STORED_ITEM = "INSERT INTO " + Constants.TABLE_SAVED_EDITED_OBJECT
             + " (digital_object_uuid, description, file_name, state) VALUES ((?),(?),(?),'true') ";
@@ -102,43 +79,6 @@ public class StoredItemsDAOImpl
     /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<StoredItem> getStoredItems(long userId) throws DatabaseException {
-
-        PreparedStatement selectSt = null;
-        List<StoredItem> storedItems = new ArrayList<StoredItem>();
-
-        try {
-            selectSt = getConnection().prepareStatement(SELECT_STORED_ITEMS_BY_USER);
-            selectSt.setLong(1, userId);
-
-            ResultSet rs = selectSt.executeQuery();
-
-            while (rs.next()) {
-                String fileName = rs.getString("file_name");
-                String uuid = rs.getString("digital_object_uuid");
-                DigitalObjectModel model = DigitalObjectModel.parseString(rs.getString("model"));
-                String description = rs.getString("description");
-                java.util.Date date = rs.getDate("timestamp");
-                String storedDate = FORMATTER.format(date);
-                long id = rs.getLong("id");
-
-                StoredItem storedItem = new StoredItem(id, fileName, uuid, model, description, storedDate);
-                storedItems.add(storedItem);
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-
-        return storedItems;
-    }
 
     /**
      * {@inheritDoc}
@@ -245,49 +185,4 @@ public class StoredItemsDAOImpl
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean deleteItem(Long id) throws DatabaseException {
-        PreparedStatement deleteSt = null;
-        boolean successful = false;
-
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
-
-        try {
-            deleteSt = getConnection().prepareStatement(DISABLE_STORED_ITEM);
-            deleteSt.setLong(1, id);
-
-            if (deleteSt.executeUpdate() == 1) {
-                LOGGER.debug("DB has been updated: The edited stored object: " + id + " has been disabled.");
-                if (daoUtils.insertCrudAction(getUserId(false),
-                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                              "saved_edited_object_id",
-                                              id,
-                                              CRUD_ACTION_TYPES.DELETE,
-                                              true)) {
-                    getConnection().commit();
-                    successful = true;
-                    LOGGER.debug("DB has been updated by commit.");
-                } else {
-                    getConnection().rollback();
-                    LOGGER.debug("DB has not been updated -> rollback!");
-                }
-            } else {
-                LOGGER.warn("DB has NOT been updated: The edited stored object: " + id
-                        + " was trying to be disabled.");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + deleteSt, e);
-        } finally {
-            closeConnection();
-        }
-        return successful;
-
-    }
 }

@@ -47,11 +47,13 @@ import cz.mzk.editor.client.presenter.AdminHomePresenter;
 import cz.mzk.editor.client.presenter.AdminMenuPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
+import cz.mzk.editor.client.presenter.StoredAndLocksPresenter;
 import cz.mzk.editor.client.presenter.UserPresenter;
 import cz.mzk.editor.client.view.AdminHomeView;
 import cz.mzk.editor.client.view.AdminMenuView;
 import cz.mzk.editor.client.view.AdminView;
 import cz.mzk.editor.client.view.HistoryView;
+import cz.mzk.editor.client.view.StoredAndLocksView;
 import cz.mzk.editor.client.view.UserView;
 
 // TODO: Auto-generated Javadoc
@@ -100,6 +102,10 @@ public class AdminClientModule
                       UserPresenter.MyView.class,
                       UserView.class,
                       UserPresenter.MyProxy.class);
+        bindPresenter(StoredAndLocksPresenter.class,
+                      StoredAndLocksPresenter.MyView.class,
+                      StoredAndLocksView.class,
+                      StoredAndLocksPresenter.MyProxy.class);
 
         bind(CachingDispatchAsync.class);
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);

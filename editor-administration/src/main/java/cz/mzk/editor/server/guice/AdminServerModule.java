@@ -35,6 +35,8 @@ import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DAOUtilsImpl;
 import cz.mzk.editor.server.DAO.DBSchemaDAO;
 import cz.mzk.editor.server.DAO.DBSchemaDAOImpl;
+import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
+import cz.mzk.editor.server.DAO.StoredAndLocksDAOImpl;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.DAO.UserDAOImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -43,6 +45,8 @@ import cz.mzk.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.mzk.editor.server.handler.CheckRightsHandler;
 import cz.mzk.editor.server.handler.GetAllRequestItemsHandler;
 import cz.mzk.editor.server.handler.GetAllRolesHandler;
+import cz.mzk.editor.server.handler.GetAllStoredTreeStructureHandler;
+import cz.mzk.editor.server.handler.GetAllStoredWorkingCopyHandler;
 import cz.mzk.editor.server.handler.GetHistoryDaysHandler;
 import cz.mzk.editor.server.handler.GetHistoryHandler;
 import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
@@ -55,12 +59,16 @@ import cz.mzk.editor.server.handler.PutRemoveUserRolesHandler;
 import cz.mzk.editor.server.handler.PutUserIdentityHandler;
 import cz.mzk.editor.server.handler.PutUserInfoHandler;
 import cz.mzk.editor.server.handler.RemoveRequestItemHandler;
+import cz.mzk.editor.server.handler.RemoveStoredTreeStructureHandler;
+import cz.mzk.editor.server.handler.RemoveStoredWorkingCopyHandler;
 import cz.mzk.editor.server.handler.RemoveUserHandler;
 import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckRightsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
+import cz.mzk.editor.shared.rpc.action.GetAllStoredTreeStructureItemsAction;
+import cz.mzk.editor.shared.rpc.action.GetAllStoredWorkingCopyItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
 import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
@@ -73,6 +81,8 @@ import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.RemoveRequestItemAction;
+import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsAction;
+import cz.mzk.editor.shared.rpc.action.RemoveStoredWorkingCopyItemsAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
 
@@ -105,6 +115,10 @@ public class AdminServerModule
         bindHandler(CheckRightsAction.class, CheckRightsHandler.class);
         bindHandler(PutRemoveUserRightsAction.class, PutRemoveUserRightsHandler.class);
         bindHandler(PutRemoveRolesAction.class, PutRemoveRolesHandler.class);
+        bindHandler(GetAllStoredWorkingCopyItemsAction.class, GetAllStoredWorkingCopyHandler.class);
+        bindHandler(RemoveStoredWorkingCopyItemsAction.class, RemoveStoredWorkingCopyHandler.class);
+        bindHandler(GetAllStoredTreeStructureItemsAction.class, GetAllStoredTreeStructureHandler.class);
+        bindHandler(RemoveStoredTreeStructureItemsAction.class, RemoveStoredTreeStructureHandler.class);
 
         bindHandler(GetHistoryItemInfoAction.class, GetHistoryItemInfoHandler.class);
         bindHandler(GetHistoryAction.class, GetHistoryHandler.class);
@@ -116,6 +130,7 @@ public class AdminServerModule
         bind(DBSchemaDAO.class).to(DBSchemaDAOImpl.class);
         bind(DAOUtils.class).to(DAOUtilsImpl.class);
         bind(ActionDAO.class).to(ActionDAOImpl.class);
+        bind(StoredAndLocksDAO.class).to(StoredAndLocksDAOImpl.class);
 
         //        // static injection
         //        requestStaticInjection(FedoraUtils.class);

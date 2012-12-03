@@ -30,29 +30,25 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.StoredItem;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class RemoveStoredWorkingCopyItems.
+ * 
  * @author Matous Jobanek
  * @version Oct 30, 2012
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class GetHistoryDays {
+public class RemoveStoredWorkingCopyItems {
 
-    @Out(1)
-    private List<StoredItem> storedItems;
-
-    /** The user id. */
+    /** The items. */
     @In(1)
-    private Long userId;
+    private List<StoredItem> items;
 
-    /** The uuid. */
-    @In(2)
-    private String uuid;
-
+    /** The successful. */
     @Out(1)
-    private List<EditorDate> days;
+    private boolean successful;
 
 }

@@ -85,7 +85,7 @@ public class NameTokens {
 
                 add(ADMIN_MENU_BUTTONS.MY_ACOUNT);
                 add(ADMIN_MENU_BUTTONS.HISTORY);
-                add(ADMIN_MENU_BUTTONS.STORED);
+                add(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS);
                 add(ADMIN_MENU_BUTTONS.STATISTIC);
                 add(ADMIN_MENU_BUTTONS.USERS);
             }
@@ -96,7 +96,7 @@ public class NameTokens {
 
         public static final String MY_ACOUNT = "myAcount";
         public static final String HISTORY = "history";
-        public static final String STORED = "stored";
+        public static final String STORED_AND_LOCKS = "stored";
         public static final String STATISTIC = "statistic";
         public static final String USERS = "users";
 

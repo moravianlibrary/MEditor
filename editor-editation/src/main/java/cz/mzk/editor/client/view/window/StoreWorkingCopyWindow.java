@@ -24,15 +24,10 @@
 
 package cz.mzk.editor.client.view.window;
 
-import java.util.List;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.SelectionStyle;
-import com.smartgwt.client.types.SortArrow;
-import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
@@ -42,9 +37,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellClickHandler;
@@ -61,6 +54,7 @@ import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.EditorTabSet;
+import cz.mzk.editor.client.view.other.StoredWorkingCopyGrid;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.event.OpenDigitalObjectEvent;
 import cz.mzk.editor.shared.event.OpenFirstDigitalObjectEvent;
@@ -79,7 +73,7 @@ public class StoreWorkingCopyWindow
 
     private static LangConstants lang;
     private static StoreWorkingCopyWindow storingWindow = null;
-    private static ListGrid storedFilesGrid;
+    private static StoredWorkingCopyGrid storedWorkingCopyGrid;
     private static Button openButton;
     private static VLayout storeLayout;
     private static DispatchAsync dispatcher;
@@ -113,48 +107,9 @@ public class StoreWorkingCopyWindow
         this.eventBus = eventBus;
         modifyIsVisible = false;
         storeLayout = new VLayout();
+        storedWorkingCopyGrid = new StoredWorkingCopyGrid(lang, dispatcher, false);
 
-        storedFilesGrid = new ListGrid();
-
-        storedFilesGrid.setWidth("95%");
-        storedFilesGrid.setHeight("80%");
-        storedFilesGrid.setShowSortArrow(SortArrow.CORNER);
-        storedFilesGrid.setShowAllRecords(true);
-        storedFilesGrid.setCanHover(true);
-        storedFilesGrid.setHoverOpacity(75);
-        storedFilesGrid.setHoverStyle("interactImageHover");
-        storedFilesGrid.setExtraSpace(20);
-        storedFilesGrid.setSelectionType(SelectionStyle.SINGLE);
-
-        storedFilesGrid.setHoverWidth(300);
-        storedFilesGrid.setHoverCustomizer(new HoverCustomizer() {
-
-            @Override
-            public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
-                StringBuffer sb = new StringBuffer();
-                sb.append(record.getAttribute(Constants.ATTR_UUID));
-                sb.append("<br/>").append(lang.name()).append(": ");
-                sb.append(record.getAttribute(Constants.ATTR_NAME));
-                sb.append("<br/>").append(lang.description()).append(": ").append("<br/>");
-                sb.append(record.getAttribute(Constants.ATTR_DESC));
-                return sb.toString();
-            }
-        });
-        storedFilesGrid.addCellContextClickHandler(new CellContextClickHandler() {
-
-            @Override
-            public void onCellContextClick(CellContextClickEvent event) {
-                Menu menu = new Menu();
-                menu.setShowShadow(true);
-                menu.setShadowDepth(10);
-
-                menu.addItem(getOpenItem(eventBus));
-                menu.addItem(getDeleteItem(storedFilesGrid, dispatcher));
-                setContextMenu(menu);
-            }
-        });
-
-        ModalWindow modalWindow = new ModalWindow(storedFilesGrid);
+        ModalWindow modalWindow = new ModalWindow(storedWorkingCopyGrid);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
 
@@ -181,13 +136,28 @@ public class StoreWorkingCopyWindow
         });
         buttonsLayout.addMember(closeButton);
 
+        storedWorkingCopyGrid.addCellContextClickHandler(new CellContextClickHandler() {
+
+            @Override
+            public void onCellContextClick(CellContextClickEvent event) {
+                Menu menu = new Menu();
+                menu.setShowShadow(true);
+                menu.setShadowDepth(10);
+
+                menu.addItem(getOpenItem(eventBus));
+                menu.addItem(getDeleteItem(storedWorkingCopyGrid, dispatcher));
+                setContextMenu(menu);
+            }
+
+        });
+
         addItem(storeLayout);
-        addItem(storedFilesGrid);
+        addItem(storedWorkingCopyGrid);
         addItem(buttonsLayout);
 
         setEdgeOffset(20);
         modalWindow.hide();
-        setData(dispatcher);
+        storedWorkingCopyGrid.setData();
         centerInPage();
         show();
         focus();
@@ -215,6 +185,15 @@ public class StoreWorkingCopyWindow
                 (detail.getUuid() + "_" + detail.getLabel()).replaceAll("[\\\\/:*?\\\"\\\'<>|\\[\\](){}%]",
                                                                         "");;
 
+        storedWorkingCopyGrid.addCellClickHandler(new CellClickHandler() {
+
+            @Override
+            public void onCellClick(CellClickEvent event) {
+                fileNameItem.setValue(event.getRecord().getAttribute(Constants.ATTR_NAME));
+            }
+
+        });
+
         fileNameItem.setDefaultValue(fileName);
         DynamicForm saveForm = new DynamicForm();
         saveForm.setItems(fileNameItem);
@@ -229,13 +208,6 @@ public class StoreWorkingCopyWindow
 
         illegalCharsLabel.setExtraSpace(12);
 
-        storedFilesGrid.addCellClickHandler(new CellClickHandler() {
-
-            @Override
-            public void onCellClick(CellClickEvent event) {
-                fileNameItem.setValue(event.getRecord().getAttribute(Constants.ATTR_NAME));
-            }
-        });
         buttonsLayout.removeMember(openButton);
         Button storeButton = new Button(lang.save());
         storeButton.addClickHandler(new ClickHandler() {
@@ -245,7 +217,7 @@ public class StoreWorkingCopyWindow
                 final String fileName = fileNameItem.getValueAsString();
                 if (!containsIllegalCharacter(fileName)) {
 
-                    Record[] records = storedFilesGrid.getRecords();
+                    Record[] records = storedWorkingCopyGrid.getRecords();
                     boolean nameIsSame = false;
 
                     for (Record record : records) {
@@ -306,7 +278,7 @@ public class StoreWorkingCopyWindow
     }
 
     private static void open() {
-        ListGridRecord record = storedFilesGrid.getSelectedRecord();
+        ListGridRecord record = storedWorkingCopyGrid.getSelectedRecord();
         if (record != null) {
             String fileName = record.getAttributeAsString(Constants.ATTR_FILE_NAME);
             DigitalObjectModel model = (DigitalObjectModel) record.getAttributeAsObject(Constants.ATTR_MODEL);
@@ -331,86 +303,12 @@ public class StoreWorkingCopyWindow
             @Override
             public void onClick(MenuItemClickEvent event) {
                 ListGridRecord record = storedFilesGrid.getSelectedRecord();
-                deleteItem(record.getAttributeAsLong(Constants.ATTR_ID),
-                           record.getAttributeAsString(Constants.ATTR_FILE_NAME),
-                           dispatcher);
+                storedWorkingCopyGrid.deleteItem(record.getAttributeAsLong(Constants.ATTR_ID),
+                                                 record.getAttributeAsString(Constants.ATTR_FILE_NAME));
 
             }
         });
         return deleteItem;
-    }
-
-    public static void deleteItem(Long id, String fileName, final DispatchAsync dispatcher) {
-        dispatcher.execute(new StoredItemsAction(null, new StoredItem(id, fileName), Constants.VERB.DELETE),
-                           new DispatchCallback<StoredItemsResult>() {
-
-                               @Override
-                               public void callback(StoredItemsResult result) {
-                                   setData(dispatcher);
-                               }
-
-                               @Override
-                               public void callbackError(final Throwable cause) {
-                                   super.callbackError(cause);
-                               }
-
-                           });
-    }
-
-    protected static void setData(final DispatchAsync dispatcher) {
-        final ModalWindow modalWindow = new ModalWindow(storedFilesGrid);
-        modalWindow.setLoadingIcon("loadingAnimation.gif");
-        modalWindow.show(true);
-        ListGridField fileNameField = new ListGridField(Constants.ATTR_NAME, lang.name());
-        ListGridField storedField = new ListGridField(Constants.ATTR_STORED, lang.stored());
-        storedField.setWidth(120);
-        storedFilesGrid.setFields(fileNameField, storedField);
-
-        dispatcher.execute(new StoredItemsAction(null, null, Constants.VERB.GET),
-                           new DispatchCallback<StoredItemsResult>() {
-
-                               @Override
-                               public void callbackError(final Throwable cause) {
-                                   super.callbackError(cause);
-                                   modalWindow.hide();
-                               }
-
-                               @Override
-                               public void callback(StoredItemsResult result) {
-
-                                   List<StoredItem> items = result.getStoredItems();
-                                   ListGridRecord[] records = new ListGridRecord[items.size()];
-                                   for (int i = 0; i < items.size(); i++) {
-                                       ListGridRecord record = new ListGridRecord();
-                                       copyValues(items.get(i), record);
-                                       records[i] = record;
-                                   }
-                                   storedFilesGrid.setData(records);
-                                   storedFilesGrid.sort(Constants.ATTR_STORED, SortDirection.ASCENDING);
-                                   storedFilesGrid.selectRecord(0);
-                                   storedFilesGrid.scrollToRow(0);
-                                   modalWindow.hide();
-                               }
-                           });
-    }
-
-    /**
-     * Copy values.
-     * 
-     * @param from
-     *        the from
-     * @param to
-     *        the to
-     */
-    private static void copyValues(StoredItem from, ListGridRecord to) {
-        String fileName = from.getFileName();
-        to.setAttribute(Constants.ATTR_NAME, fileName.substring(fileName.lastIndexOf("/") + 1));
-        to.setAttribute(Constants.ATTR_FILE_NAME, fileName);
-        to.setAttribute(Constants.ATTR_STORED, from.getStoredDate());
-        to.setAttribute(Constants.ATTR_MODEL, from.getModel());
-        to.setAttribute(Constants.ATTR_UUID, from.getUuid());
-        to.setAttribute(Constants.ATTR_DESC, from.getDescription());
-        to.setAttribute(Constants.ATTR_ID, from.getId());
     }
 
     private static void store(DigitalObjectDetail detail,
@@ -451,5 +349,15 @@ public class StoreWorkingCopyWindow
             }
         };
         dispatcher.execute(storedAction, storedCallback);
+    }
+
+    /**
+     * @param id
+     * @param fileName
+     * @param dispatcher
+     */
+    public static void deleteItem(Long id, String fileName, DispatchAsync dispatcher) {
+        storedWorkingCopyGrid.setDispatcher(dispatcher);
+        storedWorkingCopyGrid.deleteItem(id, fileName);
     }
 }

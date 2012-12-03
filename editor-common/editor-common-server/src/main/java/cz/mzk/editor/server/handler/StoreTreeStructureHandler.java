@@ -49,8 +49,8 @@ import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
 

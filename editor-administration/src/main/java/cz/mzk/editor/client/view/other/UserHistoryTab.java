@@ -24,8 +24,6 @@
 
 package cz.mzk.editor.client.view.other;
 
-import java.util.LinkedHashMap;
-
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -34,11 +32,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.HtmlCode;
-import cz.mzk.editor.shared.rpc.UserInfoItem;
-import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
-import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
 /**
  * @author Matous Jobanek
@@ -55,52 +49,28 @@ public class UserHistoryTab
      * @param dispatcher
      */
     public UserHistoryTab(EventBus eventBus, LangConstants lang, DispatchAsync dispatcher) {
-        super(eventBus,
-              lang,
-              dispatcher,
-              HtmlCode.title(lang.my() + " " + lang.historyMenu(), 2),
-              new Long(-1),
-              null,
-              lang.historyMenu() + " " + lang.ofUser());
+        super(eventBus, lang, dispatcher, HtmlCode.title(lang.my() + " " + lang.historyMenu().toLowerCase(),
+                                                         2), new Long(-1), null, lang.historyMenu() + " "
+                + lang.ofUser());
         setIcon("pieces/16/pawn_green.png");
     }
 
     private void setUserSelect() {
-        //        TODO
-        if (true) {
-            users = new SelectItem("users", getLang().users());
-            GetUsersInfoAction getUsersAction = new GetUsersInfoAction();
-            DispatchCallback<GetUsersInfoResult> usersCallback = new DispatchCallback<GetUsersInfoResult>() {
+        users = new UserSelect(getLang().users(), getDispatcher());
+        users.addChangedHandler(new ChangedHandler() {
 
-                @Override
-                public void callback(GetUsersInfoResult result) {
-                    LinkedHashMap<String, String> allUsers = new LinkedHashMap<String, String>();
+            @Override
+            public void onChanged(ChangedEvent event) {
+                getHistoryItems().removeAllData();
+                getHistoryDays().getHistory(Long.parseLong(event.getValue().toString()), null);
+                getTitleFlow().setContents(HtmlCode.title(getLang().historyMenu() + " " + getLang().ofUser(),
+                                                          2));
+            }
+        });
+        DynamicForm usersForm = new DynamicForm();
+        usersForm.setItems(users);
 
-                    for (UserInfoItem userItem : result.getItems()) {
-                        allUsers.put(userItem.getId().toString(),
-                                     userItem.getSurname() + " " + userItem.getName());
-                    }
-                    users.setValueMap(allUsers);
-                }
-            };
-
-            users.addChangedHandler(new ChangedHandler() {
-
-                @Override
-                public void onChanged(ChangedEvent event) {
-                    getHistoryItems().removeAllData();
-                    getHistoryDays().getHistory(Long.parseLong(event.getValue().toString()), null);
-                    getTitleFlow().setContents(HtmlCode.title(getLang().historyMenu() + " "
-                            + getLang().ofUser(), 2));
-                }
-            });
-
-            getDispatcher().execute(getUsersAction, usersCallback);
-            DynamicForm usersForm = new DynamicForm();
-            usersForm.setItems(users);
-
-            getMainLayout().addMember(usersForm);
-        }
+        getMainLayout().addMember(usersForm);
     }
 
     /**

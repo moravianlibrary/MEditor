@@ -24,6 +24,7 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,63 +35,66 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.DAO.ActionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.EditorDate;
-import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
-import cz.mzk.editor.shared.rpc.action.GetHistoryDaysResult;
+import cz.mzk.editor.shared.rpc.StoredItem;
+import cz.mzk.editor.shared.rpc.action.GetAllStoredWorkingCopyItemsAction;
+import cz.mzk.editor.shared.rpc.action.GetAllStoredWorkingCopyItemsResult;
 
 /**
  * @author Matous Jobanek
- * @version Oct 30, 2012
+ * @version Dec 3, 2012
  */
-public class GetHistoryDaysHandler
-        implements ActionHandler<GetHistoryDaysAction, GetHistoryDaysResult> {
+public class GetAllStoredWorkingCopyHandler
+        implements ActionHandler<GetAllStoredWorkingCopyItemsAction, GetAllStoredWorkingCopyItemsResult> {
 
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GetAllStoredWorkingCopyHandler.class.getPackage()
+            .toString());
+
+    /** The stored and locks dao. */
     @Inject
-    private ActionDAO actionDAO;
-
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = Logger.getLogger(GetHistoryDaysHandler.class);
+    private StoredAndLocksDAO storedAndLocksDAO;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public GetHistoryDaysResult execute(GetHistoryDaysAction action, ExecutionContext context)
-            throws ActionException {
+    public GetAllStoredWorkingCopyItemsResult execute(GetAllStoredWorkingCopyItemsAction action,
+                                                      ExecutionContext context) throws ActionException {
 
-        LOGGER.debug("Processing action: GetHistoryDaysAction");
+        LOGGER.debug("Processing action: GetAllStoredWorkingCopyItemsResult");
         ServerUtils.checkExpiredSession();
 
-        List<EditorDate> historyDays = null;
+        List<StoredItem> storedItems = new ArrayList<StoredItem>();
         try {
-            historyDays = actionDAO.getHistoryDays(action.getUserId(), action.getUuid());
+            storedItems = storedAndLocksDAO.getAllStoredWorkingCopyItems(action.getUserId());
         } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e);
             e.printStackTrace();
             throw new ActionException(e);
         }
 
-        return new GetHistoryDaysResult(historyDays);
+        return new GetAllStoredWorkingCopyItemsResult(storedItems);
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Class<GetHistoryDaysAction> getActionType() {
-        // TODO Auto-generated method stub
-        return GetHistoryDaysAction.class;
+    public Class<GetAllStoredWorkingCopyItemsAction> getActionType() {
+        return GetAllStoredWorkingCopyItemsAction.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void undo(GetHistoryDaysAction action, GetHistoryDaysResult result, ExecutionContext context)
-            throws ActionException {
+    public void undo(GetAllStoredWorkingCopyItemsAction action,
+                     GetAllStoredWorkingCopyItemsResult result,
+                     ExecutionContext context) throws ActionException {
         // TODO Auto-generated method stub
 
     }
