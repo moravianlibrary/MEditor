@@ -24,9 +24,13 @@
 
 package cz.mzk.editor.server.shibboleth;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,10 +45,14 @@ import org.springframework.security.authentication.RememberMeAuthenticationToken
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.SecurityUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
@@ -83,7 +91,21 @@ public class ShibbolethAuthenticationFilter
 
         RememberMeAuthenticationToken token;
 
-        String shibbolethIdentifier = request.getHeader(configuration.getShibbolethUid());
+        Properties shibbolethProperties = new Properties();
+        shibbolethProperties.load(new FileInputStream(new File(System.getProperty("user.home")
+                + File.separator + ".meditor/shibboleth.properties")));
+
+        String shibbolethIdentifier =
+                request.getHeader(shibbolethProperties.getProperty("loginAttribute", "uid"));
+
+        Enumeration headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            Object element = headerNames.nextElement();
+            String header = request.getHeader((String) element);
+            System.err.println(element);
+            System.err.println(header);
+            System.err.println();
+        }
 
         token =
                 new RememberMeAuthenticationToken(ShibbolethAuthenticationFilter.class.getPackage()
@@ -91,11 +113,21 @@ public class ShibbolethAuthenticationFilter
 
         token.setDetails(authenticationDetailsSource.buildDetails(request));
 
-        // delegate to the authentication provider
-        Authentication authentication = this.getAuthenticationManager().authenticate(token);
+        EditorUserAuthentication authentication =
+                (EditorUserAuthentication) this.getAuthenticationManager().authenticate(token);
+        if (authentication != null) {
+            if (authentication.isAuthenticated()) {
+                setLastUsername(token.getName(), request);
+            } else if (authentication.isToAdd()) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute(HttpCookies.UNKNOWN_ID_KEY, authentication.getPrincipal());
 
-        if (authentication.isAuthenticated()) {
-            setLastUsername(token.getName(), request);
+                String displayNameAttr = shibbolethProperties.getProperty("dispalyNameAttribute", "cn");
+                session.setAttribute(HttpCookies.NAME_KEY, request.getHeader(displayNameAttr));
+
+                session.setAttribute(HttpCookies.IDENTITY_TYPE, USER_IDENTITY_TYPES.SHIBBOLETH);
+                throw new UsernameNotFoundException("");
+            }
         }
 
         UsernamePasswordAuthenticationFilter f;
@@ -110,6 +142,23 @@ public class ShibbolethAuthenticationFilter
             request.getSession()
                     .setAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_LAST_USERNAME_KEY,
                                   username);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException,
+            ServletException {
+        HttpSession session = request.getSession(true);
+        Object shibbolethId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
+        if (shibbolethId != null) {
+            SecurityUtils.redirectToRegisterPage(request, response);
+        } else {
+            super.unsuccessfulAuthentication(request, response, failed);
         }
     }
 

@@ -1719,6 +1719,13 @@ public class Constants {
         SHIBBOLETH, /** The LDAP. */
         LDAP;
 
+        public static USER_IDENTITY_TYPES parseString(String s) {
+            for (USER_IDENTITY_TYPES type : USER_IDENTITY_TYPES.values()) {
+                if (type.toString().equalsIgnoreCase(s)) return type;
+            }
+            return null;
+        }
+
     }
 
     /** The Constant MODS_PART_DETAIL_PAGE_NUMBER. */

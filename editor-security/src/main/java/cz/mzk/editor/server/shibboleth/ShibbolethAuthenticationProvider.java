@@ -6,11 +6,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
-import cz.mzk.editor.server.URLS;
 
 /*
  * Metadata Editor
@@ -55,9 +53,11 @@ public class ShibbolethAuthenticationProvider
         if (userId < 0) {
             throw new BadCredentialsException("Invalid login or password");
         } else if (userId == 0) {
-            throw new UsernameNotFoundException("Username not  found! Please register <a href=\""
-                    + (URLS.LOCALHOST() ? "info.html?gwt.codesvr=127.0.0.1:9997" : URLS.INFO_PAGE)
-                    + "\">here</a>");
+            EditorUserAuthentication customAuthentication =
+                    new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.OPEN_ID);
+            customAuthentication.setAuthenticated(false);
+            customAuthentication.setToAdd(true);
+            return customAuthentication;
         } else {
 
             Authentication customAuthentication =

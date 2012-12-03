@@ -135,11 +135,11 @@ public class RequestDAOImpl
 
         int toReturn = -1;
 
-        try {
-            getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            LOGGER.warn("Unable to set autocommit off", e);
-        }
+        //        try {
+        //            getConnection().setAutoCommit(false);
+        //        } catch (SQLException e) {
+        //            LOGGER.warn("Unable to set autocommit off", e);
+        //        }
         PreparedStatement findSt = null, insSt = null;
         try {
 
@@ -165,6 +165,9 @@ public class RequestDAOImpl
                             + " identifier: " + identifier + " has been inserted.");
                     ResultSet gk = insSt.getGeneratedKeys();
                     if (gk.next()) {
+                        if (daoUtils == null) {
+                            daoUtils = new DAOUtilsImpl();
+                        }
                         if (daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId(),
                                                       Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
                                                       "request_to_admin_id",
@@ -172,16 +175,15 @@ public class RequestDAOImpl
                                                       CRUD_ACTION_TYPES.CREATE,
                                                       false)) {
                             toReturn = 1;
-                            getConnection().commit();
+                            //                            getConnection().commit();
                             LOGGER.debug("DB has been updated by commit.");
                         } else {
-                            getConnection().rollback();
+                            //                            getConnection().rollback();
                             LOGGER.debug("DB has not been updated -> rollback!");
                         }
                     } else {
                         LOGGER.error("No key has been returned! " + insSt);
                     }
-
                 } else {
                     LOGGER.error("DB has not been updated! " + insSt);
                 }

@@ -282,9 +282,6 @@ public abstract class EditorConfiguration {
         /** The Constant IDENTITIES. */
         public static final String IDENTITIES = "identities";
 
-        public static final String SHIBBOLETH_UID = "shibbolethUid";
-
-        public static final String SHIBBOLETH_UID_DEFAULT = "uid";
     }
 
     /**
@@ -752,11 +749,6 @@ public abstract class EditorConfiguration {
 
     public boolean getAkkaOn() {
         return getConfiguration().getBoolean(ServerConstants.AKKA_ON, false);
-    }
-
-    public String getShibbolethUid() {
-        return getConfiguration().getString(ServerConstants.SHIBBOLETH_UID,
-                                            ServerConstants.SHIBBOLETH_UID_DEFAULT);
     }
 
 }

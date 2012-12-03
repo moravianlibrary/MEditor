@@ -53,7 +53,10 @@ public class RequestForAddingServiceImpl
         RequestDAO reqDAO = new RequestDAOImpl();
         boolean success = false;
         try {
-            success = (reqDAO.addNewIdentifierRequest(name, openID, USER_IDENTITY_TYPES.OPEN_ID) >= 0);
+
+            success =
+                    (reqDAO.addNewIdentifierRequest(name, openID, (USER_IDENTITY_TYPES) session
+                            .getAttribute(HttpCookies.IDENTITY_TYPE)) >= 0);
         } catch (DatabaseException e) {
             return "Database problem: " + e.getMessage();
         }

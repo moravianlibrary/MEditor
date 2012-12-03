@@ -355,22 +355,25 @@ public abstract class AbstractDAO {
         PreparedStatement selectSt = null;
         long userId = -1;
         try {
-            StringBuffer sql = new StringBuffer("SELECT editor_user_id FROM ");
+            StringBuffer sql = new StringBuffer("SELECT editor_user_id FROM (");
+            String tableIdentity = "";
 
             switch (type) {
                 case OPEN_ID:
-                    sql.append(Constants.TABLE_OPEN_ID_IDENTITY);
+                    tableIdentity = Constants.TABLE_OPEN_ID_IDENTITY;
                     break;
                 case SHIBBOLETH:
-                    sql.append(Constants.TABLE_SHIBBOLETH_IDENTITY);
+                    tableIdentity = Constants.TABLE_SHIBBOLETH_IDENTITY;
                     break;
                 case LDAP:
-                    sql.append(Constants.TABLE_LDAP_IDENTITY);
+                    tableIdentity = Constants.TABLE_LDAP_IDENTITY;
                     break;
                 default:
                     return DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId();
             }
-            sql.append(" WHERE identity = (?)");
+            sql.append(tableIdentity).append(" INNER JOIN editor_user ON ").append(tableIdentity)
+                    .append(".editor_user_id = editor_user.id)");
+            sql.append(" WHERE state = 'true' AND identity = (?)");
             selectSt = getConnection().prepareStatement(sql.toString());
             selectSt.setString(1, identifier);
 

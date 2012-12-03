@@ -143,7 +143,7 @@ public class DAOUtilsImpl
 
         try {
             insertSt = getConnection().prepareStatement(sql);
-            insertSt.setLong(1, getUserId(false));
+            insertSt.setLong(1, editor_user_id);
             insertSt.setObject(2, foreignKey);
             insertSt.setString(3, type.getValue());
             if (top_digital_object_uuid != null) insertSt.setString(4, top_digital_object_uuid);
