@@ -47,7 +47,8 @@ import org.springframework.ldap.core.support.LdapContextSource;
  * @author xrosecky
  * @version Nov 14, 2012
  */
-public class LDAPSearchImpl {
+public class LDAPSearchImpl
+        implements LDAPSearch {
 
     /** The ldap template. */
     private final LdapTemplate ldapTemplate;
@@ -89,7 +90,7 @@ public class LDAPSearchImpl {
      * @return the list
      */
     @SuppressWarnings("unchecked")
-    List<Map<String, List<Object>>> search(String query) {
+    public List<Map<String, List<Object>>> search(String query) {
         AttributesMapper attributesMapper = new AttributesMapper() {
 
             public Object mapFromAttributes(Attributes attrs) throws NamingException {

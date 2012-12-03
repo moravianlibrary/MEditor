@@ -45,6 +45,8 @@ public class HttpCookies {
 
     public static final String UNKNOWN_ID_KEY = "dR#5hJ_F9";
 
+    public static final String IDENTITY_TYPE = "dR#$hJ_F@";
+
     public static final String NAME_KEY = "dR#@hJ_F9";
 
     /** The Constant ADMIN. */

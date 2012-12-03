@@ -22,35 +22,28 @@
  * 
  */
 
-package cz.mzk.editor.server.LDAP;
+package cz.mzk.editor.server;
 
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Matous Jobanek
- * @version Nov 14, 2012
+ * @version Nov 30, 2012
  */
-public interface LDAPSearch {
+public class SecurityUtils {
 
-    /**
-     * Auth.
-     * 
-     * @param pass
-     *        the pass
-     * @param query
-     *        the query
-     * @return true, if successful
-     */
-    boolean auth(String pass, String query);
+    public static void redirectToRegisterPage(HttpServletRequest request, HttpServletResponse response) {
 
-    /**
-     * Search.
-     * 
-     * @param query
-     *        the query
-     * @return the list
-     */
-    List<Map<String, List<Object>>> search(String query);
+        String root =
+                (URLS.LOCALHOST() ? "http://" : "https://")
+                        + request.getServerName()
+                        + (URLS.LOCALHOST() ? (request.getServerPort() == 80
+                                || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
+                                : "") + URLS.ROOT() + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+        URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?")) + URLS.INFO_PAGE
+                + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
+
+    }
 
 }

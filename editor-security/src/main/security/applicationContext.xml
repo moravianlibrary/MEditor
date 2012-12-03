@@ -27,10 +27,11 @@
 		<form-login login-page="/loginLocal.html"/>
 		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
 		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
+		<custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />
 	</http>
 
-	<beans:bean id="editorAuthenticationProvider"
-		class="cz.mzk.editor.server.LDAP.EditorAuthenticationProvider" />
+	<beans:bean id="ldapAuthenticationProvider"
+		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider" />
 
 	<beans:bean id="janrainAuthenticationProvider"
 		class="cz.mzk.editor.server.janrain.JanrainAuthenticationProvider">
@@ -41,10 +42,15 @@
 	</beans:bean>
 
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider ref="editorAuthenticationProvider" />
+		<authentication-provider ref="ldapAuthenticationProvider" />
 		<authentication-provider ref="janrainAuthenticationProvider" />
 		<authentication-provider ref="shibbolethAuthenticationProvider" />
 	</authentication-manager>
+
+	<beans:bean id="ldapAuthenticationFilter"
+		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
 
 	<beans:bean id="janrainAuthenticationFilter"
 		class="cz.mzk.editor.server.janrain.JanrainAuthenticationFilter">

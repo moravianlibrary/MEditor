@@ -48,6 +48,7 @@ public class EditorUserAuthentication
     private final Authentication authentication;
     private final USER_IDENTITY_TYPES identityType;
     private boolean toAdd = false;
+    private String displayName;
 
     /**
      * @param role
@@ -140,6 +141,21 @@ public class EditorUserAuthentication
      */
     public void setToAdd(boolean toAdd) {
         this.toAdd = toAdd;
+    }
+
+    /**
+     * @return the displayName
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * @param displayName
+     *        the displayName to set
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
 }

@@ -72,8 +72,7 @@ import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.DAO.UserDAOImpl;
-import cz.mzk.editor.server.LDAP.EditorAuthenticationProvider;
-import cz.mzk.editor.server.LDAP.LDAPClient;
+import cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -254,12 +253,11 @@ public class ServerModule
         requestStaticInjection(IngestUtils.class);
         requestStaticInjection(ServerUtils.class);
         requestStaticInjection(FOXMLBuilderMapping.class);
-        requestStaticInjection(LDAPClient.class);
         requestStaticInjection(JanrainClient.class);
         requestStaticInjection(JanrainAuthenticationFilter.class);
         requestStaticInjection(SessionListener.class);
         requestStaticInjection(ShibbolethAuthenticationFilter.class);
         requestStaticInjection(ShibbolethClient.class);
-        requestStaticInjection(EditorAuthenticationProvider.class);
+        requestStaticInjection(LDAPAuthenticationProvider.class);
     }
 }

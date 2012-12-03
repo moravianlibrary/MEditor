@@ -50,7 +50,7 @@ import org.springframework.security.web.authentication.rememberme.AbstractRememb
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.URLS;
+import cz.mzk.editor.server.SecurityUtils;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
@@ -137,16 +137,8 @@ public class JanrainAuthenticationFilter
             } else if (authentication.isToAdd()) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute(HttpCookies.UNKNOWN_ID_KEY, token.getIdentityUrl());
-                session.setAttribute(HttpCookies.NAME_KEY, token.getName());
-                //                String root =
-                //                        (URLS.LOCALHOST() ? "http://" : "https://")
-                //                                + request.getServerName()
-                //                                + (URLS.LOCALHOST() ? (request.getServerPort() == 80
-                //                                        || request.getServerPort() == 443 ? "" : (":" + request
-                //                                        .getServerPort())) : "") + URLS.ROOT()
-                //                                + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
-                //                URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?"))
-                //                        + URLS.INFO_PAGE + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
+                session.setAttribute(HttpCookies.NAME_KEY, token.getAttributes().get(1).getValues().get(0));
+                session.setAttribute(HttpCookies.IDENTITY_TYPE, USER_IDENTITY_TYPES.OPEN_ID);
                 throw new UsernameNotFoundException("");
             }
         }
@@ -175,15 +167,7 @@ public class JanrainAuthenticationFilter
         HttpSession session = request.getSession(true);
         Object openId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
         if (openId != null) {
-            String root =
-                    (URLS.LOCALHOST() ? "http://" : "https://")
-                            + request.getServerName()
-                            + (URLS.LOCALHOST() ? (request.getServerPort() == 80
-                                    || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
-                                    : "") + URLS.ROOT()
-                            + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
-            URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?")) + URLS.INFO_PAGE
-                    + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
+            SecurityUtils.redirectToRegisterPage(request, response);
         } else {
             super.unsuccessfulAuthentication(request, response, failed);
         }
