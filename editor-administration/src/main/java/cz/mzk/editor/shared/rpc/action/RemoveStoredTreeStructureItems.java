@@ -30,8 +30,6 @@ import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
-import cz.mzk.editor.shared.rpc.TreeStructureInfo;
-
 /**
  * @author Matous Jobanek
  * @version Oct 30, 2012
@@ -41,7 +39,7 @@ import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 public class RemoveStoredTreeStructureItems {
 
     @In(1)
-    private List<TreeStructureInfo> items;
+    private List<Long> itemsId;
 
     @Out(1)
     private boolean successful;

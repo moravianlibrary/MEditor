@@ -2,7 +2,7 @@
  * Metadata Editor
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -35,65 +35,68 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsAction;
-import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsResult;
+import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectAction;
+import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectResult;
 
 /**
- * @author Matous Jobanek
- * @version Dec 3, 2012
+ * @author Jiri Kremser
+ * @version $Id$
  */
-public class RemoveStoredTreeStructureHandler
-        implements ActionHandler<RemoveStoredTreeStructureItemsAction, RemoveStoredTreeStructureItemsResult> {
+
+public class UnlockDigitalObjectHandler
+        implements ActionHandler<UnlockDigitalObjectAction, UnlockDigitalObjectResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(RemoveStoredTreeStructureHandler.class.getPackage()
+    private static final Logger LOGGER = Logger.getLogger(UnlockDigitalObjectHandler.class.getPackage()
             .toString());
 
     /** The stored and locks dao. */
     @Inject
     private StoredAndLocksDAO storedAndLocksDAO;
 
+    /** Instantiate a new unlock digital object handler **/
+    @Inject
+    public UnlockDigitalObjectHandler() {
+    }
+
     /**
      * {@inheritDoc}
      */
-    @Override
-    public RemoveStoredTreeStructureItemsResult execute(RemoveStoredTreeStructureItemsAction action,
-                                                        ExecutionContext context) throws ActionException {
 
-        LOGGER.debug("Processing action: RemoveStoredTreeStructureItemsAction");
+    @Override
+    public UnlockDigitalObjectResult execute(UnlockDigitalObjectAction action, ExecutionContext context)
+            throws ActionException {
+
+        LOGGER.debug("Processing action: UnlockDigitalObject: " + action.getUuid());
         ServerUtils.checkExpiredSession();
 
-        boolean successful = true;
+        String uuid = action.getUuid();
+
         try {
-            for (Long id : action.getItemsId()) {
-                successful &= storedAndLocksDAO.removeSavedStructure(id);
-            }
+            return new UnlockDigitalObjectResult(storedAndLocksDAO.unlockDigitalObject(uuid));
         } catch (DatabaseException e) {
-            LOGGER.error(e);
-            e.printStackTrace();
             throw new ActionException(e);
         }
 
-        return new RemoveStoredTreeStructureItemsResult(successful);
     }
 
     /**
      * {@inheritDoc}
      */
+
     @Override
-    public Class<RemoveStoredTreeStructureItemsAction> getActionType() {
-        return RemoveStoredTreeStructureItemsAction.class;
+    public Class<UnlockDigitalObjectAction> getActionType() {
+        return UnlockDigitalObjectAction.class;
     }
 
     /**
      * {@inheritDoc}
      */
+
     @Override
-    public void undo(RemoveStoredTreeStructureItemsAction action,
-                     RemoveStoredTreeStructureItemsResult result,
-                     ExecutionContext context) throws ActionException {
+    public void undo(UnlockDigitalObjectAction arg0, UnlockDigitalObjectResult arg1, ExecutionContext arg2)
+            throws ActionException {
         // TODO Auto-generated method stub
-
     }
 
 }

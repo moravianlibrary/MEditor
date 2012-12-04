@@ -151,7 +151,7 @@ public abstract class CreateNewRoleWindow
                         if (result.isSuccessful()) {
                             afterAddAction(rightList);
                         } else {
-                            SC.warn(lang.operationFailed());
+                            SC.warn(lang.operationFailed() + "<br>" + lang.sameName());
                         }
                         mw.hide();
                         hide();

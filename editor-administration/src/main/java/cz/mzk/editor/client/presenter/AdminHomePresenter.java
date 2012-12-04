@@ -31,7 +31,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
-import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
@@ -40,10 +39,12 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
-import cz.mzk.editor.client.uihandlers.AdminHomeUiHandlers;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,15 +54,15 @@ import cz.mzk.editor.client.uihandlers.AdminHomeUiHandlers;
  * @version Oct 30, 2012
  */
 public class AdminHomePresenter
-        extends Presenter<AdminHomePresenter.MyView, AdminHomePresenter.MyProxy>
-        implements AdminHomeUiHandlers {
+        extends Presenter<AdminHomePresenter.MyView, AdminHomePresenter.MyProxy> {
 
     /**
      * The Interface MyView.
      */
     public interface MyView
-            extends View, HasUiHandlers<AdminHomeUiHandlers> {
+            extends View {
 
+        ImgButton getMeditImg();
     }
 
     /**
@@ -126,7 +127,13 @@ public class AdminHomePresenter
     @Override
     protected void onBind() {
         super.onBind();
+        getView().getMeditImg().addClickHandler(new ClickHandler() {
 
+            @Override
+            public void onClick(ClickEvent event) {
+                placeManager.revealPlace(new PlaceRequest(NameTokens.MEDIT_HOME));
+            }
+        });
     }
 
     /**
@@ -144,16 +151,6 @@ public class AdminHomePresenter
     @Override
     protected void revealInParent() {
         RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_MAIN_CONTENT, this);
-    }
-
-    /**
-     * Open medit. {@inheritDoc}
-     */
-    @Override
-    public void openMedit() {
-        System.err.println(placeManager);
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MEDIT_HOME));
-
     }
 
 }

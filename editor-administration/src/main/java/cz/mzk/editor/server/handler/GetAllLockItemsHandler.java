@@ -2,7 +2,7 @@
  * Metadata Editor
  * 
  * Metadata Editor - Rich internet application for editing metadata.
- * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Copyright (C) 2011  Matous Jobanek (matous.jobanek@mzk.cz)
  * Moravian Library in Brno
  *
  * This program is free software; you can redistribute it and/or
@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -33,70 +35,64 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.LockDAO;
+import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectAction;
-import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectResult;
+import cz.mzk.editor.shared.rpc.ActiveLockItem;
+import cz.mzk.editor.shared.rpc.action.GetAllLockItemsAction;
+import cz.mzk.editor.shared.rpc.action.GetAllLockItemsResult;
 
 /**
- * @author Jiri Kremser
- * @version $Id$
+ * @author Matous Jobanek
+ * @version Dec 4, 2012
  */
-
-public class UnlockDigitalObjectHandler
-        implements ActionHandler<UnlockDigitalObjectAction, UnlockDigitalObjectResult> {
+public class GetAllLockItemsHandler
+        implements ActionHandler<GetAllLockItemsAction, GetAllLockItemsResult> {
 
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(UnlockDigitalObjectHandler.class.getPackage()
+    private static final Logger LOGGER = Logger.getLogger(GetAllLockItemsHandler.class.getPackage()
             .toString());
 
-    /** The locks DAO **/
+    /** The stored and locks dao. */
     @Inject
-    private LockDAO locksDAO;
-
-    /** Instantiate a new unlock digital object handler **/
-    @Inject
-    public UnlockDigitalObjectHandler() {
-    }
+    private StoredAndLocksDAO storedAndLocksDAO;
 
     /**
      * {@inheritDoc}
      */
-
     @Override
-    public UnlockDigitalObjectResult execute(UnlockDigitalObjectAction action, ExecutionContext context)
+    public GetAllLockItemsResult execute(GetAllLockItemsAction action, ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: UnlockDigitalObject: " + action.getUuid());
+        LOGGER.debug("Processing action: GetAllStoredTreeStructureHandler");
         ServerUtils.checkExpiredSession();
-
-        String uuid = action.getUuid();
-
+        List<ActiveLockItem> items;
         try {
-            return new UnlockDigitalObjectResult(locksDAO.unlockDigitalObject(uuid));
+            items = storedAndLocksDAO.getAllActiveLocks(action.getUserId());
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
 
+        return new GetAllLockItemsResult(items);
     }
 
     /**
      * {@inheritDoc}
      */
-
     @Override
-    public Class<UnlockDigitalObjectAction> getActionType() {
-        return UnlockDigitalObjectAction.class;
+    public Class<GetAllLockItemsAction> getActionType() {
+        return GetAllLockItemsAction.class;
     }
 
     /**
      * {@inheritDoc}
      */
-
     @Override
-    public void undo(UnlockDigitalObjectAction arg0, UnlockDigitalObjectResult arg1, ExecutionContext arg2)
+    public void undo(GetAllLockItemsAction action, GetAllLockItemsResult result, ExecutionContext context)
             throws ActionException {
         // TODO Auto-generated method stub
+
     }
 
 }

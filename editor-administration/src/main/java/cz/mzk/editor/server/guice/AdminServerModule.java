@@ -43,6 +43,7 @@ import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 import cz.mzk.editor.server.handler.CheckAndUpdateDBSchemaHandler;
 import cz.mzk.editor.server.handler.CheckRightsHandler;
+import cz.mzk.editor.server.handler.GetAllLockItemsHandler;
 import cz.mzk.editor.server.handler.GetAllRequestItemsHandler;
 import cz.mzk.editor.server.handler.GetAllRolesHandler;
 import cz.mzk.editor.server.handler.GetAllStoredTreeStructureHandler;
@@ -65,6 +66,7 @@ import cz.mzk.editor.server.handler.RemoveUserHandler;
 import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckRightsAction;
+import cz.mzk.editor.shared.rpc.action.GetAllLockItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRequestItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
 import cz.mzk.editor.shared.rpc.action.GetAllStoredTreeStructureItemsAction;
@@ -119,6 +121,7 @@ public class AdminServerModule
         bindHandler(RemoveStoredWorkingCopyItemsAction.class, RemoveStoredWorkingCopyHandler.class);
         bindHandler(GetAllStoredTreeStructureItemsAction.class, GetAllStoredTreeStructureHandler.class);
         bindHandler(RemoveStoredTreeStructureItemsAction.class, RemoveStoredTreeStructureHandler.class);
+        bindHandler(GetAllLockItemsAction.class, GetAllLockItemsHandler.class);
 
         bindHandler(GetHistoryItemInfoAction.class, GetHistoryItemInfoHandler.class);
         bindHandler(GetHistoryAction.class, GetHistoryHandler.class);

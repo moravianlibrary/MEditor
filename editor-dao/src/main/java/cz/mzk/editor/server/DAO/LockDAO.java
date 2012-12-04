@@ -46,16 +46,6 @@ public interface LockDAO {
     boolean lockDigitalObject(String uuid, String description, boolean insert) throws DatabaseException;
 
     /**
-     * Unlocks the digital object with uuid
-     * 
-     * @param uuid
-     *        the uuid of the digital object determined to unlock
-     * @return whether unlocking was successful
-     * @throws DatabaseException
-     */
-    boolean unlockDigitalObject(String uuid) throws DatabaseException;
-
-    /**
      * Gets the id of a owner of the lock
      * 
      * @param uuid

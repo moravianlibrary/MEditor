@@ -30,7 +30,7 @@ package cz.mzk.editor.client.view;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtplatform.mvp.client.ViewWithUiHandlers;
+import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.ImgButton;
@@ -42,7 +42,6 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
-import cz.mzk.editor.client.uihandlers.AdminHomeUiHandlers;
 import cz.mzk.editor.client.util.HtmlCode;
 
 // TODO: Auto-generated Javadoc
@@ -50,13 +49,15 @@ import cz.mzk.editor.client.util.HtmlCode;
  * The Class HomeView.
  */
 public class AdminHomeView
-        extends ViewWithUiHandlers<AdminHomeUiHandlers>
+        extends ViewImpl
         implements AdminHomePresenter.MyView {
 
     /** The layout. */
     private final HStack layout;
 
     private final LangConstants lang;
+
+    private ImgButton meditImg;
 
     // @Inject
     // public void setLang(LangConstants lang) {
@@ -85,7 +86,7 @@ public class AdminHomeView
         meditLayout.setLayoutAlign(Alignment.CENTER);
         meditLayout.setAlign(Alignment.CENTER);
 
-        ImgButton meditImg = new ImgButton();
+        meditImg = new ImgButton();
         meditImg.setSrc("MEdit.png");
         meditImg.setHeight(330);
         meditImg.setWidth(500);
@@ -93,14 +94,6 @@ public class AdminHomeView
         meditImg.setShowDown(false);
         meditImg.setShowEdges(true);
         meditImg.setEdgeSize(3);
-
-        meditImg.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                getUiHandlers().openMedit();
-            }
-        });
 
         meditLayout.addMember(getInfo(lang.introduction()));
         meditLayout.addMember(meditImg);
@@ -173,6 +166,14 @@ public class AdminHomeView
     @Override
     public Widget asWidget() {
         return layout;
+    }
+
+    /**
+     * @return the meditImg
+     */
+    @Override
+    public ImgButton getMeditImg() {
+        return meditImg;
     }
 
 }

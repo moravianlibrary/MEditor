@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.rpc.ActiveLockItem;
 import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 
@@ -75,6 +76,28 @@ public class StoredAndLocksDAOImpl
     /** The Constant DISABLE_INFO. */
     public static final String DISABLE_INFO = "UPDATE " + Constants.TABLE_TREE_STRUCTURE
             + " SET state = 'false' WHERE id = (?)";
+
+    /** The Constant DISABLE_DO_LOCK_BY_UUID. */
+    public static final String DISABLE_DO_LOCK_BY_UUID =
+            "UPDATE lock SET state = 'false' WHERE digital_object_uuid = (?)";
+
+    /** The Constant SELECT_ID_OF_LOCK. */
+    private static final String SELECT_ID_OF_LOCK =
+            "SELECT l.id, MAX(timestamp) FROM ((SELECT lock_id, timestamp FROM "
+                    + Constants.TABLE_CRUD_LOCK_ACTION
+                    + " WHERE (type = 'c' OR type = 'u') AND editor_user_id = (?)) a INNER JOIN (SELECT id FROM "
+                    + Constants.TABLE_LOCK
+                    + "  WHERE digital_object_uuid = (?) AND state = 'true') l ON a.lock_id=l.id) "
+                    + "GROUP BY l.id, timestamp ORDER BY timestamp DESC LIMIT '1'";
+
+    private static final String SELECT_ALL_ACTIVE_LOCK_ITEMS =
+            "SELECT name, uuid, timestamp, al.description, model FROM "
+                    + "((SELECT lock_id, timestamp, digital_object_uuid, description FROM "
+                    + "((SELECT lock_id, MAX(timestamp) AS timestamp FROM "
+                    + Constants.TABLE_CRUD_LOCK_ACTION
+                    + " WHERE editor_user_id = (?) AND (type = 'c' OR type = 'u') GROUP BY lock_id) a INNER JOIN "
+                    + Constants.TABLE_LOCK + " l ON l.id = a.lock_id) WHERE state = true) al INNER JOIN "
+                    + Constants.TABLE_DIGITAL_OBJECT + " o ON al.digital_object_uuid = o.uuid)";
 
     /** The dao utils. */
     @Inject
@@ -257,4 +280,106 @@ public class StoredAndLocksDAOImpl
         return successful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean unlockDigitalObject(String uuid) throws DatabaseException {
+        PreparedStatement deleteSt = null;
+        boolean successful = false;
+        Long id = getLockId(uuid);
+        if (id != null) {
+            try {
+                getConnection().setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.warn("Unable to set autocommit off", e);
+            }
+            try {
+                deleteSt = getConnection().prepareStatement(DISABLE_DO_LOCK_BY_UUID);
+                deleteSt.setString(1, uuid);
+
+                if (deleteSt.executeUpdate() > 0) {
+                    successful =
+                            daoUtils.insertCrudAction(getUserId(false),
+                                                      Constants.TABLE_CRUD_LOCK_ACTION,
+                                                      "lock_id",
+                                                      id,
+                                                      CRUD_ACTION_TYPES.DELETE,
+                                                      false);
+                }
+
+                if (successful) {
+                    getConnection().commit();
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.error("DB has not been updated -> rollback!");
+                }
+
+            } catch (SQLException e) {
+                LOGGER.error("Query: " + deleteSt, e);
+            } finally {
+                closeConnection();
+            }
+        } else {
+            LOGGER.error("No key has been returned! " + deleteSt);
+        }
+
+        return successful;
+    }
+
+    @Override
+    public Long getLockId(String uuid) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        Long id = null;
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_ID_OF_LOCK);
+            selectSt.setLong(1, getUserId(false));
+            selectSt.setString(2, uuid);
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                id = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return id;
+    }
+
+    @Override
+    public List<ActiveLockItem> getAllActiveLocks(Long userId) throws DatabaseException {
+        ArrayList<ActiveLockItem> items = new ArrayList<ActiveLockItem>();
+        PreparedStatement selSt = null;
+        try {
+            Long editorUserId = userId;
+            if (editorUserId == null) {
+                editorUserId = getUserId(false);
+            }
+
+            selSt = getConnection().prepareStatement(SELECT_ALL_ACTIVE_LOCK_ITEMS);
+            selSt.setLong(1, editorUserId);
+
+            ResultSet rs = selSt.executeQuery();
+
+            while (rs.next()) {
+                items.add(new ActiveLockItem(rs.getString("name"), rs.getString("uuid"), FORMATTER_TO_SECONDS
+                        .format(rs.getTimestamp("timestamp")), rs.getString("description"), rs
+                        .getString("model")));
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage() + ", Query: " + selSt);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return items;
+    }
 }

@@ -92,6 +92,20 @@ public class StoredWorkingCopyGrid
                 return sb.toString();
             }
         });
+
+        ListGridField fileNameField = new ListGridField(Constants.ATTR_NAME, lang.name());
+        ListGridField storedField = new ListGridField(Constants.ATTR_STORED, lang.stored());
+
+        if (!showMore) {
+            storedField.setWidth(120);
+            setFields(fileNameField, storedField);
+        } else {
+            ListGridField modelField = new ListGridField(Constants.ATTR_MODEL, lang.dcType());
+            ListGridField uuidField = new ListGridField(Constants.ATTR_UUID, "PID");
+            ListGridField descField = new ListGridField(Constants.ATTR_DESC, lang.description());
+            setFields(fileNameField, storedField, uuidField, modelField, descField);
+        }
+
         setData();
     }
 
@@ -117,6 +131,7 @@ public class StoredWorkingCopyGrid
                                @Override
                                public void callbackError(final Throwable cause) {
                                    super.callbackError(cause);
+                                   modalWindow.hide();
                                }
 
                            });
@@ -126,20 +141,6 @@ public class StoredWorkingCopyGrid
         final ModalWindow modalWindow = new ModalWindow(this);
         modalWindow.setLoadingIcon("loadingAnimation.gif");
         modalWindow.show(true);
-
-        ListGridField fileNameField = new ListGridField(Constants.ATTR_NAME, lang.name());
-        ListGridField storedField = new ListGridField(Constants.ATTR_STORED, lang.stored());
-
-        if (!showMore) {
-            storedField.setWidth(120);
-            setFields(fileNameField, storedField);
-        } else {
-            ListGridField modelField = new ListGridField(Constants.ATTR_MODEL, lang.dcType());
-            ListGridField uuidField = new ListGridField(Constants.ATTR_UUID, "PID");
-            ListGridField descField = new ListGridField(Constants.ATTR_DESC, lang.description());
-            setFields(fileNameField, storedField, modelField, uuidField, descField);
-
-        }
 
         dispatcher.execute(new GetAllStoredWorkingCopyItemsAction(editorUserId),
                            new DispatchCallback<GetAllStoredWorkingCopyItemsResult>() {
@@ -182,7 +183,7 @@ public class StoredWorkingCopyGrid
         to.setAttribute(Constants.ATTR_NAME, fileName.substring(fileName.lastIndexOf("/") + 1));
         to.setAttribute(Constants.ATTR_FILE_NAME, fileName);
         to.setAttribute(Constants.ATTR_STORED, from.getStoredDate());
-        to.setAttribute(Constants.ATTR_MODEL, from.getModel());
+        to.setAttribute(Constants.ATTR_MODEL, (from.getModel() == null) ? "" : from.getModel().getValue());
         to.setAttribute(Constants.ATTR_UUID, from.getUuid());
         to.setAttribute(Constants.ATTR_DESC, from.getDescription());
         to.setAttribute(Constants.ATTR_ID, from.getId());

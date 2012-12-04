@@ -83,6 +83,7 @@ public class AdminMenuView
             setExtraSpace(20);
 
             menuButton = new IButton(title);
+            if (title.length() > 12) menuButton.setWidth(title.length() * 8);
 
             buttonLayout.addMember(menuButton);
 
@@ -137,7 +138,8 @@ public class AdminMenuView
         mainLayout.addMember(menu);
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.MY_ACOUNT, lang.myAcountMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.HISTORY, lang.historyMenu()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu()));
+        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu()
+                + " " + lang.and() + " " + lang.locks().toLowerCase()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STATISTIC, lang.statisticsMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.USERS, lang.users()));
     }

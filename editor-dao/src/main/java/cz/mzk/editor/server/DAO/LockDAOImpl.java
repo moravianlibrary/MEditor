@@ -80,10 +80,6 @@ public class LockDAOImpl
             + "')) a INNER JOIN (SELECT digital_object_uuid, id FROM " + Constants.TABLE_LOCK
             + "lock WHERE state='true') l ON a.lock_id=l.id)";
 
-    /** The Constant DISABLE_DO_LOCK_BY_UUID. */
-    private static final String DISABLE_DO_LOCK_BY_UUID =
-            "UPDATE lock SET state = 'false' WHERE digital_object_uuid = (?)";
-
     /** The Constant DISABLE_DO_LOCK_BY_ID. */
     private static final String DISABLE_DO_LOCK_BY_ID = "UPDATE lock SET state = 'false' WHERE id = (?)";
 
@@ -105,18 +101,13 @@ public class LockDAOImpl
                     + Constants.TABLE_LOCK
                     + " WHERE digital_object_uuid=(?) AND state='true') l ON a.lock_id=l.id) al GROUP BY al.timestamp ORDER BY al.timestamp DESC LIMIT '1'";
 
-    /** The Constant SELECT_ID_OF_LOCK. */
-    private static final String SELECT_ID_OF_LOCK =
-            "SELECT l.id, MAX(timestamp) FROM ((SELECT lock_id, timestamp FROM "
-                    + Constants.TABLE_CRUD_LOCK_ACTION
-                    + " WHERE (type = 'c' OR type = 'u') AND editor_user_id = (?)) a INNER JOIN (SELECT id FROM "
-                    + Constants.TABLE_LOCK
-                    + "  WHERE digital_object_uuid = (?) AND state = 'true') l ON a.lock_id=l.id) "
-                    + "GROUP BY l.id, timestamp ORDER BY timestamp DESC LIMIT '1'";
-
     /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
+
+    /** The stored and locks dao. */
+    @Inject
+    private StoredAndLocksDAO storedAndLocksDAO;
 
     /**
      * {@inheritDoc}
@@ -144,7 +135,7 @@ public class LockDAOImpl
                 updateSt.setString(2, description != null ? description : "");
                 updateSt.setBoolean(3, true);
             } else {
-                lockId = getLockId(uuid);
+                lockId = storedAndLocksDAO.getLockId(uuid);
                 updateSt = getConnection().prepareStatement(UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION);
                 updateSt.setString(1, description != null ? description : "");
                 updateSt.setLong(2, lockId);
@@ -263,87 +254,6 @@ public class LockDAOImpl
             closeConnection();
         }
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean unlockDigitalObject(String uuid) throws DatabaseException {
-        PreparedStatement deleteSt = null;
-        boolean successful = false;
-        Long id = getLockId(uuid);
-        if (id != null) {
-            try {
-                getConnection().setAutoCommit(false);
-            } catch (SQLException e) {
-                LOGGER.warn("Unable to set autocommit off", e);
-            }
-            try {
-                deleteSt = getConnection().prepareStatement(DISABLE_DO_LOCK_BY_UUID);
-                deleteSt.setString(1, uuid);
-
-                if (deleteSt.executeUpdate() > 0) {
-                    successful =
-                            daoUtils.insertCrudAction(getUserId(false),
-                                                      Constants.TABLE_CRUD_LOCK_ACTION,
-                                                      "lock_id",
-                                                      id,
-                                                      CRUD_ACTION_TYPES.DELETE,
-                                                      false);
-                }
-
-                if (successful) {
-                    getConnection().commit();
-                    LOGGER.debug("DB has been updated by commit.");
-                } else {
-                    getConnection().rollback();
-                    LOGGER.error("DB has not been updated -> rollback!");
-                }
-
-            } catch (SQLException e) {
-                LOGGER.error("Query: " + deleteSt, e);
-            } finally {
-                closeConnection();
-            }
-        } else {
-            LOGGER.error("No key has been returned! " + deleteSt);
-        }
-
-        return successful;
-    }
-
-    /**
-     * Gets the lock id.
-     * 
-     * @param uuid
-     *        the uuid
-     * @return the lock id
-     * @throws DatabaseException
-     *         the database exception
-     */
-    private Long getLockId(String uuid) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        Long id = null;
-        try {
-            selectSt = getConnection().prepareStatement(SELECT_ID_OF_LOCK);
-            selectSt.setLong(1, getUserId(false));
-            selectSt.setString(2, uuid);
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select statement", e);
-        }
-
-        try {
-            ResultSet rs = selectSt.executeQuery();
-            while (rs.next()) {
-                id = rs.getLong("id");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-        return id;
     }
 
     /**

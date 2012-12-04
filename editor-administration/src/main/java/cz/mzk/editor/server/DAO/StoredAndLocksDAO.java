@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.rpc.ActiveLockItem;
 import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 
@@ -91,4 +92,36 @@ public interface StoredAndLocksDAO {
      */
     boolean removeSavedStructure(long id) throws DatabaseException;
 
+    /**
+     * Unlock digital object.
+     * 
+     * @param uuid
+     *        the uuid
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean unlockDigitalObject(String uuid) throws DatabaseException;
+
+    /**
+     * Gets the lock id.
+     * 
+     * @param uuid
+     *        the uuid
+     * @return the lock id
+     * @throws DatabaseException
+     *         the database exception
+     */
+    Long getLockId(String uuid) throws DatabaseException;
+
+    /**
+     * Gets the all active locks.
+     * 
+     * @param userId
+     *        the user id
+     * @return the all active locks
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<ActiveLockItem> getAllActiveLocks(Long userId) throws DatabaseException;
 }
