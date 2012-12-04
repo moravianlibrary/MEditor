@@ -145,9 +145,15 @@ public class UserDetailLayout
         public UniversalSectionGrid(String title, Constants.USER_IDENTITY_TYPES identType, boolean isRole) {
             super();
 
-            setWidth(290);
-            setHeight(100);
-            setMargin(5);
+            if (!isMyAcount) {
+                setWidth(290);
+                setHeight(100);
+                setMargin(5);
+            } else {
+                setWidth(330);
+                setHeight(200);
+                setMargin(10);
+            }
 
             grid = new UniversalListGrid();
             grid.setCanDragSelectText(true);
@@ -170,7 +176,7 @@ public class UserDetailLayout
             ImgButton add = getAddButton(identType, isRole);
             ImgButton remove = getRemoveButton(identType, isRole);
 
-            sectionStackSection.setControls(add, remove);
+            if (!isMyAcount) sectionStackSection.setControls(add, remove);
             addSection(sectionStackSection);
         }
 
@@ -395,6 +401,8 @@ public class UserDetailLayout
     /** The grids layout. */
     private VLayout gridsLayout;
 
+    private final boolean isMyAcount;
+
     /**
      * Instantiates a new user detail layout.
      * 
@@ -423,43 +431,57 @@ public class UserDetailLayout
         this.eventBus = eventBus;
         this.userId = record.getAttributeAsString(Constants.ATTR_USER_ID);
 
+        isMyAcount = (userDataSource == null);
+
         setPadding(5);
 
-        final DynamicForm nameForm = new DynamicForm();
-        nameForm.setNumCols(4);
-        nameForm.setDataSource(userDataSource);
-        nameForm.addDrawHandler(new DrawHandler() {
+        if (userDataSource != null) {
 
-            @Override
-            public void onDraw(DrawEvent event) {
-                nameForm.editRecord(record);
-            }
-        });
+            final DynamicForm nameForm = new DynamicForm();
+            nameForm.setNumCols(4);
+            nameForm.setDataSource(userDataSource);
+            nameForm.addDrawHandler(new DrawHandler() {
 
-        final IButton saveButton = new IButton("Save");
-        saveButton.setDisabled(true);
-        saveButton.setLayoutAlign(Alignment.RIGHT);
-        saveButton.addClickHandler(new ClickHandler() {
+                @Override
+                public void onDraw(DrawEvent event) {
+                    nameForm.editRecord(record);
+                }
+            });
 
-            @Override
-            public void onClick(ClickEvent event) {
-                nameForm.saveData();
-            }
-        });
+            final IButton saveButton = new IButton("Save");
+            saveButton.setDisabled(true);
+            saveButton.setLayoutAlign(Alignment.RIGHT);
+            saveButton.addClickHandler(new ClickHandler() {
 
-        nameForm.addItemChangedHandler(new ItemChangedHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    nameForm.saveData();
+                }
+            });
 
-            @Override
-            public void onItemChanged(ItemChangedEvent event) {
-                saveButton.setDisabled(false);
-            }
-        });
+            nameForm.addItemChangedHandler(new ItemChangedHandler() {
 
-        addMember(nameForm);
+                @Override
+                public void onItemChanged(ItemChangedEvent event) {
+                    saveButton.setDisabled(false);
+                }
+            });
 
-        setIdentitiesAndRoles(grid, record);
+            addMember(nameForm);
 
-        addMember(saveButton);
+            setIdentitiesAndRoles(grid, record);
+
+            addMember(saveButton);
+        } else {
+            HTMLFlow titleFlow =
+                    new HTMLFlow(HtmlCode.title(record.getAttributeAsString(Constants.ATTR_NAME), 1));
+            titleFlow.setExtraSpace(70);
+            titleFlow.setMargin(10);
+            addMember(titleFlow);
+
+            setIdentitiesAndRoles(grid, record);
+        }
+
     }
 
     /**
@@ -478,10 +500,16 @@ public class UserDetailLayout
             protected void afterGetAction(GetUserRolesRightsIdentitiesResult result) {
                 HTMLFlow identities = new HTMLFlow(HtmlCode.bold(lang.identities()));
                 identities.setHeight(15);
+                if (isMyAcount) {
+                    identities.setLayoutAlign(Alignment.CENTER);
+                    identities.setWidth(1020);
+                }
+
                 addMember(identities);
                 addMember(getIdentitiesLayout(result.getIdentities()));
 
                 HLayout hLayout = new HLayout(2);
+                if (isMyAcount) hLayout.setAlign(Alignment.CENTER);
 
                 hLayout.addMember(getRolesLayout(result.getRoles()));
 
@@ -493,11 +521,11 @@ public class UserDetailLayout
 
                     @Override
                     public void onClick(ClickEvent event) {
-                        grid.collapseRecord(record);
+                        if (grid != null) grid.collapseRecord(record);
                     }
                 });
 
-                hLayout.addMember(cancelButton);
+                if (!isMyAcount) hLayout.addMember(cancelButton);
                 addMember(hLayout);
             }
         };
@@ -511,7 +539,8 @@ public class UserDetailLayout
      * @return the roles layout
      */
     private VLayout getRolesLayout(List<RoleItem> roles) {
-        VLayout hLayout = new VLayout();
+        VLayout vLayout = new VLayout();
+        if (isMyAcount) vLayout.setWidth(450);
 
         HTMLFlow roleFlow = new HTMLFlow(HtmlCode.bold(lang.roles()));
         roleFlow.setHeight(15);
@@ -524,10 +553,10 @@ public class UserDetailLayout
 
         userRoleGrid.setData(UserClientUtils.copyRoles(roles));
 
-        hLayout.addMember(roleFlow);
-        hLayout.addMember(userRoleGrid);
+        vLayout.addMember(roleFlow);
+        vLayout.addMember(userRoleGrid);
 
-        return hLayout;
+        return vLayout;
 
     }
 
@@ -539,7 +568,8 @@ public class UserDetailLayout
      * @return the rights layout
      */
     private VLayout getRightsLayout(List<Constants.EDITOR_RIGHTS> rights) {
-        VLayout hLayout = new VLayout();
+        VLayout vLayout = new VLayout();
+        if (isMyAcount) vLayout.setWidth(350);
 
         HTMLFlow right = new HTMLFlow(HtmlCode.bold(lang.otherRights()));
         right.setHeight(15);
@@ -552,10 +582,10 @@ public class UserDetailLayout
 
         userRightsGrid.setData(UserClientUtils.copyRights(rights));
 
-        hLayout.addMember(right);
-        hLayout.addMember(userRightsGrid);
+        vLayout.addMember(right);
+        vLayout.addMember(userRightsGrid);
 
-        return hLayout;
+        return vLayout;
 
     }
 
@@ -568,6 +598,10 @@ public class UserDetailLayout
      */
     private HLayout getIdentitiesLayout(List<UserIdentity> identities) {
         HLayout hLayout = new HLayout();
+        if (isMyAcount) {
+            hLayout.setAlign(Alignment.CENTER);
+            hLayout.setExtraSpace(30);
+        }
 
         if (identities != null && identities.size() > 0) {
             for (UserIdentity userIdentity : identities) {
@@ -587,5 +621,4 @@ public class UserDetailLayout
         }
         return hLayout;
     }
-
 }
