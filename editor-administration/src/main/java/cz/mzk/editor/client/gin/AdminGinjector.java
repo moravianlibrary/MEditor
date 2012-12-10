@@ -41,6 +41,7 @@ import cz.mzk.editor.client.presenter.AdminMenuPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.presenter.MyAcountPresenter;
+import cz.mzk.editor.client.presenter.StatisticsPresenter;
 import cz.mzk.editor.client.presenter.StoredAndLocksPresenter;
 import cz.mzk.editor.client.presenter.UserPresenter;
 
@@ -78,6 +79,8 @@ public interface AdminGinjector
     AsyncProvider<AdminMenuPresenter> getAdminMenuPresenter();
 
     AsyncProvider<HistoryPresenter> getHistoryPresenter();
+
+    AsyncProvider<StatisticsPresenter> getStatisticsPresenter();
 
     AsyncProvider<StoredAndLocksPresenter> getStoredAndLocksPresenter();
 
