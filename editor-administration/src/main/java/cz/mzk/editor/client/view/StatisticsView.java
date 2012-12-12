@@ -24,33 +24,55 @@
 
 package cz.mzk.editor.client.view;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.PieChart;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
-import com.smartgwt.client.data.Record;
-import com.smartgwt.client.util.JSOHelper;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.SelectionAppearance;
+import com.smartgwt.client.types.SelectionStyle;
+import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.DateItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.grid.CellFormatter;
+import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
+import com.smartgwt.client.widgets.grid.events.SelectionEvent;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.config.EditorClientConfiguration;
+import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.presenter.StatisticsPresenter;
 import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
-import cz.mzk.editor.client.view.other.UserSelect;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.HtmlCode;
+import cz.mzk.editor.client.view.other.ChartsUtils;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.NamedGraphModel;
+import cz.mzk.editor.shared.event.ConfigReceivedEvent;
+import cz.mzk.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
+import cz.mzk.editor.shared.rpc.UserInfoItem;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
 /**
  * @author Matous Jobanek
@@ -64,187 +86,324 @@ public class StatisticsView
     private SelectItem users;
     private final LangConstants lang;
     private final DispatchAsync dispatcher;
+    private final EventBus eventBus;
+    private final EditorClientConfiguration config;
+    private static String html = "<div id=\"%s\" style=\"position: absolute; z-index: 1000000\"> </div>";
 
-    private static String html =
-            "<div id=\"chart_nested_div\" style=\"position: absolute; z-index: 1000000\"> </div>";
-    private HTMLFlow htmlFlow;
+    public static final String PIE_CHART_NESTED_DIV_ID = "pie_chart_nested_div_id";
+    public static final String LINE_CHART_NESTED_DIV_ID = "line_chart_nested_div_id";
+    private final HTMLFlow htmlFlow;
 
-    class SalesRecord
-            extends Record {
+    public static final String years = "years";
+    public static final String months = "months";
+    public static final String weeks = "weeks";
+    public static final String days = "days";
 
-        SalesRecord(String region, String product, Integer sales) {
-            setAttribute("region", region);
-            setAttribute("product", product);
-            setAttribute("sales", sales);
-        }
-    };
+    private DateItem fromDate;
+    private DateItem toDate;
+    private ListGrid selectedUsersGrid;
+    private IButton showButton;
 
     @Inject
-    public StatisticsView(final EventBus eventBus, final LangConstants lang, DispatchAsync dispatcher) {
+    public StatisticsView(final EventBus eventBus,
+                          final LangConstants lang,
+                          DispatchAsync dispatcher,
+                          final EditorClientConfiguration config) {
         this.mainLayout = new VStack();
+        this.lang = lang;
+        this.dispatcher = dispatcher;
+        this.config = config;
+        this.eventBus = eventBus;
 
-        mainLayout.setWidth("90%");
-        htmlFlow = new HTMLFlow(html);
+        mainLayout.setWidth100();
+
+        setSelectionLayout();
+
+        htmlFlow = new HTMLFlow(html.replace("%s", PIE_CHART_NESTED_DIV_ID));
         htmlFlow.setWidth(500);
         htmlFlow.setHeight(300);
         mainLayout.addMember(htmlFlow);
-        System.err.println(htmlFlow.getInnerHTML());
-        System.err.println(htmlFlow.getID());
-        this.lang = lang;
-        this.dispatcher = dispatcher;
-        setUserSelect();
-
-        final HashMap<String, Integer> values = new HashMap<String, Integer>();
-        values.put("pesta", 10);
-        values.put("jiranova", 20);
-        values.put("viola", 80);
-        values.put("sapakova", 70);
 
         final String[] names = {"pesta", "jiranova", "viola", "sapakova"};
         final int[] pages = {10, 20, 80, 70};
 
-        final Runnable runnable = new Runnable() {
+        ChartsUtils.showChart(names, pages, htmlFlow, PIE_CHART_NESTED_DIV_ID, mainLayout, "Work");
 
-            @Override
-            public void run() {
-                // Create a pie chart visualization.
-                //                PieChart pie =
-                //                        new PieChart(createTable("Statistics test", values), createOptions("Statistics test"));
-                //
-                //                pie.addSelectHandler(createSelectHandler(pie));
-                //
-                //                UniversalWindow window = new UniversalWindow(300, 300, "", eventBus, 20);
-                //                window.addItem(pie);
-                //                window.show();
-                //                window.centerInPage();
-                //
-                mainLayout.removeMember(htmlFlow);
-                htmlFlow = new HTMLFlow(html);
-                htmlFlow.setWidth(500);
-                htmlFlow.setHeight(300);
-                mainLayout.addMember(htmlFlow);
-                drawChart(JSOHelper.convertToJavaScriptArray(names),
-                          JSOHelper.convertToJavaScriptArray(pages));
-
-            }
-        };
-
-        VisualizationUtils.loadVisualizationApi(runnable, PieChart.PACKAGE);
-        Window.addResizeHandler(new ResizeHandler() {
-
-            @Override
-            public void onResize(ResizeEvent event) {
-                VisualizationUtils.loadVisualizationApi(runnable, PieChart.PACKAGE);
-            }
-        });
     }
 
-    private native void drawChart(JavaScriptObject names, JavaScriptObject pages) /*-{
+    private void setSelectionLayout() {
 
-		// Create our data table.
-		var dataTable = new $wnd.google.visualization.DataTable();
+        HLayout selLayout = new HLayout();
+        selLayout.setWidth100();
+        selLayout.setHeight("25%");
+        selLayout.setShowEdges(true);
+        selLayout.setEdgeSize(3);
+        selLayout.setEdgeOpacity(60);
+        selLayout.setMargin(10);
+        selLayout.setPadding(5);
 
-		dataTable.addColumn('string', 'Task');
-		dataTable.addColumn('number', 'Hours per Day');
-		dataTable.addRows(5);
+        selLayout.addMember(setUserSelect());
 
-		for ( var i = 0; i < names.length; i++) {
-			dataTable.setValue(i, 0, names[i]);
-			dataTable.setValue(i, 1, pages[i]);
-		}
+        VLayout selectionAndCharts = new VLayout();
+        selectionAndCharts.addMember(getSelObjDate());
+        selectionAndCharts.addMember(getChartsChooser());
+        selectionAndCharts.setShowEdges(true);
+        selectionAndCharts.setEdgeSize(2);
+        selectionAndCharts.setEdgeOpacity(60);
+        selectionAndCharts.setPadding(5);
+        selectionAndCharts.setWidth(450);
+        selectionAndCharts.setExtraSpace(10);
+        selectionAndCharts.setLayoutAlign(Alignment.LEFT);
 
-		var chart = new $wnd.google.visualization.PieChart($doc
-				.getElementById('chart_nested_div'));
-		chart.draw(dataTable, {
-			width : 400,
-			height : 240
-		});
+        selLayout.addMember(selectionAndCharts);
 
-    }-*/;
+        showButton = new IButton(lang.show());
+        showButton.setLayoutAlign(VerticalAlignment.BOTTOM);
+        showButton.setDisabled(true);
 
-    private void setUserSelect() {
-        users = new UserSelect(lang.users(), dispatcher);
-        users.addChangedHandler(new ChangedHandler() {
+        selLayout.addMember(showButton);
+
+        mainLayout.addMember(selLayout);
+    }
+
+    private HLayout getChartsChooser() {
+
+        HLayout chartsChooserLayout = new HLayout();
+        chartsChooserLayout.setWidth(200);
+
+        final CheckboxItem showCharts = new CheckboxItem("showCharts", HtmlCode.bold(lang.showCharts()));
+        showCharts.setDefaultValue(true);
+
+        final SelectItem segmentation =
+                new SelectItem("segmentation", HtmlCode.bold(lang.withSegmentation()));
+
+        LinkedHashMap<String, String> segValues = new LinkedHashMap<String, String>();
+        segValues.put(years, lang.years());
+        segValues.put(months, lang.months());
+        segValues.put(weeks, lang.weeks());
+        segValues.put(days, lang.days());
+
+        segmentation.setValueMap(segValues);
+        segmentation.setDefaultValue(lang.days());
+        segmentation.setWrapTitle(false);
+        segmentation.setTitleStyle("");
+
+        DynamicForm showChartsForm = new DynamicForm();
+        showChartsForm.setItems(showCharts);
+        showChartsForm.setExtraSpace(30);
+
+        showCharts.addChangedHandler(new ChangedHandler() {
 
             @Override
             public void onChanged(ChangedEvent event) {
+                if (showCharts.getValueAsBoolean()) {
+                    segmentation.show();
+                } else {
+                    segmentation.hide();
+                }
+
             }
         });
 
-        DynamicForm usersForm = new DynamicForm();
-        usersForm.setItems(users);
+        DynamicForm segChartsForm = new DynamicForm();
+        segChartsForm.setItems(segmentation);
 
-        mainLayout.addMember(usersForm);
+        chartsChooserLayout.addMember(showChartsForm);
+        chartsChooserLayout.addMember(segChartsForm);
+
+        return chartsChooserLayout;
     }
 
-    //    private Options createOptions(String title) {
-    //        Options options = Options.create();
-    //        options.setWidth(400);
-    //        options.setHeight(240);
-    //        options.set3D(true);
-    //        options.setTitle(title);
-    //        return options;
-    //    }
-    //
-    //    private SelectHandler createSelectHandler(final PieChart chart) {
-    //        return new SelectHandler() {
-    //
-    //            @Override
-    //            public void onSelect(SelectEvent event) {
-    //                String message = "";
-    //
-    //                // May be multiple selections.
-    //                JsArray<Selection> selections = chart.getSelections();
-    //
-    //                for (int i = 0; i < selections.length(); i++) {
-    //                    // add a new line for each selection
-    //                    message += i == 0 ? "" : "\n";
-    //
-    //                    Selection selection = selections.get(i);
-    //
-    //                    if (selection.isCell()) {
-    //                        // isCell() returns true if a cell has been selected.
-    //
-    //                        // getRow() returns the row number of the selected cell.
-    //                        int row = selection.getRow();
-    //                        // getColumn() returns the column number of the selected cell.
-    //                        int column = selection.getColumn();
-    //                        message += "cell " + row + ":" + column + " selected";
-    //                    } else if (selection.isRow()) {
-    //                        // isRow() returns true if an entire row has been selected.
-    //
-    //                        // getRow() returns the row number of the selected row.
-    //                        int row = selection.getRow();
-    //                        message += "row " + row + " selected";
-    //                    } else {
-    //                        // unreachable
-    //                        message += "Pie chart selections should be either row selections or cell selections.";
-    //                        message += "  Other visualizations support column selections as well.";
-    //                    }
-    //                }
-    //
-    //                SC.warn(message);
-    //            }
-    //        };
-    //    }
-    //
-    //    private AbstractDataTable createTable(String title, Map<String, Integer> values) {
-    //        DataTable data = DataTable.create();
-    //        data.addColumn(ColumnType.STRING, "Task");
-    //        data.addColumn(ColumnType.NUMBER, "Hours per Day");
-    //        data.addRows(values.size());
-    //        int index = 0;
-    //        if (values != null) {
-    //            for (String valueType : values.keySet()) {
-    //                data.setValue(index, 0, valueType);
-    //                data.setValue(index++, 1, values.get(valueType));
-    //            }
-    //        }
-    //
-    //        return data;
-    //    }
-    //
-    //    
+    private void checkShowButton() {
+        if (fromDate.getValueAsDate().getTime() <= toDate.getValueAsDate().getTime()
+                && selectedUsersGrid.getRecords().length > 0) {
+            showButton.setDisabled(false);
+        } else {
+            showButton.setDisabled(true);
+        }
+    }
+
+    private HLayout getSelObjDate() {
+
+        HLayout selObjDateLayout = new HLayout();
+        selObjDateLayout.setWidth(400);
+        selObjDateLayout.setExtraSpace(10);
+
+        VLayout selObjLayout = new VLayout();
+        DynamicForm objectAndTime = new DynamicForm();
+        final SelectItem selObject = new SelectItem("selectObject");
+        selObject.setShowTitle(false);
+        selObject.setWrapTitle(false);
+        objectAndTime.setItems(selObject);
+
+        HTMLFlow selObjFlow = new HTMLFlow(HtmlCode.title(lang.showInsertedCount(), 3));
+        selObjFlow.setWidth(250);
+        selObjLayout.addMember(selObjFlow);
+        selObjLayout.addMember(objectAndTime);
+
+        VLayout selIntLayout = new VLayout();
+        selIntLayout.setWidth(100);
+        DynamicForm dates = new DynamicForm();
+        fromDate = new DateItem("from", HtmlCode.bold(lang.from()));
+        toDate = new DateItem("to", HtmlCode.bold(lang.to()));
+
+        fromDate.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                checkShowButton();
+            }
+        });
+        toDate.addChangedHandler(new ChangedHandler() {
+
+            @Override
+            public void onChanged(ChangedEvent event) {
+                checkShowButton();
+            }
+        });
+
+        dates.setItems(fromDate, toDate);
+        dates.setWidth(150);
+
+        HTMLFlow intevalFlow = new HTMLFlow(HtmlCode.title(lang.inInterval(), 3));
+        selIntLayout.addMember(intevalFlow);
+        selIntLayout.addMember(dates);
+
+        eventBus.addHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
+
+            @Override
+            public void onConfigReceived(ConfigReceivedEvent event) {
+                String[] documentTypes;
+                if (event.isStatusOK()) {
+                    documentTypes = config.getDocumentTypes();
+                } else {
+                    documentTypes = EditorClientConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
+                }
+
+                LinkedHashMap<String, String> models = new LinkedHashMap<String, String>();
+                boolean isPage = false;
+
+                for (String docType : documentTypes) {
+
+                    try {
+                        ArrayList<DigitalObjectModel> modelList = new ArrayList<DigitalObjectModel>();
+                        modelList.add(DigitalObjectModel.parseString(docType));
+                        LabelAndModelConverter.setLabelAndModelConverter(lang);
+
+                        while (!modelList.isEmpty()) {
+                            DigitalObjectModel lastObj = modelList.remove(modelList.size() - 1);
+                            if (!isPage && lastObj == DigitalObjectModel.PAGE) isPage = true;
+                            String labelModel =
+                                    LabelAndModelConverter.getLabelFromModel().get(lastObj.getValue());
+
+                            if (!models.containsKey(labelModel)) {
+                                models.put(lastObj.getValue(), labelModel);
+                            }
+
+                            List<DigitalObjectModel> children = NamedGraphModel.getChildren(lastObj);
+                            if (children != null) {
+                                modelList.addAll(children);
+                            }
+
+                        }
+
+                    } catch (RuntimeException e) {
+                        SC.warn(lang.operationFailed() + ": " + e);
+                    }
+                }
+                selObject.setValueMap(models);
+                if (isPage)
+                    selObject.setValue(LabelAndModelConverter.getLabelFromModel().get(DigitalObjectModel.PAGE
+                            .getValue()));
+            }
+        });
+
+        selObjDateLayout.addMember(selObjLayout);
+        selObjDateLayout.addMember(selIntLayout);
+        return selObjDateLayout;
+    }
+
+    private HLayout setUserSelect() {
+        HLayout userLayout = new HLayout();
+        userLayout.setExtraSpace(10);
+
+        selectedUsersGrid = new ListGrid();
+        selectedUsersGrid.setWidth(200);
+        selectedUsersGrid.setShowAllRecords(true);
+        selectedUsersGrid.setCanReorderRecords(true);
+        ListGridField selectedUsersField = new ListGridField(Constants.ATTR_NAME, lang.selectedUsers());
+        selectedUsersField.setCellFormatter(new CellFormatter() {
+
+            @Override
+            public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+                return record.getAttributeAsString(Constants.ATTR_NAME) + " "
+                        + record.getAttribute(Constants.ATTR_SURNAME);
+            }
+        });
+        selectedUsersGrid.setFields(selectedUsersField);
+
+        final ListGrid usersGrid = new ListGrid();
+        usersGrid.setWidth(350);
+        usersGrid.setShowAllRecords(true);
+        usersGrid.setSelectionType(SelectionStyle.SIMPLE);
+        usersGrid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
+        ListGridField nameField = new ListGridField(Constants.ATTR_NAME, lang.name());
+        ListGridField surnameField = new ListGridField(Constants.ATTR_SURNAME, lang.surname());
+        usersGrid.setFields(nameField, surnameField);
+        usersGrid.setSortField(Constants.ATTR_SURNAME);
+        usersGrid.sort();
+
+        GetUsersInfoAction getUsersAction = new GetUsersInfoAction();
+        DispatchCallback<GetUsersInfoResult> usersCallback = new DispatchCallback<GetUsersInfoResult>() {
+
+            @Override
+            public void callback(GetUsersInfoResult result) {
+                ListGridRecord[] allUsers = new ListGridRecord[result.getItems().size()];
+
+                int index = 0;
+                for (UserInfoItem userItem : result.getItems()) {
+                    ListGridRecord user = new ListGridRecord();
+                    user.setAttribute(Constants.ATTR_ID, userItem.getId());
+                    user.setAttribute(Constants.ATTR_NAME, userItem.getName());
+                    user.setAttribute(Constants.ATTR_SURNAME, userItem.getSurname());
+                    allUsers[index++] = user;
+                }
+                usersGrid.setData(allUsers);
+            }
+        };
+        dispatcher.execute(getUsersAction, usersCallback);
+
+        VLayout selUserLayout = new VLayout();
+
+        final DynamicForm showChartsForAllForm = new DynamicForm();
+        CheckboxItem showChartsForAll =
+                new CheckboxItem("showCharts", HtmlCode.bold(lang.showUnifyingCharts()));
+        showChartsForAll.setDefaultValue(true);
+        showChartsForAllForm.setItems(showChartsForAll);
+        showChartsForAllForm.setDisabled(true);
+        showChartsForAllForm.setWidth(100);
+
+        usersGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+
+            @Override
+            public void onSelectionChanged(SelectionEvent event) {
+                ListGridRecord[] selectedRecords = usersGrid.getSelectedRecords();
+                selectedUsersGrid.setData(selectedRecords);
+                if (selectedRecords != null && selectedRecords.length > 1)
+                    showChartsForAllForm.setDisabled(false);
+                checkShowButton();
+            }
+        });
+
+        userLayout.addMember(usersGrid);
+
+        selUserLayout.addMember(selectedUsersGrid);
+        selUserLayout.addMember(showChartsForAllForm);
+
+        userLayout.addMember(selUserLayout);
+        userLayout.setWidth(550);
+        return userLayout;
+    }
 
     /**
      * {@inheritDoc}

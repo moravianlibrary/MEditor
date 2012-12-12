@@ -38,8 +38,8 @@ import com.smartgwt.client.widgets.form.fields.DateTimeItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.util.Constants.DATE_RIGHT_FORMATS;
-import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.DigitalObjectModel.TopLevelObjectModel;
 

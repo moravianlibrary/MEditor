@@ -109,6 +109,7 @@ public class GetClientConfigHandler
                    configuration.getOaiRecordIdentifierLength());
         result.put(EditorClientConfiguration.Constants.HOSTNAME, configuration.getHostname());
         result.put(EditorClientConfiguration.Constants.VSUP, configuration.getVsup());
+        result.put(EditorClientConfiguration.Constants.DOCUMENT_TYPES, configuration.getDocumentTypes());
         return new GetClientConfigResult(result);
     }
 

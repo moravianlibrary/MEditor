@@ -22,7 +22,7 @@
  * 
  */
 
-package cz.mzk.editor.client.view.other;
+package cz.mzk.editor.client.other;
 
 import java.util.HashMap;
 import java.util.Map;

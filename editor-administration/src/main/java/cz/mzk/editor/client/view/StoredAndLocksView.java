@@ -322,7 +322,7 @@ public class StoredAndLocksView
         storedStructures.setAutoFetchData(false);
         storedStructures.setWidth100();
         storedStructures.setShowSortArrow(SortArrow.CORNER);
-        storedStructures.setShowAllRecords(true);
+        storedStructures.setShowAllRecords(false);
         storedStructures.setCanHover(true);
         storedStructures.setHoverOpacity(75);
         storedStructures.setHoverStyle("interactImageHover");
