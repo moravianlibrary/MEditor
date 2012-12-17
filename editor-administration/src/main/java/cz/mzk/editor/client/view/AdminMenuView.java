@@ -39,6 +39,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.NameTokens.ADMIN_MENU_BUTTONS;
 import cz.mzk.editor.client.presenter.AdminMenuPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.AdminMenuUiHandlers;
@@ -136,9 +137,11 @@ public class AdminMenuView
         menu.setExtraSpace(30);
 
         mainLayout.addMember(menu);
+        mainLayout.addMember(new MenuButtonLayout(NameTokens.ADMIN_HOME, lang.home()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.MY_ACOUNT, lang.myAcountMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.HISTORY, lang.historyMenu()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu()));
+        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu()
+                + " " + (lang.and() + " " + lang.locks()).toLowerCase()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STATISTICS, lang.statisticsMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.USERS, lang.users()));
     }

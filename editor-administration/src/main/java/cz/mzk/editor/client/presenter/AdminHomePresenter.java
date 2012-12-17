@@ -45,6 +45,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
+import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -143,6 +144,7 @@ public class AdminHomePresenter
     protected void onReset() {
         super.onReset();
         RevealContentEvent.fire(this, AdminPresenter.TYPE_ADMIN_LEFT_CONTENT, leftPresenter);
+        getEventBus().fireEvent(new MenuButtonClickedEvent(NameTokens.ADMIN_HOME, false));
     }
 
     /**
