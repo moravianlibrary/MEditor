@@ -47,10 +47,10 @@ import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.smartgwt.client.widgets.HTMLFlow;
 
-import cz.mzk.editor.client.Administration;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.event.EscKeyPressedEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
@@ -289,7 +289,7 @@ public class AdminPresenter
             @Override
             public void callback(LogoutResult result) {
                 unknown = true;
-                Administration.redirect(result.getUrl());
+                ClientUtils.redirect(result.getUrl());
             }
         });
     }

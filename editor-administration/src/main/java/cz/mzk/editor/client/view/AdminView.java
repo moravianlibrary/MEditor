@@ -44,11 +44,11 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-import cz.mzk.editor.client.Administration;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.LangSelectionHTMLFlow;
 import cz.mzk.editor.client.view.window.UniversalWindow;
@@ -133,7 +133,7 @@ public class AdminView
             @Override
             protected void afterChangeAction(boolean isEn) {
                 AdminView.isEn = isEn;
-                Administration.langRefresh(isEn ? "cs_CZ" : "en_US");
+                ClientUtils.langRefresh(isEn ? "cs_CZ" : "en_US");
             }
         };
         HTMLFlow anchor = new HTMLFlow(lang.logout());

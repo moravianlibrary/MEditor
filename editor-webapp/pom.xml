@@ -185,7 +185,7 @@
 							<execution>
 								<configuration>
 									<modules>
-										<module>cz.mzk.editor.Administration</module>
+										<!-- <module>cz.mzk.editor.Administration</module> -->
 										<module>cz.mzk.editor.MEditor</module>
 										<module>cz.mzk.editor.RequestForAdding</module>
 									</modules>
@@ -201,7 +201,7 @@
 									<goal>debug</goal>
 								</goals>
 								<configuration>
-									<module>cz.mzk.editor.Administration</module>
+									<!-- <module>cz.mzk.editor.Administration</module> -->
 									<module>cz.mzk.editor.MEditor</module>
 									<module>cz.mzk.editor.RequestForAdding</module>
 								</configuration>
@@ -292,7 +292,7 @@
 							<execution>
 								<configuration>
 									<modules>
-										<module>cz.mzk.editor.Administration</module>
+										<!-- <module>cz.mzk.editor.Administration</module> -->
 									</modules>
 								</configuration>
 								<id>gwt-goals</id>
@@ -306,7 +306,7 @@
 									<goal>debug</goal>
 								</goals>
 								<configuration>
-									<module>cz.mzk.editor.Administration</module>
+									<!-- <module>cz.mzk.editor.Administration</module> -->
 								</configuration>
 							</execution>
 						</executions>
@@ -415,7 +415,7 @@
 							<execution>
 								<configuration>
 									<modules>
-										<module>cz.mzk.editor.AdministrationDev</module>
+										<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
 									</modules>
 								</configuration>
 								<id>gwt-goals</id>
@@ -429,7 +429,7 @@
 									<goal>debug</goal>
 								</goals>
 								<configuration>
-									<module>cz.mzk.editor.AdministrationDev</module>
+									<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
 								</configuration>
 							</execution>
 						</executions>
@@ -462,7 +462,7 @@
 							<execution>
 								<configuration>
 									<modules>
-										<module>cz.mzk.editor.AdministrationDev</module>
+										<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
 										<module>cz.mzk.editor.MEditorDev</module>
 										<module>cz.mzk.editor.RequestForAddingDev</module>
 									</modules>
@@ -478,7 +478,7 @@
 									<goal>debug</goal>
 								</goals>
 								<configuration>
-									<module>cz.mzk.editor.AdministrationDev</module>
+									<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
 									<module>cz.mzk.editor.MEditorDev</module>
 									<module>cz.mzk.editor.RequestForAddingDev</module>
 								</configuration>

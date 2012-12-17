@@ -47,10 +47,10 @@ import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.MEditor;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.IngestInfoWindow;
@@ -322,7 +322,7 @@ public class AppPresenter
             @Override
             public void callback(LogoutResult result) {
                 unknown = true;
-                MEditor.redirect(result.getUrl());
+                ClientUtils.redirect(result.getUrl());
             }
         });
     }

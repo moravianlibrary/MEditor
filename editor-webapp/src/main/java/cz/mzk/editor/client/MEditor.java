@@ -29,10 +29,15 @@ package cz.mzk.editor.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.DelayedBindRegistry;
+import com.smartgwt.client.util.SC;
 
 import cz.mzk.editor.client.gin.EditorGinjector;
+import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
+import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,52 +58,31 @@ public class MEditor
     public void onModuleLoad() {
         DelayedBindRegistry.bind(injector);
         injector.getPlaceManager().revealCurrentPlace();
-        //        initializeDatabaseIfNeeded(injector.getDispatcher());
+        initializeDatabaseIfNeeded(injector.getDispatcher());
     }
 
-    /**
-     * Redirect.
-     * 
-     * @param url
-     *        the url
-     */
-    public static native void redirect(String url)/*-{
-		$wnd.location = url;
-    }-*/;
+    public static void initializeDatabaseIfNeeded(DispatchAsync dispatcher) {
+        dispatcher.execute(new CheckAndUpdateDBSchemaAction(),
+                           new AsyncCallback<CheckAndUpdateDBSchemaResult>() {
 
-    public static native void langRefresh(String locale)/*-{
-		var pos = $wnd.location.search.indexOf('&locale=');
-		var params = $wnd.location.search;
-		if (pos == -1) {
-			$wnd.location.search = params + '&locale=' + locale;
-		} else {
-			$wnd.location.search = params.substring(0, pos) + '&locale='
-					+ locale + params.substring(pos + 13, params.length);
-		}
-    }-*/;
+                               @Override
+                               public void onSuccess(CheckAndUpdateDBSchemaResult result) {
+                                   if (result.isSuccess()) {
+                                       SC.say("DB has been successfully updated to version "
+                                               + result.getVersion());
+                                   }
+                                   // remove progressbar
+                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
+                                           .getElement());
+                               }
 
-    //    public static void initializeDatabaseIfNeeded(DispatchAsync dispatcher) {
-    //        dispatcher.execute(new CheckAndUpdateDBSchemaAction(),
-    //                           new AsyncCallback<CheckAndUpdateDBSchemaResult>() {
-    //
-    //                               @Override
-    //                               public void onSuccess(CheckAndUpdateDBSchemaResult result) {
-    //                                   if (result.isSuccess()) {
-    //                                       SC.say("DB has been successfully updated to version "
-    //                                               + result.getVersion());
-    //                                   }
-    //                                   // remove progressbar
-    //                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
-    //                                           .getElement());
-    //                               }
-    //
-    //                               @Override
-    //                               public void onFailure(Throwable caught) {
-    //                                   SC.warn(caught.getMessage());
-    //                                   // remove progressbar
-    //                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
-    //                                           .getElement());
-    //                               }
-    //                           });
-    //    }
+                               @Override
+                               public void onFailure(Throwable caught) {
+                                   SC.warn(caught.getMessage());
+                                   // remove progressbar
+                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
+                                           .getElement());
+                               }
+                           });
+    }
 }

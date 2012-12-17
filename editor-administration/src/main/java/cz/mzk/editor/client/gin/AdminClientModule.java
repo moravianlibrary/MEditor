@@ -27,22 +27,9 @@
 
 package cz.mzk.editor.client.gin;
 
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.inject.Singleton;
-import com.google.web.bindery.event.shared.EventBus;
-import com.gwtplatform.mvp.client.RootPresenter;
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
-import com.gwtplatform.mvp.client.proxy.ParameterTokenFormatter;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.TokenFormatter;
 
-import cz.mzk.editor.client.EditorPlaceManager;
-import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
-import cz.mzk.editor.client.config.EditorClientConfiguration;
-import cz.mzk.editor.client.config.EditorClientConfigurationImpl;
-import cz.mzk.editor.client.dispatcher.CachingDispatchAsync;
-import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
 import cz.mzk.editor.client.presenter.AdminMenuPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
@@ -74,16 +61,16 @@ public class AdminClientModule
     @Override
     protected void configure() {
         // Singletons
-        bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
-        bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(Singleton.class);
-        bind(PlaceManager.class).to(EditorPlaceManager.class).in(Singleton.class);
-        bind(RootPresenter.class).asEagerSingleton();
+        //        bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
+        //        bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(Singleton.class);
+        //        bind(PlaceManager.class).to(EditorPlaceManager.class).in(Singleton.class);
+        //        bind(RootPresenter.class).asEagerSingleton();
 
         // ServerConstants
         bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.ADMIN_HOME);
 
-        //i18n
-        bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
+        //        //i18n
+        //        bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
         // Presenters
         bindPresenter(AdminPresenter.class,
@@ -119,10 +106,10 @@ public class AdminClientModule
                       StatisticsView.class,
                       StatisticsPresenter.MyProxy.class);
 
-        bind(CachingDispatchAsync.class);
-        bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
-
-        requestStaticInjection(DispatchCallback.class);
+        //        bind(CachingDispatchAsync.class);
+        //        bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
+        //
+        //        requestStaticInjection(DispatchCallback.class);
 
     }
 }

@@ -46,10 +46,10 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.MEditor;
 import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.AppPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.LangSelectionHTMLFlow;
 
@@ -130,7 +130,7 @@ public class AppView
             @Override
             protected void afterChangeAction(boolean isEn) {
                 AppView.isEn = isEn;
-                MEditor.langRefresh(isEn ? "cs_CZ" : "en_US");
+                ClientUtils.langRefresh(isEn ? "cs_CZ" : "en_US");
             }
         };
 
