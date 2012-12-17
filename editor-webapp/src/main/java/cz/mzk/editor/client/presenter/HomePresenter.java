@@ -29,8 +29,8 @@ package cz.mzk.editor.client.presenter;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.dispatch.shared.DispatchRequest;
 import com.gwtplatform.mvp.client.Presenter;

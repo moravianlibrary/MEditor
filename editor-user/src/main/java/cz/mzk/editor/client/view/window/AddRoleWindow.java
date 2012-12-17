@@ -27,7 +27,7 @@ package cz.mzk.editor.client.view.window;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.types.Alignment;

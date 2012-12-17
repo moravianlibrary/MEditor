@@ -28,7 +28,6 @@
 package cz.mzk.editor.shared.event;
 
 import com.gwtplatform.dispatch.annotation.GenEvent;
-import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Order;
 
 import cz.mzk.editor.shared.rpc.MetadataBundle;
@@ -51,7 +50,6 @@ public class CreateStructure {
     private String inputPath;
 
     @Order(4)
-    @Optional
     private MetadataBundle bundle;
 
 }

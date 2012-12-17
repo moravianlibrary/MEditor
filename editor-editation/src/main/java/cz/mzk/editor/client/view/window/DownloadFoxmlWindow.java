@@ -24,9 +24,9 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window.Location;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;

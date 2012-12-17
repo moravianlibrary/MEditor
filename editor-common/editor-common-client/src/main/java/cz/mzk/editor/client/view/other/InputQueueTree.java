@@ -30,8 +30,8 @@ package cz.mzk.editor.client.view.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;

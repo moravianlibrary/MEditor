@@ -26,7 +26,7 @@ package cz.mzk.editor.client.uihandlers;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.HasHandlers;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.UiHandlers;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -54,7 +54,7 @@ public interface CreateObjectMenuUiHandlers
 
     void loadStructure();
 
-    HasHandlers getBus();
+    EventBus getBus();
 
     void addPages(List<Record> pages, String parent, boolean isAtOnce);
 

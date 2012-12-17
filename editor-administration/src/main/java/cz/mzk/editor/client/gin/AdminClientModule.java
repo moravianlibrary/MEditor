@@ -27,9 +27,9 @@
 
 package cz.mzk.editor.client.gin;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.inject.Singleton;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.RootPresenter;
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
 import com.gwtplatform.mvp.client.proxy.ParameterTokenFormatter;

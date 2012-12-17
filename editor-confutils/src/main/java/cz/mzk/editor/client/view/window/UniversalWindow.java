@@ -24,9 +24,8 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Window;
@@ -45,7 +44,7 @@ import cz.mzk.editor.shared.event.EscKeyPressedEvent.EscKeyPressedHandler;
 public class UniversalWindow
         extends Window {
 
-    private final HasHandlers eventBus;
+    private final EventBus eventBus;
 
     public UniversalWindow(int height, int width, String title, EventBus eventBus, final int milisToWait) {
         this.eventBus = eventBus;
@@ -105,7 +104,7 @@ public class UniversalWindow
         animateShow(AnimationEffect.FLY, callback, Constants.WINDOW_ANIMATION_DELAY_IN_MILLIS);
     }
 
-    public HasHandlers getEventBus() {
+    public EventBus getEventBus() {
         return eventBus;
     }
 

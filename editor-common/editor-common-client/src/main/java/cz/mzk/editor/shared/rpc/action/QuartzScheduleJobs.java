@@ -28,7 +28,6 @@ import java.util.List;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
-import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Out;
 
 import cz.mzk.editor.shared.rpc.ProcessItem;
@@ -41,7 +40,6 @@ import cz.mzk.editor.shared.rpc.ProcessItem;
 @SuppressWarnings("unused")
 public class QuartzScheduleJobs {
 
-    @Optional
     @In(1)
     private ProcessItem killItem;
 

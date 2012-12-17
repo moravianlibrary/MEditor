@@ -31,8 +31,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;

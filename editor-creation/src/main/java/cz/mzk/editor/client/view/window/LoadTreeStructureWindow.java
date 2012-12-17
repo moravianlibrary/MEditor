@@ -26,7 +26,7 @@ package cz.mzk.editor.client.view.window;
 
 import java.util.ArrayList;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Side;
@@ -411,8 +411,9 @@ public class LoadTreeStructureWindow
                                        if (i == 0 && rootTreeNode != null) {
                                            tree[i++] = ClientCreateUtils.toTreeNode(rootTreeNode);
                                        }
-                                       LoadStructureEvent.fire(getEventBus(), tree, loadOnlyLeft ? null
-                                               : pages, lastId);
+                                       getEventBus()
+                                               .fireEvent(new LoadStructureEvent(tree, loadOnlyLeft ? null
+                                                       : pages, lastId));
                                        hide();
                                    }
                                }

@@ -72,7 +72,7 @@
 	<properties>
 		<!-- Versions -->
 		<gwt.version>2.4.0</gwt.version>
-		<gwtp.version>0.6</gwtp.version>
+		<gwtp.version>0.7</gwtp.version>
 		<smartGwt.version>3.0</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>1.5.0</gin.version>

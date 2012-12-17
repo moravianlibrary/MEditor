@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.util.SC;

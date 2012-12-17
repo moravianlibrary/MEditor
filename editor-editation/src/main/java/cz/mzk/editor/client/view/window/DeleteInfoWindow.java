@@ -26,7 +26,7 @@ package cz.mzk.editor.client.view.window;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;

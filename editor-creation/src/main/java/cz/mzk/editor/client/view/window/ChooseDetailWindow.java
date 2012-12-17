@@ -24,8 +24,8 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Image;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Cursor;

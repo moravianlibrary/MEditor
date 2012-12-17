@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -60,8 +60,8 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.util.Constants.CONFLICT;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.event.OpenDigitalObjectEvent;
 import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;

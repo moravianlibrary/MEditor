@@ -25,7 +25,7 @@
 package cz.mzk.editor.client.view.window;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.util.BooleanCallback;

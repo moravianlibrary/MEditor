@@ -26,8 +26,8 @@ package cz.mzk.editor.client.view.window;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;

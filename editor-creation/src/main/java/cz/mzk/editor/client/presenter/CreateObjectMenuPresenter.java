@@ -1,5 +1,5 @@
 /*
- * Metadata Editor
+\ * Metadata Editor
  * @author Jiri Kremser
  * 
  * 
@@ -33,8 +33,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HasHandlers;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -549,7 +548,7 @@ public class CreateObjectMenuPresenter
     }
 
     @Override
-    public HasHandlers getBus() {
+    public EventBus getBus() {
         return getEventBus();
     }
 

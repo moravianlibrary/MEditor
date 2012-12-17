@@ -33,7 +33,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -316,7 +316,7 @@ public class DigitalObjectMenuPresenter
 
     @Override
     protected void onReset() {
-        ChangeMenuWidthEvent.fire(getEventBus(), "275");
+        getEventBus().fireEvent(new ChangeMenuWidthEvent("275"));
     };
 
     /*
