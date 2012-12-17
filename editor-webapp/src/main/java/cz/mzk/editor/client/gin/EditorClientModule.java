@@ -38,6 +38,7 @@ import com.gwtplatform.mvp.client.proxy.TokenFormatter;
 
 import cz.mzk.editor.client.EditorPlaceManager;
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.config.EditorClientConfigurationImpl;
 import cz.mzk.editor.client.dispatcher.CachingDispatchAsync;
@@ -79,7 +80,7 @@ public class EditorClientModule
         //        bind(ProxyFailureHandler.class).to(DefaultProxyFailureHandler.class).in(Singleton.class);
 
         // ServerConstants
-        //        bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.MEDIT_HOME);
+        bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.ADMIN_HOME);
 
         //i18n
         bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);

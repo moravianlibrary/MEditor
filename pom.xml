@@ -80,7 +80,7 @@
 
 		<warName>meditor</warName>
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
-		<webappDirectory>${project.build.directory}/administration</webappDirectory>
+		<webappDirectory>${project.build.directory}/webapp</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss 'UTC'Z</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>

@@ -112,7 +112,7 @@
 	</session-config>
 
 	<welcome-file-list>
-		<welcome-file>Administration.html</welcome-file>
+		<welcome-file>MEditor.html</welcome-file>
 	</welcome-file-list>
 
 	<error-page>

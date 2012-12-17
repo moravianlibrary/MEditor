@@ -185,7 +185,6 @@
 							<execution>
 								<configuration>
 									<modules>
-										<!-- <module>cz.mzk.editor.Administration</module> -->
 										<module>cz.mzk.editor.MEditor</module>
 										<module>cz.mzk.editor.RequestForAdding</module>
 									</modules>
@@ -201,7 +200,6 @@
 									<goal>debug</goal>
 								</goals>
 								<configuration>
-									<!-- <module>cz.mzk.editor.Administration</module> -->
 									<module>cz.mzk.editor.MEditor</module>
 									<module>cz.mzk.editor.RequestForAdding</module>
 								</configuration>
@@ -228,14 +226,6 @@
 							</archive>
 							<webResources>
 								<resource>
-									<directory>${basedir}/../editor-administration/src/main/administration</directory>
-									<includes>
-										<include>Administration.css</include>
-										<include>Administration.html</include>
-									</includes>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
 									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
 									<filtering>true</filtering>
 									<includes>
@@ -254,103 +244,6 @@
 								</resource>
 							</webResources>
 							<webXml>${basedir}/../editor-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>admin</id>
-			<build>
-				<plugins>
-					<!-- Compile -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-					</plugin>
-
-					<!-- Compile GWT modules -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<noServer>true</noServer>
-							<inplace>false</inplace>
-							<logLevel>INFO</logLevel>
-							<runTarget>${coreGuiRunTarget}</runTarget>
-							<draftCompile>false</draftCompile>
-							<soyc>true</soyc>
-							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
-							<hostedWebapp>target/hostedWar</hostedWebapp>
-							<debugSuspend>false</debugSuspend>
-							<style>OBF</style>
-							<strict>true</strict>
-							<draftCompile>true</draftCompile>
-						</configuration>
-						<executions>
-							<execution>
-								<configuration>
-									<modules>
-										<!-- <module>cz.mzk.editor.Administration</module> -->
-									</modules>
-								</configuration>
-								<id>gwt-goals</id>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-cli</id>
-								<goals>
-									<goal>debug</goal>
-								</goals>
-								<configuration>
-									<!-- <module>cz.mzk.editor.Administration</module> -->
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<!-- Pack war file -->
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<warName>${warName}</warName>
-							<outputDirectory>${basedir}/../target</outputDirectory>
-							<archive>
-								<manifest>
-									<addDefaultSpecificationEntries>true
-							</addDefaultSpecificationEntries>
-									<addDefaultImplementationEntries>true
-							</addDefaultImplementationEntries>
-								</manifest>
-								<manifestEntries>
-									<Build-Number>${buildNumber}</Build-Number>
-								</manifestEntries>
-							</archive>
-							<webResources>
-								<resource>
-									<directory>${basedir}/../editor-administration/src/main/administration</directory>
-									<includes>
-										<include>Administration.css</include>
-										<include>Administration.html</include>
-									</includes>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
-									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
-									<directory>${basedir}/../editor-security/src/main/security</directory>
-									<includes>
-										<include>applicationContext.xml</include>
-									</includes>
-									<targetPath>WEB-INF</targetPath>
-								</resource>
-							</webResources>
-							<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -391,53 +284,6 @@
 		</profile>
 
 		<profile>
-			<id>devAdmin</id>
-			<build>
-				<plugins>
-					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<noServer>true</noServer>
-							<inplace>false</inplace>
-							<logLevel>INFO</logLevel>
-							<draftCompile>true</draftCompile>
-							<soyc>false</soyc>
-							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
-							<hostedWebapp>target/hostedWar</hostedWebapp>
-							<debugSuspend>false</debugSuspend>
-							<!--<style>OBF</style> -->
-							<style>DETAILED</style>
-							<strict>true</strict>
-						</configuration>
-						<executions>
-							<execution>
-								<configuration>
-									<modules>
-										<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
-									</modules>
-								</configuration>
-								<id>gwt-goals</id>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-cli</id>
-								<goals>
-									<goal>debug</goal>
-								</goals>
-								<configuration>
-									<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>dev</id>
 			<build>
 				<plugins>
@@ -462,7 +308,6 @@
 							<execution>
 								<configuration>
 									<modules>
-										<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
 										<module>cz.mzk.editor.MEditorDev</module>
 										<module>cz.mzk.editor.RequestForAddingDev</module>
 									</modules>
@@ -478,7 +323,6 @@
 									<goal>debug</goal>
 								</goals>
 								<configuration>
-									<!-- <module>cz.mzk.editor.AdministrationDev</module> -->
 									<module>cz.mzk.editor.MEditorDev</module>
 									<module>cz.mzk.editor.RequestForAddingDev</module>
 								</configuration>

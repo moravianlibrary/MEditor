@@ -16,6 +16,10 @@
 	<http pattern="/Shibboleth.sso/Login" security="none" />
 	<http pattern="/images/mzk_logo.gif" security="none" />
 	<http pattern="/images/mzk_shibboleth.gif" security="none" />
+	<http pattern="/MEditor.css" security="none" />
+	<http pattern="/flags.gif" security="none" />
+		
+	
 
 
 
@@ -24,7 +28,7 @@
 		<intercept-url pattern="/gwt/**" access="isAuthenticated()" />
 		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
-		<form-login login-page="/loginLocal.html"/>
+		<form-login login-page="/login.html"/>
 		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
 		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
 		<custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />

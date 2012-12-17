@@ -29,7 +29,6 @@ package cz.mzk.editor.client.gin;
 
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
 
-import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.presenter.AdminHomePresenter;
 import cz.mzk.editor.client.presenter.AdminMenuPresenter;
 import cz.mzk.editor.client.presenter.AdminPresenter;
@@ -54,23 +53,11 @@ import cz.mzk.editor.client.view.UserView;
 public class AdminClientModule
         extends AbstractPresenterModule {
 
-    /*
-     * (non-Javadoc)
-     * @see com.google.gwt.inject.client.AbstractGinModule#configure()
+    /**
+     * {@inheritDoc}
      */
     @Override
     protected void configure() {
-        // Singletons
-        //        bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
-        //        bind(TokenFormatter.class).to(ParameterTokenFormatter.class).in(Singleton.class);
-        //        bind(PlaceManager.class).to(EditorPlaceManager.class).in(Singleton.class);
-        //        bind(RootPresenter.class).asEagerSingleton();
-
-        // ServerConstants
-        bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.ADMIN_HOME);
-
-        //        //i18n
-        //        bind(LangConstants.class).toProvider(LangProvider.class).in(Singleton.class);
 
         // Presenters
         bindPresenter(AdminPresenter.class,
@@ -105,11 +92,6 @@ public class AdminClientModule
                       StatisticsPresenter.MyView.class,
                       StatisticsView.class,
                       StatisticsPresenter.MyProxy.class);
-
-        //        bind(CachingDispatchAsync.class);
-        //        bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
-        //
-        //        requestStaticInjection(DispatchCallback.class);
 
     }
 }
