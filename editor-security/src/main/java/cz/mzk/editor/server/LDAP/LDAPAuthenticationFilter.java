@@ -26,10 +26,15 @@ package cz.mzk.editor.server.LDAP;
 
 import java.io.IOException;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -40,6 +45,8 @@ import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.SecurityUtils;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
 /**
  * @author Matous Jobanek
@@ -48,12 +55,26 @@ import cz.mzk.editor.server.SecurityUtils;
 public class LDAPAuthenticationFilter
         extends UsernamePasswordAuthenticationFilter {
 
+    @Inject
+    private static EditorConfiguration configuration;
+
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(LDAPAuthenticationFilter.class.getPackage()
+            .toString());
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
+
+        if (!configuration.getIdentityTypes().contains(USER_IDENTITY_TYPES.LDAP)) {
+            LOGGER.warn("The LDAP authentication is not allowed in the "
+                    + EditorConfigurationImpl.DEFAULT_CONF_LOCATION + " file.");
+            return null;
+        }
+
         EditorUserAuthentication attemptAuthentication =
                 (EditorUserAuthentication) super.attemptAuthentication(request, response);
 
@@ -85,4 +106,17 @@ public class LDAPAuthenticationFilter
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+
+        super.successfulAuthentication(request, response, chain, authResult);
+        if (configuration.isLocalhost()) SecurityUtils.redirectToHostDebugMode(request, response);
+
+    }
 }

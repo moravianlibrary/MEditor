@@ -25,9 +25,7 @@ import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.DAO.LogInOutDAO;
 import cz.mzk.editor.server.DAO.SecurityUserDAO;
-import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
 /*
  * Metadata Editor
@@ -60,10 +58,8 @@ import cz.mzk.editor.server.config.EditorConfigurationImpl;
 public class LDAPAuthenticationProvider
         implements AuthenticationProvider {
 
-    @Inject
-    private static EditorConfiguration configuration;
-
     /** The Constant LOGGER. */
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(LDAPAuthenticationProvider.class.getPackage()
             .toString());
 
@@ -89,12 +85,6 @@ public class LDAPAuthenticationProvider
      * {@inheritDoc}
      */
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
-        if (!configuration.getIdentityTypes().contains(USER_IDENTITY_TYPES.LDAP)) {
-            LOGGER.warn("The LDAP authentication is not allowed in the "
-                    + EditorConfigurationImpl.DEFAULT_CONF_LOCATION + " file.");
-            return null;
-        }
 
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();

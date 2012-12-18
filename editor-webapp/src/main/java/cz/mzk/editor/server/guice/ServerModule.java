@@ -72,6 +72,7 @@ import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.DAO.UserDAOImpl;
+import cz.mzk.editor.server.LDAP.LDAPAuthenticationFilter;
 import cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
@@ -259,5 +260,6 @@ public class ServerModule
         requestStaticInjection(ShibbolethAuthenticationFilter.class);
         requestStaticInjection(ShibbolethClient.class);
         requestStaticInjection(LDAPAuthenticationProvider.class);
+        requestStaticInjection(LDAPAuthenticationFilter.class);
     }
 }

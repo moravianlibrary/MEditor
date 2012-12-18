@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,7 +115,7 @@ public class JanrainAuthenticationFilter
             throws AuthenticationException, IOException, ServletException {
 
         if (!configuration.getIdentityTypes().contains(USER_IDENTITY_TYPES.OPEN_ID)) {
-            LOGGER.warn("The LDAP authentication is not allowed in the "
+            LOGGER.warn("The OpenID authentication is not allowed in the "
                     + EditorConfigurationImpl.DEFAULT_CONF_LOCATION + " file.");
             return null;
         }
@@ -171,6 +172,20 @@ public class JanrainAuthenticationFilter
         } else {
             super.unsuccessfulAuthentication(request, response, failed);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+
+        super.successfulAuthentication(request, response, chain, authResult);
+        if (configuration.isLocalhost()) SecurityUtils.redirectToHostDebugMode(request, response);
+
     }
 
 }

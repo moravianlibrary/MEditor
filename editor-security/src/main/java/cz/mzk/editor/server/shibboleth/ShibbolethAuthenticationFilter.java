@@ -29,9 +29,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Properties;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,15 +98,6 @@ public class ShibbolethAuthenticationFilter
         String shibbolethIdentifier =
                 request.getHeader(shibbolethProperties.getProperty("loginAttribute", "uid"));
 
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            Object element = headerNames.nextElement();
-            String header = request.getHeader((String) element);
-            System.err.println(element);
-            System.err.println(header);
-            System.err.println();
-        }
-
         token =
                 new RememberMeAuthenticationToken(ShibbolethAuthenticationFilter.class.getPackage()
                         .toString(), shibbolethIdentifier, new ArrayList<GrantedAuthority>());
@@ -160,6 +151,20 @@ public class ShibbolethAuthenticationFilter
         } else {
             super.unsuccessfulAuthentication(request, response, failed);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+
+        super.successfulAuthentication(request, response, chain, authResult);
+        if (configuration.isLocalhost()) SecurityUtils.redirectToHostDebugMode(request, response);
+
     }
 
 }
