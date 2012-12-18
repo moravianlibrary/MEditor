@@ -41,6 +41,8 @@ import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.DateItem;
@@ -66,7 +68,7 @@ import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.client.util.HtmlCode;
-import cz.mzk.editor.client.view.other.ChartsUtils;
+import cz.mzk.editor.client.view.other.UserStatistics;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent;
@@ -84,21 +86,18 @@ public class StatisticsView
         implements StatisticsPresenter.MyView {
 
     private final VStack mainLayout;
-    private SelectItem users;
     private final LangConstants lang;
     private final DispatchAsync dispatcher;
     private final EventBus eventBus;
     private final EditorClientConfiguration config;
-    private static String html = "<div id=\"%s\" style=\"position: absolute; z-index: 1000000\"> </div>";
-
-    public static final String PIE_CHART_NESTED_DIV_ID = "pie_chart_nested_div_id";
-    public static final String LINE_CHART_NESTED_DIV_ID = "line_chart_nested_div_id";
-    private final HTMLFlow htmlFlow;
 
     private DateItem fromDate;
     private DateItem toDate;
     private ListGrid selectedUsersGrid;
     private IButton showButton;
+    private SelectItem segmentation;
+    private SelectItem selObject;
+    private final VLayout statPart;
 
     @Inject
     public StatisticsView(final EventBus eventBus,
@@ -110,20 +109,18 @@ public class StatisticsView
         this.dispatcher = dispatcher;
         this.config = config;
         this.eventBus = eventBus;
+        this.statPart = new VLayout();
 
         mainLayout.setWidth100();
 
+        setMaps();
         setSelectionLayout();
 
-        htmlFlow = new HTMLFlow(html.replace("%s", PIE_CHART_NESTED_DIV_ID));
-        htmlFlow.setWidth(500);
-        htmlFlow.setHeight(300);
-        mainLayout.addMember(htmlFlow);
+        mainLayout.addMember(statPart);
 
-        final String[] names = {"pesta", "jiranova", "viola", "sapakova"};
-        final int[] pages = {10, 20, 80, 70};
+    }
 
-        ChartsUtils.showChart(names, pages, htmlFlow, PIE_CHART_NESTED_DIV_ID, mainLayout, "Work");
+    private void setMaps() {
 
     }
 
@@ -157,8 +154,24 @@ public class StatisticsView
         showButton.setLayoutAlign(VerticalAlignment.BOTTOM);
         showButton.setDisabled(true);
 
-        selLayout.addMember(showButton);
+        showButton.addClickHandler(new ClickHandler() {
 
+            @Override
+            public void onClick(ClickEvent event) {
+                final String segVal = segmentation.getValueAsString();
+                statPart.removeMembers(statPart.getMembers());
+                for (ListGridRecord rec : selectedUsersGrid.getRecords()) {
+                    statPart.addMember(new UserStatistics(rec.getAttributeAsString(Constants.ATTR_ID),
+                                                          selObject.getValueAsString(),
+                                                          fromDate.getValueAsDate(),
+                                                          toDate.getValueAsDate(),
+                                                          segVal,
+                                                          dispatcher));
+                }
+            }
+        });
+
+        selLayout.addMember(showButton);
         mainLayout.addMember(selLayout);
     }
 
@@ -170,17 +183,16 @@ public class StatisticsView
         final CheckboxItem showCharts = new CheckboxItem("showCharts", HtmlCode.bold(lang.showCharts()));
         showCharts.setDefaultValue(true);
 
-        final SelectItem segmentation =
-                new SelectItem("segmentation", HtmlCode.bold(lang.withSegmentation()));
+        segmentation = new SelectItem("segmentation", HtmlCode.bold(lang.withSegmentation()));
 
-        LinkedHashMap<String, String> segValues = new LinkedHashMap<String, String>();
-        segValues.put(STATISTICS_SEGMENTATION.YEARS.getValue(), lang.years());
-        segValues.put(STATISTICS_SEGMENTATION.MONTHS.getValue(), lang.months());
-        segValues.put(STATISTICS_SEGMENTATION.WEEKS.getValue(), lang.weeks());
-        segValues.put(STATISTICS_SEGMENTATION.DAYS.getValue(), lang.days());
+        LinkedHashMap<String, String> segValuesByValue = new LinkedHashMap<String, String>();
+        segValuesByValue.put(STATISTICS_SEGMENTATION.YEARS.getValue(), lang.years());
+        segValuesByValue.put(STATISTICS_SEGMENTATION.MONTHS.getValue(), lang.months());
+        segValuesByValue.put(STATISTICS_SEGMENTATION.WEEKS.getValue(), lang.weeks());
+        segValuesByValue.put(STATISTICS_SEGMENTATION.DAYS.getValue(), lang.days());
 
-        segmentation.setValueMap(segValues);
-        segmentation.setDefaultValue(lang.days());
+        segmentation.setValueMap(segValuesByValue);
+        segmentation.setDefaultValue(STATISTICS_SEGMENTATION.DAYS.getValue());
         segmentation.setWrapTitle(false);
         segmentation.setTitleStyle("");
 
@@ -227,7 +239,7 @@ public class StatisticsView
 
         VLayout selObjLayout = new VLayout();
         DynamicForm objectAndTime = new DynamicForm();
-        final SelectItem selObject = new SelectItem("selectObject");
+        selObject = new SelectItem("selectObject");
         selObject.setShowTitle(false);
         selObject.setWrapTitle(false);
         objectAndTime.setItems(selObject);
@@ -308,9 +320,7 @@ public class StatisticsView
                     }
                 }
                 selObject.setValueMap(models);
-                if (isPage)
-                    selObject.setValue(LabelAndModelConverter.getLabelFromModel().get(DigitalObjectModel.PAGE
-                            .getValue()));
+                if (isPage) selObject.setValue(DigitalObjectModel.PAGE.getValue());
             }
         });
 

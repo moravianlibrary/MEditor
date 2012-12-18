@@ -24,11 +24,17 @@
 
 package cz.mzk.editor.server.DAO;
 
+import java.text.ParseException;
+
+import java.util.HashMap;
 import java.util.List;
 
+import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
+import cz.mzk.editor.shared.rpc.IntervalStatisticData;
 
 /**
  * @author Matous Jobanek
@@ -81,4 +87,29 @@ public interface ActionDAO {
      *         the database exception
      */
     HistoryItemInfo getHistoryItemInfo(Long id, String tableName) throws DatabaseException;
+
+    /**
+     * Gets the user statistics data.
+     * 
+     * @param userId
+     *        the user id
+     * @param model
+     *        the model
+     * @param dateFrom
+     *        the date from
+     * @param dateTo
+     *        the date to
+     * @param segmentation
+     *        the segmentation
+     * @return the user statistics data
+     * @throws DatabaseException
+     *         the database exception
+     * @throws ParseException
+     */
+    HashMap<Integer, IntervalStatisticData> getUserStatisticsData(Long userId,
+                                                                  DigitalObjectModel model,
+                                                                  EditorDate dateFrom,
+                                                                  EditorDate dateTo,
+                                                                  STATISTICS_SEGMENTATION segmentation)
+            throws DatabaseException, ParseException;
 }

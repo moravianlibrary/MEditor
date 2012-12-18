@@ -25,12 +25,13 @@
 package cz.mzk.editor.shared.rpc.action;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
+import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.IntervalStatisticData;
 
 // TODO: Auto-generated Javadoc
@@ -60,6 +61,6 @@ public class GetUserStatisticData {
     private String segmentation;
 
     @Out(1)
-    private List<IntervalStatisticData> data;
+    private Map<EditorDate, IntervalStatisticData> data;
 
 }

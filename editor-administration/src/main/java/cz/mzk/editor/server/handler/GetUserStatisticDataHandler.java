@@ -24,6 +24,14 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.text.ParseException;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.inject.Inject;
+
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -31,10 +39,13 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
+import cz.mzk.editor.server.DAO.ActionDAO;
+import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.util.EditorDateUtils;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.IntervalStatisticData;
 import cz.mzk.editor.shared.rpc.action.GetUserStatisticDataAction;
 import cz.mzk.editor.shared.rpc.action.GetUserStatisticDataResult;
 
@@ -42,11 +53,14 @@ import cz.mzk.editor.shared.rpc.action.GetUserStatisticDataResult;
  * @author Matous Jobanek
  * @version Dec 18, 2012
  */
-public class GetUserStatisticData
+public class GetUserStatisticDataHandler
         implements ActionHandler<GetUserStatisticDataAction, GetUserStatisticDataResult> {
 
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(GetUsersInfoHandler.class.getPackage().toString());
+
+    @Inject
+    private ActionDAO actionDAO;
 
     /**
      * {@inheritDoc}
@@ -55,19 +69,46 @@ public class GetUserStatisticData
     public GetUserStatisticDataResult execute(GetUserStatisticDataAction action, ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: GetUsersInfoAction");
+        LOGGER.debug("Processing action: GetUserStatisticDataAction");
         ServerUtils.checkExpiredSession();
 
         long userId = Long.parseLong(action.getUserId());
-
-        //        action.getDateFrom()
 
         EditorDate fromDate = EditorDateUtils.getEditorDate(action.getDateFrom(), true);
         EditorDate toDate = EditorDateUtils.getEditorDate(action.getDateTo(), true);
         DigitalObjectModel model = DigitalObjectModel.parseString(action.getModel());
         STATISTICS_SEGMENTATION segmentation = STATISTICS_SEGMENTATION.parseString(action.getSegmentation());
 
-        return null;
+        Map<EditorDate, IntervalStatisticData> data = new TreeMap<EditorDate, IntervalStatisticData>();
+
+        for (int year = fromDate.getYear(); year <= toDate.getYear(); year++) {
+            HashMap<Integer, IntervalStatisticData> statisticsData;
+
+            try {
+                statisticsData =
+                        actionDAO.getUserStatisticsData(userId,
+                                                        model,
+                                                        (year == fromDate.getYear()) ? fromDate
+                                                                : new EditorDate(1, 1, year),
+                                                        (year == toDate.getYear()) ? toDate
+                                                                : new EditorDate(31, 12, year),
+                                                        segmentation);
+
+                for (Integer key : statisticsData.keySet()) {
+                    data.put(statisticsData.get(key).getFromDate(), statisticsData.get(key));
+                }
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new ActionException(e);
+            } catch (ParseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new ActionException(e);
+            }
+        }
+
+        return new GetUserStatisticDataResult(data);
     }
 
     /**

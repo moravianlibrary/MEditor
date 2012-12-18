@@ -71,4 +71,8 @@ public class EditorDateUtils {
         return editorDate;
     }
 
+    public static String getStringTimestamp(EditorDate date) {
+        return date.getYear() + "-" + date.getMonth() + "-" + date.getDay();
+    }
+
 }

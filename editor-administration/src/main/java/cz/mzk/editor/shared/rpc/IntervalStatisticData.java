@@ -43,7 +43,7 @@ public class IntervalStatisticData
     private Long userId;
 
     /** The value. */
-    private int value;
+    private int value = 0;
 
     /** The from date. */
     private EditorDate fromDate;

@@ -29,18 +29,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.server.util.EditorDateUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
 import cz.mzk.editor.shared.rpc.HistoryItemInfo;
+import cz.mzk.editor.shared.rpc.IntervalStatisticData;
 
 /**
  * @author Matous Jobanek
@@ -176,6 +183,12 @@ public class ActionDAOImpl
                     + INTERVAL_CONSTRAINTS
                     + ") o LEFT JOIN (SELECT id AS user_id, name, surname FROM "
                     + Constants.TABLE_EDITOR_USER + ") u ON o.editor_user_id = u.user_id) uo";
+
+    public static final String SELECT_USER_STATISTICS_DATA = "SELECT timestamp FROM "
+            + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION + " a INNER JOIN " + Constants.TABLE_DIGITAL_OBJECT
+            + " o ON a.digital_object_uuid = o.uuid " + "WHERE a.type = 'c' "
+            + "AND (o.model = (?) OR o.model = (?))" + " AND a.editor_user_id = (?) " + " AND state = 'true'"
+            + " AND " + INTERVAL_CONSTRAINTS;
 
     private abstract class ActionDAOHandler
             extends AbstractDAO {
@@ -677,9 +690,8 @@ public class ActionDAOImpl
 
         try {
             selectSt =
-                    getConnection().prepareStatement(String.format(sql,
-                                                                   getStringTimestamp(lowerLimit),
-                                                                   getStringTimestamp(upperLimit)));
+                    getConnection().prepareStatement(String.format(sql, EditorDateUtils
+                            .getStringTimestamp(lowerLimit), EditorDateUtils.getStringTimestamp(upperLimit)));
             if (editorUserId != null) {
                 selectSt.setLong(1, editorUserId);
             } else {
@@ -690,10 +702,6 @@ public class ActionDAOImpl
             e.printStackTrace();
         }
         return selectSt;
-    }
-
-    private String getStringTimestamp(EditorDate date) {
-        return date.getYear() + "-" + date.getMonth() + "-" + date.getDay();
     }
 
     @Override
@@ -844,5 +852,115 @@ public class ActionDAOImpl
             closeConnection();
         }
         return historyItemInfo;
+    }
+
+    @Override
+    public HashMap<Integer, IntervalStatisticData> getUserStatisticsData(Long userId,
+                                                                         DigitalObjectModel model,
+                                                                         EditorDate dateFrom,
+                                                                         EditorDate dateTo,
+                                                                         STATISTICS_SEGMENTATION segmentation)
+            throws DatabaseException, ParseException {
+
+        PreparedStatement selectSt = null;
+        HashMap<Integer, IntervalStatisticData> data = new HashMap<Integer, IntervalStatisticData>();
+        int year = dateFrom.getYear();
+
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calMin = Calendar.getInstance();
+        calMin.setTime(formater.parse(EditorDateUtils.getStringTimestamp(dateFrom)));
+        Calendar calMax = Calendar.getInstance();
+        calMax.setTime(formater.parse(EditorDateUtils.getStringTimestamp(dateTo)));
+
+        Calendar cal = Calendar.getInstance();
+
+        if (segmentation == STATISTICS_SEGMENTATION.DAYS) {
+            int minDay = calMin.get(Calendar.DAY_OF_YEAR);
+            int maxDay = calMax.get(Calendar.DAY_OF_YEAR);
+
+            for (int i = minDay; i <= maxDay; i++) {
+                cal.set(Calendar.DAY_OF_YEAR, i);
+                EditorDate day = EditorDateUtils.getEditorDate(cal.getTime(), true);
+                data.put(i, new IntervalStatisticData(userId, 0, day, day));
+            }
+
+        } else if (segmentation == STATISTICS_SEGMENTATION.WEEKS) {
+            int minWeek = calMin.get(Calendar.WEEK_OF_YEAR);
+            int maxWeek = calMax.get(Calendar.WEEK_OF_YEAR);
+
+            for (int i = minWeek; i <= maxWeek; i++) {
+                cal.set(Calendar.WEEK_OF_YEAR, i);
+
+                EditorDate from =
+                        new EditorDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), year);
+                cal.add(Calendar.DATE, 6);
+                EditorDate to = new EditorDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), year);
+
+                data.put(i, new IntervalStatisticData(userId, 0, from, to));
+            }
+
+        } else if (segmentation == STATISTICS_SEGMENTATION.MONTHS) {
+            for (int i = dateFrom.getMonth(); i <= dateTo.getMonth(); i++) {
+
+                cal.set(Calendar.MONTH, i - 1);
+
+                EditorDate from = new EditorDate(1, i, year);
+                cal.add(Calendar.MONTH, 6);
+                cal.add(Calendar.DATE, -1);
+                EditorDate to = new EditorDate(cal.getMaximum(Calendar.DAY_OF_MONTH), i, year);
+
+                data.put(i, new IntervalStatisticData(userId, 0, from, to));
+            }
+
+        } else if (segmentation == STATISTICS_SEGMENTATION.YEARS) {
+            data.put(year, new IntervalStatisticData(userId,
+                                                     0,
+                                                     new EditorDate(1, 1, year),
+                                                     new EditorDate(31, 12, year)));
+        }
+
+        try {
+
+            selectSt =
+                    getConnection()
+                            .prepareStatement(String.format(SELECT_USER_STATISTICS_DATA,
+                                                            EditorDateUtils.getStringTimestamp(dateFrom),
+                                                            EditorDateUtils.getStringTimestamp(dateTo)));
+            selectSt.setString(1, model.toString());
+            selectSt.setString(2, model.getValue());
+            selectSt.setLong(3, userId);
+
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+
+                cal.setTime(rs.getTimestamp("timestamp"));
+
+                int key = -1;
+
+                if (segmentation == STATISTICS_SEGMENTATION.DAYS) {
+                    key = cal.get(Calendar.DAY_OF_YEAR);
+
+                } else if (segmentation == STATISTICS_SEGMENTATION.WEEKS) {
+                    key = cal.get(Calendar.WEEK_OF_YEAR);
+
+                } else if (segmentation == STATISTICS_SEGMENTATION.MONTHS) {
+                    key = cal.get(Calendar.MONTH);
+
+                } else if (segmentation == STATISTICS_SEGMENTATION.YEARS) {
+                    key = cal.get(Calendar.YEAR);
+                }
+
+                if (data.containsKey(key)) {
+                    data.get(key).setValue(data.get(key).getValue() + 1);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Could not get any action select statement: " + selectSt + ": " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+
+        return data;
     }
 }
