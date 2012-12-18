@@ -140,8 +140,19 @@ public class InsertNewDigitalObjectHandler
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                     e.printStackTrace();
+                    throw new ActionException(e);
                 }
 
+            } else {
+                try {
+
+                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true);
+
+                } catch (DatabaseException e) {
+                    LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
+                    e.printStackTrace();
+                    throw new ActionException(e);
+                }
             }
 
             if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {

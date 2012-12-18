@@ -342,6 +342,35 @@ public class Constants {
 
     }
 
+    public static enum STATISTICS_SEGMENTATION {
+
+        YEARS("years"), MONTHS("months"), WEEKS("weeks"), DAYS("days");
+
+        private final String value;
+
+        /**
+         * 
+         */
+        private STATISTICS_SEGMENTATION(String value) {
+            this.value = value;
+        }
+
+        /**
+         * @return the value
+         */
+        public String getValue() {
+            return value;
+        }
+
+        public static STATISTICS_SEGMENTATION parseString(String s) {
+            for (STATISTICS_SEGMENTATION seg : STATISTICS_SEGMENTATION.values()) {
+                if (seg.getValue().equalsIgnoreCase(s)) return seg;
+            }
+
+            throw new RuntimeException("Unsupported STATISTICS SEGMENTATION type: " + s);
+        }
+    }
+
     /**
      * The Enum ACTION_SUBJECTS.
      */

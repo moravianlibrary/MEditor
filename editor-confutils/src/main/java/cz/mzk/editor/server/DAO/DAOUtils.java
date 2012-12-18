@@ -31,7 +31,10 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Interface DAOUtils.
+ * 
  * @author Matous Jobanek
  * @version Oct 11, 2012
  */
@@ -75,7 +78,7 @@ public interface DAOUtils {
     public static final String DIGITAL_OBJECT_INSERT_ITEM_STATEMENT =
             "INSERT INTO "
                     + Constants.TABLE_DIGITAL_OBJECT
-                    + " (uuid, model, name, description, input_queue_directory_path, state) VALUES ((?),(?),(?),(?),(?), 'true')";
+                    + " (uuid, model, name, description, input_queue_directory_path, state) VALUES ((?),(?),(?),(?),(?), (?))";
 
     /** The Constant DIGITAL_OBJECT_SELECT_ITEM_STATEMENT. */
     public static final String DIGITAL_OBJECT_SELECT_ITEM_STATEMENT = "SELECT * FROM "
@@ -85,7 +88,7 @@ public interface DAOUtils {
     public static final String DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT =
             "UPDATE "
                     + Constants.TABLE_DIGITAL_OBJECT
-                    + " SET model=(?), name=(?), description=(?), input_queue_directory_path=(?), state = 'true' WHERE uuid=(?)";
+                    + " SET model=(?), name=(?), description=(?), input_queue_directory_path=(?), state = (?) WHERE uuid=(?)";
 
     /** The Constant EDITOR_RIGHT_INSERT_ITEM_STATEMENT. */
     public static final String EDITOR_RIGHT_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -256,6 +259,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean insertCrudAction(Long editor_user_id,
                              String tableName,
@@ -285,6 +289,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean insertCrudActionWithTopObject(Long editor_user_id,
                                           String tableName,
@@ -307,18 +312,22 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param state
+     *        the state
      * @param closeCon
      *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean checkDigitalObject(String uuid,
                                String model,
                                String name,
                                String description,
                                String input_queue_directory_path,
+                               boolean state,
                                boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -334,18 +343,22 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param state
+     *        the state
      * @param closeCon
      *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean updateDigitalObject(String uuid,
                                 String model,
                                 String name,
                                 String description,
                                 String input_queue_directory_path,
+                                boolean state,
                                 boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -361,18 +374,22 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param state
+     *        the state
      * @param closeCon
      *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean insertDigitalObject(String uuid,
                                 String model,
                                 String name,
                                 String description,
                                 String input_queue_directory_path,
+                                boolean state,
                                 boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -453,6 +470,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean checkInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
             SQLException;
@@ -470,6 +488,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean updateInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
             SQLException;
@@ -487,6 +506,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean insertInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
             SQLException;

@@ -293,6 +293,7 @@ public class DBSchemaDAOImpl
                                             null,
                                             (String) desc[2],
                                             null,
+                                            true,
                                             true);
             } catch (SQLException e) {
                 LOGGER.error(e.getMessage());
@@ -418,6 +419,7 @@ public class DBSchemaDAOImpl
                                             (String) recModItem[2],
                                             null,
                                             null,
+                                            true,
                                             true);
 
                 Long userId = editorUserIdMapping.get(Long.parseLong(recModItem[6].toString()));
@@ -491,6 +493,7 @@ public class DBSchemaDAOImpl
                                             null,
                                             null,
                                             null,
+                                            true,
                                             true);
 
                 Long savedId =

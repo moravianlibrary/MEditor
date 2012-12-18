@@ -22,42 +22,44 @@
  * 
  */
 
-package cz.mzk.editor.client.view.other;
+package cz.mzk.editor.shared.rpc.action;
 
-import com.google.web.bindery.event.shared.EventBus;
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import java.util.Date;
+import java.util.List;
 
-import cz.mzk.editor.client.LangConstants;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
 
+import cz.mzk.editor.shared.rpc.IntervalStatisticData;
+
+// TODO: Auto-generated Javadoc
 /**
+ * The Class GetAllStoredTreeStructureItems.
+ * 
  * @author Matous Jobanek
- * @version Nov 9, 2012
+ * @version Oct 30, 2012
  */
-public class DOHistoryDays
-        extends HistoryDays {
+@GenDispatch(isSecure = false)
+@SuppressWarnings("unused")
+public class GetUserStatisticData {
 
-    /**
-     * @param lang
-     * @param dispatcher
-     * @param eventBus
-     */
-    public DOHistoryDays(LangConstants lang, DispatchAsync dispatcher, EventBus eventBus, String uuid) {
-        super(lang, dispatcher, eventBus, null, uuid);
-    }
+    @In(1)
+    private String userId;
 
-    public void getDOHistory(String uuid) {
-        if (uuid != null) {
-            setUuid(uuid);
-            clean();
-            callForDays();
-        }
-    }
+    @In(2)
+    private String model;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void getHistory(Long id, String uuid) {
-        getDOHistory(uuid);
-    }
+    @In(3)
+    private Date dateFrom;
+
+    @In(4)
+    private Date dateTo;
+
+    @In(5)
+    private String segmentation;
+
+    @Out(1)
+    private List<IntervalStatisticData> data;
+
 }

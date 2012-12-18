@@ -118,6 +118,7 @@ public class RecentlyModifiedItemDAOImpl
                                                 toPut.getName(),
                                                 null,
                                                 null,
+                                                true,
                                                 false);
 
             if (successful)

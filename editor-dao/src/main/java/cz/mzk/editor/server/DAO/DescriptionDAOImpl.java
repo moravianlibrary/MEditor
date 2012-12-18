@@ -101,7 +101,8 @@ public class DescriptionDAOImpl
         }
         try {
 
-            boolean successful = daoUtils.checkDigitalObject(uuid, null, null, description, null, false);
+            boolean successful =
+                    daoUtils.checkDigitalObject(uuid, null, null, description, null, true, false);
             successful =
                     daoUtils.insertCrudAction(user_id,
                                               Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,

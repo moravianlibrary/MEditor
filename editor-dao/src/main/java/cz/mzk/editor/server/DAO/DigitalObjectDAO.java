@@ -51,6 +51,18 @@ public interface DigitalObjectDAO {
             throws DatabaseException;
 
     /**
+     * Update state.
+     * 
+     * @param objects
+     *        the uuid
+     * @param state
+     *        the state
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void updateState(List<String> objects, boolean state) throws DatabaseException;
+
+    /**
      * Insert new digital object.
      * 
      * @param uuid
@@ -63,6 +75,8 @@ public interface DigitalObjectDAO {
      *        the input_queue_directory_path
      * @param top_digital_object_uuid
      *        the top_digital_object_uuid
+     * @param state
+     *        the state
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
@@ -71,7 +85,8 @@ public interface DigitalObjectDAO {
                                    String model,
                                    String name,
                                    String input_queue_directory_path,
-                                   String top_digital_object_uuid) throws DatabaseException;
+                                   String top_digital_object_uuid,
+                                   boolean state) throws DatabaseException;
 
     /**
      * Update top object time.

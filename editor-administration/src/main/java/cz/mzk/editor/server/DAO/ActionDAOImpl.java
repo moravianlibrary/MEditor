@@ -29,8 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +36,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.server.util.EditorDateUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
@@ -178,13 +177,6 @@ public class ActionDAOImpl
                     + ") o LEFT JOIN (SELECT id AS user_id, name, surname FROM "
                     + Constants.TABLE_EDITOR_USER + ") u ON o.editor_user_id = u.user_id) uo";
 
-    public static final SimpleDateFormat FORMATTER_TO_DAY = new SimpleDateFormat("dd");
-    public static final SimpleDateFormat FORMATTER_TO_MOUNTH = new SimpleDateFormat("MM");
-    public static final SimpleDateFormat FORMATTER_TO_YEAR = new SimpleDateFormat("yyyy");
-    public static final SimpleDateFormat FORMATTER_TO_HOUR = new SimpleDateFormat("HH");
-    public static final SimpleDateFormat FORMATTER_TO_MINUTE = new SimpleDateFormat("mm");
-    public static final SimpleDateFormat FORMATTER_TO_SECOND = new SimpleDateFormat("ss");
-
     private abstract class ActionDAOHandler
             extends AbstractDAO {
 
@@ -263,7 +255,7 @@ public class ActionDAOImpl
 
                 while (rs.next()) {
                     Timestamp timestamp = rs.getTimestamp("timestamp");
-                    EditorDate date = getEditorDate(timestamp, true);
+                    EditorDate date = EditorDateUtils.getEditorDate(timestamp, true);
                     if (!days.contains(date)) days.add(date);
                 }
 
@@ -297,7 +289,7 @@ public class ActionDAOImpl
 
             ResultSet rs = selectSt.executeQuery();
             while (rs.next()) {
-                days.add(getEditorDate(rs.getTimestamp("timestamp"), true));
+                days.add(EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), true));
             }
 
             selectSt = getConnection().prepareStatement(SELECT_DO_EDIT_SAVED_DAYS);
@@ -305,7 +297,7 @@ public class ActionDAOImpl
 
             rs = selectSt.executeQuery();
             while (rs.next()) {
-                days.add(getEditorDate(rs.getTimestamp("timestamp"), true));
+                days.add(EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), true));
             }
 
             selectSt = getConnection().prepareStatement(SELECT_DO_LOCK_DAYS);
@@ -313,26 +305,13 @@ public class ActionDAOImpl
 
             rs = selectSt.executeQuery();
             while (rs.next()) {
-                days.add(getEditorDate(rs.getTimestamp("timestamp"), true));
+                days.add(EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), true));
             }
 
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private EditorDate getEditorDate(Timestamp timestamp, boolean onlyDay) {
-        EditorDate date =
-                new EditorDate(Integer.parseInt(FORMATTER_TO_DAY.format(timestamp)),
-                               Integer.parseInt(FORMATTER_TO_MOUNTH.format(timestamp)),
-                               Integer.parseInt(FORMATTER_TO_YEAR.format(timestamp)));
-        if (!onlyDay) {
-            date.setHour(Integer.parseInt(FORMATTER_TO_HOUR.format(timestamp)));
-            date.setMinute(Integer.parseInt(FORMATTER_TO_MINUTE.format(timestamp)));
-            date.setSecond(Integer.parseInt(FORMATTER_TO_SECOND.format(timestamp)));
-        }
-        return date;
     }
 
     @Override
@@ -401,12 +380,10 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 //        TODO
-                return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
-                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
-                                       rs.getString("tableName"),
-                                       rs.getString("surname") + " " + rs.getString("name"),
-                                       true);
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
+                        .getString("type")), rs.getString("tableName"), rs.getString("surname") + " "
+                        + rs.getString("name"), true);
             }
         };
         new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_EDIT_SAVED_ACTION, historyItems) {
@@ -415,7 +392,7 @@ public class ActionDAOImpl
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 //        TODO
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
                                        rs.getString("surname") + " " + rs.getString("name"),
@@ -427,12 +404,10 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 //        TODO
-                return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
-                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
-                                       Constants.TABLE_CRUD_LOCK_ACTION,
-                                       rs.getString("surname") + " " + rs.getString("name"),
-                                       true);
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
+                        .getString("type")), Constants.TABLE_CRUD_LOCK_ACTION, rs.getString("surname") + " "
+                        + rs.getString("name"), true);
             }
         };
 
@@ -448,12 +423,8 @@ public class ActionDAOImpl
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
-                return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
-                                       null,
-                                       Constants.TABLE_ACTION,
-                                       null,
-                                       false);
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), null, Constants.TABLE_ACTION, null, false);
             }
         };
     }
@@ -473,7 +444,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.CREATE,
                                        Constants.TABLE_LONG_RUNNING_PROCESS,
                                        rs.getTimestamp("finished").toString(),
@@ -497,7 +468,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
                                        rs.getString("reqType"),
@@ -520,13 +491,10 @@ public class ActionDAOImpl
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
-                return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
-                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
-                                       Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
-                                       rs.getString("name") + " ["
-                                               + rs.getString("input_queue_directory_path") + "]",
-                                       true);
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
+                        .getString("type")), Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION, rs.getString("name")
+                        + " [" + rs.getString("input_queue_directory_path") + "]", true);
             }
         };
     }
@@ -546,7 +514,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
                                        rs.getString("digital_object_uuid"),
@@ -570,7 +538,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_LOCK_ACTION,
                                        rs.getString("digital_object_uuid"),
@@ -594,7 +562,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.parseString(rs.getString("type")),
                                        Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
                                        rs.getString("name") + " [PID: " + rs.getString("digital_object_uuid")
@@ -618,13 +586,10 @@ public class ActionDAOImpl
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
-                return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
-                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
-                                       Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
-                                       rs.getString("name") + " [PID: " + rs.getString("digital_object_uuid")
-                                               + "]",
-                                       true);
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
+                        .getString("type")), Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION, rs.getString("name")
+                        + " [PID: " + rs.getString("digital_object_uuid") + "]", true);
             }
         };
     }
@@ -644,7 +609,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        CRUD_ACTION_TYPES.CREATE,
                                        Constants.TABLE_CONVERSION,
                                        rs.getString("input_queue_directory_path"),
@@ -668,7 +633,7 @@ public class ActionDAOImpl
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
                 return new HistoryItem(rs.getLong("id"),
-                                       getEditorDate(rs.getTimestamp("timestamp"), false),
+                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
                                        (rs.getBoolean("type")) ? CRUD_ACTION_TYPES.CREATE
                                                : CRUD_ACTION_TYPES.DELETE,
                                        Constants.TABLE_LOG_IN_OUT,

@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.web.bindery.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -287,7 +287,8 @@ public abstract class HistoryDays
             if (today.compareTo(historyData.get(historyDataIndex - 1)) == 0) {
                 historyItems[historyDataIndex++] = getDayItem(today, lang.today(), ATTR_TEXT_TO_SHOW);
             }
-            if (yesterday.compareTo(historyData.get(historyDataIndex - 1)) == 0) {
+            if (historyData.size() >= historyDataIndex
+                    && yesterday.compareTo(historyData.get(historyDataIndex - 1)) == 0) {
                 historyItems[historyDataIndex++] = getDayItem(yesterday, lang.yesterday(), ATTR_TEXT_TO_SHOW);
             }
 
@@ -315,6 +316,8 @@ public abstract class HistoryDays
             }
             if (!historyData.isEmpty()) {
                 historyTopGrid.analyzeHistoryData(historyData, historyDataIndex, historyItems);
+            } else {
+                historyTopGrid.setData(historyItems);
             }
         }
     }

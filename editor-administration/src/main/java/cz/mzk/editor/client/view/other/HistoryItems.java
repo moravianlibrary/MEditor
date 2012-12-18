@@ -320,6 +320,7 @@ public class HistoryItems
             }
             detailLayout.addMember(showChildren);
         }
+
         bottomLayout.redraw();
     }
 

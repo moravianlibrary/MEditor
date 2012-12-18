@@ -182,6 +182,7 @@ public class DAOUtilsImpl
                                       String name,
                                       String description,
                                       String input_queue_dir_path,
+                                      boolean state,
                                       boolean closeCon) throws DatabaseException, SQLException {
 
         PreparedStatement selSt = null;
@@ -216,7 +217,7 @@ public class DAOUtilsImpl
                     changed = true;
                 }
 
-                if (!rs.getBoolean("state")) {
+                if (state == rs.getBoolean("state")) {
                     changed = true;
                 }
 
@@ -228,6 +229,7 @@ public class DAOUtilsImpl
                                                 chaName,
                                                 chaDescription,
                                                 chaInputPath,
+                                                state,
                                                 closeCon);
                 } else {
                     successful = true;
@@ -239,6 +241,7 @@ public class DAOUtilsImpl
                                             name,
                                             description,
                                             input_queue_directory_path,
+                                            state,
                                             closeCon);
             }
 
@@ -267,6 +270,7 @@ public class DAOUtilsImpl
                                        String name,
                                        String description,
                                        String input_queue_directory_path,
+                                       boolean state,
                                        boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement updateSt = null;
         boolean successful = false;
@@ -283,7 +287,8 @@ public class DAOUtilsImpl
             updateSt.setString(2, name);
             updateSt.setString(3, description);
             updateSt.setString(4, directoryPathToRightFormat(input_queue_directory_path));
-            updateSt.setString(5, uuid);
+            updateSt.setBoolean(5, state);
+            updateSt.setString(6, uuid);
             int updated = updateSt.executeUpdate();
 
             if (updated == 1) {
@@ -309,6 +314,7 @@ public class DAOUtilsImpl
     /**
      * {@inheritDoc}
      * 
+     * @param closeCon2
      * @throws SQLException
      */
     @Override
@@ -317,6 +323,7 @@ public class DAOUtilsImpl
                                        String name,
                                        String description,
                                        String input_queue_directory_path,
+                                       boolean state,
                                        boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement insertSt = null;
         boolean successful = false;
@@ -327,6 +334,7 @@ public class DAOUtilsImpl
             insertSt.setString(3, name);
             insertSt.setString(4, description);
             insertSt.setString(5, directoryPathToRightFormat(input_queue_directory_path));
+            insertSt.setBoolean(6, state);
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {

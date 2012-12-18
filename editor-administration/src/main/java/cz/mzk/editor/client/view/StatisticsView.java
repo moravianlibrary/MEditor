@@ -64,6 +64,7 @@ import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.presenter.StatisticsPresenter;
 import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.ChartsUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
@@ -93,11 +94,6 @@ public class StatisticsView
     public static final String PIE_CHART_NESTED_DIV_ID = "pie_chart_nested_div_id";
     public static final String LINE_CHART_NESTED_DIV_ID = "line_chart_nested_div_id";
     private final HTMLFlow htmlFlow;
-
-    public static final String years = "years";
-    public static final String months = "months";
-    public static final String weeks = "weeks";
-    public static final String days = "days";
 
     private DateItem fromDate;
     private DateItem toDate;
@@ -178,10 +174,10 @@ public class StatisticsView
                 new SelectItem("segmentation", HtmlCode.bold(lang.withSegmentation()));
 
         LinkedHashMap<String, String> segValues = new LinkedHashMap<String, String>();
-        segValues.put(years, lang.years());
-        segValues.put(months, lang.months());
-        segValues.put(weeks, lang.weeks());
-        segValues.put(days, lang.days());
+        segValues.put(STATISTICS_SEGMENTATION.YEARS.getValue(), lang.years());
+        segValues.put(STATISTICS_SEGMENTATION.MONTHS.getValue(), lang.months());
+        segValues.put(STATISTICS_SEGMENTATION.WEEKS.getValue(), lang.weeks());
+        segValues.put(STATISTICS_SEGMENTATION.DAYS.getValue(), lang.days());
 
         segmentation.setValueMap(segValues);
         segmentation.setDefaultValue(lang.days());
