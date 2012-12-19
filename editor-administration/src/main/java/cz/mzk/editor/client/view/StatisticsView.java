@@ -27,6 +27,7 @@ package cz.mzk.editor.client.view;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionAppearance;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -68,11 +70,13 @@ import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.client.util.HtmlCode;
-import cz.mzk.editor.client.view.other.UserStatistics;
+import cz.mzk.editor.client.view.other.UserStatisticsLayout;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
+import cz.mzk.editor.shared.rpc.EditorDate;
+import cz.mzk.editor.shared.rpc.IntervalStatisticData;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
@@ -98,6 +102,8 @@ public class StatisticsView
     private SelectItem segmentation;
     private SelectItem selObject;
     private final VLayout statPart;
+    private CheckboxItem showCharts;
+    private VLayout selLayout;
 
     @Inject
     public StatisticsView(final EventBus eventBus,
@@ -110,32 +116,30 @@ public class StatisticsView
         this.config = config;
         this.eventBus = eventBus;
         this.statPart = new VLayout();
+        //        statPart.setWidth("98%");
 
         mainLayout.setWidth100();
+        mainLayout.setPadding(10);
+        mainLayout.setOverflow(Overflow.AUTO);
 
-        setMaps();
         setSelectionLayout();
 
         mainLayout.addMember(statPart);
-
-    }
-
-    private void setMaps() {
-
     }
 
     private void setSelectionLayout() {
 
-        HLayout selLayout = new HLayout();
+        selLayout = new VLayout();
         selLayout.setWidth100();
         selLayout.setHeight("25%");
         selLayout.setShowEdges(true);
         selLayout.setEdgeSize(3);
         selLayout.setEdgeOpacity(60);
-        selLayout.setMargin(10);
         selLayout.setPadding(5);
 
-        selLayout.addMember(setUserSelect());
+        HLayout paramsLayout = new HLayout();
+
+        paramsLayout.addMember(getUserSelect());
 
         VLayout selectionAndCharts = new VLayout();
         selectionAndCharts.addMember(getSelObjDate());
@@ -144,11 +148,11 @@ public class StatisticsView
         selectionAndCharts.setEdgeSize(2);
         selectionAndCharts.setEdgeOpacity(60);
         selectionAndCharts.setPadding(5);
-        selectionAndCharts.setWidth(450);
+        selectionAndCharts.setWidth("50%");
         selectionAndCharts.setExtraSpace(10);
         selectionAndCharts.setLayoutAlign(Alignment.LEFT);
 
-        selLayout.addMember(selectionAndCharts);
+        paramsLayout.addMember(selectionAndCharts);
 
         showButton = new IButton(lang.show());
         showButton.setLayoutAlign(VerticalAlignment.BOTTOM);
@@ -158,20 +162,88 @@ public class StatisticsView
 
             @Override
             public void onClick(ClickEvent event) {
-                final String segVal = segmentation.getValueAsString();
-                statPart.removeMembers(statPart.getMembers());
-                for (ListGridRecord rec : selectedUsersGrid.getRecords()) {
-                    statPart.addMember(new UserStatistics(rec.getAttributeAsString(Constants.ATTR_ID),
-                                                          selObject.getValueAsString(),
-                                                          fromDate.getValueAsDate(),
-                                                          toDate.getValueAsDate(),
-                                                          segVal,
-                                                          dispatcher));
+                if (statPart.getMembers().length > 0) {
+                    statPart.removeMembers(statPart.getMembers());
+                    selLayout.setWidth100();
+                    statPart.setWidth100();
                 }
+                ListGridRecord[] selRecords = selectedUsersGrid.getRecords();
+                if (selRecords.length > 1) {
+                    selLayout.setWidth(selLayout.getWidth() - 20);
+                    statPart.setWidth(statPart.getWidth() - 20);
+                }
+                if (selRecords.length > 0) {
+                    setLayout(selRecords, 0);
+                }
+            }
+
+            private void setLayout(final ListGridRecord[] selRecords, final int index) {
+                statPart.addMember(new UserStatisticsLayout(selRecords[index],
+                                                            selObject.getValueAsString(),
+                                                            fromDate.getValueAsDate(),
+                                                            toDate.getValueAsDate(),
+                                                            segmentation.getValueAsString(),
+                                                            dispatcher) {
+
+                    @Override
+                    protected void afterDraw() {
+                        if (selRecords.length > index + 1) setLayout(selRecords, index + 1);
+                    }
+
+                    @Override
+                    protected void setData(Map<EditorDate, IntervalStatisticData> data) {
+                        final String[] names = new String[data.size()];
+                        final int[] values = new int[data.size()];
+
+                        int index = data.size() - 1;
+                        for (EditorDate keyDate : data.keySet()) {
+                            STATISTICS_SEGMENTATION seg =
+                                    STATISTICS_SEGMENTATION.parseString(segmentation.getValueAsString());
+                            IntervalStatisticData inteval = data.get(keyDate);
+                            if (seg == STATISTICS_SEGMENTATION.DAYS) {
+                                names[index] = inteval.getFromDate().toString();
+                                values[index--] = inteval.getValue();
+
+                            } else if (seg == STATISTICS_SEGMENTATION.WEEKS) {
+                                String dayFrom = String.valueOf(inteval.getFromDate().getDay());
+                                if (dayFrom.length() == 1) dayFrom = "0" + dayFrom;
+                                String monthFrom = "";
+                                if (inteval.getFromDate().getMonth() != inteval.getToDate().getMonth()) {
+                                    monthFrom = String.valueOf(inteval.getFromDate().getMonth());
+                                    if (monthFrom.length() == 1) {
+                                        monthFrom = ".0" + monthFrom;
+                                    } else {
+                                        monthFrom = "." + monthFrom;
+                                    }
+                                }
+
+                                names[index] =
+                                        dayFrom + monthFrom + ". - "
+                                                + inteval.getToDate().toString().replaceAll(" ", "");
+                                values[index--] = inteval.getValue();
+
+                            } else if (seg == STATISTICS_SEGMENTATION.MONTHS) {
+                                names[index] = String.valueOf(inteval.getFromDate().getMonth());
+                                values[index--] = inteval.getValue();
+
+                            } else if (seg == STATISTICS_SEGMENTATION.YEARS) {
+                                names[index] = String.valueOf(inteval.getFromDate().getYear());
+                                values[index--] = inteval.getValue();
+                            }
+                        }
+
+                        showChart(names, values);
+                    }
+
+                });
             }
         });
 
+        paramsLayout.setExtraSpace(5);
+
+        selLayout.addMember(paramsLayout);
         selLayout.addMember(showButton);
+        selLayout.setExtraSpace(5);
         mainLayout.addMember(selLayout);
     }
 
@@ -180,7 +252,7 @@ public class StatisticsView
         HLayout chartsChooserLayout = new HLayout();
         chartsChooserLayout.setWidth(200);
 
-        final CheckboxItem showCharts = new CheckboxItem("showCharts", HtmlCode.bold(lang.showCharts()));
+        showCharts = new CheckboxItem("showCharts", HtmlCode.bold(lang.showCharts()));
         showCharts.setDefaultValue(true);
 
         segmentation = new SelectItem("segmentation", HtmlCode.bold(lang.withSegmentation()));
@@ -200,18 +272,18 @@ public class StatisticsView
         showChartsForm.setItems(showCharts);
         showChartsForm.setExtraSpace(30);
 
-        showCharts.addChangedHandler(new ChangedHandler() {
-
-            @Override
-            public void onChanged(ChangedEvent event) {
-                if (showCharts.getValueAsBoolean()) {
-                    segmentation.show();
-                } else {
-                    segmentation.hide();
-                }
-
-            }
-        });
+        //        showCharts.addChangedHandler(new ChangedHandler() {
+        //
+        //            @Override
+        //            public void onChanged(ChangedEvent event) {
+        //                if (showCharts.getValueAsBoolean()) {
+        //                    segmentation.show();
+        //                } else {
+        //                    segmentation.hide();
+        //                }
+        //
+        //            }
+        //        });
 
         DynamicForm segChartsForm = new DynamicForm();
         segChartsForm.setItems(segmentation);
@@ -244,8 +316,11 @@ public class StatisticsView
         selObject.setWrapTitle(false);
         objectAndTime.setItems(selObject);
 
-        HTMLFlow selObjFlow = new HTMLFlow(HtmlCode.title(lang.showInsertedCount(), 3));
+        HTMLFlow selObjFlow =
+                new HTMLFlow(HtmlCode.title(lang.show() + " " + lang.insertedObjCount().toLowerCase(), 3));
         selObjFlow.setWidth(250);
+        selObjFlow.setHeight(30);
+
         selObjLayout.addMember(selObjFlow);
         selObjLayout.addMember(objectAndTime);
 
@@ -274,6 +349,7 @@ public class StatisticsView
         dates.setWidth(150);
 
         HTMLFlow intevalFlow = new HTMLFlow(HtmlCode.title(lang.inInterval(), 3));
+        intevalFlow.setHeight(30);
         selIntLayout.addMember(intevalFlow);
         selIntLayout.addMember(dates);
 
@@ -329,12 +405,11 @@ public class StatisticsView
         return selObjDateLayout;
     }
 
-    private HLayout setUserSelect() {
+    private HLayout getUserSelect() {
         HLayout userLayout = new HLayout();
         userLayout.setExtraSpace(10);
 
         selectedUsersGrid = new ListGrid();
-        selectedUsersGrid.setWidth(200);
         selectedUsersGrid.setShowAllRecords(true);
         selectedUsersGrid.setCanReorderRecords(true);
         ListGridField selectedUsersField = new ListGridField(Constants.ATTR_NAME, lang.selectedUsers());
@@ -349,7 +424,7 @@ public class StatisticsView
         selectedUsersGrid.setFields(selectedUsersField);
 
         final ListGrid usersGrid = new ListGrid();
-        usersGrid.setWidth(350);
+        usersGrid.setWidth("60%");
         usersGrid.setShowAllRecords(true);
         usersGrid.setSelectionType(SelectionStyle.SIMPLE);
         usersGrid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
@@ -405,9 +480,10 @@ public class StatisticsView
 
         selUserLayout.addMember(selectedUsersGrid);
         selUserLayout.addMember(showChartsForAllForm);
+        selUserLayout.setWidth("40%");
 
         userLayout.addMember(selUserLayout);
-        userLayout.setWidth(550);
+        userLayout.setWidth("50%");
         return userLayout;
     }
 

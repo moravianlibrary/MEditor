@@ -332,5 +332,53 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<profile>
+			<id>medit</id>
+			<build>
+				<plugins>
+					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<draftCompile>true</draftCompile>
+							<soyc>false</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<!--<style>OBF</style> -->
+							<style>DETAILED</style>
+							<strict>true</strict>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.MEditor</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.MEditor</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>

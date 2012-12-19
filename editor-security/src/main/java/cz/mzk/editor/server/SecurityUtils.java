@@ -46,17 +46,4 @@ public class SecurityUtils {
 
     }
 
-    public static void redirectToHostDebugMode(HttpServletRequest request, HttpServletResponse response) {
-
-        String root =
-                "http://"
-                        + request.getServerName()
-                        + (request.getServerPort() == 80 || request.getServerPort() == 443 ? ""
-                                : (":" + request.getServerPort())) + URLS.ROOT()
-                        + "?gwt.codesvr=127.0.0.1:9997";
-        URLS.redirect(response,
-                      root.substring(0, root.indexOf("?")) + URLS.MAIN_PAGE
-                              + root.substring(root.indexOf("?")));
-
-    }
 }

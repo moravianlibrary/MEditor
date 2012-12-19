@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -45,6 +46,7 @@ import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.SecurityUtils;
+import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
 
@@ -115,8 +117,12 @@ public class LDAPAuthenticationFilter
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        super.successfulAuthentication(request, response, chain, authResult);
-        if (configuration.isLocalhost()) SecurityUtils.redirectToHostDebugMode(request, response);
+        if (!configuration.isLocalhost()) {
+            super.successfulAuthentication(request, response, chain, authResult);
+        } else {
+            SecurityContextHolder.getContext().setAuthentication(authResult);
+            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE + "?gwt.codesvr=127.0.0.1:9997"));
+        }
 
     }
 }
