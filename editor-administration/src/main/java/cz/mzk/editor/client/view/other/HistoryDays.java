@@ -73,7 +73,7 @@ public abstract class HistoryDays
     private static final String ATTR_DATE = "date";
 
     private List<EditorDate> thisMonth = null;
-    private static Map<Integer, String> months = null;
+    private final Map<Integer, String> months;
     private final EventBus eventBus;
     private Long userId;
     private String uuid;
@@ -231,8 +231,7 @@ public abstract class HistoryDays
         this.dispatcher = dispatcher;
         this.lang = lang;
         this.eventBus = eventBus;
-
-        setMonth();
+        this.months = MonthsUtils.getMonths(lang);
 
         setWidth("20%");
         setMargin(5);
@@ -345,22 +344,6 @@ public abstract class HistoryDays
         }
         SC.warn("There is a problem with months mapping. Please contact the administrator!");
         return 0;
-    }
-
-    private void setMonth() {
-        months = new HashMap<Integer, String>(12);
-        months.put(1, lang.january());
-        months.put(2, lang.february());
-        months.put(3, lang.march());
-        months.put(4, lang.april());
-        months.put(5, lang.may());
-        months.put(6, lang.june());
-        months.put(7, lang.july());
-        months.put(8, lang.august());
-        months.put(9, lang.september());
-        months.put(10, lang.october());
-        months.put(11, lang.november());
-        months.put(12, lang.december());
     }
 
     /**

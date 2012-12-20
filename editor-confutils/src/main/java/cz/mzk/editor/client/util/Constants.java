@@ -770,6 +770,9 @@ public class Constants {
     /** The Constant ATTR_IS_MORE_INFO. */
     public static final String ATTR_IS_MORE_INFO = "isMoreInfo";
 
+    /** The Constant ATTR_INTERVAL. */
+    public static final String ATTR_INTERVAL = "interval";
+
     // fedora
     /** The Constant FEDORA_MODEL_PREFIX. */
     public static final String FEDORA_MODEL_PREFIX = "model:";

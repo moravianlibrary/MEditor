@@ -25,6 +25,7 @@
 package cz.mzk.editor.client.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,7 @@ import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.client.util.HtmlCode;
+import cz.mzk.editor.client.view.other.MonthsUtils;
 import cz.mzk.editor.client.view.other.UserStatisticsLayout;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
@@ -103,7 +105,10 @@ public class StatisticsView
     private SelectItem selObject;
     private final VLayout statPart;
     private CheckboxItem showCharts;
+    private CheckboxItem showChartsForAll;
     private VLayout selLayout;
+
+    private String[] intervals = null;
 
     @Inject
     public StatisticsView(final EventBus eventBus,
@@ -116,7 +121,6 @@ public class StatisticsView
         this.config = config;
         this.eventBus = eventBus;
         this.statPart = new VLayout();
-        //        statPart.setWidth("98%");
 
         mainLayout.setWidth100();
         mainLayout.setPadding(10);
@@ -158,6 +162,8 @@ public class StatisticsView
         showButton.setLayoutAlign(VerticalAlignment.BOTTOM);
         showButton.setDisabled(true);
 
+        final HashMap<String, Integer[]> userValues = new HashMap<String, Integer[]>();
+
         showButton.addClickHandler(new ClickHandler() {
 
             @Override
@@ -168,71 +174,73 @@ public class StatisticsView
                     statPart.setWidth100();
                 }
                 ListGridRecord[] selRecords = selectedUsersGrid.getRecords();
+                if (!userValues.isEmpty()) {
+                    userValues.clear();
+                }
                 if (selRecords.length > 1) {
                     selLayout.setWidth(selLayout.getWidth() - 20);
                     statPart.setWidth(statPart.getWidth() - 20);
                 }
+
+                intervals = null;
+
                 if (selRecords.length > 0) {
                     setLayout(selRecords, 0);
                 }
             }
 
             private void setLayout(final ListGridRecord[] selRecords, final int index) {
-                statPart.addMember(new UserStatisticsLayout(selRecords[index],
+                statPart.addMember(new UserStatisticsLayout(selRecords != null ? selRecords[index] : null,
                                                             selObject.getValueAsString(),
                                                             fromDate.getValueAsDate(),
                                                             toDate.getValueAsDate(),
                                                             segmentation.getValueAsString(),
-                                                            dispatcher) {
+                                                            dispatcher,
+                                                            lang) {
 
                     @Override
                     protected void afterDraw() {
-                        if (selRecords.length > index + 1) setLayout(selRecords, index + 1);
+                        if (selRecords.length > index + 1) {
+                            setLayout(selRecords, index + 1);
+                        } else if (!showChartsForAll.isDisabled() && showChartsForAll.getValueAsBoolean()) {
+                            setLayout(null, 0);
+                        }
                     }
 
                     @Override
-                    protected void setData(Map<EditorDate, IntervalStatisticData> data) {
-                        final String[] names = new String[data.size()];
-                        final int[] values = new int[data.size()];
+                    protected void setData(Map<EditorDate, IntervalStatisticData> data, String userName) {
+                        if (data != null) {
 
-                        int index = data.size() - 1;
-                        for (EditorDate keyDate : data.keySet()) {
+                            final Integer[] values = new Integer[data.size()];
+
                             STATISTICS_SEGMENTATION seg =
                                     STATISTICS_SEGMENTATION.parseString(segmentation.getValueAsString());
-                            IntervalStatisticData inteval = data.get(keyDate);
-                            if (seg == STATISTICS_SEGMENTATION.DAYS) {
-                                names[index] = inteval.getFromDate().toString();
-                                values[index--] = inteval.getValue();
+                            if (intervals == null) setIntervals(data, seg);
 
-                            } else if (seg == STATISTICS_SEGMENTATION.WEEKS) {
-                                String dayFrom = String.valueOf(inteval.getFromDate().getDay());
-                                if (dayFrom.length() == 1) dayFrom = "0" + dayFrom;
-                                String monthFrom = "";
-                                if (inteval.getFromDate().getMonth() != inteval.getToDate().getMonth()) {
-                                    monthFrom = String.valueOf(inteval.getFromDate().getMonth());
-                                    if (monthFrom.length() == 1) {
-                                        monthFrom = ".0" + monthFrom;
-                                    } else {
-                                        monthFrom = "." + monthFrom;
-                                    }
+                            int index = data.size() - 1;
+                            for (EditorDate keyDate : data.keySet()) {
+
+                                IntervalStatisticData inteval = data.get(keyDate);
+                                if (seg == STATISTICS_SEGMENTATION.DAYS) {
+                                    values[index--] = inteval.getValue();
+
+                                } else if (seg == STATISTICS_SEGMENTATION.WEEKS) {
+                                    values[index--] = inteval.getValue();
+
+                                } else if (seg == STATISTICS_SEGMENTATION.MONTHS) {
+                                    values[index--] = inteval.getValue();
+
+                                } else if (seg == STATISTICS_SEGMENTATION.YEARS) {
+                                    values[index--] = inteval.getValue();
                                 }
-
-                                names[index] =
-                                        dayFrom + monthFrom + ". - "
-                                                + inteval.getToDate().toString().replaceAll(" ", "");
-                                values[index--] = inteval.getValue();
-
-                            } else if (seg == STATISTICS_SEGMENTATION.MONTHS) {
-                                names[index] = String.valueOf(inteval.getFromDate().getMonth());
-                                values[index--] = inteval.getValue();
-
-                            } else if (seg == STATISTICS_SEGMENTATION.YEARS) {
-                                names[index] = String.valueOf(inteval.getFromDate().getYear());
-                                values[index--] = inteval.getValue();
                             }
-                        }
 
-                        showChart(names, values);
+                            userValues.put(userName, values);
+
+                            showChartAndTable(intervals, values, showCharts.getValueAsBoolean());
+                        } else {
+                            showChartAndTable(intervals, userValues, showCharts.getValueAsBoolean());
+                        }
                     }
 
                 });
@@ -245,6 +253,41 @@ public class StatisticsView
         selLayout.addMember(showButton);
         selLayout.setExtraSpace(5);
         mainLayout.addMember(selLayout);
+    }
+
+    private void setIntervals(Map<EditorDate, IntervalStatisticData> data, STATISTICS_SEGMENTATION seg) {
+        intervals = new String[data.size()];
+        int index = data.size() - 1;
+
+        for (EditorDate keyDate : data.keySet()) {
+            IntervalStatisticData inteval = data.get(keyDate);
+
+            if (seg == STATISTICS_SEGMENTATION.DAYS) {
+                intervals[index--] = inteval.getFromDate().toString();
+
+            } else if (seg == STATISTICS_SEGMENTATION.WEEKS) {
+                String dayFrom = String.valueOf(inteval.getFromDate().getDay());
+                if (dayFrom.length() == 1) dayFrom = "0" + dayFrom;
+                String monthFrom = "";
+                if (inteval.getFromDate().getMonth() != inteval.getToDate().getMonth()) {
+                    monthFrom = String.valueOf(inteval.getFromDate().getMonth());
+                    if (monthFrom.length() == 1) {
+                        monthFrom = ".0" + monthFrom;
+                    } else {
+                        monthFrom = "." + monthFrom;
+                    }
+                }
+
+                intervals[index--] =
+                        dayFrom + monthFrom + ". - " + inteval.getToDate().toString().replaceAll(" ", "");
+
+            } else if (seg == STATISTICS_SEGMENTATION.MONTHS) {
+                intervals[index--] = MonthsUtils.getMonths(lang).get(inteval.getFromDate().getMonth());
+
+            } else if (seg == STATISTICS_SEGMENTATION.YEARS) {
+                intervals[index--] = String.valueOf(inteval.getFromDate().getYear());
+            }
+        }
     }
 
     private HLayout getChartsChooser() {
@@ -271,19 +314,6 @@ public class StatisticsView
         DynamicForm showChartsForm = new DynamicForm();
         showChartsForm.setItems(showCharts);
         showChartsForm.setExtraSpace(30);
-
-        //        showCharts.addChangedHandler(new ChangedHandler() {
-        //
-        //            @Override
-        //            public void onChanged(ChangedEvent event) {
-        //                if (showCharts.getValueAsBoolean()) {
-        //                    segmentation.show();
-        //                } else {
-        //                    segmentation.hide();
-        //                }
-        //
-        //            }
-        //        });
 
         DynamicForm segChartsForm = new DynamicForm();
         segChartsForm.setItems(segmentation);
@@ -376,6 +406,7 @@ public class StatisticsView
 
                         while (!modelList.isEmpty()) {
                             DigitalObjectModel lastObj = modelList.remove(modelList.size() - 1);
+                            //                              title,
                             if (!isPage && lastObj == DigitalObjectModel.PAGE) isPage = true;
                             String labelModel =
                                     LabelAndModelConverter.getLabelFromModel().get(lastObj.getValue());
@@ -457,8 +488,9 @@ public class StatisticsView
         VLayout selUserLayout = new VLayout();
 
         final DynamicForm showChartsForAllForm = new DynamicForm();
-        CheckboxItem showChartsForAll =
-                new CheckboxItem("showCharts", HtmlCode.bold(lang.showUnifyingCharts()));
+        showChartsForAll =
+                new CheckboxItem("showCharts", HtmlCode.bold(lang.show() + " "
+                        + lang.unifyingCharts().toLowerCase()));
         showChartsForAll.setDefaultValue(true);
         showChartsForAllForm.setItems(showChartsForAll);
         showChartsForAllForm.setDisabled(true);

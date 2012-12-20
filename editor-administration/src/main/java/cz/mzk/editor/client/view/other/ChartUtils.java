@@ -32,8 +32,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class ChartUtils {
 
-    public static native void drawPieChart(JavaScriptObject names, JavaScriptObject pages, int size,
-    //                                           String title,
+    public static native void drawPieChart(JavaScriptObject names,
+                                           JavaScriptObject pages,
+                                           int size,
                                            String chartNestedDivId) /*-{
 
 		var dataTable = new $wnd.google.visualization.DataTable();
@@ -50,16 +51,16 @@ public class ChartUtils {
 		var chart = new $wnd.google.visualization.PieChart($doc
 				.getElementById(chartNestedDivId));
 		chart.draw(dataTable, {
-			//			title : title,
-			width : 400,
+			width : 450,
 			height : 240,
 			is3D : true
 		});
 
     }-*/;
 
-    public static native void drawLineChart(JavaScriptObject names, JavaScriptObject pages, int size,
-    //                                            String title,
+    public static native void drawLineChart(JavaScriptObject names,
+                                            JavaScriptObject pages,
+                                            int size,
                                             String chartNestedDivId) /*-{
 
 		var dataTable = new $wnd.google.visualization.DataTable();
@@ -76,11 +77,38 @@ public class ChartUtils {
 		var chart = new $wnd.google.visualization.LineChart($doc
 				.getElementById(chartNestedDivId));
 		chart.draw(dataTable, {
-			//			title : title,
+			colors : [ '#9d7100' ],
 			legend : 'none',
 			width : 600,
 			height : 240,
 			is3D : true
+		});
+
+    }-*/;
+
+    public static native void drawBarChart(JavaScriptObject names,
+                                           JavaScriptObject pages,
+                                           int size,
+                                           String chartNestedDivId) /*-{
+
+		var dataTable = new $wnd.google.visualization.DataTable();
+
+		dataTable.addColumn('string', 'Task');
+		dataTable.addColumn('number', 'Object per time');
+		dataTable.addRows(size);
+
+		for ( var i = 0; i < names.length; i++) {
+			dataTable.setValue(i, 0, names[i]);
+			dataTable.setValue(i, 1, pages[i]);
+		}
+
+		var chart = new $wnd.google.visualization.BarChart($doc
+				.getElementById(chartNestedDivId));
+		chart.draw(dataTable, {
+			colors : [ '#00d287' ],
+			legend : 'none',
+			width : 600,
+			height : 240
 		});
 
     }-*/;
