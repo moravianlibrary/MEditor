@@ -256,7 +256,7 @@ public class DigitalObjectDAOImpl
         updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_UUID);
         updateSt.setString(1, newPid);
         updateSt.setString(2, oldPid);
-        updateSt.setString(2, lowerObjPid);
+        updateSt.setString(3, lowerObjPid);
 
         return updateSt;
 
