@@ -42,7 +42,6 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -57,6 +56,7 @@ import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.presenter.StoredAndLocksPresenter;
 import cz.mzk.editor.client.uihandlers.StoredAndLocksUiHandlers;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.StoredWorkingCopyGrid;
 import cz.mzk.editor.client.view.other.UserSelect;
@@ -67,6 +67,8 @@ import cz.mzk.editor.shared.rpc.action.GetAllLockItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllLockItemsResult;
 import cz.mzk.editor.shared.rpc.action.GetAllStoredTreeStructureItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllStoredTreeStructureItemsResult;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsAction;
 import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsResult;
 import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectAction;
@@ -109,7 +111,7 @@ public class StoredAndLocksView
     }
 
     private final VStack mainLayout;
-    private SelectItem users;
+    private final UserSelect users;
     private static LangConstants lang;
     private final DispatchAsync dispatcher;
     private StoredWorkingCopyGrid storedWorkingCopyGrid;
@@ -126,7 +128,22 @@ public class StoredAndLocksView
         this.lang = lang;
         this.dispatcher = dispatcher;
 
-        setUserSelect();
+        users = new UserSelect(lang.users(), dispatcher);
+        final DynamicForm usersForm = new DynamicForm();
+        mainLayout.addMember(usersForm);
+        dispatcher
+                .execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.SHOW_ALL_STORED_AND_LOCKS}),
+                         new DispatchCallback<HasUserRightsResult>() {
+
+                             @Override
+                             public void callback(HasUserRightsResult result) {
+                                 if (result.getOk()[0]) {
+                                     users.fetch();
+                                     usersForm.setItems(users);
+                                     setUserSelect();
+                                 }
+                             }
+                         });
 
         HLayout hLayout = new HLayout(2);
         hLayout.setHeight("90%");
@@ -144,7 +161,6 @@ public class StoredAndLocksView
     }
 
     private void setUserSelect() {
-        users = new UserSelect(lang.users(), dispatcher);
         users.addChangedHandler(new ChangedHandler() {
 
             @Override
@@ -160,10 +176,7 @@ public class StoredAndLocksView
                 locksTitle.setContents(HtmlCode.title(lang.locks(), 3));
             }
         });
-        DynamicForm usersForm = new DynamicForm();
-        usersForm.setItems(users);
 
-        mainLayout.addMember(usersForm);
     }
 
     private VLayout getActiveLocksLayout() {
@@ -371,7 +384,7 @@ public class StoredAndLocksView
                                            if (result.isSuccessful()) {
                                                storedStructures.removeSelectedData();
                                            } else {
-                                               SC.warn(lang.operationSuccessful());
+                                               SC.warn(lang.operationFailed());
                                            }
                                            mw.hide();
                                        }

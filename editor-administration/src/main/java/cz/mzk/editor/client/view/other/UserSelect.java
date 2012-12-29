@@ -41,29 +41,32 @@ import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 public class UserSelect
         extends SelectItem {
 
+    private final DispatchAsync dispatcher;
+
     /**
      * 
      */
     public UserSelect(String title, DispatchAsync dispatcher) {
         super("users", title);
+        this.dispatcher = dispatcher;
+    }
 
-        //      TODO
-        if (true) {
-            GetUsersInfoAction getUsersAction = new GetUsersInfoAction();
-            DispatchCallback<GetUsersInfoResult> usersCallback = new DispatchCallback<GetUsersInfoResult>() {
+    public void fetch() {
+        GetUsersInfoAction getUsersAction = new GetUsersInfoAction();
+        DispatchCallback<GetUsersInfoResult> usersCallback = new DispatchCallback<GetUsersInfoResult>() {
 
-                @Override
-                public void callback(GetUsersInfoResult result) {
-                    LinkedHashMap<String, String> allUsers = new LinkedHashMap<String, String>();
+            @Override
+            public void callback(GetUsersInfoResult result) {
+                LinkedHashMap<String, String> allUsers = new LinkedHashMap<String, String>();
 
-                    for (UserInfoItem userItem : result.getItems()) {
-                        allUsers.put(userItem.getId().toString(),
-                                     userItem.getSurname() + " " + userItem.getName());
-                    }
-                    setValueMap(allUsers);
+                for (UserInfoItem userItem : result.getItems()) {
+                    allUsers.put(userItem.getId().toString(),
+                                 userItem.getSurname() + " " + userItem.getName());
                 }
-            };
-            dispatcher.execute(getUsersAction, usersCallback);
-        }
+                setValueMap(allUsers);
+            }
+        };
+        dispatcher.execute(getUsersAction, usersCallback);
+
     }
 }

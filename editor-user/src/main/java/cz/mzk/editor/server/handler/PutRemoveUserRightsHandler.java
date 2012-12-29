@@ -73,6 +73,11 @@ public class PutRemoveUserRightsHandler
         LOGGER.debug("Processing action: PutRemoveUserRightsAction");
         ServerUtils.checkExpiredSession();
 
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
         boolean successful = true;
         for (String right : action.getRightNames()) {
             try {

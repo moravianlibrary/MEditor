@@ -41,8 +41,10 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.server.util.EditorDateUtils;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.HistoryItem;
@@ -159,17 +161,15 @@ public class ActionDAOImpl
     public static final String SELECT_DO_DAYS = "SELECT timestamp FROM "
             + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION + " WHERE digital_object_uuid = (?)";
 
-    //    
-
     public static final String SELECT_DO_LOCK_ACTION =
-            "SELECT au.id, au.name, au.surname, au.timestamp, au.type FROM ((SELECT * FROM "
+            "SELECT au.id, au.name, au.surname, au.timestamp, au.type, au.user_id FROM ((SELECT * FROM "
                     + Constants.TABLE_CRUD_LOCK_ACTION + " a WHERE a.lock_id = (SELECT id FROM "
                     + Constants.TABLE_LOCK + " l WHERE digital_object_uuid = (?)) AND "
                     + INTERVAL_CONSTRAINTS + ") al LEFT JOIN (SELECT id AS user_id, name, surname FROM "
                     + Constants.TABLE_EDITOR_USER + ") u ON al.editor_user_id = u.user_id) au";
 
     public static final String SELECT_DO_EDIT_SAVED_ACTION =
-            "SELECT au.id, au.name, au.surname, au.timestamp, au.type FROM ((SELECT * FROM "
+            "SELECT au.id, au.name, au.surname, au.timestamp, au.type, au.user_id FROM ((SELECT * FROM "
                     + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION
                     + " a WHERE a.saved_edited_object_id = (SELECT id FROM "
                     + Constants.TABLE_SAVED_EDITED_OBJECT + " s WHERE digital_object_uuid = (?)) AND "
@@ -177,7 +177,7 @@ public class ActionDAOImpl
                     + Constants.TABLE_EDITOR_USER + ") u ON aso.editor_user_id = u.user_id) au";
 
     public static final String SELECT_DO_ACTION =
-            "SELECT  uo.id, uo.name, uo.surname, uo.timestamp, uo.type, uo.tableName FROM ((SELECT * FROM (SELECT t.id, t.editor_user_id, t.timestamp, t.type, t.digital_object_uuid, p.relname AS tableName FROM "
+            "SELECT  uo.id, uo.name, uo.surname, uo.timestamp, uo.type, uo.tableName, uo.user_id FROM ((SELECT * FROM (SELECT t.id, t.editor_user_id, t.timestamp, t.type, t.digital_object_uuid, p.relname AS tableName FROM "
                     + Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION
                     + " t INNER JOIN pg_class p ON t.tableoid = p.oid) a WHERE a.digital_object_uuid = (?) AND "
                     + INTERVAL_CONSTRAINTS
@@ -372,7 +372,12 @@ public class ActionDAOImpl
             }
         } else if (uuid != null) {
 
-            handleDigitalObjectAction(uuid, lowerLimit, upperLimit, historyItems);
+            try {
+                handleDigitalObjectAction(uuid, lowerLimit, upperLimit, historyItems);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
 
         }
         return historyItems;
@@ -382,45 +387,57 @@ public class ActionDAOImpl
      * @param uuid
      * @param historyItems
      * @throws DatabaseException
+     * @throws SQLException
      */
     private void handleDigitalObjectAction(String uuid,
                                            EditorDate lowerLimit,
                                            EditorDate upperLimit,
-                                           List<HistoryItem> historyItems) throws DatabaseException {
+                                           List<HistoryItem> historyItems) throws DatabaseException,
+            SQLException {
+
+        final boolean showUsers = ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SHOW_DO_HISTORY_USERS);
+        final Long userId = getUserId(true);
 
         new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_ACTION, historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
-                //        TODO
+                String userName = "You have no permission";
+                if (showUsers || rs.getLong("user_id") == userId) {
+                    userName = rs.getString("surname") + " " + rs.getString("name");
+                }
+
                 return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
                         .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
-                        .getString("type")), rs.getString("tableName"), rs.getString("surname") + " "
-                        + rs.getString("name"), true);
+                        .getString("type")), rs.getString("tableName"), userName, true);
             }
         };
         new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_EDIT_SAVED_ACTION, historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
-                //        TODO
-                return new HistoryItem(rs.getLong("id"),
-                                       EditorDateUtils.getEditorDate(rs.getTimestamp("timestamp"), false),
-                                       CRUD_ACTION_TYPES.parseString(rs.getString("type")),
-                                       Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                       rs.getString("surname") + " " + rs.getString("name"),
-                                       true);
+                String userName = "You have no permission";
+                if (showUsers || rs.getLong("user_id") == userId) {
+                    userName = rs.getString("surname") + " " + rs.getString("name");
+                }
+
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
+                        .getString("type")), Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION, userName, true);
             }
         };
         new ActionDAOHandler(null, uuid, lowerLimit, upperLimit, SELECT_DO_LOCK_ACTION, historyItems) {
 
             @Override
             protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
-                //        TODO
+                String userName = "You have no permission";
+                if (showUsers || rs.getLong("user_id") == userId) {
+                    userName = rs.getString("surname") + " " + rs.getString("name");
+                }
+
                 return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
                         .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
-                        .getString("type")), Constants.TABLE_CRUD_LOCK_ACTION, rs.getString("surname") + " "
-                        + rs.getString("name"), true);
+                        .getString("type")), Constants.TABLE_CRUD_LOCK_ACTION, userName, true);
             }
         };
 

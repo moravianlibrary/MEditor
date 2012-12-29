@@ -150,11 +150,12 @@ public abstract class CreateNewRoleWindow
                     public void callback(PutRemoveRolesResult result) {
                         if (result.isSuccessful()) {
                             afterAddAction(rightList);
+                            mw.hide();
+                            hide();
                         } else {
                             SC.warn(lang.operationFailed() + "<br>" + lang.sameName());
+                            mw.hide();
                         }
-                        mw.hide();
-                        hide();
                     }
 
                     /**

@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,6 +36,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -56,6 +60,9 @@ public class GetAllLockItemsHandler
     @Inject
     private StoredAndLocksDAO storedAndLocksDAO;
 
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -63,15 +70,27 @@ public class GetAllLockItemsHandler
     public GetAllLockItemsResult execute(GetAllLockItemsAction action, ExecutionContext context)
             throws ActionException {
 
-        LOGGER.debug("Processing action: GetAllStoredTreeStructureHandler");
+        LOGGER.debug("Processing action: GetAllLockItemsAction");
         ServerUtils.checkExpiredSession();
-        List<ActiveLockItem> items;
+
+        List<ActiveLockItem> items = null;
+
         try {
+            if (action.getUserId() != null
+                    && !ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SHOW_ALL_STORED_AND_LOCKS)
+                    && daoUtils.getUserId(true) != action.getUserId()) {
+                LOGGER.warn("Bad authorization in " + this.getClass().toString());
+                throw new ActionException("Bad authorization in " + this.getClass().toString());
+            }
+
             items = storedAndLocksDAO.getAllActiveLocks(action.getUserId());
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
 
         return new GetAllLockItemsResult(items);

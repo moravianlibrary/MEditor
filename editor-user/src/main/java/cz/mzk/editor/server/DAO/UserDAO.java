@@ -279,6 +279,15 @@ public interface UserDAO {
     ArrayList<UserInfoItem> getUsers() throws DatabaseException;
 
     /**
+     * Gets the user.
+     * 
+     * @return the user
+     * @throws DatabaseException
+     *         the database exception
+     */
+    UserInfoItem getUser() throws DatabaseException;
+
+    /**
      * Adds the remove role item.
      * 
      * @param roleItem
@@ -301,4 +310,15 @@ public interface UserDAO {
      *         the database exception
      */
     List<EDITOR_RIGHTS> selectRightInRoleItems(String roleName) throws DatabaseException;
+
+    /**
+     * Checks for user right.
+     * 
+     * @param right
+     *        the right
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException;
 }

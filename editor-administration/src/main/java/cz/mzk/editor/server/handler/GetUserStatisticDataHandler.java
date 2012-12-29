@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.text.ParseException;
 
 import java.util.HashMap;
@@ -38,8 +40,10 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.server.DAO.ActionDAO;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.util.EditorDateUtils;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -62,6 +66,9 @@ public class GetUserStatisticDataHandler
     @Inject
     private ActionDAO actionDAO;
 
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -73,6 +80,22 @@ public class GetUserStatisticDataHandler
         ServerUtils.checkExpiredSession();
 
         long userId = Long.parseLong(action.getUserId());
+
+        try {
+            if (daoUtils.getUserId(true) != userId
+                    && !ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SHOW_ALL_STATISTICS)) {
+                LOGGER.warn("Bad authorization in " + this.getClass().toString());
+                throw new ActionException("Bad authorization in " + this.getClass().toString());
+            }
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        }
 
         EditorDate fromDate = EditorDateUtils.getEditorDate(action.getDateFrom(), true);
         EditorDate toDate = EditorDateUtils.getEditorDate(action.getDateTo(), true);

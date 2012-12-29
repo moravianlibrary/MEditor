@@ -27,12 +27,15 @@ package cz.mzk.editor.client.view.other;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.HtmlCode;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 
 /**
  * @author Matous Jobanek
@@ -41,7 +44,7 @@ import cz.mzk.editor.client.util.HtmlCode;
 public class UserHistoryTab
         extends HistoryTab {
 
-    private SelectItem users;
+    private UserSelect users;
 
     /**
      * @param eventBus
@@ -56,7 +59,7 @@ public class UserHistoryTab
     }
 
     private void setUserSelect() {
-        users = new UserSelect(getLang().users(), getDispatcher());
+
         users.addChangedHandler(new ChangedHandler() {
 
             @Override
@@ -67,10 +70,7 @@ public class UserHistoryTab
                                                           2));
             }
         });
-        DynamicForm usersForm = new DynamicForm();
-        usersForm.setItems(users);
 
-        getMainLayout().addMember(usersForm);
     }
 
     /**
@@ -78,7 +78,24 @@ public class UserHistoryTab
      */
     @Override
     protected void setSelection() {
-        setUserSelect();
-    }
 
+        users = new UserSelect(getLang().users(), getDispatcher());
+        final DynamicForm usersForm = new DynamicForm();
+        getMainLayout().addMember(usersForm);
+
+        getDispatcher()
+                .execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.SHOW_ALL_HISTORY}),
+                         new DispatchCallback<HasUserRightsResult>() {
+
+                             @Override
+                             public void callback(HasUserRightsResult result) {
+                                 if (result.getOk()[0]) {
+                                     users.fetch();
+                                     setUserSelect();
+                                     usersForm.setItems(users);
+                                 }
+                             }
+                         });
+
+    }
 }

@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,7 +36,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.ActionDAO;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.EditorDate;
@@ -54,6 +58,9 @@ public class GetHistoryDaysHandler
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(GetHistoryDaysHandler.class);
 
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -66,11 +73,21 @@ public class GetHistoryDaysHandler
 
         List<EditorDate> historyDays = null;
         try {
+            if (action.getUserId() != null
+                    && !ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SHOW_ALL_HISTORY)
+                    && daoUtils.getUserId(true) != action.getUserId()) {
+                LOGGER.warn("Bad authorization in " + this.getClass().toString());
+                throw new ActionException("Bad authorization in " + this.getClass().toString());
+            }
+
             historyDays = actionDAO.getHistoryDays(action.getUserId(), action.getUuid());
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
 
         return new GetHistoryDaysResult(historyDays);

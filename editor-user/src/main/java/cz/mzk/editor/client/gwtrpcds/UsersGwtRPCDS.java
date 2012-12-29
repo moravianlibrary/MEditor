@@ -112,15 +112,17 @@ public class UsersGwtRPCDS
             @Override
             public void callback(final GetUsersInfoResult result) {
                 ArrayList<UserInfoItem> items = result.getItems();
-                ListGridRecord[] list = new ListGridRecord[items.size()];
-                for (int i = 0; i < items.size(); i++) {
-                    ListGridRecord record = new ListGridRecord();
-                    copyValues(items.get(i), record);
-                    list[i] = record;
+                if (items != null) {
+                    ListGridRecord[] list = new ListGridRecord[items.size()];
+                    for (int i = 0; i < items.size(); i++) {
+                        ListGridRecord record = new ListGridRecord();
+                        copyValues(items.get(i), record);
+                        list[i] = record;
+                    }
+                    response.setData(list);
+                    response.setTotalRows(items.size());
+                    processResponse(requestId, response);
                 }
-                response.setData(list);
-                response.setTotalRows(items.size());
-                processResponse(requestId, response);
             }
         });
 

@@ -44,6 +44,7 @@ import cz.mzk.editor.client.NameTokens.ADMIN_MENU_BUTTONS;
 import cz.mzk.editor.client.presenter.AdminMenuPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.AdminMenuUiHandlers;
 import cz.mzk.editor.client.util.HtmlCode;
+import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
 import cz.mzk.editor.shared.event.MenuButtonClickedEvent.MenuButtonClickedHandler;
 
@@ -58,6 +59,7 @@ public class AdminMenuView
     @SuppressWarnings("unused")
     private final LangConstants lang;
     private static EventBus eventBus;
+    final ModalWindow mw;
 
     /** The layout. */
     private final VStack mainLayout;
@@ -137,13 +139,26 @@ public class AdminMenuView
         menu.setExtraSpace(30);
 
         mainLayout.addMember(menu);
+
+        mw = new ModalWindow(mainLayout);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+
+    }
+
+    @Override
+    public void setButtons(boolean showStat, boolean showUsers) {
+
         mainLayout.addMember(new MenuButtonLayout(NameTokens.ADMIN_HOME, lang.home()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.MY_ACOUNT, lang.myAcountMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.HISTORY, lang.historyMenu()));
         mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu()
                 + " " + (lang.and() + " " + lang.locks()).toLowerCase()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STATISTICS, lang.statisticsMenu()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.USERS, lang.users()));
+        if (showStat)
+            mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STATISTICS, lang.statisticsMenu()));
+        if (showUsers) mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.USERS, lang.users()));
+
+        mw.hide();
     }
 
     /**

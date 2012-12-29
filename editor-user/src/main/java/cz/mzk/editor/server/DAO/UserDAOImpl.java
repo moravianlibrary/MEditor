@@ -69,6 +69,10 @@ public class UserDAOImpl
     public static final String SELECT_USERS_STATEMENT = "SELECT id, name, surname FROM "
             + Constants.TABLE_EDITOR_USER + " WHERE state='true' ORDER BY surname";
 
+    /** The Constant SELECT_USER_STATEMENT. */
+    public static final String SELECT_USER_STATEMENT = "SELECT id, name, surname FROM "
+            + Constants.TABLE_EDITOR_USER + " WHERE id=(?)";
+
     /** The Constant DISABLE_USER. */
     public static final String DISABLE_USER = "UPDATE " + Constants.TABLE_EDITOR_USER
             + " SET state='false' WHERE id = (?)";
@@ -263,6 +267,28 @@ public class UserDAOImpl
             closeConnection();
         }
         return retList;
+    }
+
+    @Override
+    public UserInfoItem getUser() throws DatabaseException {
+        PreparedStatement selectSt = null;
+        UserInfoItem user = new UserInfoItem();
+
+        try {
+            selectSt = getConnection().prepareStatement(SELECT_USER_STATEMENT);
+            selectSt.setLong(1, getUserId(false));
+            ResultSet rs = selectSt.executeQuery();
+            if (rs.next()) {
+                if (!Constants.DEFAULT_SYSTEM_USERS.isDefaultSysUser(rs.getLong("id"))) {
+                    user = new UserInfoItem(rs.getString("name"), rs.getString("surname"), rs.getLong("id"));
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return user;
     }
 
     /**
@@ -859,7 +885,7 @@ public class UserDAOImpl
         }
 
         try {
-            if (addRemoveRightInRoleItems(rights, roleItem.getName(), add)) {
+            if (add || addRemoveRightInRoleItems(rights, roleItem.getName(), add)) {
                 updateSt =
                         getConnection().prepareStatement(add ? INSERT_ROLE_STATEMENT : DELETE_ROLE_STATEMENT);
                 updateSt.setString(1, roleItem.getName());
@@ -868,7 +894,7 @@ public class UserDAOImpl
                 if (updateSt.executeUpdate() == 1) {
                     LOGGER.debug("DB has been updated: The role " + roleItem.getName() + " has been "
                             + (add ? "added" : "removed"));
-                    success = true;
+                    if (!add || addRemoveRightInRoleItems(rights, roleItem.getName(), add)) success = true;
                 } else {
                     LOGGER.error("DB has not been updated! " + updateSt);
                 }
@@ -973,7 +999,7 @@ public class UserDAOImpl
 
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(false), userId, "The right has been "
-                                + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, true);
+                                + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, false);
 
                 if (crudSucc) {
                     getConnection().commit();
@@ -1066,4 +1092,9 @@ public class UserDAOImpl
         }
     }
 
+    @Override
+    public boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException {
+
+        return daoUtils.hasUserRight(right);
+    }
 }

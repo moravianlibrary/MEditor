@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -57,6 +61,9 @@ public class GetAllStoredWorkingCopyHandler
     @Inject
     private StoredAndLocksDAO storedAndLocksDAO;
 
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -66,14 +73,23 @@ public class GetAllStoredWorkingCopyHandler
 
         LOGGER.debug("Processing action: GetAllStoredWorkingCopyItemsResult");
         ServerUtils.checkExpiredSession();
-
         List<StoredItem> storedItems = new ArrayList<StoredItem>();
         try {
+            if (action.getUserId() != null
+                    && !ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SHOW_ALL_STORED_AND_LOCKS)
+                    && daoUtils.getUserId(true) != action.getUserId()) {
+                LOGGER.warn("Bad authorization in " + this.getClass().toString());
+                throw new ActionException("Bad authorization in " + this.getClass().toString());
+            }
+
             storedItems = storedAndLocksDAO.getAllStoredWorkingCopyItems(action.getUserId());
         } catch (DatabaseException e) {
             LOGGER.error(e);
             e.printStackTrace();
             throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
 
         return new GetAllStoredWorkingCopyItemsResult(storedItems);

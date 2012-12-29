@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 
 /**
@@ -985,5 +986,40 @@ public class DAOUtilsImpl
             closeConnection();
         }
         return name;
+    }
+
+    @Override
+    public boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException {
+        PreparedStatement selSt = null;
+
+        String HAS_USER_ROLE =
+                "SELECT ((?) IN (SELECT editor_right_name FROM "
+                        + Constants.TABLE_USERS_ROLE
+                        + " uro INNER JOIN "
+                        + Constants.TABLE_RIGHT_IN_ROLE
+                        + " rro ON uro.role_name = rro.role_name WHERE editor_user_id = (?)) OR (?) IN (SELECT editor_right_name FROM "
+                        + Constants.TABLE_USERS_RIGHT + " WHERE editor_user_id = (?))) AS ok";
+
+        boolean ok = false;
+
+        try {
+            selSt = getConnection().prepareStatement(HAS_USER_ROLE);
+            selSt.setString(1, right.toString());
+            selSt.setLong(2, getUserId(false));
+            selSt.setString(3, right.toString());
+            selSt.setLong(4, getUserId(false));
+
+            ResultSet rs = selSt.executeQuery();
+            if (rs.next()) {
+                ok = rs.getBoolean("ok");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selSt, e);
+        } finally {
+            closeConnection();
+        }
+
+        return ok;
     }
 }

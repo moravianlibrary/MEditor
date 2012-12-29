@@ -24,6 +24,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.ActionDAO;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.HistoryItem;
@@ -59,6 +63,9 @@ public class GetHistoryHandler
     @Inject
     private ActionDAO actionDAO;
 
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * Execute.
      * 
@@ -78,6 +85,12 @@ public class GetHistoryHandler
 
         List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
         try {
+            if (action.getEditorUsedId() != null && daoUtils.getUserId(true) != action.getEditorUsedId()
+                    && !ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SHOW_ALL_HISTORY)) {
+                LOGGER.warn("Bad authorization in " + this.getClass().toString());
+                throw new ActionException("Bad authorization in " + this.getClass().toString());
+            }
+
             historyItems =
                     actionDAO.getHistoryItems(action.getEditorUsedId(),
                                               action.getUuid(),
@@ -87,6 +100,9 @@ public class GetHistoryHandler
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
         java.util.Collections.sort(historyItems);
         return new GetHistoryResult(historyItems);

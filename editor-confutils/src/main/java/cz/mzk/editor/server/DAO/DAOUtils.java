@@ -29,6 +29,7 @@ import java.sql.Timestamp;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 
 // TODO: Auto-generated Javadoc
@@ -731,4 +732,16 @@ public interface DAOUtils {
      *         the database exception
      */
     String getName(Long key) throws DatabaseException;
+
+    /**
+     * Checks for user right.
+     * 
+     * @param right
+     *        the right
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException;
+
 }

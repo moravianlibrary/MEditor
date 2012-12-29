@@ -159,15 +159,9 @@ public class Constants {
      */
     public static enum EDITOR_RIGHTS {
 
-        /** The EDI t_ users. */
-        EDIT_USERS(""), /** The SHO w_ al l_ history. */
-        SHOW_ALL_HISTORY(""), /** The PUBLISH. */
-        PUBLISH(""), /** The DELETE. */
-        DELETE(""), /** The CREAT e_ ne w_ objects. */
-        CREATE_NEW_OBJECTS(""),
-
-        /** The RU n_ lon g_ runnin g_ process. */
-        RUN_LONG_RUNNING_PROCESS("");
+        ALL(""), EDIT_USERS(""), SHOW_ALL_STORED_AND_LOCKS(""), SHOW_ALL_STATISTICS(""), SHOW_STATISTICS(""),
+        SHOW_ALL_HISTORY(""), SHOW_DO_HISTORY_USERS(""), PUBLISH(""), DELETE(""), CREATE_NEW_OBJECTS(""),
+        RUN_LONG_RUNNING_PROCESS(""), EDIT_ROLES("");
 
         /** The desc. */
         private final String desc;

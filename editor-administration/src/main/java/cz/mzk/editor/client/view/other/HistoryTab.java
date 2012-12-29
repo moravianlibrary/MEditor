@@ -73,7 +73,8 @@ public abstract class HistoryTab
         titleLayout.addMember(titleFlow);
         titleFlow.setWidth(300);
         titleLayout.setAlign(VerticalAlignment.TOP);
-        titleLayout.setHeight(10);
+        titleLayout.setHeight(15);
+        titleLayout.setExtraSpace(10);
         titleLayout.setMargin(10);
         titleLayout.setWidth(300);
 

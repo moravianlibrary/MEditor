@@ -58,6 +58,7 @@ import org.apache.log4j.Logger;
 import org.springframework.security.core.context.SecurityContext;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.DAO.DAOUtils;
@@ -143,6 +144,21 @@ public class ServerUtils {
         checkExpiredSession(httpSessionProvider.get());
     }
 
+    public static boolean checkUserRightOrAll(EDITOR_RIGHTS right) {
+
+        return checkUserRight(right) || checkUserRight(EDITOR_RIGHTS.ALL);
+    }
+
+    public static boolean checkUserRight(EDITOR_RIGHTS right) {
+        try {
+            return daoUtils.hasUserRight(right);
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private static List<Field> getAllFields(Class<?> clazz) {
         if (clazz == null || clazz.getName().contains("java.util.List")
                 || clazz.getName().contains("java.lang.String")) {
@@ -158,15 +174,17 @@ public class ServerUtils {
 
     private enum KRAMERIUS_ACTION {
         REINDEX("reindex"), GENERATE_DEEP_ZOOM("generate deep zoom");
-        private String actionName;
+
+        private final String actionName;
+
         private KRAMERIUS_ACTION(String actionName) {
-            this.actionName  =  actionName;
+            this.actionName = actionName;
         }
+
         public String getActionName() {
             return this.actionName;
         }
     }
-
 
     public static boolean reindex(String pid) {
         return krameriusRest(KRAMERIUS_ACTION.REINDEX, pid);
@@ -179,7 +197,7 @@ public class ServerUtils {
 
     /**
      * Reindex.
-     *
+     * 
      * @param pid
      *        the pid
      */
@@ -195,14 +213,17 @@ public class ServerUtils {
         switch (action) {
             case REINDEX:
                 url =
-                        host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
-                                + "&userName=" + login + "&pswd=" + password;
+                        host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + ","
+                                + pid + "&userName=" + login + "&pswd=" + password;
                 break;
             case GENERATE_DEEP_ZOOM:
-                url = host + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid + "," + pid
-                        + "&userName=" + login + "&pswd=" + password;
+                url =
+                        host
+                                + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel,"
+                                + pid + "," + pid + "&userName=" + login + "&pswd=" + password;
                 break;
-            default: throw new IllegalArgumentException("Undefined rest action");
+            default:
+                throw new IllegalArgumentException("Undefined rest action");
         }
 
         if (KRAMERIUS_ACTION.REINDEX.equals(action)) {
@@ -212,8 +233,8 @@ public class ServerUtils {
         }
         if (KRAMERIUS_ACTION.GENERATE_DEEP_ZOOM.equals(action)) {
             LOGGER.info(action.getActionName() + pid + " sending HTTP GET to " + host
-                    + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid + "," + pid
-                    + "&userName=***&pswd=***");
+                    + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid
+                    + "," + pid + "&userName=***&pswd=***");
         }
         try {
             RESTHelper.get(url, login, password, false);

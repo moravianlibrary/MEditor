@@ -28,6 +28,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -36,10 +38,12 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.rpc.UserInfoItem;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 
@@ -85,6 +89,21 @@ public class GetUsersInfoHandler
 
         LOGGER.debug("Processing action: GetUsersInfoAction");
         ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)
+                && !ServerUtils.checkUserRight(EDITOR_RIGHTS.SHOW_ALL_STORED_AND_LOCKS)
+                && !ServerUtils.checkUserRight(EDITOR_RIGHTS.SHOW_ALL_STATISTICS)
+                && !ServerUtils.checkUserRight(EDITOR_RIGHTS.SHOW_ALL_HISTORY)) {
+            ArrayList<UserInfoItem> user = new ArrayList<UserInfoItem>();
+            try {
+                user.add(userDAO.getUser());
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new ActionException(e);
+            }
+            return new GetUsersInfoResult(user);
+        }
 
         try {
             return new GetUsersInfoResult(userDAO.getUsers());
