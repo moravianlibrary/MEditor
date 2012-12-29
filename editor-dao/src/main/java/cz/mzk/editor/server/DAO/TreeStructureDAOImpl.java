@@ -55,7 +55,7 @@ import cz.mzk.editor.shared.rpc.TreeStructureInfo;
  * @version 25. 1. 2011
  */
 public class TreeStructureDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements TreeStructureDAO {
 
     //    tree_structure (id, user_id, created, barcode, description, name, input_path, model)    ->
@@ -288,12 +288,12 @@ public class TreeStructureDAOImpl
             if (retList.isEmpty()) {
                 LOGGER.debug("DB has been updated: The tree structure: " + structureId + " has been read.");
                 boolean success =
-                        daoUtils.insertCrudAction(getUserId(false),
-                                                  Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
-                                                  "tree_structure_id",
-                                                  structureId,
-                                                  CRUD_ACTION_TYPES.READ,
-                                                  false);
+                        insertCrudAction(getUserId(false),
+                                         Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
+                                         "tree_structure_id",
+                                         structureId,
+                                         CRUD_ACTION_TYPES.READ,
+                                         false);
                 if (success) {
                     getConnection().commit();
                     LOGGER.debug("DB has been updated by commit.");
@@ -379,12 +379,12 @@ public class TreeStructureDAOImpl
                     getConnection().commit();
 
                     successful =
-                            daoUtils.insertCrudAction(userId,
-                                                      Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
-                                                      "tree_structure_id",
-                                                      key,
-                                                      CRUD_ACTION_TYPES.CREATE,
-                                                      false);
+                            insertCrudAction(userId,
+                                             Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
+                                             "tree_structure_id",
+                                             key,
+                                             CRUD_ACTION_TYPES.CREATE,
+                                             false);
                     if (!successful) {
                         throw new DatabaseException("DB has not been updated: Unable to insert crud action!");
                     }

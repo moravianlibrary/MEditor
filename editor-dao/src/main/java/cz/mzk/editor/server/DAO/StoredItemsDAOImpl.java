@@ -43,7 +43,7 @@ import cz.mzk.editor.shared.rpc.StoredItem;
  */
 
 public class StoredItemsDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements StoredItemsDAO {
 
     //    stored_files (id, user_id, uuid, model, description, stored, file_name) ->
@@ -127,12 +127,12 @@ public class StoredItemsDAOImpl
                     }
                 }
 
-                if (daoUtils.insertCrudAction(userId,
-                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                              "saved_edited_object_id",
-                                              id,
-                                              update ? CRUD_ACTION_TYPES.UPDATE : CRUD_ACTION_TYPES.CREATE,
-                                              true)) {
+                if (insertCrudAction(userId,
+                                     Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                     "saved_edited_object_id",
+                                     id,
+                                     update ? CRUD_ACTION_TYPES.UPDATE : CRUD_ACTION_TYPES.CREATE,
+                                     true)) {
                     getConnection().commit();
                     successful = true;
                     LOGGER.debug("DB has been updated by commit.");

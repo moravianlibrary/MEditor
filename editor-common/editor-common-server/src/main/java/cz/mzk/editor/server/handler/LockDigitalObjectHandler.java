@@ -65,7 +65,7 @@ public class LockDigitalObjectHandler
 
     /** The http session provider. */
     @Inject
-    private static Provider<HttpSession> httpSessionProvider;
+    private Provider<HttpSession> httpSessionProvider;
 
     /** Instantiate a new lock digital object handler **/
     @Inject

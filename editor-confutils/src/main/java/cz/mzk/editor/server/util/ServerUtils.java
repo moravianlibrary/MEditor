@@ -146,7 +146,7 @@ public class ServerUtils {
 
     public static boolean checkUserRightOrAll(EDITOR_RIGHTS right) {
 
-        return checkUserRight(right) || checkUserRight(EDITOR_RIGHTS.ALL);
+        return checkUserRight(EDITOR_RIGHTS.ALL) || checkUserRight(right);
     }
 
     public static boolean checkUserRight(EDITOR_RIGHTS right) {

@@ -50,7 +50,7 @@ import cz.mzk.editor.shared.rpc.RequestItem;
  * The Class UserDAOImpl.
  */
 public class RequestDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements RequestDAO {
 
     /** The Constant SELECT_IDENTITIES_STATEMENT. */
@@ -107,11 +107,11 @@ public class RequestDAOImpl
         }
         if (updated > 0) {
             try {
-                if (daoUtils.insertCrudAction(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
-                                              "request_to_admin_id",
-                                              id,
-                                              CRUD_ACTION_TYPES.UPDATE,
-                                              true)) {
+                if (insertCrudAction(Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
+                                     "request_to_admin_id",
+                                     id,
+                                     CRUD_ACTION_TYPES.UPDATE,
+                                     true)) {
                     getConnection().commit();
                     LOGGER.debug("DB has been updated by commit.");
                 } else {
@@ -168,12 +168,12 @@ public class RequestDAOImpl
                         if (daoUtils == null) {
                             daoUtils = new DAOUtilsImpl();
                         }
-                        if (daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId(),
-                                                      Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
-                                                      "request_to_admin_id",
-                                                      gk.getLong(1),
-                                                      CRUD_ACTION_TYPES.CREATE,
-                                                      false)) {
+                        if (insertCrudAction(DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId(),
+                                             Constants.TABLE_CRUD_REQUEST_TO_ADMIN_ACTION,
+                                             "request_to_admin_id",
+                                             gk.getLong(1),
+                                             CRUD_ACTION_TYPES.CREATE,
+                                             false)) {
                             toReturn = 1;
                             //                            getConnection().commit();
                             LOGGER.debug("DB has been updated by commit.");

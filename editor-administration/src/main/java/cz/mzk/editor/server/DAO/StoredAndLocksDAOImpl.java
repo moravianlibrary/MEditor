@@ -48,7 +48,7 @@ import cz.mzk.editor.shared.rpc.TreeStructureInfo;
  * @version Dec 3, 2012
  */
 public class StoredAndLocksDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements StoredAndLocksDAO {
 
     /** The logger. */
@@ -168,12 +168,12 @@ public class StoredAndLocksDAOImpl
 
             if (deleteSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The edited stored object: " + id + " has been disabled.");
-                if (daoUtils.insertCrudAction(getUserId(false),
-                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                              "saved_edited_object_id",
-                                              id,
-                                              CRUD_ACTION_TYPES.DELETE,
-                                              true)) {
+                if (insertCrudAction(getUserId(false),
+                                     Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                     "saved_edited_object_id",
+                                     id,
+                                     CRUD_ACTION_TYPES.DELETE,
+                                     true)) {
                     getConnection().commit();
                     successful = true;
                     LOGGER.debug("DB has been updated by commit.");
@@ -253,12 +253,12 @@ public class StoredAndLocksDAOImpl
             if (disableSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The tree structure info: " + id + " has been disabled.");
                 boolean success =
-                        daoUtils.insertCrudAction(getUserId(false),
-                                                  Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
-                                                  "tree_structure_id",
-                                                  id,
-                                                  CRUD_ACTION_TYPES.DELETE,
-                                                  false);
+                        insertCrudAction(getUserId(false),
+                                         Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
+                                         "tree_structure_id",
+                                         id,
+                                         CRUD_ACTION_TYPES.DELETE,
+                                         false);
                 if (success) {
                     getConnection().commit();
                     successful = true;
@@ -300,12 +300,12 @@ public class StoredAndLocksDAOImpl
 
                 if (deleteSt.executeUpdate() > 0) {
                     successful =
-                            daoUtils.insertCrudAction(getUserId(false),
-                                                      Constants.TABLE_CRUD_LOCK_ACTION,
-                                                      "lock_id",
-                                                      id,
-                                                      CRUD_ACTION_TYPES.DELETE,
-                                                      false);
+                            insertCrudAction(getUserId(false),
+                                             Constants.TABLE_CRUD_LOCK_ACTION,
+                                             "lock_id",
+                                             id,
+                                             CRUD_ACTION_TYPES.DELETE,
+                                             false);
                 }
 
                 if (successful) {

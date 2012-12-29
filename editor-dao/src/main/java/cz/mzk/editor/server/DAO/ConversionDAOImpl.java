@@ -86,6 +86,8 @@ public class ConversionDAOImpl
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
 
@@ -118,6 +120,8 @@ public class ConversionDAOImpl
             } catch (SQLException e) {
                 LOGGER.error("Select statement: " + selectSt + " " + e.getMessage());
                 e.printStackTrace();
+            } finally {
+                closeConnection();
             }
         }
         return data;

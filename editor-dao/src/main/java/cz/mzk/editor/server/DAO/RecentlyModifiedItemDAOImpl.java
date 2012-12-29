@@ -47,7 +47,7 @@ import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
  * The Class RecentlyModifiedItemDAOImpl.
  */
 public class RecentlyModifiedItemDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements RecentlyModifiedItemDAO {
 
     //     recently_modified_item (id, uuid, name, description, modified, model, user_id)  ->
@@ -123,12 +123,12 @@ public class RecentlyModifiedItemDAOImpl
 
             if (successful)
                 successful =
-                        daoUtils.insertCrudAction(getUserId(false),
-                                                  Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
-                                                  "digital_object_uuid",
-                                                  toPut.getUuid(),
-                                                  CRUD_ACTION_TYPES.READ,
-                                                  false);
+                        insertCrudAction(getUserId(false),
+                                         Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
+                                         "digital_object_uuid",
+                                         toPut.getUuid(),
+                                         CRUD_ACTION_TYPES.READ,
+                                         false);
             if (successful) {
                 getConnection().commit();
                 LOGGER.debug("DB has been updated by commit.");

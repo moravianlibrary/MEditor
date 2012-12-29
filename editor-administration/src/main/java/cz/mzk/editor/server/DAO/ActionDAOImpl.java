@@ -324,6 +324,8 @@ public class ActionDAOImpl
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
 

@@ -41,7 +41,7 @@ import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
  * @version Oct 22, 2012
  */
 public class DigitalObjectDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements DigitalObjectDAO {
 
     /** The Constant LOGGER. */
@@ -96,14 +96,13 @@ public class DigitalObjectDAOImpl
 
                 if (deleteSt.executeUpdate() == 1) {
                     LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been disabled.");
-                    if (daoUtils
-                            .insertCrudActionWithTopObject(getUserId(false),
-                                                           Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
-                                                           "digital_object_uuid",
-                                                           uuid,
-                                                           CRUD_ACTION_TYPES.DELETE,
-                                                           topObjectUuid,
-                                                           true)) {
+                    if (insertCrudActionWithTopObject(getUserId(false),
+                                                      Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                      "digital_object_uuid",
+                                                      uuid,
+                                                      CRUD_ACTION_TYPES.DELETE,
+                                                      topObjectUuid,
+                                                      true)) {
                         getConnection().commit();
                         successful = true;
                         LOGGER.debug("DB has been updated by commit.");
@@ -150,13 +149,13 @@ public class DigitalObjectDAOImpl
             if (daoUtils.checkDigitalObject(pid, model, name, null, DAOUtilsImpl
                     .directoryPathToRightFormat(input_queue_directory_path), state, false))
 
-                if (daoUtils.insertCrudActionWithTopObject(getUserId(false),
-                                                           Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
-                                                           "digital_object_uuid",
-                                                           pid,
-                                                           CRUD_ACTION_TYPES.CREATE,
-                                                           top_digital_object_pid,
-                                                           false)) {
+                if (insertCrudActionWithTopObject(getUserId(false),
+                                                  Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                  "digital_object_uuid",
+                                                  pid,
+                                                  CRUD_ACTION_TYPES.CREATE,
+                                                  top_digital_object_pid,
+                                                  false)) {
                     getConnection().commit();
                     successful = true;
                     LOGGER.debug("DB has been updated by commit.");
@@ -346,5 +345,17 @@ public class DigitalObjectDAOImpl
 
         return updateSt;
 
+    }
+
+    public void insertDOCrudAction(String tableName,
+                                   String fkNameCol,
+                                   Object foreignKey,
+                                   CRUD_ACTION_TYPES type) throws DatabaseException {
+        try {
+            insertCrudAction(tableName, fkNameCol, foreignKey, type, true);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

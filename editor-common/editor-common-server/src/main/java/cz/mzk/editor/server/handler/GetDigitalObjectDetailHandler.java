@@ -31,8 +31,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.sql.SQLException;
-
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -50,9 +48,9 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
+import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
@@ -95,7 +93,7 @@ public class GetDigitalObjectDetailHandler
     private DescriptionDAO descriptionDAO;
 
     @Inject
-    private DAOUtils daoUtils;
+    private DigitalObjectDAO digObjDAO;
 
     /**
      * Instantiates a new gets the digital object detail handler.
@@ -162,16 +160,11 @@ public class GetDigitalObjectDetailHandler
                                                                    storedFOXMLFilePath,
                                                                    action.getModel());
                 try {
-                    daoUtils.insertCrudAction(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                              "saved_edited_object_id",
-                                              action.getSavedEditedObject().getId(),
-                                              CRUD_ACTION_TYPES.READ,
-                                              true);
+                    digObjDAO.insertDOCrudAction(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                                 "saved_edited_object_id",
+                                                 action.getSavedEditedObject().getId(),
+                                                 CRUD_ACTION_TYPES.READ);
                 } catch (DatabaseException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                    throw new ActionException(e);
-                } catch (SQLException e) {
                     LOGGER.error(e.getMessage());
                     e.printStackTrace();
                     throw new ActionException(e);

@@ -45,7 +45,7 @@ import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
  */
 
 public class LockDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements LockDAO {
 
     //    lock (id, uuid, description, modified, user_id) ->
@@ -121,6 +121,13 @@ public class LockDAOImpl
         Long lockId = null;
 
         try {
+            daoUtils.checkDigitalObject(uuid, null, null, null, null, true, true);
+        } catch (SQLException e1) {
+            LOGGER.error(e1.getMessage());
+            e1.printStackTrace();
+        }
+
+        try {
             getConnection().setAutoCommit(false);
         } catch (SQLException e) {
             LOGGER.warn("Unable to set autocommit off", e);
@@ -152,13 +159,12 @@ public class LockDAOImpl
                 }
                 if (lockId != null) {
                     successful =
-                            (daoUtils.insertCrudAction(getUserId(false),
-                                                       Constants.TABLE_CRUD_LOCK_ACTION,
-                                                       "lock_id",
-                                                       lockId,
-                                                       insert ? CRUD_ACTION_TYPES.CREATE
-                                                               : CRUD_ACTION_TYPES.UPDATE,
-                                                       false));
+                            (insertCrudAction(getUserId(false),
+                                              Constants.TABLE_CRUD_LOCK_ACTION,
+                                              "lock_id",
+                                              lockId,
+                                              insert ? CRUD_ACTION_TYPES.CREATE : CRUD_ACTION_TYPES.UPDATE,
+                                              false));
 
                 } else {
                     LOGGER.error("No key has been returned! " + updateSt);
@@ -234,12 +240,12 @@ public class LockDAOImpl
                             + FORMATTER.format(new java.util.Date()) + " because the lock was older than "
                             + DURATION_LOCK);
 
-                    if (daoUtils.insertCrudAction(DEFAULT_SYSTEM_USERS.TIME.getUserId(),
-                                                  Constants.TABLE_CRUD_LOCK_ACTION,
-                                                  "lock_id",
-                                                  id,
-                                                  CRUD_ACTION_TYPES.DELETE,
-                                                  false)) {
+                    if (insertCrudAction(DEFAULT_SYSTEM_USERS.TIME.getUserId(),
+                                         Constants.TABLE_CRUD_LOCK_ACTION,
+                                         "lock_id",
+                                         id,
+                                         CRUD_ACTION_TYPES.DELETE,
+                                         false)) {
                         getConnection().commit();
                         LOGGER.debug("DB has been updated by commit.");
                     } else {

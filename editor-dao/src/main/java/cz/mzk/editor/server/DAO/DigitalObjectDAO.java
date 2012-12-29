@@ -26,7 +26,12 @@ package cz.mzk.editor.server.DAO;
 
 import java.util.List;
 
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+
+// TODO: Auto-generated Javadoc
 /**
+ * The Interface DigitalObjectDAO.
+ * 
  * @author Matous Jobanek
  * @version Oct 22, 2012
  */
@@ -123,4 +128,22 @@ public interface DigitalObjectDAO {
                                 String model,
                                 String name,
                                 String input_queue_directory_path) throws DatabaseException;
+
+    /**
+     * Insert do crud action.
+     * 
+     * @param tableName
+     *        the table name
+     * @param fkNameCol
+     *        the fk name col
+     * @param foreignKey
+     *        the foreign key
+     * @param type
+     *        the type
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void insertDOCrudAction(String tableName, String fkNameCol, Object foreignKey, CRUD_ACTION_TYPES type)
+            throws DatabaseException;
+
 }
