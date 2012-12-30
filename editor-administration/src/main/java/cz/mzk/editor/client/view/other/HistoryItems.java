@@ -246,6 +246,9 @@ public class HistoryItems
         } else if (tableName.equals(Constants.TABLE_LONG_RUNNING_PROCESS)) {
             return getVerb(action, false) + lang.ofLongProc();
 
+        } else if (tableName.equals(Constants.TABLE_USER_EDIT)) {
+            return getVerb(action, false) + lang.ofUserAcount();
+
         } else {
             return lang.unspecAction();
         }

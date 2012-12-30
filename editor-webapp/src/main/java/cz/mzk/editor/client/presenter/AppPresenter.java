@@ -270,7 +270,7 @@ public class AppPresenter
                                     @Override
                                     public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                                         placeManager
-                                                .revealRelativePlace(new PlaceRequest(NameTokens.ADMIN_MENU_BUTTONS.USERS));
+                                                .revealRelativePlace(new PlaceRequest(NameTokens.ADMIN_HOME));
                                     }
                                 });
                     }

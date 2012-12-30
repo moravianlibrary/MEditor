@@ -448,7 +448,7 @@ public class UserDetailLayout
                 }
             });
 
-            final IButton saveButton = new IButton("Save");
+            final IButton saveButton = new IButton(lang.save());
             saveButton.setDisabled(true);
             saveButton.setLayoutAlign(Alignment.RIGHT);
             saveButton.addClickHandler(new ClickHandler() {

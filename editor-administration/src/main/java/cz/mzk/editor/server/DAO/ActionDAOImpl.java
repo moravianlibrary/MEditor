@@ -92,6 +92,13 @@ public class ActionDAOImpl
                     + Constants.TABLE_CRUD_LOCK_ACTION + " ac INNER JOIN " + Constants.TABLE_LOCK
                     + " l ON ac.lock_id = l.id) a WHERE " + USER_ID_AND_INTERVAL_CONSTRAINTS;
 
+    public static final String SELECT_CRUD_USER_EDIT_ACTION =
+            "SELECT * FROM (SELECT ac.id, ac.timestamp, ac.type, u.name, u.surname, ac.description, ac.editor_user_id FROM "
+                    + Constants.TABLE_USER_EDIT
+                    + " ac INNER JOIN "
+                    + Constants.TABLE_EDITOR_USER
+                    + " u ON ac.edited_editor_user_id = u.id) AS a where a.editor_user_id = (?)";
+
     public static final String SELECT_CRUD_SAVED_EDIT_OBJ_ACTION =
             "SELECT * FROM (SELECT ac.id, ac.timestamp, ac.type, o.digital_object_uuid, ac.editor_user_id FROM "
                     + Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION + " ac INNER JOIN "
@@ -366,6 +373,9 @@ public class ActionDAOImpl
                 } else if (tableName.equals(Constants.TABLE_LONG_RUNNING_PROCESS)) {
                     handleLongProcessAction(editorUserId, lowerLimit, upperLimit, historyItems);
 
+                } else if (tableName.equals(Constants.TABLE_USER_EDIT)) {
+                    handleUserEditAction(editorUserId, lowerLimit, upperLimit, historyItems);
+
                 } else {
                     handleDefaultAction(editorUserId, lowerLimit, upperLimit, historyItems, tableName);
                 }
@@ -381,6 +391,34 @@ public class ActionDAOImpl
 
         }
         return historyItems;
+    }
+
+    /**
+     * @param editorUserId
+     * @param lowerLimit
+     * @param upperLimit
+     * @param historyItems
+     * @throws DatabaseException
+     */
+    private void handleUserEditAction(Long editorUserId,
+                                      EditorDate lowerLimit,
+                                      EditorDate upperLimit,
+                                      List<HistoryItem> historyItems) throws DatabaseException {
+        new ActionDAOHandler(editorUserId,
+                             null,
+                             lowerLimit,
+                             upperLimit,
+                             SELECT_CRUD_USER_EDIT_ACTION,
+                             historyItems) {
+
+            @Override
+            protected HistoryItem getHistoryItemFromResultSet(ResultSet rs) throws SQLException {
+                return new HistoryItem(rs.getLong("id"), EditorDateUtils.getEditorDate(rs
+                        .getTimestamp("timestamp"), false), CRUD_ACTION_TYPES.parseString(rs
+                        .getString("type")), Constants.TABLE_USER_EDIT, rs.getString("name") + " "
+                        + rs.getString("surname") + " - " + rs.getString("description"), false);
+            }
+        };
     }
 
     /**

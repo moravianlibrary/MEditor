@@ -460,7 +460,7 @@ public class StatisticsView
         usersGrid.setSelectionType(SelectionStyle.SIMPLE);
         usersGrid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
         ListGridField nameField = new ListGridField(Constants.ATTR_NAME, lang.name());
-        ListGridField surnameField = new ListGridField(Constants.ATTR_SURNAME, lang.surname());
+        ListGridField surnameField = new ListGridField(Constants.ATTR_SURNAME, lang.lastName());
         usersGrid.setFields(nameField, surnameField);
         usersGrid.setSortField(Constants.ATTR_SURNAME);
         usersGrid.sort();

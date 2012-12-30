@@ -440,7 +440,7 @@ public abstract class ModsWindow
                             TextItem newItem = new MyTextItem();
                             newItem.setTitle(part.getType());
                             if (part.getType().equals("date")) newItem.setTooltip(lang.dateParse());
-                            if (part.getType().equals("family")) newItem.setTooltip(lang.surname());
+                            if (part.getType().equals("family")) newItem.setTooltip(lang.lastName());
                             if (part.getType().equals("termsOfAddress")) {
                                 newItem.setTitle("termsOf Address");
                                 newItem.setWrapTitle(true);
@@ -467,7 +467,7 @@ public abstract class ModsWindow
             if (!isFamily) {
                 final TextItem newItem = new MyTextItem();
                 newItem.setTitle(ModsConstants.FAMILY);
-                newItem.setTooltip(lang.surname());
+                newItem.setTooltip(lang.lastName());
                 (i == 0 ? authorPartsOfName1 : authorPartsOfName2).add(newItem);
             }
 
