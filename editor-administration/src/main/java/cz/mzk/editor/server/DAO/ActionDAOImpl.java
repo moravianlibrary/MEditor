@@ -294,8 +294,6 @@ public class ActionDAOImpl
     private void handleDigitalObjectDays(String uuid, List<EditorDate> days) throws DatabaseException {
         PreparedStatement selectSt = null;
 
-        //        TODO
-
         try {
             selectSt = getConnection().prepareStatement(SELECT_DO_DAYS);
             selectSt.setString(1, uuid);

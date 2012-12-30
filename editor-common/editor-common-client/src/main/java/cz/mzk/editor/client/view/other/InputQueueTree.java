@@ -71,6 +71,7 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.gwtrpcds.InputTreeGwtRPCDS;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.NAME_OF_TREE;
 import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.client.view.window.EditorSC;
@@ -81,6 +82,8 @@ import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
@@ -103,6 +106,8 @@ public class InputQueueTree
 
     /** The roll over canvas */
     private HLayout rollOverCanvas;
+
+    private static boolean canLongProcess = true;
 
     public static void setInputTreeToSection(final DispatchAsync dispatcher,
                                              final LangConstants lang,
@@ -304,6 +309,15 @@ public class InputQueueTree
         editMenu.setShadowDepth(10);
         setContextMenu(editMenu);
 
+        dispatcher.execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.LONG_RUNNING_PROCESS}),
+                           new DispatchCallback<HasUserRightsResult>() {
+
+                               @Override
+                               public void callback(HasUserRightsResult result) {
+                                   canLongProcess = result.getOk()[0];
+                               }
+                           });
+
         addCellContextClickHandler(new CellContextClickHandler() {
 
             @Override
@@ -359,9 +373,17 @@ public class InputQueueTree
                             }
 
                         });
-                        editMenu.setItems(createItem, ingestInfo, quartz);
+                        if (canLongProcess) {
+                            editMenu.setItems(createItem, ingestInfo, quartz);
+                        } else {
+                            editMenu.setItems(createItem, ingestInfo);
+                        }
                     } else {
-                        editMenu.setItems(createItem, quartz);
+                        if (canLongProcess) {
+                            editMenu.setItems(createItem, quartz);
+                        } else {
+                            editMenu.setItems(createItem);
+                        }
                     }
 
                     editMenu.setEmptyMessage(path.substring(1, path.length()));

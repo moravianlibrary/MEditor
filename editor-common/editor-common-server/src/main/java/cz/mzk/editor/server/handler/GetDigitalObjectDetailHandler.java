@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
@@ -124,15 +125,22 @@ public class GetDigitalObjectDetailHandler
         LOGGER.debug("Processing action: GetDigitalObjectDetailAction " + action.getUuid());
         ServerUtils.checkExpiredSession();
 
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.OPEN_OBJECT)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
         // parse input
         String uuid = action.getUuid();
         String storedFOXMLFilePath = null;
+
         if (action.getSavedEditedObject() != null && action.getSavedEditedObject().getFileName() != null
                 && !action.getSavedEditedObject().getFileName().equals("")) {
             storedFOXMLFilePath = action.getSavedEditedObject().getFileName();
         }
 
         try {
+
             if (storedFOXMLFilePath == null) {
                 LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
             } else {

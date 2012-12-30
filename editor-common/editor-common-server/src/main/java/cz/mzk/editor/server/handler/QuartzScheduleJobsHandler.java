@@ -39,7 +39,9 @@ import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.quartz.UnableToInterruptJobException;
 
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.quartz.Quartz;
+import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.ProcessItem;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsResult;
@@ -65,10 +67,13 @@ public class QuartzScheduleJobsHandler
     public QuartzScheduleJobsResult execute(QuartzScheduleJobsAction action, ExecutionContext context)
             throws ActionException {
 
-        //        TODO
-        //        LOGGER.debug("Processing action: ");
-        //        ServerUtils.checkExpiredSession();
-        //
+        LOGGER.debug("Processing action: QuartzScheduleJobsAction");
+        ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.LONG_RUNNING_PROCESS)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
 
         if (action.getKillItem() != null) {
             JobKey key =

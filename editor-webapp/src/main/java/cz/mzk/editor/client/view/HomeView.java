@@ -91,7 +91,7 @@ public class HomeView
     /** The open. */
     private final IButton open;
 
-    private final IButton scheduler;
+    private IButton scheduler;
 
     /** The uuid field. */
     private final TextItem uuidField;
@@ -149,8 +149,6 @@ public class HomeView
         open.setDisabled(true);
         open.setAutoShowParent(false);
 
-        scheduler = new IButton(lang.scheduler());
-
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
         hLayout.addMember(form);
@@ -166,10 +164,14 @@ public class HomeView
         layout.addMember(html1);
         layout.addMember(status);
         layout.addMember(checkButton);
-        layout.addMember(scheduler);
         layout.addMember(html2);
         layout.addMember(hLayout);
         layout.addMember(html3);
+    }
+
+    public void showSheduler() {
+        scheduler = new IButton(lang.scheduler());
+        layout.addMember(scheduler, 3);
     }
 
     /**

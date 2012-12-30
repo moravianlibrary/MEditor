@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -71,9 +71,6 @@ public class PutDigitalObjectDetailHandler
     private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
-    /** The user dao. */
-    private final UserDAO userDAO;
-
     /** The configuration. */
     private final EditorConfiguration configuration;
 
@@ -94,11 +91,9 @@ public class PutDigitalObjectDetailHandler
      *        the http session provider
      */
     @Inject
-    public PutDigitalObjectDetailHandler(final UserDAO userDAO,
-                                         final EditorConfiguration configuration,
+    public PutDigitalObjectDetailHandler(final EditorConfiguration configuration,
                                          @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
-        this.userDAO = userDAO;
         this.fedoraAccess = fedoraAccess;
     }
 
@@ -116,16 +111,15 @@ public class PutDigitalObjectDetailHandler
         LOGGER.debug("Processing action: PutDigitalObjectDetailAction " + action.getDetail().getUuid());
         ServerUtils.checkExpiredSession();
 
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.PUBLISH)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
         if (action == null || action.getDetail() == null) throw new NullPointerException("getDetail()");
-        //TODO
+
         boolean write = false;
-        //        try {
         write = true;
-        //                    userDAO.hasRole(UserDAO.CAN_PUBLISH_STRING, userDAO.getUsersId(openID))
-        //                            || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
-        //        } catch (DatabaseException e) {
-        //            throw new ActionException(e);
-        //        }
 
         boolean shouldReindex = false;
         if (write) {

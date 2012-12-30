@@ -225,7 +225,6 @@ public class RequestDAOImpl
                 String description = rs.getString("description");
                 if (DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId().equals(user)) {
                     userName = description;
-                    //                    TODO
                     description = "";
                 }
 

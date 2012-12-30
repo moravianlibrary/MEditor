@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
@@ -92,6 +93,11 @@ public class InsertNewDigitalObjectHandler
 
         LOGGER.debug("Processing action: InsertNewDigitalObjectAction " + action.getObject().getUuid());
         ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.CREATE_NEW_OBJECTS)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
 
         NewDigitalObject object = action.getObject();
         if (object == null) throw new NullPointerException("object");

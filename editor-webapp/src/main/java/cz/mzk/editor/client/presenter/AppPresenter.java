@@ -52,6 +52,7 @@ import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.IngestInfoWindow;
 import cz.mzk.editor.client.view.window.StoreWorkingCopyWindow;
@@ -63,6 +64,8 @@ import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserResult;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 
@@ -127,6 +130,10 @@ public class AppPresenter
     private final PlaceManager placeManager;
 
     private boolean isHotKeysEnabled = true;
+
+    private boolean canOpen = true;
+    private final boolean canPublish = true;
+    private final boolean canDelete = true;
 
     /**
      * Instantiates a new app presenter.
@@ -212,11 +219,11 @@ public class AppPresenter
 
             @Override
             public void onKeyPressed(KeyPressedEvent event) {
-                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode() && canOpen) {
                     StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
                     return;
                 }
-                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode() && canOpen) {
                     displayEnterPIDWindow();
                     return;
                 }
@@ -226,6 +233,15 @@ public class AppPresenter
                 }
             }
         });
+
+        dispatcher.execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.OPEN_OBJECT}),
+                           new DispatchCallback<HasUserRightsResult>() {
+
+                               @Override
+                               public void callback(HasUserRightsResult result) {
+                                   canOpen = result.getOk()[0];
+                               }
+                           });
     }
 
     /*

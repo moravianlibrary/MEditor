@@ -123,7 +123,7 @@ public class UserDAOImpl
             + Constants.TABLE_RIGHT_IN_ROLE + " (editor_right_name, role_name) VALUES ((?),(?))";
 
     public static final String DELETE_RIGHT_IN_ROLE_STATEMENT = "DELETE FROM "
-            + Constants.TABLE_RIGHT_IN_ROLE + " WHERE editor_right_name = (?) AND role_name = (?)";
+            + Constants.TABLE_RIGHT_IN_ROLE + " WHERE role_name = (?)";
 
     public static final String SELECT_RIGHT_IN_ROLE_STATEMENT = "SELECT editor_right_name FROM "
             + Constants.TABLE_RIGHT_IN_ROLE + " WHERE  role_name = (?)";
@@ -950,15 +950,15 @@ public class UserDAOImpl
                 updateSt =
                         getConnection().prepareStatement(add ? INSERT_RIGHT_IN_ROLE_STATEMENT
                                 : DELETE_RIGHT_IN_ROLE_STATEMENT);
-                updateSt.setString(1, right.toString());
-                updateSt.setString(2, roleName);
+                updateSt.setString(1, roleName);
 
-                if (updateSt.executeUpdate() == 1) {
-                    LOGGER.debug("DB has been updated: The right " + right.toString() + " in role "
-                            + roleName + " has been " + (add ? "added" : "removed"));
+                if (updateSt.executeUpdate() > 0) {
+                    LOGGER.debug("DB has been updated: The right" + (add ? " " + right.toString() : "s ")
+                            + " in role " + roleName + " has been " + (add ? "added" : "removed"));
+                    if (!add) break;
                 } else {
                     LOGGER.error("DB has not been updated! " + updateSt);
-                    return false;
+                    return !add || false;
                 }
             }
 

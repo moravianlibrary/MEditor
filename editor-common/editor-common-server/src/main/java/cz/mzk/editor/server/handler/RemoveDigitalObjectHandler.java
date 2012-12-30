@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -162,6 +163,11 @@ public class RemoveDigitalObjectHandler
 
         LOGGER.debug("Processing action: RemoveDigitalObjectAction " + action.getUuid());
         ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.DELETE)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();

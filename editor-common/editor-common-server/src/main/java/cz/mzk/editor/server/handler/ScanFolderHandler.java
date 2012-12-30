@@ -45,6 +45,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
@@ -104,7 +105,13 @@ public class ScanFolderHandler
     public ScanFolderResult execute(final ScanFolderAction action, final ExecutionContext context)
             throws ActionException {
 
+        LOGGER.debug("Processing action: ScanFolderAction " + action.getModel() + " - " + action.getCode());
         ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SCAN_FOLDER_TO_CONVERT)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
 
         // parse input
         final String model = action.getModel();

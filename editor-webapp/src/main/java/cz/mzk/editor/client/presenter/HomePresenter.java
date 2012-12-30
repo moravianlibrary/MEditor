@@ -59,10 +59,13 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.view.window.SchedulerWindow;
 import cz.mzk.editor.shared.rpc.action.CheckAvailability;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityResult;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -149,6 +152,8 @@ public class HomePresenter
         public DynamicForm getForm();
 
         public IButton getScheduler();
+
+        void showSheduler();
     }
 
     /**
@@ -255,15 +260,25 @@ public class HomePresenter
                 }
             }
         });
-        getView().getScheduler().addClickHandler(new ClickHandler() {
 
-            @Override
-            public void onClick(ClickEvent event) {
-                new SchedulerWindow(getEventBus(), lang, dispatcher);
+        dispatcher.execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.LONG_RUNNING_PROCESS}),
+                           new DispatchCallback<HasUserRightsResult>() {
 
-            }
-        });
+                               @Override
+                               public void callback(HasUserRightsResult result) {
+                                   if (result.getOk()[0]) {
+                                       getView().showSheduler();
+                                       getView().getScheduler().addClickHandler(new ClickHandler() {
 
+                                           @Override
+                                           public void onClick(ClickEvent event) {
+                                               new SchedulerWindow(getEventBus(), lang, dispatcher);
+
+                                           }
+                                       });
+                                   }
+                               }
+                           });
     }
 
     private void evaluateUuid() {

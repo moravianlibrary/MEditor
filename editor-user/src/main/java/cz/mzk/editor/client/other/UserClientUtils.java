@@ -115,7 +115,7 @@ public class UserClientUtils {
                 StringBuffer sb = new StringBuffer();
                 if (roles.get(i).getRights() != null) {
                     for (EDITOR_RIGHTS right : roles.get(i).getRights()) {
-                        sb.append(right.toString() + ": " + right.getDesc() + "<br>");
+                        if (right != null) sb.append(right.toString() + ": " + right.getDesc() + "<br>");
                     }
                 }
                 rec.setAttribute(Constants.ATTR_RIGHT_IN_ROLE, sb.toString());

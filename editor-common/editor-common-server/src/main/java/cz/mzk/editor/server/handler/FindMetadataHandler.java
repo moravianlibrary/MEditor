@@ -47,6 +47,7 @@ import org.dom4j.Node;
 import org.dom4j.XPath;
 
 import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.OAIPMHClient;
 import cz.mzk.editor.server.Z3950Client;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -104,6 +105,11 @@ public class FindMetadataHandler
                     + action.getId());
         }
         ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.FIND_METADATA)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
 
         ArrayList<MetadataBundle> bundle = null;
         ArrayList<MetadataBundle> enrichedBundle = null;
