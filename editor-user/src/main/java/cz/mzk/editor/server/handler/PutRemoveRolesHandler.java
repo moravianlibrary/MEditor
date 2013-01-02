@@ -24,6 +24,11 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -70,12 +75,28 @@ public class PutRemoveRolesHandler
             throw new ActionException("Bad authorization in " + this.getClass().toString());
         }
 
+        Map<String, List<String>> notRemoved =
+                new HashMap<String, List<String>>(action.getRoleItems().size());
         boolean success = true;
 
         if (action.getRoleItems() != null) {
+
+            for (RoleItem roleItem : action.getRoleItems()) {
+                notRemoved.put(roleItem.getName(), new ArrayList<String>());
+            }
+
             for (RoleItem roleItem : action.getRoleItems()) {
                 try {
-                    success &= userDAO.addRemoveRoleItem(roleItem, action.isToPut());
+                    if (action.isToPut()) {
+                        success &= userDAO.addRemoveRoleItem(roleItem, true);
+                    } else {
+                        List<String> users = userDAO.removeRoleItem(roleItem, action.isForce());
+                        if (users == null) {
+                            notRemoved.remove(roleItem.getName());
+                        } else {
+                            notRemoved.get(roleItem.getName()).addAll(users);
+                        }
+                    }
                 } catch (DatabaseException e) {
                     success = false;
                     LOGGER.error(e.getMessage());
@@ -84,7 +105,7 @@ public class PutRemoveRolesHandler
             }
         }
 
-        return new PutRemoveRolesResult(success);
+        return new PutRemoveRolesResult(success, notRemoved);
     }
 
     /**

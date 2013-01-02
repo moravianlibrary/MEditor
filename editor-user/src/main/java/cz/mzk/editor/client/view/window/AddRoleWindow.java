@@ -31,6 +31,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -279,41 +280,76 @@ public abstract class AddRoleWindow
 
             @Override
             public void onClick(ClickEvent event) {
-                final ModalWindow mw = new ModalWindow(grid);
-                mw.setLoadingIcon("loadingAnimation.gif");
-                mw.show(true);
-
-                PutRemoveRolesAction removeRolesAction =
-                        new PutRemoveRolesAction(UserClientUtils.copyToRoles(null, grid.getSelectedRecords()),
-                                                 false);
-                dispatcher.execute(removeRolesAction, new DispatchCallback<PutRemoveRolesResult>() {
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    @Override
-                    public void callback(PutRemoveRolesResult result) {
-                        if (result.isSuccessful()) {
-                            grid.removeSelectedData();
-                            mw.hide();
-                        } else {
-                            SC.warn(lang.operationFailed());
-                        }
-                    }
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    @Override
-                    public void callbackError(Throwable t) {
-                        super.callbackError(t);
-                        mw.hide();
-                    }
-                });
+                removeRole(UserClientUtils.copyToRoles(null, grid.getSelectedRecords()), false);
             }
         });
 
         return remove;
+    }
+
+    private void removeRole(final List<RoleItem> toRemove, boolean force) {
+        final ModalWindow mw = new ModalWindow(grid);
+        mw.setLoadingIcon("loadingAnimation.gif");
+        mw.show(true);
+        PutRemoveRolesAction removeRolesAction = new PutRemoveRolesAction(toRemove, false, force);
+        dispatcher.execute(removeRolesAction, new DispatchCallback<PutRemoveRolesResult>() {
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void callback(PutRemoveRolesResult result) {
+                if (result.getNotRemoved().isEmpty()) {
+                    grid.removeSelectedData();
+                } else {
+                    StringBuffer sb = new StringBuffer("");
+                    final List<RoleItem> notRemoved = new ArrayList<RoleItem>(result.getNotRemoved().size());
+
+                    for (ListGridRecord selRec : grid.getSelectedRecords()) {
+                        String roleName = selRec.getAttributeAsString(Constants.ATTR_NAME);
+                        if (result.getNotRemoved().containsKey(roleName)) {
+                            if ("".equals(sb.toString())) {
+                                sb.append(lang.notRemoved().replace("%s", lang.roles().toLowerCase()))
+                                        .append(":<br>");
+                            }
+                            sb.append("<br>").append(roleName).append(" ").append(lang.referencedFrom())
+                                    .append(": ");
+                            for (String userName : result.getNotRemoved().get(roleName)) {
+                                sb.append("<br>").append(userName);
+                            }
+                            notRemoved.add(new RoleItem(null, roleName, ""));
+                        } else {
+                            grid.removeData(selRec);
+                        }
+                    }
+                    if (!"".equals(sb.toString())) {
+                        sb.append("<br><br>").append(lang.deleteReferences());
+
+                        SC.ask(sb.toString(), new BooleanCallback() {
+
+                            @Override
+                            public void execute(Boolean value) {
+                                if (value != null && value) {
+                                    removeRole(notRemoved, true);
+                                }
+                            }
+                        });
+                    } else {
+                        SC.warn(lang.operationFailed());
+                    }
+                }
+                mw.hide();
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void callbackError(Throwable t) {
+                super.callbackError(t);
+                mw.hide();
+            }
+        });
     }
 
     /**

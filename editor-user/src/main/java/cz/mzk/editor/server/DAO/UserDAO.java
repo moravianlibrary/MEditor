@@ -288,6 +288,19 @@ public interface UserDAO {
     UserInfoItem getUser() throws DatabaseException;
 
     /**
+     * Removes the role item.
+     * 
+     * @param roleItem
+     *        the role item
+     * @param force
+     *        the force
+     * @return the list
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<String> removeRoleItem(RoleItem roleItem, boolean force) throws DatabaseException;
+
+    /**
      * Adds the remove role item.
      * 
      * @param roleItem

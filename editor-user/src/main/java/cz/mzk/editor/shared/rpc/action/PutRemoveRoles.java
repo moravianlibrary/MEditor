@@ -25,6 +25,7 @@
 package cz.mzk.editor.shared.rpc.action;
 
 import java.util.List;
+import java.util.Map;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
@@ -46,7 +47,13 @@ public class PutRemoveRoles {
     @In(2)
     private boolean toPut;
 
+    @In(3)
+    private boolean force;
+
     @Out(1)
     private boolean successful;
+
+    @Out(2)
+    private Map<String, List<String>> notRemoved;
 
 }

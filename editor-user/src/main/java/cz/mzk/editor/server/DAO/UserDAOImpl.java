@@ -156,6 +156,13 @@ public class UserDAOImpl
             + " WHERE id IN (SELECT editor_user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
             + " WHERE identity = (?))";
 
+    public static final String SELECT_USER_WITH_ROLE = "SELECT u.name, u.surname FROM "
+            + Constants.TABLE_USERS_ROLE + " r LEFT JOIN " + Constants.TABLE_EDITOR_USER
+            + " u ON r.editor_user_id = u.id WHERE r.role_name = (?)";
+
+    public static final String DELETE_ALL_USERS_ROLE = "DELETE FROM " + Constants.TABLE_USERS_ROLE
+            + " WHERE role_name = (?)";
+
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(UserDAOImpl.class.getPackage().toString());
 
@@ -861,6 +868,51 @@ public class UserDAOImpl
         }
 
         return success;
+    }
+
+    @Override
+    public List<String> removeRoleItem(RoleItem roleItem, boolean force) throws DatabaseException {
+        PreparedStatement selSt = null;
+        PreparedStatement delSt = null;
+
+        ArrayList<String> users = null;
+
+        try {
+            if (!force) {
+                selSt = getConnection().prepareStatement(SELECT_USER_WITH_ROLE);
+                selSt.setString(1, roleItem.getName());
+
+                ResultSet rs = selSt.executeQuery();
+
+                while (rs.next()) {
+                    if (users == null) {
+                        users = new ArrayList<String>();
+                    }
+                    users.add(rs.getString("surname") + " " + rs.getString("name"));
+                }
+            } else {
+                delSt = getConnection().prepareStatement(DELETE_ALL_USERS_ROLE);
+                delSt.setString(1, roleItem.getName());
+
+                int updated = delSt.executeUpdate();
+                if (updated > 0) {
+                    LOGGER.debug("Table updated: All users_role items with role_name = " + roleItem.getName()
+                            + " have been removed.");
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+
+        if (users == null) {
+            users = addRemoveRoleItem(roleItem, false) ? null : new ArrayList<String>(0);
+        }
+
+        return users;
     }
 
     /**

@@ -143,7 +143,7 @@ public abstract class CreateNewRoleWindow
                                            description.getValueAsString(),
                                            UserClientUtils.copyToRights(rightsGrid.getRecords())));
 
-                PutRemoveRolesAction putRoleAction = new PutRemoveRolesAction(rightList, true);
+                PutRemoveRolesAction putRoleAction = new PutRemoveRolesAction(rightList, true, false);
                 dispatcher.execute(putRoleAction, new DispatchCallback<PutRemoveRolesResult>() {
 
                     @Override
