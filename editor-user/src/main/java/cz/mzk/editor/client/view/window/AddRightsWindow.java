@@ -27,6 +27,7 @@ package cz.mzk.editor.client.view.window;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
@@ -61,6 +62,7 @@ public abstract class AddRightsWindow
         extends UniversalWindow {
 
     private final UniversalListGrid grid;
+    private final LangConstants lang;
 
     /**
      * Instantiates a new adds the rights window.
@@ -78,10 +80,11 @@ public abstract class AddRightsWindow
      */
     public AddRightsWindow(final String userId,
                            EventBus eventBus,
-                           LangConstants lang,
+                           final LangConstants lang,
                            final DispatchAsync dispatcher,
                            List<EDITOR_RIGHTS> currentRights) {
         super(500, 600, lang.roles(), eventBus, 20);
+        this.lang = lang;
 
         grid = new UniversalListGrid();
         grid.setMargin(10);
@@ -106,14 +109,16 @@ public abstract class AddRightsWindow
 
             @Override
             public void callback(CheckRightsResult result) {
-                if (result.getNotRemovedRights() != null && !result.getNotRemovedRights().isEmpty()) {
-                    StringBuffer sb =
-                            new StringBuffer("There are some unsupported rights in the database. Please contact the administrator. The problematic rights: ");
-                    for (String right : result.getNotRemovedRights()) {
-                        sb.append(right).append("<br>");
-                    }
+                StringBuffer sb = new StringBuffer("");
+                appendNotRemRights(sb, result.getRightsRefByRole(), true);
+                appendNotRemRights(sb, result.getRightsRefByUser(), false);
+
+                if (!"".equals(sb.toString())) {
+                    sb.append("<br><br>").append(lang.resolveConflicts());
+
                     SC.warn(sb.toString());
                 }
+
                 mw.hide();
             }
 
@@ -201,6 +206,20 @@ public abstract class AddRightsWindow
         centerInPage();
         show();
         focus();
+    }
+
+    private void appendNotRemRights(StringBuffer sb, Map<String, List<String>> ref, boolean isRole) {
+        if (ref != null) {
+            for (String right : ref.keySet()) {
+                if ("".equals(sb.toString())) sb.append(lang.notRemRights()).append(":<br>");
+                sb.append("<br>").append(right).append(" ").append(lang.referencedFrom()).append(" ")
+                        .append(isRole ? lang.role() : lang.ofUser()).append(":");
+
+                for (String role : ref.get(right)) {
+                    sb.append("<br>").append(role);
+                }
+            }
+        }
     }
 
     /**

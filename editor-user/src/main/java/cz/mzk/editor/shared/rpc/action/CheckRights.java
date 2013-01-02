@@ -25,6 +25,7 @@
 package cz.mzk.editor.shared.rpc.action;
 
 import java.util.List;
+import java.util.Map;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.Out;
@@ -39,6 +40,10 @@ public class CheckRights {
 
     /** The rights. */
     @Out(1)
-    private List<String> notRemovedRights;
+    private Map<String, List<String>> rightsRefByRole;
+
+    /** The rights ref by user. */
+    @Out(2)
+    private Map<String, List<String>> rightsRefByUser;
 
 }

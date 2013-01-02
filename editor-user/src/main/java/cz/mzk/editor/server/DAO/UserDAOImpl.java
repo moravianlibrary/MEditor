@@ -163,6 +163,14 @@ public class UserDAOImpl
     public static final String DELETE_ALL_USERS_ROLE = "DELETE FROM " + Constants.TABLE_USERS_ROLE
             + " WHERE role_name = (?)";
 
+    public static final String SELECT_ALL_ROLES_BY_RIGHT = "SELECT role_name AS reference FROM "
+            + Constants.TABLE_RIGHT_IN_ROLE + " WHERE editor_right_name = (?)";
+
+    public static final String SELECT_ALL_USERS_BY_RIGHT =
+            "SELECT u.surname ||', '|| u.name AS reference FROM " + Constants.TABLE_USERS_RIGHT
+                    + " r LEFT JOIN " + Constants.TABLE_EDITOR_USER
+                    + " u ON r.editor_user_id = u.id WHERE r.right_name = (?)";
+
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(UserDAOImpl.class.getPackage().toString());
 
@@ -578,17 +586,35 @@ public class UserDAOImpl
             updateRight(toUpRight);
         }
 
-        for (String toRemRight : toRemove) {
-            if (removeRight(toRemRight)) {
-                toRemove.remove(toRemRight);
-            }
-        }
-
         for (EDITOR_RIGHTS toAddRight : sysRights) {
             insertRight(toAddRight);
         }
 
         return toRemove;
+    }
+
+    public List<String> getReferencesToRight(String rightName, boolean getRoles) throws DatabaseException {
+        ArrayList<String> references = null;
+        PreparedStatement selSt = null;
+
+        try {
+            selSt =
+                    getConnection().prepareStatement(getRoles ? SELECT_ALL_ROLES_BY_RIGHT
+                            : SELECT_ALL_USERS_BY_RIGHT);
+            selSt.setString(1, rightName);
+            ResultSet rs = selSt.executeQuery();
+
+            while (rs.next()) {
+                if (references == null) references = new ArrayList<String>();
+                references.add(rs.getString("reference"));
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return references;
     }
 
     /**

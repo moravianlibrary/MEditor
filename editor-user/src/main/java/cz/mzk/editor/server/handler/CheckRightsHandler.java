@@ -24,7 +24,10 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -63,15 +66,50 @@ public class CheckRightsHandler
         LOGGER.debug("Processing action: CheckRightsAction");
         ServerUtils.checkExpiredSession();
 
-        List<String> notRemoved = null;
+        Map<String, List<String>> rightsRefByRole = null;
+        Map<String, List<String>> rightsRefByUser = null;
+
         try {
-            notRemoved = userDAO.checkAllRights();
+            List<String> toRemove = userDAO.checkAllRights();
+
+            if (toRemove != null && !toRemove.isEmpty()) {
+                rightsRefByRole = new HashMap<String, List<String>>();
+                rightsRefByUser = new HashMap<String, List<String>>();
+                for (String toRemRight : toRemove) {
+                    rightsRefByRole.put(toRemRight, new ArrayList<String>());
+                    rightsRefByUser.put(toRemRight, new ArrayList<String>());
+                }
+
+                for (String toRemRight : toRemove) {
+                    List<String> refRoles = userDAO.getReferencesToRight(toRemRight, true);
+                    List<String> refUsers = userDAO.getReferencesToRight(toRemRight, false);
+                    boolean toRem = true;
+
+                    if (refRoles != null && !refRoles.isEmpty()) {
+                        rightsRefByRole.get(toRemRight).addAll(refRoles);
+                        toRem = false;
+                    } else {
+                        rightsRefByRole.remove(toRemRight);
+                    }
+
+                    if (refUsers != null && !refUsers.isEmpty()) {
+                        rightsRefByUser.get(toRemRight).addAll(refUsers);
+                        toRem = false;
+                    } else {
+                        rightsRefByRole.remove(toRemRight);
+                    }
+
+                    if (toRem) {
+                        userDAO.removeRight(toRemRight);
+                    }
+                }
+            }
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
 
-        return new CheckRightsResult(notRemoved);
+        return new CheckRightsResult(rightsRefByRole, rightsRefByUser);
     }
 
     /**

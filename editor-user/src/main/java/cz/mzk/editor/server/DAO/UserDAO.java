@@ -183,6 +183,19 @@ public interface UserDAO {
     List<Constants.EDITOR_RIGHTS> getRightsOfUser(long userId) throws DatabaseException;
 
     /**
+     * Gets the references to right.
+     * 
+     * @param rightName
+     *        the right name
+     * @param getRoles
+     *        the get roles
+     * @return the references to right
+     * @throws DatabaseException
+     *         the database exception
+     */
+    List<String> getReferencesToRight(String rightName, boolean getRoles) throws DatabaseException;
+
+    /**
      * Check all rights.
      * 
      * @return the list
