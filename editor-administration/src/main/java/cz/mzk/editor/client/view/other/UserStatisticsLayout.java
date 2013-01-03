@@ -74,6 +74,8 @@ public abstract class UserStatisticsLayout
     private final DispatchAsync dispatcher;
     private final String userName;
     private final LangConstants lang;
+    private TableListGrid table = null;
+    public static final String UNIFYING = "unifying";
 
     class TableListGrid
             extends ListGrid {
@@ -163,7 +165,7 @@ public abstract class UserStatisticsLayout
                                 DispatchAsync dispatcher,
                                 LangConstants lang) {
         this.dispatcher = dispatcher;
-        this.userId = userRec != null ? userRec.getAttributeAsString(Constants.ATTR_ID) : null;
+        this.userId = userRec != null ? userRec.getAttributeAsString(Constants.ATTR_ID) : UNIFYING;
         this.chartsLayout = new HLayout();
         this.lang = lang;
         this.userName =
@@ -201,7 +203,7 @@ public abstract class UserStatisticsLayout
 
     private void setdata(String model, Date dateFrom, Date dateTo, final String segVal, final ModalWindow mw) {
 
-        if (userId != null) {
+        if (!UNIFYING.equals(userId)) {
 
             GetUserStatisticDataAction statisticDataAction =
                     new GetUserStatisticDataAction(userId, model, dateFrom, dateTo, segVal);
@@ -297,8 +299,10 @@ public abstract class UserStatisticsLayout
                     }
                     HashMap<String, Integer[]> userVal = new HashMap<String, Integer[]>();
                     userVal.put(userName, values);
-                    TableListGrid table = new TableListGrid(intervalsOrNames, userVal);
-                    addMember(table);
+                    if (table == null) {
+                        table = new TableListGrid(intervalsOrNames, userVal);
+                        addMember(table);
+                    }
                 } else {
                     drawUnifyingChartsAndTables(intervalsOrNames, userValues, showCharts);
                 }
@@ -359,7 +363,9 @@ public abstract class UserStatisticsLayout
             setHeight(userValues.size() * 25 + 30);
             redraw();
         }
-        TableListGrid table = new TableListGrid(intervals, userValues);
-        addMember(table);
+        if (table == null) {
+            table = new TableListGrid(intervals, userValues);
+            addMember(table);
+        }
     }
 }

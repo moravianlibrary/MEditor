@@ -48,7 +48,6 @@ public class MEditor
 
     /** The injector. */
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
-    private DispatchAsync dispatcher;
 
     /*
      * (non-Javadoc)

@@ -56,7 +56,7 @@ import cz.mzk.editor.client.presenter.UserPresenter;
 /**
  * The Interface EditorGinjector.
  */
-@GinModules({DispatchAsyncModule.class, EditorClientModule.class, AdminClientModule.class})
+@GinModules({DispatchAsyncModule.class, EditorClientModule.class})
 public interface EditorGinjector
         extends Ginjector {
 

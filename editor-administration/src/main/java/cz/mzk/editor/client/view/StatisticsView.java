@@ -106,7 +106,7 @@ public class StatisticsView
     private final VLayout statPart;
     private CheckboxItem showCharts;
     private CheckboxItem showChartsForAll;
-    private VLayout selLayout;
+    private HLayout selLayout;
 
     private String[] intervals = null;
 
@@ -133,7 +133,7 @@ public class StatisticsView
 
     private void setSelectionLayout() {
 
-        selLayout = new VLayout();
+        selLayout = new HLayout();
         selLayout.setWidth100();
         selLayout.setHeight("25%");
         selLayout.setShowEdges(true);
@@ -152,15 +152,20 @@ public class StatisticsView
         selectionAndCharts.setEdgeSize(2);
         selectionAndCharts.setEdgeOpacity(60);
         selectionAndCharts.setPadding(5);
-        selectionAndCharts.setWidth("50%");
+
         selectionAndCharts.setExtraSpace(10);
         selectionAndCharts.setLayoutAlign(Alignment.LEFT);
-
-        paramsLayout.addMember(selectionAndCharts);
 
         showButton = new IButton(lang.show());
         showButton.setLayoutAlign(VerticalAlignment.BOTTOM);
         showButton.setDisabled(true);
+
+        VLayout paramsAndButtonLayout = new VLayout(2);
+        paramsAndButtonLayout.setWidth("50%");
+        paramsAndButtonLayout.addMember(selectionAndCharts);
+        paramsAndButtonLayout.addMember(showButton);
+
+        paramsLayout.addMember(paramsAndButtonLayout);
 
         final HashMap<String, Integer[]> userValues = new HashMap<String, Integer[]>();
 
@@ -250,7 +255,7 @@ public class StatisticsView
         paramsLayout.setExtraSpace(5);
 
         selLayout.addMember(paramsLayout);
-        selLayout.addMember(showButton);
+        //        selLayout.addMember(showButton);
         selLayout.setExtraSpace(5);
         mainLayout.addMember(selLayout);
     }
