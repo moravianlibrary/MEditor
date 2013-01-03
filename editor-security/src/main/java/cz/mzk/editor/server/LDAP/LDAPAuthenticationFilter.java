@@ -42,6 +42,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.HttpCookies;
@@ -101,10 +102,10 @@ public class LDAPAuthenticationFilter
         HttpSession session = request.getSession(true);
         Object ldapId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
 
-        if (ldapId != null) {
+        if (ldapId != null && !Constants.INVALID_LOGIN_OR_PASSWORD.equals(failed.getMessage())) {
             SecurityUtils.redirectToRegisterPage(request, response);
         } else {
-            super.unsuccessfulAuthentication(request, response, failed);
+            SecurityUtils.redirectToErrorLoginPage(request, response);
         }
     }
 

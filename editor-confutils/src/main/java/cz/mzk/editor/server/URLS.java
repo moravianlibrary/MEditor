@@ -68,7 +68,12 @@ public class URLS {
 
     /** The Constant LOGIN_PAGE. */
     public static final String LOGIN_PAGE = "/login.html";
+
+    /** The Constant LOGIN_LOCAL_PAGE. */
     public static final String LOGIN_LOCAL_PAGE = "/loginLocal.html";
+
+    /** The Constant ERROR_LOGIN_SUFFIX. */
+    public static final String ERROR_LOGIN_SUFFIX = "login_error=1";
 
     /** The Constant VERSION_PAGE. */
     public static final String VERSION_PAGE = "/version.html";

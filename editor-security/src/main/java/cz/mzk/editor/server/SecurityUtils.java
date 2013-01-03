@@ -46,4 +46,17 @@ public class SecurityUtils {
 
     }
 
+    public static void redirectToErrorLoginPage(HttpServletRequest request, HttpServletResponse response) {
+
+        String root =
+                (URLS.LOCALHOST() ? "http://" : "https://")
+                        + request.getServerName()
+                        + (URLS.LOCALHOST() ? (request.getServerPort() == 80
+                                || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
+                                : "") + URLS.ROOT() + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+        URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?"))
+                + URLS.LOGIN_LOCAL_PAGE + root.substring(root.indexOf("?")) + "&" + URLS.ERROR_LOGIN_SUFFIX
+                : root + URLS.LOGIN_PAGE + "?" + URLS.ERROR_LOGIN_SUFFIX);
+
+    }
 }

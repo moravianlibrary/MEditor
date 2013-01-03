@@ -5,8 +5,10 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 
@@ -51,7 +53,8 @@ public class JanrainAuthenticationProvider
         if (openId != null) userId = JanrainClient.getUserId(openId);
 
         if (userId < 0) {
-            throw new BadCredentialsException("Invalid login or password");
+            SecurityContextHolder.clearContext();
+            throw new BadCredentialsException(Constants.INVALID_LOGIN_OR_PASSWORD);
         } else if (userId == 0) {
             EditorUserAuthentication customAuthentication =
                     new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.OPEN_ID);

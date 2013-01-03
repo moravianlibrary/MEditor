@@ -21,7 +21,7 @@
 <body>
 	<table width="100%">
 		<tr>
-			<td></td>
+			<td id="login_error" align="center"></td>
 			<td align="center"><a
 				href="http://code.google.com/p/meta-editor/"><img
 					src="http://code.google.com/p/meta-editor/logo?cct=1328135294"
@@ -79,5 +79,21 @@
 			</td>
 		</tr>
 	</table>
+	<script type="text/javascript" language="javascript">
+		var isError = function() {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for ( var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] === "login_error" && pair[1] == 1) {
+					return true;
+				}
+			}
+			return false;
+		}();
+		if (isError) {
+			document.getElementById('login_error').innerHTML = '<font size="3" color="red"><b>! Bad authorization - wrong username or password, please try again !</b></font>';
+		}
+	</script>
 </body>
 </html>

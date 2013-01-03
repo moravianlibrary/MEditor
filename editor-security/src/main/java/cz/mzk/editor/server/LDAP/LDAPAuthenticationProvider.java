@@ -20,7 +20,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.DAO.LogInOutDAO;
@@ -92,7 +94,8 @@ public class LDAPAuthenticationProvider
         Long userId = verify(username, password);
 
         if (userId < 0) {
-            throw new BadCredentialsException("Invalid login or password");
+            SecurityContextHolder.clearContext();
+            throw new BadCredentialsException(Constants.INVALID_LOGIN_OR_PASSWORD);
         } else if (userId == 0) {
             EditorUserAuthentication customAuthentication =
                     new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.LDAP);

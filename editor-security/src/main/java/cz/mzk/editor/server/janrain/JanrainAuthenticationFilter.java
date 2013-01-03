@@ -49,6 +49,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.HttpCookies;
@@ -169,10 +170,10 @@ public class JanrainAuthenticationFilter
             ServletException {
         HttpSession session = request.getSession(true);
         Object openId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
-        if (openId != null) {
+        if (openId != null && !Constants.INVALID_LOGIN_OR_PASSWORD.equals(failed.getMessage())) {
             SecurityUtils.redirectToRegisterPage(request, response);
         } else {
-            super.unsuccessfulAuthentication(request, response, failed);
+            SecurityUtils.redirectToErrorLoginPage(request, response);
         }
     }
 

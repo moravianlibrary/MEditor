@@ -57,6 +57,8 @@ public class Constants {
     public static final Type<RevealContentHandler<?>> TYPE_ADMIN_LEFT_CONTENT =
             new Type<RevealContentHandler<?>>();
 
+    public static final String INVALID_LOGIN_OR_PASSWORD = "Invalid login or password";
+
     /** The Constant LOGO_HTML. */
     public static final String LOGO_HTML =
             "<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>";
