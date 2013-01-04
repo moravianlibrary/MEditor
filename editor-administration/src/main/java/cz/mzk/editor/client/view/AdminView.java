@@ -105,9 +105,10 @@ public class AdminView
         this.eventBus = eventBus;
         widget = new VLayout();
         leftContainer = new VLayout();
-        leftContainer.setWidth(275);
+        leftContainer.setWidth("20%");
         leftContainer.setShowResizeBar(true);
         mainContainer = new VLayout();
+        mainContainer.setWidth("*");
         widget.setWidth100();
         widget.setHeight("98%");
         widget.setLeaveScrollbarGap(true);

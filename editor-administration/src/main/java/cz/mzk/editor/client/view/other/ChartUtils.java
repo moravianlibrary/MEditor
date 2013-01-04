@@ -35,7 +35,8 @@ public class ChartUtils {
     public static native void drawPieChart(JavaScriptObject names,
                                            JavaScriptObject pages,
                                            int size,
-                                           String chartNestedDivId) /*-{
+                                           String chartNestedDivId,
+                                           int width) /*-{
 
 		var dataTable = new $wnd.google.visualization.DataTable();
 
@@ -51,7 +52,7 @@ public class ChartUtils {
 		var chart = new $wnd.google.visualization.PieChart($doc
 				.getElementById(chartNestedDivId));
 		chart.draw(dataTable, {
-			width : 450,
+			width : width,
 			height : 240,
 			is3D : true
 		});
@@ -61,7 +62,8 @@ public class ChartUtils {
     public static native void drawLineChart(JavaScriptObject names,
                                             JavaScriptObject pages,
                                             int size,
-                                            String chartNestedDivId) /*-{
+                                            String chartNestedDivId,
+                                            int width) /*-{
 
 		var dataTable = new $wnd.google.visualization.DataTable();
 
@@ -79,7 +81,7 @@ public class ChartUtils {
 		chart.draw(dataTable, {
 			colors : [ '#9d7100' ],
 			legend : 'none',
-			width : 600,
+			width : width,
 			height : 240,
 			is3D : true
 		});
@@ -89,7 +91,8 @@ public class ChartUtils {
     public static native void drawBarChart(JavaScriptObject names,
                                            JavaScriptObject pages,
                                            int size,
-                                           String chartNestedDivId) /*-{
+                                           String chartNestedDivId,
+                                           int width) /*-{
 
 		var dataTable = new $wnd.google.visualization.DataTable();
 
@@ -107,7 +110,7 @@ public class ChartUtils {
 		chart.draw(dataTable, {
 			colors : [ '#00d287' ],
 			legend : 'none',
-			width : 600,
+			width : width,
 			height : 240
 		});
 

@@ -930,8 +930,8 @@ public class ActionDAOImpl
         Calendar cal = Calendar.getInstance();
 
         if (segmentation == STATISTICS_SEGMENTATION.DAYS) {
-            int minDay = calMin.get(Calendar.DAY_OF_YEAR);
-            int maxDay = calMax.get(Calendar.DAY_OF_YEAR);
+            int minDay = calMin.get(Calendar.DAY_OF_YEAR) - 1;
+            int maxDay = calMax.get(Calendar.DAY_OF_YEAR) - 1;
 
             for (int i = minDay; i <= maxDay; i++) {
                 cal.set(Calendar.DAY_OF_YEAR, i);
@@ -943,13 +943,22 @@ public class ActionDAOImpl
             int minWeek = calMin.get(Calendar.WEEK_OF_YEAR);
             int maxWeek = calMax.get(Calendar.WEEK_OF_YEAR);
 
+            if (minWeek > maxWeek) {
+                if (minWeek == 52) minWeek = 1;
+                if (maxWeek == 1) maxWeek = 52;
+            }
+
             for (int i = minWeek; i <= maxWeek; i++) {
+                cal.setFirstDayOfWeek(Calendar.MONDAY);
                 cal.set(Calendar.WEEK_OF_YEAR, i);
 
+                cal.add(Calendar.DATE, (Calendar.MONDAY - cal.get(Calendar.DAY_OF_WEEK)) + 1);
+
                 EditorDate from =
-                        new EditorDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), year);
+                        new EditorDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, year);
                 cal.add(Calendar.DATE, 6);
-                EditorDate to = new EditorDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), year);
+                EditorDate to =
+                        new EditorDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, year);
 
                 data.put(i, new IntervalStatisticData(userId, 0, from, to));
             }
@@ -993,13 +1002,13 @@ public class ActionDAOImpl
                 int key = -1;
 
                 if (segmentation == STATISTICS_SEGMENTATION.DAYS) {
-                    key = cal.get(Calendar.DAY_OF_YEAR);
+                    key = cal.get(Calendar.DAY_OF_YEAR) - 1;
 
                 } else if (segmentation == STATISTICS_SEGMENTATION.WEEKS) {
                     key = cal.get(Calendar.WEEK_OF_YEAR);
 
                 } else if (segmentation == STATISTICS_SEGMENTATION.MONTHS) {
-                    key = cal.get(Calendar.MONTH);
+                    key = cal.get(Calendar.MONTH) + 1;
 
                 } else if (segmentation == STATISTICS_SEGMENTATION.YEARS) {
                     key = cal.get(Calendar.YEAR);

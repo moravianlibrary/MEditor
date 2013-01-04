@@ -133,7 +133,7 @@ public class StatisticsView
 
     private void setSelectionLayout() {
 
-        selLayout = new HLayout();
+        selLayout = new HLayout(2);
         selLayout.setWidth100();
         selLayout.setHeight("25%");
         selLayout.setShowEdges(true);
@@ -141,14 +141,13 @@ public class StatisticsView
         selLayout.setEdgeOpacity(60);
         selLayout.setPadding(5);
 
-        HLayout paramsLayout = new HLayout();
-
-        paramsLayout.addMember(getUserSelect());
+        selLayout.addMember(getUserSelect());
 
         VLayout selectionAndCharts = new VLayout();
         selectionAndCharts.addMember(getSelObjDate());
         selectionAndCharts.addMember(getChartsChooser());
         selectionAndCharts.setShowEdges(true);
+        selectionAndCharts.setWidth100();
         selectionAndCharts.setEdgeSize(2);
         selectionAndCharts.setEdgeOpacity(60);
         selectionAndCharts.setPadding(5);
@@ -161,11 +160,11 @@ public class StatisticsView
         showButton.setDisabled(true);
 
         VLayout paramsAndButtonLayout = new VLayout(2);
-        paramsAndButtonLayout.setWidth("50%");
         paramsAndButtonLayout.addMember(selectionAndCharts);
+        paramsAndButtonLayout.setWidth("50%");
         paramsAndButtonLayout.addMember(showButton);
 
-        paramsLayout.addMember(paramsAndButtonLayout);
+        selLayout.addMember(paramsAndButtonLayout);
 
         final HashMap<String, Integer[]> userValues = new HashMap<String, Integer[]>();
 
@@ -252,10 +251,6 @@ public class StatisticsView
             }
         });
 
-        paramsLayout.setExtraSpace(5);
-
-        selLayout.addMember(paramsLayout);
-        //        selLayout.addMember(showButton);
         selLayout.setExtraSpace(5);
         mainLayout.addMember(selLayout);
     }
@@ -341,7 +336,7 @@ public class StatisticsView
     private HLayout getSelObjDate() {
 
         HLayout selObjDateLayout = new HLayout();
-        selObjDateLayout.setWidth(400);
+        selObjDateLayout.setWidth100();
         selObjDateLayout.setExtraSpace(10);
 
         VLayout selObjLayout = new VLayout();
@@ -353,14 +348,14 @@ public class StatisticsView
 
         HTMLFlow selObjFlow =
                 new HTMLFlow(HtmlCode.title(lang.show() + " " + lang.insertedObjCount().toLowerCase(), 3));
-        selObjFlow.setWidth(250);
+        selObjFlow.setWidth(selObjFlow.getContents().length() * 5 + 10);
         selObjFlow.setHeight(30);
 
         selObjLayout.addMember(selObjFlow);
         selObjLayout.addMember(objectAndTime);
 
         VLayout selIntLayout = new VLayout();
-        selIntLayout.setWidth(100);
+        selIntLayout.setWidth("50%");
         DynamicForm dates = new DynamicForm();
         fromDate = new DateItem("from", HtmlCode.bold(lang.from()));
         toDate = new DateItem("to", HtmlCode.bold(lang.to()));
@@ -384,6 +379,7 @@ public class StatisticsView
         dates.setWidth(150);
 
         HTMLFlow intevalFlow = new HTMLFlow(HtmlCode.title(lang.inInterval(), 3));
+        selObjFlow.setWidth(selObjFlow.getContents().length() * 5);
         intevalFlow.setHeight(30);
         selIntLayout.addMember(intevalFlow);
         selIntLayout.addMember(dates);
@@ -443,11 +439,12 @@ public class StatisticsView
 
     private HLayout getUserSelect() {
         HLayout userLayout = new HLayout();
-        userLayout.setExtraSpace(10);
+        userLayout.setExtraSpace(5);
 
         selectedUsersGrid = new ListGrid();
         selectedUsersGrid.setShowAllRecords(true);
         selectedUsersGrid.setCanReorderRecords(true);
+        selectedUsersGrid.setWidth100();
         ListGridField selectedUsersField = new ListGridField(Constants.ATTR_NAME, lang.selectedUsers());
         selectedUsersField.setCellFormatter(new CellFormatter() {
 
@@ -493,13 +490,13 @@ public class StatisticsView
         VLayout selUserLayout = new VLayout();
 
         final DynamicForm showChartsForAllForm = new DynamicForm();
-        showChartsForAll =
-                new CheckboxItem("showCharts", HtmlCode.bold(lang.show() + " "
-                        + lang.unifyingCharts().toLowerCase()));
+        String title = HtmlCode.bold(lang.show() + " " + lang.unifyingCharts().toLowerCase());
+        showChartsForAll = new CheckboxItem("showCharts", title);
         showChartsForAll.setDefaultValue(true);
+        showChartsForAll.setWrapTitle(true);
+        showChartsForAll.setDisabled(true);
+        showChartsForAllForm.setWidth(title.length() * 5);
         showChartsForAllForm.setItems(showChartsForAll);
-        showChartsForAllForm.setDisabled(true);
-        showChartsForAllForm.setWidth(100);
 
         usersGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
 
@@ -507,8 +504,8 @@ public class StatisticsView
             public void onSelectionChanged(SelectionEvent event) {
                 ListGridRecord[] selectedRecords = usersGrid.getSelectedRecords();
                 selectedUsersGrid.setData(selectedRecords);
-                if (selectedRecords != null && selectedRecords.length > 1)
-                    showChartsForAllForm.setDisabled(false);
+
+                showChartsForAll.setDisabled(selectedRecords == null || selectedRecords.length < 2);
                 checkShowButton();
             }
         });

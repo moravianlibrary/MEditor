@@ -65,7 +65,7 @@ public class SubobjectsWindow
             nameField.setTitle(lang.title());
 
             ListGridField pidField = new ListGridField(Constants.ATTR_UUID);
-            pidField.setTitle(lang.title());
+            pidField.setTitle("PID");
             pidField.setWidth("50%");
 
             childrenItemsGrid.setFields(modelField, nameField, pidField);
@@ -79,6 +79,8 @@ public class SubobjectsWindow
         childrenItemsGrid.setCanHover(true);
         childrenItemsGrid.setHoverWidth(300);
         childrenItemsGrid.setMargin(15);
+        childrenItemsGrid.setCanSelectText(true);
+        childrenItemsGrid.setCanEdit(true);
 
         addItem(childrenItemsGrid);
 

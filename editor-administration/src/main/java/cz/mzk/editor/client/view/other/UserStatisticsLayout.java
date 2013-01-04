@@ -76,6 +76,8 @@ public abstract class UserStatisticsLayout
     private final LangConstants lang;
     private TableListGrid table = null;
     public static final String UNIFYING = "unifying";
+    public static final double PIE_SIZE_CONVERSION = 0.37;
+    public static final double LINE_BAR_SIZE_CONVERSION = 0.55;
 
     class TableListGrid
             extends ListGrid {
@@ -120,7 +122,9 @@ public abstract class UserStatisticsLayout
             fields.toArray(fieldsArray);
             setFields(fieldsArray);
 
-            ListGridRecord[] records = new ListGridRecord[intervals.length];
+            ListGridRecord[] records =
+                    new ListGridRecord[intervals.length > userValues.size() ? intervals.length : userValues
+                            .size()];
 
             fieldsIndex = 0;
             for (String user : userValues.keySet()) {
@@ -282,17 +286,23 @@ public abstract class UserStatisticsLayout
                     removeMember(chartsLayout);
                 }
 
+                setWidth100();
+
                 if (userValues == null) {
                     if (showCharts) {
-                        ChartUtils.drawPieChart(JSOHelper.convertToJavaScriptArray(intervalsOrNames),
-                                                JSOHelper.convertToJavaScriptArray(values),
-                                                values.length,
-                                                PIE_CHART_NESTED_DIV_ID + userId);
+                        ChartUtils
+                                .drawPieChart(JSOHelper.convertToJavaScriptArray(intervalsOrNames),
+                                              JSOHelper.convertToJavaScriptArray(values),
+                                              values.length,
+                                              PIE_CHART_NESTED_DIV_ID + userId,
+                                              (int) (UserStatisticsLayout.this.getWidth() * PIE_SIZE_CONVERSION));
 
-                        ChartUtils.drawLineChart(JSOHelper.convertToJavaScriptArray(intervalsOrNames),
-                                                 JSOHelper.convertToJavaScriptArray(values),
-                                                 values.length,
-                                                 LINE_CHART_NESTED_DIV_ID + userId);
+                        ChartUtils
+                                .drawLineChart(JSOHelper.convertToJavaScriptArray(intervalsOrNames),
+                                               JSOHelper.convertToJavaScriptArray(values),
+                                               values.length,
+                                               LINE_CHART_NESTED_DIV_ID + userId,
+                                               (int) (UserStatisticsLayout.this.getWidth() * LINE_BAR_SIZE_CONVERSION));
                     } else {
                         setHeight(100);
                         redraw();
@@ -306,7 +316,6 @@ public abstract class UserStatisticsLayout
                 } else {
                     drawUnifyingChartsAndTables(intervalsOrNames, userValues, showCharts);
                 }
-
             }
         };
 
@@ -353,12 +362,15 @@ public abstract class UserStatisticsLayout
             ChartUtils.drawPieChart(JSOHelper.convertToJavaScriptArray(allNames),
                                     JSOHelper.convertToJavaScriptArray(allValues),
                                     allNames.length,
-                                    PIE_CHART_NESTED_DIV_ID + userId);
+                                    PIE_CHART_NESTED_DIV_ID + userId,
+                                    (int) (UserStatisticsLayout.this.getWidth() * PIE_SIZE_CONVERSION));
 
             ChartUtils.drawBarChart(JSOHelper.convertToJavaScriptArray(allNames),
                                     JSOHelper.convertToJavaScriptArray(allValues),
                                     allNames.length,
-                                    LINE_CHART_NESTED_DIV_ID + userId);
+                                    LINE_CHART_NESTED_DIV_ID + userId,
+                                    (int) (UserStatisticsLayout.this.getWidth() * LINE_BAR_SIZE_CONVERSION));
+            setHeight(userValues.size() * 30 + 280);
         } else {
             setHeight(userValues.size() * 25 + 30);
             redraw();
