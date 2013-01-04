@@ -107,7 +107,7 @@ public class UserDAOImpl
 
     /** The Constant SELECT_USER_ID_BY_OPENID. */
     public static final String SELECT_USER_ID_BY_OPENID = "SELECT id FROM " + Constants.TABLE_EDITOR_USER
-            + " WHERE id IN (SELECT user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
+            + " WHERE id IN (SELECT editor_user_id FROM " + Constants.TABLE_OPEN_ID_IDENTITY
             + " WHERE identity = (?))";
 
     /** The Constant LOGGER. */
