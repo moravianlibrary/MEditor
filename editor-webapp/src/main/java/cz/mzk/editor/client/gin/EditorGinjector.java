@@ -43,6 +43,7 @@ import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter;
 import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.mzk.editor.client.presenter.EditorRootPresenter;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.presenter.HomePresenter;
@@ -112,4 +113,5 @@ public interface EditorGinjector
 
     AsyncProvider<MyAcountPresenter> getMyAcountPresenter();
 
+    Provider<EditorRootPresenter> getEditorRootPresenter();
 }

@@ -50,6 +50,7 @@ import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter;
 import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.mzk.editor.client.presenter.EditorRootPresenter;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
 import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.presenter.HomePresenter;
@@ -65,6 +66,7 @@ import cz.mzk.editor.client.view.AppView;
 import cz.mzk.editor.client.view.CreateObjectMenuView;
 import cz.mzk.editor.client.view.CreateStructureView;
 import cz.mzk.editor.client.view.DigitalObjectMenuView;
+import cz.mzk.editor.client.view.EditorRootView;
 import cz.mzk.editor.client.view.FindMetadataView;
 import cz.mzk.editor.client.view.HistoryView;
 import cz.mzk.editor.client.view.HomeView;
@@ -164,6 +166,11 @@ public class EditorClientModule
                       StatisticsPresenter.MyView.class,
                       StatisticsView.class,
                       StatisticsPresenter.MyProxy.class);
+
+        bindPresenter(EditorRootPresenter.class,
+                      EditorRootPresenter.MyView.class,
+                      EditorRootView.class,
+                      EditorRootPresenter.MyProxy.class);
 
         bind(CachingDispatchAsync.class);
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);

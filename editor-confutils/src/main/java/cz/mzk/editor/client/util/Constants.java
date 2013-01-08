@@ -57,6 +57,8 @@ public class Constants {
     public static final Type<RevealContentHandler<?>> TYPE_ADMIN_LEFT_CONTENT =
             new Type<RevealContentHandler<?>>();
 
+    public static final Type<RevealContentHandler<?>> TYPE_ROOT_CONTENT = new Type<RevealContentHandler<?>>();
+
     public static final String INVALID_LOGIN_OR_PASSWORD = "Invalid login or password";
 
     /** The Constant LOGO_HTML. */

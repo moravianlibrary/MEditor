@@ -124,7 +124,7 @@ public class AdminHomePresenter
 
             @Override
             public void onClick(ClickEvent event) {
-                placeManager.revealPlace(new PlaceRequest(NameTokens.MEDIT_HOME));
+                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MEDIT_HOME));
             }
         });
     }

@@ -40,8 +40,8 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
+import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
-import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.smartgwt.client.widgets.HTMLFlow;
 
 import cz.mzk.editor.client.LangConstants;
@@ -198,7 +198,7 @@ public class AdminPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealRootContentEvent.fire(this, this);
+        RevealContentEvent.fire(this, Constants.TYPE_ROOT_CONTENT, this);
     }
 
     /*
